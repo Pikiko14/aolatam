@@ -453,6 +453,14 @@ def _parchear_battlepass_xml_bytes(xml_bytes: bytes) -> bytes:
 
 
 URL_NOTICIAS = 'http://127.0.0.1:%d/news.htm?p=%s'
+
+
+def url_noticias(puerto, pagina):
+    """La URL de una pagina de noticias: en el host que se le da al launcher (PARCHE_HOST; 127.0.0.1 en local)."""
+    host = getattr(_cf, 'PARCHE_HOST', '127.0.0.1') or '127.0.0.1'
+    return 'http://%s:%d/news.htm?p=%s' % (host, puerto, pagina)
+
+
 BOTONES_NOTICIAS = (('Server News', 'news'), ('Events', 'events'),
                     ('Server Info', 'info'), ('Game News', 'notes'))
 
@@ -466,7 +474,7 @@ def _parchear_activityurl_xml_bytes(xml_bytes: bytes) -> bytes:
     for i, (titulo, pagina) in enumerate(BOTONES_NOTICIAS, 1):
         def _fila(m, titulo=titulo, pagina=pagina):
             tag = re.sub(r'名稱="[^"]*"', '名稱="%s"' % titulo, m.group(0))
-            return re.sub(r'網址="[^"]*"', '網址="%s"' % (URL_NOTICIAS % (puerto, pagina)), tag)
+            return re.sub(r'網址="[^"]*"', '網址="%s"' % url_noticias(puerto, pagina), tag)
         txt = re.sub(r'<活動資訊 編號="%d"[^>]*/>' % i, _fila, txt)
     return txt.encode('utf-8')
 
@@ -1163,8 +1171,7 @@ async def _manejar_ftp(reader: asyncio.StreamReader, writer: asyncio.StreamWrite
             elif cmd == 'PASV':
                 if pasv_srv:
                     pasv_srv.close()
-                pasv_srv = await asyncio.start_server(
-                    _on_data_conn, getattr(_cf, 'PARCHE_ESCUCHAR', '127.0.0.1') or '127.0.0.1', 0)
+                pasv_srv = await _abrir_pasivo(_on_data_conn)
                 port = pasv_srv.sockets[0].getsockname()[1]
                 p1, p2 = port >> 8, port & 0xFF
                 ip = _ip_pasiva().replace('.', ',')
@@ -1216,6 +1223,24 @@ async def _manejar_ftp(reader: asyncio.StreamReader, writer: asyncio.StreamWrite
             writer.close()
         except Exception:
             pass
+
+
+async def _abrir_pasivo(manejador):
+    """Abre el puerto de datos del FTP pasivo: uno libre del rango PARCHE_PASV_PUERTOS, o cualquiera si no hay rango."""
+    escuchar = getattr(_cf, 'PARCHE_ESCUCHAR', '127.0.0.1') or '127.0.0.1'
+    desde, hasta = getattr(_cf, 'PARCHE_PASV_PUERTOS', (0, 0))
+    if not desde or hasta < desde:
+        return await asyncio.start_server(manejador, escuchar, 0)
+    import random
+    puertos = list(range(desde, hasta + 1))
+    random.shuffle(puertos)
+    ultimo = None
+    for p in puertos:
+        try:
+            return await asyncio.start_server(manejador, escuchar, p)
+        except OSError as e:
+            ultimo = e
+    raise ultimo or OSError('sin puertos pasivos libres')
 
 
 def _contenido_update3_ini() -> bytes:
@@ -1509,6 +1534,12 @@ async def _manejar_http(reader: asyncio.StreamReader, writer: asyncio.StreamWrit
         req = await asyncio.wait_for(reader.read(2048), timeout=5.0)
         primera = req.decode('ascii', errors='ignore').splitlines()[0] if req else ''
         path = primera.split(' ')[1] if len(primera.split(' ')) > 1 else '/p.htm'
+        # Si el HTTP escucha hacia fuera (VPS), solo se sirven las noticias: el panel (/p.htm) cambia la estacion y abre clientes, y es solo de esta maquina.
+        peer = (writer.get_extra_info('peername') or ('',))[0]
+        if peer not in ('127.0.0.1', '::1') and not path.startswith('/news.htm'):
+            writer.write(b"HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\n\r\n")
+            await writer.drain()
+            return
 
         if path.startswith('/news.htm'):
             pagina = path.split('p=', 1)[1].split('&')[0] if 'p=' in path else 'news'
@@ -1626,9 +1657,10 @@ async def iniciar_servidores_launcher():
     except Exception as e:
         log.warning(f"No se pudo abrir puerto FTP {p_ftp}: {e}")
     try:
-        s_http = await asyncio.start_server(_manejar_http, '127.0.0.1', p_http)
+        escuchar_http = getattr(_cf, 'PARCHE_ESCUCHAR', '127.0.0.1') or '127.0.0.1'
+        s_http = await asyncio.start_server(_manejar_http, escuchar_http, p_http)
         srvs.append(s_http)
-        log.info(f"Servidor HTTP de noticias/estacion (START.EXE) en 127.0.0.1:{p_http}")
+        log.info(f"Servidor HTTP de noticias/estacion (START.EXE) en {escuchar_http}:{p_http}")
     except Exception as e:
         log.warning(f"No se pudo abrir puerto HTTP {p_http}: {e}")
     return srvs

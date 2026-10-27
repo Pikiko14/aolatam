@@ -712,12 +712,12 @@ def regenera(maximo: int, nivel: int, sentado: bool, es_hp: bool) -> int:
 # ninguna captura de un fallo. Es una curva inventada que empieza segura y
 # baja hasta el 20% en la ultima mejora. En cuanto haya numeros de verdad se
 # cambia ahi.
-MEJORAS_SIEMPRE_EXITO = false
+MEJORAS_SIEMPRE_EXITO = False
 
 # Si es True, el martillo verde da el MAXIMO de todos los stats que puede dar
 # en vez de sortear cada uno dentro de su rango. El cuadro del juego enseña
 # esos rangos: "Attack 0 (0-210), Rigor 3 (0-54), Movement Speed 37 (0-40)".
-MARTILLO_VERDE_TODOS_LOS_STATS = false
+MARTILLO_VERDE_TODOS_LOS_STATS = False
 
 # El rango con el que entra el personaje: 1 es "Growing Power" y 20 "God's
 # Mouthpiece". Viaja en el byte 93 del 0x0002, pegado a los creditos, y NO se
@@ -770,9 +770,23 @@ PUERTO_UPDATE_FTP = 2121
 #     pasivo del FTP). En local 127.0.0.1; al subir, la publica.
 #   PARCHE_ESCUCHAR: donde escucha el servidor de actualizaciones. 127.0.0.1
 #     solo atiende a esta maquina; '0.0.0.0' a todos (al subir).
-PARCHE_EN_LAUNCHER = False
-PARCHE_HOST = '127.0.0.1'
-PARCHE_ESCUCHAR = '127.0.0.1'
+#   PARCHE_PASV_PUERTOS: rango de puertos TCP para las conexiones de datos del
+#     FTP (modo pasivo). (0, 0) = cualquiera (vale en local); en un VPS con
+#     firewall hay que fijarlo y abrirlo, p. ej. (40000, 40050).
+# Las tres se pueden fijar sin tocar este archivo con variables de entorno
+# (AO_PARCHE_HOST, AO_PARCHE_ESCUCHAR, AO_PARCHE_PASV=40000-40050,
+# AO_PARCHE_EN_LAUNCHER=1): asi el servidor de un VPS y el de tu PC usan el
+# mismo codigo. Con ESCUCHAR distinto de 127.0.0.1 el HTTP solo sirve las
+# paginas de noticias (/news.htm): el panel de control (/p.htm) es solo local.
+import os as _os
+PARCHE_EN_LAUNCHER = _os.environ.get('AO_PARCHE_EN_LAUNCHER', '0') == '1'
+PARCHE_HOST = _os.environ.get('AO_PARCHE_HOST', '127.0.0.1')
+PARCHE_ESCUCHAR = _os.environ.get('AO_PARCHE_ESCUCHAR', '127.0.0.1')
+try:
+    _a, _b = _os.environ.get('AO_PARCHE_PASV', '0-0').split('-')
+    PARCHE_PASV_PUERTOS = (int(_a), int(_b))
+except ValueError:
+    PARCHE_PASV_PUERTOS = (0, 0)
 # 8080 cae dentro de un intervalo TCP reservado por Windows en algunas
 # instalaciones (por ejemplo 8067-8166), lo que produce WinError 10013 aun
 # cuando ningun proceso lo este escuchando. 8280 conserva el mismo largo en
