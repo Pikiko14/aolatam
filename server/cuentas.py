@@ -878,7 +878,7 @@ def guardar_inventario(usuario: str, char_id: int, bolsa: dict,
                                       or v.get('extra') or v.get('vinculacion')
                                       or v.get('house_egg_deadline') or v.get('mercenary_token_deadline') or v.get('holy_pass_fin')
                                       or v.get('arena_premio_fin') or v.get('mall_fin')
-                              or v.get('piezas') or v.get('fuel'))}
+                              or v.get('piezas') or v.get('fuel') or v.get('cofre_item'))}
         if cantidades is not None:
             p['cantidades'] = {str(k): int(v)
                                for k, v in sorted(cantidades.items(), key=_slot_sort_key)
@@ -897,7 +897,13 @@ def guardar_mejoras(usuario: str, char_id: int, mejoras: dict):
                                   or v.get('extra') or v.get('vinculacion')
                                   or v.get('house_egg_deadline') or v.get('mercenary_token_deadline') or v.get('holy_pass_fin')
                                   or v.get('arena_premio_fin') or v.get('mall_fin')
-                              or v.get('piezas') or v.get('fuel'))}
+                              or v.get('piezas') or v.get('fuel') or v.get('cofre_item'))}
+    _actualizar_personaje(usuario, char_id, _mut)
+
+
+def guardar_apariencia(usuario: str, char_id: int, apariencia):
+    def _mut(p):
+        p['apariencia'] = [int(v) & 0xFF for v in list(apariencia)[:5]]
     _actualizar_personaje(usuario, char_id, _mut)
 
 
@@ -1087,7 +1093,7 @@ def guardar_casa_e_inventario(usuario: str, char_id: int, casa, bolsa: dict,
                               or v.get('extra') or v.get('vinculacion')
                               or v.get('house_egg_deadline') or v.get('mercenary_token_deadline') or v.get('holy_pass_fin')
                               or v.get('arena_premio_fin') or v.get('mall_fin')
-                              or v.get('piezas') or v.get('fuel'))
+                              or v.get('piezas') or v.get('fuel') or v.get('cofre_item'))
                 }
             con.execute(
                 'UPDATE personajes SET datos=?, actualizado_en=CURRENT_TIMESTAMP '

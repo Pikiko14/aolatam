@@ -347,6 +347,16 @@ QUITAR_DE_BOLSAS = {
 
 
 # =====================================================================
+# DESCRIPCIONES DE BUFFS
+# =====================================================================
+# {magia: texto}: lo que ensena el icono del buff al pasar el raton. Se
+# escribe en magic.xml del cliente local igual que DESCRIPCIONES_ITEMS.
+DESCRIPCIONES_MAGIAS = {
+    1897: 'Increase Maximum HP by 500.',   # Recovery Notice (4297)
+}
+
+
+# =====================================================================
 # DESCRIPCIONES DE OBJETOS
 # =====================================================================
 # {objeto: texto}: al arrancar, el servidor las escribe en el cliente local

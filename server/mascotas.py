@@ -499,6 +499,12 @@ def armar(estado: dict) -> bytes:
                          int(sks[1] or 0) & 0xFFFF,
                          int(sks[2] or 0) & 0xFFFF)
 
+    # La piedra de exp: sub_60ADC0 lee a2+0xB6/+0xBA/+0xBE (guardado, tope y %)
+    # y los pasa a la barra y a la ficha de WND_PET_INFO.
+    d_exp = diamante(estado)
+    if d_exp:
+        struct.pack_into('<IIH', b, 180, int(d_exp.get('exp') or 0), int(d_exp['tope']), int(d_exp.get('pct') or 0))
+
     # Byte 190 (a2+192 en sub_60ADC0 -> dword_1434C): contador de mejoras (+N) en WND_PET_INFO
     b[190] = min(255, mej)
     # Estrellas (+196, 1 = Star Level 0.1)
@@ -703,6 +709,12 @@ def entrada(plantilla: bytes, estado: dict) -> bytes:
     e[83] = max(0, min(255, int(estado.get('mejoras') or 0)))
     # Byte 118: 1 si la mascota esta invocada (fuera), 0 si esta guardada
     e[118] = 1 if estado.get('fuera') else 0
+    # La piedra de exp (sub_514180: a3+0x36/+0x3A/+0x86 con a3 = entrada+86),
+    # que es el "Exp diamond(%d%%):%d / %d" de la ficha del objeto.
+    d_exp = diamante(estado)
+    if d_exp:
+        struct.pack_into('<II', e, 140, int(d_exp.get('exp') or 0), int(d_exp['tope']))
+        struct.pack_into('<H', e, 220, int(d_exp.get('pct') or 0))
     # Offsets 148..180: bonos verdes de cada stat (0 si la mascota no tiene bono en ese stat)
     for stat_k, off_b in OFF_BONUS_ENTRADA.items():
         bono_val = int(b_star.get(stat_k, 0)) & 0xFFFFFFFF
@@ -1422,6 +1434,47 @@ def poner_buff_exp(ficha: dict, segundos: int, pct: int, ahora=None) -> dict:
     ficha['buff_exp'] = {'hasta': ahora + max(0, int(segundos)),
                          'pct': int(pct)}
     return ficha['buff_exp']
+
+
+# EXP STONE / EXP DIAMOND (使用公式 6). La piedra se coloca en la mascota y, en
+# cada combate, guarda APARTE un pct% extra de la exp que gana la mascota, hasta
+# su tope (動態資料1). La mascota sigue ganando su exp normal. El boton de la
+# ventana (petinfo.lua: petcommand(PET_COMMAND_WITHDRAW_GEMEXP = 3)) se la pasa
+# al dueño cuando quiera, este o no llena, y la piedra se gasta.
+ORDEN_SACAR_DIAMANTE = 3
+
+
+def diamante(ficha: dict):
+    d = (ficha or {}).get('diamante')
+    return d if isinstance(d, dict) and int(d.get('tope') or 0) > 0 else None
+
+
+def poner_diamante(ficha: dict, item: int, tope: int, pct: int) -> bool:
+    """False si la mascota ya lleva una piedra puesta."""
+    if diamante(ficha):
+        return False
+    ficha['diamante'] = {'item': int(item), 'tope': int(tope), 'pct': int(pct), 'exp': 0}
+    return True
+
+
+def cargar_diamante(ficha: dict, exp_combate: int) -> int:
+    """Lo que guarda la piedra de un combate: pct% de esa exp, sin pasarse del tope."""
+    d = diamante(ficha)
+    if not d or exp_combate <= 0:
+        return 0
+    hueco = max(0, int(d['tope']) - int(d.get('exp') or 0))
+    suma = min(hueco, int(int(exp_combate) * int(d.get('pct') or 0) / 100))
+    d['exp'] = int(d.get('exp') or 0) + suma
+    return suma
+
+
+def vaciar_diamante(ficha: dict) -> int:
+    """Saca la exp guardada para el dueño y quita la piedra."""
+    d = diamante(ficha)
+    if not d:
+        return 0
+    ficha.pop('diamante', None)
+    return int(d.get('exp') or 0)
 
 
 def dar_exp(ficha: dict, cantidad: int, ahora=None) -> int:

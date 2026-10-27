@@ -1477,11 +1477,13 @@ def marcar_caducidad_mercenario(entrada, estado):
 
 def marcar_caducidad_holy(entrada, estado):
     """Holy passes and Arena equipment share the native absolute-expiry field."""
-    deadline = (estado or {}).get('holy_pass_fin') or (estado or {}).get('arena_premio_fin') or (estado or {}).get('mall_fin')
+    deadline = ((estado or {}).get('holy_pass_fin') or (estado or {}).get('arena_premio_fin')
+                or (estado or {}).get('mall_fin') or (estado or {}).get('cofre_fin'))
     base = 6 if entrada[:2] == struct.pack('<H', 0x001B) else 0
     if (not deadline or len(entrada) < base + 86
             or struct.unpack_from('<I', entrada, base + 9)[0] not in
-                (16764,16765,28866,40921,(estado or {}).get('arena_premio_item'),(estado or {}).get('mall_item'))):
+                (16764,16765,28866,40921,(estado or {}).get('arena_premio_item'),(estado or {}).get('mall_item'),
+                 (estado or {}).get('cofre_item'))):
         return entrada
     b = bytearray(entrada)
     struct.pack_into('<I', b, base + 47, max(0,min(0xffffffff,int(deadline))))
@@ -2992,7 +2994,8 @@ OBJETIVO_MASCOTA = '\u76ee\u6a19\u5bf5\u7269'
 
 
 def uso_en_mascota(item_id: int):
-    """{'saciedad': N}, {'exp': N} o {'buff': id, 'segundos': N, 'exp_pct': N}, o None."""
+    """{'saciedad': N}, {'exp': N}, {'diamante': {'tope', 'pct'}} o
+    {'buff': id, 'segundos': N, 'exp_pct': N}, o None."""
     if es_certificado_sangre(item_id):
         return None
     try:
@@ -3001,9 +3004,13 @@ def uso_en_mascota(item_id: int):
         if not db.exists():
             return None
         con = sqlite3.connect(db)
-        fila = fila_item(con, '"使用目標", "動態資料1", "常駐法術", "基本名稱"', item_id)
+        fila = fila_item(con, '"使用目標", "動態資料1", "常駐法術", "基本名稱", "使用公式", "動態資料2"', item_id)
         if not fila or str(fila[0] or '') != OBJETIVO_MASCOTA:
             return None
+        # Exp Stone / Exp Diamond: se coloca en la mascota (tope y %), no da exp.
+        if str(fila[4] or '') == '6' and str(fila[1] or '').isdigit() and int(fila[1]):
+            pct = int(fila[5]) if str(fila[5] or '').isdigit() else 0
+            return {'diamante': {'tope': int(fila[1]), 'pct': pct}}
         hechizo = str(fila[2] or '')
         if hechizo.isdigit() and int(hechizo):
             r = con.execute('select 持續時間,經驗加倍 from magic where id=?',

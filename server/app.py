@@ -2199,6 +2199,28 @@ def _usar_pieza_robot(ses, addr, ranura, objetivo, pieza):
              addr, pz_item, robot, pieza['tipo'], anterior)
 
 
+def _sacar_exp_del_diamante(ses, addr):
+    """El boton de la ventana de la mascota: la exp de su piedra pasa al dueño."""
+    import clases as _cl
+    import mascotas as _ms
+    p = ses.personaje
+    f = getattr(p, 'mascota', None)
+    if not f or not _ms.diamante(f):
+        ses.enviar(_cl.aviso('Unable to use the function unless you have used Exp diamond.', tipo=0))
+        return
+    cuanto = _ms.vaciar_diamante(f)
+    if cuanto > 0:
+        _dar_exp_y_creditos(ses, exp=cuanto)
+    r = f.get('ranura')
+    if r is not None and getattr(p, 'mascotas', None) is not None:
+        p.mascotas[str(r)] = f
+    ses.enviar(_ms.armar(f), *([] if r is None else _refrescar(ses, [r])),
+               _cl.aviso('You add %d exp from the exp diamond to yourself.' % cuanto, tipo=0))
+    if getattr(ses, 'usuario', None):
+        cuentas.guardar_mascota(ses.usuario, p.char_id, f, getattr(p, 'mascotas', None))
+    log.info('[%s] diamante de %s: %d exp al dueño', addr, f.get('nombre'), cuanto)
+
+
 def _pct_fabricacion(p, bolsa=None):
     """El % que se le quita al tiempo de fabricar: buffs y piezas de robot puestas."""
     import inventario as _iv
@@ -3171,6 +3193,10 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
                 import mascotas as _ms
                 _sp_antes = f_pet.get('sprite')
                 _sub_p = _ms.dar_exp(f_pet, exp_pet)
+                _en_piedra = _ms.cargar_diamante(f_pet, exp_pet)
+                if _en_piedra:
+                    salida_combate.append(_cl.aviso('You have deposited %d exp in the exp diamond.' % _en_piedra,
+                                                    tipo=7, msg_id=_cl.MSG_TEXTO))
                 _r_pet = f_pet.get('ranura')
                 if _r_pet is not None and getattr(p, 'mascotas', None) is not None:
                     p.mascotas[str(_r_pet)] = f_pet
@@ -9407,6 +9433,11 @@ class Servidor:
                                     if ficha:
                                         sp_antes = ficha.get('sprite')
                                         subidos = _ms_p.dar_exp(ficha, exp_ganada)
+                                        _en_piedra_p = _ms_p.cargar_diamante(ficha, exp_ganada)
+                                        if _en_piedra_p:
+                                            ses.enviar(_cl_p.aviso('You have deposited %d exp in the exp diamond.' % _en_piedra_p,
+                                                                   tipo=7, msg_id=_cl_p.MSG_TEXTO),
+                                                       _ms_p.armar(ficha))
                                         if subidos > 0:
                                             nom_p = p_info.get('name') or ficha.get('nombre') or 'Pet'
                                             ses.enviar(
@@ -15133,6 +15164,9 @@ class Servidor:
             # por el camino de partir pilas del inventario.
             if __import__('item_mall').procesar(ses,opcode,cuerpo):
                 return
+            if __import__('salon').procesar(ses, cuerpo):
+                return
+            import cofres as _cofres
             _contenedor = cuerpo[0]
             if _contenedor == 10:
                 # Cambio de rama de habilidad (Skill Angel). Medido: [u8 10][u32 la que se
@@ -15201,7 +15235,7 @@ class Servidor:
                 _bolsa = getattr(ses, 'inventario', {})
                 if _p.banco is None:
                     _p.banco = {}
-                if _ori in _p.banco:
+                if _ori in _p.banco and not _cofres.es_casilla_llave(_ori):
                     _d = _ranura_libre(_bolsa, desde=20)
                     if _d is None:
                         log.info(f"[{addr}] mochila llena, no se puede sacar del banco")
@@ -15235,9 +15269,10 @@ class Servidor:
                 if _p.banco is None:
                     _p.banco = {}
                 if _ori in _bolsa and _ori >= 20:
-                    _d = next((k for k in range(1, 49) if k not in _p.banco), None)
+                    _d = next((k for k in _cofres.guardables(_p) if k not in _p.banco), None)
                     if _d is None:
                         log.info(f"[{addr}] banco lleno, no se guarda")
+                        ses.enviar(__import__('clases').aviso('Your bank is full.', tipo=0))
                         return
                     _it = _bolsa.pop(_ori)
                     _cn = ses.cantidades.pop(_ori, 1)
@@ -15257,7 +15292,11 @@ class Servidor:
                     log.warning(f"[{addr}] banco click derecho: casilla {_ori} no es de mochila o no existe")
                 return
 
-            if _contenedor in (14, 23):
+            if _contenedor == _cofres.SUBTIPO_ALQUILER:
+                _cofres.alquilar(ses, cuerpo)
+                return
+
+            if _contenedor == 14:
                 # Arrastre dentro del banco, o entre banco y mochila
                 import inventario as _iv3
                 _ori, _dst = struct.unpack_from('<II', cuerpo, 1)
@@ -15265,9 +15304,14 @@ class Servidor:
                 _bolsa = getattr(ses, 'inventario', {})
                 if _p.banco is None:
                     _p.banco = {}
+                if _cofres.es_casilla_llave(_ori) or _cofres.es_casilla_llave(_dst):
+                    return
+                if _ori in _p.banco and not _cofres.se_puede_guardar(_p, _dst):
+                    ses.enviar(__import__('clases').aviso('This coffer is not rented.', tipo=0))
+                    return
 
                 # 1. Movimiento / intercambio DENTRO del banco (Bank -> Bank)
-                if _ori in _p.banco and 1 <= _dst <= 48:
+                if _ori in _p.banco and _cofres.se_puede_guardar(_p, _dst):
                     import competiciones as _comp_bank
                     _comp_bank.mover_pase_banco(_p, _ori, _dst, desde_banco=True,
                                                hacia_banco=True, intercambio=_dst in _p.banco)
@@ -15299,8 +15343,8 @@ class Servidor:
 
                 # 2. De MOCHILA a BANCO por arrastre (Mochila -> Bank)
                 if _ori in _bolsa and _ori >= 20:
-                    _d = _dst if (1 <= _dst <= 48 and _dst not in _p.banco) else next(
-                        (k for k in range(1, 49) if k not in _p.banco), None)
+                    _d = _dst if (_cofres.se_puede_guardar(_p, _dst) and _dst not in _p.banco) else next(
+                        (k for k in _cofres.guardables(_p) if k not in _p.banco), None)
                     if _d is not None:
                         _it = _bolsa.pop(_ori)
                         _cn = ses.cantidades.pop(_ori, 1)
@@ -15433,8 +15477,12 @@ class Servidor:
             _bolsa = getattr(ses, 'inventario', {})
             _desde_bolsa = arg1
             if _desde_bolsa in _bolsa and _desde_bolsa >= 20:
-                _d = arg2 if (1 <= arg2 <= 48 and arg2 not in _p.banco) else next(
-                    (k for k in range(1, 49) if k not in _p.banco), None)
+                import cofres as _cofres
+                if _cofres.cofre_de_casilla(arg2) and not _cofres.se_puede_guardar(_p, arg2):
+                    ses.enviar(__import__('clases').aviso('This coffer is not rented.', tipo=0))
+                    return
+                _d = arg2 if (_cofres.se_puede_guardar(_p, arg2) and arg2 not in _p.banco) else next(
+                    (k for k in _cofres.guardables(_p) if k not in _p.banco), None)
                 if _d is None:
                     log.info(f"[{addr}] banco lleno, no se guarda")
                     return
@@ -15533,6 +15581,8 @@ class Servidor:
 
         # --- Descartar / Destruir item del inventario (papelera) ---------
         if opcode == 0x004D and ses.rol == 'mundo' and ses.personaje:
+            if __import__('recovery_notice').procesar(ses, cuerpo):
+                return
             __import__('love_broadcasting').procesar(ses,cuerpo)
             return
 
@@ -16096,6 +16146,9 @@ class Servidor:
                 ses.enviar(_ms.armar(f))
                 log.info('[%s] crianza: opcion %d, crianza %+d -> %d'
                          % (addr, _ms.opcion_de(modo), _suma, _total))
+                return
+            if modo == _ms.ORDEN_SACAR_DIAMANTE:
+                _sacar_exp_del_diamante(ses, addr)
                 return
             ses.personaje.mascota_orden = modo
             ses.pet_objetivo = None
@@ -17050,6 +17103,17 @@ class Servidor:
                     if _diff_int > 0:
                         _avisos_pu.append(_clp.aviso(str(_diff_int), tipo=7, msg_id=966))
                     _txt = 'saciedad %d' % _val
+                elif 'diamante' in _pet_uso:
+                    if not _f.get('fuera'):
+                        ses.enviar(_clp.aviso('Summon your pet before using the exp stone.', tipo=0))
+                        return
+                    _dm = _pet_uso['diamante']
+                    if not _msp.poner_diamante(_f, item_id, _dm['tope'], _dm['pct']):
+                        ses.enviar(_clp.aviso('You are using an exp diamond!', tipo=0))
+                        return
+                    _avisos_pu.append(_clp.aviso('Use Exp diamond to share %d%% exp and then the total exp is %d!'
+                                                 % (_dm['pct'], _dm['tope']), tipo=0))
+                    _txt = 'piedra de exp %d%% hasta %d' % (_dm['pct'], _dm['tope'])
                 elif 'exp' in _pet_uso:
                     _sub_pu = _msp.dar_exp(_f, _pet_uso['exp'])
                     _txt = '+%d exp (%d niveles -> nv %d)' % (_pet_uso['exp'], _sub_pu, _f.get('nivel', 1))

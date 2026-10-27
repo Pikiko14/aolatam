@@ -374,24 +374,61 @@ def _parchear_equipo_ligado_vendible_xml_bytes(xml_bytes: bytes) -> bytes:
     return txt.encode('utf-8')
 
 
-def _parchear_descripciones_xml_bytes(xml_bytes: bytes) -> bytes:
-    """Pone el 說明定義 de los objetos de configuracion.DESCRIPCIONES_ITEMS."""
-    cambios = {int(k): str(v) for k, v in (getattr(_cf, 'DESCRIPCIONES_ITEMS', None) or {}).items()}
-    if not cambios:
+def apilables_del_mall() -> set:
+    """Los objetos que el Item Mall vende con cantidad > 1 y el servidor ya
+    apila (inventario.es_apilable). Si el cliente no los tiene como 可堆疊,
+    cuenta una casilla por unidad y la Store Cabinet dice "There is not enough
+    space in the bag" aunque el servidor los meta en un solo monton."""
+    import inventario
+    try:
+        filas = json.loads((pathlib.Path(__file__).parent / 'plantillas' / 'item_mall.json')
+                           .read_text(encoding='utf-8')).get('rows') or []
+    except Exception:
+        return set()
+    return {int(f['item']) for f in filas
+            if int(f.get('quantity') or 1) > 1 and inventario.es_apilable(int(f['item']))}
+
+
+def _parchear_apilables_xml_bytes(xml_bytes: bytes, ids=None) -> bytes:
+    """Pone 可堆疊="是" a esos objetos."""
+    ids = apilables_del_mall() if ids is None else set(ids)
+    if not ids:
         return xml_bytes
     txt = xml_bytes.decode('utf-8', errors='ignore')
 
     def _parchear(m):
         tag = m.group(0)
         ident = re.match(r'<道具\s+編號="(\d+)"', tag)
+        if not ident or int(ident.group(1)) not in ids:
+            return tag
+        if re.search(r'\s可堆疊="', tag):
+            return re.sub(r'(\s)可堆疊="[^"]*"', r'\g<1>可堆疊="是"', tag, count=1)
+        return tag[:-2].rstrip() + ' 可堆疊="是" />'
+
+    return re.sub(r'<道具\b[^>]*?/>', _parchear, txt).encode('utf-8')
+
+
+def _parchear_descripciones_xml_bytes(xml_bytes: bytes, etiqueta: str = '道具',
+                                      campo: str = '說明定義',
+                                      config: str = 'DESCRIPCIONES_ITEMS') -> bytes:
+    """Pone la descripcion de las filas de configuracion.<config>: el
+    說明定義 de los objetos o el 說明 de las magias (el texto del icono del buff)."""
+    cambios = {int(k): str(v) for k, v in (getattr(_cf, config, None) or {}).items()}
+    if not cambios:
+        return xml_bytes
+    txt = xml_bytes.decode('utf-8', errors='ignore')
+
+    def _parchear(m):
+        tag = m.group(0)
+        ident = re.match(r'<%s\s+編號="(\d+)"' % etiqueta, tag)
         if not ident or int(ident.group(1)) not in cambios:
             return tag
         nuevo = html.escape(cambios[int(ident.group(1))], quote=True)
-        if '說明定義="' in tag:
-            return re.sub(r'說明定義="[^"]*"', lambda _m: f'說明定義="{nuevo}"', tag, count=1)
-        return tag[:-2].rstrip() + f' 說明定義="{nuevo}" />'
+        if re.search(r'\s%s="' % campo, tag):
+            return re.sub(r'(\s)%s="[^"]*"' % campo, lambda _m: f'{_m.group(1)}{campo}="{nuevo}"', tag, count=1)
+        return tag[:-2].rstrip() + f' {campo}="{nuevo}" />'
 
-    return re.sub(r'<道具\b[^>]*?/>', _parchear, txt).encode('utf-8')
+    return re.sub(r'<%s\b[^>]*?/>' % etiqueta, _parchear, txt).encode('utf-8')
 
 
 def _parchear_battlepass_xml_bytes(xml_bytes: bytes) -> bytes:
@@ -736,6 +773,7 @@ def aplicar_modo_estacion(modo: str = None) -> str:
     # lo lee el cliente: update26 solo trae item5..item9.
     indice = indice_paks(ruta_cli)
     otros_paks = {}
+    apilables = apilables_del_mall()
     for numero in range(1, 10):
         nombre = 'item.xml' if numero == 1 else f'item{numero}.xml'
         ruta_pak = rf'SETTING\ENG\{nombre.upper()}'
@@ -752,10 +790,26 @@ def aplicar_modo_estacion(modo: str = None) -> str:
             raw_item = _parchear_item9_xml_bytes(raw_item)
         raw_item = _parchear_equipo_ligado_vendible_xml_bytes(raw_item)
         raw_item = _parchear_descripciones_xml_bytes(raw_item)
+        raw_item = _parchear_apilables_xml_bytes(raw_item, apilables)
         if pak_item == pak26:
             reemplazos[ruta_pak] = raw_item
         else:
             otros_paks.setdefault(pak_item, {})[ruta_pak] = raw_item
+
+    # El texto del icono de los buffs sale del 說明 de magic.xml.
+    if getattr(_cf, 'DESCRIPCIONES_MAGIAS', None):
+        ruta_pak = r'SETTING\ENG\MAGIC.XML'
+        pak_mag = indice.get(ruta_pak, pak26)
+        bak_mag = pak_mag.with_name(pak_mag.name + '.bak')
+        f_mag = RAIZ_PROYECTO / 'extracted_paks' / 'update26' / 'setting' / 'eng' / 'magic.xml'
+        raw_mag = (f_mag.read_bytes() if f_mag.exists()
+                   else _extraer_archivo_pak(bak_mag if bak_mag.exists() else pak_mag, ruta_pak))
+        if raw_mag:
+            raw_mag = _parchear_descripciones_xml_bytes(raw_mag, '法術', '說明', 'DESCRIPCIONES_MAGIAS')
+            if pak_mag == pak26:
+                reemplazos[ruta_pak] = raw_mag
+            else:
+                otros_paks.setdefault(pak_mag, {})[ruta_pak] = raw_mag
 
     # La estacion en stage.xml: se parte SIEMPRE del original del .bak
     raw_stage = _extraer_archivo_pak(bak26 if bak26.exists() else pak26,
