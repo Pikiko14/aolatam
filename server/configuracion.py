@@ -67,6 +67,7 @@ MAPAS_APAGADOS = frozenset({
     125,  # Fantastic Sand City
     126,  # Nightmare Palace
     127,  # Leviathan's Bedroom
+    128,  # Dragon Field
     # Floating
     137,  # Vine Front
     138,  # Roam Battlefield
@@ -322,6 +323,38 @@ CAMPOS_TOTEM_WAR = frozenset({
 
 
 # =====================================================================
+# NPCS OCULTOS
+# =====================================================================
+# {mapa: {npc_type o nombre, ...}}: esos NPC no aparecen en el mapa. Vale el
+# npc_type (el numero) o el nombre exacto; el nombre quita todos los que se
+# llamen asi (por ejemplo los cuatro 'House Pickets' del Lyceum, el 41).
+# Los NPC de cada mapa estan en server/plantillas/<mapa>.json ('spawns').
+# Los de eventos (Fashionable, Party Angel...) los pinta el propio cliente
+# desde sus sp_*.xml: el servidor los quita de ahi al arrancar, con el juego
+# cerrado, igual que las descripciones. Para esos vale solo el numero.
+NPCS_OCULTOS = {
+    41: {           # Angel Lyceum
+        11119,      # Hestia
+        8994,       # Fashionable
+        8912,       # Daily Events Clerk
+        14319,      # Gear Clerk
+        14419,      # Party Angel
+        8814,       # Fortunia
+        14888,      # Scrollmaker
+        'Ticket Angel',
+        'Astrologer',
+        'Astral Angel'
+        'Fashionable',
+        'Daily Events CLe',
+        'Assassing Master',
+        'Astral Angel',
+        'Little Exp Angel',
+        'Reissue Angel'
+    },
+}
+
+
+# =====================================================================
 # FICHA DEL ROBOT: VELOCIDAD DE LAS PIEZAS
 # =====================================================================
 # Numero de stat con el que se ensena en verde la velocidad de recoleccion y
@@ -457,19 +490,19 @@ DESCRIPCIONES_ITEMS = {
 # =====================================================================
 # 1.0 = Experiencia normal oficial
 # 2.0 = Doble experiencia, etc.
-TASA_EXP_BASE = 1.0         # Multiplicador de EXP de personaje
+TASA_EXP_BASE = 5.0         # Multiplicador de EXP de personaje
 TASA_SKILL_EXP_BASE = 5     # Multiplicador de EXP de habilidades (stamina/skills)
-TASA_DROP_BASE = 0.5          # Multiplicador de probabilidad de drop de items
-TASA_ORO_BASE = 7.5           # Multiplicador de oro obtenido de monstruos
+TASA_DROP_BASE = 0.3         # Multiplicador de probabilidad de drop de items
+TASA_ORO_BASE = 3.0           # Multiplicador de oro obtenido de monstruos
 
 # =====================================================================
 # CONFIGURACION DE CASAS, BAILES Y PET ROOM
 # =====================================================================
-MULTIPLICADOR_EXP_PET = 5.0           # Multiplicador de EXP para mascotas en el patio de crianza (477..486)
-EXP_BASE_PET_ROOM_TICK = 15           # EXP base por tick (~5 segundos) para mascotas entrenando en casa
-COOLDOWN_BAILE_SEGUNDOS = 60          # Cooldown en segundos para volver a usar un Ball Ticket (por defecto 60s para testing rapido)
+MULTIPLICADOR_EXP_PET = 10.0           # Multiplicador de EXP para mascotas en el patio de crianza (477..486)
+EXP_BASE_PET_ROOM_TICK = 20           # EXP base por tick (~5 segundos) para mascotas entrenando en casa
+COOLDOWN_BAILE_SEGUNDOS = 172800          # Cooldown en segundos para volver a usar un Ball Ticket (por defecto 60s para testing rapido)
 TIEMPO_PREPARACION_BAILE_SEGUNDOS = 180 # Tiempo de preparacion antes del baile (oficial 180s = 3 minutos)
-DURACION_BAILE_SEGUNDOS = 60           # Duracion del baile una vez iniciado (por defecto 60s)
+DURACION_BAILE_SEGUNDOS = 10         # Duracion del baile una vez iniciado (por defecto 60s)
 
 # =====================================================================
 # CONFIGURACION DE EVENTOS DE FIN DE SEMANA / SEMANALES
@@ -679,12 +712,12 @@ def regenera(maximo: int, nivel: int, sentado: bool, es_hp: bool) -> int:
 # ninguna captura de un fallo. Es una curva inventada que empieza segura y
 # baja hasta el 20% en la ultima mejora. En cuanto haya numeros de verdad se
 # cambia ahi.
-MEJORAS_SIEMPRE_EXITO = True
+MEJORAS_SIEMPRE_EXITO = false
 
 # Si es True, el martillo verde da el MAXIMO de todos los stats que puede dar
 # en vez de sortear cada uno dentro de su rango. El cuadro del juego enseña
 # esos rangos: "Attack 0 (0-210), Rigor 3 (0-54), Movement Speed 37 (0-40)".
-MARTILLO_VERDE_TODOS_LOS_STATS = True
+MARTILLO_VERDE_TODOS_LOS_STATS = false
 
 # El rango con el que entra el personaje: 1 es "Growing Power" y 20 "God's
 # Mouthpiece". Viaja en el byte 93 del 0x0002, pegado a los creditos, y NO se
@@ -728,6 +761,18 @@ MODO_ESTACION = 'normal'
 # servidor. Dejarla vacia tambien vale.
 RUTA_CLIENTE = r'C:\AO\Angels Online'
 PUERTO_UPDATE_FTP = 2121
+
+# EL PARCHE PARA LOS JUGADORES (server/parche.py). Al arrancar se genera
+# parches/update27.pak con todo lo que el servidor cambia en el cliente.
+#   PARCHE_EN_LAUNCHER: si el update3.ini lo anuncia al launcher. Apagado
+#     hasta probar con START.EXE que lo descarga bien.
+#   PARCHE_HOST: la IP o el dominio que se le da al launcher (y la del modo
+#     pasivo del FTP). En local 127.0.0.1; al subir, la publica.
+#   PARCHE_ESCUCHAR: donde escucha el servidor de actualizaciones. 127.0.0.1
+#     solo atiende a esta maquina; '0.0.0.0' a todos (al subir).
+PARCHE_EN_LAUNCHER = False
+PARCHE_HOST = '127.0.0.1'
+PARCHE_ESCUCHAR = '127.0.0.1'
 # 8080 cae dentro de un intervalo TCP reservado por Windows en algunas
 # instalaciones (por ejemplo 8067-8166), lo que produce WinError 10013 aun
 # cuando ningun proceso lo este escuchando. 8280 conserva el mismo largo en

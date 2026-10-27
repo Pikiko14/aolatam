@@ -2719,11 +2719,13 @@ ANIM_POR_SKILL = {}
 def golpe_de_arma(item_id: int = 0, duales: bool = False) -> tuple:
     """(tipo, animacion) del 0x000A para el arma que se lleva puesta.
 
-    Con dos armas de una mano el servidor real manda tipo 2 y una animacion
-    cercana a 830, igual que la lanza; con una sola arma, tipo 3.
+    Con dos armas de una mano va (0, 0), que es lo que mas manda el servidor
+    real (ver ataque()) y deja que el cliente elija el golpe de duales. Se
+    mandaba (2, 832), una combinacion que no sale en ninguna captura, y el
+    cliente pegaba con las dos armas escondidas.
     """
     if duales:
-        return (2, 832)
+        return (0, 0)
     try:
         import clases as _cl
         sid = _cl.skill_de_item(item_id) if item_id else None

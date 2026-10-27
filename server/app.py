@@ -3344,6 +3344,22 @@ RANURA_MONTURA = 10
 BONO_MONTURA = int(os.environ.get('AO_MONTURA_BONO', '150'))
 
 
+# Casillas que la mascota anda de una vez al seguir al dueño. Con tramos de 4
+# paraba cada 4 casillas aunque el dueño siguiera andando.
+TRAMO_PET = 8
+
+
+def _velocidad_seguir_pet(ses, propia, distancia) -> int:
+    """La mascota va al paso del dueño (a pie o montado) y, si se ha quedado
+    atras, un 25% mas rapido para alcanzarlo. Antes iba a 105 fijos y con
+    montura (~275) se quedaba atras, corria, y acababa saltando a su lado."""
+    dueno = _velocidad_de(ses)
+    v = max(int(propia), dueno)
+    if distancia > 4:
+        v = max(v, int(dueno * 1.25), 200)
+    return v
+
+
 def _velocidad_de(ses) -> int:
     """Velocidad del 0x0005, con monturas y buffs activos de movimiento."""
     base = VELOCIDAD_JUGADOR
@@ -11902,7 +11918,7 @@ class Servidor:
                                 if 1 < dist_jug <= 30 and ahora >= f_pet.get('proximo_paso', 0):
                                     _fin_pet, _hay_camino = _transitable.tramo(
                                         _st_pet, (pet_x, pet_y), (p.tile_x, p.tile_y),
-                                        min(dist_jug - 1, 6 if dist_jug > 6 else 4), parar_a=1)
+                                        min(dist_jug - 1, TRAMO_PET), parar_a=1)
                                 if dist_jug > 30 or not _hay_camino:
                                     _lado = p.tile_x + 1 if _transitable.se_pisa(_st_pet, p.tile_x + 1, p.tile_y) else p.tile_x
                                     f_pet['x'] = _lado
@@ -11920,8 +11936,7 @@ class Servidor:
                                         and _fin_pet != (pet_x, pet_y):
                                     nx_j, ny_j = _fin_pet
                                     pasos_dar = max(1, max(abs(nx_j - pet_x), abs(ny_j - pet_y)))
-                                    if dist_jug > 6:
-                                        spd_p = max(spd_p, 200)     # alcanzar corriendo
+                                    spd_p = _velocidad_seguir_pet(ses, spd_p, dist_jug)
                                     cur_px, cur_py = pet_x * 32, pet_y * 32
                                     f_pet['x'] = nx_j
                                     f_pet['y'] = ny_j
@@ -20495,6 +20510,11 @@ class Servidor:
             if getattr(_cf_logo, 'RAMAS_SIN_EXCLUSION', True):
                 _cl_loc.quitar_exclusion_ramas()
             _cl_loc.parchear_launcher()
+            try:
+                import parche as _parche
+                _parche.generar()
+            except Exception:
+                log.exception('no se pudo generar el parche para los jugadores')
             _srvs_launcher = await _cl_loc.iniciar_servidores_launcher()
             for _sl in _srvs_launcher:
                 tareas.append(_sl.serve_forever())

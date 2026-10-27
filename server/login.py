@@ -1310,7 +1310,7 @@ def poblar(stage: int, player_level=1):
             # saca otra cosa o no sale). Se deja en la plantilla para el censo
             # pero no se manda: en el Training Palace salian Field Mouse y
             # Tree Spirit donde no tocaba.
-            if e.get('apagado'):
+            if e.get('apagado') or npc_oculto(stage, e):
                 continue
             # El sprite va TAL COMO SE CAPTURO. Antes no se pasaba, asi que
             # los NPC salian con el generico: Cupid aparecia dibujado como
@@ -1355,6 +1355,8 @@ def poblar(stage: int, player_level=1):
     # el formato de los demas mapas y se arman igual que alli: sin esto el
     # servidor se caia al entrar en el Lyceum (KeyError 'hex').
     for e in d.get('spawns', []):
+        if e.get('apagado') or npc_oculto(stage, e):
+            continue
         if e.get('hex'):
             crudo = bytearray(bytes.fromhex(e['hex']))
             if e.get('direccion') is not None:
@@ -1378,6 +1380,13 @@ def poblar(stage: int, player_level=1):
         else:
             salida.append(objeto_de_mapa(e))
     return salida
+
+
+def npc_oculto(stage, e) -> bool:
+    """configuracion.NPCS_OCULTOS: el NPC no se manda y el cliente no lo pinta."""
+    import configuracion
+    lista = (getattr(configuracion, 'NPCS_OCULTOS', None) or {}).get(int(stage)) or ()
+    return int(e.get('npc_type') or 0) in lista or str(e.get('nombre') or '') in lista
 
 
 # El numero de cada faccion tal como lo lee el cliente en la ficha. El unico

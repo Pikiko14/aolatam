@@ -626,9 +626,13 @@ def indice_paks(ruta_cli: pathlib.Path) -> dict:
     """{nombre: pak} con el pak del que el cliente lee cada archivo: el de
     numero mas alto que lo trae (update26 no trae item.xml..item4.xml)."""
     import paks_cliente
+    import parche
     indice = {}
+    # El update27.pak es el parche que se genera A PARTIR de los demas: no
+    # cuenta como origen, o se acabaria parcheando el propio parche.
     paks = sorted((p for p in ruta_cli.iterdir()
-                   if p.suffix.lower() == '.pak' and paks_cliente.numero(p.name) >= -1),
+                   if p.suffix.lower() == '.pak' and paks_cliente.numero(p.name) >= -1
+                   and p.name.lower() != parche.NOMBRE_PAK),
                   key=lambda p: paks_cliente.numero(p.name))
     for pak in paks:
         try:
@@ -662,6 +666,56 @@ def _extraer_archivo_pak(pak_path: pathlib.Path, nombre_buscado: str) -> bytes:
             return zlib.decompress(data[lhoff : lhoff + csize], -15)
         off += 46 + fn_len + ex_len + cm_len
     return b''
+
+
+def _extraer_varios_pak(pak_path: pathlib.Path, nombres) -> dict:
+    """Como _extraer_archivo_pak pero leyendo el pak una sola vez: {nombre: bytes}."""
+    if not pak_path.exists():
+        return {}
+    data = pak_path.read_bytes()
+    eocd = bytearray(data[-22:])
+    if eocd[:4] != b'OD\x05\x06':
+        return {}
+    for i in range(4, 22):
+        eocd[i] ^= (3 * i - 91) & 0xFF
+    comp_cd_size, _, _, _, cd_offset, _ = struct.unpack('<IHHIIH', eocd[4:22])
+    cd_raw = bytearray(data[cd_offset + 4: cd_offset + 4 + comp_cd_size])
+    cd_raw[0] ^= 0x7A
+    cd = zlib.decompress(bytes(cd_raw))
+    buscados = {n.upper().replace('/', '\\') for n in nombres}
+    salida, off = {}, 0
+    while off + 46 <= len(cd):
+        csize, _usize, fn_len, ex_len, cm_len = struct.unpack_from('<IIHHH', cd, off + 20)
+        lhoff = struct.unpack_from('<I', cd, off + 42)[0]
+        fname = cd[off + 46: off + 46 + fn_len].decode('ascii', errors='ignore').upper().replace('/', '\\')
+        if fname in buscados:
+            salida[fname] = zlib.decompress(data[lhoff: lhoff + csize], -15)
+        off += 46 + fn_len + ex_len + cm_len
+    return salida
+
+
+def _quitar_npcs_xml_bytes(xml_bytes: bytes, ocultos) -> bytes:
+    """Quita de un sp_*.xml las lineas <npc .../> cuyo (map, id) esta en `ocultos`."""
+    txt = xml_bytes.decode('utf-8', errors='ignore')
+    quitadas = []
+
+    def _linea(m):
+        tag = m.group(0)
+        ident = re.search(r'\sid="(\d+)"', tag)
+        mapa = re.search(r'\smap="(\d+)"', tag)
+        if ident and mapa and (int(mapa.group(1)), int(ident.group(1))) in ocultos:
+            quitadas.append(tag)
+            return ''
+        return tag
+
+    nuevo = re.sub(r'<npc\b[^>]*/>', _linea, txt)
+    return nuevo.encode('utf-8') if quitadas else xml_bytes
+
+
+def npcs_ocultos_cliente() -> set:
+    """{(mapa, npc)} de configuracion.NPCS_OCULTOS dados por numero."""
+    return {(int(m), int(n)) for m, lista in (getattr(_cf, 'NPCS_OCULTOS', None) or {}).items()
+            for n in lista if isinstance(n, int) or str(n).isdigit()}
 
 
 def _obtener_decorado_archivo(nombre_archivo: str) -> bytes:
@@ -810,6 +864,28 @@ def aplicar_modo_estacion(modo: str = None) -> str:
                 reemplazos[ruta_pak] = raw_mag
             else:
                 otros_paks.setdefault(pak_mag, {})[ruta_pak] = raw_mag
+
+    # NPCs de eventos que el cliente pinta solo desde sus sp*.xml: se quitan
+    # los de NPCS_OCULTOS partiendo SIEMPRE del original (.bak), asi que al
+    # sacar uno de la lista vuelve a salir.
+    ocultos = npcs_ocultos_cliente()
+    sp_por_pak = {}
+    for nombre, pak in indice.items():
+        if re.fullmatch(r'SETTING\\(ENG\\)?SP[^\\]*\.XML', nombre):
+            sp_por_pak.setdefault(pak, []).append(nombre)
+    for pak, nombres in sp_por_pak.items():
+        bak = pak.with_name(pak.name + '.bak')
+        originales = _extraer_varios_pak(bak if bak.exists() else pak, nombres)
+        actuales = _extraer_varios_pak(pak, nombres) if bak.exists() else originales
+        for nombre in nombres:
+            orig = originales.get(nombre)
+            if not orig:
+                continue
+            nuevo = _quitar_npcs_xml_bytes(orig, ocultos) if ocultos else orig
+            if nuevo == actuales.get(nombre):
+                continue
+            _asegurar_bak(pak)
+            (reemplazos if pak == pak26 else otros_paks.setdefault(pak, {}))[nombre] = nuevo
 
     # La estacion en stage.xml: se parte SIEMPRE del original del .bak
     raw_stage = _extraer_archivo_pak(bak26 if bak26.exists() else pak26,
@@ -1010,13 +1086,15 @@ async def _manejar_http_parche(peticion: bytes, writer: asyncio.StreamWriter):
         ruta = linea.split(' ')[1] if ' ' in linea else '/'
     except Exception:
         ruta = '/'
-    if ruta.lower().endswith('.ini'):
-        cuerpo = _contenido_update3_ini()
+    contenido = _archivo_de_parche(ruta)
+    if contenido is not None:
+        cuerpo = contenido
+        tipo = b'text/plain' if ruta.lower().endswith('.ini') else b'application/octet-stream'
         cab = (b'HTTP/1.1 200 OK\r\n'
-               b'Content-Type: text/plain\r\n'
+               b'Content-Type: ' + tipo + b'\r\n'
                b'Content-Length: ' + str(len(cuerpo)).encode('ascii') + b'\r\n'
                b'Connection: close\r\n\r\n')
-        log.info('launcher Global: %s -> version ok (%d B)', ruta, len(cuerpo))
+        log.info('launcher Global: %s -> %d B', ruta, len(cuerpo))
     else:
         cuerpo = b''
         cab = (b'HTTP/1.1 404 Not Found\r\n'
@@ -1067,6 +1145,8 @@ async def _manejar_ftp(reader: asyncio.StreamReader, writer: asyncio.StreamWrite
             parts = cmd_line.split(' ', 1)
             cmd = parts[0].upper()
             arg = parts[1].strip() if len(parts) > 1 else ''
+            if cmd not in ('USER', 'PASS'):
+                log.info('launcher FTP: %s %s', cmd, arg)
 
             if cmd == 'USER':
                 writer.write(b"331 User name okay, need password.\r\n")
@@ -1083,32 +1163,43 @@ async def _manejar_ftp(reader: asyncio.StreamReader, writer: asyncio.StreamWrite
             elif cmd == 'PASV':
                 if pasv_srv:
                     pasv_srv.close()
-                pasv_srv = await asyncio.start_server(_on_data_conn, '127.0.0.1', 0)
+                pasv_srv = await asyncio.start_server(
+                    _on_data_conn, getattr(_cf, 'PARCHE_ESCUCHAR', '127.0.0.1') or '127.0.0.1', 0)
                 port = pasv_srv.sockets[0].getsockname()[1]
                 p1, p2 = port >> 8, port & 0xFF
-                writer.write(f"227 Entering Passive Mode (127,0,0,1,{p1},{p2}).\r\n".encode('ascii'))
+                ip = _ip_pasiva().replace('.', ',')
+                writer.write(f"227 Entering Passive Mode ({ip},{p1},{p2}).\r\n".encode('ascii'))
             elif cmd in ('LIST', 'NLST'):
-                ini_bytes = _contenido_update3_ini()
+                import parche
+                lineas = [('update3.ini', len(_contenido_update3_ini()))]
+                lineas += [(f.name, f.stat().st_size) for f in sorted(parche.DESTINO.glob('*.pak'))]
                 writer.write(b"150 Opening ASCII mode data connection for directory list.\r\n")
                 await writer.drain()
                 r_d, w_d = await asyncio.wait_for(pasv_queue.get(), timeout=5.0)
-                list_line = f"-rw-r--r-- 1 owner group {len(ini_bytes)} Jan 01 00:00 update3.ini\r\n".encode('ascii')
-                w_d.write(list_line)
+                w_d.write(''.join(f"-rw-r--r-- 1 owner group {n} Jan 01 00:00 {nom}\r\n"
+                                  for nom, n in lineas).encode('ascii'))
                 await w_d.drain()
                 w_d.close()
                 writer.write(b"226 Transfer complete.\r\n")
             elif cmd == 'SIZE':
-                ini_bytes = _contenido_update3_ini()
-                writer.write(f"213 {len(ini_bytes)}\r\n".encode('ascii'))
+                contenido = _archivo_de_parche(arg)
+                if contenido is None:
+                    writer.write(b"550 File not found.\r\n")
+                else:
+                    writer.write(f"213 {len(contenido)}\r\n".encode('ascii'))
             elif cmd == 'RETR':
-                ini_bytes = _contenido_update3_ini()
-                writer.write(b"150 Opening BINARY mode data connection.\r\n")
-                await writer.drain()
-                r_d, w_d = await asyncio.wait_for(pasv_queue.get(), timeout=5.0)
-                w_d.write(ini_bytes)
-                await w_d.drain()
-                w_d.close()
-                writer.write(b"226 Transfer complete.\r\n")
+                contenido = _archivo_de_parche(arg)
+                if contenido is None:
+                    writer.write(b"550 File not found.\r\n")
+                else:
+                    writer.write(b"150 Opening BINARY mode data connection.\r\n")
+                    await writer.drain()
+                    r_d, w_d = await asyncio.wait_for(pasv_queue.get(), timeout=5.0)
+                    w_d.write(contenido)
+                    await w_d.drain()
+                    w_d.close()
+                    writer.write(b"226 Transfer complete.\r\n")
+                    log.info('launcher FTP: enviado %s (%d B)', arg, len(contenido))
             elif cmd == 'QUIT':
                 writer.write(b"221 Goodbye.\r\n")
                 await writer.drain()
@@ -1128,19 +1219,55 @@ async def _manejar_ftp(reader: asyncio.StreamReader, writer: asyncio.StreamWrite
 
 
 def _contenido_update3_ini() -> bytes:
-    """Genera el update3.ini que hace que START.EXE marque el cliente como actualizado."""
+    """Genera el update3.ini que lee START.EXE.
+
+    START.EXE (0x40D52E) recorre TODAS las secciones [VERSION], cada una con
+    GameVer y GameURL, y las compara con el Version del reg.ini; despues lee
+    las File de [COMPLEXFILE]. Sin PARCHE_EN_LAUNCHER no se anuncia nada y el
+    cliente se da por actualizado, como siempre.
+    """
+    host = getattr(_cf, 'PARCHE_HOST', '127.0.0.1') or '127.0.0.1'
+    version = ''
+    if getattr(_cf, 'PARCHE_EN_LAUNCHER', False):
+        import parche
+        est = parche.estado()
+        if est.get('version'):
+            version = ('GameVer = %s\r\nGameURL = %s\r\n' % (est['version'], est['pak']))
     return (
         "[INFO]\r\n"
         "LoaderVer = 1.7\r\n"
         # LoaderURL se lee DE AQUI, no del reg.ini: el binario de Global pide
         # INFO\LoaderURL del fichero que acaba de bajarse. Por eso ponerlo en
         # el reg.ini no servia de nada y seguia yendo a su host.
-        "LoaderURL = 127.0.0.1\r\n"
+        "LoaderURL = %s\r\n"
         "GameVerFrom = 8.5.1.0\r\n"
         "GameVerTrans = 8.5.1.0\r\n"
         "[VERSION]\r\n"
-        "[COMPLEXFILE]\r\n"
+        "%s"
+        "[COMPLEXFILE]\r\n" % (host, version)
     ).encode('ascii')
+
+
+def _ip_pasiva() -> str:
+    """La IP que se da en el 227 del FTP: la de PARCHE_HOST (resuelta si es un dominio)."""
+    import socket
+    host = getattr(_cf, 'PARCHE_HOST', '127.0.0.1') or '127.0.0.1'
+    try:
+        return socket.gethostbyname(host)
+    except OSError:
+        return '127.0.0.1'
+
+
+def _archivo_de_parche(ruta: str):
+    """Lo que pide el launcher: el ini, o un archivo de parches/ por su nombre."""
+    import parche
+    nombre = ruta.replace('\\', '/').rstrip('/').rsplit('/', 1)[-1].split('?', 1)[0]
+    if nombre.lower().endswith('.ini'):
+        return _contenido_update3_ini()
+    f = parche.DESTINO / nombre
+    if nombre.lower().endswith('.pak') and f.is_file() and f.parent == parche.DESTINO:
+        return f.read_bytes()
+    return None
 
 
 # El panel del launcher en dos idiomas. El elegido se recuerda mientras
@@ -1449,12 +1576,6 @@ async def _manejar_http(reader: asyncio.StreamReader, writer: asyncio.StreamWrit
             "</style></head><body>"
             f"<span class='lang'>{''.join(sel)}</span>"
             f"<h3>{T['titulo']}</h3>"
-            f"<div>{T['estado']} <span class='ok'>{T['online']}</span> &nbsp;|&nbsp; "
-            f"{T['estacion']} <b style='color:#f5d76e'>{modo_act.upper()}</b></div>"
-            "<div class='box'><div style='margin-bottom:4px;color:#9fb1d1;'>"
-            f"{T['cambiar']}</div>"
-            + "".join(botones) +
-            "</div>"
             "<div class='box'><div style='margin-bottom:4px;color:#9fb1d1;'>"
             f"{T['copias']}</div>"
             + "".join(
@@ -1498,9 +1619,10 @@ async def iniciar_servidores_launcher():
     p_http = int(getattr(_cf, 'PUERTO_UPDATE_HTTP', 8280))
     srvs = []
     try:
-        s_ftp = await asyncio.start_server(_manejar_actualizacion, '127.0.0.1', p_ftp)
+        escuchar = getattr(_cf, 'PARCHE_ESCUCHAR', '127.0.0.1') or '127.0.0.1'
+        s_ftp = await asyncio.start_server(_manejar_actualizacion, escuchar, p_ftp)
         srvs.append(s_ftp)
-        log.info(f"Servidor de actualizacion (FTP del START.EXE de IGG y HTTP del de Global) en 127.0.0.1:{p_ftp}")
+        log.info(f"Servidor de actualizacion (FTP del START.EXE de IGG y HTTP del de Global) en {escuchar}:{p_ftp}")
     except Exception as e:
         log.warning(f"No se pudo abrir puerto FTP {p_ftp}: {e}")
     try:

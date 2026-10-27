@@ -13,10 +13,13 @@ SPIRIT_ROOTS = {1924: 60101, 1925: 60201, 1926: 60301, 1927: 60401}
 @functools.lru_cache(maxsize=None)
 def npcs(stage):
     import app
-    file = app.mapas_poblados().get(stage)
-    if not file:
+    if stage not in HEAD_STAGES | ENTRANCE_STAGES | {STAGE}:
         return {}
-    data = json.loads((pathlib.Path(__file__).parent / 'plantillas' / file).read_text('utf8'))
+    file = app.mapas_poblados().get(stage)
+    ruta = pathlib.Path(__file__).parent / 'plantillas' / (file or '')
+    if not file or not ruta.is_file():
+        return {}
+    data = json.loads(ruta.read_text('utf8'))
     return {r['entity_id']: r for r in data.get('spawns', [])
             if not r.get('monstruo') and r.get('npc_type') in range(1920, 1928)}
 

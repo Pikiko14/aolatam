@@ -57,3 +57,6 @@ data/cuentas.bak
 # Volcados de REA/Ghidra (pseudo codigo del cliente): se regeneran con el MCP
 # rea y son codigo descompilado de IGG, no se publican.
 docs/rea_evidence/
+
+# El parche para los jugadores: lo genera server/parche.py a partir del cliente local
+parches/
