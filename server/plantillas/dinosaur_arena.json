@@ -1,0 +1,6342 @@
+{
+ "_nota": "dinosaur_arena (stage 168). POBLADO DESDE EL CLIENTE, no desde una captura: los generadores de monstruos son objetos del propio map168.mpc -- el monstruo en el u16 del +34, la zona en el +21, el tiempo en el +38 y cuantos en el +42. Eso da el censo COMPLETO del mapa, que una captura no puede dar porque solo trae lo que estuvo a la vista. El entity_id es fabricado y estable, no el del servidor. Las casillas son las del TAG de cada generador; los que no declaran TAG ponen sus monstruos en la casilla del generador y en un anillo de radio 3 a su alrededor, que es la dispersion MEDIDA en el stage 73. Los objetos de mapa son los del .mpc cuyo id esta en la lista de los que el servidor manda de verdad, con el cuerpo del 0x000E copiado de una captura del mismo objeto. Los tornados se dibujan aparte, desde portales.json. Ver tools/poblar_del_cliente.py.",
+ "stage": 168,
+ "spawns": [
+  {
+   "entity_id": 66800000,
+   "nombre": "Dragon Emperor Rex",
+   "npc_type": 8151,
+   "sprite": 43167,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    172,
+    97
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 180,
+   "zona": 75
+  },
+  {
+   "entity_id": 66800001,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    46,
+    35
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 81
+  },
+  {
+   "entity_id": 66800002,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    41,
+    30
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 81
+  },
+  {
+   "entity_id": 66800003,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    41,
+    35
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 81
+  },
+  {
+   "entity_id": 66800004,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    41,
+    40
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 81
+  },
+  {
+   "entity_id": 66800005,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    46,
+    30
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 81
+  },
+  {
+   "entity_id": 66800006,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    46,
+    40
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 81
+  },
+  {
+   "entity_id": 66800007,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    51,
+    30
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 81
+  },
+  {
+   "entity_id": 66800008,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    51,
+    35
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 81
+  },
+  {
+   "entity_id": 66800009,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    51,
+    40
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 81
+  },
+  {
+   "entity_id": 66800010,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    36,
+    26
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 81
+  },
+  {
+   "entity_id": 66800011,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    36,
+    31
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 81
+  },
+  {
+   "entity_id": 66800012,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    36,
+    36
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 81
+  },
+  {
+   "entity_id": 66800013,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    40,
+    45
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 81
+  },
+  {
+   "entity_id": 66800014,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    41,
+    25
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 81
+  },
+  {
+   "entity_id": 66800015,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    45,
+    45
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 81
+  },
+  {
+   "entity_id": 66800016,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    46,
+    25
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 81
+  },
+  {
+   "entity_id": 66800017,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    50,
+    45
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 81
+  },
+  {
+   "entity_id": 66800018,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    51,
+    25
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 81
+  },
+  {
+   "entity_id": 66800019,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    55,
+    45
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 81
+  },
+  {
+   "entity_id": 66800020,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    56,
+    25
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 81
+  },
+  {
+   "entity_id": 66800021,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    56,
+    30
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 83
+  },
+  {
+   "entity_id": 66800022,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    61,
+    24
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 83
+  },
+  {
+   "entity_id": 66800023,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    61,
+    29
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 83
+  },
+  {
+   "entity_id": 66800024,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    47,
+    20
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 83
+  },
+  {
+   "entity_id": 66800025,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    52,
+    20
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 83
+  },
+  {
+   "entity_id": 66800026,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    57,
+    19
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 83
+  },
+  {
+   "entity_id": 66800027,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    62,
+    19
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 83
+  },
+  {
+   "entity_id": 66800028,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    66,
+    24
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 83
+  },
+  {
+   "entity_id": 66800029,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    66,
+    29
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 83
+  },
+  {
+   "entity_id": 66800030,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    67,
+    18
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 83
+  },
+  {
+   "entity_id": 66800031,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    60,
+    43
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 83
+  },
+  {
+   "entity_id": 66800032,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    65,
+    43
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 83
+  },
+  {
+   "entity_id": 66800033,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    40,
+    15
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 83
+  },
+  {
+   "entity_id": 66800034,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    70,
+    42
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 83
+  },
+  {
+   "entity_id": 66800035,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    71,
+    23
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 83
+  },
+  {
+   "entity_id": 66800036,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    31,
+    28
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 82
+  },
+  {
+   "entity_id": 66800037,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    31,
+    33
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 82
+  },
+  {
+   "entity_id": 66800038,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    25,
+    18
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 82
+  },
+  {
+   "entity_id": 66800039,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    30,
+    16
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 82
+  },
+  {
+   "entity_id": 66800040,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    35,
+    14
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 82
+  },
+  {
+   "entity_id": 66800041,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    38,
+    50
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 82
+  },
+  {
+   "entity_id": 66800042,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    43,
+    50
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 82
+  },
+  {
+   "entity_id": 66800043,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    48,
+    50
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 82
+  },
+  {
+   "entity_id": 66800044,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    53,
+    50
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 82
+  },
+  {
+   "entity_id": 66800045,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    20,
+    13
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 82
+  },
+  {
+   "entity_id": 66800046,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    25,
+    13
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 82
+  },
+  {
+   "entity_id": 66800047,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    58,
+    50
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 82
+  },
+  {
+   "entity_id": 66800048,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    47,
+    12
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 82
+  },
+  {
+   "entity_id": 66800049,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    52,
+    12
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 82
+  },
+  {
+   "entity_id": 66800050,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    30,
+    11
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 82
+  },
+  {
+   "entity_id": 66800051,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    40,
+    10
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 82
+  },
+  {
+   "entity_id": 66800052,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    35,
+    9
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 82
+  },
+  {
+   "entity_id": 66800053,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    39,
+    55
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 82
+  },
+  {
+   "entity_id": 66800054,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    44,
+    55
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 82
+  },
+  {
+   "entity_id": 66800055,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    49,
+    55
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 82
+  },
+  {
+   "entity_id": 66800056,
+   "nombre": "Adventure Chair Ralon",
+   "npc_type": 8139,
+   "sprite": 43061,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    71,
+    28
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 84
+  },
+  {
+   "entity_id": 66800057,
+   "nombre": "Adventure Chair Ralon",
+   "npc_type": 8139,
+   "sprite": 43061,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    72,
+    14
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 84
+  },
+  {
+   "entity_id": 66800058,
+   "nombre": "Adventure Chair Ralon",
+   "npc_type": 8139,
+   "sprite": 43061,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    75,
+    33
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 84
+  },
+  {
+   "entity_id": 66800059,
+   "nombre": "Adventure Chair Ralon",
+   "npc_type": 8139,
+   "sprite": 43061,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    75,
+    39
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 84
+  },
+  {
+   "entity_id": 66800060,
+   "nombre": "Adventure Chair Ralon",
+   "npc_type": 8139,
+   "sprite": 43061,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    57,
+    9
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 84
+  },
+  {
+   "entity_id": 66800061,
+   "nombre": "Adventure Chair Ralon",
+   "npc_type": 8139,
+   "sprite": 43061,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    76,
+    19
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 84
+  },
+  {
+   "entity_id": 66800062,
+   "nombre": "Adventure Chair Ralon",
+   "npc_type": 8139,
+   "sprite": 43061,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    76,
+    24
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 84
+  },
+  {
+   "entity_id": 66800063,
+   "nombre": "Adventure Chair Ralon",
+   "npc_type": 8139,
+   "sprite": 43061,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    45,
+    7
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 84
+  },
+  {
+   "entity_id": 66800064,
+   "nombre": "Adventure Chair Ralon",
+   "npc_type": 8139,
+   "sprite": 43061,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    50,
+    7
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 84
+  },
+  {
+   "entity_id": 66800065,
+   "nombre": "Adventure Chair Ralon",
+   "npc_type": 8139,
+   "sprite": 43061,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    75,
+    44
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 84
+  },
+  {
+   "entity_id": 66800066,
+   "nombre": "Adventure Chair Ralon",
+   "npc_type": 8139,
+   "sprite": 43061,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    40,
+    5
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 84
+  },
+  {
+   "entity_id": 66800067,
+   "nombre": "Adventure Chair Ralon",
+   "npc_type": 8139,
+   "sprite": 43061,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    80,
+    29
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 84
+  },
+  {
+   "entity_id": 66800068,
+   "nombre": "Adventure Chair Ralon",
+   "npc_type": 8139,
+   "sprite": 43061,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    80,
+    34
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 84
+  },
+  {
+   "entity_id": 66800069,
+   "nombre": "Adventure Chair Ralon",
+   "npc_type": 8139,
+   "sprite": 43061,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    80,
+    39
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 84
+  },
+  {
+   "entity_id": 66800070,
+   "nombre": "Adventure Chair Ralon",
+   "npc_type": 8139,
+   "sprite": 43061,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    80,
+    44
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 84
+  },
+  {
+   "entity_id": 66800071,
+   "nombre": "Adventure Chair Ralon",
+   "npc_type": 8139,
+   "sprite": 43061,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    55,
+    4
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 84
+  },
+  {
+   "entity_id": 66800072,
+   "nombre": "Adventure Chair Ralon",
+   "npc_type": 8139,
+   "sprite": 43061,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    81,
+    16
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 84
+  },
+  {
+   "entity_id": 66800073,
+   "nombre": "Adventure Chair Ralon",
+   "npc_type": 8139,
+   "sprite": 43061,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    81,
+    21
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 84
+  },
+  {
+   "entity_id": 66800074,
+   "nombre": "Adventure Chair Ralon",
+   "npc_type": 8139,
+   "sprite": 43061,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    70,
+    47
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 84
+  },
+  {
+   "entity_id": 66800075,
+   "nombre": "Adventure Chair Ralon",
+   "npc_type": 8139,
+   "sprite": 43061,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    63,
+    48
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 84
+  },
+  {
+   "entity_id": 66800076,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    85,
+    26
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 85
+  },
+  {
+   "entity_id": 66800077,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    85,
+    31
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 85
+  },
+  {
+   "entity_id": 66800078,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    85,
+    36
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 85
+  },
+  {
+   "entity_id": 66800079,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    86,
+    14
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 85
+  },
+  {
+   "entity_id": 66800080,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    86,
+    19
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 85
+  },
+  {
+   "entity_id": 66800081,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    85,
+    41
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 85
+  },
+  {
+   "entity_id": 66800082,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    90,
+    24
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 85
+  },
+  {
+   "entity_id": 66800083,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    90,
+    29
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 85
+  },
+  {
+   "entity_id": 66800084,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    90,
+    34
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 85
+  },
+  {
+   "entity_id": 66800085,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    90,
+    39
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 85
+  },
+  {
+   "entity_id": 66800086,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    91,
+    13
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 85
+  },
+  {
+   "entity_id": 66800087,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    91,
+    18
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 85
+  },
+  {
+   "entity_id": 66800088,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    95,
+    23
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 85
+  },
+  {
+   "entity_id": 66800089,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    95,
+    28
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 85
+  },
+  {
+   "entity_id": 66800090,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    95,
+    33
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 85
+  },
+  {
+   "entity_id": 66800091,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    95,
+    38
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 85
+  },
+  {
+   "entity_id": 66800092,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    95,
+    43
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 85
+  },
+  {
+   "entity_id": 66800093,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    75,
+    49
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 85
+  },
+  {
+   "entity_id": 66800094,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    96,
+    15
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 85
+  },
+  {
+   "entity_id": 66800095,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    68,
+    52
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 85
+  },
+  {
+   "entity_id": 66800096,
+   "nombre": "Sharp Fang Tiger",
+   "npc_type": 8141,
+   "sprite": 43070,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    100,
+    20
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 86
+  },
+  {
+   "entity_id": 66800097,
+   "nombre": "Sharp Fang Tiger",
+   "npc_type": 8141,
+   "sprite": 43070,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    100,
+    25
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 86
+  },
+  {
+   "entity_id": 66800098,
+   "nombre": "Sharp Fang Tiger",
+   "npc_type": 8141,
+   "sprite": 43070,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    100,
+    30
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 86
+  },
+  {
+   "entity_id": 66800099,
+   "nombre": "Sharp Fang Tiger",
+   "npc_type": 8141,
+   "sprite": 43070,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    100,
+    35
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 86
+  },
+  {
+   "entity_id": 66800100,
+   "nombre": "Sharp Fang Tiger",
+   "npc_type": 8141,
+   "sprite": 43070,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    100,
+    40
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 86
+  },
+  {
+   "entity_id": 66800101,
+   "nombre": "Sharp Fang Tiger",
+   "npc_type": 8141,
+   "sprite": 43070,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    105,
+    17
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 86
+  },
+  {
+   "entity_id": 66800102,
+   "nombre": "Sharp Fang Tiger",
+   "npc_type": 8141,
+   "sprite": 43070,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    105,
+    22
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 86
+  },
+  {
+   "entity_id": 66800103,
+   "nombre": "Sharp Fang Tiger",
+   "npc_type": 8141,
+   "sprite": 43070,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    105,
+    27
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 86
+  },
+  {
+   "entity_id": 66800104,
+   "nombre": "Sharp Fang Tiger",
+   "npc_type": 8141,
+   "sprite": 43070,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    105,
+    32
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 86
+  },
+  {
+   "entity_id": 66800105,
+   "nombre": "Sharp Fang Tiger",
+   "npc_type": 8141,
+   "sprite": 43070,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    63,
+    53
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 86
+  },
+  {
+   "entity_id": 66800106,
+   "nombre": "Sharp Fang Tiger",
+   "npc_type": 8141,
+   "sprite": 43070,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    110,
+    19
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 86
+  },
+  {
+   "entity_id": 66800107,
+   "nombre": "Sharp Fang Tiger",
+   "npc_type": 8141,
+   "sprite": 43070,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    110,
+    24
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 86
+  },
+  {
+   "entity_id": 66800108,
+   "nombre": "Sharp Fang Tiger",
+   "npc_type": 8141,
+   "sprite": 43070,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    110,
+    29
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 86
+  },
+  {
+   "entity_id": 66800109,
+   "nombre": "Sharp Fang Tiger",
+   "npc_type": 8141,
+   "sprite": 43070,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    110,
+    34
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 86
+  },
+  {
+   "entity_id": 66800110,
+   "nombre": "Sharp Fang Tiger",
+   "npc_type": 8141,
+   "sprite": 43070,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    54,
+    55
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 86
+  },
+  {
+   "entity_id": 66800111,
+   "nombre": "Bosen Dino",
+   "npc_type": 8147,
+   "sprite": 43057,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    30,
+    96
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 165,
+   "zona": 71
+  },
+  {
+   "entity_id": 66800112,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    188,
+    33
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 93
+  },
+  {
+   "entity_id": 66800113,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    183,
+    28
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 93
+  },
+  {
+   "entity_id": 66800114,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    183,
+    33
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 93
+  },
+  {
+   "entity_id": 66800115,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    183,
+    38
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 93
+  },
+  {
+   "entity_id": 66800116,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    188,
+    28
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 93
+  },
+  {
+   "entity_id": 66800117,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    188,
+    38
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 93
+  },
+  {
+   "entity_id": 66800118,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    193,
+    28
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 93
+  },
+  {
+   "entity_id": 66800119,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    193,
+    33
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 93
+  },
+  {
+   "entity_id": 66800120,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    178,
+    23
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 93
+  },
+  {
+   "entity_id": 66800121,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    178,
+    28
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 93
+  },
+  {
+   "entity_id": 66800122,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    178,
+    33
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 93
+  },
+  {
+   "entity_id": 66800123,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    178,
+    38
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 93
+  },
+  {
+   "entity_id": 66800124,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    183,
+    23
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 93
+  },
+  {
+   "entity_id": 66800125,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    189,
+    23
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 93
+  },
+  {
+   "entity_id": 66800126,
+   "nombre": "Barren Warrior",
+   "npc_type": 8136,
+   "sprite": 43039,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    194,
+    23
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 93
+  },
+  {
+   "entity_id": 66800127,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    173,
+    23
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800128,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    198,
+    28
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800129,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    173,
+    28
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800130,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    197,
+    18
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800131,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    173,
+    33
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800132,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    199,
+    23
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800133,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    173,
+    38
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800134,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    202,
+    15
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800135,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    168,
+    22
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800136,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    204,
+    20
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 150,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800137,
+   "nombre": "Magic Dragon Ambassador",
+   "npc_type": 8148,
+   "sprite": 43166,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    254,
+    148
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 170,
+   "zona": 72
+  },
+  {
+   "entity_id": 66800138,
+   "nombre": "Cartastolov",
+   "npc_type": 8150,
+   "sprite": 43168,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    35,
+    154
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 175,
+   "zona": 74
+  },
+  {
+   "entity_id": 66800139,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    204,
+    25
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 95
+  },
+  {
+   "entity_id": 66800140,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    207,
+    13
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 95
+  },
+  {
+   "entity_id": 66800141,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    209,
+    18
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 95
+  },
+  {
+   "entity_id": 66800142,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    209,
+    23
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 95
+  },
+  {
+   "entity_id": 66800143,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    168,
+    27
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 95
+  },
+  {
+   "entity_id": 66800144,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    168,
+    32
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 95
+  },
+  {
+   "entity_id": 66800145,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    212,
+    11
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 95
+  },
+  {
+   "entity_id": 66800146,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    179,
+    49
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 95
+  },
+  {
+   "entity_id": 66800147,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    214,
+    16
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 95
+  },
+  {
+   "entity_id": 66800148,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    214,
+    21
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 95
+  },
+  {
+   "entity_id": 66800149,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    174,
+    51
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 95
+  },
+  {
+   "entity_id": 66800150,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    184,
+    51
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 95
+  },
+  {
+   "entity_id": 66800151,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    189,
+    52
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 95
+  },
+  {
+   "entity_id": 66800152,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    194,
+    52
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 95
+  },
+  {
+   "entity_id": 66800153,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    163,
+    21
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 95
+  },
+  {
+   "entity_id": 66800154,
+   "nombre": "Silverhelm Dragon",
+   "npc_type": 8144,
+   "sprite": 43079,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    163,
+    26
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 96
+  },
+  {
+   "entity_id": 66800155,
+   "nombre": "Silverhelm Dragon",
+   "npc_type": 8144,
+   "sprite": 43079,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    163,
+    31
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 96
+  },
+  {
+   "entity_id": 66800156,
+   "nombre": "Silverhelm Dragon",
+   "npc_type": 8144,
+   "sprite": 43079,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    158,
+    22
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 96
+  },
+  {
+   "entity_id": 66800157,
+   "nombre": "Silverhelm Dragon",
+   "npc_type": 8144,
+   "sprite": 43079,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    158,
+    27
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 96
+  },
+  {
+   "entity_id": 66800158,
+   "nombre": "Silverhelm Dragon",
+   "npc_type": 8144,
+   "sprite": 43079,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    158,
+    32
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 96
+  },
+  {
+   "entity_id": 66800159,
+   "nombre": "Silverhelm Dragon",
+   "npc_type": 8144,
+   "sprite": 43079,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    153,
+    22
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 96
+  },
+  {
+   "entity_id": 66800160,
+   "nombre": "Silverhelm Dragon",
+   "npc_type": 8144,
+   "sprite": 43079,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    153,
+    27
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 96
+  },
+  {
+   "entity_id": 66800161,
+   "nombre": "Silverhelm Dragon",
+   "npc_type": 8144,
+   "sprite": 43079,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    153,
+    32
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 96
+  },
+  {
+   "entity_id": 66800162,
+   "nombre": "Silverhelm Dragon",
+   "npc_type": 8144,
+   "sprite": 43079,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    152,
+    50
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 96
+  },
+  {
+   "entity_id": 66800163,
+   "nombre": "Silverhelm Dragon",
+   "npc_type": 8144,
+   "sprite": 43079,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    157,
+    52
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 96
+  },
+  {
+   "entity_id": 66800164,
+   "nombre": "Silverhelm Dragon",
+   "npc_type": 8144,
+   "sprite": 43079,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    148,
+    22
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 96
+  },
+  {
+   "entity_id": 66800165,
+   "nombre": "Silverhelm Dragon",
+   "npc_type": 8144,
+   "sprite": 43079,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    148,
+    27
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 96
+  },
+  {
+   "entity_id": 66800166,
+   "nombre": "Silverhelm Dragon",
+   "npc_type": 8144,
+   "sprite": 43079,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    148,
+    32
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 96
+  },
+  {
+   "entity_id": 66800167,
+   "nombre": "Silverhelm Dragon",
+   "npc_type": 8144,
+   "sprite": 43079,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    169,
+    54
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 96
+  },
+  {
+   "entity_id": 66800168,
+   "nombre": "Silverhelm Dragon",
+   "npc_type": 8144,
+   "sprite": 43079,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    179,
+    54
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 96
+  },
+  {
+   "entity_id": 66800169,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    217,
+    11
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 97
+  },
+  {
+   "entity_id": 66800170,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    219,
+    16
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 97
+  },
+  {
+   "entity_id": 66800171,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    224,
+    12
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 97
+  },
+  {
+   "entity_id": 66800172,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    224,
+    17
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 97
+  },
+  {
+   "entity_id": 66800173,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    225,
+    41
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 97
+  },
+  {
+   "entity_id": 66800174,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    199,
+    54
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 97
+  },
+  {
+   "entity_id": 66800175,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    204,
+    55
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 97
+  },
+  {
+   "entity_id": 66800176,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    229,
+    10
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 97
+  },
+  {
+   "entity_id": 66800177,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    229,
+    15
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 97
+  },
+  {
+   "entity_id": 66800178,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    229,
+    20
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 97
+  },
+  {
+   "entity_id": 66800179,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    229,
+    36
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 97
+  },
+  {
+   "entity_id": 66800180,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    164,
+    56
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 97
+  },
+  {
+   "entity_id": 66800181,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    174,
+    56
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 97
+  },
+  {
+   "entity_id": 66800182,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    184,
+    56
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 97
+  },
+  {
+   "entity_id": 66800183,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    209,
+    56
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 97
+  },
+  {
+   "entity_id": 66800184,
+   "nombre": "Flaming Turtle Dragon",
+   "npc_type": 8146,
+   "sprite": 43046,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    230,
+    41
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 98
+  },
+  {
+   "entity_id": 66800185,
+   "nombre": "Flaming Turtle Dragon",
+   "npc_type": 8146,
+   "sprite": 43046,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    232,
+    25
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 98
+  },
+  {
+   "entity_id": 66800186,
+   "nombre": "Flaming Turtle Dragon",
+   "npc_type": 8146,
+   "sprite": 43046,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    230,
+    46
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 98
+  },
+  {
+   "entity_id": 66800187,
+   "nombre": "Flaming Turtle Dragon",
+   "npc_type": 8146,
+   "sprite": 43046,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    234,
+    10
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 98
+  },
+  {
+   "entity_id": 66800188,
+   "nombre": "Flaming Turtle Dragon",
+   "npc_type": 8146,
+   "sprite": 43046,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    234,
+    15
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 98
+  },
+  {
+   "entity_id": 66800189,
+   "nombre": "Flaming Turtle Dragon",
+   "npc_type": 8146,
+   "sprite": 43046,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    234,
+    20
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 98
+  },
+  {
+   "entity_id": 66800190,
+   "nombre": "Flaming Turtle Dragon",
+   "npc_type": 8146,
+   "sprite": 43046,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    234,
+    30
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 98
+  },
+  {
+   "entity_id": 66800191,
+   "nombre": "Flaming Turtle Dragon",
+   "npc_type": 8146,
+   "sprite": 43046,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    234,
+    35
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 98
+  },
+  {
+   "entity_id": 66800192,
+   "nombre": "Flaming Turtle Dragon",
+   "npc_type": 8146,
+   "sprite": 43046,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    235,
+    40
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 98
+  },
+  {
+   "entity_id": 66800193,
+   "nombre": "Flaming Turtle Dragon",
+   "npc_type": 8146,
+   "sprite": 43046,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    235,
+    45
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 98
+  },
+  {
+   "entity_id": 66800194,
+   "nombre": "Flaming Turtle Dragon",
+   "npc_type": 8146,
+   "sprite": 43046,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    237,
+    25
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 98
+  },
+  {
+   "entity_id": 66800195,
+   "nombre": "Flaming Turtle Dragon",
+   "npc_type": 8146,
+   "sprite": 43046,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    239,
+    7
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 98
+  },
+  {
+   "entity_id": 66800196,
+   "nombre": "Flaming Turtle Dragon",
+   "npc_type": 8146,
+   "sprite": 43046,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    239,
+    12
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 98
+  },
+  {
+   "entity_id": 66800197,
+   "nombre": "Flaming Turtle Dragon",
+   "npc_type": 8146,
+   "sprite": 43046,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    239,
+    17
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 98
+  },
+  {
+   "entity_id": 66800198,
+   "nombre": "Flaming Turtle Dragon",
+   "npc_type": 8146,
+   "sprite": 43046,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    239,
+    30
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 98
+  },
+  {
+   "entity_id": 66800199,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    143,
+    166
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 105
+  },
+  {
+   "entity_id": 66800200,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    138,
+    161
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 105
+  },
+  {
+   "entity_id": 66800201,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    138,
+    166
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 105
+  },
+  {
+   "entity_id": 66800202,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    133,
+    156
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 105
+  },
+  {
+   "entity_id": 66800203,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    133,
+    161
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 105
+  },
+  {
+   "entity_id": 66800204,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    133,
+    166
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 105
+  },
+  {
+   "entity_id": 66800205,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    138,
+    156
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 105
+  },
+  {
+   "entity_id": 66800206,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    128,
+    151
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 105
+  },
+  {
+   "entity_id": 66800207,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    128,
+    156
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 105
+  },
+  {
+   "entity_id": 66800208,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    128,
+    161
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 105
+  },
+  {
+   "entity_id": 66800209,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    128,
+    166
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 105
+  },
+  {
+   "entity_id": 66800210,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    133,
+    151
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 105
+  },
+  {
+   "entity_id": 66800211,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    123,
+    146
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 105
+  },
+  {
+   "entity_id": 66800212,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    123,
+    151
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 105
+  },
+  {
+   "entity_id": 66800213,
+   "nombre": "Dragon Blader",
+   "npc_type": 8143,
+   "sprite": 43124,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    123,
+    156
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 155,
+   "zona": 105
+  },
+  {
+   "entity_id": 66800214,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    123,
+    161
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 106
+  },
+  {
+   "entity_id": 66800215,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    123,
+    166
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 106
+  },
+  {
+   "entity_id": 66800216,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    118,
+    149
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 106
+  },
+  {
+   "entity_id": 66800217,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    118,
+    154
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 106
+  },
+  {
+   "entity_id": 66800218,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    118,
+    159
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 106
+  },
+  {
+   "entity_id": 66800219,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    118,
+    164
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 106
+  },
+  {
+   "entity_id": 66800220,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    128,
+    146
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 106
+  },
+  {
+   "entity_id": 66800221,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    113,
+    147
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 106
+  },
+  {
+   "entity_id": 66800222,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    113,
+    152
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 106
+  },
+  {
+   "entity_id": 66800223,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    113,
+    157
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 106
+  },
+  {
+   "entity_id": 66800224,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    113,
+    162
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 106
+  },
+  {
+   "entity_id": 66800225,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    133,
+    143
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 106
+  },
+  {
+   "entity_id": 66800226,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    108,
+    149
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 106
+  },
+  {
+   "entity_id": 66800227,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    108,
+    154
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 106
+  },
+  {
+   "entity_id": 66800228,
+   "nombre": "Thunder Dragon",
+   "npc_type": 8145,
+   "sprite": 43064,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    108,
+    159
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 156,
+   "zona": 106
+  },
+  {
+   "entity_id": 66800229,
+   "nombre": "Steel Armor Tiger",
+   "npc_type": 8153,
+   "sprite": 43073,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    134,
+    138
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 107
+  },
+  {
+   "entity_id": 66800230,
+   "nombre": "Steel Armor Tiger",
+   "npc_type": 8153,
+   "sprite": 43073,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    139,
+    137
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 107
+  },
+  {
+   "entity_id": 66800231,
+   "nombre": "Steel Armor Tiger",
+   "npc_type": 8153,
+   "sprite": 43073,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    144,
+    134
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 107
+  },
+  {
+   "entity_id": 66800232,
+   "nombre": "Steel Armor Tiger",
+   "npc_type": 8153,
+   "sprite": 43073,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    149,
+    133
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 107
+  },
+  {
+   "entity_id": 66800233,
+   "nombre": "Steel Armor Tiger",
+   "npc_type": 8153,
+   "sprite": 43073,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    136,
+    132
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 107
+  },
+  {
+   "entity_id": 66800234,
+   "nombre": "Steel Armor Tiger",
+   "npc_type": 8153,
+   "sprite": 43073,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    160,
+    132
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 107
+  },
+  {
+   "entity_id": 66800235,
+   "nombre": "Steel Armor Tiger",
+   "npc_type": 8153,
+   "sprite": 43073,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    154,
+    131
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 107
+  },
+  {
+   "entity_id": 66800236,
+   "nombre": "Steel Armor Tiger",
+   "npc_type": 8153,
+   "sprite": 43073,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    167,
+    130
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 107
+  },
+  {
+   "entity_id": 66800237,
+   "nombre": "Steel Armor Tiger",
+   "npc_type": 8153,
+   "sprite": 43073,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    103,
+    149
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 107
+  },
+  {
+   "entity_id": 66800238,
+   "nombre": "Steel Armor Tiger",
+   "npc_type": 8153,
+   "sprite": 43073,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    103,
+    154
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 107
+  },
+  {
+   "entity_id": 66800239,
+   "nombre": "Steel Armor Tiger",
+   "npc_type": 8153,
+   "sprite": 43073,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    103,
+    159
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 107
+  },
+  {
+   "entity_id": 66800240,
+   "nombre": "Steel Armor Tiger",
+   "npc_type": 8153,
+   "sprite": 43073,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    141,
+    129
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 107
+  },
+  {
+   "entity_id": 66800241,
+   "nombre": "Steel Armor Tiger",
+   "npc_type": 8153,
+   "sprite": 43073,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    131,
+    128
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 107
+  },
+  {
+   "entity_id": 66800242,
+   "nombre": "Steel Armor Tiger",
+   "npc_type": 8153,
+   "sprite": 43073,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    146,
+    128
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 107
+  },
+  {
+   "entity_id": 66800243,
+   "nombre": "Steel Armor Tiger",
+   "npc_type": 8153,
+   "sprite": 43073,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    136,
+    127
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 107
+  },
+  {
+   "entity_id": 66800244,
+   "nombre": "Steel Armor Tiger",
+   "npc_type": 8153,
+   "sprite": 43073,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    159,
+    127
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 107
+  },
+  {
+   "entity_id": 66800245,
+   "nombre": "Steel Armor Tiger",
+   "npc_type": 8153,
+   "sprite": 43073,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    172,
+    127
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 107
+  },
+  {
+   "entity_id": 66800246,
+   "nombre": "Steel Armor Tiger",
+   "npc_type": 8153,
+   "sprite": 43073,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    151,
+    126
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 107
+  },
+  {
+   "entity_id": 66800247,
+   "nombre": "Steel Armor Tiger",
+   "npc_type": 8153,
+   "sprite": 43073,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    164,
+    125
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 107
+  },
+  {
+   "entity_id": 66800248,
+   "nombre": "Steel Armor Tiger",
+   "npc_type": 8153,
+   "sprite": 43073,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    98,
+    149
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 107
+  },
+  {
+   "entity_id": 66800249,
+   "nombre": "Horned Bump Dragon",
+   "npc_type": 8155,
+   "sprite": 43084,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    98,
+    154
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 109
+  },
+  {
+   "entity_id": 66800250,
+   "nombre": "Horned Bump Dragon",
+   "npc_type": 8155,
+   "sprite": 43084,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    98,
+    159
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 109
+  },
+  {
+   "entity_id": 66800251,
+   "nombre": "Horned Bump Dragon",
+   "npc_type": 8155,
+   "sprite": 43084,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    93,
+    153
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 109
+  },
+  {
+   "entity_id": 66800252,
+   "nombre": "Horned Bump Dragon",
+   "npc_type": 8155,
+   "sprite": 43084,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    93,
+    158
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 109
+  },
+  {
+   "entity_id": 66800253,
+   "nombre": "Horned Bump Dragon",
+   "npc_type": 8155,
+   "sprite": 43084,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    88,
+    152
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 109
+  },
+  {
+   "entity_id": 66800254,
+   "nombre": "Horned Bump Dragon",
+   "npc_type": 8155,
+   "sprite": 43084,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    88,
+    157
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 109
+  },
+  {
+   "entity_id": 66800255,
+   "nombre": "Horned Bump Dragon",
+   "npc_type": 8155,
+   "sprite": 43084,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    141,
+    124
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 109
+  },
+  {
+   "entity_id": 66800256,
+   "nombre": "Horned Bump Dragon",
+   "npc_type": 8155,
+   "sprite": 43084,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    146,
+    123
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 109
+  },
+  {
+   "entity_id": 66800257,
+   "nombre": "Horned Bump Dragon",
+   "npc_type": 8155,
+   "sprite": 43084,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    85,
+    125
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 109
+  },
+  {
+   "entity_id": 66800258,
+   "nombre": "Horned Bump Dragon",
+   "npc_type": 8155,
+   "sprite": 43084,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    151,
+    121
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 109
+  },
+  {
+   "entity_id": 66800259,
+   "nombre": "Horned Bump Dragon",
+   "npc_type": 8155,
+   "sprite": 43084,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    84,
+    162
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 109
+  },
+  {
+   "entity_id": 66800260,
+   "nombre": "Horned Bump Dragon",
+   "npc_type": 8155,
+   "sprite": 43084,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    83,
+    119
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 109
+  },
+  {
+   "entity_id": 66800261,
+   "nombre": "Horned Bump Dragon",
+   "npc_type": 8155,
+   "sprite": 43084,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    83,
+    151
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 109
+  },
+  {
+   "entity_id": 66800262,
+   "nombre": "Horned Bump Dragon",
+   "npc_type": 8155,
+   "sprite": 43084,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    83,
+    156
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 109
+  },
+  {
+   "entity_id": 66800263,
+   "nombre": "Horned Bump Dragon",
+   "npc_type": 8155,
+   "sprite": 43084,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    146,
+    118
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 109
+  },
+  {
+   "entity_id": 66800264,
+   "nombre": "Horned Bump Dragon",
+   "npc_type": 8155,
+   "sprite": 43084,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    80,
+    124
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 109
+  },
+  {
+   "entity_id": 66800265,
+   "nombre": "Horned Bump Dragon",
+   "npc_type": 8155,
+   "sprite": 43084,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    80,
+    129
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 109
+  },
+  {
+   "entity_id": 66800266,
+   "nombre": "Horned Bump Dragon",
+   "npc_type": 8155,
+   "sprite": 43084,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    152,
+    116
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 109
+  },
+  {
+   "entity_id": 66800267,
+   "nombre": "Horned Bump Dragon",
+   "npc_type": 8155,
+   "sprite": 43084,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    88,
+    115
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 109
+  },
+  {
+   "entity_id": 66800268,
+   "nombre": "Horned Bump Dragon",
+   "npc_type": 8155,
+   "sprite": 43084,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    157,
+    115
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 109
+  },
+  {
+   "entity_id": 66800269,
+   "nombre": "Bloody Thorn Dragon",
+   "npc_type": 8156,
+   "sprite": 43100,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    94,
+    113
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 110
+  },
+  {
+   "entity_id": 66800270,
+   "nombre": "Bloody Thorn Dragon",
+   "npc_type": 8156,
+   "sprite": 43100,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    181,
+    113
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 110
+  },
+  {
+   "entity_id": 66800271,
+   "nombre": "Bloody Thorn Dragon",
+   "npc_type": 8156,
+   "sprite": 43100,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    186,
+    113
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 110
+  },
+  {
+   "entity_id": 66800272,
+   "nombre": "Bloody Thorn Dragon",
+   "npc_type": 8156,
+   "sprite": 43100,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    162,
+    112
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 110
+  },
+  {
+   "entity_id": 66800273,
+   "nombre": "Bloody Thorn Dragon",
+   "npc_type": 8156,
+   "sprite": 43100,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    171,
+    112
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 110
+  },
+  {
+   "entity_id": 66800274,
+   "nombre": "Bloody Thorn Dragon",
+   "npc_type": 8156,
+   "sprite": 43100,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    99,
+    111
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 110
+  },
+  {
+   "entity_id": 66800275,
+   "nombre": "Bloody Thorn Dragon",
+   "npc_type": 8156,
+   "sprite": 43100,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    176,
+    111
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 110
+  },
+  {
+   "entity_id": 66800276,
+   "nombre": "Bloody Thorn Dragon",
+   "npc_type": 8156,
+   "sprite": 43100,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    104,
+    110
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 110
+  },
+  {
+   "entity_id": 66800277,
+   "nombre": "Bloody Thorn Dragon",
+   "npc_type": 8156,
+   "sprite": 43100,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    157,
+    110
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 110
+  },
+  {
+   "entity_id": 66800278,
+   "nombre": "Bloody Thorn Dragon",
+   "npc_type": 8156,
+   "sprite": 43100,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    191,
+    109
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 110
+  },
+  {
+   "entity_id": 66800279,
+   "nombre": "Bloody Thorn Dragon",
+   "npc_type": 8156,
+   "sprite": 43100,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    89,
+    108
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 110
+  },
+  {
+   "entity_id": 66800280,
+   "nombre": "Bloody Thorn Dragon",
+   "npc_type": 8156,
+   "sprite": 43100,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    94,
+    108
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 110
+  },
+  {
+   "entity_id": 66800281,
+   "nombre": "Bloody Thorn Dragon",
+   "npc_type": 8156,
+   "sprite": 43100,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    181,
+    108
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 110
+  },
+  {
+   "entity_id": 66800282,
+   "nombre": "Bloody Thorn Dragon",
+   "npc_type": 8156,
+   "sprite": 43100,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    186,
+    108
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 110
+  },
+  {
+   "entity_id": 66800283,
+   "nombre": "Bloody Thorn Dragon",
+   "npc_type": 8156,
+   "sprite": 43100,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    162,
+    107
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 110
+  },
+  {
+   "entity_id": 66800284,
+   "nombre": "Mystic Huge Shrimp",
+   "npc_type": 8154,
+   "sprite": 43120,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    78,
+    119
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 108
+  },
+  {
+   "entity_id": 66800285,
+   "nombre": "Mystic Huge Shrimp",
+   "npc_type": 8154,
+   "sprite": 43120,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    78,
+    149
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 108
+  },
+  {
+   "entity_id": 66800286,
+   "nombre": "Mystic Huge Shrimp",
+   "npc_type": 8154,
+   "sprite": 43120,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    78,
+    154
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 108
+  },
+  {
+   "entity_id": 66800287,
+   "nombre": "Mystic Huge Shrimp",
+   "npc_type": 8154,
+   "sprite": 43120,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    78,
+    159
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 108
+  },
+  {
+   "entity_id": 66800288,
+   "nombre": "Mystic Huge Shrimp",
+   "npc_type": 8154,
+   "sprite": 43120,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    75,
+    124
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 108
+  },
+  {
+   "entity_id": 66800289,
+   "nombre": "Mystic Huge Shrimp",
+   "npc_type": 8154,
+   "sprite": 43120,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    75,
+    129
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 108
+  },
+  {
+   "entity_id": 66800290,
+   "nombre": "Mystic Huge Shrimp",
+   "npc_type": 8154,
+   "sprite": 43120,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    75,
+    134
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 108
+  },
+  {
+   "entity_id": 66800291,
+   "nombre": "Mystic Huge Shrimp",
+   "npc_type": 8154,
+   "sprite": 43120,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    73,
+    145
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 108
+  },
+  {
+   "entity_id": 66800292,
+   "nombre": "Mystic Huge Shrimp",
+   "npc_type": 8154,
+   "sprite": 43120,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    73,
+    150
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 108
+  },
+  {
+   "entity_id": 66800293,
+   "nombre": "Mystic Huge Shrimp",
+   "npc_type": 8154,
+   "sprite": 43120,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    73,
+    155
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 108
+  },
+  {
+   "entity_id": 66800294,
+   "nombre": "Mystic Huge Shrimp",
+   "npc_type": 8154,
+   "sprite": 43120,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    73,
+    160
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 108
+  },
+  {
+   "entity_id": 66800295,
+   "nombre": "Mystic Huge Shrimp",
+   "npc_type": 8154,
+   "sprite": 43120,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    70,
+    120
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 108
+  },
+  {
+   "entity_id": 66800296,
+   "nombre": "Mystic Huge Shrimp",
+   "npc_type": 8154,
+   "sprite": 43120,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    70,
+    125
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 108
+  },
+  {
+   "entity_id": 66800297,
+   "nombre": "Mystic Huge Shrimp",
+   "npc_type": 8154,
+   "sprite": 43120,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    70,
+    130
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 108
+  },
+  {
+   "entity_id": 66800298,
+   "nombre": "Mystic Huge Shrimp",
+   "npc_type": 8154,
+   "sprite": 43120,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    70,
+    135
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 158,
+   "zona": 108
+  },
+  {
+   "entity_id": 66800299,
+   "nombre": "Arena Attendant",
+   "npc_type": 7998,
+   "sprite": 43032,
+   "klass": 200,
+   "monstruo": false,
+   "tile": [
+    31,
+    12
+   ],
+   "direccion": 2,
+   "visible": 0
+  },
+  {
+   "entity_id": 66800300,
+   "nombre": "Lobby Guards",
+   "npc_type": 7999,
+   "sprite": 43032,
+   "klass": 200,
+   "monstruo": false,
+   "tile": [
+    143,
+    36
+   ],
+   "direccion": 2,
+   "visible": 0
+  },
+  {
+   "entity_id": 66800301,
+   "nombre": "Hall Guards",
+   "npc_type": 8000,
+   "sprite": 43033,
+   "klass": 200,
+   "monstruo": false,
+   "tile": [
+    220,
+    152
+   ],
+   "direccion": 2,
+   "visible": 0
+  },
+  {
+   "entity_id": 66800302,
+   "nombre": "Palace Guards",
+   "npc_type": 8801,
+   "sprite": 43031,
+   "klass": 200,
+   "monstruo": false,
+   "tile": [
+    130,
+    135
+   ],
+   "direccion": 2,
+   "visible": 0
+  },
+  {
+   "entity_id": 66800303,
+   "nombre": "Praetorian Guards",
+   "npc_type": 8802,
+   "sprite": 43034,
+   "klass": 200,
+   "monstruo": false,
+   "tile": [
+    151,
+    124
+   ],
+   "direccion": 2,
+   "visible": 0
+  },
+  {
+   "entity_id": 66800304,
+   "nombre": "Bringer of Doom",
+   "npc_type": 8806,
+   "sprite": 43031,
+   "klass": 200,
+   "monstruo": false,
+   "tile": [
+    211,
+    115
+   ],
+   "direccion": 2,
+   "visible": 0
+  },
+  {
+   "entity_id": 66800305,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    178,
+    96
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800306,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    173,
+    91
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800307,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    177,
+    101
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800308,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    178,
+    91
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800309,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    182,
+    101
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800310,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    183,
+    91
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800311,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    183,
+    96
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800312,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    172,
+    102
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800313,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    187,
+    101
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800314,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    168,
+    88
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800315,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    188,
+    92
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800316,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    167,
+    93
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800317,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    167,
+    98
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800318,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    192,
+    97
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800319,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    192,
+    102
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800320,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    162,
+    91
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800321,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    162,
+    96
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800322,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    162,
+    101
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800323,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    197,
+    96
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800324,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    197,
+    101
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800325,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    157,
+    99
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800326,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    157,
+    104
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800327,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    202,
+    120
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800328,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    203,
+    69
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800329,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    194,
+    68
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800330,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    204,
+    125
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800331,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    207,
+    120
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800332,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    148,
+    66
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800333,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    153,
+    66
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800334,
+   "nombre": "Mini Rex",
+   "npc_type": 8267,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    208,
+    66
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 152,
+   "zona": 202
+  },
+  {
+   "entity_id": 66800335,
+   "nombre": "Blade Thorny Dragon",
+   "npc_type": 8142,
+   "sprite": 43097,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    156,
+    57
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800336,
+   "nombre": "Blade Thorny Dragon",
+   "npc_type": 8142,
+   "sprite": 43097,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    189,
+    57
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800337,
+   "nombre": "Blade Thorny Dragon",
+   "npc_type": 8142,
+   "sprite": 43097,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    194,
+    57
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800338,
+   "nombre": "Blade Thorny Dragon",
+   "npc_type": 8142,
+   "sprite": 43097,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    169,
+    59
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800339,
+   "nombre": "Blade Thorny Dragon",
+   "npc_type": 8142,
+   "sprite": 43097,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    179,
+    59
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800340,
+   "nombre": "Blade Thorny Dragon",
+   "npc_type": 8142,
+   "sprite": 43097,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    199,
+    59
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800341,
+   "nombre": "Blade Thorny Dragon",
+   "npc_type": 8142,
+   "sprite": 43097,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    204,
+    60
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800342,
+   "nombre": "Blade Thorny Dragon",
+   "npc_type": 8142,
+   "sprite": 43097,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    214,
+    60
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800343,
+   "nombre": "Blade Thorny Dragon",
+   "npc_type": 8142,
+   "sprite": 43097,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    161,
+    61
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800344,
+   "nombre": "Blade Thorny Dragon",
+   "npc_type": 8142,
+   "sprite": 43097,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    174,
+    61
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800345,
+   "nombre": "Blade Thorny Dragon",
+   "npc_type": 8142,
+   "sprite": 43097,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    184,
+    61
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800346,
+   "nombre": "Blade Thorny Dragon",
+   "npc_type": 8142,
+   "sprite": 43097,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    209,
+    61
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800347,
+   "nombre": "Blade Thorny Dragon",
+   "npc_type": 8142,
+   "sprite": 43097,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    151,
+    55
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800348,
+   "nombre": "Blade Thorny Dragon",
+   "npc_type": 8142,
+   "sprite": 43097,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    219,
+    61
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800349,
+   "nombre": "Blade Thorny Dragon",
+   "npc_type": 8142,
+   "sprite": 43097,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    151,
+    60
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800350,
+   "nombre": "Blade Thorny Dragon",
+   "npc_type": 8142,
+   "sprite": 43097,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    189,
+    62
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800351,
+   "nombre": "Blade Thorny Dragon",
+   "npc_type": 8142,
+   "sprite": 43097,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    194,
+    62
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800352,
+   "nombre": "Blade Thorny Dragon",
+   "npc_type": 8142,
+   "sprite": 43097,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    199,
+    64
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800353,
+   "nombre": "Blade Thorny Dragon",
+   "npc_type": 8142,
+   "sprite": 43097,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    214,
+    65
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800354,
+   "nombre": "Blade Thorny Dragon",
+   "npc_type": 8142,
+   "sprite": 43097,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    224,
+    64
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800355,
+   "nombre": "Blade Thorny Dragon",
+   "npc_type": 8142,
+   "sprite": 43097,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    219,
+    66
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800356,
+   "nombre": "Blade Thorny Dragon",
+   "npc_type": 8142,
+   "sprite": 43097,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    224,
+    69
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800357,
+   "nombre": "Blade Thorny Dragon",
+   "npc_type": 8142,
+   "sprite": 43097,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    146,
+    52
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800358,
+   "nombre": "Blade Thorny Dragon",
+   "npc_type": 8142,
+   "sprite": 43097,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    213,
+    70
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800359,
+   "nombre": "Blade Thorny Dragon",
+   "npc_type": 8142,
+   "sprite": 43097,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    146,
+    57
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 154,
+   "zona": 94
+  },
+  {
+   "entity_id": 66800360,
+   "nombre": "Aged Fossil Bone",
+   "nombre_completo": "Aged Fossil Bone",
+   "npc_type": 7992,
+   "sprite": 60241,
+   "klass": 199,
+   "monstruo": false,
+   "tile": [
+    224,
+    41
+   ],
+   "direccion": 6,
+   "visible": 1,
+   "puesto_por": "npcs_del_cliente"
+  }
+ ],
+ "recursos": [
+  {
+   "entity_id": 76800000,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    8468,
+    1328
+   ],
+   "tile": [
+    264,
+    41
+   ],
+   "crudo": "00e093040000000014210000300500000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800001,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    8530,
+    1264
+   ],
+   "tile": [
+    266,
+    39
+   ],
+   "crudo": "01e093040000000052210000f00400000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800002,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    8370,
+    1264
+   ],
+   "tile": [
+    261,
+    39
+   ],
+   "crudo": "02e0930400000000b2200000f00400000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800003,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    8453,
+    1168
+   ],
+   "tile": [
+    264,
+    36
+   ],
+   "crudo": "03e093040000000005210000900400000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800004,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    8645,
+    1200
+   ],
+   "tile": [
+    270,
+    37
+   ],
+   "crudo": "04e0930400000000c5210000b00400000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800005,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    8588,
+    1136
+   ],
+   "tile": [
+    268,
+    35
+   ],
+   "crudo": "05e09304000000008c210000700400000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800006,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    8652,
+    1392
+   ],
+   "tile": [
+    270,
+    43
+   ],
+   "crudo": "06e0930400000000cc210000700500000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800007,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    8858,
+    1232
+   ],
+   "tile": [
+    276,
+    38
+   ],
+   "crudo": "07e09304000000009a220000d00400000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800008,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    8373,
+    880
+   ],
+   "tile": [
+    261,
+    27
+   ],
+   "crudo": "08e0930400000000b5200000700300000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800009,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    8493,
+    1040
+   ],
+   "tile": [
+    265,
+    32
+   ],
+   "crudo": "09e09304000000002d210000100400000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800010,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    8695,
+    1040
+   ],
+   "tile": [
+    271,
+    32
+   ],
+   "crudo": "0ae0930400000000f7210000100400000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800011,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    8514,
+    1744
+   ],
+   "tile": [
+    266,
+    54
+   ],
+   "crudo": "0be093040000000042210000d00600000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800012,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    8188,
+    1808
+   ],
+   "tile": [
+    255,
+    56
+   ],
+   "crudo": "0ce0930400000000fc1f0000100700000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800013,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    7971,
+    1680
+   ],
+   "tile": [
+    249,
+    52
+   ],
+   "crudo": "0de0930400000000231f0000900600000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800014,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    8024,
+    1584
+   ],
+   "tile": [
+    250,
+    49
+   ],
+   "crudo": "0ee0930400000000581f0000300600000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800015,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    8665,
+    592
+   ],
+   "tile": [
+    270,
+    18
+   ],
+   "crudo": "0fe0930400000000d9210000500200000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800016,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    8874,
+    560
+   ],
+   "tile": [
+    277,
+    17
+   ],
+   "crudo": "10e0930400000000aa220000300200000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800017,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    8947,
+    720
+   ],
+   "tile": [
+    279,
+    22
+   ],
+   "crudo": "11e0930400000000f3220000d00200000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800018,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    9060,
+    1072
+   ],
+   "tile": [
+    283,
+    33
+   ],
+   "crudo": "12e093040000000064230000300400000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800019,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    8950,
+    784
+   ],
+   "tile": [
+    279,
+    24
+   ],
+   "crudo": "13e0930400000000f6220000100300000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800020,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    9070,
+    1520
+   ],
+   "tile": [
+    283,
+    47
+   ],
+   "crudo": "14e09304000000006e230000f00500000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800021,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    8577,
+    1392
+   ],
+   "tile": [
+    268,
+    43
+   ],
+   "crudo": "15e093040000000081210000700500000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800022,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    9126,
+    752
+   ],
+   "tile": [
+    285,
+    23
+   ],
+   "crudo": "16e0930400000000a6230000f00200000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800023,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    8841,
+    2064
+   ],
+   "tile": [
+    276,
+    64
+   ],
+   "crudo": "17e093040000000089220000100800000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800024,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    8634,
+    2128
+   ],
+   "tile": [
+    269,
+    66
+   ],
+   "crudo": "18e0930400000000ba210000500800000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800025,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    9404,
+    2032
+   ],
+   "tile": [
+    293,
+    63
+   ],
+   "crudo": "19e0930400000000bc240000f00700000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800026,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    7518,
+    1456
+   ],
+   "tile": [
+    234,
+    45
+   ],
+   "crudo": "1ae09304000000005e1d0000b00500000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800027,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    7563,
+    1136
+   ],
+   "tile": [
+    236,
+    35
+   ],
+   "crudo": "1be09304000000008b1d0000700400000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800028,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    7852,
+    1072
+   ],
+   "tile": [
+    245,
+    33
+   ],
+   "crudo": "1ce0930400000000ac1e0000300400000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800029,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    7986,
+    656
+   ],
+   "tile": [
+    249,
+    20
+   ],
+   "crudo": "1de0930400000000321f0000900200000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800030,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    8108,
+    336
+   ],
+   "tile": [
+    253,
+    10
+   ],
+   "crudo": "1ee0930400000000ac1f0000500100000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800031,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    7997,
+    240
+   ],
+   "tile": [
+    249,
+    7
+   ],
+   "crudo": "1fe09304000000003d1f0000f00000000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800032,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    7363,
+    272
+   ],
+   "tile": [
+    230,
+    8
+   ],
+   "crudo": "20e0930400000000c31c0000100100000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800033,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    6496,
+    3952
+   ],
+   "tile": [
+    203,
+    123
+   ],
+   "crudo": "21e093040000000060190000700f00000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800034,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    6624,
+    3984
+   ],
+   "tile": [
+    207,
+    124
+   ],
+   "crudo": "22e0930400000000e0190000900f00000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800035,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    6752,
+    4016
+   ],
+   "tile": [
+    211,
+    125
+   ],
+   "crudo": "23e0930400000000601a0000b00f00000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800036,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    6880,
+    4048
+   ],
+   "tile": [
+    215,
+    126
+   ],
+   "crudo": "24e0930400000000e01a0000d00f00000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 76800037,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    7165,
+    1328
+   ],
+   "tile": [
+    223,
+    41
+   ],
+   "crudo": "25e0930400000000fd1b0000300500000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  }
+ ]
+}

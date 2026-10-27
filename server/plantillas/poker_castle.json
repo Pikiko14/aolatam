@@ -1,0 +1,5485 @@
+{
+ "_nota": "poker_castle (stage 158). POBLADO DESDE EL CLIENTE, no desde una captura: los generadores de monstruos son objetos del propio map158.mpc -- el monstruo en el u16 del +34, la zona en el +21, el tiempo en el +38 y cuantos en el +42. Eso da el censo COMPLETO del mapa, que una captura no puede dar porque solo trae lo que estuvo a la vista. El entity_id es fabricado y estable, no el del servidor. Las casillas son las del TAG de cada generador; los que no declaran TAG ponen sus monstruos en la casilla del generador y en un anillo de radio 3 a su alrededor, que es la dispersion MEDIDA en el stage 73. Los objetos de mapa son los del .mpc cuyo id esta en la lista de los que el servidor manda de verdad, con el cuerpo del 0x000E copiado de una captura del mismo objeto. Los tornados se dibujan aparte, desde portales.json. Ver tools/poblar_del_cliente.py. SUELO (15/10/2026): los monstruos que caian fuera del suelo transitable o en el borde (el reparto en anillo de poblar_del_cliente no miraba el suelo) se mueven a la casilla interior mas cercana, hasta 8 casillas. OLEADAS: fuera 80 bichos de la captura que salen por evento (tools/quitar_oleadas.py). CENSO (15/10/2026): cuadrado con lo que declara el cliente (tools/cuadrar_censo.py).",
+ "stage": 158,
+ "spawns": [
+  {
+   "entity_id": 65800027,
+   "nombre": "Club Poker Spearman",
+   "npc_type": 7261,
+   "sprite": 42949,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    97,
+    77
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800028,
+   "nombre": "Club Poker Spearman",
+   "npc_type": 7261,
+   "sprite": 42949,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    146,
+    76
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800029,
+   "nombre": "Club Poker Spearman",
+   "npc_type": 7261,
+   "sprite": 42949,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    128,
+    80
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800030,
+   "nombre": "Club Poker Spearman",
+   "npc_type": 7261,
+   "sprite": 42949,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    92,
+    72
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800031,
+   "nombre": "Club Poker Spearman",
+   "npc_type": 7261,
+   "sprite": 42949,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    141,
+    69
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800032,
+   "nombre": "Club Poker Spearman",
+   "npc_type": 7261,
+   "sprite": 42949,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    126,
+    74
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800033,
+   "nombre": "Club Poker Spearman",
+   "npc_type": 7261,
+   "sprite": 42949,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    94,
+    75
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800034,
+   "nombre": "Club Poker Spearman",
+   "npc_type": 7261,
+   "sprite": 42949,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    141,
+    76
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800036,
+   "nombre": "Club Poker Spearman",
+   "npc_type": 7261,
+   "sprite": 42949,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    92,
+    82
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800037,
+   "nombre": "Club Poker Spearman",
+   "npc_type": 7261,
+   "sprite": 42949,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    141,
+    81
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800039,
+   "nombre": "Club Poker Spearman",
+   "npc_type": 7261,
+   "sprite": 42949,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    97,
+    72
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800040,
+   "nombre": "Club Poker Spearman",
+   "npc_type": 7261,
+   "sprite": 42949,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    146,
+    70
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800041,
+   "nombre": "Club Poker Spearman",
+   "npc_type": 7261,
+   "sprite": 42949,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    128,
+    75
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800048,
+   "nombre": "Diamond Poker Spearman",
+   "npc_type": 7262,
+   "sprite": 42948,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    102,
+    72
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 140,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800049,
+   "nombre": "Diamond Poker Spearman",
+   "npc_type": 7262,
+   "sprite": 42948,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    151,
+    71
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 140,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800061,
+   "nombre": "Diamond Poker Spearman",
+   "npc_type": 7262,
+   "sprite": 42948,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    151,
+    76
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 140,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800090,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    49,
+    39
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800091,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    49,
+    44
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800092,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    44,
+    34
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800093,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    55,
+    39
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800094,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    44,
+    39
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800095,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    53,
+    44
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800096,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    45,
+    46
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800097,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    44,
+    49
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800098,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    48,
+    36
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800099,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    49,
+    49
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800100,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    52,
+    38
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800101,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    54,
+    49
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800102,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    39,
+    29
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800103,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    60,
+    37
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800104,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    39,
+    34
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800105,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    59,
+    39
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800106,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    40,
+    38
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800107,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    59,
+    44
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800108,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    41,
+    48
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800109,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    59,
+    49
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800110,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    39,
+    49
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800111,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    39,
+    53
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800112,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    43,
+    28
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800113,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    44,
+    52
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800114,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    47,
+    26
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800115,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    49,
+    53
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800116,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    51,
+    24
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800117,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    53,
+    54
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800118,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    61,
+    25
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800119,
+   "nombre": "Fat Dessert Angel",
+   "npc_type": 7260,
+   "sprite": 43008,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    57,
+    52
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800120,
+   "nombre": "Fat Bandit",
+   "npc_type": 7259,
+   "sprite": 43007,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    34,
+    24
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 136,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800121,
+   "nombre": "Fat Bandit",
+   "npc_type": 7259,
+   "sprite": 43007,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    65,
+    27
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 136,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800122,
+   "nombre": "Fat Bandit",
+   "npc_type": 7259,
+   "sprite": 43007,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    34,
+    29
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 136,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800123,
+   "nombre": "Fat Bandit",
+   "npc_type": 7259,
+   "sprite": 43007,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    64,
+    35
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 136,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800124,
+   "nombre": "Fat Bandit",
+   "npc_type": 7259,
+   "sprite": 43007,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    34,
+    34
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 136,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800125,
+   "nombre": "Fat Bandit",
+   "npc_type": 7259,
+   "sprite": 43007,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    64,
+    39
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 136,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800126,
+   "nombre": "Fat Bandit",
+   "npc_type": 7259,
+   "sprite": 43007,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    36,
+    36
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 136,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800127,
+   "nombre": "Fat Bandit",
+   "npc_type": 7259,
+   "sprite": 43007,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    64,
+    44
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 136,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800128,
+   "nombre": "Fat Bandit",
+   "npc_type": 7259,
+   "sprite": 43007,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    39,
+    49
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 136,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800129,
+   "nombre": "Fat Bandit",
+   "npc_type": 7259,
+   "sprite": 43007,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    63,
+    48
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 136,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800130,
+   "nombre": "Fat Bandit",
+   "npc_type": 7259,
+   "sprite": 43007,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    35,
+    51
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 136,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800131,
+   "nombre": "Fat Bandit",
+   "npc_type": 7259,
+   "sprite": 43007,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    61,
+    50
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 136,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800132,
+   "nombre": "Fat Bandit",
+   "npc_type": 7259,
+   "sprite": 43007,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    34,
+    54
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 136,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800133,
+   "nombre": "Fat Bandit",
+   "npc_type": 7259,
+   "sprite": 43007,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    31,
+    59
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 136,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800134,
+   "nombre": "Fat Bandit",
+   "npc_type": 7259,
+   "sprite": 43007,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    39,
+    24
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 136,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800135,
+   "nombre": "Fat Bandit",
+   "npc_type": 7259,
+   "sprite": 43007,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    37,
+    54
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 136,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800136,
+   "nombre": "Fat Bandit",
+   "npc_type": 7259,
+   "sprite": 43007,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    44,
+    24
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 136,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800137,
+   "nombre": "Fat Bandit",
+   "npc_type": 7259,
+   "sprite": 43007,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    50,
+    54
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 136,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800138,
+   "nombre": "Fat Bandit",
+   "npc_type": 7259,
+   "sprite": 43007,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    49,
+    24
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 136,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800139,
+   "nombre": "Fat Bandit",
+   "npc_type": 7259,
+   "sprite": 43007,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    51,
+    55
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 136,
+   "zona": 201
+  },
+  {
+   "entity_id": 65800141,
+   "nombre": "Goddess Ward",
+   "npc_type": 7279,
+   "sprite": 42968,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    263,
+    39
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 204
+  },
+  {
+   "entity_id": 65800142,
+   "nombre": "Club Poker Spearman",
+   "npc_type": 7261,
+   "sprite": 42949,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    102,
+    82
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800143,
+   "nombre": "Club Poker Spearman",
+   "npc_type": 7261,
+   "sprite": 42949,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    154,
+    81
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800146,
+   "nombre": "Spade Poker Spearman",
+   "npc_type": 7264,
+   "sprite": 42946,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    168,
+    53
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 142,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800147,
+   "nombre": "Spade Poker Spearman",
+   "npc_type": 7264,
+   "sprite": 42946,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    168,
+    48
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 142,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800148,
+   "nombre": "Spade Poker Spearman",
+   "npc_type": 7264,
+   "sprite": 42946,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    165,
+    50
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 142,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800149,
+   "nombre": "Spade Poker Spearman",
+   "npc_type": 7264,
+   "sprite": 42946,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    163,
+    43
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 142,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800150,
+   "nombre": "Spade Poker Spearman",
+   "npc_type": 7264,
+   "sprite": 42946,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    163,
+    53
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 142,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800151,
+   "nombre": "Spade Poker Spearman",
+   "npc_type": 7264,
+   "sprite": 42946,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    173,
+    43
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 142,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800152,
+   "nombre": "Spade Poker Spearman",
+   "npc_type": 7264,
+   "sprite": 42946,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    163,
+    58
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 142,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800153,
+   "nombre": "Spade Poker Spearman",
+   "npc_type": 7264,
+   "sprite": 42946,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    173,
+    50
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 142,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800154,
+   "nombre": "Spade Poker Spearman",
+   "npc_type": 7264,
+   "sprite": 42946,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    168,
+    57
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 142,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800155,
+   "nombre": "Spade Poker Spearman",
+   "npc_type": 7264,
+   "sprite": 42946,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    173,
+    55
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 142,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800156,
+   "nombre": "Spade Poker Spearman",
+   "npc_type": 7264,
+   "sprite": 42946,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    173,
+    57
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 142,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800157,
+   "nombre": "Spade Poker Spearman",
+   "npc_type": 7264,
+   "sprite": 42946,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    175,
+    40
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 142,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800158,
+   "nombre": "Spade Poker Spearman",
+   "npc_type": 7264,
+   "sprite": 42946,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    159,
+    42
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 142,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800159,
+   "nombre": "Spade Poker Spearman",
+   "npc_type": 7264,
+   "sprite": 42946,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    158,
+    38
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 142,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800160,
+   "nombre": "Spade Poker Spearman",
+   "npc_type": 7264,
+   "sprite": 42946,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    157,
+    48
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 142,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800161,
+   "nombre": "Spade Poker Spearman",
+   "npc_type": 7264,
+   "sprite": 42946,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    158,
+    53
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 142,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800162,
+   "nombre": "Spade Poker Spearman",
+   "npc_type": 7264,
+   "sprite": 42946,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    158,
+    57
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 142,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800163,
+   "nombre": "Spade Poker Spearman",
+   "npc_type": 7264,
+   "sprite": 42946,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    163,
+    38
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 142,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800164,
+   "nombre": "Spade Poker Spearman",
+   "npc_type": 7264,
+   "sprite": 42946,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    158,
+    65
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 142,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800165,
+   "nombre": "Spade Poker Spearman",
+   "npc_type": 7264,
+   "sprite": 42946,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    178,
+    45
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 142,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800166,
+   "nombre": "Black Heart Chef",
+   "npc_type": 7265,
+   "sprite": 43009,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    161,
+    60
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 143,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800167,
+   "nombre": "Black Heart Chef",
+   "npc_type": 7265,
+   "sprite": 43009,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    178,
+    50
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 143,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800168,
+   "nombre": "Black Heart Chef",
+   "npc_type": 7265,
+   "sprite": 43009,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    165,
+    58
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 143,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800169,
+   "nombre": "Black Heart Chef",
+   "npc_type": 7265,
+   "sprite": 43009,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    178,
+    55
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 143,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800170,
+   "nombre": "Black Heart Chef",
+   "npc_type": 7265,
+   "sprite": 43009,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    178,
+    57
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 143,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800171,
+   "nombre": "Black Heart Chef",
+   "npc_type": 7265,
+   "sprite": 43009,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    179,
+    36
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 143,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800172,
+   "nombre": "Black Heart Chef",
+   "npc_type": 7265,
+   "sprite": 43009,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    179,
+    71
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 143,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800173,
+   "nombre": "Black Heart Chef",
+   "npc_type": 7265,
+   "sprite": 43009,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    168,
+    35
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 143,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800174,
+   "nombre": "Black Heart Chef",
+   "npc_type": 7265,
+   "sprite": 43009,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    182,
+    69
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 143,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800175,
+   "nombre": "Black Heart Chef",
+   "npc_type": 7265,
+   "sprite": 43009,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    173,
+    35
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 143,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800176,
+   "nombre": "Black Heart Chef",
+   "npc_type": 7265,
+   "sprite": 43009,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    153,
+    38
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 143,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800177,
+   "nombre": "Black Heart Chef",
+   "npc_type": 7265,
+   "sprite": 43009,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    153,
+    33
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 143,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800178,
+   "nombre": "Black Heart Chef",
+   "npc_type": 7265,
+   "sprite": 43009,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    152,
+    46
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 143,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800179,
+   "nombre": "Black Heart Chef",
+   "npc_type": 7265,
+   "sprite": 43009,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    153,
+    48
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 143,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800180,
+   "nombre": "Black Heart Chef",
+   "npc_type": 7265,
+   "sprite": 43009,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    153,
+    53
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 143,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800181,
+   "nombre": "Black Heart Chef",
+   "npc_type": 7265,
+   "sprite": 43009,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    154,
+    56
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 143,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800182,
+   "nombre": "Black Heart Chef",
+   "npc_type": 7265,
+   "sprite": 43009,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    152,
+    63
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 143,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800183,
+   "nombre": "Black Heart Chef",
+   "npc_type": 7265,
+   "sprite": 43009,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    158,
+    33
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 143,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800184,
+   "nombre": "Black Heart Chef",
+   "npc_type": 7265,
+   "sprite": 43009,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    156,
+    68
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 143,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800185,
+   "nombre": "Black Heart Chef",
+   "npc_type": 7265,
+   "sprite": 43009,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    163,
+    33
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 143,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800186,
+   "nombre": "Black Heart Chef",
+   "npc_type": 7265,
+   "sprite": 43009,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    161,
+    68
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 143,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800187,
+   "nombre": "Black Heart Chef",
+   "npc_type": 7265,
+   "sprite": 43009,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    183,
+    44
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 143,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800188,
+   "nombre": "Black Heart Chef",
+   "npc_type": 7265,
+   "sprite": 43009,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    163,
+    69
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 143,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800189,
+   "nombre": "Black Heart Chef",
+   "npc_type": 7265,
+   "sprite": 43009,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    183,
+    47
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 143,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800190,
+   "nombre": "Black Heart Chef",
+   "npc_type": 7265,
+   "sprite": 43009,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    183,
+    52
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 143,
+   "zona": 202
+  },
+  {
+   "entity_id": 65800191,
+   "nombre": "Toy Sniper",
+   "npc_type": 7267,
+   "sprite": 43012,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    51,
+    148
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 144,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800192,
+   "nombre": "Toy Sniper",
+   "npc_type": 7267,
+   "sprite": 43012,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    49,
+    143
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 144,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800193,
+   "nombre": "Toy Sniper",
+   "npc_type": 7267,
+   "sprite": 43012,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    45,
+    138
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 144,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800194,
+   "nombre": "Toy Sniper",
+   "npc_type": 7267,
+   "sprite": 43012,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    49,
+    148
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 144,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800195,
+   "nombre": "Toy Sniper",
+   "npc_type": 7267,
+   "sprite": 43012,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    54,
+    140
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 144,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800196,
+   "nombre": "Toy Sniper",
+   "npc_type": 7267,
+   "sprite": 43012,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    44,
+    143
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 144,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800197,
+   "nombre": "Toy Sniper",
+   "npc_type": 7267,
+   "sprite": 43012,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    49,
+    150
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 144,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800198,
+   "nombre": "Toy Sniper",
+   "npc_type": 7267,
+   "sprite": 43012,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    56,
+    145
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 144,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800199,
+   "nombre": "Toy Sniper",
+   "npc_type": 7267,
+   "sprite": 43012,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    50,
+    135
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 144,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800200,
+   "nombre": "Toy Sniper",
+   "npc_type": 7267,
+   "sprite": 43012,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    51,
+    152
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 144,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800201,
+   "nombre": "Toy Sniper",
+   "npc_type": 7267,
+   "sprite": 43012,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    56,
+    150
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 144,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800202,
+   "nombre": "Toy Sniper",
+   "npc_type": 7267,
+   "sprite": 43012,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    40,
+    145
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 144,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800203,
+   "nombre": "Toy Sniper",
+   "npc_type": 7267,
+   "sprite": 43012,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    57,
+    153
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 144,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800204,
+   "nombre": "Toy Sniper",
+   "npc_type": 7267,
+   "sprite": 43012,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    37,
+    159
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 144,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800205,
+   "nombre": "Toy Sniper",
+   "npc_type": 7267,
+   "sprite": 43012,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    55,
+    134
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 144,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800206,
+   "nombre": "Toy Sniper",
+   "npc_type": 7267,
+   "sprite": 43012,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    59,
+    140
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 144,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800207,
+   "nombre": "Toy Sniper",
+   "npc_type": 7267,
+   "sprite": 43012,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    40,
+    134
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 144,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800208,
+   "nombre": "Toy Sniper",
+   "npc_type": 7267,
+   "sprite": 43012,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    45,
+    133
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 144,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800209,
+   "nombre": "Toy Sniper",
+   "npc_type": 7267,
+   "sprite": 43012,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    39,
+    160
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 144,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800210,
+   "nombre": "Toy Sniper",
+   "npc_type": 7267,
+   "sprite": 43012,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    60,
+    134
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 144,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800211,
+   "nombre": "Club Poker Priest",
+   "npc_type": 7268,
+   "sprite": 42953,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    43,
+    162
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800212,
+   "nombre": "Club Poker Priest",
+   "npc_type": 7268,
+   "sprite": 42953,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    39,
+    139
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800213,
+   "nombre": "Club Poker Priest",
+   "npc_type": 7268,
+   "sprite": 42953,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    50,
+    130
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800214,
+   "nombre": "Club Poker Priest",
+   "npc_type": 7268,
+   "sprite": 42953,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    50,
+    152
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800215,
+   "nombre": "Club Poker Priest",
+   "npc_type": 7268,
+   "sprite": 42953,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    61,
+    145
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800216,
+   "nombre": "Club Poker Priest",
+   "npc_type": 7268,
+   "sprite": 42953,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    36,
+    129
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800217,
+   "nombre": "Club Poker Priest",
+   "npc_type": 7268,
+   "sprite": 42953,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    61,
+    150
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800218,
+   "nombre": "Club Poker Priest",
+   "npc_type": 7268,
+   "sprite": 42953,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    62,
+    154
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800219,
+   "nombre": "Club Poker Priest",
+   "npc_type": 7268,
+   "sprite": 42953,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    36,
+    144
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800220,
+   "nombre": "Club Poker Priest",
+   "npc_type": 7268,
+   "sprite": 42953,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    50,
+    166
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800221,
+   "nombre": "Club Poker Priest",
+   "npc_type": 7268,
+   "sprite": 42953,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    36,
+    147
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800222,
+   "nombre": "Club Poker Priest",
+   "npc_type": 7268,
+   "sprite": 42953,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    55,
+    129
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800223,
+   "nombre": "Club Poker Priest",
+   "npc_type": 7268,
+   "sprite": 42953,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    66,
+    155
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800224,
+   "nombre": "Club Poker Priest",
+   "npc_type": 7268,
+   "sprite": 42953,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    34,
+    158
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800225,
+   "nombre": "Club Poker Priest",
+   "npc_type": 7268,
+   "sprite": 42953,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    60,
+    129
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800226,
+   "nombre": "Club Poker Priest",
+   "npc_type": 7268,
+   "sprite": 42953,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    64,
+    139
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800227,
+   "nombre": "Club Poker Priest",
+   "npc_type": 7268,
+   "sprite": 42953,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    35,
+    134
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800228,
+   "nombre": "Club Poker Priest",
+   "npc_type": 7268,
+   "sprite": 42953,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    41,
+    128
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800229,
+   "nombre": "Club Poker Priest",
+   "npc_type": 7268,
+   "sprite": 42953,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    63,
+    134
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800230,
+   "nombre": "Club Poker Priest",
+   "npc_type": 7268,
+   "sprite": 42953,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    35,
+    159
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800231,
+   "nombre": "Club Poker Priest",
+   "npc_type": 7268,
+   "sprite": 42953,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    34,
+    139
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800232,
+   "nombre": "Club Poker Priest",
+   "npc_type": 7268,
+   "sprite": 42953,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    40,
+    163
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800233,
+   "nombre": "Club Poker Priest",
+   "npc_type": 7268,
+   "sprite": 42953,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    65,
+    129
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800234,
+   "nombre": "Club Poker Priest",
+   "npc_type": 7268,
+   "sprite": 42953,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    46,
+    125
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800235,
+   "nombre": "Club Poker Priest",
+   "npc_type": 7268,
+   "sprite": 42953,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    45,
+    163
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800236,
+   "nombre": "Toy Colonel",
+   "npc_type": 7269,
+   "sprite": 43011,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    48,
+    165
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800237,
+   "nombre": "Toy Colonel",
+   "npc_type": 7269,
+   "sprite": 43011,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    66,
+    144
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800238,
+   "nombre": "Toy Colonel",
+   "npc_type": 7269,
+   "sprite": 43011,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    31,
+    124
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800239,
+   "nombre": "Toy Colonel",
+   "npc_type": 7269,
+   "sprite": 43011,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    66,
+    149
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800240,
+   "nombre": "Toy Colonel",
+   "npc_type": 7269,
+   "sprite": 43011,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    66,
+    154
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800241,
+   "nombre": "Toy Colonel",
+   "npc_type": 7269,
+   "sprite": 43011,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    31,
+    129
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800242,
+   "nombre": "Toy Colonel",
+   "npc_type": 7269,
+   "sprite": 43011,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    67,
+    156
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800243,
+   "nombre": "Toy Colonel",
+   "npc_type": 7269,
+   "sprite": 43011,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    31,
+    144
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800244,
+   "nombre": "Toy Colonel",
+   "npc_type": 7269,
+   "sprite": 43011,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    31,
+    149
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800245,
+   "nombre": "Toy Colonel",
+   "npc_type": 7269,
+   "sprite": 43011,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    35,
+    164
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800246,
+   "nombre": "Toy Colonel",
+   "npc_type": 7269,
+   "sprite": 43011,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    29,
+    156
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800247,
+   "nombre": "Toy Colonel",
+   "npc_type": 7269,
+   "sprite": 43011,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    36,
+    124
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800248,
+   "nombre": "Toy Colonel",
+   "npc_type": 7269,
+   "sprite": 43011,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    70,
+    158
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800249,
+   "nombre": "Toy Colonel",
+   "npc_type": 7269,
+   "sprite": 43011,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    69,
+    139
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800250,
+   "nombre": "Toy Colonel",
+   "npc_type": 7269,
+   "sprite": 43011,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    51,
+    124
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800251,
+   "nombre": "Toy Colonel",
+   "npc_type": 7269,
+   "sprite": 43011,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    52,
+    168
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800252,
+   "nombre": "Toy Colonel",
+   "npc_type": 7269,
+   "sprite": 43011,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    30,
+    134
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800253,
+   "nombre": "Toy Colonel",
+   "npc_type": 7269,
+   "sprite": 43011,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    56,
+    124
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800254,
+   "nombre": "Toy Colonel",
+   "npc_type": 7269,
+   "sprite": 43011,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    52,
+    169
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800255,
+   "nombre": "Toy Colonel",
+   "npc_type": 7269,
+   "sprite": 43011,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    30,
+    159
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800256,
+   "nombre": "Toy Colonel",
+   "npc_type": 7269,
+   "sprite": 43011,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    60,
+    126
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800257,
+   "nombre": "Toy Colonel",
+   "npc_type": 7269,
+   "sprite": 43011,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    70,
+    128
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800258,
+   "nombre": "Toy Colonel",
+   "npc_type": 7269,
+   "sprite": 43011,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    30,
+    163
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800259,
+   "nombre": "Toy Colonel",
+   "npc_type": 7269,
+   "sprite": 43011,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    41,
+    123
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800260,
+   "nombre": "Toy Colonel",
+   "npc_type": 7269,
+   "sprite": 43011,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    70,
+    138
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 145,
+   "zona": 205
+  },
+  {
+   "entity_id": 65800261,
+   "nombre": "Poker Colonel Kello",
+   "npc_type": 7276,
+   "sprite": 43016,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    66,
+    124
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 151,
+   "zona": 175
+  },
+  {
+   "entity_id": 65800262,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    258,
+    49
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800263,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    253,
+    44
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800264,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    253,
+    49
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800265,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    253,
+    54
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800266,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    258,
+    44
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800267,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    258,
+    54
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800268,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    263,
+    44
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800269,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    263,
+    49
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800270,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    263,
+    54
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800271,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    248,
+    40
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800272,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    248,
+    44
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800273,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    250,
+    47
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800274,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    248,
+    54
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800275,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    248,
+    59
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800276,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    253,
+    39
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800277,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    253,
+    59
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800278,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    258,
+    39
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800279,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    257,
+    58
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800280,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    259,
+    57
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800281,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    268,
+    39
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800282,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    268,
+    44
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800283,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    268,
+    49
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800284,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    268,
+    54
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800285,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    269,
+    57
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800286,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    242,
+    34
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800287,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    243,
+    39
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800288,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    243,
+    43
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800289,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    243,
+    52
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800290,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    243,
+    54
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800291,
+   "nombre": "Cheese Assassin",
+   "npc_type": 7270,
+   "sprite": 43013,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    244,
+    60
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 203
+  },
+  {
+   "entity_id": 65800292,
+   "nombre": "Diamond Poker Priest",
+   "npc_type": 7271,
+   "sprite": 42952,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    17,
+    103
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 206
+  },
+  {
+   "entity_id": 65800293,
+   "nombre": "Diamond Poker Priest",
+   "npc_type": 7271,
+   "sprite": 42952,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    14,
+    100
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 206
+  },
+  {
+   "entity_id": 65800294,
+   "nombre": "Diamond Poker Priest",
+   "npc_type": 7271,
+   "sprite": 42952,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    12,
+    104
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 146,
+   "zona": 206
+  },
+  {
+   "entity_id": 65800295,
+   "nombre": "Goddess Aglaia",
+   "npc_type": 7280,
+   "sprite": 42969,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    27,
+    97
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 207
+  },
+  {
+   "entity_id": 65800296,
+   "nombre": "Goddess Thalia",
+   "npc_type": 7281,
+   "sprite": 42970,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    146,
+    106
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 118
+  },
+  {
+   "entity_id": 65800297,
+   "nombre": "Heart Poker Priest",
+   "npc_type": 7272,
+   "sprite": 42951,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    146,
+    115
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 117
+  },
+  {
+   "entity_id": 65800298,
+   "nombre": "Heart Poker Priest",
+   "npc_type": 7272,
+   "sprite": 42951,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    141,
+    110
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 117
+  },
+  {
+   "entity_id": 65800299,
+   "nombre": "Heart Poker Priest",
+   "npc_type": 7272,
+   "sprite": 42951,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    144,
+    114
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 117
+  },
+  {
+   "entity_id": 65800300,
+   "nombre": "Heart Poker Priest",
+   "npc_type": 7272,
+   "sprite": 42951,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    145,
+    117
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 117
+  },
+  {
+   "entity_id": 65800301,
+   "nombre": "Heart Poker Priest",
+   "npc_type": 7272,
+   "sprite": 42951,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    146,
+    118
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 117
+  },
+  {
+   "entity_id": 65800302,
+   "nombre": "Heart Poker Priest",
+   "npc_type": 7272,
+   "sprite": 42951,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    153,
+    110
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 117
+  },
+  {
+   "entity_id": 65800303,
+   "nombre": "Heart Poker Priest",
+   "npc_type": 7272,
+   "sprite": 42951,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    151,
+    115
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 117
+  },
+  {
+   "entity_id": 65800304,
+   "nombre": "Heart Poker Priest",
+   "npc_type": 7272,
+   "sprite": 42951,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    151,
+    120
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 117
+  },
+  {
+   "entity_id": 65800305,
+   "nombre": "Heart Poker Priest",
+   "npc_type": 7272,
+   "sprite": 42951,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    136,
+    105
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 117
+  },
+  {
+   "entity_id": 65800306,
+   "nombre": "Heart Poker Priest",
+   "npc_type": 7272,
+   "sprite": 42951,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    135,
+    110
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 117
+  },
+  {
+   "entity_id": 65800307,
+   "nombre": "Heart Poker Priest",
+   "npc_type": 7272,
+   "sprite": 42951,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    135,
+    113
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 117
+  },
+  {
+   "entity_id": 65800308,
+   "nombre": "Heart Poker Priest",
+   "npc_type": 7272,
+   "sprite": 42951,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    131,
+    120
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 117
+  },
+  {
+   "entity_id": 65800309,
+   "nombre": "Heart Poker Priest",
+   "npc_type": 7272,
+   "sprite": 42951,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    131,
+    120
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 117
+  },
+  {
+   "entity_id": 65800310,
+   "nombre": "Heart Poker Priest",
+   "npc_type": 7272,
+   "sprite": 42951,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    141,
+    103
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 117
+  },
+  {
+   "entity_id": 65800311,
+   "nombre": "Heart Poker Priest",
+   "npc_type": 7272,
+   "sprite": 42951,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    147,
+    118
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 117
+  },
+  {
+   "entity_id": 65800312,
+   "nombre": "Heart Poker Priest",
+   "npc_type": 7272,
+   "sprite": 42951,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    150,
+    120
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 117
+  },
+  {
+   "entity_id": 65800313,
+   "nombre": "Heart Poker Priest",
+   "npc_type": 7272,
+   "sprite": 42951,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    151,
+    105
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 117
+  },
+  {
+   "entity_id": 65800314,
+   "nombre": "Heart Poker Priest",
+   "npc_type": 7272,
+   "sprite": 42951,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    154,
+    124
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 117
+  },
+  {
+   "entity_id": 65800315,
+   "nombre": "Heart Poker Priest",
+   "npc_type": 7272,
+   "sprite": 42951,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    156,
+    105
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 117
+  },
+  {
+   "entity_id": 65800316,
+   "nombre": "Heart Poker Priest",
+   "npc_type": 7272,
+   "sprite": 42951,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    156,
+    109
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 117
+  },
+  {
+   "entity_id": 65800317,
+   "nombre": "Gothicllo",
+   "npc_type": 7282,
+   "sprite": 42971,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    139,
+    154
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 165,
+   "zona": 127
+  },
+  {
+   "entity_id": 65800318,
+   "nombre": "Spade Poker Priest",
+   "npc_type": 7273,
+   "sprite": 42950,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    201,
+    146
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 0
+  },
+  {
+   "entity_id": 65800319,
+   "nombre": "Spade Poker Priest",
+   "npc_type": 7273,
+   "sprite": 42950,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    196,
+    141
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 0
+  },
+  {
+   "entity_id": 65800320,
+   "nombre": "Spade Poker Priest",
+   "npc_type": 7273,
+   "sprite": 42950,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    196,
+    146
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 0
+  },
+  {
+   "entity_id": 65800321,
+   "nombre": "Spade Poker Priest",
+   "npc_type": 7273,
+   "sprite": 42950,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    197,
+    150
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 0
+  },
+  {
+   "entity_id": 65800322,
+   "nombre": "Spade Poker Priest",
+   "npc_type": 7273,
+   "sprite": 42950,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    201,
+    141
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 0
+  },
+  {
+   "entity_id": 65800323,
+   "nombre": "Spade Poker Priest",
+   "npc_type": 7273,
+   "sprite": 42950,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    201,
+    151
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 0
+  },
+  {
+   "entity_id": 65800324,
+   "nombre": "Spade Poker Priest",
+   "npc_type": 7273,
+   "sprite": 42950,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    206,
+    141
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 0
+  },
+  {
+   "entity_id": 65800325,
+   "nombre": "Spade Poker Priest",
+   "npc_type": 7273,
+   "sprite": 42950,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    206,
+    146
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 0
+  },
+  {
+   "entity_id": 65800326,
+   "nombre": "Spade Poker Priest",
+   "npc_type": 7273,
+   "sprite": 42950,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    206,
+    151
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 0
+  },
+  {
+   "entity_id": 65800327,
+   "nombre": "Spade Poker Priest",
+   "npc_type": 7273,
+   "sprite": 42950,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    191,
+    136
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 0
+  },
+  {
+   "entity_id": 65800328,
+   "nombre": "Spade Poker Priest",
+   "npc_type": 7273,
+   "sprite": 42950,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    191,
+    141
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 0
+  },
+  {
+   "entity_id": 65800329,
+   "nombre": "Spade Poker Priest",
+   "npc_type": 7273,
+   "sprite": 42950,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    191,
+    146
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 0
+  },
+  {
+   "entity_id": 65800330,
+   "nombre": "Spade Poker Priest",
+   "npc_type": 7273,
+   "sprite": 42950,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    189,
+    151
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 0
+  },
+  {
+   "entity_id": 65800331,
+   "nombre": "Spade Poker Priest",
+   "npc_type": 7273,
+   "sprite": 42950,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    188,
+    152
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 0
+  },
+  {
+   "entity_id": 65800332,
+   "nombre": "Spade Poker Priest",
+   "npc_type": 7273,
+   "sprite": 42950,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    196,
+    136
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 0
+  },
+  {
+   "entity_id": 65800333,
+   "nombre": "Spade Poker Priest",
+   "npc_type": 7273,
+   "sprite": 42950,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    200,
+    153
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 0
+  },
+  {
+   "entity_id": 65800334,
+   "nombre": "Spade Poker Priest",
+   "npc_type": 7273,
+   "sprite": 42950,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    201,
+    136
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 0
+  },
+  {
+   "entity_id": 65800335,
+   "nombre": "Spade Poker Priest",
+   "npc_type": 7273,
+   "sprite": 42950,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    202,
+    154
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 0
+  },
+  {
+   "entity_id": 65800336,
+   "nombre": "Spade Poker Priest",
+   "npc_type": 7273,
+   "sprite": 42950,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    205,
+    137
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 0
+  },
+  {
+   "entity_id": 65800337,
+   "nombre": "Spade Poker Priest",
+   "npc_type": 7273,
+   "sprite": 42950,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    206,
+    156
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 0
+  },
+  {
+   "entity_id": 65800338,
+   "nombre": "Spade Poker Priest",
+   "npc_type": 7273,
+   "sprite": 42950,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    212,
+    136
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 0
+  },
+  {
+   "entity_id": 65800339,
+   "nombre": "Spade Poker Priest",
+   "npc_type": 7273,
+   "sprite": 42950,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    211,
+    141
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 0
+  },
+  {
+   "entity_id": 65800340,
+   "nombre": "Spade Poker Priest",
+   "npc_type": 7273,
+   "sprite": 42950,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    211,
+    144
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 0
+  },
+  {
+   "entity_id": 65800341,
+   "nombre": "Spade Poker Priest",
+   "npc_type": 7273,
+   "sprite": 42950,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    211,
+    151
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 0
+  },
+  {
+   "entity_id": 65800342,
+   "nombre": "Spade Poker Priest",
+   "npc_type": 7273,
+   "sprite": 42950,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    211,
+    156
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 148,
+   "zona": 0
+  },
+  {
+   "entity_id": 65800404,
+   "nombre": "Searing Light Beam",
+   "npc_type": 7394,
+   "sprite": 43025,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    164,
+    100
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 1,
+   "zona": 11
+  },
+  {
+   "entity_id": 65800405,
+   "nombre": "Tasty Dessert",
+   "npc_type": 7395,
+   "sprite": 42416,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    131,
+    146
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 1,
+   "zona": 25
+  },
+  {
+   "entity_id": 65800406,
+   "nombre": "Tasty Dessert",
+   "npc_type": 7396,
+   "sprite": 42416,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    134,
+    152
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 1,
+   "zona": 15
+  },
+  {
+   "entity_id": 65800407,
+   "nombre": "Tasty Dessert",
+   "npc_type": 7395,
+   "sprite": 42416,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    129,
+    151
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 1,
+   "zona": 17
+  },
+  {
+   "entity_id": 65800408,
+   "nombre": "Tasty Dessert",
+   "npc_type": 7395,
+   "sprite": 42416,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    126,
+    146
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 1,
+   "zona": 18
+  },
+  {
+   "entity_id": 65800409,
+   "nombre": "Tasty Dessert",
+   "npc_type": 7395,
+   "sprite": 42416,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    124,
+    151
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 1,
+   "zona": 17
+  },
+  {
+   "entity_id": 65800410,
+   "nombre": "Tasty Dessert",
+   "npc_type": 7395,
+   "sprite": 42416,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    136,
+    143
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 1,
+   "zona": 25
+  },
+  {
+   "entity_id": 65800411,
+   "nombre": "Tasty Dessert",
+   "npc_type": 7395,
+   "sprite": 42416,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    123,
+    142
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 1,
+   "zona": 20
+  },
+  {
+   "entity_id": 65800412,
+   "nombre": "Tasty Dessert",
+   "npc_type": 7395,
+   "sprite": 42416,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    128,
+    141
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 1,
+   "zona": 25
+  },
+  {
+   "entity_id": 65800413,
+   "nombre": "Tasty Dessert",
+   "npc_type": 7395,
+   "sprite": 42416,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    121,
+    146
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 1,
+   "zona": 17
+  },
+  {
+   "entity_id": 65800414,
+   "nombre": "Tasty Dessert",
+   "npc_type": 7395,
+   "sprite": 42416,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    121,
+    156
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 1,
+   "zona": 17
+  },
+  {
+   "entity_id": 65800415,
+   "nombre": "Club Poker Spearman",
+   "npc_type": 7261,
+   "sprite": 42949,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    95,
+    77
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800416,
+   "nombre": "Club Poker Spearman",
+   "npc_type": 7261,
+   "sprite": 42949,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    144,
+    76
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800417,
+   "nombre": "Club Poker Spearman",
+   "npc_type": 7261,
+   "sprite": 42949,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    126,
+    79
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 138,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800418,
+   "nombre": "Diamond Poker Spearman",
+   "npc_type": 7262,
+   "sprite": 42948,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    95,
+    79
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 140,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800419,
+   "nombre": "Diamond Poker Spearman",
+   "npc_type": 7262,
+   "sprite": 42948,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    144,
+    78
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 140,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800420,
+   "nombre": "Diamond Poker Spearman",
+   "npc_type": 7262,
+   "sprite": 42948,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    126,
+    81
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 140,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800421,
+   "nombre": "Diamond Poker Spearman",
+   "npc_type": 7262,
+   "sprite": 42948,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    98,
+    93
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 140,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800422,
+   "nombre": "Diamond Poker Spearman",
+   "npc_type": 7262,
+   "sprite": 42948,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    123,
+    54
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 140,
+   "zona": 81
+  },
+  {
+   "entity_id": 65800423,
+   "nombre": "Diamond Poker Spearman",
+   "npc_type": 7262,
+   "sprite": 42948,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    125,
+    66
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 140,
+   "zona": 81
+  }
+ ],
+ "recursos": [
+  {
+   "entity_id": 75800000,
+   "sprite": 60461,
+   "capa": 0,
+   "px": [
+    4337,
+    1424
+   ],
+   "tile": [
+    135,
+    44
+   ],
+   "evento": 107,
+   "crudo": "c09d840400000000f1100000900500000000000023000000000000000000000000062dec00000480000000",
+   "copiado_de": "cuerpo de una captura del objeto 60461",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800001,
+   "sprite": 60461,
+   "capa": 2,
+   "px": [
+    3052,
+    3088
+   ],
+   "tile": [
+    95,
+    96
+   ],
+   "evento": 118,
+   "crudo": "c19d840402000000ec0b0000100c00000000000023000000000000000000000000062dec00000480000000",
+   "copiado_de": "cuerpo de una captura del objeto 60461",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800002,
+   "sprite": 60457,
+   "capa": 0,
+   "px": [
+    5423,
+    656
+   ],
+   "tile": [
+    169,
+    20
+   ],
+   "evento": 108,
+   "crudo": "c29d8404000000002f150000900200000000000027000000000000001a000000dc0629ec00004080140000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800003,
+   "sprite": 60457,
+   "capa": 0,
+   "px": [
+    5563,
+    560
+   ],
+   "tile": [
+    173,
+    17
+   ],
+   "evento": 109,
+   "crudo": "c39d840400000000bb150000300200000000000027000000000000001a000000dc0629ec00004080140000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800004,
+   "sprite": 60457,
+   "capa": 0,
+   "px": [
+    5715,
+    496
+   ],
+   "tile": [
+    178,
+    15
+   ],
+   "evento": 110,
+   "crudo": "c49d84040000000053160000f00100000000000027000000000000001a000000dc0629ec00004080140000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800005,
+   "sprite": 60457,
+   "capa": 0,
+   "px": [
+    5857,
+    400
+   ],
+   "tile": [
+    183,
+    12
+   ],
+   "evento": 111,
+   "crudo": "c59d840400000000e1160000900100000000000027000000000000001a000000dc0629ec00004080140000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800006,
+   "sprite": 60457,
+   "capa": 2,
+   "px": [
+    6326,
+    592
+   ],
+   "tile": [
+    197,
+    18
+   ],
+   "evento": 112,
+   "crudo": "c69d840402000000b6180000500200000000000027000000000000001a000000dc0629ec00004080140000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800007,
+   "sprite": 60457,
+   "capa": 2,
+   "px": [
+    6440,
+    656
+   ],
+   "tile": [
+    201,
+    20
+   ],
+   "evento": 113,
+   "crudo": "c79d84040200000028190000900200000000000027000000000000001a000000dc0629ec00004080140000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800008,
+   "sprite": 60457,
+   "capa": 2,
+   "px": [
+    6553,
+    688
+   ],
+   "tile": [
+    204,
+    21
+   ],
+   "evento": 114,
+   "crudo": "c89d84040200000099190000b00200000000000027000000000000001a000000dc0629ec00004080140000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800009,
+   "sprite": 60457,
+   "capa": 2,
+   "px": [
+    6654,
+    752
+   ],
+   "tile": [
+    207,
+    23
+   ],
+   "evento": 115,
+   "crudo": "c99d840402000000fe190000f00200000000000027000000000000001a000000dc0629ec00004080140000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800010,
+   "sprite": 60462,
+   "capa": 0,
+   "px": [
+    8658,
+    1488
+   ],
+   "tile": [
+    270,
+    46
+   ],
+   "evento": 0,
+   "crudo": "ca9d840400000000d2210000d00500000000000027000000000000001a000000dc062eec00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800011,
+   "sprite": 60461,
+   "capa": 0,
+   "px": [
+    7328,
+    1776
+   ],
+   "tile": [
+    229,
+    55
+   ],
+   "evento": 123,
+   "crudo": "cb9d840400000000a01c0000f00600000000000023000000000000000000000000062dec00000480000000",
+   "copiado_de": "cuerpo de una captura del objeto 60461",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800012,
+   "sprite": 60461,
+   "capa": 0,
+   "px": [
+    7526,
+    1936
+   ],
+   "tile": [
+    235,
+    60
+   ],
+   "evento": 125,
+   "crudo": "cc9d840400000000661d0000900700000000000023000000000000000000000000062dec00000480000000",
+   "copiado_de": "cuerpo de una captura del objeto 60461",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800013,
+   "sprite": 60461,
+   "capa": 0,
+   "px": [
+    905,
+    3664
+   ],
+   "tile": [
+    28,
+    114
+   ],
+   "evento": 128,
+   "crudo": "cd9d84040000000089030000500e00000000000023000000000000000000000000062dec00000480000000",
+   "copiado_de": "cuerpo de una captura del objeto 60461",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800014,
+   "sprite": 60461,
+   "capa": 0,
+   "px": [
+    988,
+    3856
+   ],
+   "tile": [
+    30,
+    120
+   ],
+   "evento": 126,
+   "crudo": "ce9d840400000000dc030000100f00000000000023000000000000000000000000062dec00000480000000",
+   "copiado_de": "cuerpo de una captura del objeto 60461",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800015,
+   "sprite": 60415,
+   "capa": 0,
+   "px": [
+    866,
+    3152
+   ],
+   "tile": [
+    27,
+    98
+   ],
+   "evento": 0,
+   "crudo": "cf9d84040000000062030000500c00000000000027000000000000001a000000dc06ffeb00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800016,
+   "sprite": 60461,
+   "capa": 0,
+   "px": [
+    4960,
+    2416
+   ],
+   "tile": [
+    155,
+    75
+   ],
+   "evento": 136,
+   "crudo": "d09d84040000000060130000700900000000000023000000000000000000000000062dec00000480000000",
+   "copiado_de": "cuerpo de una captura del objeto 60461",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800017,
+   "sprite": 60461,
+   "capa": 0,
+   "px": [
+    5070,
+    2608
+   ],
+   "tile": [
+    158,
+    81
+   ],
+   "evento": 137,
+   "crudo": "d19d840400000000ce130000300a00000000000023000000000000000000000000062dec00000480000000",
+   "copiado_de": "cuerpo de una captura del objeto 60461",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800018,
+   "sprite": 60461,
+   "capa": 0,
+   "px": [
+    5061,
+    3856
+   ],
+   "tile": [
+    158,
+    120
+   ],
+   "evento": 138,
+   "crudo": "d29d840400000000c5130000100f00000000000023000000000000000000000000062dec00000480000000",
+   "copiado_de": "cuerpo de una captura del objeto 60461",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800019,
+   "sprite": 60461,
+   "capa": 2,
+   "px": [
+    7235,
+    3152
+   ],
+   "tile": [
+    226,
+    98
+   ],
+   "evento": 138,
+   "crudo": "d39d840402000000431c0000500c00000000000023000000000000000000000000062dec00000480000000",
+   "copiado_de": "cuerpo de una captura del objeto 60461",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800020,
+   "sprite": 60461,
+   "capa": 2,
+   "px": [
+    5875,
+    4848
+   ],
+   "tile": [
+    183,
+    151
+   ],
+   "evento": 144,
+   "crudo": "d49d840402000000f3160000f01200000000000023000000000000000000000000062dec00000480000000",
+   "copiado_de": "cuerpo de una captura del objeto 60461",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800021,
+   "sprite": 60461,
+   "capa": 2,
+   "px": [
+    6108,
+    4720
+   ],
+   "tile": [
+    190,
+    147
+   ],
+   "evento": 142,
+   "crudo": "d59d840402000000dc170000701200000000000023000000000000000000000000062dec00000480000000",
+   "copiado_de": "cuerpo de una captura del objeto 60461",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800022,
+   "sprite": 60461,
+   "capa": 2,
+   "px": [
+    5605,
+    752
+   ],
+   "tile": [
+    175,
+    23
+   ],
+   "evento": 158,
+   "crudo": "d69d840402000000e5150000f00200000000000023000000000000000000000000062dec00000480000000",
+   "copiado_de": "cuerpo de una captura del objeto 60461",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800023,
+   "sprite": 60384,
+   "capa": 0,
+   "px": [
+    4948,
+    3344
+   ],
+   "tile": [
+    154,
+    104
+   ],
+   "evento": 159,
+   "crudo": "d79d84040000000054130000100d00000000000027000000000000001a000000dc06e0eb00004080140000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800024,
+   "sprite": 60384,
+   "capa": 0,
+   "px": [
+    5783,
+    3248
+   ],
+   "tile": [
+    180,
+    101
+   ],
+   "evento": 159,
+   "crudo": "d89d84040000000097160000b00c00000000000027000000000000001a000000dc06e0eb00004080140000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800025,
+   "sprite": 60384,
+   "capa": 0,
+   "px": [
+    5719,
+    2960
+   ],
+   "tile": [
+    178,
+    92
+   ],
+   "evento": 159,
+   "crudo": "d99d84040000000057160000900b00000000000027000000000000001a000000dc06e0eb00004080140000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800026,
+   "sprite": 60384,
+   "capa": 0,
+   "px": [
+    5078,
+    2832
+   ],
+   "tile": [
+    158,
+    88
+   ],
+   "evento": 159,
+   "crudo": "da9d840400000000d6130000100b00000000000027000000000000001a000000dc06e0eb00004080140000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800027,
+   "sprite": 60384,
+   "capa": 0,
+   "px": [
+    4761,
+    2992
+   ],
+   "tile": [
+    148,
+    93
+   ],
+   "evento": 159,
+   "crudo": "db9d84040000000099120000b00b00000000000027000000000000001a000000dc06e0eb00004080140000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800028,
+   "sprite": 60384,
+   "capa": 0,
+   "px": [
+    5956,
+    1776
+   ],
+   "tile": [
+    186,
+    55
+   ],
+   "evento": 154,
+   "crudo": "dc9d84040000000044170000f00600000000000027000000000000001a000000dc06e0eb00004080140000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800029,
+   "sprite": 60462,
+   "capa": 0,
+   "px": [
+    1362,
+    5424
+   ],
+   "tile": [
+    42,
+    169
+   ],
+   "evento": 0,
+   "crudo": "dd9d84040000000052050000301500000000000027000000000000001a000000dc062eec00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800030,
+   "sprite": 60462,
+   "capa": 0,
+   "px": [
+    5956,
+    1776
+   ],
+   "tile": [
+    186,
+    55
+   ],
+   "evento": 0,
+   "crudo": "de9d84040000000044170000f00600000000000027000000000000001a000000dc062eec00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800031,
+   "sprite": 60462,
+   "capa": 0,
+   "px": [
+    1306,
+    3152
+   ],
+   "tile": [
+    40,
+    98
+   ],
+   "evento": 0,
+   "crudo": "df9d8404000000001a050000500c00000000000027000000000000001a000000dc062eec00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800032,
+   "sprite": 60458,
+   "capa": 0,
+   "px": [
+    2676,
+    2704
+   ],
+   "tile": [
+    83,
+    84
+   ],
+   "evento": 135,
+   "crudo": "e09d840400000000740a0000900a00000000000027000000000000001a000000dc062aec00004080140000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800033,
+   "sprite": 60458,
+   "capa": 0,
+   "px": [
+    4637,
+    2128
+   ],
+   "tile": [
+    144,
+    66
+   ],
+   "evento": 133,
+   "crudo": "e19d8404000000001d120000500800000000000027000000000000001a000000dc062aec00004080140000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800034,
+   "sprite": 60455,
+   "capa": 0,
+   "px": [
+    2401,
+    1424
+   ],
+   "tile": [
+    75,
+    44
+   ],
+   "evento": 0,
+   "crudo": "e29d84040000000061090000900500000000000027000000000000001a000000dc0627ec00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800035,
+   "sprite": 60455,
+   "capa": 0,
+   "px": [
+    4379,
+    1456
+   ],
+   "tile": [
+    136,
+    45
+   ],
+   "evento": 0,
+   "crudo": "e39d8404000000001b110000b00500000000000027000000000000001a000000dc0627ec00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800036,
+   "sprite": 60456,
+   "capa": 0,
+   "px": [
+    7662,
+    1744
+   ],
+   "tile": [
+    239,
+    54
+   ],
+   "evento": 0,
+   "crudo": "e49d840400000000ee1d0000d00600000000000027000000000000001a000000dc0628ec00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800037,
+   "sprite": 60456,
+   "capa": 0,
+   "px": [
+    7363,
+    1904
+   ],
+   "tile": [
+    230,
+    59
+   ],
+   "evento": 0,
+   "crudo": "e59d840400000000c31c0000700700000000000027000000000000001a000000dc0628ec00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800038,
+   "sprite": 60455,
+   "capa": 2,
+   "px": [
+    3060,
+    3152
+   ],
+   "tile": [
+    95,
+    98
+   ],
+   "evento": 0,
+   "crudo": "e69d840402000000f40b0000500c00000000000027000000000000001a000000dc0627ec00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800039,
+   "sprite": 60456,
+   "capa": 0,
+   "px": [
+    956,
+    3792
+   ],
+   "tile": [
+    29,
+    118
+   ],
+   "evento": 0,
+   "crudo": "e79d840400000000bc030000d00e00000000000027000000000000001a000000dc0628ec00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800040,
+   "sprite": 60456,
+   "capa": 0,
+   "px": [
+    4993,
+    2544
+   ],
+   "tile": [
+    156,
+    79
+   ],
+   "evento": 0,
+   "crudo": "e89d84040000000081130000f00900000000000027000000000000001a000000dc0628ec00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800041,
+   "sprite": 60455,
+   "capa": 2,
+   "px": [
+    7258,
+    3216
+   ],
+   "tile": [
+    226,
+    100
+   ],
+   "evento": 0,
+   "crudo": "e99d8404020000005a1c0000900c00000000000027000000000000001a000000dc0627ec00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800042,
+   "sprite": 60455,
+   "capa": 0,
+   "px": [
+    5055,
+    3920
+   ],
+   "tile": [
+    157,
+    122
+   ],
+   "evento": 0,
+   "crudo": "ea9d840400000000bf130000500f00000000000027000000000000001a000000dc0627ec00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800043,
+   "sprite": 60456,
+   "capa": 2,
+   "px": [
+    6005,
+    4816
+   ],
+   "tile": [
+    187,
+    150
+   ],
+   "evento": 0,
+   "crudo": "eb9d84040200000075170000d01200000000000027000000000000001a000000dc0628ec00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800044,
+   "sprite": 60458,
+   "capa": 0,
+   "px": [
+    4949,
+    3344
+   ],
+   "tile": [
+    154,
+    104
+   ],
+   "evento": 145,
+   "crudo": "ec9d84040000000055130000100d00000000000027000000000000001a000000dc062aec00004080140000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800045,
+   "sprite": 60038,
+   "capa": 0,
+   "px": [
+    866,
+    3152
+   ],
+   "tile": [
+    27,
+    98
+   ],
+   "evento": 0,
+   "crudo": "ed9d84040000000062030000500c00000000000027000000000000001a000000dc0686ea00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800046,
+   "sprite": 60458,
+   "capa": 0,
+   "px": [
+    5465,
+    3376
+   ],
+   "tile": [
+    170,
+    105
+   ],
+   "evento": 146,
+   "crudo": "ee9d84040000000059150000300d00000000000027000000000000001a000000dc062aec00004080140000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800047,
+   "sprite": 60458,
+   "capa": 0,
+   "px": [
+    5782,
+    3248
+   ],
+   "tile": [
+    180,
+    101
+   ],
+   "evento": 147,
+   "crudo": "ef9d84040000000096160000b00c00000000000027000000000000001a000000dc062aec00004080140000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800048,
+   "sprite": 60458,
+   "capa": 0,
+   "px": [
+    5721,
+    2960
+   ],
+   "tile": [
+    178,
+    92
+   ],
+   "evento": 148,
+   "crudo": "f09d84040000000059160000900b00000000000027000000000000001a000000dc062aec00004080140000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800049,
+   "sprite": 60458,
+   "capa": 0,
+   "px": [
+    5080,
+    2832
+   ],
+   "tile": [
+    158,
+    88
+   ],
+   "evento": 149,
+   "crudo": "f19d840400000000d8130000100b00000000000027000000000000001a000000dc062aec00004080140000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800050,
+   "sprite": 60458,
+   "capa": 0,
+   "px": [
+    4761,
+    2992
+   ],
+   "tile": [
+    148,
+    93
+   ],
+   "evento": 150,
+   "crudo": "f29d84040000000099120000b00b00000000000027000000000000001a000000dc062aec00004080140000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800051,
+   "sprite": 60068,
+   "capa": 2,
+   "px": [
+    2999,
+    5328
+   ],
+   "tile": [
+    93,
+    166
+   ],
+   "evento": 151,
+   "crudo": "f39d840402000000b70b0000d01400000000000027000000000000001a000000dc06a4ea00004080020000",
+   "copiado_de": "cuerpo de una captura del objeto 60068",
+   "puesto_por": "objetos_de_instancia"
+  },
+  {
+   "entity_id": 75800052,
+   "sprite": 60461,
+   "capa": 0,
+   "px": [
+    2414,
+    1360
+   ],
+   "tile": [
+    75,
+    42
+   ],
+   "evento": 101,
+   "crudo": "f49d8404000000006e090000500500000000000023000000000000000000000000062dec00000480000000",
+   "copiado_de": "cuerpo de una captura del objeto 60461",
+   "puesto_por": "objetos_de_instancia"
+  }
+ ]
+}

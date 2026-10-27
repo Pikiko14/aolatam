@@ -1,0 +1,7290 @@
+{
+ "_nota": "unknown_chambers (stage 176). POBLADO DESDE EL CLIENTE, no desde una captura: los generadores de monstruos son objetos del propio map176.mpc -- el monstruo en el u16 del +34, la zona en el +21, el tiempo en el +38 y cuantos en el +42. Eso da el censo COMPLETO del mapa, que una captura no puede dar porque solo trae lo que estuvo a la vista. El entity_id es fabricado y estable, no el del servidor. Las casillas son las del TAG de cada generador; los que no declaran TAG ponen sus monstruos en la casilla del generador y en un anillo de radio 3 a su alrededor, que es la dispersion MEDIDA en el stage 73. Los objetos de mapa son los del .mpc cuyo id esta en la lista de los que el servidor manda de verdad, con el cuerpo del 0x000E copiado de una captura del mismo objeto. Los tornados se dibujan aparte, desde portales.json. Ver tools/poblar_del_cliente.py.",
+ "stage": 176,
+ "spawns": [
+  {
+   "entity_id": 67600000,
+   "nombre": "Sand Mist Queen Gilypela",
+   "npc_type": 8771,
+   "sprite": 43215,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    17,
+    111
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 185,
+   "zona": 72
+  },
+  {
+   "entity_id": 67600001,
+   "nombre": "Slumber Tomb Priest",
+   "npc_type": 8773,
+   "sprite": 42028,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    7,
+    106
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 170,
+   "zona": 152
+  },
+  {
+   "entity_id": 67600002,
+   "nombre": "Slumber Tomb Priest",
+   "npc_type": 8773,
+   "sprite": 42028,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    25,
+    115
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 170,
+   "zona": 153
+  },
+  {
+   "entity_id": 67600003,
+   "nombre": "Pharaoh Emperor Ottenkhamun",
+   "npc_type": 8772,
+   "sprite": 43213,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    226,
+    263
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 195,
+   "zona": 73
+  },
+  {
+   "entity_id": 67600004,
+   "nombre": "Messengers of Styx",
+   "npc_type": 8754,
+   "sprite": 43189,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    33,
+    27
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 81
+  },
+  {
+   "entity_id": 67600005,
+   "nombre": "Messengers of Styx",
+   "npc_type": 8754,
+   "sprite": 43189,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    26,
+    45
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 81
+  },
+  {
+   "entity_id": 67600006,
+   "nombre": "Messengers of Styx",
+   "npc_type": 8754,
+   "sprite": 43189,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    47,
+    49
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 81
+  },
+  {
+   "entity_id": 67600007,
+   "nombre": "Messengers of Styx",
+   "npc_type": 8754,
+   "sprite": 43189,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    115,
+    61
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 81
+  },
+  {
+   "entity_id": 67600008,
+   "nombre": "Messengers of Styx",
+   "npc_type": 8754,
+   "sprite": 43189,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    101,
+    31
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 81
+  },
+  {
+   "entity_id": 67600009,
+   "nombre": "Messengers of Styx",
+   "npc_type": 8754,
+   "sprite": 43189,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    115,
+    14
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 81
+  },
+  {
+   "entity_id": 67600010,
+   "nombre": "Messengers of Styx",
+   "npc_type": 8754,
+   "sprite": 43189,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    89,
+    12
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 81
+  },
+  {
+   "entity_id": 67600011,
+   "nombre": "Messengers of Styx",
+   "npc_type": 8754,
+   "sprite": 43189,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    68,
+    10
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 81
+  },
+  {
+   "entity_id": 67600012,
+   "nombre": "Messengers of Styx",
+   "npc_type": 8754,
+   "sprite": 43189,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    50,
+    15
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 81
+  },
+  {
+   "entity_id": 67600013,
+   "nombre": "Messengers of Styx",
+   "npc_type": 8754,
+   "sprite": 43189,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    91,
+    65
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 81
+  },
+  {
+   "entity_id": 67600014,
+   "nombre": "Messengers of Styx",
+   "npc_type": 8754,
+   "sprite": 43189,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    30,
+    24
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 81
+  },
+  {
+   "entity_id": 67600015,
+   "nombre": "Messengers of Styx",
+   "npc_type": 8754,
+   "sprite": 43189,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    23,
+    42
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 81
+  },
+  {
+   "entity_id": 67600016,
+   "nombre": "Messengers of Styx",
+   "npc_type": 8754,
+   "sprite": 43189,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    44,
+    46
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 81
+  },
+  {
+   "entity_id": 67600017,
+   "nombre": "Messengers of Styx",
+   "npc_type": 8754,
+   "sprite": 43189,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    112,
+    58
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 81
+  },
+  {
+   "entity_id": 67600018,
+   "nombre": "Messengers of Styx",
+   "npc_type": 8754,
+   "sprite": 43189,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    98,
+    28
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 81
+  },
+  {
+   "entity_id": 67600019,
+   "nombre": "Messengers of Styx",
+   "npc_type": 8754,
+   "sprite": 43189,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    112,
+    11
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 81
+  },
+  {
+   "entity_id": 67600020,
+   "nombre": "Messengers of Styx",
+   "npc_type": 8754,
+   "sprite": 43189,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    86,
+    9
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 81
+  },
+  {
+   "entity_id": 67600021,
+   "nombre": "Messengers of Styx",
+   "npc_type": 8754,
+   "sprite": 43189,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    65,
+    7
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 81
+  },
+  {
+   "entity_id": 67600022,
+   "nombre": "Messengers of Styx",
+   "npc_type": 8754,
+   "sprite": 43189,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    47,
+    12
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 81
+  },
+  {
+   "entity_id": 67600023,
+   "nombre": "Messengers of Styx",
+   "npc_type": 8754,
+   "sprite": 43189,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    88,
+    62
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 81
+  },
+  {
+   "entity_id": 67600024,
+   "nombre": "Messengers of Styx",
+   "npc_type": 8754,
+   "sprite": 43189,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    30,
+    27
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 81
+  },
+  {
+   "entity_id": 67600025,
+   "nombre": "Messengers of Styx",
+   "npc_type": 8754,
+   "sprite": 43189,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    23,
+    45
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 81
+  },
+  {
+   "entity_id": 67600026,
+   "nombre": "Messengers of Styx",
+   "npc_type": 8754,
+   "sprite": 43189,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    44,
+    49
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 81
+  },
+  {
+   "entity_id": 67600027,
+   "nombre": "Messengers of Styx",
+   "npc_type": 8754,
+   "sprite": 43189,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    112,
+    61
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 81
+  },
+  {
+   "entity_id": 67600028,
+   "nombre": "Messengers of Styx",
+   "npc_type": 8754,
+   "sprite": 43189,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    98,
+    31
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 81
+  },
+  {
+   "entity_id": 67600029,
+   "nombre": "Royal Army Bees",
+   "npc_type": 8757,
+   "sprite": 43192,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    39,
+    18
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 83
+  },
+  {
+   "entity_id": 67600030,
+   "nombre": "Royal Army Bees",
+   "npc_type": 8757,
+   "sprite": 43192,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    82,
+    7
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 83
+  },
+  {
+   "entity_id": 67600031,
+   "nombre": "Royal Army Bees",
+   "npc_type": 8757,
+   "sprite": 43192,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    39,
+    39
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 83
+  },
+  {
+   "entity_id": 67600032,
+   "nombre": "Royal Army Bees",
+   "npc_type": 8757,
+   "sprite": 43192,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    69,
+    46
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 83
+  },
+  {
+   "entity_id": 67600033,
+   "nombre": "Royal Army Bees",
+   "npc_type": 8757,
+   "sprite": 43192,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    104,
+    60
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 83
+  },
+  {
+   "entity_id": 67600034,
+   "nombre": "Royal Army Bees",
+   "npc_type": 8757,
+   "sprite": 43192,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    137,
+    52
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 83
+  },
+  {
+   "entity_id": 67600035,
+   "nombre": "Royal Army Bees",
+   "npc_type": 8757,
+   "sprite": 43192,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    94,
+    27
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 83
+  },
+  {
+   "entity_id": 67600036,
+   "nombre": "Royal Army Bees",
+   "npc_type": 8757,
+   "sprite": 43192,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    102,
+    13
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 83
+  },
+  {
+   "entity_id": 67600037,
+   "nombre": "Royal Army Bees",
+   "npc_type": 8757,
+   "sprite": 43192,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    58,
+    10
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 83
+  },
+  {
+   "entity_id": 67600038,
+   "nombre": "Royal Army Bees",
+   "npc_type": 8757,
+   "sprite": 43192,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    15,
+    37
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 83
+  },
+  {
+   "entity_id": 67600039,
+   "nombre": "Royal Army Bees",
+   "npc_type": 8757,
+   "sprite": 43192,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    36,
+    15
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 83
+  },
+  {
+   "entity_id": 67600040,
+   "nombre": "Royal Army Bees",
+   "npc_type": 8757,
+   "sprite": 43192,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    79,
+    4
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 83
+  },
+  {
+   "entity_id": 67600041,
+   "nombre": "Royal Army Bees",
+   "npc_type": 8757,
+   "sprite": 43192,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    36,
+    36
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 83
+  },
+  {
+   "entity_id": 67600042,
+   "nombre": "Royal Army Bees",
+   "npc_type": 8757,
+   "sprite": 43192,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    66,
+    43
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 83
+  },
+  {
+   "entity_id": 67600043,
+   "nombre": "Royal Army Bees",
+   "npc_type": 8757,
+   "sprite": 43192,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    101,
+    57
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 83
+  },
+  {
+   "entity_id": 67600044,
+   "nombre": "Royal Army Bees",
+   "npc_type": 8757,
+   "sprite": 43192,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    134,
+    49
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 83
+  },
+  {
+   "entity_id": 67600045,
+   "nombre": "Royal Army Bees",
+   "npc_type": 8757,
+   "sprite": 43192,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    91,
+    25
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 83
+  },
+  {
+   "entity_id": 67600046,
+   "nombre": "Royal Army Bees",
+   "npc_type": 8757,
+   "sprite": 43192,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    99,
+    10
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 83
+  },
+  {
+   "entity_id": 67600047,
+   "nombre": "Royal Army Bees",
+   "npc_type": 8757,
+   "sprite": 43192,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    55,
+    8
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 83
+  },
+  {
+   "entity_id": 67600048,
+   "nombre": "Royal Army Bees",
+   "npc_type": 8757,
+   "sprite": 43192,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    12,
+    35
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 83
+  },
+  {
+   "entity_id": 67600049,
+   "nombre": "Royal Army Bees",
+   "npc_type": 8757,
+   "sprite": 43192,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    36,
+    18
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 83
+  },
+  {
+   "entity_id": 67600050,
+   "nombre": "Royal Army Bees",
+   "npc_type": 8757,
+   "sprite": 43192,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    79,
+    7
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 83
+  },
+  {
+   "entity_id": 67600051,
+   "nombre": "Royal Army Bees",
+   "npc_type": 8757,
+   "sprite": 43192,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    36,
+    39
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 83
+  },
+  {
+   "entity_id": 67600052,
+   "nombre": "Royal Army Bees",
+   "npc_type": 8757,
+   "sprite": 43192,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    66,
+    46
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 83
+  },
+  {
+   "entity_id": 67600053,
+   "nombre": "Royal Army Bees",
+   "npc_type": 8757,
+   "sprite": 43192,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    101,
+    60
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 160,
+   "zona": 83
+  },
+  {
+   "entity_id": 67600054,
+   "nombre": "Helio Jade Bangle",
+   "npc_type": 8761,
+   "sprite": 43203,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    30,
+    21
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 85
+  },
+  {
+   "entity_id": 67600055,
+   "nombre": "Helio Jade Bangle",
+   "npc_type": 8761,
+   "sprite": 43203,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    30,
+    37
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 85
+  },
+  {
+   "entity_id": 67600056,
+   "nombre": "Helio Jade Bangle",
+   "npc_type": 8761,
+   "sprite": 43203,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    54,
+    44
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 85
+  },
+  {
+   "entity_id": 67600057,
+   "nombre": "Helio Jade Bangle",
+   "npc_type": 8761,
+   "sprite": 43203,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    110,
+    70
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 85
+  },
+  {
+   "entity_id": 67600058,
+   "nombre": "Helio Jade Bangle",
+   "npc_type": 8761,
+   "sprite": 43203,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    127,
+    52
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 85
+  },
+  {
+   "entity_id": 67600059,
+   "nombre": "Helio Jade Bangle",
+   "npc_type": 8761,
+   "sprite": 43203,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    140,
+    43
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 85
+  },
+  {
+   "entity_id": 67600060,
+   "nombre": "Helio Jade Bangle",
+   "npc_type": 8761,
+   "sprite": 43203,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    95,
+    17
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 85
+  },
+  {
+   "entity_id": 67600061,
+   "nombre": "Helio Jade Bangle",
+   "npc_type": 8761,
+   "sprite": 43203,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    123,
+    11
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 85
+  },
+  {
+   "entity_id": 67600062,
+   "nombre": "Helio Jade Bangle",
+   "npc_type": 8761,
+   "sprite": 43203,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    89,
+    6
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 85
+  },
+  {
+   "entity_id": 67600063,
+   "nombre": "Helio Jade Bangle",
+   "npc_type": 8761,
+   "sprite": 43203,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    56,
+    20
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 85
+  },
+  {
+   "entity_id": 67600064,
+   "nombre": "Helio Jade Bangle",
+   "npc_type": 8761,
+   "sprite": 43203,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    33,
+    20
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 85
+  },
+  {
+   "entity_id": 67600065,
+   "nombre": "Helio Jade Bangle",
+   "npc_type": 8761,
+   "sprite": 43203,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    27,
+    34
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 85
+  },
+  {
+   "entity_id": 67600066,
+   "nombre": "Helio Jade Bangle",
+   "npc_type": 8761,
+   "sprite": 43203,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    51,
+    41
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 85
+  },
+  {
+   "entity_id": 67600067,
+   "nombre": "Helio Jade Bangle",
+   "npc_type": 8761,
+   "sprite": 43203,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    107,
+    67
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 85
+  },
+  {
+   "entity_id": 67600068,
+   "nombre": "Helio Jade Bangle",
+   "npc_type": 8761,
+   "sprite": 43203,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    124,
+    49
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 85
+  },
+  {
+   "entity_id": 67600069,
+   "nombre": "Helio Jade Bangle",
+   "npc_type": 8761,
+   "sprite": 43203,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    137,
+    40
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 85
+  },
+  {
+   "entity_id": 67600070,
+   "nombre": "Helio Jade Bangle",
+   "npc_type": 8761,
+   "sprite": 43203,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    92,
+    14
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 85
+  },
+  {
+   "entity_id": 67600071,
+   "nombre": "Helio Jade Bangle",
+   "npc_type": 8761,
+   "sprite": 43203,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    120,
+    8
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 85
+  },
+  {
+   "entity_id": 67600072,
+   "nombre": "Helio Jade Bangle",
+   "npc_type": 8761,
+   "sprite": 43203,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    86,
+    4
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 85
+  },
+  {
+   "entity_id": 67600073,
+   "nombre": "Helio Jade Bangle",
+   "npc_type": 8761,
+   "sprite": 43203,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    53,
+    17
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 85
+  },
+  {
+   "entity_id": 67600074,
+   "nombre": "Helio Jade Bangle",
+   "npc_type": 8761,
+   "sprite": 43203,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    33,
+    23
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 85
+  },
+  {
+   "entity_id": 67600075,
+   "nombre": "Helio Jade Bangle",
+   "npc_type": 8761,
+   "sprite": 43203,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    27,
+    37
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 85
+  },
+  {
+   "entity_id": 67600076,
+   "nombre": "Helio Jade Bangle",
+   "npc_type": 8761,
+   "sprite": 43203,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    51,
+    44
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 85
+  },
+  {
+   "entity_id": 67600077,
+   "nombre": "Helio Jade Bangle",
+   "npc_type": 8761,
+   "sprite": 43203,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    107,
+    70
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 85
+  },
+  {
+   "entity_id": 67600078,
+   "nombre": "Helio Jade Bangle",
+   "npc_type": 8761,
+   "sprite": 43203,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    124,
+    52
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 85
+  },
+  {
+   "entity_id": 67600079,
+   "nombre": "Scarlet Heaven Scorpio",
+   "npc_type": 8763,
+   "sprite": 42598,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    43,
+    24
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 87
+  },
+  {
+   "entity_id": 67600080,
+   "nombre": "Scarlet Heaven Scorpio",
+   "npc_type": 8763,
+   "sprite": 42598,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    65,
+    15
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 87
+  },
+  {
+   "entity_id": 67600081,
+   "nombre": "Scarlet Heaven Scorpio",
+   "npc_type": 8763,
+   "sprite": 42598,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    96,
+    9
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 87
+  },
+  {
+   "entity_id": 67600082,
+   "nombre": "Scarlet Heaven Scorpio",
+   "npc_type": 8763,
+   "sprite": 42598,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    108,
+    18
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 87
+  },
+  {
+   "entity_id": 67600083,
+   "nombre": "Scarlet Heaven Scorpio",
+   "npc_type": 8763,
+   "sprite": 42598,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    143,
+    56
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 87
+  },
+  {
+   "entity_id": 67600084,
+   "nombre": "Scarlet Heaven Scorpio",
+   "npc_type": 8763,
+   "sprite": 42598,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    84,
+    66
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 87
+  },
+  {
+   "entity_id": 67600085,
+   "nombre": "Scarlet Heaven Scorpio",
+   "npc_type": 8763,
+   "sprite": 42598,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    39,
+    53
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 87
+  },
+  {
+   "entity_id": 67600086,
+   "nombre": "Scarlet Heaven Scorpio",
+   "npc_type": 8763,
+   "sprite": 42598,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    61,
+    43
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 87
+  },
+  {
+   "entity_id": 67600087,
+   "nombre": "Scarlet Heaven Scorpio",
+   "npc_type": 8763,
+   "sprite": 42598,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    24,
+    34
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 87
+  },
+  {
+   "entity_id": 67600088,
+   "nombre": "Scarlet Heaven Scorpio",
+   "npc_type": 8763,
+   "sprite": 42598,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    19,
+    48
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 87
+  },
+  {
+   "entity_id": 67600089,
+   "nombre": "Scarlet Heaven Scorpio",
+   "npc_type": 8763,
+   "sprite": 42598,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    40,
+    21
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 87
+  },
+  {
+   "entity_id": 67600090,
+   "nombre": "Scarlet Heaven Scorpio",
+   "npc_type": 8763,
+   "sprite": 42598,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    62,
+    12
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 87
+  },
+  {
+   "entity_id": 67600091,
+   "nombre": "Scarlet Heaven Scorpio",
+   "npc_type": 8763,
+   "sprite": 42598,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    93,
+    6
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 87
+  },
+  {
+   "entity_id": 67600092,
+   "nombre": "Scarlet Heaven Scorpio",
+   "npc_type": 8763,
+   "sprite": 42598,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    105,
+    15
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 87
+  },
+  {
+   "entity_id": 67600093,
+   "nombre": "Scarlet Heaven Scorpio",
+   "npc_type": 8763,
+   "sprite": 42598,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    140,
+    53
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 87
+  },
+  {
+   "entity_id": 67600094,
+   "nombre": "Scarlet Heaven Scorpio",
+   "npc_type": 8763,
+   "sprite": 42598,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    81,
+    63
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 87
+  },
+  {
+   "entity_id": 67600095,
+   "nombre": "Scarlet Heaven Scorpio",
+   "npc_type": 8763,
+   "sprite": 42598,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    36,
+    50
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 87
+  },
+  {
+   "entity_id": 67600096,
+   "nombre": "Scarlet Heaven Scorpio",
+   "npc_type": 8763,
+   "sprite": 42598,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    58,
+    40
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 87
+  },
+  {
+   "entity_id": 67600097,
+   "nombre": "Scarlet Heaven Scorpio",
+   "npc_type": 8763,
+   "sprite": 42598,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    21,
+    31
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 87
+  },
+  {
+   "entity_id": 67600098,
+   "nombre": "Scarlet Heaven Scorpio",
+   "npc_type": 8763,
+   "sprite": 42598,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    16,
+    45
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 87
+  },
+  {
+   "entity_id": 67600099,
+   "nombre": "Scarlet Heaven Scorpio",
+   "npc_type": 8763,
+   "sprite": 42598,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    40,
+    24
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 87
+  },
+  {
+   "entity_id": 67600100,
+   "nombre": "Scarlet Heaven Scorpio",
+   "npc_type": 8763,
+   "sprite": 42598,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    62,
+    15
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 87
+  },
+  {
+   "entity_id": 67600101,
+   "nombre": "Scarlet Heaven Scorpio",
+   "npc_type": 8763,
+   "sprite": 42598,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    93,
+    9
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 87
+  },
+  {
+   "entity_id": 67600102,
+   "nombre": "Scarlet Heaven Scorpio",
+   "npc_type": 8763,
+   "sprite": 42598,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    105,
+    18
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 87
+  },
+  {
+   "entity_id": 67600103,
+   "nombre": "Scarlet Heaven Scorpio",
+   "npc_type": 8763,
+   "sprite": 42598,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    140,
+    56
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 87
+  },
+  {
+   "entity_id": 67600104,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    48,
+    21
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 89
+  },
+  {
+   "entity_id": 67600105,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    20,
+    40
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 89
+  },
+  {
+   "entity_id": 67600106,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    58,
+    50
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 89
+  },
+  {
+   "entity_id": 67600107,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    41,
+    45
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 89
+  },
+  {
+   "entity_id": 67600108,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    123,
+    57
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 89
+  },
+  {
+   "entity_id": 67600109,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    131,
+    46
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 89
+  },
+  {
+   "entity_id": 67600110,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    102,
+    24
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 89
+  },
+  {
+   "entity_id": 67600111,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    109,
+    9
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 89
+  },
+  {
+   "entity_id": 67600112,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    73,
+    8
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 89
+  },
+  {
+   "entity_id": 67600113,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    48,
+    41
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 89
+  },
+  {
+   "entity_id": 67600114,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    45,
+    18
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 89
+  },
+  {
+   "entity_id": 67600115,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    19,
+    43
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 89
+  },
+  {
+   "entity_id": 67600116,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    55,
+    47
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 89
+  },
+  {
+   "entity_id": 67600117,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    38,
+    42
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 89
+  },
+  {
+   "entity_id": 67600118,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    120,
+    54
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 89
+  },
+  {
+   "entity_id": 67600119,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    128,
+    43
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 89
+  },
+  {
+   "entity_id": 67600120,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    99,
+    21
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 89
+  },
+  {
+   "entity_id": 67600121,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    108,
+    12
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 89
+  },
+  {
+   "entity_id": 67600122,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    70,
+    5
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 89
+  },
+  {
+   "entity_id": 67600123,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    45,
+    38
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 89
+  },
+  {
+   "entity_id": 67600124,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    45,
+    21
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 89
+  },
+  {
+   "entity_id": 67600125,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    23,
+    39
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 89
+  },
+  {
+   "entity_id": 67600126,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    55,
+    50
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 89
+  },
+  {
+   "entity_id": 67600127,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    38,
+    45
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 89
+  },
+  {
+   "entity_id": 67600128,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    120,
+    57
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 89
+  },
+  {
+   "entity_id": 67600129,
+   "nombre": "Holy Sphinx Guardian",
+   "npc_type": 8770,
+   "sprite": 43214,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    163,
+    89
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 175,
+   "zona": 71
+  },
+  {
+   "entity_id": 67600130,
+   "nombre": "Ghostly Shadow Queen",
+   "npc_type": 8767,
+   "sprite": 43293,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    207,
+    26
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 170,
+   "zona": 74
+  },
+  {
+   "entity_id": 67600131,
+   "nombre": "Hell Duo Book Stixx",
+   "npc_type": 8768,
+   "sprite": 43212,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    113,
+    260
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 170,
+   "zona": 75
+  },
+  {
+   "entity_id": 67600132,
+   "nombre": "Hell Duo Book Stixx",
+   "npc_type": 8768,
+   "sprite": 43212,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    178,
+    200
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 170,
+   "zona": 76
+  },
+  {
+   "entity_id": 67600133,
+   "nombre": "Ghostly Warrior",
+   "npc_type": 8755,
+   "sprite": 43190,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    49,
+    213
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 91
+  },
+  {
+   "entity_id": 67600134,
+   "nombre": "Ghostly Warrior",
+   "npc_type": 8755,
+   "sprite": 43190,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    33,
+    206
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 91
+  },
+  {
+   "entity_id": 67600135,
+   "nombre": "Ghostly Warrior",
+   "npc_type": 8755,
+   "sprite": 43190,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    45,
+    206
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 91
+  },
+  {
+   "entity_id": 67600136,
+   "nombre": "Ghostly Warrior",
+   "npc_type": 8755,
+   "sprite": 43190,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    55,
+    203
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 91
+  },
+  {
+   "entity_id": 67600137,
+   "nombre": "Ghostly Warrior",
+   "npc_type": 8755,
+   "sprite": 43190,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    58,
+    195
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 91
+  },
+  {
+   "entity_id": 67600138,
+   "nombre": "Ghostly Warrior",
+   "npc_type": 8755,
+   "sprite": 43190,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    67,
+    200
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 91
+  },
+  {
+   "entity_id": 67600139,
+   "nombre": "Ghostly Warrior",
+   "npc_type": 8755,
+   "sprite": 43190,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    75,
+    203
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 91
+  },
+  {
+   "entity_id": 67600140,
+   "nombre": "Ghostly Warrior",
+   "npc_type": 8755,
+   "sprite": 43190,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    177,
+    144
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 95
+  },
+  {
+   "entity_id": 67600141,
+   "nombre": "Ghostly Warrior",
+   "npc_type": 8755,
+   "sprite": 43190,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    179,
+    135
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 95
+  },
+  {
+   "entity_id": 67600142,
+   "nombre": "Ghostly Warrior",
+   "npc_type": 8755,
+   "sprite": 43190,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    166,
+    140
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 95
+  },
+  {
+   "entity_id": 67600143,
+   "nombre": "Ghostly Warrior",
+   "npc_type": 8755,
+   "sprite": 43190,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    181,
+    151
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 95
+  },
+  {
+   "entity_id": 67600144,
+   "nombre": "Ghostly Warrior",
+   "npc_type": 8755,
+   "sprite": 43190,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    192,
+    145
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 95
+  },
+  {
+   "entity_id": 67600145,
+   "nombre": "Ghostly Warrior",
+   "npc_type": 8755,
+   "sprite": 43190,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    157,
+    143
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 95
+  },
+  {
+   "entity_id": 67600146,
+   "nombre": "Ghostly Warrior",
+   "npc_type": 8755,
+   "sprite": 43190,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    184,
+    141
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 95
+  },
+  {
+   "entity_id": 67600147,
+   "nombre": "Ghostly Warrior",
+   "npc_type": 8755,
+   "sprite": 43190,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    75,
+    103
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600148,
+   "nombre": "Ghostly Warrior",
+   "npc_type": 8755,
+   "sprite": 43190,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    73,
+    91
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600149,
+   "nombre": "Ghostly Warrior",
+   "npc_type": 8755,
+   "sprite": 43190,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    59,
+    98
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600150,
+   "nombre": "Ghostly Warrior",
+   "npc_type": 8755,
+   "sprite": 43190,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    45,
+    99
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600151,
+   "nombre": "Ghostly Warrior",
+   "npc_type": 8755,
+   "sprite": 43190,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    44,
+    92
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600152,
+   "nombre": "Ghostly Warrior",
+   "npc_type": 8755,
+   "sprite": 43190,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    56,
+    86
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600153,
+   "nombre": "Ghostly Warrior",
+   "npc_type": 8755,
+   "sprite": 43190,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    40,
+    84
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600154,
+   "nombre": "Ghostly Warrior",
+   "npc_type": 8755,
+   "sprite": 43190,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    67,
+    96
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600155,
+   "nombre": "Ghostly Warrior",
+   "npc_type": 8755,
+   "sprite": 43190,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    52,
+    95
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600156,
+   "nombre": "Ghostly Warrior",
+   "npc_type": 8755,
+   "sprite": 43190,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    68,
+    101
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600157,
+   "nombre": "Desert Blob",
+   "npc_type": 8759,
+   "sprite": 43198,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    105,
+    178
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 93
+  },
+  {
+   "entity_id": 67600158,
+   "nombre": "Desert Blob",
+   "npc_type": 8759,
+   "sprite": 43198,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    96,
+    175
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 93
+  },
+  {
+   "entity_id": 67600159,
+   "nombre": "Desert Blob",
+   "npc_type": 8759,
+   "sprite": 43198,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    104,
+    170
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 93
+  },
+  {
+   "entity_id": 67600160,
+   "nombre": "Desert Blob",
+   "npc_type": 8759,
+   "sprite": 43198,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    115,
+    173
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 93
+  },
+  {
+   "entity_id": 67600161,
+   "nombre": "Desert Blob",
+   "npc_type": 8759,
+   "sprite": 43198,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    125,
+    179
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 93
+  },
+  {
+   "entity_id": 67600162,
+   "nombre": "Desert Blob",
+   "npc_type": 8759,
+   "sprite": 43198,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    127,
+    168
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 93
+  },
+  {
+   "entity_id": 67600163,
+   "nombre": "Desert Blob",
+   "npc_type": 8759,
+   "sprite": 43198,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    135,
+    173
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 93
+  },
+  {
+   "entity_id": 67600164,
+   "nombre": "Desert Blob",
+   "npc_type": 8759,
+   "sprite": 43198,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    174,
+    141
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 95
+  },
+  {
+   "entity_id": 67600165,
+   "nombre": "Desert Blob",
+   "npc_type": 8759,
+   "sprite": 43198,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    176,
+    133
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 95
+  },
+  {
+   "entity_id": 67600166,
+   "nombre": "Desert Blob",
+   "npc_type": 8759,
+   "sprite": 43198,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    163,
+    137
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 95
+  },
+  {
+   "entity_id": 67600167,
+   "nombre": "Desert Blob",
+   "npc_type": 8759,
+   "sprite": 43198,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    178,
+    148
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 95
+  },
+  {
+   "entity_id": 67600168,
+   "nombre": "Desert Blob",
+   "npc_type": 8759,
+   "sprite": 43198,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    189,
+    142
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 95
+  },
+  {
+   "entity_id": 67600169,
+   "nombre": "Desert Blob",
+   "npc_type": 8759,
+   "sprite": 43198,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    154,
+    140
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 95
+  },
+  {
+   "entity_id": 67600170,
+   "nombre": "Desert Blob",
+   "npc_type": 8759,
+   "sprite": 43198,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    181,
+    138
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 95
+  },
+  {
+   "entity_id": 67600171,
+   "nombre": "Desert Blob",
+   "npc_type": 8759,
+   "sprite": 43198,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    72,
+    100
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600172,
+   "nombre": "Desert Blob",
+   "npc_type": 8759,
+   "sprite": 43198,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    70,
+    88
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600173,
+   "nombre": "Desert Blob",
+   "npc_type": 8759,
+   "sprite": 43198,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    56,
+    95
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600174,
+   "nombre": "Desert Blob",
+   "npc_type": 8759,
+   "sprite": 43198,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    42,
+    96
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600175,
+   "nombre": "Desert Blob",
+   "npc_type": 8759,
+   "sprite": 43198,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    41,
+    89
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600176,
+   "nombre": "Desert Blob",
+   "npc_type": 8759,
+   "sprite": 43198,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    53,
+    86
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600177,
+   "nombre": "Desert Blob",
+   "npc_type": 8759,
+   "sprite": 43198,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    37,
+    81
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600178,
+   "nombre": "Desert Blob",
+   "npc_type": 8759,
+   "sprite": 43198,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    47,
+    120
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600179,
+   "nombre": "Desert Blob",
+   "npc_type": 8759,
+   "sprite": 43198,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    64,
+    93
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600180,
+   "nombre": "Desert Blob",
+   "npc_type": 8759,
+   "sprite": 43198,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    49,
+    92
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600181,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    102,
+    175
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 93
+  },
+  {
+   "entity_id": 67600182,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    93,
+    172
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 93
+  },
+  {
+   "entity_id": 67600183,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    101,
+    167
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 93
+  },
+  {
+   "entity_id": 67600184,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    112,
+    170
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 93
+  },
+  {
+   "entity_id": 67600185,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    122,
+    176
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 93
+  },
+  {
+   "entity_id": 67600186,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    124,
+    165
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 93
+  },
+  {
+   "entity_id": 67600187,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    132,
+    170
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 93
+  },
+  {
+   "entity_id": 67600188,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    28,
+    160
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 97
+  },
+  {
+   "entity_id": 67600189,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    35,
+    155
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 97
+  },
+  {
+   "entity_id": 67600190,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    44,
+    152
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 97
+  },
+  {
+   "entity_id": 67600191,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    50,
+    159
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 97
+  },
+  {
+   "entity_id": 67600192,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    53,
+    150
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 97
+  },
+  {
+   "entity_id": 67600193,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    60,
+    162
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 97
+  },
+  {
+   "entity_id": 67600194,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    41,
+    159
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 97
+  },
+  {
+   "entity_id": 67600195,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    25,
+    157
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 97
+  },
+  {
+   "entity_id": 67600196,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    32,
+    152
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 97
+  },
+  {
+   "entity_id": 67600197,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    41,
+    149
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 97
+  },
+  {
+   "entity_id": 67600198,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    47,
+    156
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 97
+  },
+  {
+   "entity_id": 67600199,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    50,
+    147
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 97
+  },
+  {
+   "entity_id": 67600200,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    56,
+    98
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600201,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    42,
+    99
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600202,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    44,
+    89
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600203,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    53,
+    89
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600204,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    37,
+    84
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600205,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    27,
+    84
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600206,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    64,
+    96
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600207,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    49,
+    95
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600208,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    65,
+    99
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600209,
+   "nombre": "Sacrificial Hydra",
+   "npc_type": 8762,
+   "sprite": 43204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    37,
+    88
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 162,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600210,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    46,
+    210
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 91
+  },
+  {
+   "entity_id": 67600211,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    30,
+    203
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 91
+  },
+  {
+   "entity_id": 67600212,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    42,
+    203
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 91
+  },
+  {
+   "entity_id": 67600213,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    52,
+    200
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 91
+  },
+  {
+   "entity_id": 67600214,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    55,
+    192
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 91
+  },
+  {
+   "entity_id": 67600215,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    64,
+    197
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 91
+  },
+  {
+   "entity_id": 67600216,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    72,
+    200
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 91
+  },
+  {
+   "entity_id": 67600217,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    105,
+    131
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 99
+  },
+  {
+   "entity_id": 67600218,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    116,
+    127
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 99
+  },
+  {
+   "entity_id": 67600219,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    103,
+    124
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 99
+  },
+  {
+   "entity_id": 67600220,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    120,
+    132
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 99
+  },
+  {
+   "entity_id": 67600221,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    107,
+    138
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 99
+  },
+  {
+   "entity_id": 67600222,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    88,
+    130
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 99
+  },
+  {
+   "entity_id": 67600223,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    94,
+    127
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 99
+  },
+  {
+   "entity_id": 67600224,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    102,
+    128
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 99
+  },
+  {
+   "entity_id": 67600225,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    113,
+    124
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 99
+  },
+  {
+   "entity_id": 67600226,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    100,
+    121
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 99
+  },
+  {
+   "entity_id": 67600227,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    117,
+    130
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 99
+  },
+  {
+   "entity_id": 67600228,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    104,
+    135
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 99
+  },
+  {
+   "entity_id": 67600229,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    59,
+    95
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600230,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    42,
+    102
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600231,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    45,
+    95
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600232,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    54,
+    83
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600233,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    40,
+    81
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600234,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    24,
+    81
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600235,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    44,
+    117
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600236,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    67,
+    93
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600237,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    49,
+    98
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600238,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    65,
+    102
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600239,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    34,
+    85
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600240,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    34,
+    80
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600241,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    60,
+    92
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600242,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    61,
+    101
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600243,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    45,
+    102
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600244,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    47,
+    89
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600245,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    56,
+    89
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600246,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    43,
+    82
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600247,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    24,
+    84
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600248,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    44,
+    120
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600249,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    70,
+    93
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600250,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    52,
+    92
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600251,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    70,
+    104
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600252,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    34,
+    88
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600253,
+   "nombre": "Archaic Mummy",
+   "npc_type": 8764,
+   "sprite": 42143,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    31,
+    77
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600254,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    25,
+    160
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 97
+  },
+  {
+   "entity_id": 67600255,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    32,
+    155
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 97
+  },
+  {
+   "entity_id": 67600256,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    41,
+    152
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 97
+  },
+  {
+   "entity_id": 67600257,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    47,
+    159
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 97
+  },
+  {
+   "entity_id": 67600258,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    50,
+    150
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 97
+  },
+  {
+   "entity_id": 67600259,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    57,
+    159
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 97
+  },
+  {
+   "entity_id": 67600260,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    38,
+    156
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 97
+  },
+  {
+   "entity_id": 67600261,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    27,
+    163
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 97
+  },
+  {
+   "entity_id": 67600262,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    32,
+    158
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 97
+  },
+  {
+   "entity_id": 67600263,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    41,
+    155
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 97
+  },
+  {
+   "entity_id": 67600264,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    47,
+    162
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 97
+  },
+  {
+   "entity_id": 67600265,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    50,
+    153
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 97
+  },
+  {
+   "entity_id": 67600266,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    102,
+    131
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 99
+  },
+  {
+   "entity_id": 67600267,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    113,
+    127
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 99
+  },
+  {
+   "entity_id": 67600268,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    100,
+    124
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 99
+  },
+  {
+   "entity_id": 67600269,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    117,
+    133
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 99
+  },
+  {
+   "entity_id": 67600270,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    104,
+    138
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 99
+  },
+  {
+   "entity_id": 67600271,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    85,
+    127
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 99
+  },
+  {
+   "entity_id": 67600272,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    91,
+    124
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 99
+  },
+  {
+   "entity_id": 67600273,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    105,
+    128
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 99
+  },
+  {
+   "entity_id": 67600274,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    113,
+    130
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 99
+  },
+  {
+   "entity_id": 67600275,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    103,
+    121
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 99
+  },
+  {
+   "entity_id": 67600276,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    120,
+    129
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 99
+  },
+  {
+   "entity_id": 67600277,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    107,
+    135
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 99
+  },
+  {
+   "entity_id": 67600278,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    73,
+    106
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600279,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    73,
+    88
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600280,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    61,
+    96
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600281,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    48,
+    101
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600282,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    42,
+    91
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600283,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    59,
+    84
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600284,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    43,
+    85
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600285,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    24,
+    87
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600286,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    44,
+    123
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600287,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    70,
+    96
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600288,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    135,
+    224
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600289,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    132,
+    218
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600290,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    146,
+    225
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600291,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    146,
+    216
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600292,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    160,
+    216
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600293,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    158,
+    225
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600294,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    154,
+    231
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600295,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    146,
+    237
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600296,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    169,
+    223
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600297,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    176,
+    222
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600298,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    197,
+    213
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600299,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    203,
+    209
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600300,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    189,
+    199
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600301,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    182,
+    196
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600302,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    214,
+    196
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600303,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    226,
+    194
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600304,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    231,
+    201
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600305,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    236,
+    180
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600306,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    231,
+    176
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600307,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    78,
+    257
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600308,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    86,
+    258
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600309,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    95,
+    255
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600310,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    103,
+    260
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600311,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    105,
+    254
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600312,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    111,
+    257
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600313,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    113,
+    241
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600314,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    101,
+    236
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600315,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    84,
+    254
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600316,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    99,
+    254
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600317,
+   "nombre": "Pharaoh's Holy Guard",
+   "npc_type": 8756,
+   "sprite": 43191,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    110,
+    263
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 168,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600318,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    132,
+    221
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600319,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    129,
+    220
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600320,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    143,
+    222
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600321,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    143,
+    213
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600322,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    157,
+    213
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600323,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    155,
+    222
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600324,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    151,
+    228
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600325,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    143,
+    234
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600326,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    166,
+    220
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600327,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    173,
+    219
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600328,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    194,
+    213
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600329,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    200,
+    206
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600330,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    186,
+    196
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600331,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    179,
+    194
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600332,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    211,
+    193
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600333,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    223,
+    195
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600334,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    228,
+    198
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600335,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    233,
+    179
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600336,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    228,
+    177
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600337,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    75,
+    254
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600338,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    83,
+    257
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600339,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    92,
+    253
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600340,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    100,
+    257
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600341,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    102,
+    251
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600342,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    110,
+    260
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600343,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    110,
+    238
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600344,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    104,
+    234
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600345,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    81,
+    251
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600346,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    96,
+    251
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600347,
+   "nombre": "Nile Giant Bee",
+   "npc_type": 8758,
+   "sprite": 43194,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    107,
+    260
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600348,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    132,
+    224
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600349,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    135,
+    217
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600350,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    143,
+    225
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600351,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    143,
+    216
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600352,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    157,
+    216
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600353,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    155,
+    225
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600354,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    151,
+    231
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600355,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    143,
+    237
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600356,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    166,
+    223
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600357,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    173,
+    222
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600358,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    195,
+    216
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600359,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    200,
+    209
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600360,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    186,
+    199
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600361,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    179,
+    197
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600362,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    211,
+    196
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600363,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    227,
+    191
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600364,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    228,
+    201
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600365,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    236,
+    177
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600366,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    229,
+    173
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600367,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    75,
+    257
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600368,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    87,
+    255
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600369,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    92,
+    256
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600370,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    103,
+    257
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600371,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    102,
+    254
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600372,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    114,
+    256
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600373,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    113,
+    238
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600374,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    104,
+    237
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600375,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    81,
+    254
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600376,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    99,
+    251
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600377,
+   "nombre": "Golden Wave Fatty",
+   "npc_type": 8760,
+   "sprite": 43200,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    107,
+    263
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600378,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    132,
+    227
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600379,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    135,
+    220
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600380,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    143,
+    228
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600381,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    143,
+    219
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600382,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    157,
+    219
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600383,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    155,
+    228
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600384,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    151,
+    234
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600385,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    143,
+    240
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600386,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    166,
+    226
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600387,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    173,
+    225
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600388,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    140,
+    220
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600389,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    144,
+    231
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600390,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    138,
+    238
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600391,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    152,
+    224
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600392,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    154,
+    210
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600393,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    163,
+    220
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600394,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    171,
+    228
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600395,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    170,
+    218
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600396,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    160,
+    233
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600397,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    143,
+    243
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600398,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    148,
+    212
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600399,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    135,
+    227
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600400,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    131,
+    219
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600401,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    146,
+    222
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600402,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    146,
+    219
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600403,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    160,
+    213
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600404,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    158,
+    222
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600405,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    154,
+    234
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600406,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    146,
+    234
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600407,
+   "nombre": "King Tomb's Mage",
+   "npc_type": 8766,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    168,
+    221
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 164,
+   "zona": 0
+  },
+  {
+   "entity_id": 67600408,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    138,
+    223
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600409,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    132,
+    219
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600410,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    146,
+    228
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600411,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    149,
+    217
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600412,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    160,
+    219
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600413,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    158,
+    228
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600414,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    157,
+    231
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600415,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    146,
+    240
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600416,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    168,
+    225
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600417,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    176,
+    219
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600418,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    197,
+    210
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600419,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    200,
+    212
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600420,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    189,
+    196
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600421,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    182,
+    199
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600422,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    211,
+    199
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600423,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    229,
+    194
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600424,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    231,
+    198
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600425,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    239,
+    177
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600426,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    232,
+    173
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600427,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    75,
+    260
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600428,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    84,
+    259
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600429,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    94,
+    253
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600430,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    106,
+    257
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600431,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    105,
+    251
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600432,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    113,
+    258
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600433,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    116,
+    238
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600434,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    101,
+    234
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600435,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    83,
+    252
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600436,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    97,
+    253
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600437,
+   "nombre": "Mirage Sand Maid",
+   "npc_type": 8765,
+   "sprite": 42646,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    113,
+    263
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 166,
+   "zona": 103
+  },
+  {
+   "entity_id": 67600438,
+   "nombre": "Evil Priest Engty",
+   "npc_type": 8769,
+   "sprite": 43227,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    159,
+    231
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 170,
+   "apagado": true,
+   "zona": 106
+  },
+  {
+   "entity_id": 90176000,
+   "nombre": "Archeology Profe",
+   "nombre_completo": "Archeology Professor Harrison",
+   "npc_type": 8903,
+   "sprite": 40332,
+   "klass": 199,
+   "monstruo": false,
+   "tile": [
+    26,
+    13
+   ],
+   "direccion": 6,
+   "visible": 1,
+   "puesto_por": "npcs_del_cliente"
+  },
+  {
+   "entity_id": 90176001,
+   "nombre": "The Pharaoh's Bo",
+   "nombre_completo": "The Pharaoh's Book",
+   "npc_type": 8904,
+   "sprite": 60241,
+   "klass": 199,
+   "monstruo": false,
+   "tile": [
+    68,
+    29
+   ],
+   "direccion": 6,
+   "visible": 1,
+   "puesto_por": "npcs_del_cliente"
+  }
+ ],
+ "recursos": [
+  {
+   "entity_id": 77600000,
+   "sprite": 60367,
+   "capa": 0,
+   "px": [
+    1015,
+    2608
+   ],
+   "tile": [
+    31,
+    81
+   ],
+   "crudo": "0015a00400000000f7030000300a00000000000027000000000000001a000000dc06cfeb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60367"
+  },
+  {
+   "entity_id": 77600001,
+   "sprite": 60367,
+   "capa": 0,
+   "px": [
+    1608,
+    2896
+   ],
+   "tile": [
+    50,
+    90
+   ],
+   "crudo": "0115a0040000000048060000500b00000000000027000000000000001a000000dc06cfeb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60367"
+  },
+  {
+   "entity_id": 77600002,
+   "sprite": 60367,
+   "capa": 0,
+   "px": [
+    2004,
+    2704
+   ],
+   "tile": [
+    62,
+    84
+   ],
+   "crudo": "0215a00400000000d4070000900a00000000000027000000000000001a000000dc06cfeb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60367"
+  },
+  {
+   "entity_id": 77600003,
+   "sprite": 60367,
+   "capa": 0,
+   "px": [
+    2920,
+    3472
+   ],
+   "tile": [
+    91,
+    108
+   ],
+   "crudo": "0315a00400000000680b0000900d00000000000027000000000000001a000000dc06cfeb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60367"
+  },
+  {
+   "entity_id": 77600004,
+   "sprite": 60367,
+   "capa": 0,
+   "px": [
+    2517,
+    3280
+   ],
+   "tile": [
+    78,
+    102
+   ],
+   "crudo": "0415a00400000000d5090000d00c00000000000027000000000000001a000000dc06cfeb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60367"
+  },
+  {
+   "entity_id": 77600005,
+   "sprite": 60367,
+   "capa": 0,
+   "px": [
+    2803,
+    3088
+   ],
+   "tile": [
+    87,
+    96
+   ],
+   "crudo": "0515a00400000000f30a0000100c00000000000027000000000000001a000000dc06cfeb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60367"
+  },
+  {
+   "entity_id": 77600006,
+   "sprite": 60367,
+   "capa": 0,
+   "px": [
+    2034,
+    4144
+   ],
+   "tile": [
+    63,
+    129
+   ],
+   "crudo": "0615a00400000000f2070000301000000000000027000000000000001a000000dc06cfeb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60367"
+  },
+  {
+   "entity_id": 77600007,
+   "sprite": 60367,
+   "capa": 0,
+   "px": [
+    1662,
+    4336
+   ],
+   "tile": [
+    51,
+    135
+   ],
+   "crudo": "0715a004000000007e060000f01000000000000027000000000000001a000000dc06cfeb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60367"
+  },
+  {
+   "entity_id": 77600008,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    5219,
+    2736
+   ],
+   "tile": [
+    163,
+    85
+   ],
+   "crudo": "0815a0040000000063140000b00a00000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 77600009,
+   "sprite": 60461,
+   "capa": 0,
+   "px": [
+    4249,
+    2480
+   ],
+   "tile": [
+    132,
+    77
+   ],
+   "crudo": "0915a0040000000099100000b00900000000000023000000000000000000000000062dec00000480140000",
+   "copiado_de": "cuerpo de una captura del objeto 60461"
+  },
+  {
+   "entity_id": 77600010,
+   "sprite": 60305,
+   "capa": 0,
+   "px": [
+    4996,
+    2832
+   ],
+   "tile": [
+    156,
+    88
+   ],
+   "crudo": "0a15a0040000000084130000100b00000000000027000000000000001a000000dc0691eb00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60305"
+  },
+  {
+   "entity_id": 77600011,
+   "sprite": 60093,
+   "capa": 0,
+   "px": [
+    2207,
+    944
+   ],
+   "tile": [
+    68,
+    29
+   ],
+   "crudo": "0b15a004000000009f080000b00300000000000027000000000000001a000000dc06bdea00004080140000",
+   "copiado_de": "cuerpo de una captura del objeto 60093"
+  },
+  {
+   "entity_id": 77600012,
+   "sprite": 60461,
+   "capa": 0,
+   "px": [
+    4514,
+    2352
+   ],
+   "tile": [
+    141,
+    73
+   ],
+   "crudo": "0c15a00400000000a2110000300900000000000023000000000000000000000000062dec00000480140000",
+   "copiado_de": "cuerpo de una captura del objeto 60461"
+  },
+  {
+   "entity_id": 77600013,
+   "sprite": 60461,
+   "capa": 2,
+   "px": [
+    3809,
+    7664
+   ],
+   "tile": [
+    119,
+    239
+   ],
+   "crudo": "0d15a00402000000e10e0000f01d00000000000023000000000000000000000000062dec00000480140000",
+   "copiado_de": "cuerpo de una captura del objeto 60461"
+  },
+  {
+   "entity_id": 77600014,
+   "sprite": 60461,
+   "capa": 2,
+   "px": [
+    6154,
+    6576
+   ],
+   "tile": [
+    192,
+    205
+   ],
+   "crudo": "0e15a004020000000a180000b01900000000000023000000000000000000000000062dec00000480140000",
+   "copiado_de": "cuerpo de una captura del objeto 60461"
+  }
+ ]
+}

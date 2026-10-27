@@ -1,0 +1,78 @@
+{
+ "_nota": "game.* de los Lua -> subtipo del c2s 0x0016 que manda. Ver tools/opcodes_de_nativas.py.",
+ "nativas": {
+  "antiplaytime": {
+   "funcion": "0x58AD60",
+   "subtipos_0x0016": [
+    "0x20"
+   ]
+  },
+  "automallrequestmalldata": {
+   "funcion": "0x593790",
+   "subtipos_0x0016": [
+    "0x14",
+    "0x15"
+   ]
+  },
+  "closebank": {
+   "funcion": "0x589110",
+   "subtipos_0x0016": [
+    "0x12"
+   ]
+  },
+  "deletequest": {
+   "funcion": "0x584AE0",
+   "subtipos_0x0016": [
+    "0x08"
+   ]
+  },
+  "dropemot": {
+   "funcion": "0x578E60",
+   "subtipos_0x0016": [
+    "0x06"
+   ]
+  },
+  "dropxquickemot": {
+   "funcion": "0x578EF0",
+   "subtipos_0x0016": [
+    "0x06"
+   ]
+  },
+  "equipcrown": {
+   "funcion": "0x589430",
+   "subtipos_0x0016": [
+    "0x31"
+   ]
+  },
+  "opencollectionbook": {
+   "funcion": "0x59A6F0",
+   "subtipos_0x0016": [
+    "0x32"
+   ]
+  },
+  "quickemot": {
+   "funcion": "0x578FD0",
+   "subtipos_0x0016": [
+    "0x01"
+   ]
+  },
+  "repairclose": {
+   "funcion": "0x589E80",
+   "subtipos_0x0016": [
+    "0x22"
+   ]
+  },
+  "sendcollect": {
+   "funcion": "0x59A780",
+   "subtipos_0x0016": [
+    "0x33"
+   ]
+  },
+  "switchsubset": {
+   "funcion": "0x58AC90",
+   "subtipos_0x0016": [
+    "0x47"
+   ]
+  }
+ }
+}

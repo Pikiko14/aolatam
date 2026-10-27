@@ -1,0 +1,59 @@
+# ---------------------------------------------------------------------------
+# Capturas de trafico. NO se publican: llevan el nombre de cuenta del jugador,
+# el chat publico de OTRAS personas del servidor donde se grabaron, y la IP de
+# ese servidor. El analisis de esas capturas esta en docs/; los bytes crudos
+# no hacen falta para nada.
+# ---------------------------------------------------------------------------
+logs/
+*.pcapng
+*.pcap
+
+# Corpus derivado de las capturas y del cliente (544 MB). Se regenera con
+# tools/build_corpus2.py y tools/extract_content.py a partir de los paks.
+corpus/captura_nueva
+corpus/igg_sesionA
+corpus/igg_streams
+corpus/pcap_streams
+
+# El cliente descompilado (17 MB). Es material con copyright de IGG: se usa
+# como referencia para entender el protocolo, pero no se redistribuye.
+Angel_unpacked.c
+*.exe
+*.dll
+
+# Cuentas y personajes: datos locales de cada quien, con contrasenas.
+data/cuentas.json
+data/cuentas*
+cuentas.db
+cuentas.db-*
+data/cuentas.db
+data/cuentas.db-*
+data/content.db
+data/backups/
+
+# Codigo heredado de un proyecto anterior, que solo se consulto.
+src/
+
+# Restos de Windows y del editor
+nul
+__pycache__/
+*.pyc
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+scratch/
+extracted_paks
+items
+README_RE_partner_systems.md
+data/cuentas.json.old
+data/cuentas.bak
+
+# Respaldos que dejan las herramientas al tocar una plantilla
+# (tools/npcs_del_cliente.py, tools/objetos_de_mision.py). El historial de
+# git ya guarda la version anterior: subirlos solo es ruido.
+*.antes_*.bak
+
+# Volcados de REA/Ghidra (pseudo codigo del cliente): se regeneran con el MCP
+# rea y son codigo descompilado de IGG, no se publican.
+docs/rea_evidence/
