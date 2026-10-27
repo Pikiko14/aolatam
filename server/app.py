@@ -1043,8 +1043,8 @@ def _refrescar(ses, ranuras, con_oro=False):
                     _linea = inv.marcar_mejora(_linea, _mej['veces'])
                 # Y los stats del martillo verde, que van en la misma entrada en
                 # registros de cuatro bytes desde el offset 13.
-                if _mej and _mej.get('extra'):
-                    _linea = inv.marcar_extras(_linea, _mej['extra'])
+                if inv.extras_visibles(_mej):
+                    _linea = inv.marcar_extras(_linea, inv.extras_visibles(_mej))
                 # Y LOS HUECOS con sus gemas, que van en el 82 y del 62 al 81.
                 # Sin esto el cliente no dibujaba donde meter la gema, asi que
                 # tras abrir el primer hueco la pieza se quedaba atascada.
@@ -2147,6 +2147,110 @@ def _pet_plantilla():
         _PET_PL[0] = bytes.fromhex(_json.loads(
             _iv.PLANTILLA_INI.read_text(encoding='utf-8'))['mascota_mundo'])
     return _PET_PL[0]
+
+
+def _robot_objetivo(ses, objetivo):
+    """La casilla del robot sobre el que se usa algo: el clicado o, si no, el equipado."""
+    import inventario as _iv
+    bolsa = ses.inventario
+    if objetivo in bolsa and _iv.categoria_item(bolsa[objetivo]) == '機甲':
+        return objetivo
+    if _iv.categoria_item(bolsa.get(RANURA_MONTURA, 0)) == '機甲':
+        return RANURA_MONTURA
+    return None
+
+
+def _usar_pieza_robot(ses, addr, ranura, objetivo, pieza):
+    """Instala una pieza de robot (Fast Gear, Energy Core...): inventario.pieza_de_robot."""
+    import clases as _cl
+    bolsa = ses.inventario
+    p = ses.personaje
+    robot = _robot_objetivo(ses, objetivo)
+    if robot is None:
+        ses.enviar(_cl.aviso('Right click the part and then left click a robot.', tipo=0))
+        return
+    if int(getattr(p, 'nivel', 0) or 0) < pieza['nivel']:
+        ses.enviar(_cl.aviso('This part requires level %d.' % pieza['nivel'], tipo=0))
+        return
+    if getattr(p, 'mejoras', None) is None:
+        p.mejoras = {}
+    pz_item = int(bolsa[ranura])
+    mej_robot = p.mejoras.setdefault(robot, {})
+    # Al pasar por el JSON del guardado las claves llegan como texto ("33").
+    piezas = {str(k): int(v) for k, v in (mej_robot.get('piezas') or {}).items()}
+    mej_robot['piezas'] = piezas
+    anterior = piezas.get(pieza['tipo'])
+    piezas[pieza['tipo']] = pz_item
+    _sacar(ses, ranura, 1)
+    efectos = []
+    b = __import__('inventario')._bonus(pz_item)
+    if b.get('carga'):
+        efectos.append('Load +%d' % b['carga'])
+    if pieza['fabricacion_pct']:
+        efectos.append('manufacturing speed +%d%%' % pieza['fabricacion_pct'])
+    if pieza['recoleccion_pct']:
+        efectos.append('collecting speed +%d%%' % pieza['recoleccion_pct'])
+    texto = '%s installed on %s: %s.' % (_nombre_item(pz_item), _nombre_item(bolsa[robot]), ', '.join(efectos) or 'done')
+    if anterior:
+        texto += ' Replaced %s.' % _nombre_item(anterior)
+    ses.enviar(*_refrescar(ses, [ranura, robot]), _stats_ses(ses), _cl.aviso(texto, tipo=0))
+    _guardar_bolsa(ses, p.char_id)
+    log.info('[%s] pieza %s en el robot de la casilla %s (tipo %s, antes %s)',
+             addr, pz_item, robot, pieza['tipo'], anterior)
+
+
+def _pct_fabricacion(p, bolsa=None):
+    """El % que se le quita al tiempo de fabricar: buffs y piezas de robot puestas."""
+    import inventario as _iv
+    import lyceum_services as _ly
+    return (_ly.bono(getattr(p, 'buffs', None), 'fabricacion_pct')
+            + _iv.velocidad_de_equipo(bolsa if bolsa is not None else getattr(p, 'inventario', None),
+                                      getattr(p, 'mejoras', None), 'fabricacion_pct'))
+
+
+def _tiempo_fabricacion(ses, row, p=None):
+    """Segundos que tarda una receta, ya con el % de _pct_fabricacion."""
+    base = max(0.1, float(row.get('製作時間') or 1))
+    pct = _pct_fabricacion(p or ses.personaje, ses.inventario)
+    delay = base * max(0.10, 1 - pct / 100)
+    log.info('[%s] fabricar %s: %.1fs de %.1fs (velocidad +%d%%)',
+             getattr(ses, 'addr', '?'), row.get('物品編號'), delay, base, pct)
+    return delay
+
+
+def _usar_fuel_robot(ses, addr, ranura, objetivo, fuel):
+    """Mighty Fuel: carga extra en el robot elegido (o el equipado) mientras dure.
+
+    Se guarda en las mejoras del robot, que viajan con el al moverlo; solo
+    suma con el robot puesto (inventario.bonos_de_equipo). Como en la magia
+    (同類無法使用), no se acumula con otro fuel activo en el mismo robot."""
+    import clases as _cl
+    bolsa = ses.inventario
+    robot = _robot_objetivo(ses, objetivo)
+    if robot is None:
+        ses.enviar(_cl.aviso('Right click the fuel and then left click a robot.', tipo=0))
+        return
+    p = ses.personaje
+    if getattr(p, 'mejoras', None) is None:
+        p.mejoras = {}
+    ahora = time.time()
+    activo = (p.mejoras.get(robot) or {}).get('fuel') or {}
+    if float(activo.get('fin') or 0) > ahora:
+        horas = max(1, int((float(activo['fin']) - ahora) // 3600))
+        ses.enviar(_cl.aviso('This robot already has fuel active (%d h left).' % horas, tipo=0))
+        return
+    fuel_item = bolsa[ranura]
+    p.mejoras.setdefault(robot, {})['fuel'] = {'item': int(fuel_item), 'magia': fuel['magia'],
+                                               'carga': fuel['carga'], 'fin': ahora + fuel['segundos']}
+    _sacar(ses, ranura, 1)
+    dias, horas = divmod(fuel['segundos'] // 3600, 24)
+    dura = '%d day%s' % (dias, '' if dias == 1 else 's') if dias else '%d hours' % horas
+    ses.enviar(*_refrescar(ses, [ranura, robot]), _stats_ses(ses),
+               _cl.aviso('%s: %s Load +%d for %s.' % (_nombre_item(fuel_item), _nombre_item(bolsa[robot]),
+                                                     fuel['carga'], dura), tipo=0))
+    _guardar_bolsa(ses, p.char_id)
+    log.info('[%s] fuel %s en el robot de la casilla %s: carga +%d durante %d s',
+             addr, fuel_item, robot, fuel['carga'], fuel['segundos'])
 
 
 def _usar_mejora(ses, addr, ranura, objetivo) -> bool:
@@ -4785,9 +4889,7 @@ def _casa_fabricar(ses, recipe_id):
         _guardar_bolsa(ses, ses.personaje.char_id)
         ses.enviar_inmediato(*_refrescar(ses, touched),
                             struct.pack('<HBI', 0x004C, int(success), recipe_id))
-    delay = max(0.1, int(row.get('製作時間') or 1))
-    import lyceum_services as _ly_make
-    delay *= max(0.10, 1-_ly_make.bono(getattr(ses.personaje, 'buffs', None), 'fabricacion_pct')/100)
+    delay = _tiempo_fabricacion(ses, row)
     ses.house_make_task = asyncio.get_event_loop().call_later(delay, finish)
 
 def _fabricar_receta(ses, recipe_id):
@@ -4877,9 +4979,7 @@ def _fabricar_receta(ses, recipe_id):
         pkgs.append(struct.pack('<HBI', 0x004C, int(success), recipe_id))
         ses.enviar_inmediato(*pkgs)
 
-    delay = max(0.1, int(row.get('製作時間') or 1))
-    import lyceum_services as _ly_make
-    delay *= max(0.10, 1 - _ly_make.bono(getattr(p, 'buffs', None), 'fabricacion_pct') / 100)
+    delay = _tiempo_fabricacion(ses, row, p)
     try:
         import asyncio
         ses.craft_task = asyncio.get_event_loop().call_later(delay, finish)
@@ -5910,6 +6010,7 @@ def _herramienta_para(ses, herramienta):
                     for r in range(1, 11) if bolsa.get(r))
     import lyceum_services as _ly_gather
     velocidad += _ly_gather.bono(getattr(ses.personaje, 'buffs', None), 'recoleccion_pct')
+    velocidad += _iv_h.velocidad_de_equipo(bolsa, _mejoras_de(ses), 'recoleccion_pct')
     if cat_m == '機甲':
         # Optimizacion de recoleccion en robot mediante Drive (25)
         p = getattr(ses, 'personaje', None)
@@ -16557,6 +16658,16 @@ class Servidor:
                 _pet_alternar(ses, addr, ranura)
                 return
 
+            # MIGHTY FUEL sobre un robot (使用目標="目標機甲").
+            _fuel_uso = inv.uso_en_robot(bolsa[ranura])
+            if _fuel_uso and ses.personaje:
+                _usar_fuel_robot(ses, addr, ranura, objetivo, _fuel_uso)
+                return
+            _pieza_uso = inv.pieza_de_robot(bolsa[ranura])
+            if _pieza_uso and ses.personaje:
+                _usar_pieza_robot(ses, addr, ranura, objetivo, _pieza_uso)
+                return
+
             # MEJORAS: morteros, martillos, piensos y gemas (incluyendo desde la barra F1-F12).
             if ses.personaje:
                 import mejoras as _mj_2e
@@ -17931,7 +18042,8 @@ class Servidor:
                 log.info(f"[{addr}] {p.nombre} uso Skill Leveling Stone {item_id} -> HABILIDADES SUBIDAS A NIVEL {target_sk_lv}!")
                 return
 
-            log.info(f"[{addr}] usar item {item_id} (ranura {ranura}): sin accion")
+            log.info(f"[{addr}] usar item {item_id} (ranura {ranura}): sin accion "
+                     f"(objetivo {objetivo}, cuerpo {cuerpo.hex(' ')})")
             return
 
         if __import__('elementary').procesar(ses,opcode,cuerpo):

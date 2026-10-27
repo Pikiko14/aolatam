@@ -9,6 +9,7 @@ Antes de modificar cualquier archivo del cliente (update26.pak, START.EXE, reg.i
 se crea siempre una copia de respaldo (.bak) intacta si no existe todavia.
 """
 import asyncio
+import html
 import json
 import logging
 import os
@@ -373,6 +374,26 @@ def _parchear_equipo_ligado_vendible_xml_bytes(xml_bytes: bytes) -> bytes:
     return txt.encode('utf-8')
 
 
+def _parchear_descripciones_xml_bytes(xml_bytes: bytes) -> bytes:
+    """Pone el 說明定義 de los objetos de configuracion.DESCRIPCIONES_ITEMS."""
+    cambios = {int(k): str(v) for k, v in (getattr(_cf, 'DESCRIPCIONES_ITEMS', None) or {}).items()}
+    if not cambios:
+        return xml_bytes
+    txt = xml_bytes.decode('utf-8', errors='ignore')
+
+    def _parchear(m):
+        tag = m.group(0)
+        ident = re.match(r'<道具\s+編號="(\d+)"', tag)
+        if not ident or int(ident.group(1)) not in cambios:
+            return tag
+        nuevo = html.escape(cambios[int(ident.group(1))], quote=True)
+        if '說明定義="' in tag:
+            return re.sub(r'說明定義="[^"]*"', lambda _m: f'說明定義="{nuevo}"', tag, count=1)
+        return tag[:-2].rstrip() + f' 說明定義="{nuevo}" />'
+
+    return re.sub(r'<道具\b[^>]*?/>', _parchear, txt).encode('utf-8')
+
+
 def _parchear_battlepass_xml_bytes(xml_bytes: bytes) -> bytes:
     """Alarga la temporada pase.TEMPORADA del Angel Pass.
 
@@ -543,6 +564,44 @@ def actualizar_pak_cliente(pak_path: pathlib.Path, reemplazos: dict) -> bool:
     return True
 
 
+def _entradas_pak(pak_path: pathlib.Path) -> set:
+    """Nombres (en mayusculas, con \\) que trae el pak; solo lee su directorio."""
+    with open(pak_path, 'rb') as f:
+        f.seek(-22, 2)
+        eocd = bytearray(f.read(22))
+        if eocd[:4] != b'OD\x05\x06':
+            return set()
+        for i in range(4, 22):
+            eocd[i] ^= (3 * i - 91) & 0xFF
+        comp, _, _, _, cd_offset, _ = struct.unpack('<IHHIIH', eocd[4:22])
+        f.seek(cd_offset + 4)
+        raw = bytearray(f.read(comp))
+    raw[0] ^= 0x7A
+    cd, off, salida = zlib.decompress(bytes(raw)), 0, set()
+    while off + 46 <= len(cd):
+        fn_len, ex_len, cm_len = struct.unpack_from('<HHH', cd, off + 28)
+        salida.add(cd[off + 46:off + 46 + fn_len].decode('ascii', 'ignore').upper().replace('/', '\\'))
+        off += 46 + fn_len + ex_len + cm_len
+    return salida
+
+
+def indice_paks(ruta_cli: pathlib.Path) -> dict:
+    """{nombre: pak} con el pak del que el cliente lee cada archivo: el de
+    numero mas alto que lo trae (update26 no trae item.xml..item4.xml)."""
+    import paks_cliente
+    indice = {}
+    paks = sorted((p for p in ruta_cli.iterdir()
+                   if p.suffix.lower() == '.pak' and paks_cliente.numero(p.name) >= -1),
+                  key=lambda p: paks_cliente.numero(p.name))
+    for pak in paks:
+        try:
+            for nombre in _entradas_pak(pak):
+                indice[nombre] = pak
+        except Exception as e:
+            log.warning(f"No se pudo leer el indice de {pak.name}: {e}")
+    return indice
+
+
 def _extraer_archivo_pak(pak_path: pathlib.Path, nombre_buscado: str) -> bytes:
     """Extrae un archivo descomprimido desde un .pak (formato OD\\x05\\x06)."""
     if not pak_path.exists():
@@ -671,22 +730,32 @@ def aplicar_modo_estacion(modo: str = None) -> str:
         if patched_obd != raw_obd:
             reemplazos[r'SETTING\SERVER.OBD'] = patched_obd
 
-    # Tablas de items: conservar el consumible custom y permitir vender a NPC
-    # el equipo ligado de recompensa sin volverlo comerciable entre jugadores.
+    # Tablas de items: conservar el consumible custom, permitir vender a NPC
+    # el equipo ligado de recompensa sin volverlo comerciable entre jugadores
+    # y las descripciones de configuracion. Cada item*.xml va al pak del que
+    # lo lee el cliente: update26 solo trae item5..item9.
+    indice = indice_paks(ruta_cli)
+    otros_paks = {}
     for numero in range(1, 10):
         nombre = 'item.xml' if numero == 1 else f'item{numero}.xml'
         ruta_pak = rf'SETTING\ENG\{nombre.upper()}'
+        pak_item = indice.get(ruta_pak, pak26)
+        bak_item = pak_item.with_name(pak_item.name + '.bak')
         f_item = (RAIZ_PROYECTO / 'extracted_paks' / 'update26' /
                   'setting' / 'eng' / nombre)
         raw_item = (f_item.read_bytes() if f_item.exists()
                     else _extraer_archivo_pak(
-                        bak26 if bak26.exists() else pak26, ruta_pak))
+                        bak_item if bak_item.exists() else pak_item, ruta_pak))
         if not raw_item:
             continue
         if numero == 9:
             raw_item = _parchear_item9_xml_bytes(raw_item)
         raw_item = _parchear_equipo_ligado_vendible_xml_bytes(raw_item)
-        reemplazos[ruta_pak] = raw_item
+        raw_item = _parchear_descripciones_xml_bytes(raw_item)
+        if pak_item == pak26:
+            reemplazos[ruta_pak] = raw_item
+        else:
+            otros_paks.setdefault(pak_item, {})[ruta_pak] = raw_item
 
     # La estacion en stage.xml: se parte SIEMPRE del original del .bak
     raw_stage = _extraer_archivo_pak(bak26 if bak26.exists() else pak26,
@@ -730,11 +799,14 @@ def aplicar_modo_estacion(modo: str = None) -> str:
     except Exception as e:
         log.warning(f'Error gestionando mapas en {dir_map}: {e}')
 
-    if reemplazos:
+    for pak, cambios in [(pak26, reemplazos)] + list(otros_paks.items()):
+        if not cambios:
+            continue
         try:
-            actualizar_pak_cliente(pak26, reemplazos)
+            actualizar_pak_cliente(pak, cambios)
         except Exception as e:
-            log.warning(f"No se pudo actualizar {pak26} (quiza el juego esta abierto): {e}")
+            log.warning(f"No se pudo actualizar {pak} (quiza el juego o el editor de mapas "
+                        f"esta abierto): {e}")
     return modo_Norm
 
 

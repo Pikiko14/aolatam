@@ -34,6 +34,7 @@ import pathlib
 import re
 import sqlite3
 import struct
+import configuracion
 import mascotas as _ms
 import time
 
@@ -568,6 +569,14 @@ def bonos_de_equipo(bolsa, mejoras: dict = None, mascotas: dict = None) -> dict:
                          'hp', 'mp', 'atk', 'carga', 'res_body', 'res_mind',
                          'res_lightning', 'res_fire', 'res_ice', 'res_corrosion'):
                 x[_dest] = x.get(_dest, 0) + int(_v)
+        # El Mighty Fuel del robot (ver uso_en_robot): suma mientras dura.
+        _fuel = _ex.get('fuel') or {}
+        if _fuel and float(_fuel.get('fin') or 0) > time.time():
+            x['carga'] = x.get('carga', 0) + int(_fuel.get('carga') or 0)
+        # Y sus piezas instaladas (ver pieza_de_robot), con todos sus stats.
+        for _pz in piezas_instaladas(_ex):
+            for _k, _v in _bonus(_pz).items():
+                x[_k] = x.get(_k, 0) + _v
         eq['def'] += x.get('def', 0)
         eq['accuracy'] += x.get('accuracy', 0)
         eq['agility'] += x.get('agility', 0)
@@ -1291,6 +1300,73 @@ _VEL_MONTURA = {}
 _VEL_RECOLECCION = {}
 
 
+# LAS PIEZAS DE ROBOT (機甲零件): Producing Fast Gear, Collecting Energy Core,
+# Power/Drive/Turbo. Se instalan en el robot (clic derecho en la pieza, clic
+# izquierdo en el robot) y le suman sus stats de item.xml -- carga, HP,
+# ataque, defensa -- y su 製作速度 / 採集速度. 動態資料1 es el tipo de pieza
+# (31 motor, 33 produccion/recoleccion): una por tipo, la nueva reemplaza a
+# la anterior. 等級限制 es el nivel que pide al personaje.
+CATEGORIA_PIEZA_ROBOT = '\u6a5f\u7532\u96f6\u4ef6'
+_PIEZAS = {}
+_COL_ITEM = {}
+
+
+def _col_item(item_id: int, columna: str) -> int:
+    """Una columna numerica del item, 0 si no la trae (no todas las tablas la tienen)."""
+    clave = (int(item_id or 0), columna)
+    if clave not in _COL_ITEM:
+        v = 0
+        try:
+            import sqlite3
+            db = pathlib.Path(__file__).parent.parent / 'corpus' / 'content.db'
+            if db.exists():
+                con = sqlite3.connect(db)
+                try:
+                    fila = fila_item(con, '"%s"' % columna, clave[0])
+                finally:
+                    con.close()
+                if fila and str(fila[0] or '').lstrip('-').isdigit():
+                    v = int(fila[0])
+        except Exception:
+            v = 0
+        _COL_ITEM[clave] = v
+    return _COL_ITEM[clave]
+
+
+def pieza_de_robot(item_id: int):
+    """{'tipo', 'nivel', 'fabricacion_pct', 'recoleccion_pct'} si es pieza de robot, o None."""
+    iid = int(item_id or 0)
+    if iid not in _PIEZAS:
+        _PIEZAS[iid] = None if categoria_item(iid) != CATEGORIA_PIEZA_ROBOT else {
+            'tipo': str(_col_item(iid, '\u52d5\u614b\u8cc7\u65991')),
+            'nivel': _col_item(iid, '\u7b49\u7d1a\u9650\u5236'),
+            'fabricacion_pct': _col_item(iid, '\u88fd\u4f5c\u901f\u5ea6'),
+            'recoleccion_pct': _col_item(iid, '\u63a1\u96c6\u901f\u5ea6')}
+    return _PIEZAS[iid]
+
+
+def piezas_instaladas(mejora) -> list:
+    """Los item_id de las piezas puestas en ese robot."""
+    return [int(i) for i in ((mejora or {}).get('piezas') or {}).values() if i]
+
+
+def velocidad_de_equipo(bolsa, mejoras, clave: str) -> int:
+    """El % de 'fabricacion_pct' o 'recoleccion_pct' que dan las piezas
+    instaladas en lo que se lleva puesto (ranuras 1..10)."""
+    total = 0
+    for r in range(1, 11):
+        if not (bolsa or {}).get(r):
+            continue
+        for pz in piezas_instaladas((mejoras or {}).get(r)):
+            total += (pieza_de_robot(pz) or {}).get(clave, 0)
+    return total
+
+
+def velocidad_fabricacion(item_id: int) -> int:
+    """El % que ese item le quita al tiempo de fabricacion (製作速度)."""
+    return _col_item(item_id, '\u88fd\u4f5c\u901f\u5ea6')
+
+
 def velocidad_recoleccion(item_id: int) -> int:
     """El % que ese item le quita al tiempo de recoleccion (採集速度).
 
@@ -1496,6 +1572,12 @@ ID_EXTRA = {
     # desconocido: es el numero de casillas que suma la mochila.
     'peso': 28,
     'ranuras': 192,
+    # Del cliente: la funcion 0x71DBD0 de angel.dat traduce id/4 al texto de
+    # string.xml con un switch de 1 a 58. El 57 es "Collection Speed" (2161)
+    # y el 58 "Production Speed" (2162). Esa misma tabla da todos los de
+    # arriba (1 HP, 3 MP, 7 Maximum Weight, 8 Attack... 48 Backpack slots).
+    'recoleccion': getattr(configuracion, 'ID_EXTRA_RECOLECCION', 228),
+    'fabricacion': getattr(configuracion, 'ID_EXTRA_FABRICACION', 232),
 }
 
 
@@ -1508,7 +1590,7 @@ def marcar_extras(entrada: bytes, extras: dict) -> bytes:
     hueco = 0
     for nombre, valor in extras.items():
         sid = ID_EXTRA.get(nombre)
-        if sid is None or not valor or hueco >= MAX_EXTRAS:
+        if not sid or not valor or hueco >= MAX_EXTRAS:
             continue
         o = base + OFF_EXTRAS + hueco * TAM_EXTRA
         if o + TAM_EXTRA > len(b):
@@ -1520,10 +1602,31 @@ def marcar_extras(entrada: bytes, extras: dict) -> bytes:
     return bytes(b)
 
 
+def extras_visibles(mejora) -> dict:
+    """Los stats verdes que ensena la pieza: los del martillo y, en un robot,
+    la carga del Mighty Fuel mientras dura (como "Maximum Weight") y los
+    stats de sus piezas. Esos los suma bonos_de_equipo aparte: aqui solo se
+    ensenan."""
+    extras = dict((mejora or {}).get('extra') or {})
+    fuel = (mejora or {}).get('fuel') or {}
+    if fuel and float(fuel.get('fin') or 0) > time.time():
+        extras['peso'] = int(extras.get('peso') or 0) + int(fuel.get('carga') or 0)
+    for pz in piezas_instaladas(mejora):
+        b = _bonus(pz)
+        for propio, nombre in (('carga', 'peso'), ('hp', 'hp'), ('atk', 'atk'), ('def', 'dfs')):
+            if b.get(propio):
+                extras[nombre] = int(extras.get(nombre) or 0) + int(b[propio])
+        datos = pieza_de_robot(pz) or {}
+        for propio, nombre in (('fabricacion_pct', 'fabricacion'), ('recoleccion_pct', 'recoleccion')):
+            if datos.get(propio) and ID_EXTRA.get(nombre):
+                extras[nombre] = int(extras.get(nombre) or 0) + int(datos[propio])
+    return extras
+
+
 def leer_extras(entrada: bytes) -> dict:
     """Lo contrario: saca los stats extra de una entrada."""
     base = 6 if entrada[:2] == struct.pack('<H', 0x001B) else 0
-    por_id = {v: k for k, v in ID_EXTRA.items()}
+    por_id = {v: k for k, v in ID_EXTRA.items() if v}
     out = {}
     for h in range(MAX_EXTRAS):
         o = base + OFF_EXTRAS + h * TAM_EXTRA
@@ -2365,8 +2468,8 @@ def completo(char_id: int, items, dueno: int = None, mejoras=None,
             _e = marcar_vinculacion(_e, _m)
             if _m and _m.get('veces'):
                 _e = marcar_mejora(_e, _m['veces'])
-            if _m and _m.get('extra'):
-                _e = marcar_extras(_e, _m['extra'])
+            if extras_visibles(_m):
+                _e = marcar_extras(_e, extras_visibles(_m))
             if _m and (_m.get('huecos') or _m.get('gemas')):
                 _e = marcar_huecos(_e, _m.get('huecos') or 0, _m.get('gemas'))
         lista.append(_e)
@@ -2539,8 +2642,8 @@ def actualizar_ranuras(char_id: int, entradas, dueno: int = None,
             _e = marcar_vinculacion(_e, _m)
             if _m and _m.get('veces'):
                 _e = marcar_mejora(_e, _m['veces'])
-            if _m and _m.get('extra'):
-                _e = marcar_extras(_e, _m['extra'])
+            if extras_visibles(_m):
+                _e = marcar_extras(_e, extras_visibles(_m))
             if _m and (_m.get('huecos') or _m.get('gemas')):
                 _e = marcar_huecos(_e, _m.get('huecos') or 0, _m.get('gemas'))
         lista.append(_e)
@@ -2920,6 +3023,43 @@ def uso_en_mascota(item_id: int):
     except Exception:
         pass
     return None
+
+
+# Los consumibles que se usan SOBRE UN ROBOT (使用目標="目標機甲"). Los Mighty
+# Fuel apuntan en 動態資料1 a una magia con la carga (負重) y la duracion:
+#
+#   1961 Mighty Fuel                     magia 1825  +2000   8 horas
+#   2022/2023/2024 Mighty Fuel 1/7/30 d  1827..1829  +5000
+#   6053/6054/6055 Great Mighty Fuel     3691..3693  +10000  1/7/30 dias
+#   8820 Torque Force Fuel (1 Day)       1827        +5000
+#
+# Los Fighting/Defensive Fuel tambien van al robot, pero su magia no lleva
+# carga: no entran aqui.
+OBJETIVO_ROBOT = '\u76ee\u6a19\u6a5f\u7532'
+
+
+def uso_en_robot(item_id: int):
+    """{'magia': id, 'carga': N, 'segundos': N} si es un combustible de carga, o None."""
+    try:
+        import sqlite3
+        db = pathlib.Path(__file__).parent.parent / 'corpus' / 'content.db'
+        if not db.exists():
+            return None
+        con = sqlite3.connect(db)
+        try:
+            fila = fila_item(con, '"使用目標", "動態資料1"', item_id)
+            if not fila or str(fila[0] or '') != OBJETIVO_ROBOT or not str(fila[1] or '').isdigit():
+                return None
+            r = con.execute('select 負重, 持續時間 from magic where id=?', (str(fila[1]),)).fetchone()
+        finally:
+            con.close()
+        carga = int(r[0]) if r and str(r[0] or '').isdigit() else 0
+        seg = int(r[1]) if r and str(r[1] or '').isdigit() else 0
+        if carga <= 0 or seg <= 0:
+            return None
+        return {'magia': int(fila[1]), 'carga': carga, 'segundos': seg}
+    except Exception:
+        return None
 
 
 # Los multiplicadores de experiencia y botin. Cada carta lleva un 常駐法術 y

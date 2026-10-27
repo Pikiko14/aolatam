@@ -307,8 +307,9 @@ def es_bolsa(item_id: int) -> bool:
 _TABLA_CACHE = {}
 
 
-def _sorteo(tabla_id):
-    """(item, cuantos) de esa tabla, por peso. None si no hay nada que dar."""
+def _sorteo(tabla_id, excluir=()):
+    """(item, cuantos) de esa tabla, por peso, sin los objetos de `excluir`.
+    None si no hay nada que dar."""
     if tabla_id in _TABLA_CACHE:
         opciones = _TABLA_CACHE[tabla_id]
     else:
@@ -343,6 +344,8 @@ def _sorteo(tabla_id):
             if raw_ops:
                 opciones = [(int(it), int(ct), int(pr)) for it, ct, pr in raw_ops]
         _TABLA_CACHE[tabla_id] = opciones
+    if excluir:
+        opciones = [o for o in opciones if o[0] not in excluir]
     if not opciones:
         return None
     total = sum(p for _i, _c, p in opciones)
@@ -365,7 +368,8 @@ def abrir(item_id: int):
     if not que:
         return None
     clase, valor = que
-    return _sorteo(valor)
+    import configuracion
+    return _sorteo(valor, getattr(configuracion, 'QUITAR_DE_BOLSAS', {}).get(iid, ()))
 
 
 # ---------------------------------------------------------------------------

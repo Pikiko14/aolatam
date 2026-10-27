@@ -322,6 +322,127 @@ CAMPOS_TOTEM_WAR = frozenset({
 
 
 # =====================================================================
+# FICHA DEL ROBOT: VELOCIDAD DE LAS PIEZAS
+# =====================================================================
+# Numero de stat con el que se ensena en verde la velocidad de recoleccion y
+# de fabricacion de las piezas (Fast Gear, Energy Core) en la ficha del
+# robot. Poner 0 para no enviarlo; el bono se aplica igual aunque no se vea.
+ID_EXTRA_RECOLECCION = 228
+ID_EXTRA_FABRICACION = 232
+
+
+# =====================================================================
+# PREMIOS QUITADOS DE BOLSAS
+# =====================================================================
+# {bolsa: {objeto, ...}}: esos objetos ya no salen al abrir esa bolsa. Los
+# demas premios conservan su peso, asi que su probabilidad sube en proporcion.
+# La descripcion del cliente los sigue listando.
+QUITAR_DE_BOLSAS = {
+    11963: {3852},  # HalloweenArtisan Lucky Bag: sin Dragon Egg
+    11259: {6394},  # Virgo Mage Lucky Bag (2): sin Great Orange Potion
+    11257: {6394},  # Virgo Spearman Lucky Bag (2): sin Great Orange Potion
+    11256: {6394},  # Virgo Axeman Lucky Bag (2): sin Great Orange Potion
+    11255: {6394},  # Virgo Swordsman Lucky Bag (2): sin Great Orange Potion
+}
+
+
+# =====================================================================
+# DESCRIPCIONES DE OBJETOS
+# =====================================================================
+# {objeto: texto}: al arrancar, el servidor las escribe en el cliente local
+# (update26.pak), con el juego cerrado. Cada jugador necesita ese .pak.
+DESCRIPCIONES_ITEMS = {
+    11963: ('Open to get one of the following items: Power Ring, Polar Region Penguin Robot, '
+            'Universal Gift Box, Advanced Koala Robot 2, Producing Fast Gear Lvl 3, '
+            'Collecting Energy Core Lvl 3, Moon Warrior Helmet, Craftsman Soul Box, Pestle, '
+            'Safe Key (30 days), Stall Gold Card 3, Monster Breath (30 days), Mighty Fuel (30 days), '
+            'Transform Luck Bag, Super Broadcasting x5, Spacious Bank x20, Pet Feed x10, '
+            'Experience Pet Gem Lucky Bag, Recovery Notice.'),
+    # Advance Lucky Bag
+    14710: ('Open to get one of the following items: Angel Amulet, Monster Breath, Mighty Fuel (7 '
+            'days), Breeze Woods Scroll x12, Dark City Scroll x12, Iron Castle Scroll x12, Aurora '
+            'City Scroll x12, Big-2 Common Card 3, Double Skill Exp Card (30 M.) x12, Super '
+            'Broadcasting x3, Flaming Beetle Bag, Hiphop Dog Warplane, Roll Kitty Warplane, Blue Evil'
+            " Cat, Black Fight Lizard, Evil Cat's Staff, Ice Bow, Spear of Earth, Blood Axe of Beast "
+            'God, Sword of Goddess.'),
+    # Wulfie Master Lucky Bag(2)
+    11776: ("Open to get one of the following items: Snow Evil Cat, Top Gown Box Lvl 35, Evil Cat's "
+            'Staff, Magic Alchemic Gown, Moonnight Mantle, Magic Alchemic Cap, Autumn Fiesta Fan, '
+            'Diamond Bag, Transform Luck Bag, Defend Gift Box, Attack Gift Box, City Scroll Bag, '
+            "Master's Love x3, Pet Feed x4, Super Broadcasting x2, 8 Carat Exp Stone x6, Lucky Card "
+            '(30 Minutes) x10, Pet Amulet x20.'),
+    # Wulfie Archer Lucky Bag(2)
+    11775: ('Open to get one of the following items: Flame Chariot, Top Light Armor Box Lvl 35, Ice '
+            'Bow, Ice Stone Armor, Angel Wings, Icy Hard-Leather Cap, Autumn Fiesta Fan, Diamond Bag,'
+            " Transform Luck Bag, Defend Gift Box, Attack Gift Box, City Scroll Bag, Master's Love "
+            'x3, Pet Feed x4, Super Broadcasting x2, 8 Carat Exp Stone x6, Lucky Card (30 Minutes) '
+            'x10, Pet Amulet x20.'),
+    # Wulfie Spearman Lucky Bag(2)
+    11774: ('Open to get one of the following items: Flame Chariot, Top Heavy Armor Box Lvl 35, Spear'
+            ' of Earth, Beastman Leather Armor, Bat Wings, Beastman Viking Cap, Autumn Fiesta Fan, '
+            'Diamond Bag, Transform Luck Bag, Defend Gift Box, Attack Gift Box, City Scroll Bag, '
+            "Master's Love x3, Pet Feed x4, Super Broadcasting x2, 8 Carat Exp Stone x6, Lucky Card "
+            '(30 Minutes) x10, Pet Amulet x20.'),
+    # Wulfie Axeman Lucky Bag(2)
+    11773: ('Open to get one of the following items: Moon Gerbil, Top Heavy Armor Box Lvl 35, Blood '
+            'Axe of Beast God, Beastman Leather Armor, Crystal Shield, Beastman Viking Cap, Autumn '
+            'Fiesta Fan, Diamond Bag, Transform Luck Bag, Defend Gift Box, Attack Gift Box, City '
+            "Scroll Bag, Master's Love x3, Pet Feed x4, Super Broadcasting x2, 8 Carat Exp Stone x6, "
+            'Lucky Card (30 Minutes) x10, Pet Amulet x20.'),
+    # Wulfie Master Lucky Bag(1)
+    11771: ('Open to get one of the following items: Night Cat, Fiery Staff, Green Beetle Bag, Magic '
+            'Gown of Flame God, Devil Wings, Gloves of the Flame God, Fiery Boots, Holy Alchemic Cap,'
+            ' Pearl Refining, Diamond Bag, Transform Luck Bag, Defend Gift Box, Attack Gift Box, City'
+            " Scroll Bag, Master's Love x4, Pet Feed x6, Super Broadcasting x2, 8 Carat Exp Stone x8."),
+    # Wulfie Archer Lucky Bag(1)
+    11770: ('Open to get one of the following items: Handsome Burro, Splash Slingshot, Red Beetle '
+            'Bag, Eagle Breastplate, Fighting Wings, Eagle Wristlet, Eagle Boots, Eagle Hood, Pearl '
+            'Refining, Diamond Bag, Transform Luck Bag, Defend Gift Box, Attack Gift Box, City Scroll'
+            " Bag, Master's Love x4, Pet Feed x6, Super Broadcasting x2, 8 Carat Exp Stone x8."),
+    # Wulfie Spearman Lucky Bag(1)
+    11769: ('Open to get one of the following items: Marmot, Spear of Yugo, Red Beetle Bag, Golden '
+            'Chain Armor, Fighting Wings, Golden Chain Cuff, Golden Chain Boots, Eagle Hood, Curse '
+            'Refining, Diamond Bag, Transform Luck Bag, Defend Gift Box, Attack Gift Box, City Scroll'
+            " Bag, Master's Love x4, Pet Feed x6, Super Broadcasting x2, 8 Carat Exp Stone x8."),
+    # Wulfie Axeman Lucky Bag(1)
+    11768: ('Open to get one of the following items: Hell Wolf, Rainbow Axe, Green Beetle Bag, Golden'
+            ' Chain Armor, Angel Knights Shield, Golden Chain Cuff, Golden Chain Boots, Eagle Hood, '
+            'Curse Refining, Diamond Bag, Transform Luck Bag, Defend Gift Box, Attack Gift Box, City '
+            "Scroll Bag, Master's Love x4, Pet Feed x6, Super Broadcasting x2, 8 Carat Exp Stone x8."),
+    # Wulfie Swordman Lucky Bag(1)
+    11767: ("Open to get one of the following items: Icy Lizard, Adas's Blade, Red Beetle Bag, Golden"
+            ' Chain Armor, Angel Knights Shield, Golden Chain Cuff, Golden Chain Boots, Golden Full-'
+            'face Helmet, Curse Refining, Diamond Bag, Transform Luck Bag, Defend Gift Box, Attack '
+            "Gift Box, City Scroll Bag, Master's Love x4, Pet Feed x6, Super Broadcasting x2, 8 Carat"
+            ' Exp Stone x8.'),
+    # Virgo Mage Lucky Bag( 2 )
+    11259: ("Open to get one of the following items: Elf Egg, Thunder Bird, Angel's Blessing, Night "
+            'Cat, Slarm Suit Egg, Clean Diamond Bag, Necklace of Goddess, Mask Lucky Bag, Lvl 5 Lucky'
+            ' Ride Feed, 5-star Lucky Piercing Hammer, 5-star Lucky Enhanced Pestle, Improved Pet '
+            'Feed, Stall Gold Card 3, Surprise Lucky Bag, Pet Feed x10, 8 Carat Exp Stone x6, Super '
+            'Broadcasting x4, Angel Amulet x6, Spell Attack Scroll x12.'),
+    # Virgo Spearman Lucky Bag( 2 )
+    11257: ('Open to get one of the following items: Elf Egg, Thunder Bird, Saw Spear, Gold Lizard, '
+            'Knight Suit Egg, Clean Diamond Bag, Sage Mantle, Mask Lucky Bag, Lvl 5 Lucky Ride Feed, '
+            '5-star Lucky Piercing Hammer, 5-star Lucky Enhanced Pestle, Improved Pet Feed, Stall '
+            'Gold Card 3, Surprise Lucky Bag, Pet Feed x10, 8 Carat Exp Stone x6, Super Broadcasting '
+            'x4, Angel Amulet x6, Attack Scroll x12.'),
+    # Virgo Axeman Lucky Bag( 2 )
+    11256: ('Open to get one of the following items: Elf Egg, Thunder Bird, Fish Axe, Icy Lizard, '
+            'Knight Suit Egg, Clean Diamond Bag, Vein Shield, Mask Lucky Bag, Lvl 5 Lucky Ride Feed, '
+            '5-star Lucky Piercing Hammer, 5-star Lucky Enhanced Pestle, Improved Pet Feed, Stall '
+            'Gold Card 3, Surprise Lucky Bag, Pet Feed x10, 8 Carat Exp Stone x6, Super Broadcasting '
+            'x4, Angel Amulet x6, Attack Scroll x12.'),
+    # Virgo Swordsman Lucky Bag( 2 )
+    11255: ('Open to get one of the following items: Elf Egg, Thunder Bird, Rose Sword, Evil Lizard, '
+            'Knight Suit Egg, Clean Diamond Bag, Vein Shield, Mask Lucky Bag, Lvl 5 Lucky Ride Feed, '
+            '5-star Lucky Piercing Hammer, 5-star Lucky Enhanced Pestle, Improved Pet Feed, Stall '
+            'Gold Card 3, Surprise Lucky Bag, Pet Feed x10, 8 Carat Exp Stone x6, Super Broadcasting '
+            'x4, Angel Amulet x6, Attack Scroll x12.'),
+}
+
+
+# =====================================================================
 # MULTIPLICADORES BASE (Valores por defecto del servidor)
 # =====================================================================
 # 1.0 = Experiencia normal oficial

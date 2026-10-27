@@ -236,7 +236,6 @@ def craft(s,ident):
         if success:
             s.enviar(*app._otorgar_skill_exp(s,p,p.entity_id,skills_forzadas={SKILLS[station['category']]},prob_override=1.0))
         s.enviar(struct.pack('<HBI',0x4c,int(success),ident))
-    delay=max(.1,float(row.get('\u88fd\u4f5c\u6642\u9593') or 1))
-    import lyceum_services,asyncio
-    delay*=max(.1,1-lyceum_services.bono(p.buffs,'fabricacion_pct')/100)
+    delay=app._tiempo_fabricacion(s,row,p)
+    import asyncio
     s.craft_task=asyncio.get_event_loop().call_later(delay,finish)

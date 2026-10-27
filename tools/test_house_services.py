@@ -21,7 +21,8 @@ def runtime():
               '_casa_recibir_token', '_casa_invocar_mercenario',
               '_casa_fabricar', '_casa_tick_monstruos', '_casa_sincronizar_token',
               '_paquetes_ocultar_interactivos_casa', '_casa_paquetes_decorar',
-              '_casa_salir_editor', '_casa_usar_token', '_casa_submit_order'}
+              '_casa_salir_editor', '_casa_usar_token', '_casa_submit_order',
+              '_pct_fabricacion', '_tiempo_fabricacion'}
     nodes = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name in needed]
     env = dict(struct=struct, time=time, asyncio=asyncio, random=Mock(randrange=lambda _: 0),
                log=logging.getLogger('house-test'), cuentas=Mock())

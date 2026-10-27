@@ -26,7 +26,6 @@ import re
 import struct
 import sys
 import types
-import zlib
 
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(RAIZ / 'server'))
@@ -34,7 +33,6 @@ sys.path.insert(0, str(RAIZ / 'tools'))
 
 import cliente_local
 import configuracion
-import paks_cliente
 import transitable as tr
 
 TRANSITABLE = RAIZ / 'server' / 'plantillas' / 'transitable.bin'
@@ -44,36 +42,9 @@ def nombre_en_pak(stage):
     return 'MAP\\MAP%03d.MPC' % int(stage)
 
 
-def _entradas(pak):
-    """Nombres (en mayusculas, con \\) que trae el pak; solo lee el directorio."""
-    with open(pak, 'rb') as f:
-        f.seek(-22, 2)
-        eocd = bytearray(f.read(22))
-        if eocd[:4] != b'OD\x05\x06':
-            return set()
-        for i in range(4, 22):
-            eocd[i] ^= (3 * i - 91) & 0xFF
-        comp, _, _, _, cd_off, _ = struct.unpack('<IHHIIH', eocd[4:22])
-        f.seek(cd_off + 4)
-        raw = bytearray(f.read(comp))
-    raw[0] ^= 0x7A
-    cd, off, salida = zlib.decompress(bytes(raw)), 0, set()
-    while off + 46 <= len(cd):
-        fn, ex, cm = struct.unpack_from('<HHH', cd, off + 28)
-        salida.add(cd[off + 46:off + 46 + fn].decode('ascii', 'ignore').upper().replace('/', '\\'))
-        off += 46 + fn + ex + cm
-    return salida
-
-
 def pak_del_mapa(cliente, stage):
     """El pak que manda para ese mapa: el de numero mas alto que lo trae."""
-    paks = sorted((p for p in pathlib.Path(cliente).iterdir()
-                   if p.suffix.lower() == '.pak' and paks_cliente.numero(p.name) >= -1),
-                  key=lambda p: paks_cliente.numero(p.name), reverse=True)
-    for pak in paks:
-        if nombre_en_pak(stage) in _entradas(pak):
-            return pak
-    return None
+    return cliente_local.indice_paks(pathlib.Path(cliente)).get(nombre_en_pak(stage))
 
 
 def comprobar_mpc(data):

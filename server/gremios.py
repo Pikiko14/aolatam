@@ -892,8 +892,8 @@ def paquete_banco_gremio(gremio_dict, char_id: int, entidad: int, tipo: int = 2)
         e = _inv.marcar_vinculacion(e, mejora)
         if mejora.get('veces'):
             e = _inv.marcar_mejora(e, mejora['veces'])
-        if mejora.get('extra'):
-            e = _inv.marcar_extras(e, mejora['extra'])
+        if _inv.extras_visibles(mejora):
+            e = _inv.marcar_extras(e, _inv.extras_visibles(mejora))
         if mejora.get('huecos') or mejora.get('gemas'):
             e = _inv.marcar_huecos(e, mejora.get('huecos') or 0, mejora.get('gemas'))
         entradas.append(e)
