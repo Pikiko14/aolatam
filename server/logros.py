@@ -87,6 +87,12 @@ STATS = {
 }
 
 
+def _requisitos(f) -> list:
+    """Los logros que pide uno de tipo 達成成就: TODOS los 參數 de la fila (hasta 9), no solo los dos primeros."""
+    ps = f.get('params') or [f.get('param1'), f.get('param2')]
+    return [x for x in (_num(v) for v in ps) if x]
+
+
 def comprobar(personaje, conseguidos, *, muertos=None, stats=None) -> list:
     """Los logros que el personaje cumple y todavia no tiene.
 
@@ -130,8 +136,7 @@ def comprobar(personaje, conseguidos, *, muertos=None, stats=None) -> list:
     for f in por_regla('達成成就'):
         if f['id'] in ya:
             continue
-        pide = [_num(f.get('param1')), _num(f.get('param2'))]
-        pide = [x for x in pide if x]
+        pide = _requisitos(f)
         if pide and all(x in ya for x in pide):
             nuevos.append(f['id'])
     return sorted(set(nuevos))
@@ -190,6 +195,10 @@ def _pct(personaje, f, ya, pts, habs, muertos, stats):
         return frac(_num(stats.get(clave)), f.get('param2')) if clave else 0
     if regla == '成就積分':
         return frac(pts, f.get('param1'))
+    if regla == '達成成就':
+        # "Executive Assistant - Aurora" pide siete misiones: el % es cuantas lleva hechas
+        pide = _requisitos(f)
+        return frac(sum(1 for x in pide if x in ya), len(pide)) if pide else 0
     return 0
 
 
