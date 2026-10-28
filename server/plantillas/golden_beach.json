@@ -39,10 +39,14 @@
    "monstruo": false,
    "tile": [
     35,
-    65
+    66
    ],
    "direccion": 6,
-   "visible": 1
+   "visible": 1,
+   "tile_antes": [
+    35,
+    65
+   ]
   },
   {
    "entity_id": 122346,

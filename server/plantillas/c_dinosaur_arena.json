@@ -5989,6 +5989,22 @@
    "visible": 0,
    "nivel": 250,
    "zona": 122
+  },
+  {
+   "entity_id": 90413000,
+   "nombre": "Aged Fossil Bone",
+   "nombre_completo": "Aged Fossil Bone",
+   "npc_type": 7992,
+   "sprite": 60241,
+   "klass": 199,
+   "monstruo": false,
+   "tile": [
+    224,
+    41
+   ],
+   "direccion": 6,
+   "visible": 1,
+   "puesto_por": "npcs_del_cliente"
   }
  ],
  "recursos": [

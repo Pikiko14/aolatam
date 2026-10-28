@@ -192,11 +192,15 @@
    "klass": 199,
    "monstruo": false,
    "tile": [
-    106,
-    126
+    105,
+    127
    ],
    "direccion": 6,
-   "visible": 1
+   "visible": 1,
+   "tile_antes": [
+    106,
+    126
+   ]
   },
   {
    "entity_id": 123157,

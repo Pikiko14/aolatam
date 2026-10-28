@@ -6006,6 +6006,8 @@ SKILL_POR_MATERIAL = {
     '釣魚': 21,   # Fishing
 }
 DISTANCIA_RECOLECCION = 6       # casillas
+# Los bancos de peces estan dentro del agua: desde la orilla hay mas de 6 casillas hasta ellos en muchos mapas, y con 6 no se podia pescar.
+DISTANCIA_PESCA = 14            # casillas
 
 
 def _veta_de(stage, ent):
@@ -6169,8 +6171,9 @@ def _recolectar(ses, addr, stage, ent):
         ses.enviar(_cl_r.aviso('', tipo=7, msg_id=msg))
         log.info('[%s] veta %s (%s): no puede recolectar (msg %s)', addr, ent, mat['nombre'], msg)
         return True
+    _distancia_max = DISTANCIA_PESCA if (mat.get('herramienta') or (mat_xml or {}).get('裝備限制')) == '釣竿' else DISTANCIA_RECOLECCION
     if px and max(abs(int(px[0]) // 32 - int(getattr(p, 'tile_x', 0) or 0)),
-                  abs(int(px[1]) // 32 - int(getattr(p, 'tile_y', 0) or 0))) > DISTANCIA_RECOLECCION:
+                  abs(int(px[1]) // 32 - int(getattr(p, 'tile_y', 0) or 0))) > _distancia_max:
         ses.enviar(_cl_r.aviso('', tipo=7, msg_id=MSG_RECOLECTAR_LEJOS))
         return True
     if stage in __import__('league_war').STAGES and not __import__('league_war').participating(ses):return False

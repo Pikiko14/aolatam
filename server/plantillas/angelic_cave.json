@@ -137,10 +137,14 @@
    "monstruo": false,
    "tile": [
     257,
-    40
+    41
    ],
    "direccion": 6,
-   "visible": 1
+   "visible": 1,
+   "tile_antes": [
+    257,
+    40
+   ]
   },
   {
    "entity_id": 123059,

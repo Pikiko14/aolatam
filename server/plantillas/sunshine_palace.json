@@ -3187,12 +3187,16 @@
    "klass": 199,
    "monstruo": false,
    "tile": [
-    286,
-    168
+    284,
+    165
    ],
    "direccion": 6,
    "visible": 1,
-   "puesto_por": "npcs_del_cliente"
+   "puesto_por": "npcs_del_cliente",
+   "tile_antes": [
+    286,
+    168
+   ]
   },
   {
    "entity_id": 30773,

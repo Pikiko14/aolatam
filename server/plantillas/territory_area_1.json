@@ -946,6 +946,22 @@
    "direccion": 2,
    "visible": 0,
    "nivel": 55
+  },
+  {
+   "entity_id": 90050000,
+   "nombre": "Terra Keeper",
+   "nombre_completo": "Terra Keeper",
+   "npc_type": 2087,
+   "sprite": 40008,
+   "klass": 199,
+   "monstruo": false,
+   "tile": [
+    90,
+    62
+   ],
+   "direccion": 6,
+   "visible": 1,
+   "puesto_por": "npcs_del_cliente"
   }
  ],
  "recursos": [
@@ -965,7 +981,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Obsidian",
    "marca_nombre": 109,
-   "cola_nombre": "0000000000000002"
+   "cola_nombre": "0000000000000002",
+   "material": 155
   },
   {
    "entity_id": 102188,
@@ -983,7 +1000,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Obsidian",
    "marca_nombre": 109,
-   "cola_nombre": "0000000000000002"
+   "cola_nombre": "0000000000000002",
+   "material": 155
   },
   {
    "entity_id": 102189,
@@ -1001,7 +1019,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Steel",
    "marca_nombre": 220,
-   "cola_nombre": "0000000000000002"
+   "cola_nombre": "0000000000000002",
+   "material": 156
   },
   {
    "entity_id": 102190,
@@ -1019,7 +1038,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Steel",
    "marca_nombre": 109,
-   "cola_nombre": "0000000000000002"
+   "cola_nombre": "0000000000000002",
+   "material": 156
   },
   {
    "entity_id": 102191,
@@ -1037,7 +1057,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Bauxite",
    "marca_nombre": 109,
-   "cola_nombre": "0000000000000002"
+   "cola_nombre": "0000000000000002",
+   "material": 157
   },
   {
    "entity_id": 102192,
@@ -1055,7 +1076,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Bauxite",
    "marca_nombre": 220,
-   "cola_nombre": "0000000000000002"
+   "cola_nombre": "0000000000000002",
+   "material": 157
   },
   {
    "entity_id": 102193,
@@ -1073,7 +1095,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Viburnum",
    "marca_nombre": 109,
-   "cola_nombre": "0000000000000001"
+   "cola_nombre": "0000000000000001",
+   "material": 158
   },
   {
    "entity_id": 102194,
@@ -1091,7 +1114,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Viburnum",
    "marca_nombre": 220,
-   "cola_nombre": "0000000000000001"
+   "cola_nombre": "0000000000000001",
+   "material": 158
   },
   {
    "entity_id": 102195,
@@ -1109,7 +1133,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Melaleuca",
    "marca_nombre": 220,
-   "cola_nombre": "0000000000000001"
+   "cola_nombre": "0000000000000001",
+   "material": 159
   },
   {
    "entity_id": 102196,
@@ -1127,7 +1152,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Melaleuca",
    "marca_nombre": 109,
-   "cola_nombre": "0000000000000001"
+   "cola_nombre": "0000000000000001",
+   "material": 159
   },
   {
    "entity_id": 102197,
@@ -1145,7 +1171,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Wisteria",
    "marca_nombre": 109,
-   "cola_nombre": "0000000000000001"
+   "cola_nombre": "0000000000000001",
+   "material": 160
   },
   {
    "entity_id": 102198,
@@ -1163,7 +1190,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Wisteria",
    "marca_nombre": 220,
-   "cola_nombre": "0000000000000001"
+   "cola_nombre": "0000000000000001",
+   "material": 160
   },
   {
    "entity_id": 102199,
@@ -1181,7 +1209,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Bright Bush",
    "marca_nombre": 109,
-   "cola_nombre": "0000000000000003"
+   "cola_nombre": "0000000000000003",
+   "material": 161
   },
   {
    "entity_id": 102200,
@@ -1199,7 +1228,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Bright Bush",
    "marca_nombre": 109,
-   "cola_nombre": "0000000000000003"
+   "cola_nombre": "0000000000000003",
+   "material": 161
   },
   {
    "entity_id": 102201,
@@ -1217,7 +1247,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Leafy Bush",
    "marca_nombre": 109,
-   "cola_nombre": "0000000000000003"
+   "cola_nombre": "0000000000000003",
+   "material": 162
   },
   {
    "entity_id": 102202,
@@ -1235,7 +1266,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Leafy Bush",
    "marca_nombre": 220,
-   "cola_nombre": "0000000000000003"
+   "cola_nombre": "0000000000000003",
+   "material": 162
   },
   {
    "entity_id": 102203,
@@ -1253,7 +1285,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Angel Bush",
    "marca_nombre": 220,
-   "cola_nombre": "0000000000000003"
+   "cola_nombre": "0000000000000003",
+   "material": 163
   },
   {
    "entity_id": 102204,
@@ -1271,7 +1304,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Angel Bush",
    "marca_nombre": 220,
-   "cola_nombre": "0000000000000003"
+   "cola_nombre": "0000000000000003",
+   "material": 163
   },
   {
    "entity_id": 102205,
@@ -1289,7 +1323,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Bandit Den",
    "marca_nombre": 220,
-   "cola_nombre": "0000000000000003"
+   "cola_nombre": "0000000000000003",
+   "material": 164
   },
   {
    "entity_id": 102206,
@@ -1307,7 +1342,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Bandit Den",
    "marca_nombre": 220,
-   "cola_nombre": "0000000000000003"
+   "cola_nombre": "0000000000000003",
+   "material": 164
   },
   {
    "entity_id": 102207,
@@ -1325,7 +1361,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Beastkin Den",
    "marca_nombre": 109,
-   "cola_nombre": "0000000000000003"
+   "cola_nombre": "0000000000000003",
+   "material": 165
   },
   {
    "entity_id": 102208,
@@ -1343,7 +1380,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Beastkin Den",
    "marca_nombre": 220,
-   "cola_nombre": "0000000000000003"
+   "cola_nombre": "0000000000000003",
+   "material": 165
   },
   {
    "entity_id": 102209,
@@ -1361,7 +1399,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Devil Den",
    "marca_nombre": 220,
-   "cola_nombre": "0000000000000003"
+   "cola_nombre": "0000000000000003",
+   "material": 166
   },
   {
    "entity_id": 102210,
@@ -1379,7 +1418,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Devil Den",
    "marca_nombre": 109,
-   "cola_nombre": "0000000000000003"
+   "cola_nombre": "0000000000000003",
+   "material": 166
   },
   {
    "entity_id": 102211,
@@ -1397,7 +1437,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Meteor Alga",
    "marca_nombre": 109,
-   "cola_nombre": "0000000000000004"
+   "cola_nombre": "0000000000000004",
+   "material": 167
   },
   {
    "entity_id": 102212,
@@ -1415,7 +1456,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Meteor Alga",
    "marca_nombre": 220,
-   "cola_nombre": "0000000000000004"
+   "cola_nombre": "0000000000000004",
+   "material": 167
   },
   {
    "entity_id": 102213,
@@ -1433,7 +1475,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Bright Alga",
    "marca_nombre": 109,
-   "cola_nombre": "0000000000000004"
+   "cola_nombre": "0000000000000004",
+   "material": 168
   },
   {
    "entity_id": 102214,
@@ -1451,7 +1494,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Bright Alga",
    "marca_nombre": 109,
-   "cola_nombre": "0000000000000004"
+   "cola_nombre": "0000000000000004",
+   "material": 168
   },
   {
    "entity_id": 102215,
@@ -1469,7 +1513,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Fire Alga",
    "marca_nombre": 109,
-   "cola_nombre": "0000000000000004"
+   "cola_nombre": "0000000000000004",
+   "material": 169
   },
   {
    "entity_id": 102216,
@@ -1487,7 +1532,8 @@
    "copiado_de": "mundo_130341_992186_orden.jsonl",
    "nombre_visible": "Fire Alga",
    "marca_nombre": 109,
-   "cola_nombre": "0000000000000004"
+   "cola_nombre": "0000000000000004",
+   "material": 169
   }
  ],
  "_nota_recursos": "Recursos copiados de la captura de Celestia mundo_130341_992186_orden.jsonl (tools/recursos_de_captura.py), con su nombre."

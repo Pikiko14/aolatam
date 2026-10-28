@@ -1,7 +1,72 @@
 {
  "_nota": "",
  "stage": 80,
- "spawns": [],
+ "spawns": [
+  {
+   "entity_id": 90080000,
+   "nombre": "Abba",
+   "nombre_completo": "Abba",
+   "npc_type": 2090,
+   "sprite": 40169,
+   "klass": 199,
+   "monstruo": false,
+   "tile": [
+    97,
+    59
+   ],
+   "direccion": 6,
+   "visible": 1,
+   "puesto_por": "npcs_del_cliente"
+  },
+  {
+   "entity_id": 90080001,
+   "nombre": "Newbie Priest",
+   "nombre_completo": "Newbie Priest",
+   "npc_type": 2134,
+   "sprite": 40169,
+   "klass": 199,
+   "monstruo": false,
+   "tile": [
+    36,
+    73
+   ],
+   "direccion": 6,
+   "visible": 1,
+   "puesto_por": "npcs_del_cliente"
+  },
+  {
+   "entity_id": 90080002,
+   "nombre": "Divorce Clerk",
+   "nombre_completo": "Divorce Clerk",
+   "npc_type": 2136,
+   "sprite": 40169,
+   "klass": 199,
+   "monstruo": false,
+   "tile": [
+    101,
+    16
+   ],
+   "direccion": 6,
+   "visible": 1,
+   "puesto_por": "npcs_del_cliente"
+  },
+  {
+   "entity_id": 90080003,
+   "nombre": "Abba",
+   "nombre_completo": "Abba",
+   "npc_type": 2090,
+   "sprite": 60241,
+   "klass": 199,
+   "monstruo": false,
+   "tile": [
+    91,
+    56
+   ],
+   "direccion": 6,
+   "visible": 1,
+   "puesto_por": "npcs_del_cliente"
+  }
+ ],
  "recursos": [
   {
    "entity_id": 102269,

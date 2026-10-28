@@ -1466,6 +1466,576 @@
    "cola": "00000000000000",
    "crudo": "d9c1ce0000000000880100008d020000000000001e0000000000000000000000000684ea00000000000000",
    "copiado_de": 118
+  },
+  {
+   "entity_id": 73550000,
+   "sprite": 60076,
+   "capa": 0,
+   "px": [
+    852,
+    2640
+   ],
+   "tile": [
+    26,
+    82
+   ],
+   "evento": 0,
+   "material": 168,
+   "nombre_visible": "Bright Alga",
+   "crudo": "b04862040000000054030000500a00000000000027000000000000001a000000dc06acea00000000000000",
+   "copiado_de": "cuerpo de una captura del objeto 60076",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550001,
+   "sprite": 60159,
+   "capa": 0,
+   "px": [
+    4619,
+    2832
+   ],
+   "tile": [
+    144,
+    88
+   ],
+   "evento": 0,
+   "material": 155,
+   "nombre_visible": "Obsidian",
+   "crudo": "b1486204000000000b120000100b00000000000027000000000000001a000000dc06ffea00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550002,
+   "sprite": 60126,
+   "capa": 0,
+   "px": [
+    4332,
+    2864
+   ],
+   "tile": [
+    135,
+    89
+   ],
+   "evento": 0,
+   "material": 161,
+   "nombre_visible": "Bright Bush",
+   "crudo": "b248620400000000ec100000300b00000000000027000000000000001a000000dc06deea00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550003,
+   "sprite": 60202,
+   "capa": 2,
+   "px": [
+    3924,
+    2160
+   ],
+   "tile": [
+    122,
+    67
+   ],
+   "evento": 0,
+   "material": 164,
+   "nombre_visible": "Bandit Den",
+   "crudo": "b348620402000000540f0000700800000000000027000000000000001a000000dc062aeb00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550004,
+   "sprite": 60183,
+   "capa": 0,
+   "px": [
+    3638,
+    2288
+   ],
+   "tile": [
+    113,
+    71
+   ],
+   "evento": 0,
+   "material": 158,
+   "nombre_visible": "Viburnum",
+   "crudo": "b448620400000000360e0000f00800000000000027000000000000001a000000dc0617eb00000000000000",
+   "copiado_de": "cuerpo de una captura del objeto 60183",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550005,
+   "sprite": 60075,
+   "capa": 0,
+   "px": [
+    3498,
+    2896
+   ],
+   "tile": [
+    109,
+    90
+   ],
+   "evento": 0,
+   "material": 167,
+   "nombre_visible": "Meteor Alga",
+   "crudo": "b548620400000000aa0d0000500b00000000000027000000000000001a000000dc06abea00000000000000",
+   "copiado_de": "cuerpo de una captura del objeto 60075",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550006,
+   "sprite": 60161,
+   "capa": 2,
+   "px": [
+    1312,
+    2864
+   ],
+   "tile": [
+    41,
+    89
+   ],
+   "evento": 0,
+   "material": 156,
+   "nombre_visible": "Steel",
+   "crudo": "b64862040200000020050000300b00000000000027000000000000001a000000dc0601eb00000000000000",
+   "copiado_de": "cuerpo de una captura del objeto 60161",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550007,
+   "sprite": 60124,
+   "capa": 2,
+   "px": [
+    2237,
+    2416
+   ],
+   "tile": [
+    69,
+    75
+   ],
+   "evento": 0,
+   "material": 159,
+   "nombre_visible": "Melaleuca",
+   "crudo": "b748620402000000bd080000700900000000000027000000000000001a000000dc06dcea00000000000000",
+   "copiado_de": "cuerpo de una captura del objeto 60124",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550008,
+   "sprite": 60219,
+   "capa": 0,
+   "px": [
+    705,
+    2352
+   ],
+   "tile": [
+    22,
+    73
+   ],
+   "evento": 0,
+   "material": 162,
+   "nombre_visible": "Leafy Bush",
+   "crudo": "b848620400000000c1020000300900000000000027000000000000001a000000dc063beb00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550009,
+   "sprite": 60205,
+   "capa": 0,
+   "px": [
+    2114,
+    2736
+   ],
+   "tile": [
+    66,
+    85
+   ],
+   "evento": 0,
+   "material": 165,
+   "nombre_visible": "Beastkin Den",
+   "crudo": "b94862040000000042080000b00a00000000000027000000000000001a000000dc062deb00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550010,
+   "sprite": 60204,
+   "capa": 2,
+   "px": [
+    2871,
+    848
+   ],
+   "tile": [
+    89,
+    26
+   ],
+   "evento": 0,
+   "material": 166,
+   "nombre_visible": "Devil Den",
+   "crudo": "ba48620402000000370b0000500300000000000027000000000000001a000000dc062ceb00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550011,
+   "sprite": 60220,
+   "capa": 2,
+   "px": [
+    4528,
+    368
+   ],
+   "tile": [
+    141,
+    11
+   ],
+   "evento": 0,
+   "material": 163,
+   "nombre_visible": "Angel Bush",
+   "crudo": "bb48620402000000b0110000700100000000000027000000000000001a000000dc063ceb00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550012,
+   "sprite": 60123,
+   "capa": 0,
+   "px": [
+    3758,
+    80
+   ],
+   "tile": [
+    117,
+    2
+   ],
+   "evento": 0,
+   "material": 160,
+   "nombre_visible": "Wisteria",
+   "crudo": "bc48620400000000ae0e0000500000000000000027000000000000001a000000dc06dbea00000000000000",
+   "copiado_de": "cuerpo de una captura del objeto 60123",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550013,
+   "sprite": 60166,
+   "capa": 0,
+   "px": [
+    2993,
+    432
+   ],
+   "tile": [
+    93,
+    13
+   ],
+   "evento": 0,
+   "material": 157,
+   "nombre_visible": "Bauxite",
+   "crudo": "bd48620400000000b10b0000b00100000000000027000000000000001a000000dc0606eb00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550014,
+   "sprite": 60143,
+   "capa": 0,
+   "px": [
+    2616,
+    80
+   ],
+   "tile": [
+    81,
+    2
+   ],
+   "evento": 0,
+   "material": 169,
+   "nombre_visible": "Fire Alga",
+   "crudo": "be48620400000000380a0000500000000000000027000000000000001a000000dc06efea00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550015,
+   "sprite": 60159,
+   "capa": 0,
+   "px": [
+    4515,
+    2544
+   ],
+   "tile": [
+    141,
+    79
+   ],
+   "evento": 0,
+   "material": 155,
+   "nombre_visible": "Obsidian",
+   "crudo": "bf48620400000000a3110000f00900000000000027000000000000001a000000dc06ffea00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550016,
+   "sprite": 60076,
+   "capa": 0,
+   "px": [
+    758,
+    2608
+   ],
+   "tile": [
+    23,
+    81
+   ],
+   "evento": 0,
+   "material": 168,
+   "nombre_visible": "Bright Alga",
+   "crudo": "c048620400000000f6020000300a00000000000027000000000000001a000000dc06acea00000000000000",
+   "copiado_de": "cuerpo de una captura del objeto 60076",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550017,
+   "sprite": 60126,
+   "capa": 0,
+   "px": [
+    4432,
+    2736
+   ],
+   "tile": [
+    138,
+    85
+   ],
+   "evento": 0,
+   "material": 161,
+   "nombre_visible": "Bright Bush",
+   "crudo": "c14862040000000050110000b00a00000000000027000000000000001a000000dc06deea00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550018,
+   "sprite": 60202,
+   "capa": 2,
+   "px": [
+    4222,
+    2032
+   ],
+   "tile": [
+    131,
+    63
+   ],
+   "evento": 0,
+   "material": 164,
+   "nombre_visible": "Bandit Den",
+   "crudo": "c2486204020000007e100000f00700000000000027000000000000001a000000dc062aeb00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550019,
+   "sprite": 60183,
+   "capa": 2,
+   "px": [
+    3299,
+    2384
+   ],
+   "tile": [
+    103,
+    74
+   ],
+   "evento": 0,
+   "material": 158,
+   "nombre_visible": "Viburnum",
+   "crudo": "c348620402000000e30c0000500900000000000027000000000000001a000000dc0617eb00000000000000",
+   "copiado_de": "cuerpo de una captura del objeto 60183",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550020,
+   "sprite": 60075,
+   "capa": 2,
+   "px": [
+    3323,
+    2960
+   ],
+   "tile": [
+    103,
+    92
+   ],
+   "evento": 0,
+   "material": 167,
+   "nombre_visible": "Meteor Alga",
+   "crudo": "c448620402000000fb0c0000900b00000000000027000000000000001a000000dc06abea00000000000000",
+   "copiado_de": "cuerpo de una captura del objeto 60075",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550021,
+   "sprite": 60161,
+   "capa": 0,
+   "px": [
+    1138,
+    2704
+   ],
+   "tile": [
+    35,
+    84
+   ],
+   "evento": 0,
+   "material": 156,
+   "nombre_visible": "Steel",
+   "crudo": "c54862040000000072040000900a00000000000027000000000000001a000000dc0601eb00000000000000",
+   "copiado_de": "cuerpo de una captura del objeto 60161",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550022,
+   "sprite": 60124,
+   "capa": 0,
+   "px": [
+    2327,
+    2384
+   ],
+   "tile": [
+    72,
+    74
+   ],
+   "evento": 0,
+   "material": 159,
+   "nombre_visible": "Melaleuca",
+   "crudo": "c64862040000000017090000500900000000000027000000000000001a000000dc06dcea00000000000000",
+   "copiado_de": "cuerpo de una captura del objeto 60124",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550023,
+   "sprite": 60219,
+   "capa": 2,
+   "px": [
+    1325,
+    2352
+   ],
+   "tile": [
+    41,
+    73
+   ],
+   "evento": 0,
+   "material": 162,
+   "nombre_visible": "Leafy Bush",
+   "crudo": "c7486204020000002d050000300900000000000027000000000000001a000000dc063beb00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550024,
+   "sprite": 60205,
+   "capa": 2,
+   "px": [
+    1789,
+    2768
+   ],
+   "tile": [
+    55,
+    86
+   ],
+   "evento": 0,
+   "material": 165,
+   "nombre_visible": "Beastkin Den",
+   "crudo": "c848620402000000fd060000d00a00000000000027000000000000001a000000dc062deb00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550025,
+   "sprite": 60204,
+   "capa": 0,
+   "px": [
+    3853,
+    976
+   ],
+   "tile": [
+    120,
+    30
+   ],
+   "evento": 0,
+   "material": 166,
+   "nombre_visible": "Devil Den",
+   "crudo": "c9486204000000000d0f0000d00300000000000027000000000000001a000000dc062ceb00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550026,
+   "sprite": 60220,
+   "capa": 2,
+   "px": [
+    3833,
+    240
+   ],
+   "tile": [
+    119,
+    7
+   ],
+   "evento": 0,
+   "material": 163,
+   "nombre_visible": "Angel Bush",
+   "crudo": "ca48620402000000f90e0000f00000000000000027000000000000001a000000dc063ceb00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550027,
+   "sprite": 60123,
+   "capa": 2,
+   "px": [
+    3471,
+    272
+   ],
+   "tile": [
+    108,
+    8
+   ],
+   "evento": 0,
+   "material": 160,
+   "nombre_visible": "Wisteria",
+   "crudo": "cb486204020000008f0d0000100100000000000027000000000000001a000000dc06dbea00000000000000",
+   "copiado_de": "cuerpo de una captura del objeto 60123",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550028,
+   "sprite": 60166,
+   "capa": 2,
+   "px": [
+    2711,
+    368
+   ],
+   "tile": [
+    84,
+    11
+   ],
+   "evento": 0,
+   "material": 157,
+   "nombre_visible": "Bauxite",
+   "crudo": "cc48620402000000970a0000700100000000000027000000000000001a000000dc0606eb00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "vetas_faltantes"
+  },
+  {
+   "entity_id": 73550029,
+   "sprite": 60143,
+   "capa": 0,
+   "px": [
+    2489,
+    48
+   ],
+   "tile": [
+    77,
+    1
+   ],
+   "evento": 0,
+   "material": 169,
+   "nombre_visible": "Fire Alga",
+   "crudo": "cd48620400000000b9090000300000000000000027000000000000001a000000dc06efea00000000000000",
+   "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
+   "puesto_por": "vetas_faltantes"
   }
  ]
 }
