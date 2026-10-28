@@ -1325,6 +1325,9 @@ def datos_magia(magic_id: int) -> dict:
             res['dur_ms'] = dur_val * 1000 if dur_val > 0 else 0
             res['cast_time'] = _num(d.get('前置時間'), 100)
             res['rango'] = _num(d.get('射程'), 1)
+            # ARMA QUE PIDE LA HABILIDAD: 裝備限制1/2 de magic.xml (斧+錘, 劍+刀, 弓箭+彈弓, 槍, 盾, 杖, 影刃). Coinciden con la
+            # 物品類別 de los items equipados.
+            res['equip_req'] = tuple(x for x in (str(d.get('裝備限制1') or '').strip(), str(d.get('裝備限制2') or '').strip()) if x)
             res['crit_rate'] = _num(d.get('crit_rate') if d.get('crit_rate') is not None else (d.get('爆擊率') or d.get('重擊機率')), 0)
             res['phys_mit'] = _num(d.get('物理傷害抵銷'), 0)
             res['mag_mit'] = _num(d.get('魔法傷害抵銷'), 0)
