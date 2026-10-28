@@ -83,11 +83,24 @@ def cambios_del_cliente(ruta_cli: pathlib.Path) -> dict:
             if previo and previo[0] == entrada[0] and previo[2] == entrada[2]:
                 continue
             out[nombre] = _leer(actual_raw, entrada)
+    out.update(_extras())
     return out
 
 
-def escribir_pak(ruta: pathlib.Path, archivos: dict):
-    """Un pak nuevo con esos archivos, en el formato que lee angel.dat."""
+def _extras() -> dict:
+    """Archivos hechos aparte (tools/mpc_sin_npc.py) que van en el parche tal cual:
+    parches/extras/map/map006.mpc -> MAP\\MAP006.MPC."""
+    base = DESTINO / 'extras'
+    out = {}
+    if base.is_dir():
+        for f in base.rglob('*'):
+            if f.is_file():
+                out[str(f.relative_to(base)).upper().replace('/', '\\')] = f.read_bytes()
+    return out
+
+
+def armar_pak(archivos: dict) -> bytes:
+    """Los bytes de un pak con esos archivos, en el formato que lee angel.dat."""
     datos = bytearray()
     cd = bytearray()
     t = time.localtime()
@@ -109,10 +122,34 @@ def escribir_pak(ruta: pathlib.Path, archivos: dict):
                                                  len(archivos), len(cd), len(datos), 0))
     for i in range(4, 22):
         eocd[i] ^= (3 * i - 91) & 0xFF
+    return bytes(datos) + b'OD\x05\x06' + bytes(cd_comp) + bytes(eocd)
+
+
+def escribir_pak(ruta: pathlib.Path, archivos: dict):
+    """Un pak nuevo con esos archivos, en el formato que lee angel.dat."""
     ruta.parent.mkdir(parents=True, exist_ok=True)
     tmp = ruta.with_name(ruta.name + '.tmp')
-    tmp.write_bytes(bytes(datos) + b'OD\x05\x06' + bytes(cd_comp) + bytes(eocd))
+    tmp.write_bytes(armar_pak(archivos))
     tmp.replace(ruta)
+
+
+_CACHE_ENTRADAS = {}
+
+
+def entradas(destino: pathlib.Path = DESTINO) -> dict:
+    """{NOMBRE: bytes} de lo que lleva parches/update27.pak (con cache por fecha)."""
+    pak = destino / NOMBRE_PAK
+    try:
+        marca = (pak.stat().st_mtime_ns, pak.stat().st_size)
+    except OSError:
+        return {}
+    previo = _CACHE_ENTRADAS.get(str(pak))
+    if previo and previo[0] == marca:
+        return previo[1]
+    crudo = pak.read_bytes()
+    dic = {n: _leer(crudo, e) for n, e in _directorio(crudo).items()}
+    _CACHE_ENTRADAS[str(pak)] = (marca, dic)
+    return dic
 
 
 def _huella(archivos: dict) -> str:
@@ -136,6 +173,11 @@ def version(destino: pathlib.Path = DESTINO) -> str:
 
 def generar(ruta_cli: pathlib.Path = None, destino: pathlib.Path = DESTINO) -> dict:
     """Rehace parches/update27.pak si lo que hay que repartir cambio y sube la version."""
+    import os
+    # Servidor sin cliente (el VPS): el parche se genera en la maquina que tiene el cliente y se sube hecho; AO_PARCHE_FIJO=1 impide que el arranque
+    # lo rehaga (sin cliente saldria vacio y pisaria el bueno).
+    if os.environ.get('AO_PARCHE_FIJO') == '1' and (destino / NOMBRE_PAK).exists() and estado(destino).get('version'):
+        return estado(destino)
     import cliente_local
     ruta_cli = ruta_cli or cliente_local.ruta_cliente()
     archivos = cambios_del_cliente(ruta_cli)

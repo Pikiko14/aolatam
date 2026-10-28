@@ -335,21 +335,18 @@ CAMPOS_TOTEM_WAR = frozenset({
 NPCS_OCULTOS = {
     41: {           # Angel Lyceum
         11119,      # Hestia
-        8994,       # Fashionable
+        8994,       # Fashionable (evento)
         8912,       # Daily Events Clerk
         14319,      # Gear Clerk
         14419,      # Party Angel
         8814,       # Fortunia
         14888,      # Scrollmaker
-        'Ticket Angel',
-        'Astrologer',
-        'Astral Angel'
-        'Fashionable',
-        'Daily Events CLe',
-        'Assassing Master',
-        'Astral Angel',
-        'Little Exp Angel',
-        'Reissue Angel'
+        2008,       # Ticket Angel
+        14701,      # Astrologer
+        6883,       # Assassin Master
+        2686,       # Little Exp Angel
+        24516,      # Astral Angel (evento: sp_star_angel.xml, mapa 41)
+        24801,      # Reissue Angel (evento: sp_reissue_angel.xml, mapa 41)
     },
 }
 
@@ -780,6 +777,8 @@ PUERTO_UPDATE_FTP = 2121
 # paginas de noticias (/news.htm): el panel de control (/p.htm) es solo local.
 import os as _os
 PARCHE_EN_LAUNCHER = _os.environ.get('AO_PARCHE_EN_LAUNCHER', '0') == '1'
+# Golpe de quien pelea con dos armas: True = tipo y animacion del arma de la mano derecha (el ataque automatico se ve); False = (0, 0), como antes.
+DUALES_GOLPE_COMO_ARMA = _os.environ.get('AO_DUALES_GOLPE', '1') != '0'
 PARCHE_HOST = _os.environ.get('AO_PARCHE_HOST', '127.0.0.1')
 PARCHE_ESCUCHAR = _os.environ.get('AO_PARCHE_ESCUCHAR', '127.0.0.1')
 try:

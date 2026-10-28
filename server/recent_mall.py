@@ -45,13 +45,13 @@ def poblar(stage):
     if stage == 41:
         return [login._npc_spawn(n['entity_id'], n['npc_type'], n['nombre'], tuple(n['tile']),
                                 sprite=n['sprite'], klass=200, direccion=n['direccion'])
-                for n in datos()['npcs'] if n['nombre'] != 'Gear Clerk']
+                for n in datos()['npcs'] if n['nombre'] != 'Gear Clerk' and not login.npc_oculto(stage, n)]
     tiles = CITY_EXCHANGE_TILES.get(stage, {})
     out = []
     base_id = 71000000 + stage * 10000
     for idx, (nom, tile) in enumerate(tiles.items()):
         proto = next((n for n in datos()['npcs'] if n['nombre'] == nom), None)
-        if not proto:
+        if not proto or login.npc_oculto(stage, proto):
             continue
         out.append(login._npc_spawn(base_id + idx, proto['npc_type'], nom, tuple(tile),
                                     sprite=proto['sprite'], klass=200, direccion=proto.get('direccion', 6)))

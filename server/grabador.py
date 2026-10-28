@@ -12,6 +12,7 @@ Cuando el cliente real falle -- y va a fallar en algun punto -- esto convierte
 "no anduvo" en "en el mensaje N el cliente esperaba otra cosa".
 """
 import json
+import os
 import pathlib
 import struct
 import time
@@ -20,12 +21,52 @@ import datetime
 RAIZ = pathlib.Path(__file__).parent.parent / 'logs' / 'sesiones'
 
 
+# AO_GRABAR=0 apaga la grabacion (en un servidor publico guarda hashes de
+# contrasena y todo el trafico). AO_GRABAR_DIAS=N borra al arrancar las
+# sesiones de mas de N dias (0 = no borra nada).
+ACTIVO = os.environ.get('AO_GRABAR', '1') != '0'
+
+
+def purgar(dias=None):
+    """Borra las sesiones grabadas de mas de `dias` dias. Devuelve cuantas."""
+    if dias is None:
+        try:
+            dias = int(os.environ.get('AO_GRABAR_DIAS', '0'))
+        except ValueError:
+            dias = 0
+    if dias <= 0 or not RAIZ.exists():
+        return 0
+    limite = time.time() - dias * 86400
+    n = 0
+    for f in RAIZ.iterdir():
+        try:
+            if f.is_file() and f.stat().st_mtime < limite:
+                f.unlink()
+                n += 1
+        except OSError:
+            pass
+    return n
+
+
+class _Mudo:
+    """Mismo interfaz que el archivo, sin escribir nada."""
+    def write(self, *_): return 0
+    def flush(self): pass
+    def close(self): pass
+
+
 class Grabador:
     def __init__(self, addr, puerto, clave):
-        RAIZ.mkdir(parents=True, exist_ok=True)
         marca = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
         ip = str(addr[0]).replace('.', '_')
         base = f"{ip}_{puerto}_{marca}"
+        if not ACTIVO:
+            self.c2s = self.s2c = self.orden = _Mudo()
+            self.t0 = time.time()
+            self.base = base
+            self.n_c2s = self.n_s2c = 0
+            return
+        RAIZ.mkdir(parents=True, exist_ok=True)
         self.c2s = open(RAIZ / f"{base}_c2s.bin", 'wb')
         self.s2c = open(RAIZ / f"{base}_s2c.bin", 'wb')
         # la clave es imprescindible para descifrar despues

@@ -2725,7 +2725,11 @@ def golpe_de_arma(item_id: int = 0, duales: bool = False) -> tuple:
     cliente pegaba con las dos armas escondidas.
     """
     if duales:
-        return (0, 0)
+        # Con (0, 0) el cliente no dibujaba el ataque automatico de quien lleva dos armas. Con DUALES_GOLPE_COMO_ARMA el golpe va con el tipo y la animacion
+        # del arma de la mano derecha (espada, daga, hacha...), igual que con una sola. AO_DUALES_GOLPE=0 devuelve el comportamiento anterior.
+        import configuracion as _cfg
+        if not getattr(_cfg, 'DUALES_GOLPE_COMO_ARMA', True):
+            return (0, 0)
     try:
         import clases as _cl
         sid = _cl.skill_de_item(item_id) if item_id else None

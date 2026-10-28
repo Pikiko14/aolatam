@@ -1150,6 +1150,8 @@ async def _manejar_ftp(reader: asyncio.StreamReader, writer: asyncio.StreamWrite
             cmd_line = line.decode('ascii', errors='ignore').strip()
             if not cmd_line:
                 continue
+            if os.environ.get('AO_FTP_LATENCIA_MS'):
+                await asyncio.sleep(int(os.environ['AO_FTP_LATENCIA_MS']) / 1000.0)  # solo para pruebas
             parts = cmd_line.split(' ', 1)
             cmd = parts[0].upper()
             arg = parts[1].strip() if len(parts) > 1 else ''
@@ -1180,13 +1182,27 @@ async def _manejar_ftp(reader: asyncio.StreamReader, writer: asyncio.StreamWrite
                 import parche
                 lineas = [('update3.ini', len(_contenido_update3_ini()))]
                 lineas += [(f.name, f.stat().st_size) for f in sorted(parche.DESTINO.glob('*.pak'))]
+                # El launcher pide "LIST <archivo>" y toma el tamano de la PRIMERA
+                # linea: con la lista entera le llegaba el de update3.ini (160 B) y
+                # dejaba de leer a los 3072 B, con el parche cortado. Se contesta
+                # solo con el archivo pedido y su tamano real.
+                if arg:
+                    _pedido = _archivo_de_parche(arg)
+                    if _pedido is not None:
+                        lineas = [(arg.replace('\\', '/').rstrip('/').rsplit('/', 1)[-1], len(_pedido))]
                 writer.write(b"150 Opening ASCII mode data connection for directory list.\r\n")
                 await writer.drain()
                 r_d, w_d = await asyncio.wait_for(pasv_queue.get(), timeout=5.0)
+                if os.environ.get('AO_FTP_DATOS_MS'):
+                    await asyncio.sleep(int(os.environ['AO_FTP_DATOS_MS']) / 1000.0)  # solo para pruebas
                 w_d.write(''.join(f"-rw-r--r-- 1 owner group {n} Jan 01 00:00 {nom}\r\n"
                                   for nom, n in lineas).encode('ascii'))
                 await w_d.drain()
                 w_d.close()
+                try:
+                    await asyncio.wait_for(w_d.wait_closed(), timeout=20.0)
+                except Exception:
+                    pass
                 writer.write(b"226 Transfer complete.\r\n")
             elif cmd == 'SIZE':
                 contenido = _archivo_de_parche(arg)
@@ -1202,9 +1218,27 @@ async def _manejar_ftp(reader: asyncio.StreamReader, writer: asyncio.StreamWrite
                     writer.write(b"150 Opening BINARY mode data connection.\r\n")
                     await writer.drain()
                     r_d, w_d = await asyncio.wait_for(pasv_queue.get(), timeout=5.0)
-                    w_d.write(contenido)
-                    await w_d.drain()
+                    if os.environ.get('AO_FTP_DATOS_MS'):
+                        await asyncio.sleep(int(os.environ['AO_FTP_DATOS_MS']) / 1000.0)  # solo para pruebas
+                    _pausa =int(os.environ.get('AO_FTP_PAUSA_MS', '0')) / 1000.0
+                    if _pausa > 0:
+                        for _i in range(0, len(contenido), 16384):
+                            w_d.write(contenido[_i:_i + 16384])
+                            await w_d.drain()
+                            await asyncio.sleep(_pausa)
+                    else:
+                        w_d.write(contenido)
+                        await w_d.drain()
                     w_d.close()
+                    # El 226 va DESPUES de que salga el ultimo byte: con un archivo
+                    # grande WinInet cierra la lectura al verlo y se queda con lo
+                    # que ya habia llegado (el launcher guardaba solo 3072 B).
+                    try:
+                        await asyncio.wait_for(w_d.wait_closed(), timeout=120.0)
+                    except Exception as e:
+                        log.info('launcher FTP: la conexion de datos de %s termino con %r', arg, e)
+                    if os.environ.get('AO_FTP_226_MS'):
+                        await asyncio.sleep(int(os.environ['AO_FTP_226_MS']) / 1000.0)  # solo para pruebas
                     writer.write(b"226 Transfer complete.\r\n")
                     log.info('launcher FTP: enviado %s (%d B)', arg, len(contenido))
             elif cmd == 'QUIT':
@@ -1214,8 +1248,8 @@ async def _manejar_ftp(reader: asyncio.StreamReader, writer: asyncio.StreamWrite
             else:
                 writer.write(b"200 OK\r\n")
             await writer.drain()
-    except Exception:
-        pass
+    except Exception as e:
+        log.warning('launcher FTP: sesion cortada por %r', e)
     finally:
         if pasv_srv:
             pasv_srv.close()
@@ -1253,11 +1287,14 @@ def _contenido_update3_ini() -> bytes:
     """
     host = getattr(_cf, 'PARCHE_HOST', '127.0.0.1') or '127.0.0.1'
     version = ''
-    if getattr(_cf, 'PARCHE_EN_LAUNCHER', False):
-        import parche
-        est = parche.estado()
-        if est.get('version'):
-            version = ('GameVer = %s\r\nGameURL = %s\r\n' % (est['version'], est['pak']))
+    trans = '8.5.1.0'
+    est = _anuncio_parche()
+    if est:
+        # Medido contra el START.EXE de IGG (28/10/2026): solo actualiza si
+        # GameVerTrans es la version nueva, y GameURL es el NOMBRE del paquete
+        # de informacion (el launcher le anade ".pak"). Ver _info_del_parche.
+        trans = est['version']
+        version = 'GameVer = %s\r\nGameURL = %s\r\n' % (est['version'], _nombre_info(est))
     return (
         "[INFO]\r\n"
         "LoaderVer = 1.7\r\n"
@@ -1266,10 +1303,10 @@ def _contenido_update3_ini() -> bytes:
         # el reg.ini no servia de nada y seguia yendo a su host.
         "LoaderURL = %s\r\n"
         "GameVerFrom = 8.5.1.0\r\n"
-        "GameVerTrans = 8.5.1.0\r\n"
+        "GameVerTrans = %s\r\n"
         "[VERSION]\r\n"
         "%s"
-        "[COMPLEXFILE]\r\n" % (host, version)
+        "[COMPLEXFILE]\r\n" % (host, trans, version)
     ).encode('ascii')
 
 
@@ -1283,12 +1320,94 @@ def _ip_pasiva() -> str:
         return '127.0.0.1'
 
 
-def _archivo_de_parche(ruta: str):
-    """Lo que pide el launcher: el ini, o un archivo de parches/ por su nombre."""
+def _anuncio_parche():
+    """El estado del parche si hay que anunciarlo al launcher; si no, None.
+
+    Se anuncia con AO_PARCHE_EN_LAUNCHER=1 (y se puede apagar con
+    AO_PARCHE_ANUNCIAR=0). Sin anuncio el launcher se da por actualizado.
+    """
+    if not getattr(_cf, 'PARCHE_EN_LAUNCHER', False) or os.environ.get('AO_PARCHE_ANUNCIAR') == '0':
+        return None
     import parche
-    nombre = ruta.replace('\\', '/').rstrip('/').rsplit('/', 1)[-1].split('?', 1)[0]
+    est = parche.estado()
+    return est if est.get('version') and parche.entradas() else None
+
+
+def _nombre_info(est) -> str:
+    """GameURL del anuncio: 'u' + la version sin puntos (8.5.1.4 -> u8514)."""
+    return 'u' + est['version'].replace('.', '')
+
+
+# Archivo de relleno que va ULTIMO en la lista del launcher: el instalador del
+# launcher falla siempre justo despues de bajar el ultimo archivo, asi que se le
+# da uno inofensivo para ese lugar. Termina dentro de update27.pak y el juego lo
+# ignora.
+RELLENO = ('SHAPE\\LOGO\\ZZ_FIN.TXT', b'fin\r\n')
+
+
+def entradas_del_launcher() -> dict:
+    """Lo que baja el launcher: las entradas del parche mas el relleno final."""
+    import parche
+    e = dict(parche.entradas())
+    e[RELLENO[0]] = RELLENO[1]
+    return e
+
+
+def _info_del_parche(est) -> bytes:
+    """El paquete de informacion que el launcher baja como <GameURL>.pak.
+
+    Es un pak (formato OD) con UNA entrada, llamada como el GameURL en mayusculas
+    (sin extension), que es un ini: [INFO], y un [VERSION] con Ver, Size, Path y
+    una linea File por archivo: "nombre,pak,carpeta,tamano" (separadores coma o
+    tabulador). Por cada File el launcher baja <carpeta>/<nombre>.pak (un pak con
+    ese archivo) y lo mete en <pak>.pak dentro de la carpeta del juego. Sin esa
+    entrada el launcher falla con "Failed to load the latest update information".
+    """
+    import parche
+    host = getattr(_cf, 'PARCHE_HOST', '127.0.0.1') or '127.0.0.1'
+    pak_destino = est['pak'].rsplit('.', 1)[0]
+    lineas, total = [], 0
+    for nombre, datos in sorted(entradas_del_launcher().items()):
+        carpeta, _, base = nombre.rpartition('\\')
+        if not carpeta or ',' in nombre or '\t' in nombre:
+            log.warning('parche: %s no se anuncia al launcher (sin carpeta o con coma)', nombre)
+            continue
+        lineas.append('File = %s,%s,%s,%d\r\n' % (base, pak_destino, carpeta, len(datos)))
+        total += len(datos)
+    texto = ('[INFO]\r\nLoaderVer = 1.7\r\nLoaderURL = %s\r\nCompress = 1\r\n'
+             '[VERSION]\r\nVer = %s\r\nSize = %d\r\nPath = \r\n%s'
+             % (host, est['version'], total, ''.join(lineas)))
+    return parche.armar_pak({_nombre_info(est).upper(): texto.encode('ascii')})
+
+
+def _archivo_de_parche(ruta: str):
+    """Lo que pide el launcher: el ini, el paquete de informacion, un archivo del
+    parche en su mini-pak, o un archivo de parches/ por su nombre."""
+    import parche
+    partes = ruta.replace('\\', '/').strip('/').split('?', 1)[0].split('/')
+    nombre = partes[-1]
     if nombre.lower().endswith('.ini'):
         return _contenido_update3_ini()
+    est = _anuncio_parche()
+    if est and nombre.lower().endswith('.pak'):
+        # Paquetes ya hechos (tools/generar_paquetes_launcher.py): el VPS tiene otro
+        # zlib que el de la PC y con sus paks el launcher no llegaba a fusionar.
+        if not any(p in ('', '.', '..') for p in partes):
+            fijo = parche.DESTINO / 'launcher'
+            for p in partes:
+                fijo = fijo / p
+            if fijo.is_file():
+                return fijo.read_bytes()
+        if len(partes) == 1 and nombre[:-4].lower() == _nombre_info(est):
+            return _info_del_parche(est)
+        if len(partes) >= 2:
+            clave = ('\\'.join(partes[:-1]) + '\\' + nombre[:-4]).upper()
+            datos = entradas_del_launcher().get(clave)
+            if datos is not None:
+                return parche.armar_pak({clave: datos})
+    # START.EXE pide GameURL con ".pak" anadido (update27.pak -> update27.pak.pak).
+    if nombre.lower().endswith('.pak.pak'):
+        nombre = nombre[:-4]
     f = parche.DESTINO / nombre
     if nombre.lower().endswith('.pak') and f.is_file() and f.parent == parche.DESTINO:
         return f.read_bytes()
@@ -1534,12 +1653,11 @@ async def _manejar_http(reader: asyncio.StreamReader, writer: asyncio.StreamWrit
         req = await asyncio.wait_for(reader.read(2048), timeout=5.0)
         primera = req.decode('ascii', errors='ignore').splitlines()[0] if req else ''
         path = primera.split(' ')[1] if len(primera.split(' ')) > 1 else '/p.htm'
-        # Si el HTTP escucha hacia fuera (VPS), solo se sirven las noticias: el panel (/p.htm) cambia la estacion y abre clientes, y es solo de esta maquina.
+        # Si el HTTP escucha hacia fuera (VPS), a quien no es de esta maquina solo se le sirven las noticias: el panel (/p.htm) cambia la estacion y abre clientes.
+        # El launcher de los jugadores abre la raiz ("http://<ip>:8280/"): es la pagina de noticias.
         peer = (writer.get_extra_info('peername') or ('',))[0]
         if peer not in ('127.0.0.1', '::1') and not path.startswith('/news.htm'):
-            writer.write(b"HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\n\r\n")
-            await writer.drain()
-            return
+            path = '/news.htm?p=news'
 
         if path.startswith('/news.htm'):
             pagina = path.split('p=', 1)[1].split('&')[0] if 'p=' in path else 'news'

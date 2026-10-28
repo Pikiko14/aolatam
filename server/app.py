@@ -9300,6 +9300,9 @@ class Servidor:
         # Legacy client identifies this handoff by IP, not a session token.
         from accesos import Accesos
         self.accesos = Accesos()
+        import limites
+        self.conexiones = limites.Conexiones()
+        self.freno_login = limites.FrenoLogin()
 
     async def _patrulla_lyceum(self, ses):
         """Mueve a los House Pickets periodicamente para que patrullen el Angel Lyceum,
@@ -9631,6 +9634,19 @@ class Servidor:
             log.debug(f"bucle de regeneracion detenido: {e}")
 
     async def cliente(self, reader, writer, rol='mundo'):
+        """Cuenta las conexiones por IP y rechaza las que pasen del tope."""
+        peer = writer.get_extra_info('peername')
+        ip = peer[0] if peer else '?'
+        if not self.conexiones.entrar(ip):
+            log.warning(f"[{peer}] rechazada: demasiadas conexiones desde {ip}")
+            writer.close()
+            return
+        try:
+            await self._cliente(reader, writer, rol)
+        finally:
+            self.conexiones.salir(ip)
+
+    async def _cliente(self, reader, writer, rol='mundo'):
         addr = writer.get_extra_info('peername')
         self.sesiones += 1
         ses = Session(addr)
@@ -9653,13 +9669,24 @@ class Servidor:
         ses.grab.salida(primero)
         writer.write(primero)
         await writer.drain()
+        import limites
+        _ritmo = limites.Ritmo()
+        _espera = limites.timeout_de(rol)
         try:
             while True:
-                data = await reader.read(65536)
+                try:
+                    data = await asyncio.wait_for(reader.read(65536), _espera)
+                except asyncio.TimeoutError:
+                    log.info(f"[{addr}] sin datos en {_espera}s, se cierra ({rol})")
+                    break
                 if not data:
                     break
                 grab.entrada(data)
-                for opcode, cuerpo in ses.alimentar(data):
+                _msgs = ses.alimentar(data)
+                if not _ritmo.pasa(len(_msgs)):
+                    log.warning(f"[{addr}] demasiados mensajes por segundo, se cierra ({rol})")
+                    break
+                for opcode, cuerpo in _msgs:
                     ses.vistos[opcode] += 1
                     grab.submensaje('c2s', opcode, cuerpo)
                     m, d = ses.parsear(opcode, cuerpo)
@@ -10441,8 +10468,15 @@ class Servidor:
         if opcode == 0x0002 and ses.rol == 'login':
             usuario = login_server.usuario_de_auth(cuerpo)
             cuentas.guardar_muestra_auth(cuerpo, f"usuario='{usuario}' desde {addr}")
+            _ip_login = addr[0] if addr else '?'
+            _resto = self.freno_login.bloqueado(_ip_login, usuario)
+            if _resto:
+                log.warning(f"[{addr}] LOGIN BLOQUEADO usuario='{usuario}': faltan {_resto}s")
+                ses.enviar_crudo(login_server.respuesta_error(login_server.ERROR_GENERICO))
+                return
             cuenta, motivo = cuentas.validar(usuario, cuerpo)
             if cuenta is None:
+                self.freno_login.fallo(_ip_login, usuario)
                 log.warning(f"[{addr}] LOGIN RECHAZADO usuario='{usuario}': {motivo}")
                 codigo_error = (
                     login_server.ERROR_PASSWORD_INCORRECTA
@@ -10451,6 +10485,7 @@ class Servidor:
                 )
                 ses.enviar_crudo(login_server.respuesta_error(codigo_error))
                 return
+            self.freno_login.acierto(_ip_login, usuario)
             if not self.accesos.login(ses, usuario):
                 log.warning('[%s] LOGIN RECHAZADO: cuenta ya conectada', addr)
                 ses.enviar_crudo(login_server.respuesta_error(login_server.ERROR_GENERICO))
@@ -18329,6 +18364,21 @@ class Servidor:
                     if getattr(ses, 'monstruo_encantado', None) and getattr(ses.monstruo_encantado, 'vivo', False):
                         ses.monstruo_encantado.charmed_objetivo = _m
                 ses.enviar(_cb0.atributo(ent, _m.porcentaje if getattr(_m, 'vivo', False) else 0))
+                # El cuadro de objetivo del cliente puede crearse DESPUES de
+                # que llegue esa vida y quedar vacio hasta el siguiente golpe
+                # ("a veces se llena"): se repite un instante despues.
+                async def _revida(_ses=ses, _mob=_m, _ent=ent):
+                    for _t in (0.25, 0.8):
+                        await asyncio.sleep(_t)
+                        if (getattr(_ses, 'desconectado', False)
+                                or getattr(_ses, 'objetivo_actual', None) != _ent
+                                or not getattr(_mob, 'vivo', False)):
+                            return
+                        _ses.enviar_inmediato(_cb0.atributo(_ent, _mob.porcentaje))
+                try:
+                    asyncio.get_running_loop().create_task(_revida())
+                except RuntimeError:
+                    pass
                 # El clic sobre un monstruo vivo ataca con golpe basico respetando alcance y cadencia.
                 # Como ultimo_golpe NO se resetea a 0, si este clic llega junto a un 0x0016
                 # la cadencia de _atacar descarta el segundo sin duplicar golpes.
@@ -20435,6 +20485,12 @@ class Servidor:
 
     async def correr(self):
         import functools
+        import grabador as _grabador
+        _n_purga = _grabador.purgar()
+        if _n_purga:
+            log.info(f"grabaciones antiguas borradas: {_n_purga} archivos")
+        if not _grabador.ACTIVO:
+            log.info("grabacion de sesiones apagada (AO_GRABAR=0)")
         srv = await asyncio.start_server(
             functools.partial(self.cliente, rol='login'), self.host, self.port)
         log.info(f"servidor de LOGIN en {self.host}:{self.port}")
