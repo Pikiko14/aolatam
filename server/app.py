@@ -1078,7 +1078,7 @@ def _entrada_item_puesto(ses, ranura: int, cantidad: int) -> bytes:
     # En las capturas reales de 0x0032 (Yasir, Mew: corpus/packets.db) el dueno del item (+33..+36) va a cero; aqui salia el char_id del
     # vendedor, un dato que el cliente nunca recibe en un puesto y que no entiende al armar la ventana del comprador.
     if len(cuerpo_item) >= 37:
-        cuerpo_item[33:37] = b'    '
+        cuerpo_item[33:37] = bytes(4)
     return bytes(cuerpo_item)
 
 
