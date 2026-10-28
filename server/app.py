@@ -20182,6 +20182,16 @@ class Servidor:
                     return
                 ses.personaje.tile_x = dst['x'] // 32
                 ses.personaje.tile_y = dst['y'] // 32
+                # La posicion del companero en el mapa del equipo sale del 0x0026: solo se mandaba al cambiar HP/MP, asi que el
+                # marcador se quedaba donde estaba al invitarlo (lejos). Ahora tambien al moverse, como mucho una vez por segundo.
+                _ahora_eq = time.time()
+                if _ahora_eq - getattr(ses, '_eq_pos_t', 0) >= 1.0:
+                    ses._eq_pos_t = _ahora_eq
+                    try:
+                        import equipos as _eq_mov
+                        _eq_mov.notificar_stats(ses)
+                    except Exception:
+                        pass
                 if ses.personaje.stage==112:
                     _hb_walk=__import__('holy_battlefield')
                     _hb_wait=math.hypot(dst['x']-d['cur_x'],dst['y']-d['cur_y'])/max(1,_velocidad_de(ses))
