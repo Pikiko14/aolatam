@@ -49,22 +49,6 @@
    "direccion": 6,
    "visible": 1,
    "puesto_por": "npcs_del_cliente"
-  },
-  {
-   "entity_id": 90080003,
-   "nombre": "Abba",
-   "nombre_completo": "Abba",
-   "npc_type": 2090,
-   "sprite": 60241,
-   "klass": 199,
-   "monstruo": false,
-   "tile": [
-    91,
-    56
-   ],
-   "direccion": 6,
-   "visible": 1,
-   "puesto_por": "npcs_del_cliente"
   }
  ],
  "recursos": [
