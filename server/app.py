@@ -1075,6 +1075,10 @@ def _entrada_item_puesto(ses, ranura: int, cantidad: int) -> bytes:
         return b'\x00' * 85
     cuerpo_item = bytearray(paquetes[0][7:])
     struct.pack_into('<I', cuerpo_item, 4, max(1, int(cantidad)))
+    # En las capturas reales de 0x0032 (Yasir, Mew: corpus/packets.db) el dueno del item (+33..+36) va a cero; aqui salia el char_id del
+    # vendedor, un dato que el cliente nunca recibe en un puesto y que no entiende al armar la ventana del comprador.
+    if len(cuerpo_item) >= 37:
+        cuerpo_item[33:37] = b'    '
     return bytes(cuerpo_item)
 
 
