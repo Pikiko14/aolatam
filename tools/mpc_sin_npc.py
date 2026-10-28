@@ -124,4 +124,20 @@ def main():
     print('total registros quitados:', total, '(escritos)' if escribir else '(solo informe)')
 
 
-main()
+def recortar_entrada(entrada, datos):
+    """Para parche.py: devuelve `datos` (un map###.mpc) sin los NPC que el servidor ya manda; si el mapa esta cerrado,
+    no tiene plantilla o no es un map###.mpc, lo devuelve igual."""
+    import configuracion as cf
+    m = re.match(r'MAP\\MAP(\d+)\.MPC$', entrada.upper().replace('/', BS))
+    if not m or datos[:4] != b'MAP\x00':
+        return datos
+    stage = int(m.group(1))
+    pls = plantillas()
+    if stage not in pls or cf.mapa_apagado(stage):
+        return datos
+    nuevo, _quitados = recortar(datos, npc_del_servidor(stage, pls[stage]))
+    return nuevo
+
+
+if __name__ == '__main__':
+    main()

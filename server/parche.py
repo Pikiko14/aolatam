@@ -84,7 +84,38 @@ def cambios_del_cliente(ruta_cli: pathlib.Path) -> dict:
                 continue
             out[nombre] = _leer(actual_raw, entrada)
     out.update(_extras())
+    out.update(_pack_del_editor(ruta_cli))
     return out
+
+
+# El editor de mapas (C:\AO\Angels Online\editor-mapas) deja los mapas que se guardan o exportan en este pack del cliente.
+PACK_EDITOR = 'update28.pak'
+
+
+def _pack_del_editor(ruta_cli) -> dict:
+    """{NOMBRE: bytes} de los mapas del pack del editor, listos para repartir: a cada map###.mpc se le quitan los NPC que
+    el servidor ya manda (tools/mpc_sin_npc.py), para que el mapa muestre un solo punto por NPC. Pisan a los extras."""
+    f = pathlib.Path(ruta_cli) / PACK_EDITOR
+    if not f.is_file():
+        return {}
+    crudo = f.read_bytes()
+    try:
+        entradas = {n: _leer(crudo, e) for n, e in _directorio(crudo).items()}
+    except Exception as e:
+        log.warning('parche: no se pudo leer %s: %s', PACK_EDITOR, e)
+        return {}
+    try:
+        import sys
+        tools = str(RAIZ / 'tools')
+        if tools not in sys.path:
+            sys.path.append(tools)
+        import mpc_sin_npc
+        for n, d in list(entradas.items()):
+            entradas[n] = mpc_sin_npc.recortar_entrada(n, d)
+    except Exception as e:
+        log.warning('parche: los mapas del editor van sin quitar NPC duplicados (%s)', e)
+    log.info('parche: %d mapa(s) del editor en %s', len(entradas), PACK_EDITOR)
+    return entradas
 
 
 def _extras() -> dict:

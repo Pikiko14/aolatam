@@ -60,3 +60,6 @@ docs/rea_evidence/
 
 # El parche para los jugadores: lo genera server/parche.py a partir del cliente local
 parches/
+
+# el cliente Lua guarda su codigo en cliente/src
+!cliente/src/

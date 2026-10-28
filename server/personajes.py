@@ -71,6 +71,13 @@ ROPA_INICIAL = {
     'guantes': 28,      # Students' Gloves
     'zapatos': 30,      # Students' shoes
 }
+# Lo mismo para un personaje HOMBRE (primer byte de la apariencia = 1). El 26/28/30 es de mujer en item.xml del cliente (sus dolls 129/131/133
+# son el qipao, un mono de pelo y zapatos de mujer): puestos a un hombre no se dibujan y queda con el cuerpo descubierto.
+ROPA_INICIAL_HOMBRE = {
+    'cuerpo':  3410,    # Blue Students' Clothes(M)  (doll 15)
+    'guantes': 3409,    # Students' Gloves(M)        (doll 14)
+    'zapatos': 3411,    # Students' Shoes(M)         (doll 16)
+}
 INVENTARIO_INICIAL = [
     20103,              # Level 1-10 Growth Box
 ]
@@ -98,6 +105,8 @@ def apariencia_de_creacion(elegidos) -> list:
 
 def personaje_nuevo(nombre: str, ranura: int, char_id: int,
                     elegidos=None) -> dict:
+    apariencia = apariencia_de_creacion(elegidos)
+    ropa = ROPA_INICIAL_HOMBRE if apariencia[0] == 1 else ROPA_INICIAL
     return {
         'nombre': nombre,
         'char_id': char_id,
@@ -110,7 +119,7 @@ def personaje_nuevo(nombre: str, ranura: int, char_id: int,
         'hp_max': HP_MAX_INICIAL,
         'mp': MP_INICIAL,
         'mp_max': MP_MAX_INICIAL,
-        'apariencia': apariencia_de_creacion(elegidos),
+        'apariencia': apariencia,
         'tile_x': TILE_INICIAL[0],
         'tile_y': TILE_INICIAL[1],
         'habilidades': [],
@@ -119,7 +128,9 @@ def personaje_nuevo(nombre: str, ranura: int, char_id: int,
         'oro': 0,
         'inventario': {
             '0': 1,                           # Gold (item ID 1)
-            '2': ROPA_INICIAL['cuerpo'],      # 26 Students' Uniform, puesta
+            '2': ropa['cuerpo'],              # uniforme de estudiante (26 mujer, 3410 hombre), puesto
+            '5': ropa['guantes'],             # guantes (28 mujer, 3409 hombre), puestos
+            '6': ropa['zapatos'],             # zapatos (30 mujer, 3411 hombre), puestos
         },
     }
 
