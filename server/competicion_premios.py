@@ -91,7 +91,7 @@ def validar(rows, holy=False):
                 raise ValueError('Invalid Holy reward outcome')
         elif not 1 <= int(row['puesto_min']) <= int(row['puesto_max']):
             raise ValueError('Invalid Arena reward rank')
-        if any(int(row.get(k,0)) < 0 for k in ('exp','oro','creditos','skill_exp','skill_exp_ppm')):
+        if any(int(row.get(k,0)) < 0 for k in ('exp','oro','creditos','skill_exp','skill_exp_ppm','angel_gold')):
             raise ValueError('Negative competition reward')
         for item in row.get('items',[]):
             if not isinstance(item,dict) or not {'id','cantidad'} <= item.keys():
@@ -133,7 +133,7 @@ def seleccionar(r, cid, miembro):
     if len(matches) != 1:
         return None, 'sin_tabla'  # Ambiguous rows also fail closed.
     row = matches[0]
-    plan = {k:int(row.get(k, 0)) for k in ('exp','oro','creditos','skill_exp','skill_exp_ppm')}
+    plan = {k:int(row.get(k, 0)) for k in ('exp','oro','creditos','skill_exp','skill_exp_ppm','angel_gold')}
     plan['items'] = copy.deepcopy(row.get('items', []))
     if any(v < 0 for k,v in plan.items() if k != 'items'):
         raise ValueError('Negative competition reward')
@@ -187,7 +187,7 @@ def entregar(ses, automatico=False, stage=None):
     c._cargar()
     entregadas = 0
     compat_entregada = False
-    exp_entregada, skills_entregadas = 0, {}
+    exp_entregada, skills_entregadas, ag_entregado = 0, {}, 0
     with cuentas._LOCK:
         con = cuentas._get_conn()
         try:
@@ -281,6 +281,18 @@ def entregar(ses, automatico=False, stage=None):
                             data['mejoras'][str(slot)]={'arena_premio_fin':item['caduca_en'],
                                 'arena_premio_item':int(item['id']),'arena_premio_ronda':rid}
                         changed.add(slot)
+                    if int(plan.get('angel_gold',0)) > 0:
+                        # Same transaction; the movement id makes a retried claim credit only once.
+                        import item_mall
+                        item_mall._schema(con)
+                        item_mall._wallet(con,ses.usuario)
+                        mov = con.execute('INSERT OR IGNORE INTO item_mall_movimientos VALUES(?,?,?,?,?,?)',
+                                          ('holy:%s:%d' % (rid,p.char_id),ses.usuario,int(plan['angel_gold']),
+                                           'competicion',int(plan.get('stage',0)),c.time.time()))
+                        if mov.rowcount:
+                            con.execute('UPDATE item_mall_wallet SET ag=ag+? WHERE usuario=?',
+                                        (int(plan['angel_gold']),ses.usuario))
+                            ag_entregado += int(plan['angel_gold'])
                 except ValueError:
                     data = before
                     continue  # A full bag never marks a claim as delivered.
@@ -316,6 +328,9 @@ def entregar(ses, automatico=False, stage=None):
         ses.enviar(*app._refrescar(ses,touched,con_oro=True), app._stats_ses(ses))
         import clases
         ses.enviar(clases.arbol(p.habilidades or []))
+        if ag_entregado:
+            import item_mall
+            ses.enviar(__import__('struct').pack('<HI',0x0062,item_mall.saldo(ses.usuario)))
         if exp_entregada:
             ses.enviar(clases.aviso(str(exp_entregada),tipo=0,msg_id=clases.MSG_EXP))
         for sid,amount in skills_entregadas.items():

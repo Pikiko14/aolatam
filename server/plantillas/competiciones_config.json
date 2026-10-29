@@ -1,33 +1,66 @@
 {
- "modo_pruebas": true,
- "cobrar_entrada_en_pruebas": true,
- "logros_en_pruebas": true,
- "premios_en_pruebas": true,
- "holy_exp": {
-  "habilitado": true,
-  "fuente": "Compatibilidad propia autorizada por Karma; NO formula oficial IGG",
-  "puntos_tope": 500,
-  "exp_base_ppm": 50000,
-  "exp_victoria_ppm": 50000,
-  "exp_puntos_ppm": 50000,
-  "skill_base_ppm": 250000,
-  "skill_victoria_ppm": 250000,
-  "skill_puntos_ppm": 500000
- },
- "formato_arena": "supervivencia",
- "arena_preparacion_segundos": 60,
- "arena_ronda_segundos": 600,
- "arena_cuenta_segundos": 5,
- "nota": "Entrada normal y logros en pruebas GM. Holy usa EXP/skill EXP propias autorizadas por Karma, configuradas en holy_exp y congeladas al abrir cada ronda: NO son formula oficial IGG. Arena por defecto es supervivencia todos contra todos. Sin apertura automatica ni objetos oficiales inventados. Para pruebas gratuitas desactivar cobrar_entrada_en_pruebas antes de abrir otra ronda.",
- "premios_arena": null,
- "arena_premio_compat": {
-  "habilitado": true,
-  "fuente": "Premios originales Lv280 como sustitucion provisional para401+, autorizada por Karma; NO tabla oficial401+"
- },
- "premios_holy": null,
- "fuentes": {
-  "arena": "https://ao.igg.com/act/house/arena.php",
-  "holy_igg": "https://ao.igg.com/act/glory/",
-  "holy_japon_referencia_no_igg": "https://alo-nhn.ujj.co.jp/playguide/gamesystem/pvp_ss.php"
- }
+    "modo_pruebas": false,
+    "horario_automatico": [
+        112
+    ],
+    "zona_horaria": null,
+    "holy_horario": {
+        "dias": [
+            4,
+            6
+        ],
+        "horas": [
+            10,
+            16
+        ]
+    },
+    "cobrar_entrada_en_pruebas": true,
+    "logros_en_pruebas": true,
+    "premios_en_pruebas": true,
+    "holy_exp": {
+        "habilitado": true,
+        "fuente": "Compatibilidad propia autorizada por Karma; NO formula oficial IGG",
+        "puntos_tope": 500,
+        "exp_base_ppm": 50000,
+        "exp_victoria_ppm": 50000,
+        "exp_puntos_ppm": 50000,
+        "skill_base_ppm": 250000,
+        "skill_victoria_ppm": 250000,
+        "skill_puntos_ppm": 500000
+    },
+    "formato_arena": "supervivencia",
+    "arena_preparacion_segundos": 60,
+    "arena_ronda_segundos": 600,
+    "arena_cuenta_segundos": 5,
+    "nota": "Entrada normal y logros en pruebas GM. Holy usa EXP/skill EXP propias autorizadas por Karma, configuradas en holy_exp y congeladas al abrir cada ronda: NO son formula oficial IGG. Arena por defecto es supervivencia todos contra todos. Sin apertura automatica ni objetos oficiales inventados. Para pruebas gratuitas desactivar cobrar_entrada_en_pruebas antes de abrir otra ronda.",
+    "premios_arena": null,
+    "arena_premio_compat": {
+        "habilitado": true,
+        "fuente": "Premios originales Lv280 como sustitucion provisional para401+, autorizada por Karma; NO tabla oficial401+"
+    },
+    "premios_holy": [
+        {
+            "nivel_min": 1,
+            "nivel_max": 10000,
+            "resultado": "ganador",
+            "angel_gold": 5000
+        },
+        {
+            "nivel_min": 1,
+            "nivel_max": 10000,
+            "resultado": "perdedor",
+            "angel_gold": 1000
+        },
+        {
+            "nivel_min": 1,
+            "nivel_max": 10000,
+            "resultado": "empate",
+            "angel_gold": 1000
+        }
+    ],
+    "fuentes": {
+        "arena": "https://ao.igg.com/act/house/arena.php",
+        "holy_igg": "https://ao.igg.com/act/glory/",
+        "holy_japon_referencia_no_igg": "https://alo-nhn.ujj.co.jp/playguide/gamesystem/pvp_ss.php"
+    }
 }

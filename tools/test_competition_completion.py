@@ -195,10 +195,33 @@ def test_reward_ledger_is_atomic_retry_safe_and_frozen(world, monkeypatch):
         assert con.execute("SELECT estado FROM competiciones_premios WHERE char_id=1").fetchone()[0] == 'entregado'
 
 
+def test_holy_angel_gold_prize_winner_loser_and_single_credit(world, monkeypatch):
+    import competicion_premios as premios
+    import item_mall
+    monkeypatch.setattr(app,'_stats_ses',lambda ses:b'')
+    c.iniciar(112,60,0)
+    a,b = world.player(items={20:8537}),world.player(items={20:8537})
+    for s in (a,b):
+        c.entrada(s,112)
+    r = c.ronda(112)
+    r['premios_config'] = [{'nivel_min':1,'nivel_max':10000,'resultado':'ganador','angel_gold':5000},
+                           {'nivel_min':1,'nivel_max':10000,'resultado':'perdedor','angel_gold':1}]
+    ganador = next(s for s in (a,b) if c._miembro(r,s)['equipo']==1)
+    r['puntos']['1']=20
+    c._guardar(r)
+    base = {s.usuario:item_mall.saldo(s.usuario) for s in (a,b)}
+    c.terminar(112,'20 crystals')
+    for s in (a,b):
+        esperado = 5000 if s is ganador else 1
+        assert item_mall.saldo(s.usuario) == base[s.usuario]+esperado
+        assert premios.entregar(s) == 0
+        assert item_mall.saldo(s.usuario) == base[s.usuario]+esperado
+
+
 def test_unknown_official_reward_is_never_substituted_when_compat_disabled(world,monkeypatch):
     import competicion_premios as premios
     cfg = c.config_eventos()
-    monkeypatch.setattr(c,'config_eventos',lambda:dict(cfg,holy_exp=None))
+    monkeypatch.setattr(c,'config_eventos',lambda:dict(cfg,holy_exp=None,premios_holy=None))
     c.iniciar(112,60,0)
     a,b = world.player(items={20:8537}),world.player(items={20:8537})
     for s in (a,b):

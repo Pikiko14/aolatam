@@ -67,11 +67,8 @@ def config_eventos():
 
 
 def _modo_pruebas():
-    """Fail closed: configuring unknown rewards cannot silently enable paid PvP."""
-    cfg = config_eventos()
-    if cfg.get('modo_pruebas') is not True:
-        raise Rechazo('Official reward tables are not verified. Production competitions remain disabled.')
-    return True
+    """True = GM test rounds; False = production round (charged entry, achievements, prizes)."""
+    return config_eventos().get('modo_pruebas') is True
 
 
 def _esquema(con):
@@ -1023,6 +1020,10 @@ def cron(ahora=None):
     import configuracion
     _cargar()
     now = ahora or dt.datetime.now().astimezone()
+    zona = config_eventos().get('zona_horaria')
+    if zona and ahora is None:
+        import zoneinfo
+        now = dt.datetime.now(zoneinfo.ZoneInfo(zona))
     for stage, r in list(_RONDAS.items()):
         phase = fase(r, now.timestamp())
         if phase == 'registro':
@@ -1054,10 +1055,15 @@ def cron(ahora=None):
                     if ses.personaje.stage == stage:
                         al_entrar(ses)
     if _modo_pruebas():
-        return  # GM tests only until official reward delivery is complete.
+        return  # test mode: GM opens rounds by hand
+    auto = {int(s) for s in (config_eventos().get('horario_automatico') or [])}
     windows = [(t[2], t[0], t[3], t[4], t[5], configuracion.DURACION_ANGEL_ARENA_MIN) for t in TRAMOS]
-    windows += [(112, 1, day, hour, 0, 60) for day in (4, 6) for hour in (12, 21)]
+    hh = config_eventos().get('holy_horario') or {}
+    windows += [(112, 1, int(day), int(hour), 0, 60)
+                for day in hh.get('dias', (4, 6)) for hour in hh.get('horas', (12, 21))]
     for stage, level, weekday, hour, minute, duration in windows:
+        if stage not in auto:
+            continue
         start = now.replace(hour=hour, minute=minute, second=0, microsecond=0)
         identity = 'official-%d-%s' % (stage, start.isoformat())
         if (now.weekday() == weekday and start-dt.timedelta(minutes=15) <= now < start
