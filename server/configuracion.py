@@ -814,3 +814,9 @@ QUITAR_LOGO_ARRANQUE = True
 # cliente. Se deja un skill.xml suelto en el cliente, y para deshacerlo
 # basta borrarlo.
 RAMAS_SIN_EXCLUSION = True
+
+# Espera entre dos consumibles de HP/MP (pociones y comida). El cliente la lee de magic.xml
+# (後置時間, parche de tools/parche_pociones.py); el servidor la exige tambien, por si alguien
+# edita sus archivos. TOLERANCIA absorbe la irregularidad de la red entre dos usos legitimos.
+COOLDOWN_POCION_S = 1.0
+COOLDOWN_POCION_TOLERANCIA_S = 0.15

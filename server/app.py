@@ -18058,6 +18058,12 @@ class Servidor:
             # Caso 5: Consumibles (Pociones HP/MP, Hierba Magica 1228, Biscuits 2, etc.)
             ef_con = inv.efecto_consumible(item_id)
             if ef_con and ses.personaje:
+                import configuracion as _cfg_pot
+                _t_pot = time.time()
+                if _t_pot - getattr(ses, '_pocion_ultima', 0.0) < _cfg_pot.COOLDOWN_POCION_S - _cfg_pot.COOLDOWN_POCION_TOLERANCIA_S:
+                    log.info('[%s] consumible %s rechazado: cooldown de %.1fs', addr, item_id, _cfg_pot.COOLDOWN_POCION_S)
+                    return
+                ses._pocion_ultima = _t_pot
                 # Una unidad del monton. Antes se borraba la casilla entera:
                 # con una sola galleta daba igual, pero con una pila de diez
                 # desaparecian las diez de un mordisco.
