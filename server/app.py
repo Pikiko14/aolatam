@@ -1093,7 +1093,11 @@ def _entrada_item_puesto(ses, ranura: int, cantidad: int) -> bytes:
     if not paquetes or len(paquetes[0]) < 15:
         return b'\x00' * 85
     cuerpo_item = bytearray(paquetes[0][7:])
-    struct.pack_into('<I', cuerpo_item, 4, max(1, int(cantidad)))
+    # La cantidad va en el offset 39 de la ficha (capturas reales: 00 14 00 | 01 00 00 00). Antes se escribia en el 4,
+    # que es la mitad alta de la INSTANCIA: la ficha ya no coincidia con la cabecera de la entrada y el cliente comprador,
+    # que busca el item por instancia (0x514b70) al seleccionarlo, no lo encontraba y se cerraba.
+    if len(cuerpo_item) >= 43:
+        struct.pack_into('<I', cuerpo_item, 39, max(1, int(cantidad)))
     # En las capturas reales de 0x0032 (Yasir, Mew: corpus/packets.db) el dueno del item (+33..+36) va a cero; aqui salia el char_id del
     # vendedor, un dato que el cliente nunca recibe en un puesto y que no entiende al armar la ventana del comprador.
     if len(cuerpo_item) >= 37:
@@ -15219,12 +15223,6 @@ class Servidor:
                 if (__import__('arena_premios_compat').es_premio(ses,ranura)
                         or __import__('item_mall').es_temporal(ses,ranura)
                         or __import__('furniture_items').protegido(ses,ranura)):
-                    continue
-                # Una mascota/huevo no entra en la tabla de items del cliente comprador (0x514d50), asi que al
-                # seleccionarla 0x514b70 no la encuentra, recorre toda la tabla y se cierra el juego
-                # (volcados err6ae2be74 y err6ae2bf28). No se pueden vender en puesto.
-                if _iv.es_mascota(int(bolsa[ranura])):
-                    ses.enviar(clases_aviso('Pets cannot be sold in a stall.'))
                     continue
                 hay = _cant_de(ses, ranura)
                 if hay <= 0:
