@@ -15220,6 +15220,12 @@ class Servidor:
                         or __import__('item_mall').es_temporal(ses,ranura)
                         or __import__('furniture_items').protegido(ses,ranura)):
                     continue
+                # Una mascota/huevo no entra en la tabla de items del cliente comprador (0x514d50), asi que al
+                # seleccionarla 0x514b70 no la encuentra, recorre toda la tabla y se cierra el juego
+                # (volcados err6ae2be74 y err6ae2bf28). No se pueden vender en puesto.
+                if _iv.es_mascota(int(bolsa[ranura])):
+                    ses.enviar(clases_aviso('Pets cannot be sold in a stall.'))
+                    continue
                 hay = _cant_de(ses, ranura)
                 if hay <= 0:
                     continue
