@@ -1546,7 +1546,7 @@ PALABRAS_GM = frozenset((
     'estacion', 'season', 'modo',
     'rango', 'rank',
     'sistemas', 'album', 'logros', 'cartas', 'estrellas', 'casa',
-    'level', 'lvl', 'lv', 'levelall', 'lvlall',
+    'level', 'lvl', 'lv', 'levelall', 'lvlall', 'setlevel', 'setlvl', 'nivelde',
     'skills', 'spells', 'skillsall', 'learnall', 'skillall', 'skills5', 'skill5',
     'clearskills', 'clearskill',
     'pet', 'mascota',
@@ -1678,7 +1678,7 @@ def _gm_parsear(texto: str):
             return ('rango', int(partes[1], 0))
         except ValueError:
             return ('err', 'usage: /rango [1..20]')
-    if cmd in ('level', 'lvl', 'lv', 'levelall', 'lvlall',
+    if cmd in ('level', 'lvl', 'lv', 'levelall', 'lvlall', 'setlevel', 'setlvl', 'nivelde',
                'skills', 'spells', 'skillsall', 'learnall', 'skillall', 'skills5', 'skill5',
                'clearskills', 'clearskill',
                'pet', 'mascota'):
@@ -1825,7 +1825,7 @@ def _probar_gm(ses, cuerpo, addr) -> bool:
         return True
     if leido[0] == 'help':
         ses.enviar(_cl.aviso(
-            'GM: /item <id> [qty] | /level <n> | /levelall <n> | /skills [lv] | /skillsall [lv] | /skills5 | /clearskills | '
+            'GM: /item <id> [qty] | /level <n> | /levelall <n> | /setlevel <name|all> <n> |/skills [lv] | /skillsall [lv] | /skills5 | /clearskills | '
             '/pet level|exp|path|evolve | /rango [1..20] | /recipes [all|weapon|armor|sewing|craft|cooking] [level] | '
             '/estacion <normal|navidad|halloween|sakura|verano> | /emote <0..36> | /emote unlock <id> | /emote unlockall | /emote list | '
             '/quest <id> <step> | /ball reset | /glevel <1..10> | /grep <n> | /farm [enter|seeds|tools|pests] | /plant <crop> [plot] | '
@@ -2253,7 +2253,7 @@ def _probar_gm(ses, cuerpo, addr) -> bool:
         ses.enviar(_cl.aviso(f"League '{g['nombre']}' reputation set to {rep_val} (Level: {actualizado['nivel']}).", tipo=0, msg_id=_cl.MSG_TEXTO))
         log.info(f"[{addr}] GM guildrep: {g['nombre']} -> rep {rep_val}")
         return True
-    if leido[0] in ('level', 'levelall', 'skills', 'skillsall', 'skills5', 'clearskills', 'skilllevel', 'pet', 'ball'):
+    if leido[0] in ('level', 'levelall', 'setlevel', 'skills', 'skillsall', 'skills5', 'clearskills', 'skilllevel', 'pet', 'ball'):
         import gm as _gm
         msg = _gm.aplicar(ses, leido)
         log.info('[%s] GM %s' % (addr, msg))

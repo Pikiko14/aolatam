@@ -26,6 +26,7 @@ def _nivel_max() -> int:
 
 _CMDS_ITEM = ('item', 'give', 'i')
 _CMDS_LEVEL = ('level', 'lvl', 'lv')
+_CMDS_SETLEVEL = ('setlevel', 'setlvl', 'nivelde')
 _CMDS_LEVELALL = ('levelall', 'lvlall')
 _CMDS_SKILLS = ('skills', 'spells')
 _CMDS_SKILLSALL = ('skillsall', 'learnall', 'skillall')
@@ -46,7 +47,7 @@ _CMDS = frozenset(('help',) + _CMDS_ITEM + _CMDS_LEVEL + _CMDS_LEVELALL
                   + _CMDS_GUILDLEVEL + _CMDS_GUILDREP + _CMDS_GUILD
                   + _CMDS_TW + _CMDS_FARM)
 
-AYUDA = ("GM: /item <id> [qty]  /level <n>  /levelall <n>  /guildlevel <1..10>  /guildrep <n>  "
+AYUDA = ("GM: /item <id> [qty]  /level <n>  /levelall <n>  /setlevel <name|all> <n>/guildlevel <1..10>  /guildrep <n>  "
          "/skills [lv]  /skillsall [lv]  /skills5  /clearskills  "
          "/pet level|exp|path|evolve  /ball reset  /quest <id> <step>  "
          "/rango [1..20]  /estacion <normal|navidad|halloween|sakura|verano>  /farm enter  /plant <id>  "
@@ -157,6 +158,28 @@ def poner_nivel(ses, n: int) -> str:
             cuentas.guardar_banco_habilidades(ses.usuario, cid, p.banco_habilidades)
     extra = f", {len(added)} extra skill slot(s)" if added else ""
     return f"level {p.nivel}{extra}"
+
+
+def poner_nivel_a_otros(gm_ses, quien: str, n: int) -> str:
+    """/setlevel <nombre|all> <n>: sube a otros jugadores conectados, nunca al GM que lo escribe."""
+    a = _app()
+    quien = (quien or '').strip()
+    otros = [s for s in a._tw_sesiones()
+             if s is not gm_ses and getattr(s, 'personaje', None)]
+    if quien.lower() in ('all', 'todos'):
+        objetivos = otros
+    else:
+        objetivos = [s for s in otros if s.personaje.nombre.lower() == quien.lower()]
+    if not objetivos:
+        return 'no online player found: %s' % quien
+    hechos = []
+    for s in objetivos:
+        try:
+            poner_nivel(s, n)
+            hechos.append(s.personaje.nombre)
+        except Exception:
+            log.exception('setlevel fallo para %s', getattr(s.personaje, 'nombre', '?'))
+    return 'level %d set for %d player(s): %s' % (n, len(hechos), ', '.join(hechos[:10]) + ('...' if len(hechos) > 10 else ''))
 
 
 def poner_skills(ses, n: int) -> str:
@@ -413,6 +436,16 @@ def parsear(texto: str):
             except ValueError:
                 return ('err', 'qty must be a number')
         return ('item', iid, qty)
+    if cmd in _CMDS_SETLEVEL:
+        if len(parts) < 3:
+            return ('err', 'usage: /setlevel <name|all> <n>  (other players, not you)')
+        try:
+            n = int(parts[-1], 0)
+        except ValueError:
+            return ('err', 'level must be a number')
+        if n < NIVEL_MIN or n > _nivel_max():
+            return ('err', f'level must be {NIVEL_MIN}-{_nivel_max()}')
+        return ('setlevel', ' '.join(parts[1:-1]), n)
     if cmd in _CMDS_LEVEL + _CMDS_LEVELALL:
         kind = 'levelall' if cmd in _CMDS_LEVELALL else 'level'
         if len(parts) < 2:
@@ -524,6 +557,10 @@ def aplicar(ses, parsed) -> str:
         msg = dar_item(ses, parsed[1], parsed[2])
         if not msg.startswith('gave '):
             _avisar(ses, msg)
+        return msg
+    if kind == 'setlevel':
+        msg = poner_nivel_a_otros(ses, parsed[1], parsed[2])
+        _avisar(ses, msg)
         return msg
     if kind == 'level':
         return poner_nivel(ses, parsed[1])
