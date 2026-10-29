@@ -14,9 +14,9 @@
             16
         ]
     },
-    "cobrar_entrada_en_pruebas": true,
-    "logros_en_pruebas": true,
-    "premios_en_pruebas": true,
+    "cobrar_entrada_en_pruebas": false,
+    "logros_en_pruebas": false,
+    "premios_en_pruebas": false,
     "holy_exp": {
         "habilitado": true,
         "fuente": "Compatibilidad propia autorizada por Karma; NO formula oficial IGG",
