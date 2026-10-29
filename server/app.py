@@ -565,10 +565,23 @@ TOPE_CON_MOCHILA = 120
 
 
 def _tope_bolsa(bolsa) -> int:
-    """Hasta que casilla se puede guardar, segun si hay mochila puesta."""
+    """Hasta que casilla se puede guardar: las 25 de base mas las casillas de
+    la mochila puesta (columna 動態資料1 de item.xml, 背包). Con 15 de mochila
+    son 40 y el cliente bloquea el resto; antes se dejaba hasta la 120."""
     b = bolsa or {}
-    hay = b.get(7) is not None or b.get(8) is not None
-    return TOPE_CON_MOCHILA if hay else TOPE_SIN_MOCHILA
+    extra = 0
+    for r in (7, 8):
+        it = b.get(r)
+        if not it:
+            continue
+        try:
+            import house_services as _hs_tb
+            fila = _hs_tb.xml_rows('item.xml').get(int(it)) or {}
+            if fila.get('物品類別') == '背包':
+                extra += int(fila.get('動態資料1') or 0)
+        except Exception:
+            extra = TOPE_CON_MOCHILA
+    return min(TOPE_CON_MOCHILA, TOPE_SIN_MOCHILA + extra)
 
 
 def _ranura_libre(bolsa, desde=20, hasta=None):
@@ -16909,6 +16922,16 @@ class Servidor:
                         ses.enviar(*_refrescar(ses, [ranura]))
                         _guardar_bolsa(ses, cid)
                     return
+
+            # MAPA DEL TESORO (fragmento, categoria 地圖碎片): 'clic derecho para
+            # anotarlo en el album'. El album se pinta en el cliente (Quest Log,
+            # pestana TreMap) y el paquete que lo rellena no esta capturado, asi
+            # que no se gasta ni se cura: antes caia en el consumible y subia el HP.
+            if inv.categoria_item(item_id) == '地圖碎片':
+                import clases as _cl_tm
+                ses.enviar(_cl_tm.aviso('The treasure map album is not available yet.', tipo=0))
+                log.info('[%s] fragmento de mapa del tesoro %s: sin album, no se consume', addr, item_id)
+                return
 
             # Caso 0: objeto que da CREDITOS DE RANGO.
             #
