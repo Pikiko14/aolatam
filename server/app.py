@@ -6011,7 +6011,10 @@ SKILL_POR_MATERIAL = {
 }
 DISTANCIA_RECOLECCION = 6       # casillas
 # Los bancos de peces estan dentro del agua: desde la orilla hay mas de 6 casillas hasta ellos en muchos mapas, y con 6 no se podia pescar.
-DISTANCIA_PESCA = 14            # casillas
+DISTANCIA_PESCA = 25            # casillas
+# Byte +0xb del 0x000A tipo 9 (lo lee el cliente en 0x4b46a0): 1 y 2 'Work',
+# 3 'Cast' (lanzar la cana), 4 'Wait'. Con 0 no dibuja ninguna pose.
+POSE_PESCA = 3
 
 
 def _veta_de(stage, ent):
@@ -6139,6 +6142,8 @@ def _recolectar(ses, addr, stage, ent):
             resource = hs.resource_for(ent, ses.personaje.nivel)
             mid, px = resource['material'], resource['px']
     if not mid or not ses.personaje:
+        if ses.personaje and _recurso_con_entidad(stage, ent) is not None:
+            log.info('[%s] recurso %s en %s pulsado: no es una veta', addr, ent, stage)
         return False
     mat = _material(mid)
     if not mat:
@@ -6175,7 +6180,8 @@ def _recolectar(ses, addr, stage, ent):
         ses.enviar(_cl_r.aviso('', tipo=7, msg_id=msg))
         log.info('[%s] veta %s (%s): no puede recolectar (msg %s)', addr, ent, mat['nombre'], msg)
         return True
-    _distancia_max = DISTANCIA_PESCA if (mat.get('herramienta') or (mat_xml or {}).get('裝備限制')) == '釣竿' else DISTANCIA_RECOLECCION
+    _pesca = (mat.get('herramienta') or (mat_xml or {}).get('裝備限制')) == '釣竿'
+    _distancia_max = DISTANCIA_PESCA if _pesca else DISTANCIA_RECOLECCION
     if px and max(abs(int(px[0]) // 32 - int(getattr(p, 'tile_x', 0) or 0)),
                   abs(int(px[1]) // 32 - int(getattr(p, 'tile_y', 0) or 0))) > _distancia_max:
         ses.enviar(_cl_r.aviso('', tipo=7, msg_id=MSG_RECOLECTAR_LEJOS))
@@ -6190,7 +6196,8 @@ def _recolectar(ses, addr, stage, ent):
     token = object()
     ses.recoleccion = {'ent': int(ent), 'stage': stage, 'token': token}
     ses.enviar(_cl_r.aviso('', tipo=7, msg_id=MSG_EMPIEZA_RECOLECCION),
-               struct.pack('<HIIHH', 0x000A, p.entity_id, int(ent), ACCION_RECOLECTAR, ms))
+               struct.pack('<HIIBBH', 0x000A, p.entity_id, int(ent), ACCION_RECOLECTAR,
+                           POSE_PESCA if _pesca else 0, ms))
     log.info('[%s] recolectando %s (%s, material %s) en %s: %d ms, velocidad %d%%',
              addr, ent, mat['nombre'], mid, stage, ms, velocidad)
 
