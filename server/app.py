@@ -10495,7 +10495,7 @@ class Servidor:
             self.freno_login.acierto(_ip_login, usuario)
             if not self.accesos.login(ses, usuario):
                 log.warning('[%s] LOGIN RECHAZADO: cuenta ya conectada', addr)
-                ses.enviar_crudo(login_server.respuesta_error(login_server.ERROR_GENERICO))
+                ses.enviar_crudo(login_server.respuesta_error(login_server.ERROR_CUENTA_CONECTADA))
                 return
             ses.usuario = usuario
             log.info(f"[{addr}] LOGIN usuario='{usuario}' aceptado ({motivo})")

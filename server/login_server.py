@@ -71,8 +71,11 @@ def usuario_de_auth(cuerpo: bytes) -> str:
     return cuerpo[:fin if fin >= 0 else 0].decode('ascii', 'replace')
 
 
-ERROR_GENERICO = 1
-ERROR_PASSWORD_INCORRECTA = 3
+# El cliente muestra la cadena de string.xml cuyo id es el codigo (el 1 era
+# 'Angels Online', un cartel en blanco).
+ERROR_GENERICO = 152                 # Wrong account or password
+ERROR_PASSWORD_INCORRECTA = 152
+ERROR_CUENTA_CONECTADA = 161         # The account is logged in.
 
 
 def respuesta_error(codigo: int = ERROR_GENERICO) -> bytes:

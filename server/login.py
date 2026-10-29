@@ -1312,6 +1312,11 @@ def poblar(stage: int, player_level=1):
             # Tree Spirit donde no tocaba.
             if e.get('apagado') or npc_oculto(stage, e):
                 continue
+            # Totem oculto + el mismo totem como objeto: en el minimapa salian
+            # dos puntos azules. Se queda solo el objeto (clic por su id).
+            if 'Totem' in e['nombre'] and not e.get('visible', 1) and any(
+                    r.get('que_es') == e['nombre'] for r in d43.get('recursos', [])):
+                continue
             # El sprite va TAL COMO SE CAPTURO. Antes no se pasaba, asi que
             # los NPC salian con el generico: Cupid aparecia dibujado como
             # Angel Michael y los totems igual. El suyo es 40006 para Cupid y
@@ -1329,6 +1334,8 @@ def poblar(stage: int, player_level=1):
             if 'Totem' in e['nombre']:
                 TOTEMS_PUESTOS[e['entity_id']] = e['nombre']
         for r in d43.get('recursos', []):
+            if 'Totem' in str(r.get('que_es', '')):
+                TOTEMS_PUESTOS[int(r['entity_id'])] = r['que_es']
             salida.append(objeto_de_mapa(r))
             # Y su cartel, si se capturo: sin el 0x000F el recurso se ve pero
             # no tiene nombre al pasar el raton.
