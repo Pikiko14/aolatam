@@ -2634,6 +2634,11 @@ def respuesta_a(opcion_id: int, entidad: int = 0, val: int = 4,
                       516189, 516191, 516196, 516197)
             or opcion_id in TIENDAS_POR_OPCION):
         shop_id = 0
+        # Los Salesman de la Suft C of C NO abren tienda (estaban puestos con
+        # tiendas de equipo inventadas). Hasta saber que hacen, solo cierran.
+        if any(k in (nombre or '') for k in ('Weapon Salesman', 'Armor Salesman', 'Sewing Salesman',
+                                              'Cooking Salesman', 'Art Salesman', 'Art Saleman')):
+            return (struct.pack('<H', 0x0012) + FIN,)
         # 0. Lo primero: los NPC que venden DOS cosas segun la opcion.
         if (entidad, opcion_id) in TIENDAS_POR_ENTIDAD_Y_OPCION:
             shop_id = TIENDAS_POR_ENTIDAD_Y_OPCION[(entidad, opcion_id)]
