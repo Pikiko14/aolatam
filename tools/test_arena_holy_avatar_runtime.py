@@ -104,3 +104,72 @@ def test_walk_crystal_rejects_dead_own_and_duplicate_then_delivers(world):
     c.pulsar(a,angel);c.pulsar(a,angel)
     assert c.ronda(112)['puntos']['1']==1
     assert not c.ronda(112)['portadores'] and 3141 not in a.personaje.buffs
+
+
+def test_holy_death_respawns_at_own_camp(world):
+    import eventos
+    c.iniciar(112,60,0)
+    a,b=world.player(items={20:8537}),world.player(items={20:8537})
+    c.entrada(a,112);c.entrada(b,112)
+    r=c.ronda(112)
+    team=c._miembro(r,b)['equipo']
+    b.personaje.tile_x,b.personaje.tile_y=(150,150)
+    b.muerto=True
+    c.baja(a,b)
+    assert (b.personaje.tile_x,b.personaje.tile_y)==tuple(eventos.casillas_de_tag(112,team)[0])
+    assert not b.muerto
+
+
+def test_holy_delivery_works_even_if_own_crystal_was_stolen(world):
+    c.iniciar(112,60,0)
+    a,b=world.player(items={20:8537}),world.player(items={20:8537})
+    c.entrada(a,112);c.entrada(b,112)
+    r=c.ronda(112)
+    ta,tb=c._miembro(r,a)['equipo'],c._miembro(r,b)['equipo']
+    assert ta!=tb
+    a.personaje.tile_x,a.personaje.tile_y=c.CRISTALES[tb][1]
+    hb.contacto_cristal(a)
+    b.personaje.tile_x,b.personaje.tile_y=c.CRISTALES[ta][1]
+    hb.contacto_cristal(b)
+    r=c.ronda(112)
+    assert r['portadores']=={str(tb):a.personaje.char_id,str(ta):b.personaje.char_id}
+    angel=next(eid for eid,(team,tile) in c.ENTREGAS.items() if team==ta)
+    a.personaje.tile_x,a.personaje.tile_y=c.ENTREGAS[angel][1]
+    c.pulsar(a,angel)
+    assert c.ronda(112)['puntos'][str(ta)]==1
+    assert str(tb) not in c.ronda(112)['portadores']
+
+
+def test_holy_base_line_closes_gaps_for_enemies_but_not_for_own_team(world):
+    c.iniciar(112,60,0)
+    a,b=world.player(items={20:8537}),world.player(items={20:8537})
+    c.entrada(a,112);c.entrada(b,112)
+    r=c.ronda(112)
+    team_a=c._miembro(r,a)['equipo']
+    base=[t for t,team in hb.limites_base() if team==team_a]
+    ordenados=sorted(base)
+    # hueco entre dos puntos consecutivos de la linea: la casilla de en medio no es un punto, pero esta en la zona
+    hueco=next(((p[0]+q[0])//2,(p[1]+q[1])//2) for p,q in zip(ordenados,ordenados[1:])
+               if 1<max(abs(p[0]-q[0]),abs(p[1]-q[1]))<=4 and (((p[0]+q[0])//2,(p[1]+q[1])//2) not in base))
+    desde=(hueco[0]-6,hueco[1]-6);hasta=(hueco[0]+6,hueco[1]+6)
+    enemigo=b if c._miembro(r,b)['equipo']!=team_a else a
+    assert hb.bloquear_paso(enemigo,desde,hasta)
+    propio=a if c._miembro(r,a)['equipo']==team_a else b
+    assert not hb.bloquear_paso(propio,desde,hasta)
+
+
+def test_holy_own_team_buildings_are_sent_as_npc_and_enemy_ones_as_monsters(world):
+    c.iniciar(112,60,0)
+    a,b=world.player(items={20:8537}),world.player(items={20:8537})
+    c.entrada(a,112);c.entrada(b,112)
+    r=c.ronda(112)
+    team=hb.equipo_de(a,r)
+    propio=next(m for m in hb.monstruos(r).values() if m.hb_data['team']==team)
+    rival=next(m for m in hb.monstruos(r).values() if m.hb_data['team']!=team)
+    klass=lambda pkt:struct.unpack_from('<I',pkt,2+40)[0]
+    assert klass(hb.spawn_edificio(propio,team))==199
+    assert klass(hb.spawn_edificio(rival,team))!=199
+    assert klass(hb.spawn_edificio(propio))!=199          # sin equipo (observador): como antes
+    a.packets.clear()
+    hb.aliados_como_npc(a,r)
+    assert a.packets and all(True for _ in a.packets)

@@ -482,7 +482,30 @@ def buff_de(item_id, ahora=0.0):
         if mag.get(key):entrada[key]=mag[key]
     for source,target in (('atk_speed_bonus','atk_speed'),('crit_rate','crit'),('phys_mit','mit')):
         if mag.get(source):entrada[target]=mag[source]
+    _campos_de_carta(mid, entrada)
     return mid, entrada, dur
+
+
+def _campos_de_carta(mid, entrada):
+    """Cartas de recoleccion, fabricacion (Facture), EXP, skill y loot: sus % salen de las columnas de la
+    fila de magic. Sin esto la carta de velocidad se gastaba sin acelerar nada (solo la leian los 4 boosts
+    de novato y los servicios del Lyceum). Las de recoleccion/fabricacion llevan el extra de
+    configuracion.BONO_CARTAS_VELOCIDAD_PCT."""
+    import configuracion
+    from house_services import xml_rows
+    fila = xml_rows('magic.xml').get(int(mid)) or {}
+    es_carta = int(fila.get('持續時間') or 0) >= 1800      # media hora o mas: cartas; los pasteles y pociones de 10-25 min no
+    extra = 1 + (float(getattr(configuracion, 'BONO_CARTAS_VELOCIDAD_PCT', 0)) / 100 if es_carta else 0)
+    for columna, destino, escala in (('採集速度', 'recoleccion_pct', extra),
+                                     ('製作速度', 'fabricacion_pct', extra),
+                                     ('經驗加倍', 'exp_extra_pct', 1),
+                                     ('技能經驗加倍', 'skill_exp_extra_pct', 1),
+                                     ('掉寶加倍', 'drop_extra_pct', 1)):
+        v = str(fila.get(columna) or '')
+        if v.isdigit() and int(v):
+            entrada[destino] = round(int(v) * escala)
+    if fila.get('死亡不消失') == '是':
+        entrada['persist_death'] = True
 
 
 def se_gasta(item_id) -> bool:
@@ -495,3 +518,29 @@ def se_gasta(item_id) -> bool:
     """
     _cargar_buffs()
     return int(item_id or 0) not in (_NO_GASTAN or set())
+
+
+def piedra_caducada(ses, ranura, item_id) -> bool:
+    """PIEDRAS REUTILIZABLES CON CADUCIDAD (Speed Stone / 3X / 5X Stone de 30 o 60 dias: 使用不扣 y 持續時間 en
+    MINUTOS en el item). Cada uso da un buff de media hora, pero la piedra dura lo que dice: el plazo corre desde el
+    primer uso y viaja con el item en las mejoras (como Mall y Arena). True = ya caduco (se retira de la mochila)."""
+    import time
+    import cuentas
+    import inventario
+    minutos = inventario._col_item(item_id, '持續時間')
+    if minutos <= 0 or se_gasta(item_id):
+        return False
+    p = ses.personaje
+    if not isinstance(getattr(p, 'mejoras', None), dict):
+        p.mejoras = {}
+    meta = p.mejoras.setdefault(ranura, {})
+    if meta.get('stone_item') != item_id or 'stone_fin' not in meta:
+        meta['stone_item'] = item_id
+        meta['stone_fin'] = time.time() + minutos * 60
+        if getattr(ses, 'usuario', None):
+            cuentas.guardar_mejoras(ses.usuario, p.char_id, p.mejoras)
+        return False
+    if meta['stone_fin'] <= time.time():
+        __import__('arena_premios_compat').caducados(ses, campo_fin='stone_fin', campo_item='stone_item')
+        return True
+    return False

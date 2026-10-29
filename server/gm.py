@@ -27,6 +27,7 @@ def _nivel_max() -> int:
 _CMDS_ITEM = ('item', 'give', 'i')
 _CMDS_LEVEL = ('level', 'lvl', 'lv')
 _CMDS_SETLEVEL = ('setlevel', 'setlvl', 'nivelde')
+_CMDS_GOLD = ('gold', 'oro', 'givegold', 'dargold')
 _CMDS_LEVELALL = ('levelall', 'lvlall')
 _CMDS_SKILLS = ('skills', 'spells')
 _CMDS_SKILLSALL = ('skillsall', 'learnall', 'skillall')
@@ -158,6 +159,37 @@ def poner_nivel(ses, n: int) -> str:
             cuentas.guardar_banco_habilidades(ses.usuario, cid, p.banco_habilidades)
     extra = f", {len(added)} extra skill slot(s)" if added else ""
     return f"level {p.nivel}{extra}"
+
+
+def dar_oro(gm_ses, quien: str, cantidad: int) -> str:
+    """/gold: sin nombre es para el GM; con nombre (o all = todos los demas conectados) para esos jugadores."""
+    a = _app()
+    import cuentas
+    quien = (quien or '').strip()
+    if not quien:
+        objetivos = [gm_ses] if getattr(gm_ses, 'personaje', None) else []
+    else:
+        otros = [s for s in a._tw_sesiones() if getattr(s, 'personaje', None)]
+        if quien.lower() in ('all', 'todos'):
+            objetivos = [s for s in otros if s is not gm_ses]
+        else:
+            objetivos = [s for s in otros if s.personaje.nombre.lower() == quien.lower()]
+    if not objetivos:
+        return 'no online player found: %s' % (quien or 'you')
+    hechos = []
+    for s in objetivos:
+        try:
+            nuevo = max(0, min(2000000000, int(getattr(s, 'oro', 0)) + int(cantidad)))
+            s.oro = s.personaje.oro = nuevo
+            s.enviar(*a._refrescar(s, [], con_oro=True))
+            if getattr(s, 'usuario', None):
+                cuentas.guardar_oro(s.usuario, s.personaje.char_id, nuevo)
+            if s is not gm_ses:
+                _avisar(s, 'You received %+d gold.' % int(cantidad))
+            hechos.append('%s=%d' % (s.personaje.nombre, nuevo))
+        except Exception:
+            log.exception('gold fallo para %s', getattr(s.personaje, 'nombre', '?'))
+    return 'gold %+d -> %s' % (int(cantidad), ', '.join(hechos[:10]) + ('...' if len(hechos) > 10 else ''))
 
 
 def poner_nivel_a_otros(gm_ses, quien: str, n: int) -> str:
@@ -436,9 +468,18 @@ def parsear(texto: str):
             except ValueError:
                 return ('err', 'qty must be a number')
         return ('item', iid, qty)
+    if cmd in _CMDS_GOLD:
+        # /gold <n>  (a ti)  |  /gold <nombre|all> <n>  (a otros conectados). n negativo quita oro.
+        if len(parts) < 2:
+            return ('err', 'usage: /gold <n>  |  /gold <name|all> <n>')
+        try:
+            n = int(parts[-1].replace(',', '').replace('.', ''), 0)
+        except ValueError:
+            return ('err', 'amount must be a number')
+        return ('gold', ' '.join(parts[1:-1]), n)
     if cmd in _CMDS_SETLEVEL:
         if len(parts) < 3:
-            return ('err', 'usage: /setlevel <name|all> <n>  (other players, not you)')
+            return ('err', 'usage: /setlevel <name|all> <n>  /gold [name|all] <n>  (other players, not you)')
         try:
             n = int(parts[-1], 0)
         except ValueError:
@@ -557,6 +598,10 @@ def aplicar(ses, parsed) -> str:
         msg = dar_item(ses, parsed[1], parsed[2])
         if not msg.startswith('gave '):
             _avisar(ses, msg)
+        return msg
+    if kind == 'gold':
+        msg = dar_oro(ses, parsed[1], parsed[2])
+        _avisar(ses, msg)
         return msg
     if kind == 'setlevel':
         msg = poner_nivel_a_otros(ses, parsed[1], parsed[2])

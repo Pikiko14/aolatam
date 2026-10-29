@@ -820,3 +820,8 @@ RAMAS_SIN_EXCLUSION = True
 # edita sus archivos. TOLERANCIA absorbe la irregularidad de la red entre dos usos legitimos.
 COOLDOWN_POCION_S = 1.0
 COOLDOWN_POCION_TOLERANCIA_S = 0.15
+
+
+# Extra (en %) sobre la velocidad de las cartas de recoleccion y fabricacion (Collection / Facture Speedup Card
+# y sus variantes): una carta de +50% da 50 * 1.30 = 65. Pedido del usuario, 29/10/2026. 0 = el valor del xml.
+BONO_CARTAS_VELOCIDAD_PCT = 30

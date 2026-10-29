@@ -1546,7 +1546,7 @@ PALABRAS_GM = frozenset((
     'estacion', 'season', 'modo',
     'rango', 'rank',
     'sistemas', 'album', 'logros', 'cartas', 'estrellas', 'casa',
-    'level', 'lvl', 'lv', 'levelall', 'lvlall', 'setlevel', 'setlvl', 'nivelde',
+    'level', 'lvl', 'lv', 'levelall', 'lvlall', 'setlevel', 'setlvl', 'nivelde', 'gold', 'oro', 'givegold', 'dargold',
     'skills', 'spells', 'skillsall', 'learnall', 'skillall', 'skills5', 'skill5',
     'clearskills', 'clearskill',
     'pet', 'mascota',
@@ -1678,7 +1678,7 @@ def _gm_parsear(texto: str):
             return ('rango', int(partes[1], 0))
         except ValueError:
             return ('err', 'usage: /rango [1..20]')
-    if cmd in ('level', 'lvl', 'lv', 'levelall', 'lvlall', 'setlevel', 'setlvl', 'nivelde',
+    if cmd in ('level', 'lvl', 'lv', 'levelall', 'lvlall', 'setlevel', 'setlvl', 'nivelde', 'gold', 'oro', 'givegold', 'dargold',
                'skills', 'spells', 'skillsall', 'learnall', 'skillall', 'skills5', 'skill5',
                'clearskills', 'clearskill',
                'pet', 'mascota'):
@@ -1825,7 +1825,7 @@ def _probar_gm(ses, cuerpo, addr) -> bool:
         return True
     if leido[0] == 'help':
         ses.enviar(_cl.aviso(
-            'GM: /item <id> [qty] | /level <n> | /levelall <n> | /setlevel <name|all> <n> |/skills [lv] | /skillsall [lv] | /skills5 | /clearskills | '
+            'GM: /item <id> [qty] | /level <n> | /levelall <n> | /setlevel <name|all> <n> | /gold [name|all] <n> | /skills [lv] | /skillsall [lv] | /skills5 | /clearskills | '
             '/pet level|exp|path|evolve | /rango [1..20] | /recipes [all|weapon|armor|sewing|craft|cooking] [level] | '
             '/estacion <normal|navidad|halloween|sakura|verano> | /emote <0..36> | /emote unlock <id> | /emote unlockall | /emote list | '
             '/quest <id> <step> | /ball reset | /glevel <1..10> | /grep <n> | /farm [enter|seeds|tools|pests] | /plant <crop> [plot] | '
@@ -2253,7 +2253,7 @@ def _probar_gm(ses, cuerpo, addr) -> bool:
         ses.enviar(_cl.aviso(f"League '{g['nombre']}' reputation set to {rep_val} (Level: {actualizado['nivel']}).", tipo=0, msg_id=_cl.MSG_TEXTO))
         log.info(f"[{addr}] GM guildrep: {g['nombre']} -> rep {rep_val}")
         return True
-    if leido[0] in ('level', 'levelall', 'setlevel', 'skills', 'skillsall', 'skills5', 'clearskills', 'skilllevel', 'pet', 'ball'):
+    if leido[0] in ('level', 'levelall', 'setlevel', 'gold', 'skills', 'skillsall', 'skills5', 'clearskills', 'skilllevel', 'pet', 'ball'):
         import gm as _gm
         msg = _gm.aplicar(ses, leido)
         log.info('[%s] GM %s' % (addr, msg))
@@ -3771,6 +3771,33 @@ CIUDAD_DE_FACCION = {
     "Iron Castle": (38, (68, 163)),
     "Dark City": (26, (309, 69)),
 }
+
+
+# Insignias de faccion: item -> nombre de ciudad (CIUDAD_DE_FACCION). Las cuatro dicen "Badge" y solo cambia la ciudad.
+INSIGNIAS_DE_FACCION = {7028: 'Aurora', 7029: 'Breeze Woods', 7030: 'Iron Castle', 7031: 'Dark City'}
+
+
+def _usar_insignia_faccion(ses, addr, ranura, item_id):
+    import clases as _cl_ins
+    p = ses.personaje
+    ciudad = INSIGNIAS_DE_FACCION[item_id]
+    nueva = NOMBRE_DE_FACCION.get(ciudad, ciudad)
+    if getattr(ses, 'muerto', False) or getattr(ses, 'mapa_cargando', False) or es_instancia(p.stage):
+        ses.enviar(_cl_ins.aviso('You cannot use this badge here.', tipo=0))
+        return
+    if getattr(p, 'faction', '') == nueva:
+        ses.enviar(_cl_ins.aviso('You already belong to this faction.', tipo=0))
+        return
+    _sacar(ses, ranura, 1)
+    p.faction = nueva
+    if getattr(ses, 'usuario', None):
+        cuentas.guardar_faccion(ses.usuario, p.char_id, nueva)
+        _guardar_bolsa(ses, p.char_id)
+    ses.enviar(*_refrescar(ses, [ranura]))
+    ses.enviar(_cl_ins.aviso('You are now a member of the %s faction.' % ciudad, tipo=0))
+    stage, tile = CIUDAD_DE_FACCION.get(ciudad, CIUDAD_DE_FACCION['Aurora'])
+    log.info('[%s] %s usa la insignia %d: faccion %s, viaja a %s %s', addr, p.nombre, item_id, nueva, stage, tile)
+    _sincronizar_cambio_mapa(ses, stage, tile[0], tile[1])
 
 
 def _ya_registrado(ses) -> bool:
@@ -11090,7 +11117,7 @@ class Servidor:
                     if isinstance(_b_data, dict):
                         _rem_s = _b_data.get('fin', 0) - _now_b
                         if _rem_s > 0:
-                            ses.enviar(struct.pack('<HIBBII', 0x001D, p.entity_id, 1, 4, int(_b_id), int(_rem_s * 1000)))
+                            ses.enviar(struct.pack('<HIBBII', 0x001D, p.entity_id, 1, 4, int(_b_id), min(int(_rem_s * 1000), 0x7FFFFFFF)))
                             if _b_data.get('es_transform') and (_b_data.get('trans_sprite') or _b_data.get('mag', {}).get('trans_sprite')):
                                 _ts = _b_data.get('trans_sprite') or _b_data.get('mag', {}).get('trans_sprite')
                                 ses.enviar(_cb.atributo(p.entity_id, _ts, _cb.KIND_TRANSFORM))
@@ -12392,15 +12419,41 @@ class Servidor:
             nombre = cuerpo.split(bytes(1))[0].decode('ascii', 'replace').strip()
 
             def _por_nombre(n):
+                n_l = (n or '').strip().lower()
                 for s in self.mundos:
                     p2 = getattr(s, 'personaje', None)
-                    if p2 is not None and (getattr(p2, 'nombre', '') or '') == n:
+                    if p2 is not None and (getattr(p2, 'nombre', '') or '').strip().lower() == n_l:
                         return s
                 return None
             modo = cuerpo[-1] if len(cuerpo)>=18 and cuerpo[-1] in (0,1) else 0
+            # Alt+G (invitar al objetivo seleccionado): si lo que llega no es un nombre conectado, se prueba como
+            # entidad del jugador seleccionado (u32 al inicio) y, si no, con el objetivo actual del que invita.
+            if _por_nombre(nombre) is None:
+                try:
+                    import presencia as _pr_eq
+                    _cand = None
+                    if len(cuerpo) >= 4:
+                        _cand = _pr_eq.sesion_por_entidad(ses, struct.unpack_from('<I', cuerpo, 0)[0])
+                    if _cand is None:
+                        _ob = getattr(ses, 'objetivo_jugador', None) or getattr(ses, 'objetivo_actual', None)
+                        if isinstance(_ob, int):
+                            _cand = _pr_eq.sesion_por_entidad(ses, _ob)
+                    if _cand is not None and getattr(_cand, 'personaje', None) and _cand is not ses:
+                        nombre = _cand.personaje.nombre
+                except Exception:
+                    log.debug('invitar: sin objetivo por entidad', exc_info=True)
             ok, por_que = _eq.invitar(ses, nombre, _por_nombre, modo=modo)
-            log.info("[%s] invita a '%s': %s", addr, nombre,
+            log.info("[%s] invita a '%s' (crudo %r): %s", addr, nombre, cuerpo[:20],
                      'cartel mandado' if ok else por_que)
+            if not ok:
+                # Antes fallaba en silencio y parecia que Alt+G no hacia nada.
+                import clases as _cl_eq
+                _txt = {'no hay a quien invitar': 'Select a player to invite.',
+                        'no esta conectado': 'That player is not online.',
+                        'ya esta en un grupo': 'That player is already in a team.',
+                        'solo el lider puede invitar': 'Only the team leader can invite.',
+                        'el grupo ya esta lleno (maximo 5)': 'Your team is full.'}.get(por_que, 'Could not send the invitation.')
+                ses.enviar(_cl_eq.aviso(_txt, tipo=0, msg_id=_cl_eq.MSG_TEXTO))
             return
 
         if (opcode in (0x100,0x101,0x102,0x103,0x106,0x107) and ses.rol=='mundo' and ses.personaje):
@@ -18247,6 +18300,13 @@ class Servidor:
                 log.info(f"[{addr}] Regression Scroll usado: teletransporte al Area I stage 50 paralelo {par}")
                 return
 
+            # INSIGNIAS DE FACCION (items 7028..7031, 使用公式 vacio): "Use it and become a member of X Faction".
+            # Se gasta, cambia la faccion del personaje y lo lleva a la ciudad de esa faccion (el mismo destino que
+            # al elegirla con el Angel del Graduation Palace, que es donde el cliente aplica el cambio).
+            if item_id in INSIGNIAS_DE_FACCION and ses.personaje:
+                _usar_insignia_faccion(ses, addr, ranura, item_id)
+                return
+
             # Caso 4.9: OBJETOS QUE BUFEAN. VA ANTES QUE LOS CONSUMIBLES, y
             # no es un detalle: efecto_consumible() lee el hp y el mp de la
             # fila de magia y los toma por una pocion, asi que la Kyrio Angel
@@ -18262,6 +18322,9 @@ class Servidor:
             if _bf:
                 import combate as _cb
                 _mid_buff, _entrada, _dur = _bf
+                if _bol0.piedra_caducada(ses, ranura, item_id):      # piedras de 30/60 dias: ver bolsas.piedra_caducada
+                    ses.enviar(_c.aviso('This item has expired.', tipo=0))
+                    return
                 __import__('recent_mall').ajustar_buff(item_id,_entrada)
                 if True:
                     _yo = ses.personaje.entity_id
@@ -18299,8 +18362,9 @@ class Servidor:
                                                 1, 3, b, 0)))
                         except RuntimeError:
                             pass
+                    _dur_icono = min(_dur, 0x7FFFFFFF)   # el icono: int32 en ms (las cartas de 30 dias pasan de 2^31)
                     _sal.append(struct.pack('<HIBBII', 0x001D, _yo, 1, 4,
-                                            _mid_buff, _dur))
+                                            _mid_buff, _dur_icono))
                     # Y la vida y el mana al tope nuevo, como hace el hechizo
                     # cuando el buff sube los maximos: si no, se queda con la
                     # barra a medias sobre un maximo mas grande.

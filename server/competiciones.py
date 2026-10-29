@@ -543,6 +543,8 @@ def al_entrar(ses):
         if other is not ses and other.personaje.stage==p.stage:
             ses.enviar(*(__import__('presencia').para_receptor(ses,packet)
                          for packet in marcas_actor(other,True)))
+    if m and p.stage==112:
+        __import__('holy_battlefield').aliados_como_npc(ses,r)     # estatuas/puertas propias: NPC, no punto rojo
     if not m:
         aviso(ses, 'You are not registered here. Return to Sign-up Office to join or watch.')
     else:
@@ -964,9 +966,16 @@ def pulsar(ses, eid):
             state['participantes'].append(p.char_id)
     else:
         enemy = str(3-team)
-        if (own != team or r['portadores'].get(enemy) != p.char_id or str(team) in r['portadores']
-                or r.get('cristales_estado',{}).get(str(team),{}).get('tile')):
+        # holy_entrega_exige_cristal_propio (config, false por defecto): con true solo se puntua si el cristal propio
+        # esta en la base. Con las dos cuentas de prueba cada una roba el del otro y nadie podia entregar nunca.
+        exige_propio = bool(config_eventos().get('holy_entrega_exige_cristal_propio', False))
+        if own != team or r['portadores'].get(enemy) != p.char_id:
+            if own == team:
+                aviso(ses, 'You are not carrying the enemy crystal. Take it from their base first.')
             hb.mostrar(ses,7630 if own!=team else [7631,7632,7633],[],42 if own==1 else 3)
+            return True
+        if exige_propio and (str(team) in r['portadores'] or r.get('cristales_estado',{}).get(str(team),{}).get('tile')):
+            aviso(ses, 'Your own crystal must be back at your base before you can deliver.')
             return True
         r['portadores'].pop(enemy)
         r['puntos'][str(team)] += 1
@@ -1097,6 +1106,7 @@ async def reloj():
                 __import__('olympus').tick(ses)
                 __import__('arena_premios_compat').caducados(ses)
                 __import__('item_mall').caducados(ses)
+                __import__('arena_premios_compat').caducados(ses, campo_fin='stone_fin', campo_item='stone_item')   # piedras de 30/60 dias
                 __import__('competicion_premios').entregar(ses, automatico=True)
         except Exception:
             log.exception('competition clock')

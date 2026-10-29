@@ -54,6 +54,25 @@ def _persist_position(con,s,point,data=None):
     else:data.update(stage_id=point['stage'],tile_x=point['x'],tile_y=point['y'])
 
 
+def _efecto(s,row):
+    """El efecto visual del item (特效編號: 6 = Mark Stone marca el area, 5 = Mark Portal Scroll). Antes no se mandaba
+    ninguno: el item grababa la posicion y solo salia el aviso de texto."""
+    try:
+        import combate,presencia
+        ef=int(row.get('特效編號') or 0)
+        if not ef:return
+        yo=s.personaje.entity_id
+        ini=lambda e:combate.efecto_magia_self_inicio(e,ef,0,cast_time=0)
+        fin=lambda e:combate.efecto_magia_self_fin(e,ef,0)
+        s.enviar(ini(yo),fin(yo))
+        pub=presencia.entidad_de(s)
+        presencia.notificar_companero_accion(s,ini(pub))
+        presencia.notificar_companero_accion(s,fin(pub))
+    except Exception:
+        import logging
+        logging.getLogger('app').debug('efecto del item de viaje',exc_info=True)
+
+
 def usar(s,slot,target=None):
     import app,recent_mall,eventos
     from house_services import xml_rows
@@ -104,8 +123,11 @@ def usar(s,slot,target=None):
         recent_mall.cambiar(s,consume,[],transaccion=transaction)
         if record:
             if not maple:s.personaje.travel_mark=record
+            _efecto(s,row)
             _notice(s,'Location recorded: map %d (%d, %d).'%(record['stage'],record['x'],record['y']))
-        if destination:_move(traveler,destination)
+        if destination:
+            _efecto(traveler,row)
+            _move(traveler,destination)
         s._travel_item=None
     except (Rechazo,recent_mall.Rechazo) as exc:_notice(s,str(exc))
     return True

@@ -6,7 +6,7 @@
     "zona_horaria": null,
     "holy_hp": {
         "estatuas": 10000,
-        "guardianes": 10000
+        "guardianes": 20000
     },
     "holy_horario": {
         "dias": [
@@ -55,7 +55,7 @@
             "nivel_min": 1,
             "nivel_max": 10000,
             "resultado": "perdedor",
-            "angel_gold": 1000
+            "angel_gold": 2000
         },
         {
             "nivel_min": 1,

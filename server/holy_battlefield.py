@@ -116,25 +116,72 @@ def limites_base():
             if o['evento'] in (7,8)]
 
 
+RADIO_LIMITE_BASE = 2
+
+
+@functools.lru_cache(maxsize=1)
+def zonas_limite_base():
+    """{equipo: set de casillas} de los limites de base 7/8, cada punto con su radio."""
+    zonas = {}
+    for (x,y),team in limites_base():
+        z = zonas.setdefault(team,set())
+        for dx in range(-RADIO_LIMITE_BASE,RADIO_LIMITE_BASE+1):
+            for dy in range(-RADIO_LIMITE_BASE,RADIO_LIMITE_BASE+1):
+                z.add((x+dx,y+dy))
+    return zonas
+
+
 def puerta(d,r):
     # server.obd:60373/60382 closed;60374/60383 open, retaining the arch.
     sprite=d['sprite']-1 if gate_alive(r,d['team'],d['number']) else d['sprite']
     return objeto(d['entity'],sprite,tuple(d['tile']))
 
 
-def spawn_edificio(m):
+def spawn_edificio(m,equipo_ver=None):
+    """El 0x0008 de una estatua/guardian. Para quien ve desde el MISMO equipo se manda como NPC (klass 199) y no
+    como monstruo: el cliente pinta en rojo, tambien en el minimapa, a todo monstruo, y las estatuas y puertas
+    propias salian como un punto rojo enemigo. Los del rival siguen siendo monstruos (se pueden atacar)."""
     import login
     d=m.hb_data
-    packet=bytearray(login._npc_spawn(m.entity_id,m.npc_type,m.nombre,
-                                    (m.tile_x,m.tile_y),m.sprite,klass=1))
+    facing=None
     if d['kind']=='guard':
         pair=sorted((v for v in datos()['structures'] if v['kind']=='guard'
                      and v['team']==d['team'] and v['number']==d['number']),key=lambda v:v['tile'])
         # Opposite outward diagonals for normal and mirrored arches.
         normal=pair[1]['tile'][1]>pair[0]['tile'][1]
         facing=(5 if normal else 3) if d['entity']==pair[0]['entity'] else (1 if normal else 7)
+    if equipo_ver is not None and int(equipo_ver)==int(d['team']):
+        return login._npc_spawn(m.entity_id,m.npc_type,m.nombre,(m.tile_x,m.tile_y),m.sprite,
+                                klass=199,direccion=facing if facing is not None else 6,visible=0)
+    packet=bytearray(login._npc_spawn(m.entity_id,m.npc_type,m.nombre,
+                                    (m.tile_x,m.tile_y),m.sprite,klass=1))
+    if facing is not None:
         packet[35]=facing  # _npc_spawn ignores direccion for klass1.
     return bytes(packet)
+
+
+def equipo_de(ses,r=None):
+    """1/2 si el jugador compite en la ronda de Holy, None si observa o no hay ronda."""
+    import competiciones as c
+    try:
+        m=c._miembro(r or c.ronda(112),ses)
+    except Exception:
+        return None
+    return m['equipo'] if m and not m.get('espectador') else None
+
+
+def aliados_como_npc(ses,r=None):
+    """Vuelve a mandar a ese jugador sus estatuas y guardianes vivos como NPC (ver spawn_edificio)."""
+    import competiciones as c
+    r=r or c.ronda(112)
+    team=equipo_de(ses,r)
+    if team is None or not r:return
+    packets=[]
+    for m in monstruos(r).values():
+        if m.vivo and m.hb_data['team']==team:
+            packets.extend((combate.despawn_monstruo(m.entity_id),spawn_edificio(m,team),
+                            equipo(m.entity_id,team,True),combate.atributo(m.entity_id,m.porcentaje)))
+    if packets:ses.enviar(*packets)
 
 
 def salto(ses,tile):
@@ -207,6 +254,11 @@ def gate_alive(r, team, number):
 
 
 def spawn_tag(r, team):
+    # competiciones_config.json -> holy_respawn: "campamento" (por defecto: se revive en el campamento del equipo,
+    # los mismos tags 1/2 de la entrada) o "frente" (la progresion hacia el frente segun las estatuas vivas).
+    import competiciones as c
+    if (c.config_eventos().get('holy_respawn') or 'campamento') != 'frente':
+        return 1 if team==1 else 2
     # 101..110 are MINE gathering regions, not resurrection points!
     # Use original base / central statue tags as the compatibility frontier.
     step = min(5, idols(r, team)//5)
@@ -380,7 +432,7 @@ def publicar(r):
             for m in pool.values():
                 if m.vivo:
                     if not previous.get(m.entity_id,False):
-                        packets.extend((spawn_edificio(m),equipo(m.entity_id,m.hb_data['team'],True)))
+                        packets.extend((spawn_edificio(m,equipo_de(s,r)),equipo(m.entity_id,m.hb_data['team'],True)))
                     packets.append(combate.atributo(m.entity_id,m.porcentaje))
                 elif previous.get(m.entity_id,True):
                     packets.append(combate.despawn_monstruo(m.entity_id))
@@ -555,8 +607,11 @@ def bloquear_paso(ses, desde, hasta):
     if c.fase(r)!='combate':return False
     crossed = set(app._casillas_del_tramo(desde,hasta))
     carrying=ses.personaje.char_id in r.get('portadores',{}).values()
-    if any(tile in crossed and (team!=m['equipo'] or carrying) for tile,team in limites_base()):
-        return True
+    # Los disparadores originales 7/8 son puntos sueltos cada 2-4 casillas (una linea punteada): pisar justo uno es
+    # raro y el rival se colaba por los huecos. Cada punto cubre un radio (RADIO_LIMITE_BASE) para cerrar la linea.
+    for team,zona in zonas_limite_base().items():
+        if (team!=m['equipo'] or carrying) and crossed & zona:
+            return True
     for d in datos()['barriers']:
         ev = d['event']
         team = 1 if ev<71 else 2
