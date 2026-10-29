@@ -6004,6 +6004,7 @@ MSG_SIN_MATERIAL = 347          # "There is no material for collection. Please w
 MSG_SIN_HERRAMIENTA = 359       # "Unable to collect without proper equipment."
 MSG_RECOLECTAR_MONTADO = 573    # "Unable to collect when you are riding."
 MSG_RECOLECTAR_LEJOS = 574      # "Unable to collect because the distance is too far."
+MSG_PESCA_LEJOS = 575           # "Unable to fish because you are too far away from the Fishing Area."
 ACCION_RECOLECTAR = 9           # tipo del 0x000A, medido en la Global
 # Ranuras de la herramienta de cada 裝備限制 de material.xml. La wiki, en las
 # cuatro habilidades: Collect "a pair of gloves or a robot", Dig "a mine pick
@@ -6017,7 +6018,7 @@ SKILL_POR_MATERIAL = {
 }
 DISTANCIA_RECOLECCION = 6       # casillas
 # Los bancos de peces estan dentro del agua: desde la orilla hay mas de 6 casillas hasta ellos en muchos mapas, y con 6 no se podia pescar.
-DISTANCIA_PESCA = 25            # casillas
+DISTANCIA_PESCA = 40            # casillas
 # Byte +0xb del 0x000A tipo 9 (lo lee el cliente en 0x4b46a0): 1 y 2 'Work',
 # 3 'Cast' (lanzar la cana), 4 'Wait'. Con 0 no dibuja ninguna pose.
 POSE_PESCA = 3
@@ -6148,7 +6149,7 @@ def _recolectar(ses, addr, stage, ent):
             resource = hs.resource_for(ent, ses.personaje.nivel)
             mid, px = resource['material'], resource['px']
     if not mid or not ses.personaje:
-        if ses.personaje and _recurso_con_entidad(stage, ent) is not None:
+        if ses.personaje and any(int(x.get('entity_id', 0)) == int(ent) for x in _recursos_de_plantilla(stage)):
             log.info('[%s] recurso %s en %s pulsado: no es una veta', addr, ent, stage)
         return False
     mat = _material(mid)
@@ -6190,7 +6191,10 @@ def _recolectar(ses, addr, stage, ent):
     _distancia_max = DISTANCIA_PESCA if _pesca else DISTANCIA_RECOLECCION
     if px and max(abs(int(px[0]) // 32 - int(getattr(p, 'tile_x', 0) or 0)),
                   abs(int(px[1]) // 32 - int(getattr(p, 'tile_y', 0) or 0))) > _distancia_max:
-        ses.enviar(_cl_r.aviso('', tipo=7, msg_id=MSG_RECOLECTAR_LEJOS))
+        log.info('[%s] veta %s (%s): demasiado lejos, objeto en casilla (%s,%s), jugador en (%s,%s), maximo %s',
+                 addr, ent, mat.get('nombre'), int(px[0]) // 32, int(px[1]) // 32,
+                 getattr(p, 'tile_x', None), getattr(p, 'tile_y', None), _distancia_max)
+        ses.enviar(_cl_r.aviso('', tipo=7, msg_id=MSG_PESCA_LEJOS if _pesca else MSG_RECOLECTAR_LEJOS))
         return True
     if stage in __import__('league_war').STAGES and not __import__('league_war').participating(ses):return False
     cuenta = _cuenta_de_veta(ses, stage, ent, mat)
