@@ -84,6 +84,7 @@ import os
 import pathlib
 import re
 import struct
+import sys
 import xml.etree.ElementTree as ET
 
 RAIZ = pathlib.Path(__file__).parent.parent
@@ -446,6 +447,16 @@ def mapa(stage):
         _RUTAS = mapas_del_cliente()
     if stage not in _CACHE:
         r = _RUTAS.get(stage)
+        if not r:
+            # extracted_paks puede traer solo setting/: se saca ese mapa del cliente instalado.
+            try:
+                sys.path.insert(0, str(RAIZ / 'server'))
+                import paks_cliente
+                r = paks_cliente.extraer_mapa(stage)
+                if r:
+                    _RUTAS[stage] = str(r)
+            except Exception:
+                r = None
         _CACHE[stage] = Mapa(stage, r) if r else None
     return _CACHE[stage]
 

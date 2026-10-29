@@ -1059,17 +1059,18 @@ def cron(ahora=None):
     auto = {int(s) for s in (config_eventos().get('horario_automatico') or [])}
     windows = [(t[2], t[0], t[3], t[4], t[5], configuracion.DURACION_ANGEL_ARENA_MIN) for t in TRAMOS]
     hh = config_eventos().get('holy_horario') or {}
-    windows += [(112, 1, int(day), int(hour), 0, 60)
+    windows += [(112, 1, int(day), int(hour), 0, int(hh.get('duracion_min', 60)))
                 for day in hh.get('dias', (4, 6)) for hour in hh.get('horas', (12, 21))]
     for stage, level, weekday, hour, minute, duration in windows:
         if stage not in auto:
             continue
+        registro = int(hh.get('registro_min', 15)) if stage == 112 else 15
         start = now.replace(hour=hour, minute=minute, second=0, microsecond=0)
         identity = 'official-%d-%s' % (stage, start.isoformat())
-        if (now.weekday() == weekday and start-dt.timedelta(minutes=15) <= now < start
+        if (now.weekday() == weekday and start-dt.timedelta(minutes=registro) <= now < start
                 and fase(_RONDAS.get(stage), now.timestamp()) == 'cerrada'
                 and (_RONDAS.get(stage) or {}).get('id') != identity):
-            iniciar(stage, duration, 15, level, por='horario', inicio=start.timestamp(), identidad=identity)
+            iniciar(stage, duration, registro, level, por='horario', inicio=start.timestamp(), identidad=identity)
 
 
 async def reloj():

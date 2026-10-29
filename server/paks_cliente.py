@@ -105,3 +105,38 @@ def asegurar_extraidos(ruta_cliente=None) -> int:
     MARCA.write_text(str(ruta_cliente), encoding='utf-8')
     log.info('tablas del cliente: %d archivos de setting/ sacados de %s', escritos, ruta_cliente)
     return escritos
+
+
+def extraer_mapa(stage: int, ruta_cliente=None):
+    """Saca map/mapNNN.mpc del cliente instalado a extracted_paks/update26/map/ (el del pak de numero mas alto
+    que lo trae) y devuelve la ruta, o None. Sin esto el servidor no puede leer los objetos y TAGs de un mapa
+    cuando extracted_paks solo tiene setting/ (instalacion limpia o VPS): p. ej. Holy Battlefield (mapa 112)
+    fallaba al armar la escena y el cliente se quedaba en pantalla negra."""
+    destino = DESTINO / 'map' / ('map%03d.mpc' % int(stage))
+    if destino.exists():
+        return destino
+    try:
+        if ruta_cliente is None:
+            import cliente_local
+            ruta_cliente = cliente_local.ruta_cliente()
+        paks = sorted((p for p in pathlib.Path(ruta_cliente).glob('*') if p.suffix.lower() == '.pak'
+                       and numero(p.name) >= -1), key=lambda p: numero(p.name), reverse=True)
+    except Exception:
+        log.exception('no se encontro el cliente')
+        return None
+    buscado = ('map' + chr(92) + 'map%03d.mpc' % int(stage)).lower()
+    for pak in paks:
+        fuente = pak.with_name(pak.name + '.bak')
+        fuente = fuente if fuente.exists() else pak
+        try:
+            data = fuente.read_bytes()
+            for nombre, crc, csize, usize, lhoff in _directorio(data):
+                if nombre.lower() == buscado:
+                    contenido = zlib.decompress(data[lhoff: lhoff + csize], -15) if csize != usize else data[lhoff: lhoff + csize]
+                    destino.parent.mkdir(parents=True, exist_ok=True)
+                    destino.write_bytes(contenido)
+                    log.info('mapa %s sacado de %s', buscado, fuente.name)
+                    return destino
+        except Exception:
+            log.exception('no se pudo leer %s', pak)
+    return None

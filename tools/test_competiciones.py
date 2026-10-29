@@ -36,7 +36,7 @@ def world(tmp_path, monkeypatch):
     # remains fail-closed until its missing official reward tables are supplied.
     monkeypatch.setattr(c, '_modo_pruebas', lambda: False)
     original_config = c.config_eventos
-    monkeypatch.setattr(c, 'config_eventos', lambda: dict(original_config(), formato_arena='supervivencia',arena_preparacion_segundos=0,horario_automatico=[112]+[t[2] for t in c.TRAMOS],zona_horaria=None,holy_horario={'dias':[4,6],'horas':[12,21]}))
+    monkeypatch.setattr(c, 'config_eventos', lambda: dict(original_config(), formato_arena='supervivencia',arena_preparacion_segundos=0,horario_automatico=[112]+[t[2] for t in c.TRAMOS],zona_horaria=None,cobrar_entrada_en_pruebas=True,logros_en_pruebas=True,premios_en_pruebas=True,holy_horario={'dias':[4,6],'horas':[12,21]}))
     clock = [2_000_000_000.0]
     monkeypatch.setattr(c.time, 'time', lambda: clock[0])
     players, broadcasts, trips = [], [], []

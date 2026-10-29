@@ -63,3 +63,11 @@ parches/
 
 # el cliente Lua guarda su codigo en cliente/src
 !cliente/src/
+
+# Editor de mapas: lo que genera (mapas exportados, proyectos, volcados de Dos Coronas)
+tools/editor_mapas/salida/
+tools/editor_mapas/proyectos/
+tools/editor_mapas/dc_mapas/
+tools/editor_mapas/dc_editados/
+tools/editor_mapas/dcdump/
+tools/editor_mapas/__pycache__/

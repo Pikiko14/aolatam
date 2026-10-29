@@ -12,7 +12,9 @@
         "horas": [
             10,
             16
-        ]
+        ],
+        "duracion_min": 60,
+        "registro_min": 15
     },
     "cobrar_entrada_en_pruebas": false,
     "logros_en_pruebas": false,
