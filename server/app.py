@@ -12401,12 +12401,12 @@ class Servidor:
             arma_puesta = ses.inventario.get(3, 0) if ses.inventario else 0
 
             mag = _cb.datos_magia(tipo) if tipo != _cb.ATAQUE_NORMAL else {}
-            # Una habilidad de arma solo se usa con esa arma en una mano (o el escudo en la otra): con una espada no se lanzan las de hacha.
+            # Una habilidad de arma solo se usa con esa arma en una mano (o el escudo en la otra): con una espada no se lanzan las de hacha. Ni el robot sustituye al arma.
             _req_arma = mag.get('equip_req') if mag else None
             if _req_arma and ses.inventario is not None:
                 import inventario as _iv_req
                 _manos = {_iv_req.categoria_item(int(ses.inventario.get(r) or 0)) for r in (3, 4)}
-                if not (_manos & set(_req_arma)) and _iv_req.categoria_item(int(ses.inventario.get(10) or ses.inventario.get(174) or 0)) != '機甲':
+                if not (_manos & set(_req_arma)):
                     import clases as _cl_req
                     ses.enviar(_cl_req.aviso('You need the proper weapon equipped to use this skill.', tipo=7))
                     log.info('[%s] habilidad %s rechazada: pide %s y lleva %s', addr, tipo, _req_arma, _manos)
