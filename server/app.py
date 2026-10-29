@@ -1312,7 +1312,10 @@ def _intercambio(ses, addr, opcode, cuerpo):
         _instancias(ses)[r] = inst8
         t['ofertas'][idx] = {'ranura': r, 'item_id': item_id}
         _intercambio_cambio(t, t_o)
-        pk = struct.pack('<H', 0x0046) + _nombre17(ses) + struct.pack('<I', idx) + _entrada_item_puesto(ses, r, _cant_de(ses, r))
+        ficha = bytearray(_entrada_item_puesto(ses, r, _cant_de(ses, r)))
+        if len(ficha) >= 39:
+            struct.pack_into('<H', ficha, 37, 20 + idx)      # igual que en el puesto: casilla pequena, no la real
+        pk = struct.pack('<H', 0x0046) + _nombre17(ses) + struct.pack('<I', idx) + bytes(ficha)
         ses.enviar(pk)
         otro.enviar(pk)
         otro.volcar()
@@ -1386,10 +1389,16 @@ def _paquete_vista_puesto(vendedor) -> bytes:
 
     buf = bytearray(struct.pack('<H17sII', 0x0032, nom_b,
                                 len(ventas_limpias), len(compras_limpias)))
-    for v in ventas_limpias:
+    for i_v, v in enumerate(ventas_limpias):
         buf += struct.pack('<8sIII', v['instancia'], int(v['cantidad']),
                            int(v['precio']), int(v['item_id']))
-        buf += _entrada_item_puesto(vendedor, v['ranura'], v['cantidad'])
+        entrada_v = bytearray(_entrada_item_puesto(vendedor, v['ranura'], v['cantidad']))
+        # La casilla (offset 37 de la ficha) la usa el cliente del comprador como INDICE en una tabla de 20..94
+        # (0x514b70). Un item del vendedor en la casilla 82 (mochila grande) la dejaba fuera: el cliente se cerraba
+        # al seleccionarlo. Las capturas reales solo traen 20..44. La compra se resuelve por la instancia, no por la casilla.
+        if len(entrada_v) >= 39:
+            struct.pack_into('<H', entrada_v, 37, 20 + i_v)
+        buf += bytes(entrada_v)
     for c in compras_limpias:
         iid = int(c['item_id'])
         buf += struct.pack('<IIIII', iid, 0, int(c['cantidad']),
