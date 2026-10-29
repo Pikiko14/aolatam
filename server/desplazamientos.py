@@ -16,7 +16,7 @@ def reubicar(ses,tile,origen='spell'):
     ses._token_choque=None
     ses._holy_camino=None
     app._cancelar_portal_armado(ses)
-    app._viajar_dentro_del_mapa(ses,origen,{'llegada':tuple(tile),'solo_0003':True})
+    app._viajar_dentro_del_mapa(ses,origen,{'llegada':tuple(tile),'solo_0003':True,'sin_guardar':origen=='holy'})
     move=app.Msg.registry[(0x0005,'s2c','*')]
     def stopped(eid):
         return move.build(entity_id=eid,cur_x=tile[0]*32,cur_y=tile[1]*32,

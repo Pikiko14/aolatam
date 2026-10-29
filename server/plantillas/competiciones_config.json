@@ -4,6 +4,10 @@
         112
     ],
     "zona_horaria": null,
+    "holy_hp": {
+        "estatuas": 10000,
+        "guardianes": 10000
+    },
     "holy_horario": {
         "dias": [
             4,

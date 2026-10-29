@@ -3893,7 +3893,7 @@ def _viajar_dentro_del_mapa(ses, addr, por, motivo=''):
     # mapa, se marca como pisada: si no, el jugador rebotaria al primer paso.
     _en = _portal_en(ses.personaje.stage, *lleg)
     ses.portal_pisado = tuple(_en['tile']) if _en else None
-    if getattr(ses, 'usuario', None):
+    if getattr(ses, 'usuario', None) and not por.get('sin_guardar'):    # los saltos de Holy no escriben en disco: la posicion se guarda al salir
         cuentas.guardar_mapa(ses.usuario, ses.personaje.char_id,
                              ses.personaje.stage, *lleg)
     log.info(f"[{addr}] portal interno: sigue en stage "

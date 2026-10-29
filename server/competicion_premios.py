@@ -185,6 +185,18 @@ def entregar(ses, automatico=False, stage=None):
     if not p or not getattr(ses, 'usuario', None) or getattr(ses, 'mapa_cargando', False):
         return 0
     c._cargar()
+    # El reloj llama esto cada segundo por jugador: sin premios pendientes no se abre transaccion de escritura
+    # (BEGIN IMMEDIATE bloquea a quien guarde su posicion al mismo tiempo, p. ej. al cruzar una puerta de Holy).
+    with cuentas._LOCK:
+        con0 = cuentas._get_conn()
+        try:
+            hay = (con0.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='competiciones_premios'").fetchone()
+                   and con0.execute("SELECT 1 FROM competiciones_premios WHERE char_id=? AND estado IN ('pendiente','sin_tabla') LIMIT 1",
+                                    (p.char_id,)).fetchone())
+        finally:
+            con0.close()
+    if not hay:
+        return 0
     entregadas = 0
     compat_entregada = False
     exp_entregada, skills_entregadas, ag_entregado = 0, {}, 0

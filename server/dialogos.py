@@ -1781,6 +1781,12 @@ def propio(nombre: str, faccion: str = "Heaven", jugador: str = "",
     if 'Floren' in nombre:
         return [armar_linea(147510, npc_val or 1432, [])[2:]]
 
+    if nombre == 'Bao Clerk':
+        # npc_type 1910 (plantillas/npcs.json): cambia el dummy treasure y devuelve el prop perdido. El 5236 de
+        # dialogos_npc.json ("Which warehouse...") era una pantalla de otro NPC: abria el almacen.
+        return [armar_linea(5132, npc_val or 3, [5133, 5131, 5378, 5379, 5025],
+                            acciones=[1000349, 1000350, 1001045, 1001046, 0])[2:]]
+
     d = _propios().get(nombre)
     if not d and nombre:
         nom_l = nombre.strip().lower()

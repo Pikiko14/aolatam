@@ -30,7 +30,19 @@ def equipo(entity,team,companero=False):
 
 @functools.lru_cache(maxsize=1)
 def datos():
-    return json.loads((pathlib.Path(__file__).parent / 'plantillas' / 'holy_battlefield.json').read_text(encoding='utf-8'))
+    d = json.loads((pathlib.Path(__file__).parent / 'plantillas' / 'holy_battlefield.json').read_text(encoding='utf-8'))
+    # HP de estatuas y guardianes de puerta: competiciones_config.json -> holy_hp {estatuas, guardianes}.
+    # Valor recortado, no ampliado; null/ausente = el original de la plantilla. (Se lee una vez: reiniciar el servidor.)
+    try:
+        import competiciones
+        hp = competiciones.config_eventos().get('holy_hp') or {}
+    except Exception:
+        hp = {}
+    for e in d.get('structures', []):
+        tope = hp.get('estatuas' if e.get('kind') == 'idol' else 'guardianes')
+        if tope:
+            e['hp'] = min(int(e['hp']), int(tope))
+    return d
 
 
 def recursos():
