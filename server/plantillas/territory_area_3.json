@@ -1551,7 +1551,9 @@
    "crudo": "210e460400000000bd0e0000f00f00000000000027000000000000001a000000dc06beeb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60350",
    "material": 362,
-   "nombre_visible": "Lord Coco"
+   "nombre_visible": "Lord Coco",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 71700002,
@@ -1568,7 +1570,9 @@
    "crudo": "220e4604040000005a110000f00200000000000027000000000000001a000000dc06cdeb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60365",
    "material": 367,
-   "nombre_visible": "Catfish Fish"
+   "nombre_visible": "Catfish Fish",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 71700003,
@@ -1585,7 +1589,9 @@
    "crudo": "230e4604040000001a110000b00200000000000027000000000000001a000000dc06cdeb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60365",
    "material": 367,
-   "nombre_visible": "Catfish Fish"
+   "nombre_visible": "Catfish Fish",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 71700004,
@@ -1602,7 +1608,9 @@
    "crudo": "240e460400000000fa170000d00500000000000027000000000000001a000000dc06bbeb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60347",
    "material": 361,
-   "nombre_visible": "Cypresses"
+   "nombre_visible": "Cypresses",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 71700005,
@@ -1619,7 +1627,9 @@
    "crudo": "250e460404000000a80c0000500800000000000027000000000000001a000000dc06ceeb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60366",
    "material": 368,
-   "nombre_visible": "Pirana Fish"
+   "nombre_visible": "Pirana Fish",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 71700006,
@@ -1636,7 +1646,9 @@
    "crudo": "260e4604020000002d100000d00300000000000027000000000000001a000000dc06c1eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60353",
    "material": 365,
-   "nombre_visible": "Wing Den"
+   "nombre_visible": "Wing Den",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71700007,
@@ -1653,7 +1665,9 @@
    "crudo": "270e4604020000007c100000b00500000000000027000000000000001a000000dc06c3eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60355",
    "material": 365,
-   "nombre_visible": "Wing Den"
+   "nombre_visible": "Wing Den",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71700008,
@@ -1670,7 +1684,9 @@
    "crudo": "280e460400000000c4150000b00700000000000027000000000000001a000000dc06c7eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60359",
    "material": 363,
-   "nombre_visible": "Chili Bush"
+   "nombre_visible": "Chili Bush",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71700009,
@@ -1687,7 +1703,9 @@
    "crudo": "290e460404000000fc0c0000100800000000000027000000000000001a000000dc06ceeb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60366",
    "material": 368,
-   "nombre_visible": "Pirana Fish"
+   "nombre_visible": "Pirana Fish",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 71700010,
@@ -1704,7 +1722,9 @@
    "crudo": "2a0e46040000000014180000501400000000000027000000000000001a000000dc0607ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60423",
    "material": 419,
-   "nombre_visible": "MysticGroove"
+   "nombre_visible": "MysticGroove",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71700011,
@@ -1721,7 +1741,9 @@
    "crudo": "2b0e460400000000b8170000100500000000000027000000000000001a000000dc06bdeb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60349",
    "material": 361,
-   "nombre_visible": "Cypresses"
+   "nombre_visible": "Cypresses",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 71700012,
@@ -1738,7 +1760,9 @@
    "crudo": "2c0e460400000000c4140000100800000000000027000000000000001a000000dc06c9eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60361",
    "material": 363,
-   "nombre_visible": "Chili Bush"
+   "nombre_visible": "Chili Bush",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71700013,
@@ -1755,7 +1779,9 @@
    "crudo": "2d0e460402000000090d0000900f00000000000027000000000000001a000000dc06bfeb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60351",
    "material": 362,
-   "nombre_visible": "Lord Coco"
+   "nombre_visible": "Lord Coco",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 71700014,
@@ -1772,7 +1798,9 @@
    "crudo": "2e0e460400000000f3170000901100000000000027000000000000001a000000dc0602ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60418",
    "material": 416,
-   "nombre_visible": "RootOak"
+   "nombre_visible": "RootOak",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 71700015,
@@ -1789,7 +1817,9 @@
    "crudo": "2f0e460402000000b6170000501200000000000027000000000000001a000000dc0604ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60420",
    "material": 416,
-   "nombre_visible": "RootOak"
+   "nombre_visible": "RootOak",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 71700016,
@@ -1806,7 +1836,9 @@
    "crudo": "300e46040000000092160000500c00000000000027000000000000001a000000dc06c4eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60356",
    "material": 366,
-   "nombre_visible": "Hoof Den"
+   "nombre_visible": "Hoof Den",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71700017,
@@ -1823,7 +1855,9 @@
    "crudo": "310e46040000000080150000100d00000000000027000000000000001a000000dc06c5eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60357",
    "material": 366,
-   "nombre_visible": "Hoof Den"
+   "nombre_visible": "Hoof Den",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71700018,
@@ -1840,7 +1874,9 @@
    "crudo": "320e460400000000ee050000f00b00000000000027000000000000001a000000dc06b8eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60344",
    "material": 360,
-   "nombre_visible": "Chromite"
+   "nombre_visible": "Chromite",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 71700019,
@@ -1857,7 +1893,9 @@
    "crudo": "330e46040000000000070000900c00000000000027000000000000001a000000dc06baeb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60346",
    "material": 360,
-   "nombre_visible": "Chromite"
+   "nombre_visible": "Chromite",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 71700020,
@@ -1874,7 +1912,9 @@
    "crudo": "340e46040000000028030000d00800000000000027000000000000001a000000dc060eec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60430",
    "material": 423,
-   "nombre_visible": "Tasty Unagi"
+   "nombre_visible": "Tasty Unagi",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 71700021,
@@ -1891,7 +1931,9 @@
    "crudo": "350e460402000000ab030000f00800000000000027000000000000001a000000dc060eec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60430",
    "material": 423,
-   "nombre_visible": "Tasty Unagi"
+   "nombre_visible": "Tasty Unagi",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 71700022,
@@ -1908,7 +1950,9 @@
    "crudo": "360e46040000000032060000b00800000000000027000000000000001a000000dc06c4eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60356",
    "material": 429,
-   "nombre_visible": "SwiftGroove"
+   "nombre_visible": "SwiftGroove",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71700023,
@@ -1925,7 +1969,9 @@
    "crudo": "370e460400000000b00b0000900500000000000027000000000000001a000000dc061dec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60445",
    "material": 427,
-   "nombre_visible": "Energy Ore"
+   "nombre_visible": "Energy Ore",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 71700024,
@@ -1942,7 +1988,9 @@
    "crudo": "380e460400000000820a0000b00600000000000027000000000000001a000000dc061bec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60443",
    "material": 427,
-   "nombre_visible": "Energy Ore"
+   "nombre_visible": "Energy Ore",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 71700025,
@@ -1959,7 +2007,9 @@
    "crudo": "390e4604000000004f090000100300000000000027000000000000001a000000dc0608ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60424",
    "material": 421,
-   "nombre_visible": "Sunflower"
+   "nombre_visible": "Sunflower",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71700026,
@@ -1976,7 +2026,9 @@
    "crudo": "3a0e4604020000002b080000900200000000000027000000000000001a000000dc0608ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60424",
    "material": 421,
-   "nombre_visible": "Sunflower"
+   "nombre_visible": "Sunflower",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71700027,
@@ -1993,7 +2045,9 @@
    "crudo": "3b0e460400000000ee060000300800000000000027000000000000001a000000dc06c5eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60357",
    "material": 429,
-   "nombre_visible": "SwiftGroove"
+   "nombre_visible": "SwiftGroove",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71700028,
@@ -2010,7 +2064,9 @@
    "crudo": "3c0e460400000000dc000000500200000000000027000000000000001a000000dc0615ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60437",
    "material": 425,
-   "nombre_visible": "HardOak"
+   "nombre_visible": "HardOak",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 71700029,
@@ -2027,7 +2083,9 @@
    "crudo": "3d0e46040000000032020000f00000000000000027000000000000001a000000dc0617ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60439",
    "material": 425,
-   "nombre_visible": "HardOak"
+   "nombre_visible": "HardOak",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 71700030,
@@ -2044,7 +2102,9 @@
    "crudo": "3e0e460400000000f7160000f00f00000000000027000000000000001a000000dc060fec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60431",
    "material": 420,
-   "nombre_visible": "Wild Guppy"
+   "nombre_visible": "Wild Guppy",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 71700031,
@@ -2061,7 +2121,9 @@
    "crudo": "3f0e46040200000046170000501000000000000027000000000000001a000000dc060fec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60431",
    "material": 420,
-   "nombre_visible": "Wild Guppy"
+   "nombre_visible": "Wild Guppy",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 71700032,
@@ -2078,7 +2140,9 @@
    "crudo": "400e4604000000004c110000301500000000000027000000000000001a000000dc060dec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60429",
    "material": 417,
-   "nombre_visible": "Spark Lode"
+   "nombre_visible": "Spark Lode",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 71700033,
@@ -2095,7 +2159,9 @@
    "crudo": "410e4604020000009d120000d01300000000000027000000000000001a000000dc060cec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60428",
    "material": 417,
-   "nombre_visible": "Spark Lode"
+   "nombre_visible": "Spark Lode",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 71700034,
@@ -2112,7 +2178,9 @@
    "crudo": "420e4604020000005d130000f01500000000000027000000000000001a000000dc060aec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60426",
    "material": 418,
-   "nombre_visible": "Crane Flower"
+   "nombre_visible": "Crane Flower",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71700035,
@@ -2129,7 +2197,9 @@
    "crudo": "430e460400000000ba140000b01500000000000027000000000000001a000000dc060aec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60426",
    "material": 418,
-   "nombre_visible": "Crane Flower"
+   "nombre_visible": "Crane Flower",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71700036,
@@ -2146,7 +2216,9 @@
    "crudo": "440e46040000000030120000300e00000000000027000000000000001a000000dc06caeb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60362",
    "material": 364,
-   "nombre_visible": "Fly Bush"
+   "nombre_visible": "Fly Bush",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71700037,
@@ -2163,7 +2235,9 @@
    "crudo": "450e4604020000009c160000701500000000000027000000000000001a000000dc0605ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60421",
    "material": 419,
-   "nombre_visible": "MysticGroove"
+   "nombre_visible": "MysticGroove",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71700038,
@@ -2180,7 +2254,9 @@
    "crudo": "460e4604000000003c170000900700000000000027000000000000001a000000dc06b5eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60341",
    "material": 359,
-   "nombre_visible": "Graphite"
+   "nombre_visible": "Graphite",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 71700039,
@@ -2197,7 +2273,9 @@
    "crudo": "470e46040000000074130000f00d00000000000027000000000000001a000000dc06cbeb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60363",
    "material": 364,
-   "nombre_visible": "Fly Bush"
+   "nombre_visible": "Fly Bush",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71700040,
@@ -2214,7 +2292,9 @@
    "crudo": "480e460400000000fc170000300700000000000027000000000000001a000000dc06b6eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60342",
    "material": 359,
-   "nombre_visible": "Graphite"
+   "nombre_visible": "Graphite",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   }
  ]
 }

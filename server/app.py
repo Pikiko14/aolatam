@@ -11404,7 +11404,11 @@ class Servidor:
                                                     suyo = max(1, int(round(suyo * (1.0 - b_bf_mit / 100.0))))
                                             ef_atk = m.proj_ef if m.proj_ef > 0 else 148
 
-                                            ses.enviar(_cb.ataque(m.entity_id, targ_eid, _cb.anim_de_monstruo(m.nombre)))
+                                            # Con el objetivo = yo, el cliente (0x5ed03b -> 0x649c70) selecciona
+                                            # solo al atacante y mi personaje empieza a pegarle sin que yo lo
+                                            # elija. Sin objetivo se ve el golpe del bicho y no se me selecciona.
+                                            ses.enviar(_cb.ataque(m.entity_id, 0 if targ_eid == yo else targ_eid,
+                                                                  _cb.anim_de_monstruo(m.nombre)))
 
                                             def _impacto(m=m, suyo=suyo, ef_atk=ef_atk, teid=targ_eid):
                                                 if not getattr(m, 'vivo', False):

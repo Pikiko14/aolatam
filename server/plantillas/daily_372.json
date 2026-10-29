@@ -1169,7 +1169,9 @@
    "crudo": "8027cb0502000000670c0000900e00000000000027000000000000001a000000dc0655ec00004080120000",
    "copiado_de": "cuerpo de una captura del objeto 60501",
    "material": 971,
-   "nombre_visible": "Rainfish"
+   "nombre_visible": "Rainfish",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 97200001,
@@ -1186,7 +1188,9 @@
    "crudo": "8127cb0500000000960d0000900e00000000000027000000000000001a000000dc067aec00004080120000",
    "copiado_de": "cuerpo de una captura del objeto 60538",
    "material": 973,
-   "nombre_visible": "Blob Fish"
+   "nombre_visible": "Blob Fish",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 97200002,
@@ -1203,7 +1207,9 @@
    "crudo": "8227cb050000000030230000500f00000000000027000000000000001a000000dc0669ec000040800f0000",
    "copiado_de": "cuerpo de una captura del objeto 60521",
    "material": 938,
-   "nombre_visible": "Large Glazewood"
+   "nombre_visible": "Large Glazewood",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 97200003,
@@ -1220,7 +1226,9 @@
    "crudo": "8327cb0500000000b9220000f01000000000000027000000000000001a000000dc0679ec000040800f0000",
    "copiado_de": "cuerpo de una captura del objeto 60537",
    "material": 939,
-   "nombre_visible": "Large Intricate Wood"
+   "nombre_visible": "Large Intricate Wood",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 97200004,
@@ -1237,7 +1245,9 @@
    "crudo": "8427cb0502000000a9130000100200000000000027000000000000001a000000dc064eec00004080110000",
    "copiado_de": "cuerpo de una captura del objeto 60494",
    "material": 953,
-   "nombre_visible": "Devilkin Shrub"
+   "nombre_visible": "Devilkin Shrub",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 97200005,
@@ -1254,7 +1264,9 @@
    "crudo": "8527cb050000000005160000700300000000000027000000000000001a000000dc065bec00004080110000",
    "copiado_de": "cuerpo de una captura del objeto 60507",
    "material": 954,
-   "nombre_visible": "Big Parabeast Foilage"
+   "nombre_visible": "Big Parabeast Foilage",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 97200006,
@@ -1271,7 +1283,9 @@
    "crudo": "8627cb05020000007a180000900300000000000027000000000000001a000000dc0666ec00004080110000",
    "copiado_de": "cuerpo de una captura del objeto 60518",
    "material": 955,
-   "nombre_visible": "Large Purpra Grove"
+   "nombre_visible": "Large Purpra Grove",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 97200007,
@@ -1288,7 +1302,9 @@
    "crudo": "8727cb050200000062190000700500000000000027000000000000001a000000dc0673ec00004080110000",
    "copiado_de": "cuerpo de una captura del objeto 60531",
    "material": 956,
-   "nombre_visible": "Large Den of Serpents"
+   "nombre_visible": "Large Den of Serpents",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 97200008,
@@ -1305,7 +1321,9 @@
    "crudo": "8827cb0500000000830b0000b00e00000000000027000000000000001a000000dc0648ec00004080120000",
    "copiado_de": "cuerpo de una captura del objeto 60488",
    "material": 970,
-   "nombre_visible": "Tarragon Fish"
+   "nombre_visible": "Tarragon Fish",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 97200009,
@@ -1322,7 +1340,9 @@
    "crudo": "8927cb050200000073220000b00a00000000000027000000000000001a000000dc0651ec000040800f0000",
    "copiado_de": "cuerpo de una captura del objeto 60497",
    "material": 936,
-   "nombre_visible": "Jadite Pine"
+   "nombre_visible": "Jadite Pine",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 97200010,
@@ -1339,7 +1359,9 @@
    "crudo": "8a27cb050000000052230000500c00000000000027000000000000001a000000dc065eec000040800f0000",
    "copiado_de": "cuerpo de una captura del objeto 60510",
    "material": 937,
-   "nombre_visible": "Big Monkswood"
+   "nombre_visible": "Big Monkswood",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 97200011,
@@ -1356,7 +1378,9 @@
    "crudo": "8b27cb0500000000070d0000300e00000000000027000000000000001a000000dc0660ec00004080120000",
    "copiado_de": "cuerpo de una captura del objeto 60512",
    "material": 972,
-   "nombre_visible": "Anchovy"
+   "nombre_visible": "Anchovy",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 97200012,
@@ -1373,7 +1397,9 @@
    "crudo": "8c27cb0502000000ad080000b00800000000000027000000000000001a000000dc064bec00004080100000",
    "copiado_de": "cuerpo de una captura del objeto 60491",
    "material": 919,
-   "nombre_visible": "Sluice Mine"
+   "nombre_visible": "Sluice Mine",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 97200013,
@@ -1390,7 +1416,9 @@
    "crudo": "8d27cb050000000041070000d00800000000000027000000000000001a000000dc0658ec00004080100000",
    "copiado_de": "cuerpo de una captura del objeto 60504",
    "material": 920,
-   "nombre_visible": "Coarse Grit"
+   "nombre_visible": "Coarse Grit",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 97200014,
@@ -1407,7 +1435,9 @@
    "crudo": "8e27cb0502000000bd050000f00900000000000027000000000000001a000000dc0663ec00004080100000",
    "copiado_de": "cuerpo de una captura del objeto 60515",
    "material": 921,
-   "nombre_visible": "Large Edohigan Ore"
+   "nombre_visible": "Large Edohigan Ore",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 97200015,
@@ -1424,7 +1454,9 @@
    "crudo": "8f27cb05000000006f050000500b00000000000027000000000000001a000000dc0670ec00004080100000",
    "copiado_de": "cuerpo de una captura del objeto 60528",
    "material": 922,
-   "nombre_visible": "Large Novanite Vein"
+   "nombre_visible": "Large Novanite Vein",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 97200016,
@@ -1441,7 +1473,9 @@
    "crudo": "9027cb050000000066020000700500000000000027000000000000001a000000dc0647ec00004080110000",
    "copiado_de": "cuerpo de una captura del objeto 60487",
    "material": 902,
-   "nombre_visible": "Heptad Grass"
+   "nombre_visible": "Heptad Grass",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 97200017,
@@ -1458,7 +1492,9 @@
    "crudo": "9127cb050000000071030000f00500000000000027000000000000001a000000dc0654ec00004080110000",
    "copiado_de": "cuerpo de una captura del objeto 60500",
    "material": 903,
-   "nombre_visible": "Amakusa"
+   "nombre_visible": "Amakusa",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 97200018,
@@ -1475,7 +1511,9 @@
    "crudo": "9227cb05000000009a040000300600000000000027000000000000001a000000dc065fec00004080110000",
    "copiado_de": "cuerpo de una captura del objeto 60511",
    "material": 904,
-   "nombre_visible": "Hinata Grass"
+   "nombre_visible": "Hinata Grass",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 97200019,
@@ -1492,7 +1530,9 @@
    "crudo": "9327cb050000000028060000300600000000000027000000000000001a000000dc0674ec00004080110000",
    "copiado_de": "cuerpo de una captura del objeto 60532",
    "material": 905,
-   "nombre_visible": "Glede"
+   "nombre_visible": "Glede",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   }
  ],
  "bosses": [],

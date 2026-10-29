@@ -3273,7 +3273,9 @@
    "nombre_visible": "Copper(L)",
    "crudo": "f0d9d20300000000d40a0000500900000000000027000000000000001a000000dc0601eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60161",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 64150001,
@@ -3292,7 +3294,9 @@
    "nombre_visible": "Copper(L)",
    "crudo": "f1d9d203000000007e0d0000900900000000000027000000000000001a000000dc0601eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60161",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 64150002,
@@ -3311,7 +3315,9 @@
    "nombre_visible": "Copper(L)",
    "crudo": "f2d9d20300000000f40b0000b00900000000000027000000000000001a000000dc0601eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60161",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 64150003,
@@ -3330,7 +3336,9 @@
    "nombre_visible": "Copper(L)",
    "crudo": "f3d9d203000000003d120000d00600000000000027000000000000001a000000dc0601eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60161",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 64150004,
@@ -3349,7 +3357,9 @@
    "nombre_visible": "Copper(L)",
    "crudo": "f4d9d203020000000d130000300500000000000027000000000000001a000000dc0601eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60161",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 64150005,
@@ -3368,7 +3378,9 @@
    "nombre_visible": "Copper(M)",
    "crudo": "f5d9d20300000000f9110000b00600000000000027000000000000001a000000dc0603eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60163",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 64150006,
@@ -3387,7 +3399,9 @@
    "nombre_visible": "Copper(M)",
    "crudo": "f6d9d20300000000cc120000500500000000000027000000000000001a000000dc0603eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60163",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 64150007,
@@ -3406,7 +3420,9 @@
    "nombre_visible": "Copper(M)",
    "crudo": "f7d9d2030200000041130000100500000000000027000000000000001a000000dc0603eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60163",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 64150008,
@@ -3425,7 +3441,9 @@
    "nombre_visible": "Copper(M)",
    "crudo": "f8d9d20300000000c50d0000700900000000000027000000000000001a000000dc0603eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60163",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 64150009,
@@ -3444,7 +3462,9 @@
    "nombre_visible": "Copper(M)",
    "crudo": "f9d9d20300000000420c0000d00900000000000027000000000000001a000000dc0603eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60163",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 64150010,
@@ -3463,7 +3483,9 @@
    "nombre_visible": "Copper(S)",
    "crudo": "fad9d20300000000380b0000500900000000000027000000000000001a000000dc0602eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60162",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 64150011,
@@ -3482,7 +3504,9 @@
    "nombre_visible": "Copper(S)",
    "crudo": "fbd9d20300000000a40b0000700900000000000027000000000000001a000000dc0602eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60162",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 64150012,
@@ -3501,7 +3525,9 @@
    "nombre_visible": "Copper(S)",
    "crudo": "fcd9d20300000000b1110000900600000000000027000000000000001a000000dc0602eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60162",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 64150013,
@@ -3520,7 +3546,9 @@
    "nombre_visible": "Copper(S)",
    "crudo": "fdd9d2030200000076130000f00400000000000027000000000000001a000000dc0602eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60162",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 64150014,
@@ -3539,7 +3567,9 @@
    "nombre_visible": "Copper(S)",
    "crudo": "fed9d203020000007a110000700600000000000027000000000000001a000000dc0602eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60162",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 64150015,
@@ -3558,7 +3588,9 @@
    "nombre_visible": "Horseradish(S)",
    "crudo": "ffd9d20300000000cd050000900800000000000027000000000000001a000000dc0680ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60032",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 64150016,
@@ -3577,7 +3609,9 @@
    "nombre_visible": "Horseradish(S)",
    "crudo": "00dad2030000000006070000100900000000000027000000000000001a000000dc0680ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60032",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 64150017,
@@ -3596,7 +3630,9 @@
    "nombre_visible": "Horseradish(S)",
    "crudo": "01dad2030000000003070000700800000000000027000000000000001a000000dc0680ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60032",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 64150018,
@@ -3615,7 +3651,9 @@
    "nombre_visible": "Horseradish(S)",
    "crudo": "02dad20302000000aa040000300900000000000027000000000000001a000000dc0680ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60032",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 64150019,
@@ -3634,7 +3672,9 @@
    "nombre_visible": "Horseradish(S)",
    "crudo": "03dad2030000000064080000900800000000000027000000000000001a000000dc0680ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60032",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 64150020,
@@ -3653,7 +3693,9 @@
    "nombre_visible": "Horseradish(S)",
    "crudo": "04dad2030000000094110000b00300000000000027000000000000001a000000dc0680ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60032",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 64150021,
@@ -3672,7 +3714,9 @@
    "nombre_visible": "Horseradish(S)",
    "crudo": "05dad20302000000ab110000500300000000000027000000000000001a000000dc0680ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60032",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 64150022,
@@ -3691,7 +3735,9 @@
    "nombre_visible": "Horseradish(S)",
    "crudo": "06dad203000000003f100000900300000000000027000000000000001a000000dc0680ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60032",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 64150023,
@@ -3710,7 +3756,9 @@
    "nombre_visible": "Horseradish(S)",
    "crudo": "07dad20300000000930e0000700300000000000027000000000000001a000000dc0680ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60032",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 64150024,
@@ -3729,7 +3777,9 @@
    "nombre_visible": "Horseradish(S)",
    "crudo": "08dad203000000006e130000b00300000000000027000000000000001a000000dc0680ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60032",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 64150025,
@@ -3748,7 +3798,9 @@
    "nombre_visible": "Poplar(L)",
    "crudo": "09dad203000000005f0c0000d00200000000000027000000000000001a000000dc066fea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60015",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 64150026,
@@ -3767,7 +3819,9 @@
    "nombre_visible": "Poplar(L)",
    "crudo": "0adad20302000000760c0000f00100000000000027000000000000001a000000dc066fea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60015",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 64150027,
@@ -3786,7 +3840,9 @@
    "nombre_visible": "Poplar(L)",
    "crudo": "0bdad203000000001d0d0000900100000000000027000000000000001a000000dc066fea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60015",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 64150028,
@@ -3805,7 +3861,9 @@
    "nombre_visible": "Poplar(M)",
    "crudo": "0cdad20302000000ac0c0000900200000000000027000000000000001a000000dc066dea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60013",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 64150029,
@@ -3824,7 +3882,9 @@
    "nombre_visible": "Poplar(M)",
    "crudo": "0ddad20300000000e80b0000500300000000000027000000000000001a000000dc066dea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60013",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 64150030,
@@ -3843,7 +3903,9 @@
    "nombre_visible": "Poplar(L)",
    "crudo": "0edad2030000000098030000500600000000000027000000000000001a000000dc066fea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60015",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 64150031,
@@ -3862,7 +3924,9 @@
    "nombre_visible": "Poplar(L)",
    "crudo": "0fdad2030000000065050000500600000000000027000000000000001a000000dc066fea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60015",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 64150032,
@@ -3881,7 +3945,9 @@
    "nombre_visible": "Poplar(M)",
    "crudo": "10dad2030000000009030000b00600000000000027000000000000001a000000dc066dea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60013",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 64150033,
@@ -3900,7 +3966,9 @@
    "nombre_visible": "Poplar(M)",
    "crudo": "11dad2030200000011060000100600000000000027000000000000001a000000dc066dea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60013",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 64150034,
@@ -3919,7 +3987,9 @@
    "nombre_visible": "Poplar(M)",
    "crudo": "12dad2030200000041040000500600000000000027000000000000001a000000dc066dea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60013",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 64150035,
@@ -3938,7 +4008,9 @@
    "nombre_visible": "Poplar(S)",
    "crudo": "13dad2030000000067020000d00600000000000027000000000000001a000000dc066eea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60014",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 64150036,
@@ -3957,7 +4029,9 @@
    "nombre_visible": "Poplar(S)",
    "crudo": "14dad20300000000fe030000500600000000000027000000000000001a000000dc066eea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60014",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 64150037,
@@ -3976,7 +4050,9 @@
    "nombre_visible": "Poplar(S)",
    "crudo": "15dad2030200000072060000300600000000000027000000000000001a000000dc066eea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60014",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 64150038,
@@ -3995,7 +4071,9 @@
    "nombre_visible": "Poplar(S)",
    "crudo": "16dad20300000000eb0c0000d00200000000000027000000000000001a000000dc066eea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60014",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 64150039,
@@ -4014,7 +4092,9 @@
    "nombre_visible": "Poplar(S)",
    "crudo": "17dad20300000000db0c0000b00100000000000027000000000000001a000000dc066eea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60014",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 64150040,
@@ -4033,7 +4113,9 @@
    "nombre_visible": "Beast Den(S)",
    "crudo": "18dad20300000000ea120000100100000000000027000000000000001a000000dc06b6ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60086",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 64150041,
@@ -4052,7 +4134,9 @@
    "nombre_visible": "Beast Den(S)",
    "crudo": "19dad20302000000f4110000100100000000000027000000000000001a000000dc06b6ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60086",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 64150042,
@@ -4071,7 +4155,9 @@
    "nombre_visible": "Beast Den(S)",
    "crudo": "1adad20300000000f4130000b00100000000000027000000000000001a000000dc06b6ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60086",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 64150043,
@@ -4090,7 +4176,9 @@
    "nombre_visible": "Beast Den(S)",
    "crudo": "1bdad20302000000cb010000500900000000000027000000000000001a000000dc06b6ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60086",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 64150044,
@@ -4109,7 +4197,9 @@
    "nombre_visible": "Beast Den(S)",
    "crudo": "1cdad20300000000b7020000f00900000000000027000000000000001a000000dc06b6ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60086",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 64150045,
@@ -4128,7 +4218,9 @@
    "nombre_visible": "Beast Den(S)",
    "crudo": "1ddad2030200000011020000f00900000000000027000000000000001a000000dc06b6ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60086",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 64150046,
@@ -4147,7 +4239,9 @@
    "nombre_visible": "Wild Alga(S)",
    "crudo": "1edad20300000000e10f0000700f00000000000027000000000000001a000000dc0667ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60007",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 64150047,
@@ -4166,7 +4260,9 @@
    "nombre_visible": "Wild Alga(S)",
    "crudo": "1fdad2030000000032100000900f00000000000027000000000000001a000000dc0668ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60008",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 64150048,
@@ -4185,7 +4281,9 @@
    "nombre_visible": "Wild Alga(S)",
    "crudo": "20dad20300000000a81e0000900800000000000027000000000000001a000000dc0669ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60009",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 64150049,
@@ -4204,7 +4302,9 @@
    "nombre_visible": "Wild Alga(S)",
    "crudo": "21dad20300000000ca1e0000500800000000000027000000000000001a000000dc0668ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60008",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 64150050,
@@ -4223,7 +4323,9 @@
    "nombre_visible": "Wild Alga(S)",
    "crudo": "22dad20300000000c9050000700200000000000027000000000000001a000000dc0668ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60008",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 64150051,
@@ -4242,7 +4344,9 @@
    "nombre_visible": "Wild Alga(S)",
    "crudo": "23dad2030000000093050000b00200000000000027000000000000001a000000dc0669ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60009",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 64150052,
@@ -4261,7 +4365,9 @@
    "nombre_visible": "Wild Alga(S)",
    "crudo": "24dad2030000000056050000900200000000000027000000000000001a000000dc0666ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60006",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 64150053,
@@ -4280,7 +4386,9 @@
    "nombre_visible": "Wild Alga(S)",
    "crudo": "25dad20300000000c3050000d00200000000000027000000000000001a000000dc06c9ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60105",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 64150054,
@@ -4299,7 +4407,9 @@
    "nombre_visible": "Wild Alga(S)",
    "crudo": "26dad2030000000055050000d00200000000000027000000000000001a000000dc06caea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60106",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 64150055,
@@ -4318,7 +4428,9 @@
    "nombre_visible": "Wild Alga(S)",
    "crudo": "27dad20300000000df0f0000b00f00000000000027000000000000001a000000dc06caea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60106",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 64150056,
@@ -4337,7 +4449,9 @@
    "nombre_visible": "Wild Alga(S)",
    "crudo": "28dad20302000000970f0000900f00000000000027000000000000001a000000dc06caea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60106",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 64150057,
@@ -4356,7 +4470,9 @@
    "nombre_visible": "Wild Alga(S)",
    "crudo": "29dad203000000000d100000700f00000000000027000000000000001a000000dc06c9ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60105",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 64150058,
@@ -4375,7 +4491,9 @@
    "nombre_visible": "Wild Alga(S)",
    "crudo": "2adad20300000000661e0000900800000000000027000000000000001a000000dc06c9ea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60105",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 64150059,
@@ -4394,7 +4512,9 @@
    "nombre_visible": "Wild Alga(S)",
    "crudo": "2bdad20300000000d01e0000900800000000000027000000000000001a000000dc06caea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60106",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   }
  ]
 }

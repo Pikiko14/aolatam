@@ -1701,7 +1701,9 @@
    "crudo": "a1c8d20502000000000d0000100800000000000027000000000000001a000000dc063aec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60474",
    "material": 570,
-   "nombre_visible": "Flat-Bellied Fish"
+   "nombre_visible": "Flat-Bellied Fish",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 97700002,
@@ -1718,7 +1720,9 @@
    "crudo": "a2c8d20500000000df050000100c00000000000027000000000000001a000000dc0632ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60466",
    "material": 566,
-   "nombre_visible": "Olivine Mine"
+   "nombre_visible": "Olivine Mine",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 97700003,
@@ -1735,7 +1739,9 @@
    "crudo": "a3c8d2050000000068170000900700000000000027000000000000001a000000dc0626ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60454",
    "material": 428,
-   "nombre_visible": "Crimson Lode"
+   "nombre_visible": "Crimson Lode",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 97700004,
@@ -1752,7 +1758,9 @@
    "crudo": "a4c8d2050000000008160000b00700000000000027000000000000001a000000dc0609ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60425",
    "material": 422,
-   "nombre_visible": "Bristlegrass"
+   "nombre_visible": "Bristlegrass",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 97700005,
@@ -1769,7 +1777,9 @@
    "crudo": "a5c8d20500000000f0060000900c00000000000027000000000000001a000000dc0631ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60465",
    "material": 566,
-   "nombre_visible": "Olivine Mine"
+   "nombre_visible": "Olivine Mine",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 97700006,
@@ -1786,7 +1796,9 @@
    "crudo": "a6c8d2050200000063110000f00200000000000027000000000000001a000000dc0610ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60432",
    "material": 424,
-   "nombre_visible": "Sailfish"
+   "nombre_visible": "Sailfish",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 97700007,
@@ -1803,7 +1815,9 @@
    "crudo": "a7c8d205000000001d110000b00200000000000027000000000000001a000000dc0610ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60432",
    "material": 424,
-   "nombre_visible": "Sailfish"
+   "nombre_visible": "Sailfish",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 97700008,
@@ -1820,7 +1834,9 @@
    "crudo": "a8c8d2050200000017100000100400000000000027000000000000001a000000dc0623ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60451",
    "material": 430,
-   "nombre_visible": "WingGroove"
+   "nombre_visible": "WingGroove",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 97700009,
@@ -1837,7 +1853,9 @@
    "crudo": "a9c8d20500000000fb170000100700000000000027000000000000001a000000dc0625ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60453",
    "material": 428,
-   "nombre_visible": "Crimson Lode"
+   "nombre_visible": "Crimson Lode",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 97700010,
@@ -1854,7 +1872,9 @@
    "crudo": "aac8d20500000000d90b0000900500000000000027000000000000001a000000dc064bec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60491",
    "material": 608,
-   "nombre_visible": "Aquatic Ore"
+   "nombre_visible": "Aquatic Ore",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 97700011,
@@ -1871,7 +1891,9 @@
    "crudo": "abc8d2050200000050150000f00700000000000027000000000000001a000000dc0609ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60425",
    "material": 422,
-   "nombre_visible": "Bristlegrass"
+   "nombre_visible": "Bristlegrass",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 97700012,
@@ -1888,7 +1910,9 @@
    "crudo": "acc8d2050200000083100000900500000000000027000000000000001a000000dc0622ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60450",
    "material": 430,
-   "nombre_visible": "WingGroove"
+   "nombre_visible": "WingGroove",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 97700013,
@@ -1905,7 +1929,9 @@
    "crudo": "adc8d20500000000af0c0000700800000000000027000000000000001a000000dc063aec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60474",
    "material": 570,
-   "nombre_visible": "Flat-Bellied Fish"
+   "nombre_visible": "Flat-Bellied Fish",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 97700014,
@@ -1922,7 +1948,9 @@
    "crudo": "aec8d20500000000ae0e0000f00f00000000000027000000000000001a000000dc0635ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60469",
    "material": 567,
-   "nombre_visible": "Solitude Tree"
+   "nombre_visible": "Solitude Tree",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 97700015,
@@ -1939,7 +1967,9 @@
    "crudo": "afc8d205000000008d0d0000f00f00000000000027000000000000001a000000dc0634ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60468",
    "material": 567,
-   "nombre_visible": "Solitude Tree"
+   "nombre_visible": "Solitude Tree",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 97700016,
@@ -1956,7 +1986,9 @@
    "crudo": "b0c8d20500000000c7160000500c00000000000027000000000000001a000000dc0639ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60473",
    "material": 569,
-   "nombre_visible": "Beast Shrub"
+   "nombre_visible": "Beast Shrub",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 97700017,
@@ -1973,7 +2005,9 @@
    "crudo": "b1c8d205020000008a150000100d00000000000027000000000000001a000000dc0638ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60472",
    "material": 569,
-   "nombre_visible": "Beast Shrub"
+   "nombre_visible": "Beast Shrub",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 97700018,
@@ -1990,7 +2024,9 @@
    "crudo": "b2c8d2050200000037120000500e00000000000027000000000000001a000000dc0636ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60470",
    "material": 568,
-   "nombre_visible": "Soft Carpet Grass"
+   "nombre_visible": "Soft Carpet Grass",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 97700019,
@@ -2007,7 +2043,9 @@
    "crudo": "b3c8d205000000005c130000f00d00000000000027000000000000001a000000dc0636ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60470",
    "material": 568,
-   "nombre_visible": "Soft Carpet Grass"
+   "nombre_visible": "Soft Carpet Grass",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 97700020,
@@ -2024,7 +2062,9 @@
    "crudo": "b4c8d20502000000b1030000f00800000000000027000000000000001a000000dc0648ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60488",
    "material": 612,
-   "nombre_visible": "Dragonfish"
+   "nombre_visible": "Dragonfish",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 97700021,
@@ -2041,7 +2081,9 @@
    "crudo": "b5c8d2050000000048070000700200000000000027000000000000001a000000dc0647ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60487",
    "material": 610,
-   "nombre_visible": "Septivit Grass"
+   "nombre_visible": "Septivit Grass",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 97700022,
@@ -2058,7 +2100,9 @@
    "crudo": "b6c8d2050000000095010000100100000000000027000000000000001a000000dc0651ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60497",
    "material": 609,
-   "nombre_visible": "Jadepine Wood"
+   "nombre_visible": "Jadepine Wood",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 97700023,
@@ -2075,7 +2119,9 @@
    "crudo": "b7c8d20502000000d3080000f00200000000000027000000000000001a000000dc0647ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60487",
    "material": 610,
-   "nombre_visible": "Septivit Grass"
+   "nombre_visible": "Septivit Grass",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 97700024,
@@ -2092,7 +2138,9 @@
    "crudo": "b8c8d205000000003f060000f00800000000000027000000000000001a000000dc064eec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60494",
    "material": 611,
-   "nombre_visible": "Haloz Grove"
+   "nombre_visible": "Haloz Grove",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 97700025,
@@ -2109,7 +2157,9 @@
    "crudo": "b9c8d205000000006e070000500800000000000027000000000000001a000000dc064dec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60493",
    "material": 611,
-   "nombre_visible": "Haloz Grove"
+   "nombre_visible": "Haloz Grove",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 97700026,
@@ -2126,7 +2176,9 @@
    "crudo": "bac8d2050000000020030000d00800000000000027000000000000001a000000dc0648ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60488",
    "material": 612,
-   "nombre_visible": "Dragonfish"
+   "nombre_visible": "Dragonfish",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 97700027,
@@ -2143,7 +2195,9 @@
    "crudo": "bbc8d20500000000a8170000501200000000000027000000000000001a000000dc0645ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60485",
    "material": 588,
-   "nombre_visible": "Crimson Maplewood"
+   "nombre_visible": "Crimson Maplewood",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 97700028,
@@ -2160,7 +2214,9 @@
    "crudo": "bcc8d2050200000009180000501100000000000027000000000000001a000000dc0644ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60484",
    "material": 588,
-   "nombre_visible": "Crimson Maplewood"
+   "nombre_visible": "Crimson Maplewood",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 97700029,
@@ -2177,7 +2233,9 @@
    "crudo": "bdc8d20500000000ad140000901500000000000027000000000000001a000000dc063cec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60476",
    "material": 589,
-   "nombre_visible": "Paper Reed"
+   "nombre_visible": "Paper Reed",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 97700030,
@@ -2194,7 +2252,9 @@
    "crudo": "bec8d2050200000086130000d01500000000000027000000000000001a000000dc063cec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60476",
    "material": 589,
-   "nombre_visible": "Paper Reed"
+   "nombre_visible": "Paper Reed",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 97700031,
@@ -2211,7 +2271,9 @@
    "crudo": "bfc8d20500000000d5160000701500000000000027000000000000001a000000dc0641ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60481",
    "material": 590,
-   "nombre_visible": "Porcupia Foilage"
+   "nombre_visible": "Porcupia Foilage",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 97700032,
@@ -2228,7 +2290,9 @@
    "crudo": "c0c8d2050000000012180000501400000000000027000000000000001a000000dc0643ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60483",
    "material": 590,
-   "nombre_visible": "Porcupia Foilage"
+   "nombre_visible": "Porcupia Foilage",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 97700033,
@@ -2245,7 +2309,9 @@
    "crudo": "c1c8d2050200000047170000301000000000000027000000000000001a000000dc063dec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60477",
    "material": 591,
-   "nombre_visible": "Tutank Fish"
+   "nombre_visible": "Tutank Fish",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 97700034,
@@ -2262,7 +2328,9 @@
    "crudo": "c2c8d20500000000f4160000f00f00000000000027000000000000001a000000dc063dec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60477",
    "material": 591,
-   "nombre_visible": "Tutank Fish"
+   "nombre_visible": "Tutank Fish",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 97700035,
@@ -2279,7 +2347,9 @@
    "crudo": "c3c8d20500000000ab110000d01500000000000027000000000000001a000000dc0640ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60480",
    "material": 587,
-   "nombre_visible": "Starcore Ore"
+   "nombre_visible": "Starcore Ore",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 97700036,
@@ -2296,7 +2366,9 @@
    "crudo": "c4c8d2050200000066020000f00000000000000027000000000000001a000000dc0650ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60496",
    "material": 609,
-   "nombre_visible": "Jadepine Wood"
+   "nombre_visible": "Jadepine Wood",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 97700037,
@@ -2313,7 +2385,9 @@
    "crudo": "c5c8d20500000000300b0000100600000000000027000000000000001a000000dc0649ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60489",
    "material": 608,
-   "nombre_visible": "Aquatic Ore"
+   "nombre_visible": "Aquatic Ore",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 97700038,
@@ -2330,7 +2404,9 @@
    "crudo": "c6c8d2050200000087110000d01400000000000027000000000000001a000000dc063fec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60479",
    "material": 587,
-   "nombre_visible": "Starcore Ore"
+   "nombre_visible": "Starcore Ore",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 97700039,
@@ -2347,7 +2423,9 @@
    "crudo": "c7c8d20500000000ea170000b00500000000000027000000000000001a000000dc0620ec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60448",
    "material": 426,
-   "nombre_visible": "GreenOak"
+   "nombre_visible": "GreenOak",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 97700040,
@@ -2364,7 +2442,9 @@
    "crudo": "c8c8d2050000000097170000100500000000000027000000000000001a000000dc061fec00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60447",
    "material": 426,
-   "nombre_visible": "GreenOak"
+   "nombre_visible": "GreenOak",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000001"
   }
  ]
 }

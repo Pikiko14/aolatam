@@ -1393,7 +1393,9 @@
    "nombre_visible": "Bright Alga",
    "crudo": "105848040000000054030000500a00000000000027000000000000001a000000dc06acea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60076",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 71850001,
@@ -1412,7 +1414,9 @@
    "nombre_visible": "Obsidian",
    "crudo": "11584804000000000b120000100b00000000000027000000000000001a000000dc06ffea00000000000000",
    "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 71850002,
@@ -1431,7 +1435,9 @@
    "nombre_visible": "Bright Bush",
    "crudo": "1258480400000000ec100000300b00000000000027000000000000001a000000dc06deea00000000000000",
    "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71850003,
@@ -1450,7 +1456,9 @@
    "nombre_visible": "Bandit Den",
    "crudo": "1358480402000000540f0000700800000000000027000000000000001a000000dc062aeb00000000000000",
    "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71850004,
@@ -1469,7 +1477,9 @@
    "nombre_visible": "Viburnum",
    "crudo": "1458480400000000360e0000f00800000000000027000000000000001a000000dc0617eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60183",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 71850005,
@@ -1488,7 +1498,9 @@
    "nombre_visible": "Meteor Alga",
    "crudo": "1558480400000000aa0d0000500b00000000000027000000000000001a000000dc06abea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60075",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 71850006,
@@ -1507,7 +1519,9 @@
    "nombre_visible": "Steel",
    "crudo": "165848040200000020050000300b00000000000027000000000000001a000000dc0601eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60161",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 71850007,
@@ -1526,7 +1540,9 @@
    "nombre_visible": "Melaleuca",
    "crudo": "1758480402000000bd080000700900000000000027000000000000001a000000dc06dcea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60124",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 71850008,
@@ -1545,7 +1561,9 @@
    "nombre_visible": "Leafy Bush",
    "crudo": "1858480400000000c1020000300900000000000027000000000000001a000000dc063beb00000000000000",
    "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71850009,
@@ -1564,7 +1582,9 @@
    "nombre_visible": "Beastkin Den",
    "crudo": "195848040000000042080000b00a00000000000027000000000000001a000000dc062deb00000000000000",
    "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71850010,
@@ -1583,7 +1603,9 @@
    "nombre_visible": "Devil Den",
    "crudo": "1a58480402000000370b0000500300000000000027000000000000001a000000dc062ceb00000000000000",
    "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71850011,
@@ -1602,7 +1624,9 @@
    "nombre_visible": "Angel Bush",
    "crudo": "1b58480402000000b0110000700100000000000027000000000000001a000000dc063ceb00000000000000",
    "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71850012,
@@ -1621,7 +1645,9 @@
    "nombre_visible": "Wisteria",
    "crudo": "1c58480400000000ae0e0000500000000000000027000000000000001a000000dc06dbea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60123",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 71850013,
@@ -1640,7 +1666,9 @@
    "nombre_visible": "Bauxite",
    "crudo": "1d58480400000000b10b0000b00100000000000027000000000000001a000000dc0606eb00000000000000",
    "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 71850014,
@@ -1659,7 +1687,9 @@
    "nombre_visible": "Fire Alga",
    "crudo": "1e58480400000000380a0000500000000000000027000000000000001a000000dc06efea00000000000000",
    "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 71850015,
@@ -1678,7 +1708,9 @@
    "nombre_visible": "Obsidian",
    "crudo": "1f58480400000000a3110000f00900000000000027000000000000001a000000dc06ffea00000000000000",
    "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 71850016,
@@ -1697,7 +1729,9 @@
    "nombre_visible": "Bright Alga",
    "crudo": "2058480400000000f6020000300a00000000000027000000000000001a000000dc06acea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60076",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 71850017,
@@ -1716,7 +1750,9 @@
    "nombre_visible": "Bright Bush",
    "crudo": "215848040000000050110000b00a00000000000027000000000000001a000000dc06deea00000000000000",
    "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71850018,
@@ -1735,7 +1771,9 @@
    "nombre_visible": "Bandit Den",
    "crudo": "22584804020000007e100000f00700000000000027000000000000001a000000dc062aeb00000000000000",
    "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71850019,
@@ -1754,7 +1792,9 @@
    "nombre_visible": "Viburnum",
    "crudo": "2358480402000000e30c0000500900000000000027000000000000001a000000dc0617eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60183",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 220,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 71850020,
@@ -1773,7 +1813,9 @@
    "nombre_visible": "Meteor Alga",
    "crudo": "2458480402000000fb0c0000900b00000000000027000000000000001a000000dc06abea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60075",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   },
   {
    "entity_id": 71850021,
@@ -1792,7 +1834,9 @@
    "nombre_visible": "Steel",
    "crudo": "255848040000000072040000900a00000000000027000000000000001a000000dc0601eb00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60161",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 71850022,
@@ -1811,7 +1855,9 @@
    "nombre_visible": "Melaleuca",
    "crudo": "265848040000000017090000500900000000000027000000000000001a000000dc06dcea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60124",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 71850023,
@@ -1830,7 +1876,9 @@
    "nombre_visible": "Leafy Bush",
    "crudo": "27584804020000002d050000300900000000000027000000000000001a000000dc063beb00000000000000",
    "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71850024,
@@ -1849,7 +1897,9 @@
    "nombre_visible": "Beastkin Den",
    "crudo": "2858480402000000fd060000d00a00000000000027000000000000001a000000dc062deb00000000000000",
    "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71850025,
@@ -1868,7 +1918,9 @@
    "nombre_visible": "Devil Den",
    "crudo": "29584804000000000d0f0000d00300000000000027000000000000001a000000dc062ceb00000000000000",
    "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71850026,
@@ -1887,7 +1939,9 @@
    "nombre_visible": "Angel Bush",
    "crudo": "2a58480402000000f90e0000f00000000000000027000000000000001a000000dc063ceb00000000000000",
    "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000003"
   },
   {
    "entity_id": 71850027,
@@ -1906,7 +1960,9 @@
    "nombre_visible": "Wisteria",
    "crudo": "2b584804020000008f0d0000100100000000000027000000000000001a000000dc06dbea00000000000000",
    "copiado_de": "cuerpo de una captura del objeto 60123",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000001"
   },
   {
    "entity_id": 71850028,
@@ -1925,7 +1981,9 @@
    "nombre_visible": "Bauxite",
    "crudo": "2c58480402000000970a0000700100000000000027000000000000001a000000dc0606eb00000000000000",
    "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000002"
   },
   {
    "entity_id": 71850029,
@@ -1944,7 +2002,9 @@
    "nombre_visible": "Fire Alga",
    "crudo": "2d58480400000000b9090000300000000000000027000000000000001a000000dc06efea00000000000000",
    "copiado_de": "cuerpo de otro objeto con el sprite cambiado",
-   "puesto_por": "vetas_faltantes"
+   "puesto_por": "vetas_faltantes",
+   "marca_nombre": 109,
+   "cola_nombre": "0000000000000004"
   }
  ]
 }
