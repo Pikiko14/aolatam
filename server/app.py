@@ -6021,7 +6021,7 @@ DISTANCIA_RECOLECCION = 6       # casillas
 DISTANCIA_PESCA = 40            # casillas
 # Byte +0xb del 0x000A tipo 9 (lo lee el cliente en 0x4b46a0): 1 y 2 'Work',
 # 3 'Cast' (lanzar la cana), 4 'Wait'. Con 0 no dibuja ninguna pose.
-POSE_PESCA = 3
+POSE_PESCA = 3   # tambien en minar, talar y recolectar: es la burbuja de 'trabajando' sobre la cabeza
 
 
 def _veta_de(stage, ent):
@@ -6207,7 +6207,7 @@ def _recolectar(ses, addr, stage, ent):
     ses.recoleccion = {'ent': int(ent), 'stage': stage, 'token': token}
     ses.enviar(_cl_r.aviso('', tipo=7, msg_id=MSG_EMPIEZA_RECOLECCION),
                struct.pack('<HIIBBH', 0x000A, p.entity_id, int(ent), ACCION_RECOLECTAR,
-                           POSE_PESCA if _pesca else 0, ms))
+                           POSE_PESCA, ms))
     log.info('[%s] recolectando %s (%s, material %s) en %s: %d ms, velocidad %d%%',
              addr, ent, mat['nombre'], mid, stage, ms, velocidad)
 
