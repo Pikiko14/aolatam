@@ -1880,18 +1880,18 @@ TIENDAS_POR_NOMBRE = {
     'Life Mage': 8,
     'Wraith Mage': 9,
     'Chaos Mage': 10,
-    'Weapon Salesman': 2,
-    'Armor Salesman': 5,
+    'Weapon Salesman': 56,
+    'Armor Salesman': 56,
     'Bow Seller': 3,
     'Borg Seller A': 4,
     'Borg Seller B': 42,
     'Heavygear Seller': 5,
     'Lightgear Seller': 6,
     'Mage Gear Seller': 7,
-    'Cooking Salesman': 7,
-    'Sewing Salesman': 5,
-    'Art Saleman': 6,
-    'Art Salesman': 6,
+    'Cooking Salesman': 56,
+    'Sewing Salesman': 56,
+    'Art Saleman': 55,
+    'Art Salesman': 55,
     'Weapon Seller': 2,
     'Weapon Clerk': 2,
     'Armor Clerk': 5,
@@ -2110,11 +2110,11 @@ TIENDAS_POR_ENTIDAD = {
     47: 22,    # D. Plan Seller -> Shop 22 (Tailor / Sewing recipes)
     17: 16,    # Ironsmith -> Shop 16 (Weaponsmith recipes)
     18: 20,    # Ironsmith -> Shop 20 (Armorsmith recipes)
-    36: 2,     # Weapon Salesman -> Shop 2
-    37: 3,     # Armor Salesman -> Shop 3
-    38: 5,     # Sewing Salesman -> Shop 5
-    39: 7,     # Cooking Salesman -> Shop 7
-    40: 6,     # Art Saleman -> Shop 6
+    36: 56,     # Weapon Salesman -> Shop 56 (materiales de produccion)
+    37: 56,     # Armor Salesman -> Shop 56 (materiales de produccion)
+    38: 56,     # Sewing Salesman -> Shop 56 (materiales de produccion)
+    39: 56,     # Cooking Salesman -> Shop 56 (materiales de produccion)
+    40: 55,     # Art Saleman -> Shop 55 (materiales de produccion)
     24: 1,     # Shopkeeper -> Shop 1
 
     # --- Aurora City (Stage 3) ---
@@ -2125,7 +2125,7 @@ TIENDAS_POR_ENTIDAD = {
     121636: 3,  # Bow Seller -> Shop 3
     121651: 4,  # Borg Seller A -> Shop 4
     121652: 42, # Borg Seller B -> Shop 42
-    121649: 5,  # Armor Salesman -> Shop 5
+    121649: 56,  # Armor Salesman -> Shop 56 (materiales de produccion)
     121645: 6,  # Lightgear Seller -> Shop 6
     121619: 7,  # Mage Gear Seller -> Shop 7
     121616: 56, # Material Seller -> Shop 56
@@ -2148,7 +2148,7 @@ TIENDAS_POR_ENTIDAD = {
     121954: 3,  # Bow Seller -> Shop 3
     121939: 4,  # Borg Seller A -> Shop 4
     121952: 42, # Borg Seller B -> Shop 42
-    121955: 5,  # Armor Salesman -> Shop 5
+    121955: 56,  # Armor Salesman -> Shop 56 (materiales de produccion)
     121933: 6,  # Lightgear Seller -> Shop 6
     121941: 7,  # Mage Gear Seller -> Shop 7
     121932: 56, # Material Seller -> Shop 56
@@ -2171,7 +2171,7 @@ TIENDAS_POR_ENTIDAD = {
     122104: 3,  # Bow Seller -> Shop 3
     122106: 4,  # Borg Seller A -> Shop 4
     122126: 42, # Borg Seller B -> Shop 42
-    122102: 5,  # Armor Salesman -> Shop 5
+    122102: 56,  # Armor Salesman -> Shop 56 (materiales de produccion)
     122105: 6,  # Lightgear Seller -> Shop 6
     122130: 7,  # Mage Gear Seller -> Shop 7
     122088: 56, # Material Seller -> Shop 56
@@ -2194,7 +2194,7 @@ TIENDAS_POR_ENTIDAD = {
     121886: 3,  # Bow Seller -> Shop 3
     121885: 4,  # Borg Seller A -> Shop 4
     121882: 42, # Borg Seller B -> Shop 42
-    121861: 5,  # Armor Salesman -> Shop 5
+    121861: 56,  # Armor Salesman -> Shop 56 (materiales de produccion)
     121887: 6,  # Lightgear Seller -> Shop 6
     121859: 7,  # Mage Gear Seller -> Shop 7
     121875: 56, # Material Seller -> Shop 56
