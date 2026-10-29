@@ -1356,39 +1356,39 @@ def propio(nombre: str, faccion: str = "Heaven", jugador: str = "",
 
     # Salesman de la camara de comercio Suft (ordenes)
     if 'Weapon Salesman' in nombre:
-        return [armar_linea(70000, npc_val or 3, [5190, 5191])[2:]]
+        return [armar_linea(70000, npc_val or 3, [70005, 70006, 70007, 70008])[2:]]
     if 'Armor Salesman' in nombre:
-        return [armar_linea(70001, npc_val or 3, [5190, 5191])[2:]]
+        return [armar_linea(70001, npc_val or 3, [70005, 70006, 70007, 70008])[2:]]
     if 'Sewing Salesman' in nombre:
-        return [armar_linea(70002, npc_val or 3, [5190, 5191])[2:]]
+        return [armar_linea(70002, npc_val or 3, [70005, 70006, 70007, 70008])[2:]]
     if 'Cooking Salesman' in nombre:
-        return [armar_linea(70003, npc_val or 3, [5190, 5191])[2:]]
+        return [armar_linea(70003, npc_val or 3, [70005, 70006, 70007, 70008])[2:]]
     if any(s in nombre for s in ['Art Salesman', 'Art Saleman']):
-        return [armar_linea(70004, npc_val or 3, [5190, 5191])[2:]]
+        return [armar_linea(70004, npc_val or 3, [70005, 70006, 70007, 70008])[2:]]
 
     # Directores de produccion (Suft C of C)
     if 'Weapon Director' in nombre:
-        return [armar_linea(70100, npc_val or 3, [5190, 5191])[2:]]
+        return [armar_linea(70100, npc_val or 3, [70105, 70006, 70007, 70008])[2:]]
     if 'Armor Director' in nombre:
-        return [armar_linea(70101, npc_val or 3, [5190, 5191])[2:]]
+        return [armar_linea(70101, npc_val or 3, [70105, 70006, 70007, 70008])[2:]]
     if 'Sewing Director' in nombre:
-        return [armar_linea(70102, npc_val or 3, [5190, 5191])[2:]]
+        return [armar_linea(70102, npc_val or 3, [70105, 70006, 70007, 70008])[2:]]
     if 'Cooking Director' in nombre:
-        return [armar_linea(70103, npc_val or 3, [5190, 5191])[2:]]
+        return [armar_linea(70103, npc_val or 3, [70105, 70006, 70007, 70008])[2:]]
     if 'Art Director' in nombre:
-        return [armar_linea(70104, npc_val or 3, [5190, 5191])[2:]]
+        return [armar_linea(70104, npc_val or 3, [70105, 70006, 70007, 70008])[2:]]
 
     # Clerks de Palm Base (Suft C of C)
     if 'Weapon Clerk' in nombre:
-        return [armar_linea(70017, npc_val or 3, [5190, 5191])[2:]]
+        return [armar_linea(70017, npc_val or 3, [70005, 70006, 70007, 70008])[2:]]
     if 'Armor Clerk' in nombre:
-        return [armar_linea(70018, npc_val or 3, [5190, 5191])[2:]]
+        return [armar_linea(70018, npc_val or 3, [70005, 70006, 70007, 70008])[2:]]
     if 'Sewing Clerk' in nombre:
-        return [armar_linea(70019, npc_val or 3, [5190, 5191])[2:]]
+        return [armar_linea(70019, npc_val or 3, [70005, 70006, 70007, 70008])[2:]]
     if 'Cooking Clerk' in nombre:
-        return [armar_linea(70020, npc_val or 3, [5190, 5191])[2:]]
+        return [armar_linea(70020, npc_val or 3, [70005, 70006, 70007, 70008])[2:]]
     if 'Art Clerk' in nombre:
-        return [armar_linea(70021, npc_val or 3, [5190, 5191])[2:]]
+        return [armar_linea(70021, npc_val or 3, [70005, 70006, 70007, 70008])[2:]]
     if 'Palm Base Smith' in nombre:
         return [armar_linea(5179, npc_val or 3, [5190, 5191])[2:]]
     if 'Ironsmith' in nombre or 'Weapon Seller' in nombre:
@@ -2668,6 +2668,16 @@ def respuesta_a(opcion_id: int, entidad: int = 0, val: int = 4,
             pkg_cierre = struct.pack('<H', 0x0012) + FIN
             return (pkg_shop, pkg_cierre)
 
+    # Suft C of C (Salesman, Clerk y Director): informacion y salir. La entrega
+    # de ordenes (70007 Trade) la hace app.py porque lee la mochila.
+    if opcion_id == 70005:
+        return (armar_linea(70009, val, []), armar_linea(70010, val, [70008]))
+    if opcion_id == 70105:
+        return (armar_linea(70106, val, [70008]),)
+    if opcion_id == 70006:
+        return (armar_linea(70011, val, [70008]),)
+    if opcion_id == 70008:
+        return (struct.pack('<H', 0x0012) + FIN,)
     if opcion_id == 5976:
         if nivel >= 60:
             return (armar_linea(7503, val, [7505, 7506],

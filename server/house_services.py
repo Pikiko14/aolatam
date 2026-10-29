@@ -273,11 +273,19 @@ def resource_for(entity_id, player_level):
                 material=mid, nombre_visible=row['名稱'])
 
 
-def producer_order_plan(option, inventory, quantities, last_slot):
+def order_client(receipt):
+    """Cliente de una orden (su descripcion: 'Client: Art Saleman'), en minusculas y con 'salesman' bien escrito."""
+    import re
+    text = str((xml_rows('item.xml').get(int(receipt)) or {}).get('說明定義') or '')
+    m = re.search(r'Client:\s*(.+?)(?:\\n|\n|$)', text)
+    return m.group(1).strip().lower().replace('saleman', 'salesman') if m else ''
+
+
+def producer_order_plan(option, inventory, quantities, last_slot, client=None):
     """One complete owned order, never items from equipment/bank/other bags."""
     from collections import Counter
     category = ORDER_CATEGORIES.get(option)
-    if category is None:
+    if category is None and client is None:
         return None
     bag = {int(s): int(i) for s, i in inventory.items() if 20 <= int(s) <= last_slot}
     counts = Counter()
@@ -285,7 +293,9 @@ def producer_order_plan(option, inventory, quantities, last_slot):
         counts[item] += max(1, int(quantities.get(slot, 1)))
     for row in xml_rows('order.xml').values():
         receipt = int(row.get('訂單原型') or 0)
-        if row.get('訂單類別') != category or not receipt or not counts[receipt]:
+        if (client is None and row.get('訂單類別') != category) or not receipt or not counts[receipt]:
+            continue
+        if client is not None and order_client(receipt) != client:
             continue
         required = Counter({receipt: 1})
         required[int(row['成品編號'])] += int(row['成品數量'])

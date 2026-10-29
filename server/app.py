@@ -4324,33 +4324,11 @@ def _casa_click(ses, ent):
     return True
 
 
-def _casa_submit_order(ses, option):
-    """One owned order: exact receipt/products and XML rewards, no fake payment."""
+def _entrega_orden(ses, plan, reply_fail, reply_ok):
+    """Consume la orden y el producto de `plan` y paga exp/oro/creditos/bonus."""
     import house_services as hs, dialogos, clases, combate, inventario
     from producer_orders import apply_delivery, reward_progress
-    p = getattr(ses, 'personaje', None)
-    if (option not in hs.ORDER_CATEGORIES or not p or p.stage != 500
-            or getattr(ses, 'dlg_ent', None) != 721):
-        return False
-    c = _casa_actual(ses)
-    def reply(message):
-        line = dialogos.armar_linea(message, 0, [7850])
-        ses.dlg_guion, ses.dlg_paso, ses.dlg_val = [line[2:]], 1, 0
-        ses.enviar(line)
-    if c.owner_id != p.char_id:
-        reply(7873)
-        return True
-    if not c.cleanliness or getattr(ses, 'house_furnishing', False):
-        reply(7923)
-        return True
-    if c.level < 4:
-        reply(7852)
-        return True
-    plan = hs.producer_order_plan(option, ses.inventario, _cantidades(ses),
-                                  _tope_bolsa(ses.inventario))
-    if not plan:
-        reply(7860)
-        return True
+    p = ses.personaje
     row, slots = plan
     consumption = [(s, ses.inventario[s], amount, _cant_de(ses, s)) for s, amount in slots]
     rewards = dict(exp=int(row.get('經驗值') or 0), oro=int(row.get('金錢') or 0),
@@ -4368,7 +4346,7 @@ def _casa_submit_order(ses, option):
         if dest is None:
             dest = _ranura_libre(future)
         if dest is None:
-            reply(7860)
+            reply_fail()
             return True
         bonus = (dest, bonus_item, int(row.get('獎賞數量') or 1))
     try:
@@ -4379,7 +4357,7 @@ def _casa_submit_order(ses, option):
             after, touched = apply_delivery(snapshot, consumption, rewards, bonus)
     except Exception:
         log.exception('house: producer delivery rejected without consumption')
-        reply(7860)
+        reply_fail()
         return True
     # No await between planning, commit and applying these validated slot deltas.
     consumed_all = {slot for slot, item, amount, expected in consumption if amount == expected}
@@ -4425,8 +4403,59 @@ def _casa_submit_order(ses, option):
         ses.enviar(clases.aviso(f"{rewards['oro']} Gold", tipo=0, msg_id=clases.MSG_ITEM))
     if rewards.get('creditos'):
         ses.enviar(clases.aviso(str(rewards['creditos']), tipo=0, msg_id=642))
-    reply(7859)
+    reply_ok()
     return True
+
+
+def _suft_entregar(ses, ent, nombre):
+    """Trade con un Salesman/Clerk/Director de la Suft C of C: entrega la orden de produccion
+    cuyo cliente es ese NPC junto con lo que pide (70013 acepta, 70014 faltan cosas, 70015/70016/70109 sin orden)."""
+    import house_services as hs, dialogos, inventario as _inv
+    cliente = nombre.strip().lower().replace('saleman', 'salesman')
+    val = dialogos.val_por_entidad(ent, 0) or 3
+    def decir(msg):
+        linea = dialogos.armar_linea(msg, val, [70008])
+        ses.dlg_guion, ses.dlg_paso, ses.dlg_val = [linea[2:]], 1, val
+        ses.enviar(linea)
+    tope = _tope_bolsa(ses.inventario)
+    plan = hs.producer_order_plan(None, ses.inventario, _cantidades(ses), tope, client=cliente)
+    if plan:
+        return _entrega_orden(ses, plan, lambda: decir(70014), lambda: decir(70013))
+    cats = hs.xml_rows('item.xml')
+    tiene = any(20 <= int(r) <= tope and (cats.get(int(i)) or {}).get('物品類別') == '訂單'
+                and hs.order_client(int(i)) == cliente for r, i in ses.inventario.items())
+    decir(70014 if tiene else (70109 if 'director' in cliente else 70016 if 'clerk' in cliente else 70015))
+    return True
+
+
+def _casa_submit_order(ses, option):
+    """One owned order: exact receipt/products and XML rewards, no fake payment."""
+    import house_services as hs, dialogos, clases, combate, inventario
+    from producer_orders import apply_delivery, reward_progress
+    p = getattr(ses, 'personaje', None)
+    if (option not in hs.ORDER_CATEGORIES or not p or p.stage != 500
+            or getattr(ses, 'dlg_ent', None) != 721):
+        return False
+    c = _casa_actual(ses)
+    def reply(message):
+        line = dialogos.armar_linea(message, 0, [7850])
+        ses.dlg_guion, ses.dlg_paso, ses.dlg_val = [line[2:]], 1, 0
+        ses.enviar(line)
+    if c.owner_id != p.char_id:
+        reply(7873)
+        return True
+    if not c.cleanliness or getattr(ses, 'house_furnishing', False):
+        reply(7923)
+        return True
+    if c.level < 4:
+        reply(7852)
+        return True
+    plan = hs.producer_order_plan(option, ses.inventario, _cantidades(ses),
+                                  _tope_bolsa(ses.inventario))
+    if not plan:
+        reply(7860)
+        return True
+    return _entrega_orden(ses, plan, lambda: reply(7860), lambda: reply(7859))
 
 
 def _casa_tick_limpieza(ses, now=None, flush=False):
@@ -19267,6 +19296,11 @@ class Servidor:
                                        % _nombre_entidad(ses, ent))
                     return
 
+                if _el == 70007 and ses.personaje:
+                    _nom_suft = _nombre_entidad(ses, ent) or ''
+                    if any(k in _nom_suft for k in ('Salesman', 'Saleman', 'Clerk', 'Director')):
+                        _suft_entregar(ses, ent, _nom_suft)
+                        return
                 if _casa_submit_order(ses, _el):
                     return
                 _fac_actual = getattr(ses.personaje, 'faction', 'Heaven') if ses.personaje else 'Heaven'
