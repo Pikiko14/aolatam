@@ -12325,6 +12325,31 @@ class Servidor:
                     log.exception('gremios: fallo al sincronizar gremio al entrar al mapa')
             return
 
+        # --- PESCA: el cliente no manda el clic 0x0005 sobre el banco de peces;
+        # manda 0x000C [03] y 0x002D [u32 x][u32 y] con la casilla pulsada
+        # (visto en un log local: 0x002D = 81 00 00 00 7b 00 00 00). Se busca
+        # el banco de esa casilla y se pesca como una veta.
+        if opcode == 0x002D and ses.rol == 'mundo' and ses.personaje and len(cuerpo) >= 8:
+            _fx, _fy = struct.unpack_from('<II', cuerpo, 0)
+            _st_f = ses.personaje.stage
+            _mejor_f = None
+            for _r_f in _recursos_de_plantilla(_st_f):
+                _t_f = _r_f.get('tile') or ((int(_r_f['px'][0]) // 32, int(_r_f['px'][1]) // 32) if _r_f.get('px') else None)
+                if not _t_f:
+                    continue
+                _d_f = max(abs(int(_t_f[0]) - _fx), abs(int(_t_f[1]) - _fy))
+                if _d_f > 2 or (_mejor_f is not None and _d_f >= _mejor_f[0]):
+                    continue
+                _mid_f, _ = _veta_de(_st_f, _r_f.get('entity_id', 0))
+                _mat_f = _material(_mid_f) if _mid_f else None
+                if _mat_f and (_mat_f.get('herramienta') == '釣竿'):
+                    _mejor_f = (_d_f, int(_r_f['entity_id']))
+            log.info('[%s] pesca 0x002D casilla (%s,%s) en %s: %s', addr, _fx, _fy, _st_f,
+                     'banco %s' % _mejor_f[1] if _mejor_f else 'sin banco cerca')
+            if _mejor_f:
+                _recolectar(ses, addr, _st_f, _mejor_f[1])
+            return
+
         # --- combate -----------------------------------------------------
         if opcode == 0x0006 and ses.rol == 'mundo' and cuerpo:
             import combate as _cb
