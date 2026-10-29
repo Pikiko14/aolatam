@@ -1101,6 +1101,250 @@ def _entrada_item_puesto(ses, ranura: int, cantidad: int) -> bytes:
     return bytes(cuerpo_item)
 
 
+# ----------------------------------------------------------------- INTERCAMBIO
+# Protocolo sacado de Angel.exe (los handlers 0x39..0x48 de s2c y los natives
+# trade*). C2S: 0x2B [u32 destino] invita; 0x2C [u32 quien invito] acepta; 0x35
+# [u32 quien invito] rechaza; 0x30 cierra; 0x32 [u32 hueco 0..7][8B instancia]
+# pone un item; 0x33 [u32 oro]; 0x31 confirma; 0x34 comerciar.
+# S2C: 0x39 [u32 id][nombre 17B] invitacion; 0x3A [nombre 17B] abre la ventana;
+# 0x46 [nombre 17B][u32 hueco][ficha de item] (a los dos: el cliente decide el
+# lado comparando el nombre con el suyo); 0x47 [u32 oro] (solo al otro); 0x45
+# el otro confirmo; 0x44 cierra la ventana; 0x48 [u8 1 ok / 0 fallo] resultado.
+# NO hay captura del servidor real: lo que no lee el cliente (distancias, pesos)
+# se valida aqui con criterio propio.
+HUECOS_INTERCAMBIO = 8
+
+
+def _nombre17(ses) -> bytes:
+    return (getattr(ses.personaje, 'nombre', '') or '').encode('latin-1', 'replace')[:16].ljust(17, b'\x00')
+
+
+def _intercambio_cerrar(ses, resultado=None):
+    """Cierra el intercambio de ses y el del otro. resultado: None = solo cerrar la ventana; 0/1 = 0x48 antes."""
+    t = getattr(ses, 'trade', None)
+    ses.trade = None
+    ses.trade_invita = None
+    if not t:
+        return
+    for s_x in (ses, t.get('socio')):
+        if s_x is None:
+            continue
+        if s_x is not ses:
+            tt = getattr(s_x, 'trade', None)
+            if not tt or tt.get('socio') is not ses:
+                continue
+            s_x.trade = None
+        try:
+            if resultado is not None:
+                s_x.enviar(struct.pack('<HB', 0x0048, int(resultado)))
+            s_x.enviar(struct.pack('<H', 0x0044))
+            s_x.volcar()
+        except Exception:
+            log.exception('intercambio: no se pudo avisar')
+
+
+def _intercambio_cambio(t, t_otro):
+    """Cualquier cambio en las ofertas anula las confirmaciones."""
+    t['ok'] = t['listo'] = False
+    t_otro['ok'] = t_otro['listo'] = False
+
+
+def _intercambio_ejecutar(ses, otro):
+    """Pasa lo ofrecido de un lado al otro. Si algo ya no cuadra devuelve False y no se mueve nada."""
+    import copy as _copy
+    import inventario as _iv
+    t, t_o = ses.trade, otro.trade
+    movimientos = []
+    for dueno, receptor, tt, tt_receptor in ((ses, otro, t, t_o), (otro, ses, t_o, t)):
+        bolsa = dueno.inventario
+        oro = int(tt.get('oro', 0))
+        if oro < 0 or oro > getattr(dueno, 'oro', 0):
+            return False
+        lista = []
+        for idx, o in sorted(tt['ofertas'].items()):
+            r, item_id = int(o['ranura']), int(o['item_id'])
+            if bolsa.get(r) != item_id or _cant_de(dueno, r) <= 0:
+                return False
+            lista.append((r, item_id, _cant_de(dueno, r)))
+        # sitio del que recibe: huecos libres, mas los que libera lo que ofrece el
+        libres = sum(1 for r in range(20, _tope_bolsa(receptor.inventario) + 1) if r not in receptor.inventario)
+        libres += len(tt_receptor['ofertas'])
+        necesita = 0
+        for r, item_id, n in lista:
+            tiene_monton = _iv.es_apilable(item_id) and any(
+                int(it) == item_id and int(rk) != _iv.RANURA_ORO and not _iv.es_equipo(int(rk))
+                for rk, it in receptor.inventario.items())
+            if not tiene_monton:
+                necesita += 1
+        if necesita > libres:
+            return False
+        movimientos.append((dueno, receptor, lista, oro))
+    tocadas = {id(ses): [], id(otro): []}
+    for dueno, receptor, lista, oro in movimientos:
+        for r, item_id, n in lista:
+            mej = None
+            pet = None
+            if not _iv.es_apilable(item_id):
+                mej_orig = (getattr(dueno.personaje, 'mejoras', None) or {}).get(r)
+                if mej_orig:
+                    mej = _copy.deepcopy(mej_orig)
+                m_dueno = getattr(dueno.personaje, 'mascotas', None) or {}
+                pet_orig = m_dueno.get(str(r)) or m_dueno.get(r)
+                if pet_orig:
+                    pet = _copy.deepcopy(pet_orig)
+            sacadas = _sacar(dueno, r, n)
+            tocadas[id(dueno)].append(r)
+            if sacadas <= 0:
+                continue
+            r2 = _meter(receptor, item_id, sacadas)
+            if r2 is None:
+                _meter(dueno, item_id, sacadas)
+                continue
+            tocadas[id(receptor)].append(int(r2))
+            if mej is not None:
+                if getattr(receptor.personaje, 'mejoras', None) is None:
+                    receptor.personaje.mejoras = {}
+                receptor.personaje.mejoras[int(r2)] = mej
+            if pet is not None:
+                if not isinstance(getattr(receptor.personaje, 'mascotas', None), dict):
+                    receptor.personaje.mascotas = {}
+                pet['ranura'] = int(r2)
+                pet['item'] = item_id
+                pet['instancia'] = 1000 + int(r2)
+                pet['fuera'] = False
+                pet['entidad'] = None
+                receptor.personaje.mascotas[str(int(r2))] = pet
+        if oro:
+            dueno.oro = max(0, getattr(dueno, 'oro', 0) - oro)
+            dueno.personaje.oro = dueno.oro
+            receptor.oro = min(2000000000, getattr(receptor, 'oro', 0) + oro)
+            receptor.personaje.oro = receptor.oro
+    for s_x in (ses, otro):
+        s_x.enviar(*_refrescar(s_x, sorted(set(tocadas[id(s_x)])), con_oro=True))
+        _guardar_bolsa(s_x, s_x.personaje.char_id)
+        if getattr(s_x, 'usuario', None):
+            cuentas.guardar_oro(s_x.usuario, s_x.personaje.char_id, s_x.oro)
+    return True
+
+
+def _intercambio(ses, addr, opcode, cuerpo):
+    """Atiende los C2S 0x2B..0x35 del intercambio entre jugadores."""
+    import clases as _c
+    import inventario as _iv
+    import presencia as _pres
+    import house_services as _hs_t
+    p = ses.personaje
+    if getattr(ses, 'muerto', False):
+        return
+    if opcode == 0x002B and len(cuerpo) >= 4:
+        eid = struct.unpack_from('<I', cuerpo, 0)[0]
+        otro = _pres.sesion_por_entidad(ses, eid)
+        if otro is None or otro is ses or not getattr(otro, 'personaje', None):
+            return
+        if (getattr(ses, 'puesto', None) or getattr(ses, 'trade', None)
+                or getattr(otro, 'puesto', None) or getattr(otro, 'trade', None)
+                or getattr(otro, 'trade_invita', None)):
+            ses.enviar(_c.aviso('', tipo=7, msg_id=374))     # The target is trading or setting a stall.
+            return
+        otro.trade_invita = ses
+        otro.enviar(struct.pack('<HI', 0x0039, _pres.entidad_de(ses)) + _nombre17(ses))
+        otro.volcar()
+        log.info('[%s] intercambio: %s invita a %s', addr, p.nombre, otro.personaje.nombre)
+        return
+    if opcode in (0x002C, 0x0035):
+        inv = getattr(ses, 'trade_invita', None)
+        ses.trade_invita = None
+        if inv is None or not getattr(inv, 'personaje', None):
+            return
+        if opcode == 0x0035:
+            inv.enviar(_c.aviso(p.nombre, tipo=7, msg_id=373))     # %s refuses to trade.
+            inv.volcar()
+            return
+        if (getattr(inv, 'trade', None) or getattr(ses, 'trade', None)
+                or getattr(inv, 'puesto', None) or getattr(ses, 'puesto', None)):
+            ses.enviar(_c.aviso('', tipo=7, msg_id=374))
+            return
+        nuevo = lambda socio: {'socio': socio, 'ofertas': {}, 'oro': 0, 'ok': False, 'listo': False}
+        ses.trade, inv.trade = nuevo(inv), nuevo(ses)
+        ses.enviar(struct.pack('<H', 0x003A) + _nombre17(inv))
+        inv.enviar(struct.pack('<H', 0x003A) + _nombre17(ses))
+        inv.volcar()
+        log.info('[%s] intercambio abierto entre %s y %s', addr, p.nombre, inv.personaje.nombre)
+        return
+    t = getattr(ses, 'trade', None)
+    otro = t.get('socio') if t else None
+    if t is None or otro is None or getattr(otro, 'trade', None) is None or otro.trade.get('socio') is not ses:
+        if t is not None:
+            _intercambio_cerrar(ses)
+        return
+    t_o = otro.trade
+    if opcode == 0x0030:
+        _intercambio_cerrar(ses)
+        return
+    if opcode == 0x0032 and len(cuerpo) >= 12:
+        idx, inst8 = struct.unpack_from('<I8s', cuerpo, 0)
+        if not 0 <= idx < HUECOS_INTERCAMBIO:
+            return
+        bolsa = ses.inventario
+        if not any(inst8):
+            t['ofertas'].pop(idx, None)
+            _intercambio_cambio(t, t_o)
+            pk = struct.pack('<H', 0x0046) + _nombre17(ses) + struct.pack('<I', idx) + bytes(85)
+            ses.enviar(pk)
+            otro.enviar(pk)
+            otro.volcar()
+            return
+        r = _iv.ranura_de_instancia(_instancias(ses), inst8, bolsa, p.char_id)
+        if r is None or _iv.es_equipo(r) or r == _iv.RANURA_ORO or any(int(o['ranura']) == int(r) for o in t['ofertas'].values()):
+            ses.enviar(_c.aviso('', tipo=7, msg_id=378))     # The item is unavailable.
+            return
+        r = int(r)
+        item_id = int(bolsa[r])
+        fila = _hs_t.xml_rows('item.xml').get(item_id) or {}
+        if (fila.get('不可交易') == '是'
+                or __import__('arena_premios_compat').es_premio(ses, r)
+                or __import__('item_mall').es_temporal(ses, r)
+                or __import__('furniture_items').protegido(ses, r)):
+            ses.enviar(_c.aviso('', tipo=7, msg_id=378))
+            return
+        _instancias(ses)[r] = inst8
+        t['ofertas'][idx] = {'ranura': r, 'item_id': item_id}
+        _intercambio_cambio(t, t_o)
+        pk = struct.pack('<H', 0x0046) + _nombre17(ses) + struct.pack('<I', idx) + _entrada_item_puesto(ses, r, _cant_de(ses, r))
+        ses.enviar(pk)
+        otro.enviar(pk)
+        otro.volcar()
+        return
+    if opcode == 0x0033 and len(cuerpo) >= 4:
+        oro = struct.unpack_from('<I', cuerpo, 0)[0]
+        if oro > getattr(ses, 'oro', 0):
+            ses.enviar(_c.aviso('', tipo=7, msg_id=379))     # Not enough money
+            return
+        t['oro'] = int(oro)
+        _intercambio_cambio(t, t_o)
+        otro.enviar(struct.pack('<HI', 0x0047, int(oro)))
+        otro.volcar()
+        return
+    if opcode == 0x0031:
+        t['ok'] = True
+        otro.enviar(struct.pack('<H', 0x0045))
+        otro.volcar()
+        return
+    if opcode == 0x0034:
+        if not (t['ok'] and t_o['ok']):
+            return
+        t['listo'] = True
+        if t_o['listo']:
+            exito = False
+            try:
+                exito = _intercambio_ejecutar(ses, otro)
+            except Exception:
+                log.exception('intercambio: fallo al ejecutar')
+            log.info('[%s] intercambio %s <-> %s: %s', addr, p.nombre, otro.personaje.nombre, 'hecho' if exito else 'cancelado')
+            _intercambio_cerrar(ses, resultado=1 if exito else 0)
+        return
+
+
 def _paquete_vista_puesto(vendedor) -> bytes:
     """Construye S2C 0x0032 (FUN_00604710) con las pestanas Sell y Buy del puesto."""
     puesto = getattr(vendedor, 'puesto', None) or {}
@@ -9796,6 +10040,10 @@ class Servidor:
             pass
         finally:
             ses.desconectado = True
+            try:
+                _intercambio_cerrar(ses)
+            except Exception:
+                log.exception('intercambio: al desconectar')
             _ia_task = getattr(ses, 'ia_monstruos_task', None)
             if _ia_task:
                 _ia_task.cancel()
@@ -14908,6 +15156,10 @@ class Servidor:
         #   C2S 0x0024 (0x61A2D0): ver puesto de otro jugador -> S2C 0x0032
         #   C2S 0x0025 (0x61B8B0): comprar de la pestana Sell -> S2C 0x0033
         #   C2S 0x0026 (0x61BD90): vender a la pestana Buy   -> S2C 0x004A
+        if opcode in (0x002B, 0x002C, 0x0030, 0x0031, 0x0032, 0x0033, 0x0034, 0x0035) and ses.rol == 'mundo' and ses.personaje:
+            _intercambio(ses, addr, opcode, cuerpo)
+            return
+
         if opcode == 0x0022 and ses.rol == 'mundo' and ses.personaje and len(cuerpo) >= 61:
             if getattr(ses, 'muerto', False) or getattr(ses, 'puesto', None):
                 return
