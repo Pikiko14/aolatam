@@ -590,7 +590,13 @@ def _final_tutorial(ses, addr):
     cid = ses.personaje.char_id if getattr(ses, 'personaje', None) else 4980
     ids = [h[0] if isinstance(h, (list, tuple)) else int(h)
            for h in (getattr(ses.personaje, 'habilidades', None) or [])]
+    # El set de estudiante va segun el genero y ya se entrego puesto al crear
+    # el personaje (personajes.ROPA_INICIAL*): a un hombre no se le dan
+    # ademas los guantes y zapatos de mujer (28 y 30), que acababan en la mochila.
+    _hombre = bool(getattr(ses.personaje, 'apariencia', None)) and int(ses.personaje.apariencia[0]) == 1
     for ranura, item_id in clases.premio_final(ids):
+        if _hombre and item_id in (28, 30):
+            continue
         if ranura in bolsa and bolsa[ranura] == item_id:
             continue
         if ranura in bolsa:
