@@ -1,0 +1,1177 @@
+{
+ "_nota": "Shadow Area (stage 55) como instancia oscura Lv55-60: bichos normales y elites en 12 grupos y, al fondo, el jefe Cursed Larry (suelta piedras de Holy Battlefield). Generado con tools/generar_instancia_oscura.py.",
+ "stage": 55,
+ "spawns": [
+  {
+   "entity_id": 7550001,
+   "nombre": "Cursed Barft",
+   "npc_type": 5254,
+   "sprite": 42204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    84,
+    6
+   ],
+   "direccion": 3,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550002,
+   "nombre": "Fossa Rat",
+   "npc_type": 902,
+   "sprite": 42338,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    74,
+    5
+   ],
+   "direccion": 7,
+   "visible": 0,
+   "nivel": 58
+  },
+  {
+   "entity_id": 7550003,
+   "nombre": "Cursed Barft",
+   "npc_type": 5254,
+   "sprite": 42204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    72,
+    9
+   ],
+   "direccion": 6,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550004,
+   "nombre": "Tail Rotten Rat",
+   "npc_type": 903,
+   "sprite": 42339,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    82,
+    9
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 60
+  },
+  {
+   "entity_id": 7550005,
+   "nombre": "Tail Rotten Rat",
+   "npc_type": 903,
+   "sprite": 42339,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    77,
+    10
+   ],
+   "direccion": 6,
+   "visible": 0,
+   "nivel": 60
+  },
+  {
+   "entity_id": 7550006,
+   "nombre": "Evil Warden",
+   "npc_type": 4629,
+   "sprite": 42322,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    82,
+    13
+   ],
+   "direccion": 6,
+   "visible": 0,
+   "nivel": 60,
+   "hp_mult": 3.0,
+   "atk_mult": 1.25,
+   "elite": true
+  },
+  {
+   "entity_id": 7550007,
+   "nombre": "Tail Rotten Rat",
+   "npc_type": 903,
+   "sprite": 42339,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    154,
+    14
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 60
+  },
+  {
+   "entity_id": 7550008,
+   "nombre": "Fossa Rat",
+   "npc_type": 902,
+   "sprite": 42338,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    152,
+    21
+   ],
+   "direccion": 6,
+   "visible": 0,
+   "nivel": 58
+  },
+  {
+   "entity_id": 7550009,
+   "nombre": "Cursed Barft",
+   "npc_type": 5254,
+   "sprite": 42204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    149,
+    13
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550010,
+   "nombre": "Fossa Rat",
+   "npc_type": 902,
+   "sprite": 42338,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    144,
+    19
+   ],
+   "direccion": 7,
+   "visible": 0,
+   "nivel": 58
+  },
+  {
+   "entity_id": 7550011,
+   "nombre": "Tail Rotten Rat",
+   "npc_type": 903,
+   "sprite": 42339,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    146,
+    22
+   ],
+   "direccion": 5,
+   "visible": 0,
+   "nivel": 60
+  },
+  {
+   "entity_id": 7550012,
+   "nombre": "Cursed Priest",
+   "npc_type": 5257,
+   "sprite": 42438,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    143,
+    15
+   ],
+   "direccion": 7,
+   "visible": 0,
+   "nivel": 60,
+   "hp_mult": 3.0,
+   "atk_mult": 1.25,
+   "elite": true
+  },
+  {
+   "entity_id": 7550013,
+   "nombre": "Soul-eating Worm",
+   "npc_type": 814,
+   "sprite": 42300,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    50,
+    45
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550014,
+   "nombre": "Rotten Seeker",
+   "npc_type": 912,
+   "sprite": 42346,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    54,
+    44
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550015,
+   "nombre": "Tail Rotten Rat",
+   "npc_type": 903,
+   "sprite": 42339,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    59,
+    43
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 60
+  },
+  {
+   "entity_id": 7550016,
+   "nombre": "Imp Elf",
+   "npc_type": 894,
+   "sprite": 42331,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    59,
+    49
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 58
+  },
+  {
+   "entity_id": 7550017,
+   "nombre": "Cursed Barft",
+   "npc_type": 5254,
+   "sprite": 42204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    55,
+    50
+   ],
+   "direccion": 3,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550018,
+   "nombre": "Fossa Rat",
+   "npc_type": 902,
+   "sprite": 42338,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    54,
+    27
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 58
+  },
+  {
+   "entity_id": 7550019,
+   "nombre": "Cursed Barft",
+   "npc_type": 5254,
+   "sprite": 42204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    52,
+    31
+   ],
+   "direccion": 1,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550020,
+   "nombre": "Fossa Rat",
+   "npc_type": 902,
+   "sprite": 42338,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    48,
+    23
+   ],
+   "direccion": 5,
+   "visible": 0,
+   "nivel": 58
+  },
+  {
+   "entity_id": 7550021,
+   "nombre": "Cursed Barft",
+   "npc_type": 5254,
+   "sprite": 42204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    59,
+    22
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550022,
+   "nombre": "Soul-eating Worm",
+   "npc_type": 814,
+   "sprite": 42300,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    54,
+    22
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550023,
+   "nombre": "Cursed General",
+   "npc_type": 5255,
+   "sprite": 42322,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    58,
+    32
+   ],
+   "direccion": 7,
+   "visible": 0,
+   "nivel": 60,
+   "hp_mult": 3.0,
+   "atk_mult": 1.25,
+   "elite": true
+  },
+  {
+   "entity_id": 7550024,
+   "nombre": "Rotten Seeker",
+   "npc_type": 912,
+   "sprite": 42346,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    77,
+    117
+   ],
+   "direccion": 1,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550025,
+   "nombre": "Imp Elf",
+   "npc_type": 894,
+   "sprite": 42331,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    75,
+    113
+   ],
+   "direccion": 3,
+   "visible": 0,
+   "nivel": 58
+  },
+  {
+   "entity_id": 7550026,
+   "nombre": "Rotten Seeker",
+   "npc_type": 912,
+   "sprite": 42346,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    85,
+    109
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550027,
+   "nombre": "Soul-eating Worm",
+   "npc_type": 814,
+   "sprite": 42300,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    78,
+    111
+   ],
+   "direccion": 3,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550028,
+   "nombre": "Fossa Rat",
+   "npc_type": 902,
+   "sprite": 42338,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    81,
+    111
+   ],
+   "direccion": 1,
+   "visible": 0,
+   "nivel": 58
+  },
+  {
+   "entity_id": 7550029,
+   "nombre": "Cursed Priest",
+   "npc_type": 5257,
+   "sprite": 42438,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    83,
+    119
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 60,
+   "hp_mult": 3.0,
+   "atk_mult": 1.25,
+   "elite": true
+  },
+  {
+   "entity_id": 7550030,
+   "nombre": "Fossa Rat",
+   "npc_type": 902,
+   "sprite": 42338,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    132,
+    113
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 58
+  },
+  {
+   "entity_id": 7550031,
+   "nombre": "Tail Rotten Rat",
+   "npc_type": 903,
+   "sprite": 42339,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    123,
+    120
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 60
+  },
+  {
+   "entity_id": 7550032,
+   "nombre": "Cursed Barft",
+   "npc_type": 5254,
+   "sprite": 42204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    127,
+    119
+   ],
+   "direccion": 3,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550033,
+   "nombre": "Cursed Barft",
+   "npc_type": 5254,
+   "sprite": 42204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    125,
+    111
+   ],
+   "direccion": 1,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550034,
+   "nombre": "Rotten Seeker",
+   "npc_type": 912,
+   "sprite": 42346,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    131,
+    119
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550035,
+   "nombre": "Cursed General",
+   "npc_type": 5255,
+   "sprite": 42322,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    124,
+    115
+   ],
+   "direccion": 7,
+   "visible": 0,
+   "nivel": 60,
+   "hp_mult": 3.0,
+   "atk_mult": 1.25,
+   "elite": true
+  },
+  {
+   "entity_id": 7550036,
+   "nombre": "Cursed Barft",
+   "npc_type": 5254,
+   "sprite": 42204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    132,
+    21
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550037,
+   "nombre": "Fossa Rat",
+   "npc_type": 902,
+   "sprite": 42338,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    129,
+    23
+   ],
+   "direccion": 5,
+   "visible": 0,
+   "nivel": 58
+  },
+  {
+   "entity_id": 7550038,
+   "nombre": "Imp Elf",
+   "npc_type": 894,
+   "sprite": 42331,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    129,
+    14
+   ],
+   "direccion": 1,
+   "visible": 0,
+   "nivel": 58
+  },
+  {
+   "entity_id": 7550039,
+   "nombre": "Cursed Barft",
+   "npc_type": 5254,
+   "sprite": 42204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    130,
+    17
+   ],
+   "direccion": 7,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550040,
+   "nombre": "Cursed Barft",
+   "npc_type": 5254,
+   "sprite": 42204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    133,
+    16
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550041,
+   "nombre": "Evil Warden",
+   "npc_type": 4629,
+   "sprite": 42322,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    121,
+    13
+   ],
+   "direccion": 3,
+   "visible": 0,
+   "nivel": 60,
+   "hp_mult": 3.0,
+   "atk_mult": 1.25,
+   "elite": true
+  },
+  {
+   "entity_id": 7550042,
+   "nombre": "Soul-eating Worm",
+   "npc_type": 814,
+   "sprite": 42300,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    96,
+    83
+   ],
+   "direccion": 3,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550043,
+   "nombre": "Tail Rotten Rat",
+   "npc_type": 903,
+   "sprite": 42339,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    94,
+    78
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 60
+  },
+  {
+   "entity_id": 7550044,
+   "nombre": "Fossa Rat",
+   "npc_type": 902,
+   "sprite": 42338,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    99,
+    80
+   ],
+   "direccion": 6,
+   "visible": 0,
+   "nivel": 58
+  },
+  {
+   "entity_id": 7550045,
+   "nombre": "Soul-eating Worm",
+   "npc_type": 814,
+   "sprite": 42300,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    93,
+    82
+   ],
+   "direccion": 1,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550046,
+   "nombre": "Cursed Barft",
+   "npc_type": 5254,
+   "sprite": 42204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    98,
+    77
+   ],
+   "direccion": 3,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550047,
+   "nombre": "Cursed Priest",
+   "npc_type": 5257,
+   "sprite": 42438,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    104,
+    79
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 60,
+   "hp_mult": 3.0,
+   "atk_mult": 1.25,
+   "elite": true
+  },
+  {
+   "entity_id": 7550048,
+   "nombre": "Imp Elf",
+   "npc_type": 894,
+   "sprite": 42331,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    18,
+    57
+   ],
+   "direccion": 3,
+   "visible": 0,
+   "nivel": 58
+  },
+  {
+   "entity_id": 7550049,
+   "nombre": "Rotten Seeker",
+   "npc_type": 912,
+   "sprite": 42346,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    24,
+    62
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550050,
+   "nombre": "Tail Rotten Rat",
+   "npc_type": 903,
+   "sprite": 42339,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    23,
+    52
+   ],
+   "direccion": 6,
+   "visible": 0,
+   "nivel": 60
+  },
+  {
+   "entity_id": 7550051,
+   "nombre": "Imp Elf",
+   "npc_type": 894,
+   "sprite": 42331,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    28,
+    59
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 58
+  },
+  {
+   "entity_id": 7550052,
+   "nombre": "Soul-eating Worm",
+   "npc_type": 814,
+   "sprite": 42300,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    24,
+    56
+   ],
+   "direccion": 6,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550053,
+   "nombre": "Cursed Fasit",
+   "npc_type": 5256,
+   "sprite": 42327,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    17,
+    61
+   ],
+   "direccion": 5,
+   "visible": 0,
+   "nivel": 60,
+   "hp_mult": 3.0,
+   "atk_mult": 1.25,
+   "elite": true
+  },
+  {
+   "entity_id": 7550054,
+   "nombre": "Fossa Rat",
+   "npc_type": 902,
+   "sprite": 42338,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    174,
+    106
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 58
+  },
+  {
+   "entity_id": 7550055,
+   "nombre": "Fossa Rat",
+   "npc_type": 902,
+   "sprite": 42338,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    177,
+    98
+   ],
+   "direccion": 6,
+   "visible": 0,
+   "nivel": 58
+  },
+  {
+   "entity_id": 7550056,
+   "nombre": "Tail Rotten Rat",
+   "npc_type": 903,
+   "sprite": 42339,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    181,
+    105
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 60
+  },
+  {
+   "entity_id": 7550057,
+   "nombre": "Fossa Rat",
+   "npc_type": 902,
+   "sprite": 42338,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    183,
+    98
+   ],
+   "direccion": 6,
+   "visible": 0,
+   "nivel": 58
+  },
+  {
+   "entity_id": 7550058,
+   "nombre": "Cursed Barft",
+   "npc_type": 5254,
+   "sprite": 42204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    173,
+    96
+   ],
+   "direccion": 7,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550059,
+   "nombre": "Cursed Priest",
+   "npc_type": 5257,
+   "sprite": 42438,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    177,
+    102
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 60,
+   "hp_mult": 3.0,
+   "atk_mult": 1.25,
+   "elite": true
+  },
+  {
+   "entity_id": 7550060,
+   "nombre": "Tail Rotten Rat",
+   "npc_type": 903,
+   "sprite": 42339,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    189,
+    37
+   ],
+   "direccion": 7,
+   "visible": 0,
+   "nivel": 60
+  },
+  {
+   "entity_id": 7550061,
+   "nombre": "Soul-eating Worm",
+   "npc_type": 814,
+   "sprite": 42300,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    187,
+    34
+   ],
+   "direccion": 3,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550062,
+   "nombre": "Cursed Barft",
+   "npc_type": 5254,
+   "sprite": 42204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    192,
+    42
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550063,
+   "nombre": "Tail Rotten Rat",
+   "npc_type": 903,
+   "sprite": 42339,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    195,
+    34
+   ],
+   "direccion": 7,
+   "visible": 0,
+   "nivel": 60
+  },
+  {
+   "entity_id": 7550064,
+   "nombre": "Cursed Barft",
+   "npc_type": 5254,
+   "sprite": 42204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    192,
+    38
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550065,
+   "nombre": "Imp Elf",
+   "npc_type": 894,
+   "sprite": 42331,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    143,
+    55
+   ],
+   "direccion": 3,
+   "visible": 0,
+   "nivel": 58
+  },
+  {
+   "entity_id": 7550066,
+   "nombre": "Cursed Barft",
+   "npc_type": 5254,
+   "sprite": 42204,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    140,
+    44
+   ],
+   "direccion": 7,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550067,
+   "nombre": "Rotten Seeker",
+   "npc_type": 912,
+   "sprite": 42346,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    144,
+    44
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550068,
+   "nombre": "Rotten Seeker",
+   "npc_type": 912,
+   "sprite": 42346,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    141,
+    49
+   ],
+   "direccion": 3,
+   "visible": 0,
+   "nivel": 55
+  },
+  {
+   "entity_id": 7550069,
+   "nombre": "Tail Rotten Rat",
+   "npc_type": 903,
+   "sprite": 42339,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    136,
+    49
+   ],
+   "direccion": 6,
+   "visible": 0,
+   "nivel": 60
+  },
+  {
+   "entity_id": 7550070,
+   "nombre": "Evil Warden",
+   "npc_type": 4629,
+   "sprite": 42322,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    135,
+    55
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 60,
+   "hp_mult": 3.0,
+   "atk_mult": 1.25,
+   "elite": true
+  },
+  {
+   "entity_id": 7550071,
+   "nombre": "Cursed Larry",
+   "npc_type": 5258,
+   "sprite": 42207,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    5,
+    92
+   ],
+   "direccion": 3,
+   "visible": 0,
+   "nivel": 63,
+   "hp_mult": 45.0,
+   "atk_mult": 1.5,
+   "jefe": true
+  },
+  {
+   "entity_id": 7550072,
+   "nombre": "Evil Warden",
+   "npc_type": 4629,
+   "sprite": 42322,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    11,
+    87
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 60,
+   "hp_mult": 3.0,
+   "atk_mult": 1.25,
+   "elite": true
+  },
+  {
+   "entity_id": 7550073,
+   "nombre": "Evil Warden",
+   "npc_type": 4629,
+   "sprite": 42322,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    7,
+    88
+   ],
+   "direccion": 2,
+   "visible": 0,
+   "nivel": 60,
+   "hp_mult": 3.0,
+   "atk_mult": 1.25,
+   "elite": true
+  },
+  {
+   "entity_id": 7550074,
+   "nombre": "Cursed Priest",
+   "npc_type": 5257,
+   "sprite": 42438,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    11,
+    91
+   ],
+   "direccion": 6,
+   "visible": 0,
+   "nivel": 60,
+   "hp_mult": 3.0,
+   "atk_mult": 1.25,
+   "elite": true
+  },
+  {
+   "entity_id": 7550075,
+   "nombre": "Cursed Priest",
+   "npc_type": 5257,
+   "sprite": 42438,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    12,
+    99
+   ],
+   "direccion": 6,
+   "visible": 0,
+   "nivel": 60,
+   "hp_mult": 3.0,
+   "atk_mult": 1.25,
+   "elite": true
+  }
+ ],
+ "recursos": []
+}

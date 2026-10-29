@@ -1057,7 +1057,10 @@ def _nivel_plausible(lista_raw, nivel_monstruo: int) -> bool:
 # Tablas ponderadas originales de drop_table en content.db para los cuatro
 # jefes de Nightmare Cave (Bloody Hook, Soul Puller, Violent Cat, Evil Chieftain):
 # tres tiradas por muerte con ~98.15%–99.54% de peso para Dream Piece (3040).
+# Cursed Larry (5258), jefe de la instancia oscura Lv55-60 (plantillas/shadow_area.json): 2 tiradas de piedras de Holy
+# Battlefield. Pesos: piedra normal 8537 (la mas comun), de prueba 8770 y 24882, y los pases de 7 y 30 dias, mas raros.
 _DROPS_PONDERADOS_JEFES = {
+    5258: (2, ((8537, 1, 5000), (8770, 1, 2500), (24882, 1, 1500), (28866, 1, 700), (40921, 1, 300))),
     420: (3, ((3040, 1, 981481), (5918, 1, 18519))),
     422: (3, ((3040, 1, 981481), (5919, 1, 18519))),
     424: (3, ((3040, 1, 990741), (5921, 1, 9259))),

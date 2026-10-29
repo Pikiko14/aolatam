@@ -419,6 +419,13 @@ def _monstruos_de(stage: int):
                                                      e['nombre'], e['tile'],
                                                      e.get('sprite', 0), stage=stage)
                     for e in d.get('spawns', []) if e.get('monstruo') and not e.get('apagado')}
+            # Elites y jefes de las instancias propias: vida y ataque por encima de la ficha del cliente.
+            for e in d.get('spawns', []):
+                b = bichos.get(e.get('entity_id'))
+                if b is not None and (e.get('hp_mult') or e.get('atk_mult')):
+                    b.hp_max = b.hp = int(b.hp_max * float(e.get('hp_mult') or 1))
+                    b.atk = int(b.atk * float(e.get('atk_mult') or 1))
+                    b.matk = int(b.matk * float(e.get('atk_mult') or 1))
             # La ZONA de su generador (tools/zonas_de_plantilla.py): la miran
             # los portales que solo dejan pasar con la sala limpia
             # (GENERATOR_ALIVE). Por cercania casi no se contaban.

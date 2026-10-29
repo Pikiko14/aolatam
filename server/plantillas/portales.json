@@ -666,6 +666,21 @@
      }
     },
     "nota": "Lyceum -> Angel House Area. Al pisarlo pregunta 'Are you going to the Angel House Area?' (514813, yes 5954 / no 5955). Medido en Celestia, captura del 14/10/2026 (mundo_2111xx/2112xx/2114xx)."
+   },
+   {
+    "entity": 7550010,
+    "tile": [
+     162,
+     34
+    ],
+    "destino": 55,
+    "llegada": [
+     193,
+     9
+    ],
+    "preguntar": false,
+    "dibujar": true,
+    "nota": "Lyceum -> Shadow Area (instancia oscura Lv55-60), junto a los Slarm. Entrada propia del servidor, no medida en Celestia."
    }
   ],
   "43": [
@@ -19128,6 +19143,23 @@
     "dibujar": true,
     "preguntar": false,
     "nota": "Del mapa del cliente: map207.mpc, objeto 60001 en esa casilla, evento 1, que hace CHANGE_MAP(21, 30). Llegada (161, 105): la mas despejada de las 3 del TAG. Las casillas del TAG son [(151, 110), (161, 105), (150, 100)] y el servidor coge una al azar. Metodo comprobado contra las 546 llegadas que este json tiene medidas cruzando portales una por una: reproduce todas. Ver tools/mapa_del_cliente.py y tools/propagar_portales.py."
+   }
+  ],
+  "55": [
+   {
+    "entity": 7550011,
+    "tile": [
+     196,
+     7
+    ],
+    "destino": 41,
+    "llegada": [
+     160,
+     36
+    ],
+    "preguntar": false,
+    "dibujar": true,
+    "nota": "Shadow Area -> Lyceum (vuelta de la instancia oscura)."
    }
   ]
  },

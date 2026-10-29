@@ -784,6 +784,14 @@
    "asignacion": "",
    "tope_personas": 1000,
    "sin_cambio_de_canal": false
+  },
+  "55": {
+   "nombre": "Shadow Area",
+   "copias": 1,
+   "dinamica": true,
+   "asignacion": "",
+   "tope_personas": 0,
+   "sin_cambio_de_canal": false
   }
  }
 }
