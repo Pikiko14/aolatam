@@ -1410,6 +1410,21 @@ def _paquete_vista_puesto(vendedor) -> bytes:
     return bytes(buf)
 
 
+def _puesto_cerrar_si_vacio(dueno):
+    """Si al puesto ya no le queda nada en venta ni en compra, se cierra solo."""
+    puesto = getattr(dueno, 'puesto', None)
+    if not puesto:
+        return
+    quedan = [x for x in (puesto.get('ventas') or []) if int(x.get('cantidad', 0)) > 0]
+    quedan += [x for x in (puesto.get('compras') or []) if int(x.get('cantidad', 0)) > 0]
+    if quedan:
+        return
+    _cerrar_puesto(dueno)
+    dueno.enviar(clases_aviso('Your stall has no items left and was closed.'))
+    dueno.volcar()
+    log.info('puesto de %s cerrado: sin items', getattr(dueno.personaje, 'nombre', '?'))
+
+
 def _cerrar_puesto(ses, avisar_dueno: bool = True):
     """Cierra el puesto de venta del jugador y avisa a los demas en su mapa."""
     tenia = getattr(ses, 'puesto', None)
@@ -15438,6 +15453,7 @@ class Servidor:
             if getattr(vendedor, 'usuario', None):
                 cuentas.guardar_oro(vendedor.usuario, cid_vend, vendedor.oro)
             log.info(f"[{addr}] compro en puesto de {vendedor.personaje.nombre} por {oro_total} de oro")
+            _puesto_cerrar_si_vacio(vendedor)
             return
 
         if opcode == 0x0026 and ses.rol == 'mundo' and ses.personaje and len(cuerpo) >= 8:
@@ -15565,6 +15581,7 @@ class Servidor:
             if getattr(comprador, 'usuario', None):
                 cuentas.guardar_oro(comprador.usuario, cid_comp, comprador.oro)
             log.info(f"[{addr}] vendio al puesto de {comprador.personaje.nombre} por {oro_total} de oro")
+            _puesto_cerrar_si_vacio(comprador)
             return
 
         # --- separar un monton en dos -------------------------------------
