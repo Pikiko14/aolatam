@@ -1386,6 +1386,10 @@ def poblar(stage: int, player_level=1):
             salida.append(struct.pack('<H', 0x000E) + bytes.fromhex(e['hex']))
         else:
             salida.append(objeto_de_mapa(e))
+            # El cartel con el nombre de la veta (sin el 0x000F no sale al pasar el raton).
+            _cartel = objeto_nombrado(e)
+            if _cartel is not None:
+                salida.append(_cartel)
     return salida
 
 
