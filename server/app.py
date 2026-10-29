@@ -1159,12 +1159,14 @@ def _intercambio_ejecutar(ses, otro):
         bolsa = dueno.inventario
         oro = int(tt.get('oro', 0))
         if oro < 0 or oro > getattr(dueno, 'oro', 0):
-            return False
+            return ('oro', dueno)
+        if oro and getattr(receptor, 'oro', 0) + oro > 2000000000:
+            return ('oro', receptor)
         lista = []
         for idx, o in sorted(tt['ofertas'].items()):
             r, item_id = int(o['ranura']), int(o['item_id'])
             if bolsa.get(r) != item_id or _cant_de(dueno, r) <= 0:
-                return False
+                return ('item', dueno)
             lista.append((r, item_id, _cant_de(dueno, r)))
         # sitio del que recibe: huecos libres, mas los que libera lo que ofrece el
         libres = sum(1 for r in range(20, _tope_bolsa(receptor.inventario) + 1) if r not in receptor.inventario)
@@ -1177,7 +1179,7 @@ def _intercambio_ejecutar(ses, otro):
             if not tiene_monton:
                 necesita += 1
         if necesita > libres:
-            return False
+            return ('espacio', receptor)
         movimientos.append((dueno, receptor, lista, oro))
     tocadas = {id(ses): [], id(otro): []}
     for dueno, receptor, lista, oro in movimientos:
@@ -1224,7 +1226,7 @@ def _intercambio_ejecutar(ses, otro):
         _guardar_bolsa(s_x, s_x.personaje.char_id)
         if getattr(s_x, 'usuario', None):
             cuentas.guardar_oro(s_x.usuario, s_x.personaje.char_id, s_x.oro)
-    return True
+    return None
 
 
 def _intercambio(ses, addr, opcode, cuerpo):
@@ -1335,12 +1337,22 @@ def _intercambio(ses, addr, opcode, cuerpo):
             return
         t['listo'] = True
         if t_o['listo']:
-            exito = False
+            fallo = ('error', None)
             try:
-                exito = _intercambio_ejecutar(ses, otro)
+                fallo = _intercambio_ejecutar(ses, otro)
             except Exception:
                 log.exception('intercambio: fallo al ejecutar')
-            log.info('[%s] intercambio %s <-> %s: %s', addr, p.nombre, otro.personaje.nombre, 'hecho' if exito else 'cancelado')
+            exito = fallo is None
+            log.info('[%s] intercambio %s <-> %s: %s', addr, p.nombre, otro.personaje.nombre,
+                     'hecho' if exito else 'cancelado (%s)' % (fallo,))
+            if not exito and fallo[0] == 'espacio':
+                # Si alguno no tiene sitio no se mueve nada: el que no tiene lo lee en 380 y el otro se entera.
+                falta = fallo[1]
+                resto = otro if falta is ses else ses
+                falta.enviar(_c.aviso('', tipo=7, msg_id=380))
+                resto.enviar(_c.aviso('The other player does not have enough backpack space. The trade was cancelled.', tipo=0))
+            elif not exito and fallo[0] == 'oro':
+                fallo[1].enviar(_c.aviso('', tipo=7, msg_id=379))
             _intercambio_cerrar(ses, resultado=1 if exito else 0)
         return
 
