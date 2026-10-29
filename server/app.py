@@ -7046,6 +7046,22 @@ def _usar_pergamino_revivir(ses, addr, ranura, pct):
 INTERVALO_LOGROS = 3.0
 
 
+CLAVE_TESORO = 'tesoro_piezas'      # mascara de bits (1..10) de los fragmentos anotados en el album
+
+
+def _tesoro_paquete(ses):
+    """s2c 0x012A: el album de mapas del tesoro (pestana TreMap del Quest Log).
+
+    Medido en capturas reales: [u32 tipo 0][u32 mapa 0][u32 escena 0][u32
+    fragmentos hallados][u32 posicion 0][u8 0xF5], y el contador subia 4,5,6...9
+    al anotar cada fragmento. El cliente (0x609600) copia el paquete y pinta
+    "Found: n/10". Con mapa 0 es el mapa sin terminar.
+    """
+    _logros_datos(ses)
+    mascara = int(ses.personaje.logros_cont.get(CLAVE_TESORO, 0))
+    return struct.pack('<HIIIIIB', 0x012A, 0, 0, 0, bin(mascara).count('1'), 0, 0xF5)
+
+
 def _logros_datos(ses):
     """Carga una vez lo que los logros guardan aparte: muertes por tipo y el
     titulo puesto (claves 'logros_muertos' y 'titulo' de la ficha)."""
@@ -10901,6 +10917,7 @@ class Servidor:
             try:
                 _logros_vaciar(ses)
                 _logros_actualizar(ses, addr, enviar=True)
+                ses.enviar(_tesoro_paquete(ses))
                 _pase_entrar(ses)
                 # Pet Amplify ya con el inventario de la sesion: el bono a los
                 # stats y el 0x0179 con las mascotas metidas.
@@ -16929,8 +16946,22 @@ class Servidor:
             # que no se gasta ni se cura: antes caia en el consumible y subia el HP.
             if inv.categoria_item(item_id) == '地圖碎片':
                 import clases as _cl_tm
-                ses.enviar(_cl_tm.aviso('The treasure map album is not available yet.', tipo=0))
-                log.info('[%s] fragmento de mapa del tesoro %s: sin album, no se consume', addr, item_id)
+                _logros_datos(ses)
+                _n_pieza = int(inv._col_item(item_id, '動態資料') or 0) if hasattr(inv, '_col_item') else 0
+                _n_pieza = _n_pieza or (int(item_id) - 3080)
+                _mask = int(ses.personaje.logros_cont.get(CLAVE_TESORO, 0))
+                if not 1 <= _n_pieza <= 10:
+                    return
+                if _mask & (1 << (_n_pieza - 1)):
+                    ses.enviar(_cl_tm.aviso('You have already recorded this map piece.', tipo=0))
+                    return
+                ses.personaje.logros_cont[CLAVE_TESORO] = _mask | (1 << (_n_pieza - 1))
+                _sacar(ses, ranura, 1)
+                ses.enviar(*_refrescar(ses, [ranura]), _tesoro_paquete(ses))
+                _guardar_bolsa(ses, cid)
+                _logros_guardar(ses)
+                log.info('[%s] fragmento %d del mapa del tesoro anotado (%d/10)', addr, _n_pieza,
+                         bin(ses.personaje.logros_cont[CLAVE_TESORO]).count('1'))
                 return
 
             # Caso 0: objeto que da CREDITOS DE RANGO.
