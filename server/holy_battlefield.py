@@ -7,6 +7,7 @@
 import copy
 import functools
 import json
+import logging
 import pathlib
 import random
 import struct
@@ -14,6 +15,8 @@ import time
 
 import combate
 import cuentas
+
+log = logging.getLogger(__name__)
 
 GATE_COST = (40, 20, 20, 15, 15, 30, 30, 5, 5, 40)
 IDOL_COST = 2  # msg7658; msg7654 contradicts this with 1.
@@ -555,9 +558,19 @@ def tick_cristales():
     changed = False
     for owner,state in list(new.get('cristales_estado',{}).items()):
         if min(state.get('limite',float('inf')),state.get('retorno',float('inf')))<=now:
-            new['portadores'].pop(owner,None)
+            portador = new['portadores'].pop(owner,None)
             new['cristales_estado'].pop(owner)
             changed = True
+            # Se acababa en silencio: el portador seguia junto a su angel con el icono en
+            # 00:00, y al pulsarlo solo salia el "Thanks for bringing..." de no llevar nada.
+            if portador is not None and state.get('limite',float('inf'))<=now:
+                log.info('[holy] cristal %s vuelve a su base: el portador %s no lo entrego en 5 min',
+                         owner, portador)
+                s_port = next((s for s in c._sesiones()
+                               if getattr(s,'personaje',None) and s.personaje.char_id==int(portador)),None)
+                if s_port:
+                    c.aviso(s_port,'Time is up: the crystal has returned to its base. '
+                                   'Carry it to your angel within 5 minutes.')
     if changed:
         c._guardar(new)
         c._publicar_cristales(new)

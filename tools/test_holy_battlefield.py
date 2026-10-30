@@ -207,6 +207,20 @@ def test_carried_and_dropped_crystals_have_real_time_limits(battle):
     assert hb.posicion_cristal(c.ronda(112),2)==(100,88)
 
 
+def test_when_carry_time_runs_out_the_carrier_is_told(battle):
+    """Reported: 'No me deja entregar el cristal al angel Gabriel'. The 5 min limit expired
+    silently; clicking the angel then only answered 'Thanks for bringing...'."""
+    w,a,b = battle
+    a.personaje.tile_x,a.personaje.tile_y=(100,88)
+    c.pulsar(a,71112002)
+    assert c.ronda(112)['portadores']
+    a.packets.clear()
+    w.now[0]+=301
+    hb.tick_cristales()
+    assert not c.ronda(112)['portadores']
+    assert any(b'crystal has returned' in p for p in a.packets)
+
+
 def test_leaving_map_does_not_drop_crystal_at_lobby_coordinates(battle):
     w,a,b = battle
     a.personaje.tile_x,a.personaje.tile_y=(100,88)

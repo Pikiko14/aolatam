@@ -188,7 +188,9 @@ class TestProducers(unittest.TestCase):
 
     def test_skill_angel_skill_swap_for_producer(self):
         # Character is Chef with Cook (31), wants to swap slot 0 (Cook 31) for Weaponsmith (26)
-        pj = MockPersonaje(nivel=20, habilidades=[(31, 10, 50), (20, 5, 0)])
+        # Nivel 19: desde el 20 el cambio pide un Skill Crystal (ver test_rama_bloqueo_nivel20.py);
+        # aqui solo se prueba el banco y la clase.
+        pj = MockPersonaje(nivel=19, habilidades=[(31, 10, 50), (20, 5, 0)])
         ses = MockSession(pj)
 
         # 0x002F container 10: out 31, in 26

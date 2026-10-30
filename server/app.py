@@ -3644,6 +3644,7 @@ VELOCIDAD_JUGADOR = int(os.environ.get('AO_VELOCIDAD', '110'))
 # lo que hay: es la forma correcta, aunque el numero no salga clavado al de
 # Celestia hasta que sepamos modelar el nivel de la montura.
 RANURA_MONTURA = 10
+SKILL_CRYSTALS = (2025, 2028)   # "Skill Crystal": paga el cambio de rama desde el nivel 20
 
 # Bono de montura, en por ciento, que PISA el move_speed del item. Antes era
 # 150 fijo (el Gryphon declara 50 en item.xml) a peticion del usuario, pero
@@ -7190,7 +7191,14 @@ def _espejar(ses, submsgs):
         if not offs:
             continue
         ents = [struct.unpack_from('<I', sm, 2 + o)[0] for o in offs if len(sm) >= 6 + o]
-        if not any(x in bichos for x in ents):
+        # Solo se reenviaba lo que tocaba a un BICHO: un buff (0x0011 de uno sobre si
+        # mismo o sobre un aliado) no tiene bicho, asi que nadie veia los buffs ni los
+        # hechizos de los demas. Los dos paquetes puramente visuales (el efecto 0x0011
+        # y el golpe 0x000A) se reenvian tambien cuando el que actua es el propio
+        # jugador. El 0x001D no: ese cambia iconos y cooldowns del que lo recibe.
+        _opc = struct.unpack_from('<H', sm, 0)[0]
+        if not (any(x in bichos for x in ents)
+                or (_opc in (0x0011, 0x000A) and yo in ents)):
             continue
         b = bytearray(sm)
         for o in offs:
@@ -12826,6 +12834,15 @@ class Servidor:
             if tipo != _cb.ATAQUE_NORMAL:
                 import skills as _sk_arma
                 _rama_tipo = _sk_arma.skill_de_magia(tipo)
+                # Con un robot (機甲) puesto no se lanzan habilidades de rama: ninguna
+                # rama tiene hechizos de robot (magic no trae 技能限制1 de pilotar ni
+                # 裝備限制 de 機甲), asi que todo lo que trae rama es de a pie. Lo que
+                # no trae rama (efectos de objeto, transformaciones) sigue pasando.
+                if (_rama_tipo and _iv_mun0.categoria_item(
+                        int((ses.inventario or {}).get(RANURA_MONTURA) or 0)) == '機甲'):
+                    ses.enviar(__import__('clases').aviso('Cannot use skills while riding a robot.', tipo=7))
+                    log.info(f"[{addr}] habilidad {tipo} rechazada: lleva un robot puesto")
+                    return
                 if _rama_tipo in _sk_arma.RAMAS_MELEE:
                     _ramas_actuales = {h[0] if isinstance(h, (list, tuple)) else h
                                        for h in (ses.personaje.habilidades or [])}
@@ -14688,8 +14705,8 @@ class Servidor:
             pkgs_sk = _otorgar_skill_exp(ses, ses.personaje, yo, arma_puesta=arma_puesta,
                                          magic_id=tipo if tipo != _cb.ATAQUE_NORMAL else 0)
 
-            _tipo_golpe, _anim_golpe = _cb.golpe_de_arma(
-                arma_puesta, duales=lleva_duales_ses(ses))
+            _tipo_golpe, _anim_golpe = (getattr(ses, '_golpe_prueba', None)
+                                        or _cb.golpe_de_arma(arma_puesta, duales=lleva_duales_ses(ses)))
             _cierre_skill = None
             cast_time = _cb.calcular_cast_time(
                 max(100, mag.get('cast_time', 100)),
@@ -15774,10 +15791,16 @@ class Servidor:
                 if not (1 <= _dentro <= 36):
                     log.warning(f"[{addr}] cambio de rama: rama invalida {_dentro}")
                     return
-                if (_p.nivel or 1) > 20:
-                    log.warning(f"[{addr}] cambio de rama rechazado: nivel {_p.nivel} > 20")
-                    ses.enviar(_cl2.aviso('You can only change your skill branch before level 20.', tipo=0))
-                    return
+                # De nivel 20 en adelante el cambio cuesta un Skill Crystal (2025/2028, "Changes
+                # the skill for Lvl 20+ characters." en item.xml). Por debajo es gratis.
+                _ranura_cristal = None
+                if (_p.nivel or 1) >= 20:
+                    _ranura_cristal = next((r for r, it in sorted((ses.inventario or {}).items())
+                                            if int(r) >= 20 and int(it or 0) in SKILL_CRYSTALS), None)
+                    if _ranura_cristal is None:
+                        log.warning(f"[{addr}] cambio de rama rechazado: nivel {_p.nivel} sin Skill Crystal")
+                        ses.enviar(_cl2.aviso('From level 20 you need a Skill Crystal to change your skill.', tipo=0))
+                        return
                 _pos = next((k for k, h in enumerate(_habs) if h[0] == _fuera), None)
                 if _pos is None:
                     log.warning(f"[{addr}] cambio de rama: no se lleva la "
@@ -15816,8 +15839,13 @@ class Servidor:
                     for _nid, _nom in _nuevos:
                         _salida.append(struct.pack('<HIB', 0x001D, _p.entity_id, 1) + struct.pack('<BII', _cl2.KIND_HECHIZO, _nid, 1))
                         _salida.append(_cl2.aviso(_nom, tipo=7, msg_id=_cl2.MSG_HECHIZO))
+                if _ranura_cristal is not None:
+                    _sacar(ses, _ranura_cristal, 1)
+                    _salida.extend(_refrescar(ses, [_ranura_cristal]))
 
                 ses.enviar(*_salida)
+                if _ranura_cristal is not None and getattr(ses, 'usuario', None):
+                    _guardar_bolsa(ses, _p.char_id)
                 if getattr(ses, 'usuario', None):
                     cuentas.guardar_habilidades(ses.usuario, _p.char_id, _p.habilidades)
                     cuentas.guardar_clase(ses.usuario, _p.char_id, _p.class_id)

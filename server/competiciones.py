@@ -964,12 +964,15 @@ def pulsar(ses, eid):
         state['limite']=time.time()+300
         if p.char_id not in state.setdefault('participantes',[]):
             state['participantes'].append(p.char_id)
+        log.info('[holy] %s (equipo %s) toma el cristal %s: 5 min para entregarlo', p.nombre, team, own)
     else:
         enemy = str(3-team)
         # holy_entrega_exige_cristal_propio (config, false por defecto): con true solo se puntua si el cristal propio
         # esta en la base. Con las dos cuentas de prueba cada una roba el del otro y nadie podia entregar nunca.
         exige_propio = bool(config_eventos().get('holy_entrega_exige_cristal_propio', False))
         if own != team or r['portadores'].get(enemy) != p.char_id:
+            log.info('[holy] %s (equipo %s) pulsa el angel del equipo %s sin llevar el cristal enemigo '
+                     '(portadores=%s)', p.nombre, team, own, r['portadores'])
             if own == team:
                 aviso(ses, 'You are not carrying the enemy crystal. Take it from their base first.')
             hb.mostrar(ses,7630 if own!=team else [7631,7632,7633],[],42 if own==1 else 3)
@@ -979,6 +982,7 @@ def pulsar(ses, eid):
             return True
         r['portadores'].pop(enemy)
         r['puntos'][str(team)] += 1
+        log.info('[holy] %s entrega el cristal %s: equipo %s lleva %s', p.nombre, enemy, team, r['puntos'][str(team)])
         member['cristales'] += 1
         import holy_battlefield as hb
         hb.score(r,p.char_id,500)
