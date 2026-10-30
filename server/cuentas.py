@@ -460,6 +460,35 @@ def _guardar(datos: dict):
     guardar_documento(datos)
 
 
+def usuario_disponible(usuario: str) -> bool:
+    """Si ese nombre de cuenta esta libre (cuentas.usuario es NOCASE: 'Karma' ocupa 'karma')."""
+    with _LOCK:
+        con = _get_conn()
+        try:
+            return con.execute('SELECT 1 FROM cuentas WHERE usuario = ?', (usuario,)).fetchone() is None
+        finally:
+            con.close()
+
+
+def reservar_usuario(usuario: str) -> bool:
+    """Crea la cuenta sin contrasena (igual que el primer login sin validar). True si la reservo ahora,
+    False si ya existia. La contrasena de verdad queda fijada por el primer login real del juego
+    (ver validar(): con 'registrar_primer_hash', el cliente registra la suya encima de esta fila vacia)."""
+    with _LOCK:
+        con = _get_conn()
+        try:
+            con.execute('BEGIN IMMEDIATE')
+            ya = con.execute('SELECT 1 FROM cuentas WHERE usuario = ?', (usuario,)).fetchone() is not None
+            if not ya:
+                con.execute("INSERT INTO cuentas (usuario, password) VALUES (?, '')", (usuario,))
+            con.commit()
+            if not ya:
+                _notificar_cambio(inmediato=True)
+            return not ya
+        finally:
+            con.close()
+
+
 def guardar_personaje_nuevo(usuario: str, p: dict):
     """Create only: never replace an occupied slot or reuse another name."""
     with _LOCK:

@@ -1,0 +1,5 @@
+ANGELS ONLINE
+Abre index.html. Publica todos los archivos y assets juntos.
+DESCARGA: configura downloadUrl en config.js con la URL del cliente.
+NOTICIAS: edita SERVER_NEWS en news.js. Cada entrada tiene date (AAAA-MM-DD), category, title, summary y paragraphs (lista de textos). Se muestran por fecha descendente. Publica de nuevo los archivos para que todos vean los cambios. No incluye panel de administración ni publicación automática.
+Diseño responsive, sin compilación ni dependencias externas.

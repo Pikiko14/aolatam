@@ -1,0 +1,16 @@
+[Unit]
+Description=Angels Online - API de registro web (reserva de usuario)
+After=network.target angels.service
+PartOf=angels.service
+
+[Service]
+Type=simple
+User=angels
+WorkingDirectory=/opt/angels
+Environment=AO_WEB_REGISTRO_PUERTO=8281
+ExecStart=/usr/bin/python3 /opt/angels/server/web_registro.py
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

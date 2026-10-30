@@ -1,0 +1,14 @@
+/* Seccion "crear cuenta": reutiliza la paleta de styles.css (--gold, --ink, --paper) sin tocar ese archivo. */
+.account-form{max-width:420px;margin:18px auto 0;display:flex;flex-direction:column;gap:14px}
+.account-form label{font:italic 15px Georgia,serif;color:#e1b96b;letter-spacing:.5px}
+.account-form input{background:#1c233a;border:1px solid #c8a56766;color:#f2e4c6;border-radius:4px;padding:13px 15px;font-size:15px}
+.account-form input:focus-visible{outline:2px solid #e7bf70;outline-offset:2px}
+.account-form input[data-estado="libre"]{border-color:#7fbf8a}
+.account-form input[data-estado="ocupado"]{border-color:#d9766f}
+.account-form button{border:1px solid #f3dbab;background:linear-gradient(135deg,#f7dfab,#d5ab66);color:#26392c;border-radius:4px;padding:14px 20px;font-size:13px;letter-spacing:1.5px;font-weight:600;cursor:pointer;transition:transform .2s,filter .2s}
+.account-form button:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-2px)}
+.account-form button:disabled{opacity:.55;cursor:default}
+.account-status{font-size:13px;line-height:1.6;color:#d4decf;min-height:20px}
+.account-status[data-tipo="ok"]{color:#9fe3ab}
+.account-status[data-tipo="error"]{color:#f0a39c}
+.account-note{max-width:620px;margin:20px auto 0;font-size:13px;line-height:1.7;color:#bfc4d6;text-align:center}
