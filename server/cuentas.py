@@ -685,7 +685,7 @@ def personaje_de(cuenta, ranura=0):
             _tx, _ty = int(_cp_t[0] or 150), int(_cp_t[1] or 100)
         else:
             _fac = p.get('faction') or ''
-            _ciudades = {'Aurora': (3, 150, 105), 'Beasts': (26, 140, 150), 'Steel': (29, 150, 120), 'Shadow': (38, 150, 120)}
+            _ciudades = {'Aurora': (3, 191, 182), 'Beasts': (29, 321, 97), 'Steel': (38, 68, 163), 'Shadow': (26, 309, 69)}   # = app.CIUDAD_POR_FACCION
             _st, _tx, _ty = _ciudades.get(_fac, (41, 244, 30))
     elif _st in (46, 900):
         # La instancia oscura (900) no se reanuda: su mapa se rehace al entrar y la casilla guardada puede caer en roca.

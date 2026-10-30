@@ -3787,6 +3787,12 @@ CIUDAD_DE_FACCION = {
 }
 
 
+# faccion -> (stage, casilla) de su ciudad (Aurora 3, Dark City 26, Breeze Woods 29, Iron Castle 38). Antes habia tres tablas a
+# mano con las ciudades cruzadas (Beasts en Dark City, Steel en Breeze Woods...) y casillas inventadas.
+CIUDAD_POR_FACCION = {NOMBRE_DE_FACCION[c]: v for c, v in CIUDAD_DE_FACCION.items()}
+CIUDADES_DE_FACCION = {v[0] for v in CIUDAD_DE_FACCION.values()}
+
+
 # Insignias de faccion: item -> nombre de ciudad (CIUDAD_DE_FACCION). Las cuatro dicen "Badge" y solo cambia la ciudad.
 INSIGNIAS_DE_FACCION = {7028: 'Aurora', 7029: 'Breeze Woods', 7030: 'Iron Castle', 7031: 'Dark City'}
 
@@ -3804,12 +3810,19 @@ def _usar_insignia_faccion(ses, addr, ranura, item_id):
         return
     _sacar(ses, ranura, 1)
     p.faction = nueva
+    stage, tile = CIUDAD_DE_FACCION.get(ciudad, CIUDAD_DE_FACCION['Aurora'])
+    # El punto de revivir de la ciudad de la faccion de antes llevaria a una ciudad enemiga: pasa a la nueva. Uno fijado con
+    # Cupid en otro sitio (el Lyceum, un campo) no se toca.
+    cp = getattr(p, 'checkpoint_stage', 0)
+    if cp in CIUDADES_DE_FACCION and cp != stage:
+        p.checkpoint_stage, p.checkpoint_x, p.checkpoint_y = stage, tile[0], tile[1]
+        if getattr(ses, 'usuario', None):
+            cuentas.guardar_checkpoint(ses.usuario, p.char_id, stage, tile[0], tile[1])
     if getattr(ses, 'usuario', None):
         cuentas.guardar_faccion(ses.usuario, p.char_id, nueva)
         _guardar_bolsa(ses, p.char_id)
     ses.enviar(*_refrescar(ses, [ranura]))
     ses.enviar(_cl_ins.aviso('You are now a member of the %s faction.' % ciudad, tipo=0))
-    stage, tile = CIUDAD_DE_FACCION.get(ciudad, CIUDAD_DE_FACCION['Aurora'])
     log.info('[%s] %s usa la insignia %d: faccion %s, viaja a %s %s', addr, p.nombre, item_id, nueva, stage, tile)
     _sincronizar_cambio_mapa(ses, stage, tile[0], tile[1])
 
@@ -10163,7 +10176,7 @@ class Servidor:
                             ses.personaje.stage, (ses.personaje.tile_x, ses.personaje.tile_y) = prev
                         else:
                             _fac = getattr(ses.personaje, 'faccion', None) or getattr(ses.personaje, 'faction', '')
-                            _ciudades = {'Aurora': (3, (150, 105)), 'Beasts': (26, (140, 150)), 'Steel': (29, (150, 120)), 'Shadow': (38, (150, 120))}
+                            _ciudades = CIUDAD_POR_FACCION
                             ses.personaje.stage, (ses.personaje.tile_x, ses.personaje.tile_y) = _ciudades.get(_fac, (41, (244, 30)))
                         if getattr(ses, 'usuario', None):
                             _cta_dis.guardar_mapa(ses.usuario, ses.personaje.char_id, ses.personaje.stage, ses.personaje.tile_x, ses.personaje.tile_y)
@@ -10237,7 +10250,7 @@ class Servidor:
                             p_fin.stage, (p_fin.tile_x, p_fin.tile_y) = prev
                         else:
                             _fac = getattr(p_fin, 'faccion', None) or getattr(p_fin, 'faction', '')
-                            _ciudades = {'Aurora': (3, (150, 105)), 'Beasts': (26, (140, 150)), 'Steel': (29, (150, 120)), 'Shadow': (38, (150, 120))}
+                            _ciudades = CIUDAD_POR_FACCION
                             p_fin.stage, (p_fin.tile_x, p_fin.tile_y) = _ciudades.get(_fac, (41, (244, 30)))
                         cuentas.guardar_mapa(ses.usuario, p_fin.char_id, p_fin.stage, p_fin.tile_x, p_fin.tile_y)
                     cuentas.guardar_posicion(ses.usuario, p_fin.char_id,
