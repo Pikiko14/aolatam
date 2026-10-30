@@ -13,6 +13,38 @@ STAGE = 46
 _PLANTILLA = pathlib.Path(__file__).parent / 'plantillas' / 'training_cave_big.json'
 _CACHE = {}
 ENTIDAD_BARRERA = 7551000
+_PRUEBA = pathlib.Path(__file__).parent / 'plantillas' / 'instancia_oscura_prueba.json'
+
+
+def prueba():
+    """Interruptores para aislar que cierra el cliente: plantillas/instancia_oscura_prueba.json (si no existe, todo normal).
+    sin_cortinas, sin_jefe, sin_elites, max_bichos (cuantos monstruos normales), solo_tipos (lista de npc_type)."""
+    try:
+        return json.loads(_PRUEBA.read_text(encoding='utf-8')) if _PRUEBA.exists() else {}
+    except (OSError, ValueError):
+        return {}
+
+
+def filtrar(bichos, spawns):
+    """Quita monstruos segun prueba(); `spawns` es la lista de la plantilla."""
+    cfg = prueba()
+    if not cfg:
+        return bichos
+    quitar = set()
+    normales = 0
+    for e in spawns:
+        eid = e['entity_id']
+        if e.get('jefe') and cfg.get('sin_jefe'):
+            quitar.add(eid)
+        elif e.get('elite') and cfg.get('sin_elites'):
+            quitar.add(eid)
+        elif cfg.get('solo_tipos') and e['npc_type'] not in cfg['solo_tipos']:
+            quitar.add(eid)
+        elif not e.get('jefe') and not e.get('elite'):
+            normales += 1
+            if 'max_bichos' in cfg and normales > int(cfg['max_bichos']):
+                quitar.add(eid)
+    return {k: v for k, v in bichos.items() if k not in quitar}
 
 
 def datos():
@@ -42,7 +74,7 @@ def barreras(puerta):
 
 def poblar(stage):
     """Las barreras de las puertas cerradas al cargar el mapa (el estado se reinicia al entrar: todas cerradas)."""
-    if stage != STAGE:
+    if stage != STAGE or prueba().get('sin_cortinas'):
         return []
     return [pk for p in datos().get('puertas', []) for pk in barreras(p)]
 

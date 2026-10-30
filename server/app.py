@@ -428,6 +428,8 @@ def _monstruos_de(stage: int):
                     b.hp_max = b.hp = int(b.hp_max * float(e.get('hp_mult') or 1))
                     b.atk = int(b.atk * float(e.get('atk_mult') or 1))
                     b.matk = int(b.matk * float(e.get('atk_mult') or 1))
+            if stage == 46:
+                bichos = __import__('instancia_oscura').filtrar(bichos, d.get('spawns', []))
             # La ZONA de su generador (tools/zonas_de_plantilla.py): la miran
             # los portales que solo dejan pasar con la sala limpia
             # (GENERATOR_ALIVE). Por cercania casi no se contaban.
