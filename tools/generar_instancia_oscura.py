@@ -281,7 +281,7 @@ def hacer_plantilla(libre, salas, azar):
     datos = {'_nota': 'Instancia oscura Lv55-60 en el mapa propio map046 (cueva nueva): grupos de bichos normales y elites por las salas y, '
                       'al fondo, el jefe Dragonkin Moowad (suelta piedras de Holy Battlefield). Generado con tools/generar_instancia_oscura.py.',
              'stage': STAGE, 'spawns': spawns, 'recursos': [], 'puzzles': puzzles}
-    return datos, llegada, jefe_tile, tile(salas[0][0] + 8, salas[0][1] + 3)
+    return datos, llegada, jefe_tile, tile(salas[0][0] - 7, salas[0][1])
 
 
 def instalar(datos):
