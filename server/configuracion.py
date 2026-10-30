@@ -739,6 +739,18 @@ FLECHAS_INFINITAS = False
 
 
 # =====================================================================
+# LOGROS (Achievements)
+# =====================================================================
+# Con False se apaga server/app.py:_logros_actualizar() entero: no se evalua ni se otorga
+# ningun logro nuevo (ranking, los ampliados ni los de matar/puntos), no sale el aviso de
+# "Achievement completed", no se reparte el Super BC del primer titulo y el panel de logros
+# (0x0155) no se refresca con nada nuevo. Los contadores (_logros_contar) se siguen sumando
+# igual -- no se pierde progreso -- para que al volver a poner esto en True los logros que ya
+# se cumplieron entre tanto se otorguen de una vez.
+LOGROS_ACTIVOS = True
+
+
+# =====================================================================
 # MODO ESTACIONAL DEL CLIENTE Y ACTUALIZADOR LOCAL (START.EXE)
 # =====================================================================
 # Controla el tema visual del Angel Lyceum (map041.mpc) que el servidor

@@ -8140,6 +8140,9 @@ def _logros_contar(ses, clave, n=1, maximo=False, addr=None):
 def _logros_actualizar(ses, addr=None, enviar=False, silencioso=False):
     """Da los logros que ya cumple y, si cambio algo (o `enviar`), manda el
     0x0155 para que la ventana este al dia."""
+    import configuracion as _cfg_lg
+    if not getattr(_cfg_lg, 'LOGROS_ACTIVOS', True):
+        return
     import logros as _lg_a
     import clases as _cl_a
     p = getattr(ses, 'personaje', None)
