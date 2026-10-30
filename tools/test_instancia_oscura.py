@@ -11,6 +11,7 @@ import transitable
 
 PLANT = RAIZ / 'server' / 'plantillas'
 STAGE = 900
+MAPA_ENTRADA = 16  # Thorn Wasteland
 JEFE = 209
 STAGES_PROHIBIDOS = (55, 66)       # stage.xml con 強制傳送: el cliente se cierra al entrar
 PIEDRAS_HOLY = {8537, 8770, 24882, 28866, 40921}
@@ -39,7 +40,7 @@ def test_niveles_mezcla_de_normales_y_elites_y_un_jefe():
 
 def test_todos_pisan_suelo_y_se_llega_a_ellos_desde_la_entrada():
     portales = json.loads((PLANT / 'portales.json').read_text(encoding='utf-8'))['mapas']
-    llegada = tuple(next(p for p in portales['41'] if p.get('destino') == STAGE)['llegada'])
+    llegada = tuple(next(p for p in portales[str(MAPA_ENTRADA)] if p.get('destino') == STAGE)['llegada'])
     visto, cola = {llegada}, [llegada]
     while cola:
         x, y = cola.pop()
@@ -64,10 +65,10 @@ def test_los_monstruos_se_arman_con_vida_extra_para_elites_y_jefe():
 
 def test_portales_de_ida_y_vuelta_validos():
     portales = json.loads((PLANT / 'portales.json').read_text(encoding='utf-8'))['mapas']
-    ida = next(p for p in portales['41'] if p.get('destino') == STAGE)
-    vuelta = next(p for p in portales[str(STAGE)] if p.get('destino') == 41)
-    assert transitable.se_pisa(41, *ida['tile']) and transitable.se_pisa(STAGE, *ida['llegada'])
-    assert transitable.se_pisa(STAGE, *vuelta['tile']) and transitable.se_pisa(41, *vuelta['llegada'])
+    ida = next(p for p in portales[str(MAPA_ENTRADA)] if p.get('destino') == STAGE)
+    vuelta = next(p for p in portales[str(STAGE)] if p.get('destino') == MAPA_ENTRADA)
+    assert transitable.se_pisa(MAPA_ENTRADA, *ida['tile']) and transitable.se_pisa(STAGE, *ida['llegada'])
+    assert transitable.se_pisa(STAGE, *vuelta['tile']) and transitable.se_pisa(MAPA_ENTRADA, *vuelta['llegada'])
     cheb = lambda a, b: max(abs(a[0] - b[0]), abs(a[1] - b[1]))
     assert cheb(ida['llegada'], vuelta['tile']) > 1 and cheb(vuelta['llegada'], ida['tile']) > 1
     assert ida['entity'] != vuelta['entity']
@@ -184,14 +185,14 @@ def test_puzzles_cada_puerta_cerrada_dibuja_su_cortina_de_luz_y_al_abrirse_la_qu
     assert len(quitados) == len(puertas[0]['barrera'])
 
 
-def test_quien_se_desconecta_dentro_de_la_instancia_vuelve_al_lyceum_al_entrar():
+def test_quien_se_desconecta_dentro_de_la_instancia_vuelve_a_la_entrada_al_entrar():
     """La casilla guardada de la instancia puede caer en roca del mapa nuevo: el cliente se cerraba al cargar."""
     import cuentas
     ficha = {'ranura': 0, 'char_id': 7, 'nombre': 'X', 'habilidades': [], 'barra': [], 'quests': [],
              'stage_id': STAGE, 'tile_x': 13, 'tile_y': 50, 'inventario': {}}
     assert not transitable.se_pisa(STAGE, 13, 50)
     p = cuentas.personaje_de({'personajes': [ficha]}, 0)
-    assert (p.stage, p.tile_x, p.tile_y) == (41, 160, 36)
-    ficha.update(stage_id=41, tile_x=100, tile_y=100)
+    assert (p.stage, p.tile_x, p.tile_y) == (MAPA_ENTRADA, 18, 16)
+    ficha.update(stage_id=MAPA_ENTRADA, tile_x=100, tile_y=100)
     p = cuentas.personaje_de({'personajes': [ficha]}, 0)
-    assert (p.stage, p.tile_x, p.tile_y) == (41, 100, 100)
+    assert (p.stage, p.tile_x, p.tile_y) == (MAPA_ENTRADA, 100, 100)

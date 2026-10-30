@@ -666,21 +666,6 @@
      }
     },
     "nota": "Lyceum -> Angel House Area. Al pisarlo pregunta 'Are you going to the Angel House Area?' (514813, yes 5954 / no 5955). Medido en Celestia, captura del 14/10/2026 (mundo_2111xx/2112xx/2114xx)."
-   },
-   {
-    "entity": 7550010,
-    "tile": [
-     162,
-     34
-    ],
-    "destino": 900,
-    "llegada": [
-     24,
-     62
-    ],
-    "preguntar": false,
-    "dibujar": true,
-    "nota": "Lyceum -> mapa propio map900 (Dark Cavern), instancia oscura Lv55-60, junto a los Slarm. Entrada propia del servidor, no medida en Celestia."
    }
   ],
   "43": [
@@ -1309,6 +1294,21 @@
     "dibujar": false,
     "preguntar": false,
     "nota": "Thorn Wasteland -> Foggy Forest. Tornado 100719. Radio 4: el MOVE_REQ mas cercano antes de viajar vino de (293,119). La llegada (16,9) la mando Celestia las dos veces igual."
+   },
+   {
+    "entity": 7550010,
+    "tile": [
+     14,
+     16
+    ],
+    "destino": 900,
+    "llegada": [
+     24,
+     62
+    ],
+    "preguntar": false,
+    "dibujar": true,
+    "nota": "Thorn Wasteland -> mapa propio map900 (Dark Cavern), instancia oscura Lv55-60. Movido desde el Lyceum a pedido del usuario; (14,16) es una esquina abierta y caminable del mapa, a mas de 20 casillas de cualquier spawn de thorn_wasteland.json y sin solape con los otros tornados del mapa. Entrada propia del servidor, no medida en Celestia."
    }
   ],
   "21": [
@@ -19152,14 +19152,14 @@
      13,
      62
     ],
-    "destino": 41,
+    "destino": 16,
     "llegada": [
-     160,
-     36
+     18,
+     16
     ],
     "preguntar": false,
     "dibujar": true,
-    "nota": "mapa propio map900 -> Lyceum (vuelta de la instancia oscura)."
+    "nota": "mapa propio map900 -> Thorn Wasteland (vuelta de la instancia oscura). Llegada (18,16): junto al tornado de entrada (14,16), fuera de su radio para no reabrir el salto."
    }
   ]
  },
