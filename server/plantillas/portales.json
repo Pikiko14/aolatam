@@ -675,12 +675,12 @@
     ],
     "destino": 46,
     "llegada": [
-     196,
-     3
+     24,
+     62
     ],
     "preguntar": false,
     "dibujar": true,
-    "nota": "Lyceum -> Training Cave (big), instancia oscura Lv55-60, junto a los Slarm. Entrada propia del servidor, no medida en Celestia."
+    "nota": "Lyceum -> mapa propio map046 (cueva nueva), instancia oscura Lv55-60, junto a los Slarm. Entrada propia del servidor, no medida en Celestia."
    }
   ],
   "43": [
@@ -19149,8 +19149,8 @@
    {
     "entity": 7550011,
     "tile": [
-     193,
-     3
+     28,
+     59
     ],
     "destino": 41,
     "llegada": [
@@ -19159,7 +19159,7 @@
     ],
     "preguntar": false,
     "dibujar": true,
-    "nota": "Training Cave (big) -> Lyceum (vuelta de la instancia oscura)."
+    "nota": "mapa propio map046 -> Lyceum (vuelta de la instancia oscura)."
    }
   ]
  },

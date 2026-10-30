@@ -422,6 +422,8 @@ def _monstruos_de(stage: int):
             # Elites y jefes de las instancias propias: vida y ataque por encima de la ficha del cliente.
             for e in d.get('spawns', []):
                 b = bichos.get(e.get('entity_id'))
+                if b is not None and e.get('sello'):
+                    b.sello = int(e['sello'])
                 if b is not None and (e.get('hp_mult') or e.get('atk_mult')):
                     b.hp_max = b.hp = int(b.hp_max * float(e.get('hp_mult') or 1))
                     b.atk = int(b.atk * float(e.get('atk_mult') or 1))
@@ -3197,6 +3199,9 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
     if __import__('league_war').monster_dead(ses,m):
         return
 
+    if getattr(m, 'sello', None):
+        __import__('instancia_oscura').al_morir(ses, m)
+
     if getattr(m, 'es_estructura_hb', False):
         # Building death/construction is persisted by Holy's own engine.
         # Never award the guard's normal monster loot, EXP or respawn.
@@ -4006,6 +4011,8 @@ def _sincronizar_cambio_mapa(ses, stage_id: int, x: int = None, y: int = None):
     if x is not None and y is not None:
         p.tile_x, p.tile_y = x, y
     ses.monstruos = _monstruos_de(stage_id)
+    if stage_id == 46:
+        __import__('instancia_oscura').reiniciar(ses)
     ses.mapa_cambiado_en = time.time()
 
     # Unico paquete: decirle al cliente "carga este mapa"
@@ -20649,6 +20656,12 @@ class Servidor:
                     ses.enviar(ACK.build(), MOVE.build(entity_id=ses.personaje.entity_id,
                         cur_x=_px_hb,cur_y=_py_hb,dst_x=_px_hb,dst_y=_py_hb,speed=_velocidad_de(ses)))
                     return
+            if ses.personaje and ses.personaje.stage == 46 and __import__('instancia_oscura').bloquear_paso(
+                    ses, (ses.personaje.tile_x, ses.personaje.tile_y), (dst['x']//32, dst['y']//32)):
+                _px_io, _py_io = ses.personaje.tile_x*32, ses.personaje.tile_y*32
+                ses.enviar(ACK.build(), MOVE.build(entity_id=ses.personaje.entity_id,
+                    cur_x=_px_io, cur_y=_py_io, dst_x=_px_io, dst_y=_py_io, speed=_velocidad_de(ses)))
+                return
             ses.enviar(ACK.build(),
                        MOVE.build(entity_id=ses.entity_id or 1001,
                                   cur_x=d['cur_x'], cur_y=d['cur_y'],

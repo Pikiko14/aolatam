@@ -1,4 +1,4 @@
-"""Instancia oscura Lv55-60 (Training Cave (big), stage 46): plantilla, portales y jefe con piedras de Holy."""
+"""Instancia oscura Lv55-60 (mapa propio map046, stage 46): plantilla, portales y jefe con piedras de Holy."""
 import json
 import pathlib
 import sys
@@ -11,7 +11,7 @@ import transitable
 
 PLANT = RAIZ / 'server' / 'plantillas'
 STAGE = 46
-JEFE = 5258
+JEFE = 209
 STAGES_PROHIBIDOS = (55, 66)       # stage.xml con 強制傳送: el cliente se cierra al entrar
 PIEDRAS_HOLY = {8537, 8770, 24882, 28866, 40921}
 
@@ -33,7 +33,7 @@ def test_niveles_mezcla_de_normales_y_elites_y_un_jefe():
     assert len(normales) >= 40 and len(elites) >= 8 and len(jefes) == 1
     assert all(55 <= s['nivel'] <= 60 for s in normales + elites)
     assert jefes[0]['npc_type'] == JEFE
-    assert all(s['hp_mult'] > 1 for s in elites)
+    assert all(0 < s['hp_mult'] <= (1.4 if s.get('sello') else 1) for s in normales + elites)
     assert len({s['entity_id'] for s in sp}) == len(sp)
 
 
@@ -60,7 +60,7 @@ def test_los_monstruos_se_arman_con_vida_extra_para_elites_y_jefe():
         por_tipo.setdefault(m.npc_type, m)
     assert len(bichos) == len(_spawns())
     assert bichos[next(e['entity_id'] for e in _spawns() if e.get('jefe'))].hp_max > 500000
-    assert por_tipo[5254].hp_max < por_tipo[5255].hp_max
+    assert por_tipo[JEFE].hp_max > 20 * por_tipo[205].hp_max
 
 
 def test_portales_de_ida_y_vuelta_validos():
@@ -76,7 +76,7 @@ def test_portales_de_ida_y_vuelta_validos():
 
 def test_el_jefe_solo_suelta_piedras_de_holy():
     for _ in range(50):
-        botin = combate.botin_items(JEFE, 'Cursed Larry', 63)
+        botin = combate.botin_items(JEFE, 'Dragonkin Moowad', 65)
         assert botin and all(item in PIEDRAS_HOLY for item, _n in botin)
 
 
@@ -86,3 +86,85 @@ def test_el_mapa_elegido_no_lleva_flags_especiales_en_stage_xml():
     for flag in ('強制傳送', '陣營', '平行空間', 'PVP陣營對戰', '動態空間', '不可標記'):
         assert flag not in fila, (flag, fila)
     assert STAGE not in STAGES_PROHIBIDOS
+
+
+def test_los_sprites_de_los_monstruos_vienen_en_el_cliente():
+    """Con sprites que no estan en ningun .pak el monstruo existe pero no se ve."""
+    import re
+    import cliente_local
+    ruta = pathlib.Path(cliente_local.ruta_cliente())
+    if not ruta.is_dir():
+        import pytest
+        pytest.skip('sin cliente')
+    nombres = set(cliente_local.indice_paks(ruta))
+    for sprite in {s['sprite'] for s in _spawns()}:
+        assert any(re.fullmatch(r'SHAPE[\\/]MON[\\/][^\\/]+[\\/]%d_WAIT\.SPR' % sprite, n.upper()) for n in nombres), sprite
+
+
+def test_el_mapa_propio_es_el_que_usa_el_servidor():
+    """map046.mpc (tools/mapas_propios) y transitable.bin cuentan lo mismo."""
+    import struct
+    datos = (RAIZ / 'tools' / 'mapas_propios' / 'map046.mpc').read_bytes()
+    ancho, alto = struct.unpack_from('<II', datos, 4)
+    for x, y in ((24, 62), (187, 62), (0, 0), (100, 3)):
+        celda = (alto - 1 - y) * ancho + x
+        libre = datos[96 + celda * 6 + 1] & 3 == 0
+        assert transitable.se_pisa(STAGE, x, y) == libre, (x, y)
+
+
+class _Ses:
+    def __init__(self):
+        self.enviados = []
+        self.personaje = type('P', (), {'stage': STAGE})()
+
+    def enviar(self, *paquetes):
+        self.enviados.extend(paquetes)
+
+
+def test_puzzles_las_puertas_cierran_el_paso_hasta_romper_los_sellos():
+    import instancia_oscura as io
+    datos = io.datos()
+    a, b = datos['puertas']
+    ses = _Ses()
+    io.reiniciar(ses)
+    cruce = lambda p: (tuple(p['zona'][0]), tuple(p['zona'][0]))
+    assert io.bloquear_paso(ses, *cruce(a)) and io.bloquear_paso(ses, *cruce(b))
+    monstruos = {s['sello']: type('M', (), {'sello': s['sello']})() for s in _spawns() if s.get('sello')}
+    io.al_morir(ses, monstruos[1])
+    assert io.bloquear_paso(ses, *cruce(a))
+    io.al_morir(ses, monstruos[2])
+    assert not io.bloquear_paso(ses, *cruce(a)) and io.bloquear_paso(ses, *cruce(b))
+    io.al_morir(ses, monstruos[3])
+    assert not io.bloquear_paso(ses, *cruce(b))
+    io.reiniciar(ses)
+    assert io.bloquear_paso(ses, *cruce(a))
+
+
+def test_puzzles_los_sellos_llegan_al_monstruo_y_estan_antes_de_su_puerta():
+    bichos = app._monstruos_de(STAGE)
+    sellos = [b for b in bichos.values() if getattr(b, 'sello', None)]
+    assert sorted(b.sello for b in sellos) == [1, 2, 3]
+    import instancia_oscura as io
+    a, b = io.datos()['puertas']
+    s = {x.sello: x for x in sellos}
+    # el tercero esta pasada la puerta A y antes de la B, en el eje x del recorrido
+    assert s[1].tile[0] < a['zona'][0][0] and s[2].tile[0] < a['zona'][0][0]
+    assert a['zona'][0][0] < s[3].tile[0] < b['zona'][0][0]
+
+
+def test_puzzles_cada_puerta_cerrada_dibuja_su_cortina_de_luz_y_al_abrirse_la_quita():
+    import struct
+    import instancia_oscura as io
+    puertas = io.datos()['puertas']
+    paquetes = io.poblar(STAGE)
+    assert io.poblar(41) == []
+    assert len(paquetes) == sum(len(p['barrera']) for p in puertas) >= 6
+    assert all(struct.unpack_from('<H', pk)[0] == 0x000E for pk in paquetes)
+    assert len({struct.unpack_from('<I', pk, 2)[0] for pk in paquetes}) == len(paquetes)
+    ses = _Ses()
+    io.reiniciar(ses)
+    monstruos = {s['sello']: type('M', (), {'sello': s['sello']})() for s in _spawns() if s.get('sello')}
+    io.al_morir(ses, monstruos[1])
+    io.al_morir(ses, monstruos[2])
+    quitados = [pk for pk in ses.enviados if len(pk) == 7 and struct.unpack_from('<H', pk)[0] == 0x0007]
+    assert len(quitados) == len(puertas[0]['barrera'])

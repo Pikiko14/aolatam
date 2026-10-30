@@ -60,6 +60,7 @@ def lanzar(ses,mid,mag,x,y):
         x,y=origin[0]+round(dx*limit/distance),origin[1]+round(dy*limit/distance)
     if not transitable.se_pisa(p.stage,x,y):return False
     if p.stage==112 and __import__('holy_battlefield').bloquear_paso(ses,origin,(x,y)):return False
+    if p.stage==46 and __import__('instancia_oscura').bloquear_paso(ses,origin,(x,y)):return False
     now=time.time();uses=getattr(ses,'ultimo_uso',None) or {}
     cd=int(mag.get('cd_ms',0))
     if now-uses.get(mid,0)<cd/1000:return False
