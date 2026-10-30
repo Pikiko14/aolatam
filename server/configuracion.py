@@ -487,10 +487,10 @@ DESCRIPCIONES_ITEMS = {
 # =====================================================================
 # 1.0 = Experiencia normal oficial
 # 2.0 = Doble experiencia, etc.
-TASA_EXP_BASE = 5.0         # Multiplicador de EXP de personaje
-TASA_SKILL_EXP_BASE = 5     # Multiplicador de EXP de habilidades (stamina/skills)
-TASA_DROP_BASE = 0.3         # Multiplicador de probabilidad de drop de items
-TASA_ORO_BASE = 3.0           # Multiplicador de oro obtenido de monstruos
+TASA_EXP_BASE = 2.0         # Multiplicador de EXP de personaje
+TASA_SKILL_EXP_BASE = 2     # Multiplicador de EXP de habilidades (stamina/skills)
+TASA_DROP_BASE = 0.1         # Multiplicador de probabilidad de drop de items
+TASA_ORO_BASE = 2.0           # Multiplicador de oro obtenido de monstruos
 
 # =====================================================================
 # CONFIGURACION DE CASAS, BAILES Y PET ROOM
@@ -734,7 +734,7 @@ ITEM_MEDALLA_RANGO = 83266
 # Si es True (como en el servidor Global actual), las flechas y bolitas/balas
 # equipadas en la mano izquierda (ranura 4) son infinitas y no se gastan al atacar.
 # Si es False, cada disparo con arco u honda consume 1 unidad de municion.
-FLECHAS_INFINITAS = True
+FLECHAS_INFINITAS = False
 
 
 # =====================================================================
@@ -747,7 +747,7 @@ FLECHAS_INFINITAS = True
 #   - 'halloween' : Angel Lyceum de Halloween (041halloween.mpc)
 #   - 'sakura'    : Angel Lyceum de cerezos en flor (041sakura.mpc)
 #   - 'verano'    : Angel Lyceum de festival de verano / Matsuri (041matsuri.mpc)
-MODO_ESTACION = 'normal'
+MODO_ESTACION = 'halloween'
 
 # Ruta local del cliente para sincronizar el modo estacional y el launcher START.EXE
 # Donde esta el cliente. Es solo una PISTA: si no esta ahi, el servidor lo
@@ -809,7 +809,7 @@ MASCOTA_NIVEL_INICIAL = 1
 
 # Deja en blanco la pantalla del logo que sale al abrir el cliente.
 # Solo toca UPDATE21.PAK, y siempre deja un .bak antes.
-QUITAR_LOGO_ARRANQUE = True
+QUITAR_LOGO_ARRANQUE = False
 
 # Quita las once reglas de exclusion entre ramas de habilidad (Life<->Wraith,
 # Chaos<->Earth, Meditate<->Enhance, Grapple<->Snipe y el trio
