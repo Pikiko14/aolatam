@@ -204,3 +204,11 @@ class TestDatosDelMapa(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
+
+
+def test_un_tag_grande_es_una_casilla_suelta():
+    import eventos
+    assert eventos.casillas_de_tag(41, 160036) == [(160, 36)]
+    assert eventos.casillas_de_tag(900, 24062) == eventos.casillas_de_tag(900, 24062)     # por debajo del umbral sigue siendo un tag
+    assert eventos.casillas_de_tag(41, 1) == [tuple(c) for c in eventos._datos()['stages']['41']['tags']['1']]
+    assert eventos.casillas_de_tag(999999, 173091) == [(173, 91)]

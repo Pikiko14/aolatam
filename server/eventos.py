@@ -128,7 +128,15 @@ def evento_en(stage, tx, ty):
     return o[0] if o else None
 
 
+# Un tag a partir de 100000 es una casilla suelta: x * 1000 + y (160036 -> casilla 160,36). Sirve en CHANGE_MAP y GOTO_TAG
+# para llegar a un punto exacto sin que el mapa de destino tenga un tag en ese sitio (editor de mapas: "Punto de llegada").
+TAG_COORDENADA = 100000
+
+
 def casillas_de_tag(stage, tag):
+    tag = int(tag)
+    if tag >= TAG_COORDENADA:
+        return [(tag // 1000, tag % 1000)]
     d = del_stage(stage)
     if not d:
         return []

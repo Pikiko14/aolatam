@@ -14,7 +14,7 @@ const EV_PARES = Array.from({ length: 10 }, (_, i) => (i % 2 ? 'Cantidad ' : 'Ob
 // [nombre, [etiquetas de parametros]]. Una etiqueta que empieza por "Comparar" se elige de una lista (=, <, >...).
 const EV_ACC_ES = {
   1: ['Detener (no ejecutar lo que sigue)', []],
-  3: ['Ir a otro mapa', ['Mapa (número)', 'Punto de llegada (tag)']],
+  3: ['Ir a otro mapa', ['Mapa (número)', 'Punto de llegada: tag, o casilla como x*1000+y (160036 = casilla 160,36)']],
   4: ['Poner el paso de una misión', ['Misión (número)', 'Paso (empieza en 0)']],
   7: ['Sumar a un atributo', ['Atributo (0 vida, 2 maná, 4 SP, 29 nivel, 32 experiencia)', 'Cantidad']],
   8: ['Fijar un atributo', ['Atributo (0 vida, 2 maná, 4 SP, 29 nivel, 32 experiencia)', 'Valor']],
@@ -30,7 +30,7 @@ const EV_ACC_ES = {
   41: ['Contar bajas para avanzar la misión', ['Misión (número)', 'Paso (desde 0)', 'Objeto oculto que cuenta', 'Suma por baja', 'Probabilidad %', 'Total para completar']],
   42: ['Soltar objeto de misión', ['Misión', 'Paso', 'Objeto', 'Cantidad', 'Probabilidad %', 'Máximo']],
   47: ['Elegir un premio (extendido)', EV_PARES], 50: ['Ir a la región de la liga', []],
-  52: ['Cambiar un objeto estático', ['Tag', 'Objeto (número)']], 53: ['Ir a un punto del mapa', ['Punto (tag)']],
+  52: ['Cambiar un objeto estático', ['Tag', 'Objeto (número)']], 53: ['Ir a un punto del mapa', ['Punto: tag, o casilla como x*1000+y (160036 = casilla 160,36)']],
   54: ['Lanzar una magia', ['Magia (número)', 'Objetivo (0 el que dispara, 1 el grupo, 2 el lanzador)', 'Extra']],
   55: ['Decir en el chat', ['Tipo', 'Mensaje 1', 'Mensaje 2', 'Mensaje 3', 'Mensaje 4', 'Mensaje 5']],
   56: ['Fijar variable del mapa', ['Mapa', 'Variable', 'Valor']], 57: ['Sumar a variable del mapa', ['Mapa', 'Variable', 'Valor']],
