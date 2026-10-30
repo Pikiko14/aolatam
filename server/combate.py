@@ -2716,6 +2716,12 @@ GOLPE_POR_SKILL = {
     30: (3, 1480),
     11: (2, 827),
     8: (2, 951),     # baston: medido con el Walking Stick del mago
+    # Arco y honda (los dos son la rama 17). No hay captura con arco, y sin
+    # entrada caia en GOLPE_POR_DEFECTO, el tajo de espada: el arquero pegaba
+    # como espadachin. (0, 0) es lo que mas manda el servidor real (245 de
+    # ~289 golpes, ver ataque()) y deja que el cliente ponga la animacion del
+    # arma que lleva puesta.
+    17: (0, 0),
 }
 GOLPE_POR_DEFECTO = (3, 1480)
 ANIM_POR_SKILL = {}
