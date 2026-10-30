@@ -12265,7 +12265,15 @@ class Servidor:
                                     if (ahora - f_pet.get('ultimo_ataque', 0) >= cadencia_pet
                                             and ahora >= f_pet.get('combo_hasta', 0)):
                                         f_pet['ultimo_ataque'] = ahora
-                                        pet_targ.en_combate_con = pet_eid  # El monstruo enfoca a la mascota
+                                        # Igual que con las invocaciones (mas abajo, "targ.en_combate_con is None"):
+                                        # la mascota solo RECLAMA un objetivo libre, nunca le quita al jugador el suyo.
+                                        # Antes esto pisaba sin condicion, asi que cada golpe de la mascota devolvia el
+                                        # foco del monstruo a ella aunque el jugador lo acabara de golpear: si el
+                                        # jugador atacaba desde fuera del alcance del monstruo (a distancia, o con la
+                                        # mascota de escudo delante), el monstruo volvia a la mascota antes de
+                                        # alcanzarlo a el, y nunca llegaba a contraatacarle.
+                                        if getattr(pet_targ, 'en_combate_con', None) is None:
+                                            pet_targ.en_combate_con = pet_eid  # El monstruo enfoca a la mascota
                                         sks = f_pet.get('skills') or list(_ms.skills_de(f_pet.get('sprite', 3001), int(f_pet.get('nivel', 1))))
                                         cd_pet = f_pet.setdefault('cd_skills', {})
                                         sk_cands = [
