@@ -422,6 +422,9 @@ def _monstruos_de(stage: int):
             # Elites y jefes de las instancias propias: vida y ataque por encima de la ficha del cliente.
             for e in d.get('spawns', []):
                 b = bichos.get(e.get('entity_id'))
+                # Monstruo propio (combate.aplicar_propio): sus stats antes del hp_mult.
+                if b is not None and e.get('propio') and not combate.aplicar_propio(b, e['propio']):
+                    log.warning('stage %s: monstruo propio desconocido %r', stage, e['propio'])
                 if b is not None and e.get('sello'):
                     b.sello = int(e['sello'])
                 if b is not None and (e.get('hp_mult') or e.get('atk_mult')):
@@ -3455,15 +3458,17 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
         _repartir_muerte entre quienes pelearon."""
         yo = ses.personaje.entity_id if ses.personaje else yo_muerte
         buffs = ses.personaje.buffs if ses.personaje else {}
-        exp_ganada = _cb.calcular_exp(m.npc_type, buffs)
+        exp_ganada = _cb.calcular_exp(m.npc_type, buffs, base=getattr(m, 'exp_propia', None))
         if fraccion < 1.0:
             exp_ganada = max(1, int(round(exp_ganada * fraccion)))
         sk_exp_ganada = _cb.calcular_skill_exp(buffs)
 
         # El oro depende del BICHO: su tabla de serv_drop.xml si la tiene, y si
         # no la mediana de su tramo de nivel. Antes se llamaba sin argumentos y
-        # por eso todos soltaban lo mismo.
-        oro = _cb.botin(getattr(m, 'nivel', 0) or 0, getattr(m, 'npc_type', 0) or 0)
+        # por eso todos soltaban lo mismo. Un monstruo propio va por su nivel: la
+        # tabla de su npc_type es la del de nivel 150+ en el que se basa.
+        _npc_oro = 0 if getattr(m, 'propio', None) else (getattr(m, 'npc_type', 0) or 0)
+        oro = _cb.botin(getattr(m, 'nivel', 0) or 0, _npc_oro)
         if fraccion < 1.0:
             oro = int(oro * fraccion)
         ses.oro = getattr(ses, 'oro', 0) + oro
@@ -3653,8 +3658,22 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
 
         salida_combate.append(_cl.aviso(f'{oro} Gold', tipo=0, msg_id=_cl.MSG_ITEM))
 
-        drops = (_cb.botin_items(m.npc_type, nombre=getattr(m, 'nombre', ''), nivel=getattr(m, 'nivel', 0),buffs=getattr(ses.personaje,'buffs',None))
-                 if con_botin else [])
+        if not con_botin:
+            drops = []
+        elif getattr(m, 'propio', None):
+            # Monstruo propio: su caja y sus piedras, no el botin del npc_type de nivel 150+
+            # en el que se basa. Y su Angel Gold, para quien se lleva el botin.
+            drops = _cb.botin_propio()
+            _ag_propio = int(_cb.monstruos_propios().get('botin', {}).get('ag', 0) or 0)
+            if _ag_propio and getattr(ses, 'usuario', None):
+                try:
+                    __import__('item_mall').sumar_ag(ses.usuario, _ag_propio)
+                    salida_combate.append(_cl.aviso('%d Angel Gold' % _ag_propio, tipo=0, msg_id=_cl.MSG_ITEM))
+                except Exception:
+                    log.exception('[%s] Angel Gold del monstruo propio %s', addr, m.propio)
+        else:
+            drops = _cb.botin_items(m.npc_type, nombre=getattr(m, 'nombre', ''), nivel=getattr(m, 'nivel', 0),
+                                    buffs=getattr(ses.personaje, 'buffs', None))
         if con_botin:
             import lyceum_services as _ly_drop
             drops = list(drops) + _ly_drop.straw_drop_monstruo(ses.personaje.stage, m)

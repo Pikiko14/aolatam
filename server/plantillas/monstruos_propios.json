@@ -1,0 +1,227 @@
+{
+ "_nota": "Generado por tools/generar_monstruos_propios.py; no editar a mano.",
+ "mobs": {
+  "dc45": {
+   "nombre": "Iron Can Snail",
+   "base": 8138,
+   "sprite": 43106,
+   "nivel": 45,
+   "hp": 1523,
+   "atk": 319,
+   "var": 2,
+   "def": 379,
+   "mdef": 178,
+   "matk": 318,
+   "exp": 380
+  },
+  "dc46": {
+   "nombre": "Crystal Dragon Turtle",
+   "base": 8137,
+   "sprite": 43043,
+   "nivel": 46,
+   "hp": 1561,
+   "atk": 328,
+   "var": 2,
+   "def": 391,
+   "mdef": 182,
+   "matk": 325,
+   "exp": 390
+  },
+  "dc47": {
+   "nombre": "Clawed Swift Dragon",
+   "base": 8140,
+   "sprite": 43088,
+   "nivel": 47,
+   "hp": 1599,
+   "atk": 338,
+   "var": 2,
+   "def": 402,
+   "mdef": 185,
+   "matk": 332,
+   "exp": 399
+  },
+  "dc48": {
+   "nombre": "Adventure Chair Ralon",
+   "base": 8139,
+   "sprite": 43061,
+   "nivel": 48,
+   "hp": 1637,
+   "atk": 347,
+   "var": 2,
+   "def": 414,
+   "mdef": 189,
+   "matk": 339,
+   "exp": 409
+  },
+  "dc49": {
+   "nombre": "Blade Thorny Dragon",
+   "base": 8142,
+   "sprite": 43097,
+   "nivel": 49,
+   "hp": 1675,
+   "atk": 344,
+   "var": 2,
+   "def": 472,
+   "mdef": 193,
+   "matk": 336,
+   "exp": 418
+  },
+  "dc50": {
+   "nombre": "Thunder Dragon",
+   "base": 8145,
+   "sprite": 43064,
+   "nivel": 50,
+   "hp": 1713,
+   "atk": 341,
+   "var": 2,
+   "def": 529,
+   "mdef": 197,
+   "matk": 333,
+   "exp": 428
+  },
+  "dc51": {
+   "nombre": "Silverhelm Dragon",
+   "base": 8144,
+   "sprite": 43079,
+   "nivel": 51,
+   "hp": 1752,
+   "atk": 350,
+   "var": 2,
+   "def": 512,
+   "mdef": 201,
+   "matk": 341,
+   "exp": 438
+  },
+  "dc52": {
+   "nombre": "Steel Armor Tiger",
+   "base": 8153,
+   "sprite": 43073,
+   "nivel": 52,
+   "hp": 1791,
+   "atk": 360,
+   "var": 2,
+   "def": 494,
+   "mdef": 205,
+   "matk": 348,
+   "exp": 447
+  },
+  "dc53": {
+   "nombre": "Bloody Thorn Dragon",
+   "base": 8156,
+   "sprite": 43100,
+   "nivel": 53,
+   "hp": 1830,
+   "atk": 369,
+   "var": 2,
+   "def": 477,
+   "mdef": 209,
+   "matk": 356,
+   "exp": 457
+  },
+  "dc54": {
+   "nombre": "Royal Army Bees",
+   "base": 8757,
+   "sprite": 43192,
+   "nivel": 54,
+   "hp": 1869,
+   "atk": 378,
+   "var": 2,
+   "def": 542,
+   "mdef": 212,
+   "matk": 364,
+   "exp": 467
+  },
+  "dc55": {
+   "nombre": "Toxic Hornet Soldiers",
+   "base": 8640,
+   "sprite": 43193,
+   "nivel": 55,
+   "hp": 1908,
+   "atk": 388,
+   "var": 2,
+   "def": 608,
+   "mdef": 216,
+   "matk": 372,
+   "exp": 477
+  },
+  "dc56": {
+   "nombre": "Messengers of Styx",
+   "base": 8754,
+   "sprite": 43189,
+   "nivel": 56,
+   "hp": 1959,
+   "atk": 393,
+   "var": 2,
+   "def": 610,
+   "mdef": 221,
+   "matk": 381,
+   "exp": 490
+  },
+  "dc57": {
+   "nombre": "Desert Blob",
+   "base": 8759,
+   "sprite": 43198,
+   "nivel": 57,
+   "hp": 2010,
+   "atk": 399,
+   "var": 2,
+   "def": 613,
+   "mdef": 225,
+   "matk": 389,
+   "exp": 503
+  },
+  "dc58": {
+   "nombre": "Ghostly Warrior",
+   "base": 8755,
+   "sprite": 43190,
+   "nivel": 58,
+   "hp": 2062,
+   "atk": 404,
+   "var": 2,
+   "def": 615,
+   "mdef": 230,
+   "matk": 398,
+   "exp": 515
+  },
+  "dc60": {
+   "nombre": "Pharaoh's Holy Guard",
+   "base": 8756,
+   "sprite": 43191,
+   "nivel": 60,
+   "hp": 2164,
+   "atk": 415,
+   "var": 2,
+   "def": 620,
+   "mdef": 239,
+   "matk": 415,
+   "exp": 541
+  }
+ },
+ "botin": {
+  "ag": 50,
+  "caja": 89055,
+  "prob_caja": 0.04,
+  "piedras_holy": [
+   [
+    8537,
+    0.01
+   ],
+   [
+    8770,
+    0.005
+   ],
+   [
+    24882,
+    0.003
+   ],
+   [
+    28866,
+    0.0014
+   ],
+   [
+    40921,
+    0.0006
+   ]
+  ]
+ }
+}

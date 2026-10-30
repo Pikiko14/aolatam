@@ -113,6 +113,17 @@ def saldo(user):
         return _wallet(con,user)
 
 
+def sumar_ag(user,cantidad):
+    """Suma Angel Gold a la cuenta (monstruos propios de Dark Cavern). Devuelve el saldo nuevo."""
+    import cuentas
+    cantidad=int(cantidad)
+    with cuentas._LOCK,cuentas._get_conn() as con:
+        _schema(con)
+        _wallet(con,user)
+        con.execute('UPDATE item_mall_wallet SET ag=ag+? WHERE usuario=?',(cantidad,user))
+        return int(con.execute('SELECT ag FROM item_mall_wallet WHERE usuario=?',(user,)).fetchone()[0])
+
+
 def almacen(user):
     import cuentas
     with cuentas._get_conn() as con:

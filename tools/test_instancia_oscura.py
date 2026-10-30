@@ -1,4 +1,4 @@
-"""Instancia oscura Lv55-60 (mapa propio map900, stage 900): plantilla, portales y jefe con piedras de Holy."""
+"""Instancia oscura Lv45-60 (mapa propio map900, stage 900): plantilla, portales y jefe con piedras de Holy."""
 import json
 import pathlib
 import sys
@@ -32,7 +32,8 @@ def test_niveles_mezcla_de_normales_y_elites_y_un_jefe():
     elites = [s for s in sp if s.get('elite')]
     jefes = [s for s in sp if s.get('jefe')]
     assert len(normales) >= 20 and len(elites) >= 3 and len(jefes) == 1
-    assert all(50 <= s['nivel'] <= 66 for s in normales + elites)
+    # La instancia es de nivel 45 a 60 (pedido del usuario, 30/10/2026).
+    assert all(45 <= s['nivel'] <= 60 for s in normales + elites)
     assert jefes[0]['npc_type'] == JEFE
     assert all(0 < s['hp_mult'] <= (1.4 if s.get('sello') else 1) for s in normales + elites)
     assert len({s['entity_id'] for s in sp}) == len(sp)

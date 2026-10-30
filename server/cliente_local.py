@@ -148,6 +148,30 @@ LINEA_XML_MEDALLA = (
     '\u53ef\u5806\u758a="\u662f" \u53ef\u4f7f\u7528="\u662f" />'
 )
 
+# LA CAJA DE NIVEL 55 de los monstruos de Dark Cavern. Item propio (el cliente no trae caja de
+# nivel 55): icono de la Lvl 50 Weapon Box (8756), \u7d05\u5305 como las cajas de equipo, y su
+# \u52d5\u614b\u8cc7\u65991 = 89055 es la tabla de plantillas/drops_bolsas.json con lo que puede dar.
+ITEM_CAJA_55 = 89055
+CAJA_55_CONTENIDO = (
+    (3041, "Crusader's Sword"), (3042, 'Rose Sword'), (3043, 'War Axe'), (3044, 'Fish Axe'),
+    (3045, 'Silver-Edged Javelin'), (3046, 'Saw Spear'), (3047, 'Giant Bow'), (3048, 'Elf Wings'),
+    (3049, 'Staff'), (3050, "Angel's Blessing"), (13511, 'Dark Lily Petal'),
+    (1933, 'Sage Mantle'), (1934, 'Wings of Giant Dragon'),
+    (1935, 'Necklace of High Clerist'), (1936, 'Necklace of Goddess'), (1937, 'Necklace of Devil'),
+    (14704, 'SKY-Fish Bu55'), (14705, 'SKY-Fish Re55'),
+)
+_DESC_CAJA_55 = ('Open it to get one Lvl 55 item at random: weapon, mantle, necklace or robot. '
+                 + ', '.join(n for _, n in CAJA_55_CONTENIDO) + '.')
+LINEA_XML_CAJA_55 = (
+    '    <\u9053\u5177 \u7de8\u865f="%d" \u539f\u578b\u4ecb\u9762="8756" '
+    '\u57fa\u672c\u540d\u7a31="Lvl 55 Equipment Box" \u7269\u54c1\u985e\u5225="\u7d05\u5305" '
+    '\u7269\u54c1\u7b49\u7d1a="55" \u91cd\u91cf="10" \u52d5\u614b\u8cc7\u65991="%d" log\u7b49\u7d1a="80" '
+    '\u8aaa\u660e\u5b9a\u7fa9="%s" \u53ef\u4f7f\u7528="\u662f" />'
+) % (ITEM_CAJA_55, ITEM_CAJA_55, _DESC_CAJA_55.replace('"', "'"))
+
+# Filas propias que van en item9.xml: (id, linea).
+LINEAS_ITEM9_PROPIAS = ((83266, LINEA_XML_MEDALLA), (ITEM_CAJA_55, LINEA_XML_CAJA_55))
+
 
 # DONDE ESTA EL CLIENTE.
 #
@@ -327,17 +351,20 @@ def _asegurar_bak(ruta: pathlib.Path) -> pathlib.Path:
 
 
 def _parchear_item9_xml_bytes(xml_bytes: bytes) -> bytes:
-    """Inserta el item 83266 (Rank Promotion Medal) en item9.xml si no esta."""
+    """Inserta en item9.xml los items propios que falten (83266 Rank Promotion Medal y la
+    caja de nivel 55 de Dark Cavern)."""
     txt = xml_bytes.decode('utf-8', errors='ignore')
-    if '\u7de8\u865f="83266"' in txt:
-        return xml_bytes
-    objetivo = '    <\u9053\u5177 />'
-    if objetivo in txt:
-        txt = txt.replace(objetivo, LINEA_XML_MEDALLA, 1)
-    else:
-        cierre = '</root>'
-        txt = txt.replace(cierre, LINEA_XML_MEDALLA + '\r\n' + cierre, 1)
-    return txt.encode('utf-8')
+    cambio = False
+    for iid, linea in LINEAS_ITEM9_PROPIAS:
+        if '\u7de8\u865f="%d"' % iid in txt:
+            continue
+        objetivo = '    <\u9053\u5177 />'
+        if objetivo in txt:
+            txt = txt.replace(objetivo, linea, 1)
+        else:
+            txt = txt.replace('</root>', linea + '\r\n' + '</root>', 1)
+        cambio = True
+    return txt.encode('utf-8') if cambio else xml_bytes
 
 
 _MARCAS_EQUIPO_XML = (
@@ -514,6 +541,16 @@ def registrar_medalla_en_servidor():
                 )
                 con.commit()
                 log.info("Item 83266 (Rank Promotion Medal) registrado en corpus/content.db")
+            if not con.execute('SELECT id FROM item9 WHERE id = ?', (str(ITEM_CAJA_55),)).fetchone():
+                con.execute(
+                    'INSERT INTO item9 (id, "原型介面", "基本名稱", '
+                    '"物品類別", "物品等級", weight, '
+                    '"動態資料1", "log等級", "說明定義", '
+                    '"可使用", _pak) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                    (str(ITEM_CAJA_55), '8756', 'Lvl 55 Equipment Box', '紅包', '55', '10',
+                     str(ITEM_CAJA_55), '80', _DESC_CAJA_55, '是', 'update26'))
+                con.commit()
+                log.info("Item %d (Lvl 55 Equipment Box) registrado en corpus/content.db", ITEM_CAJA_55)
             con.close()
         except Exception as e:
             log.warning(f"No se pudo registrar 83266 en content.db: {e}")
@@ -524,8 +561,9 @@ def registrar_medalla_en_servidor():
         try:
             raw = json.loads(f_json.read_text(encoding='utf-8'))
             nombres = raw.get('item_names')
-            if isinstance(nombres, dict) and '83266' not in nombres:
-                nombres['83266'] = 'Rank Promotion Medal'
+            if isinstance(nombres, dict) and ('83266' not in nombres or str(ITEM_CAJA_55) not in nombres):
+                nombres.setdefault('83266', 'Rank Promotion Medal')
+                nombres.setdefault(str(ITEM_CAJA_55), 'Lvl 55 Equipment Box')
                 f_json.write_text(json.dumps(raw, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
         except Exception:
             pass

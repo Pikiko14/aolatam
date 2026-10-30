@@ -358,13 +358,62 @@ def exp_para_barra(nivel: int, exp: int) -> tuple:
 
 
 
-def calcular_exp(npc_type: int, buffs: dict = None) -> int:
-    """Calcula la EXP de personaje ganada aplicando los multiplicadores de configuracion."""
+def calcular_exp(npc_type: int, buffs: dict = None, base: int = None) -> int:
+    """Calcula la EXP de personaje ganada aplicando los multiplicadores de configuracion.
+    `base` manda sobre la de su npc_type (monstruos propios, ver aplicar_propio)."""
     import configuracion
-    d = _datos(npc_type) or {}
-    base = d.get('exp', 35)
+    if base is None:
+        base = (_datos(npc_type) or {}).get('exp', 35)
     mult = configuracion.multiplicador_exp(buffs)
     return max(1, int(round(base * mult)))
+
+
+# ---------------------------------------------------------------------------
+# MONSTRUOS PROPIOS (plantillas/monstruos_propios.json, lo genera
+# tools/generar_monstruos_propios.py). Cada uno usa un npc_type real de nivel alto -- de ahi
+# sus habilidades, su IA y el dibujo que el cliente ya sabe hacer -- con nombre, nivel, stats,
+# exp, oro y botin propios. En la plantilla del mapa el spawn lleva "propio": "<id>".
+# ---------------------------------------------------------------------------
+_PROPIOS = None
+
+
+def monstruos_propios() -> dict:
+    global _PROPIOS
+    if _PROPIOS is None:
+        f = pathlib.Path(__file__).parent / 'plantillas' / 'monstruos_propios.json'
+        _PROPIOS = json.loads(f.read_text(encoding='utf-8')) if f.exists() else {'mobs': {}, 'botin': {}}
+    return _PROPIOS
+
+
+def aplicar_propio(m, propio_id) -> bool:
+    """Le pone a `m` los datos del monstruo propio. False si ese id no existe."""
+    mob = monstruos_propios().get('mobs', {}).get(str(propio_id))
+    if not mob:
+        return False
+    m.propio = str(propio_id)
+    m.nombre = mob['nombre']
+    m.nivel = int(mob['nivel'])
+    m.hp_max = m.hp = int(mob['hp'])
+    m.atk, m.var, m.matk = int(mob['atk']), int(mob['var']), int(mob['matk'])
+    m.defensa, m.mdef = int(mob['def']), int(mob['mdef'])
+    m.exp_propia = int(mob['exp'])
+    return True
+
+
+def botin_propio() -> list:
+    """[(item, cantidad)] de un monstruo propio: la caja y, mas raro, una piedra de Holy.
+
+    Las probabilidades del json son las de verdad: NO pasan por TASA_DROP_BASE, que en local
+    esta en 0,1 y dejaba la caja en una de cada 250."""
+    b = monstruos_propios().get('botin', {})
+    salida = []
+    if b.get('caja') and random.random() < float(b.get('prob_caja', 0)):
+        salida.append((int(b['caja']), 1))
+    for iid, prob in b.get('piedras_holy', []):
+        if random.random() < float(prob):
+            salida.append((int(iid), 1))
+            break
+    return salida
 
 
 def calcular_skill_exp(buffs: dict = None) -> int:
