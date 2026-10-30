@@ -9068,9 +9068,10 @@ def _buff_a_otro(s, tipo, entrada, dur_ms, mag, lanzador=None, ef=0):
         try:
             import presencia as _pr_o
             pub = _pr_o.entidad_de(lanzador)
+            _es_magia_o = bool(mag.get('es_magia_visual')) if mag else False
             s.enviar_inmediato(
-                _cb_o.efecto_magia_self_inicio(pub, ef, tipo, objetivo=p2.entity_id),
-                _cb_o.efecto_magia_self_fin(pub, ef, tipo, objetivo=p2.entity_id))
+                _cb_o.efecto_magia_self_inicio(pub, ef, tipo, objetivo=p2.entity_id, es_magia=_es_magia_o),
+                _cb_o.efecto_magia_self_fin(pub, ef, tipo, objetivo=p2.entity_id, es_magia=_es_magia_o))
         except Exception:
             log.debug('efecto del buff ajeno', exc_info=True)
     if not getattr(p2, 'buffs', None):
@@ -13678,9 +13679,13 @@ class Servidor:
                         ses.enviar(
                             _cb.atributo(yo, ses.personaje.mp, _cb.KIND_MP),
                             atk_confirm,
-                            # Lanza el que lo lanza (yo); le cae a targ_confirm.
+                            # Lanza el que lo lanza (yo); le cae a targ_confirm. es_magia
+                            # faltaba: la animacion de buff salia SIEMPRE como de guerrero
+                            # (byte 20 = 2), tambien para los buffs de mago. Mismo campo que
+                            # ya usa el buff periodico de mascota (linea ~12149).
                             _cb.efecto_magia_self_inicio(yo, ef, tipo, cast_time=cast_time,
-                                                         objetivo=targ_confirm),
+                                                         objetivo=targ_confirm,
+                                                         es_magia=bool(mag.get('es_magia_visual'))),
                         )
 
                         # Si es transformacion y ya la tenia activa, re-castear reinstaura su forma humana
@@ -13837,7 +13842,8 @@ class Servidor:
                             if not ses.personaje or getattr(ses, 'muerto', False):
                                 return
                             pkgs_buff = [
-                                _cb.efecto_magia_self_fin(yo, ef, tipo, objetivo=targ_confirm),
+                                _cb.efecto_magia_self_fin(yo, ef, tipo, objetivo=targ_confirm,
+                                                          es_magia=bool(mag.get('es_magia_visual'))),
                             ]
                             if cd_ms > 0:
                                 pkgs_buff.append(struct.pack('<HIBBII', 0x001D, yo, 1, 3, tipo_solicitado, cd_ms))
