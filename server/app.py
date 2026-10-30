@@ -19173,12 +19173,10 @@ class Servidor:
                     asyncio.get_running_loop().create_task(_revida())
                 except RuntimeError:
                     pass
-                # El clic sobre un monstruo vivo ataca con golpe basico respetando alcance y cadencia.
-                # Como ultimo_golpe NO se resetea a 0, si este clic llega junto a un 0x0016
-                # la cadencia de _atacar descarta el segundo sin duplicar golpes.
-                if getattr(_m, 'vivo', False) and not getattr(_m, 'encantado', False) and not getattr(ses, 'muerto', False) and getattr(ses, 'personaje', None):
-                    self.manejar(ses, 0x0006, m, d, addr,
-                                 struct.pack('<HI', _cb0.ATAQUE_NORMAL, ent))
+                # Aqui se volvio a meter un 0x0006 forzado ("el clic ataca"), y con el cualquier
+                # clic sobre un bicho -- seleccionarlo, mirarlo -- le pegaba. El ataque basico
+                # llega por su cuenta como 0x0016 subtipo 12 (ver arriba y el log), asi que el
+                # clic solo selecciona.
                 return
 
 
@@ -21066,10 +21064,9 @@ class Servidor:
                             ses.objetivo_actual = None
                             log.info(f"[{addr}] objetivo soltado: te alejaste a "
                                      f"{_dist_ahora} casillas del {_bi.nombre}")
-                        elif _dist_ahora <= _alc + 1 and getattr(_bi, 'vivo', False) and not getattr(ses, 'muerto', False):
-                            import combate as _cb_mv
-                            self.manejar(ses, 0x0006, m, d, addr,
-                                         struct.pack('<HI', _cb_mv.ATAQUE_NORMAL, _obj))
+                        # Aqui habia un 0x0006 forzado al pararse cerca del objetivo: con un
+                        # bicho seleccionado, cualquier clic en el suelo que te dejara a su
+                        # alcance le pegaba. El ataque lo pide el cliente (0x0016 accion 0x0C).
                 import clases as _cl3
                 # Portales: un solo camino, el de plantillas/portales.json.
                 # Antes habia otro bloque con areas enormes (tx<=32 y ty>=126
