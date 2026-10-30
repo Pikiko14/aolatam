@@ -336,6 +336,9 @@ def main():
     else:
         raise SystemExit('ninguna semilla dio una cueva valida')
     datos, nobj = hacer_mpc(libre, azar)
+    if MAPA_PROPIO.exists() and MAPA_PROPIO.read_bytes() != datos and '--forzar' not in sys.argv:
+        raise SystemExit('%s ya existe y es distinto del generado (¿lo editaste en el editor de mapas?). Con --forzar se pisa; '
+                         'tambien se pisan la plantilla de monstruos y los puzzles.' % MAPA_PROPIO)
     MAPA_PROPIO.parent.mkdir(parents=True, exist_ok=True)
     MAPA_PROPIO.write_bytes(datos)
     destino = RAIZ / 'server' / 'plantillas' / 'dark_cavern.json'

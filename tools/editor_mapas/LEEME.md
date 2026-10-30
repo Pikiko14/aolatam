@@ -17,6 +17,18 @@ Vive en `tools/editor_mapas/` del repo. Lee los **assets del cliente** (carpeta 
 
 ---
 
+## Eventos en español (pestaña "Eventos")
+- Constructor visual de la logica del mapa: un **evento** es "cuando pase X (disparador), si se cumple Y (condiciones), haz Z (acciones)". Todo en español, con la etiqueta de cada parametro.
+- **+ Evento nuevo desde plantilla**: salida a otro mapa, dar objeto o oro al hacer clic, cobrar y dar, abrir tienda, contador de bajas de una mision, evento vacio.
+- Cada condicion tiene "al reves" (反向) y cada disparador "basta con una" (旗標); se conserva el ALIAS/DEFINE del XML. Lo marcado con ⚠ **no lo ejecuta el servidor todavia** (se guarda igual).
+- **Enlazar un objeto con un evento**: pestaña Seleccion, un solo objeto, campo **evento** (van en los 4 primeros bytes del registro extra del objeto; 0 = ninguno). Los NPC del servidor (0x0008) no llevan evento: su dialogo sale de `server/dialogos.py` por `npc_type`.
+- "XML avanzado" abre el XML tal cual. Los nombres salen de `static/eventos_catalogo.js` (`python tools/editor_mapas/gen_catalogo_eventos.py` lo regenera desde `server/eventos.py`).
+- Despues de exportar, `python tools/propagar_eventos.py` pasa los eventos de los mapas al servidor (`plantillas/eventos.json`).
+- Una **mision nueva** necesita ademas su fila en `quest.xml` (el cliente la muestra desde ahi) y sus textos en `msg.xml`: eso todavia no lo genera el editor.
+
+---
+
+
 # Editor de mapas (FAO .mpc y Dos Coronas)
 
 Abre `abrir_editor.bat` (o `py -3 editor_mapas.py`; necesita Python 3, Pillow y numpy). Indexa los .pak del cliente (la carpeta de arriba, `C:\AO\Angels Online`) y abre el navegador en http://127.0.0.1:8770/ .

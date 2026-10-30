@@ -3,7 +3,953 @@
  "stage": 900,
  "spawns": [
   {
-   "entity_id": 7550001,
+   "entity_id": 7550079,
+   "nombre": "Puqi Local",
+   "npc_type": 1176,
+   "sprite": 42283,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    32,
+    35
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 52,
+   "sprite_original": 42421,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550080,
+   "nombre": "Puqi Local",
+   "npc_type": 1176,
+   "sprite": 42283,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    37,
+    32
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 52,
+   "sprite_original": 42421,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550081,
+   "nombre": "Puqi Local",
+   "npc_type": 1176,
+   "sprite": 42283,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    38,
+    29
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 52,
+   "sprite_original": 42421,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550082,
+   "nombre": "Puqi Local",
+   "npc_type": 1176,
+   "sprite": 42283,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    38,
+    26
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 52,
+   "sprite_original": 42421,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550083,
+   "nombre": "Puqi Local",
+   "npc_type": 1176,
+   "sprite": 42283,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    31,
+    27
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 52,
+   "sprite_original": 42421,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550084,
+   "nombre": "Puqi Local",
+   "npc_type": 1176,
+   "sprite": 42283,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    30,
+    32
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 52,
+   "sprite_original": 42421,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550085,
+   "nombre": "Puqi Local",
+   "npc_type": 1176,
+   "sprite": 42283,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    35,
+    29
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 52,
+   "sprite_original": 42421,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550086,
+   "nombre": "Death Leech 1",
+   "npc_type": 220,
+   "sprite": 42030,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    15,
+    67
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 53,
+   "sprite_original": 42144,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550087,
+   "nombre": "Death Leech 1",
+   "npc_type": 220,
+   "sprite": 42030,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    16,
+    62
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 53,
+   "sprite_original": 42144,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550088,
+   "nombre": "Death Leech 1",
+   "npc_type": 220,
+   "sprite": 42030,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    21,
+    60
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 53,
+   "sprite_original": 42144,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550089,
+   "nombre": "Death Leech 1",
+   "npc_type": 220,
+   "sprite": 42030,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    24,
+    65
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 53,
+   "sprite_original": 42144,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550090,
+   "nombre": "Death Leech 1",
+   "npc_type": 220,
+   "sprite": 42030,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    19,
+    68
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 53,
+   "sprite_original": 42144,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550091,
+   "nombre": "Fifth Lord I",
+   "npc_type": 9492,
+   "sprite": 42278,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    42,
+    72
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 50,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550092,
+   "nombre": "超喰イノシシ",
+   "npc_type": 3781,
+   "sprite": 42367,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    53,
+    102
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 55,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550093,
+   "nombre": "超喰イノシシ",
+   "npc_type": 3781,
+   "sprite": 42367,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    57,
+    100
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 55,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550094,
+   "nombre": "超喰イノシシ",
+   "npc_type": 3781,
+   "sprite": 42367,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    60,
+    97
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 55,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550095,
+   "nombre": "超喰イノシシ",
+   "npc_type": 3781,
+   "sprite": 42367,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    57,
+    92
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 55,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550096,
+   "nombre": "超喰イノシシ",
+   "npc_type": 3781,
+   "sprite": 42367,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    52,
+    95
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 55,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550097,
+   "nombre": "超喰イノシシ",
+   "npc_type": 3781,
+   "sprite": 42367,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    53,
+    99
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 55,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550098,
+   "nombre": "Howling Wolf",
+   "npc_type": 5068,
+   "sprite": 42063,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    64,
+    47
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 55,
+   "sprite_original": 42495,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550099,
+   "nombre": "Howling Wolf",
+   "npc_type": 5068,
+   "sprite": 42063,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    62,
+    42
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 55,
+   "sprite_original": 42495,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550100,
+   "nombre": "Howling Wolf",
+   "npc_type": 5068,
+   "sprite": 42063,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    65,
+    37
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 55,
+   "sprite_original": 42495,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550101,
+   "nombre": "Howling Wolf",
+   "npc_type": 5068,
+   "sprite": 42063,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    71,
+    36
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 55,
+   "sprite_original": 42495,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550102,
+   "nombre": "Howling Wolf",
+   "npc_type": 5068,
+   "sprite": 42063,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    74,
+    42
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 55,
+   "sprite_original": 42495,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550103,
+   "nombre": "Howling Wolf",
+   "npc_type": 5068,
+   "sprite": 42063,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    71,
+    47
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 55,
+   "sprite_original": 42495,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550104,
+   "nombre": "Howling Wolf",
+   "npc_type": 5068,
+   "sprite": 42063,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    81,
+    70
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 55,
+   "sprite_original": 42495,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550105,
+   "nombre": "Howling Wolf",
+   "npc_type": 5068,
+   "sprite": 42063,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    79,
+    67
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 55,
+   "sprite_original": 42495,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550106,
+   "nombre": "Howling Wolf",
+   "npc_type": 5068,
+   "sprite": 42063,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    80,
+    62
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 55,
+   "sprite_original": 42495,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550107,
+   "nombre": "Howling Wolf",
+   "npc_type": 5068,
+   "sprite": 42063,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    86,
+    68
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 55,
+   "sprite_original": 42495,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550108,
+   "nombre": "Howling Wolf",
+   "npc_type": 5068,
+   "sprite": 42063,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    85,
+    92
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 55,
+   "sprite_original": 42495,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550109,
+   "nombre": "Howling Wolf",
+   "npc_type": 5068,
+   "sprite": 42063,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    89,
+    95
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 55,
+   "sprite_original": 42495,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550110,
+   "nombre": "Howling Wolf",
+   "npc_type": 5068,
+   "sprite": 42063,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    95,
+    93
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 55,
+   "sprite_original": 42495,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550111,
+   "nombre": "Howling Wolf",
+   "npc_type": 5068,
+   "sprite": 42063,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    97,
+    89
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 55,
+   "sprite_original": 42495,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550112,
+   "nombre": "Howling Wolf",
+   "npc_type": 5068,
+   "sprite": 42063,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    91,
+    88
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 55,
+   "sprite_original": 42495,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550113,
+   "nombre": "Howling Wolf",
+   "npc_type": 5068,
+   "sprite": 42063,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    91,
+    92
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 55,
+   "sprite_original": 42495,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550114,
+   "nombre": "Fane Priest",
+   "npc_type": 207,
+   "sprite": 42088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    141,
+    91
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 61,
+   "sprite_original": 42208,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550115,
+   "nombre": "Cursed General",
+   "npc_type": 5255,
+   "sprite": 42093,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    129,
+    69
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 60,
+   "sprite_original": 42322,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550116,
+   "nombre": "Cursed General",
+   "npc_type": 5255,
+   "sprite": 42093,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    129,
+    63
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 60,
+   "sprite_original": 42322,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550117,
+   "nombre": "Cursed General",
+   "npc_type": 5255,
+   "sprite": 42093,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    127,
+    60
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 60,
+   "sprite_original": 42322,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550118,
+   "nombre": "Cursed General",
+   "npc_type": 5255,
+   "sprite": 42093,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    125,
+    69
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 60,
+   "sprite_original": 42322,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550119,
+   "nombre": "Cursed General",
+   "npc_type": 5255,
+   "sprite": 42093,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    134,
+    67
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 60,
+   "sprite_original": 42322,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550120,
+   "nombre": "Cursed General",
+   "npc_type": 5255,
+   "sprite": 42093,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    113,
+    38
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 60,
+   "sprite_original": 42322,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550121,
+   "nombre": "Cursed General",
+   "npc_type": 5255,
+   "sprite": 42093,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    113,
+    33
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 60,
+   "sprite_original": 42322,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550122,
+   "nombre": "Cursed General",
+   "npc_type": 5255,
+   "sprite": 42093,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    119,
+    34
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 60,
+   "sprite_original": 42322,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550123,
+   "nombre": "Cursed General",
+   "npc_type": 5255,
+   "sprite": 42093,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    120,
+    39
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 60,
+   "sprite_original": 42322,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550124,
+   "nombre": "Cursed General",
+   "npc_type": 5255,
+   "sprite": 42093,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    99,
+    56
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 60,
+   "sprite_original": 42322,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550125,
+   "nombre": "Cursed General",
+   "npc_type": 5255,
+   "sprite": 42093,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    98,
+    50
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 60,
+   "sprite_original": 42322,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550126,
+   "nombre": "Cursed General",
+   "npc_type": 5255,
+   "sprite": 42093,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    104,
+    48
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 60,
+   "sprite_original": 42322,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550127,
+   "nombre": "Cursed General",
+   "npc_type": 5255,
+   "sprite": 42093,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    110,
+    50
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 60,
+   "sprite_original": 42322,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550128,
+   "nombre": "Cursed General",
+   "npc_type": 5255,
+   "sprite": 42093,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    103,
+    56
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 60,
+   "sprite_original": 42322,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550129,
+   "nombre": "Puqi Pirate",
+   "npc_type": 1185,
+   "sprite": 42076,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    149,
+    70
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 62,
+   "sprite_original": 42425,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550130,
+   "nombre": "Puqi Pirate",
+   "npc_type": 1185,
+   "sprite": 42076,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    149,
+    65
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 62,
+   "sprite_original": 42425,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550131,
+   "nombre": "Puqi Pirate",
+   "npc_type": 1185,
+   "sprite": 42076,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    156,
+    64
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 62,
+   "sprite_original": 42425,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550132,
+   "nombre": "Puqi Pirate",
+   "npc_type": 1185,
+   "sprite": 42076,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    155,
+    68
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 62,
+   "sprite_original": 42425,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550133,
+   "nombre": "Puqi Pirate",
+   "npc_type": 1185,
+   "sprite": 42076,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    152,
+    67
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 62,
+   "sprite_original": 42425,
+   "hp_mult": 0.7
+  },
+  {
+   "entity_id": 7550134,
+   "nombre": "Dragonkin Moowad",
+   "npc_type": 209,
+   "sprite": 42091,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    185,
+    57
+   ],
+   "direccion": 4,
+   "visible": 0,
+   "nivel": 65,
+   "hp_mult": 28.0,
+   "atk_mult": 1.3,
+   "jefe": true
+  },
+  {
+   "entity_id": 7550135,
    "nombre": "Seal Guardian I",
    "npc_type": 208,
    "sprite": 42093,
@@ -13,7 +959,7 @@
     47,
     76
    ],
-   "direccion": 1,
+   "direccion": 4,
    "visible": 0,
    "nivel": 60,
    "hp_mult": 1.4,
@@ -22,7 +968,7 @@
    "sello": 1
   },
   {
-   "entity_id": 7550002,
+   "entity_id": 7550136,
    "nombre": "Seal Guardian II",
    "npc_type": 208,
    "sprite": 42093,
@@ -32,7 +978,7 @@
     66,
     43
    ],
-   "direccion": 1,
+   "direccion": 4,
    "visible": 0,
    "nivel": 60,
    "hp_mult": 1.4,
@@ -41,1259 +987,31 @@
    "sello": 2
   },
   {
-   "entity_id": 7550003,
+   "entity_id": 7550137,
    "nombre": "Seal Guardian III",
    "npc_type": 208,
    "sprite": 42093,
    "klass": 1,
    "monstruo": true,
    "tile": [
-    141,
-    91
+    138,
+    88
    ],
-   "direccion": 5,
+   "direccion": 4,
    "visible": 0,
    "nivel": 60,
    "hp_mult": 1.4,
    "atk_mult": 1.15,
    "elite": true,
    "sello": 3
-  },
-  {
-   "entity_id": 7550004,
-   "nombre": "Evil Wind Elf",
-   "npc_type": 204,
-   "sprite": 42059,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    35,
-    18
-   ],
-   "direccion": 3,
-   "visible": 0,
-   "nivel": 55,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550005,
-   "nombre": "Mirror Elf",
-   "npc_type": 205,
-   "sprite": 42061,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    34,
-    26
-   ],
-   "direccion": 0,
-   "visible": 0,
-   "nivel": 55,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550006,
-   "nombre": "Gold Fly",
-   "npc_type": 843,
-   "sprite": 42276,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    36,
-    31
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550007,
-   "nombre": "Evil Earth Elf",
-   "npc_type": 206,
-   "sprite": 42062,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    31,
-    28
-   ],
-   "direccion": 3,
-   "visible": 0,
-   "nivel": 56,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550008,
-   "nombre": "Flame Fly",
-   "npc_type": 847,
-   "sprite": 42277,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    36,
-    21
-   ],
-   "direccion": 2,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550009,
-   "nombre": "Savage Chief Apu",
-   "npc_type": 195,
-   "sprite": 42203,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    25,
-    22
-   ],
-   "direccion": 6,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7,
-   "atk_mult": 1.15,
-   "elite": true
-  },
-  {
-   "entity_id": 7550010,
-   "nombre": "Flame Fly",
-   "npc_type": 847,
-   "sprite": 42277,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    47,
-    68
-   ],
-   "direccion": 6,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550011,
-   "nombre": "Mirror Elf",
-   "npc_type": 205,
-   "sprite": 42061,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    43,
-    73
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 55,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550012,
-   "nombre": "Mirror Elf",
-   "npc_type": 205,
-   "sprite": 42061,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    42,
-    70
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 55,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550013,
-   "nombre": "Mirror Elf",
-   "npc_type": 205,
-   "sprite": 42061,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    50,
-    71
-   ],
-   "direccion": 6,
-   "visible": 0,
-   "nivel": 55,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550014,
-   "nombre": "Evil Earth Elf",
-   "npc_type": 206,
-   "sprite": 42062,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    47,
-    72
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 56,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550015,
-   "nombre": "Fane Protector",
-   "npc_type": 208,
-   "sprite": 42093,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    43,
-    77
-   ],
-   "direccion": 6,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7,
-   "atk_mult": 1.15,
-   "elite": true
-  },
-  {
-   "entity_id": 7550016,
-   "nombre": "Evil Earth Elf",
-   "npc_type": 206,
-   "sprite": 42062,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    60,
-    94
-   ],
-   "direccion": 1,
-   "visible": 0,
-   "nivel": 56,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550017,
-   "nombre": "Terra Miner",
-   "npc_type": 953,
-   "sprite": 42283,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    56,
-    98
-   ],
-   "direccion": 6,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550018,
-   "nombre": "Terra Miner",
-   "npc_type": 953,
-   "sprite": 42283,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    55,
-    92
-   ],
-   "direccion": 2,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550019,
-   "nombre": "Gold Fly",
-   "npc_type": 843,
-   "sprite": 42276,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    54,
-    95
-   ],
-   "direccion": 3,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550020,
-   "nombre": "Flame Fly",
-   "npc_type": 847,
-   "sprite": 42277,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    59,
-    103
-   ],
-   "direccion": 3,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550021,
-   "nombre": "Savage Chief Apu",
-   "npc_type": 195,
-   "sprite": 42203,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    50,
-    95
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7,
-   "atk_mult": 1.15,
-   "elite": true
-  },
-  {
-   "entity_id": 7550022,
-   "nombre": "Terra Miner",
-   "npc_type": 953,
-   "sprite": 42283,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    69,
-    44
-   ],
-   "direccion": 7,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550023,
-   "nombre": "Gold Fly",
-   "npc_type": 843,
-   "sprite": 42276,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    73,
-    47
-   ],
-   "direccion": 6,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550024,
-   "nombre": "Evil Earth Elf",
-   "npc_type": 206,
-   "sprite": 42062,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    69,
-    41
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 56,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550025,
-   "nombre": "Terra Miner",
-   "npc_type": 953,
-   "sprite": 42283,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    63,
-    43
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550026,
-   "nombre": "Evil Wind Elf",
-   "npc_type": 204,
-   "sprite": 42059,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    73,
-    42
-   ],
-   "direccion": 2,
-   "visible": 0,
-   "nivel": 55,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550027,
-   "nombre": "Soul Slalin",
-   "npc_type": 810,
-   "sprite": 42280,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    64,
-    38
-   ],
-   "direccion": 6,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7,
-   "atk_mult": 1.15,
-   "elite": true
-  },
-  {
-   "entity_id": 7550028,
-   "nombre": "Gold Fly",
-   "npc_type": 843,
-   "sprite": 42276,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    75,
-    63
-   ],
-   "direccion": 2,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550029,
-   "nombre": "Evil Wind Elf",
-   "npc_type": 204,
-   "sprite": 42059,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    76,
-    67
-   ],
-   "direccion": 3,
-   "visible": 0,
-   "nivel": 55,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550030,
-   "nombre": "Terra Miner",
-   "npc_type": 953,
-   "sprite": 42283,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    83,
-    66
-   ],
-   "direccion": 1,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550031,
-   "nombre": "Evil Earth Elf",
-   "npc_type": 206,
-   "sprite": 42062,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    84,
-    71
-   ],
-   "direccion": 7,
-   "visible": 0,
-   "nivel": 56,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550032,
-   "nombre": "Evil Earth Elf",
-   "npc_type": 206,
-   "sprite": 42062,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    80,
-    66
-   ],
-   "direccion": 3,
-   "visible": 0,
-   "nivel": 56,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550033,
-   "nombre": "Savage Chief Apu",
-   "npc_type": 195,
-   "sprite": 42203,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    82,
-    62
-   ],
-   "direccion": 0,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7,
-   "atk_mult": 1.15,
-   "elite": true
-  },
-  {
-   "entity_id": 7550034,
-   "nombre": "Evil Earth Elf",
-   "npc_type": 206,
-   "sprite": 42062,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    87,
-    94
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 56,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550035,
-   "nombre": "Gold Fly",
-   "npc_type": 843,
-   "sprite": 42276,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    89,
-    91
-   ],
-   "direccion": 7,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550036,
-   "nombre": "Evil Wind Elf",
-   "npc_type": 204,
-   "sprite": 42059,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    96,
-    88
-   ],
-   "direccion": 1,
-   "visible": 0,
-   "nivel": 55,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550037,
-   "nombre": "Mirror Elf",
-   "npc_type": 205,
-   "sprite": 42061,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    96,
-    93
-   ],
-   "direccion": 5,
-   "visible": 0,
-   "nivel": 55,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550038,
-   "nombre": "Flame Fly",
-   "npc_type": 847,
-   "sprite": 42277,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    93,
-    93
-   ],
-   "direccion": 7,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550039,
-   "nombre": "Soul Slalin",
-   "npc_type": 810,
-   "sprite": 42280,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    86,
-    85
-   ],
-   "direccion": 2,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7,
-   "atk_mult": 1.15,
-   "elite": true
-  },
-  {
-   "entity_id": 7550040,
-   "nombre": "Gold Fly",
-   "npc_type": 843,
-   "sprite": 42276,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    107,
-    53
-   ],
-   "direccion": 0,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550041,
-   "nombre": "Evil Earth Elf",
-   "npc_type": 206,
-   "sprite": 42062,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    109,
-    43
-   ],
-   "direccion": 3,
-   "visible": 0,
-   "nivel": 56,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550042,
-   "nombre": "Evil Wind Elf",
-   "npc_type": 204,
-   "sprite": 42059,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    100,
-    51
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 55,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550043,
-   "nombre": "Terra Miner",
-   "npc_type": 953,
-   "sprite": 42283,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    109,
-    47
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550044,
-   "nombre": "Flame Fly",
-   "npc_type": 847,
-   "sprite": 42277,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    100,
-    46
-   ],
-   "direccion": 3,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550045,
-   "nombre": "Fane Protector",
-   "npc_type": 208,
-   "sprite": 42093,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    104,
-    45
-   ],
-   "direccion": 1,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7,
-   "atk_mult": 1.15,
-   "elite": true
-  },
-  {
-   "entity_id": 7550046,
-   "nombre": "Flame Fly",
-   "npc_type": 847,
-   "sprite": 42277,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    117,
-    32
-   ],
-   "direccion": 6,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550047,
-   "nombre": "Terra Miner",
-   "npc_type": 953,
-   "sprite": 42283,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    120,
-    26
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550048,
-   "nombre": "Evil Earth Elf",
-   "npc_type": 206,
-   "sprite": 42062,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    113,
-    26
-   ],
-   "direccion": 7,
-   "visible": 0,
-   "nivel": 56,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550049,
-   "nombre": "Terra Miner",
-   "npc_type": 953,
-   "sprite": 42283,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    121,
-    33
-   ],
-   "direccion": 5,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550050,
-   "nombre": "Gold Fly",
-   "npc_type": 843,
-   "sprite": 42276,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    118,
-    29
-   ],
-   "direccion": 7,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550051,
-   "nombre": "Soul Slalin",
-   "npc_type": 810,
-   "sprite": 42280,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    113,
-    32
-   ],
-   "direccion": 6,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7,
-   "atk_mult": 1.15,
-   "elite": true
-  },
-  {
-   "entity_id": 7550052,
-   "nombre": "Flame Fly",
-   "npc_type": 847,
-   "sprite": 42277,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    127,
-    64
-   ],
-   "direccion": 0,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550053,
-   "nombre": "Gold Fly",
-   "npc_type": 843,
-   "sprite": 42276,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    126,
-    70
-   ],
-   "direccion": 3,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550054,
-   "nombre": "Evil Earth Elf",
-   "npc_type": 206,
-   "sprite": 42062,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    131,
-    67
-   ],
-   "direccion": 5,
-   "visible": 0,
-   "nivel": 56,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550055,
-   "nombre": "Mirror Elf",
-   "npc_type": 205,
-   "sprite": 42061,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    132,
-    70
-   ],
-   "direccion": 6,
-   "visible": 0,
-   "nivel": 55,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550056,
-   "nombre": "Gold Fly",
-   "npc_type": 843,
-   "sprite": 42276,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    131,
-    63
-   ],
-   "direccion": 6,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550057,
-   "nombre": "Gold Fly",
-   "npc_type": 843,
-   "sprite": 42276,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    143,
-    87
-   ],
-   "direccion": 7,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550058,
-   "nombre": "Gold Fly",
-   "npc_type": 843,
-   "sprite": 42276,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    141,
-    94
-   ],
-   "direccion": 3,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550059,
-   "nombre": "Flame Fly",
-   "npc_type": 847,
-   "sprite": 42277,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    139,
-    88
-   ],
-   "direccion": 1,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550060,
-   "nombre": "Flame Fly",
-   "npc_type": 847,
-   "sprite": 42277,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    145,
-    91
-   ],
-   "direccion": 3,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550061,
-   "nombre": "Flame Fly",
-   "npc_type": 847,
-   "sprite": 42277,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    138,
-    92
-   ],
-   "direccion": 5,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550062,
-   "nombre": "Gold Fly",
-   "npc_type": 843,
-   "sprite": 42276,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    156,
-    66
-   ],
-   "direccion": 7,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550063,
-   "nombre": "Evil Wind Elf",
-   "npc_type": 204,
-   "sprite": 42059,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    152,
-    62
-   ],
-   "direccion": 6,
-   "visible": 0,
-   "nivel": 55,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550064,
-   "nombre": "Mirror Elf",
-   "npc_type": 205,
-   "sprite": 42061,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    152,
-    67
-   ],
-   "direccion": 3,
-   "visible": 0,
-   "nivel": 55,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550065,
-   "nombre": "Evil Earth Elf",
-   "npc_type": 206,
-   "sprite": 42062,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    156,
-    62
-   ],
-   "direccion": 2,
-   "visible": 0,
-   "nivel": 56,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550066,
-   "nombre": "Evil Earth Elf",
-   "npc_type": 206,
-   "sprite": 42062,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    146,
-    65
-   ],
-   "direccion": 1,
-   "visible": 0,
-   "nivel": 56,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550067,
-   "nombre": "Soul Slalin",
-   "npc_type": 810,
-   "sprite": 42280,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    146,
-    71
-   ],
-   "direccion": 0,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7,
-   "atk_mult": 1.15,
-   "elite": true
-  },
-  {
-   "entity_id": 7550068,
-   "nombre": "Fane Protector",
-   "npc_type": 208,
-   "sprite": 42093,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    184,
-    69
-   ],
-   "direccion": 3,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7,
-   "atk_mult": 1.15,
-   "elite": true
-  },
-  {
-   "entity_id": 7550069,
-   "nombre": "Savage Chief Apu",
-   "npc_type": 195,
-   "sprite": 42203,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    176,
-    60
-   ],
-   "direccion": 1,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7,
-   "atk_mult": 1.15,
-   "elite": true
-  },
-  {
-   "entity_id": 7550070,
-   "nombre": "Soul Slalin",
-   "npc_type": 810,
-   "sprite": 42280,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    174,
-    65
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7,
-   "atk_mult": 1.15,
-   "elite": true
-  },
-  {
-   "entity_id": 7550071,
-   "nombre": "Savage Chief Apu",
-   "npc_type": 195,
-   "sprite": 42203,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    183,
-    57
-   ],
-   "direccion": 2,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7,
-   "atk_mult": 1.15,
-   "elite": true
-  },
-  {
-   "entity_id": 7550072,
-   "nombre": "Terra Miner",
-   "npc_type": 953,
-   "sprite": 42283,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    190,
-    66
-   ],
-   "direccion": 5,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550073,
-   "nombre": "Evil Earth Elf",
-   "npc_type": 206,
-   "sprite": 42062,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    170,
-    63
-   ],
-   "direccion": 5,
-   "visible": 0,
-   "nivel": 56,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550074,
-   "nombre": "Flame Fly",
-   "npc_type": 847,
-   "sprite": 42277,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    182,
-    60
-   ],
-   "direccion": 1,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550075,
-   "nombre": "Evil Earth Elf",
-   "npc_type": 206,
-   "sprite": 42062,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    189,
-    57
-   ],
-   "direccion": 7,
-   "visible": 0,
-   "nivel": 56,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550076,
-   "nombre": "Mirror Elf",
-   "npc_type": 205,
-   "sprite": 42061,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    183,
-    54
-   ],
-   "direccion": 7,
-   "visible": 0,
-   "nivel": 55,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550077,
-   "nombre": "Gold Fly",
-   "npc_type": 843,
-   "sprite": 42276,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    177,
-    66
-   ],
-   "direccion": 5,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550078,
-   "nombre": "Dragonkin Moowad",
-   "npc_type": 209,
-   "sprite": 42091,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    187,
-    62
-   ],
-   "direccion": 3,
-   "visible": 0,
-   "nivel": 65,
-   "hp_mult": 28.0,
-   "atk_mult": 1.3,
-   "jefe": true
   }
  ],
  "recursos": [],
  "puzzles": {
   "sellos": [
-   7550001,
-   7550002,
-   7550003
+   7550135,
+   7550136,
+   7550137
   ],
   "objeto_barrera": 60402,
   "puertas": [

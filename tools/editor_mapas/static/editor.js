@@ -772,6 +772,7 @@ function tabSel(p) {
     const o = l[0], campo = (txt, k) => { const f = el('div', { className: 'row' }, `<span class="mu" style="width:60px">${txt}</span>`); const i = el('input', { type: 'number', value: o[k] }); i.onchange = () => { modObj(o, { [k]: +i.value | 0 }); }; f.append(i); return f; };
     const d = OBJDEFS[o.id]; p.append(el('div', { className: 'mu' }, `${d ? d[0] + ' · ' + d[1] + ' · ' + d[2] : 'id desconocido'}`));
     p.append(campo('id', 'id'), campo('x px', 'x'), campo('y px', 'y'), campo('a', 'a'), campo('espejo', 'e'), campo('c', 'c'));
+    if (typeof EVU !== 'undefined') EVU.campoEvento(p, o);
     p.append(el('div', { className: 'mu' }, `celda ${Math.floor(o.x / CELL)},${Math.floor(o.y / CELL)} · los campos a/espejo/c son del formato original (0/50/80/400, 0/1/2, 192 = transparencia)`));
   } else {
     const r2 = el('div', { className: 'row' }); const ci = el('input', { type: 'number', placeholder: 'nuevo id' }); const b = mk('Cambiar id', () => { if (ci.value) { const v = +ci.value | 0; l.forEach(o => modObj(o, { id: v })); precargarObjetos(); panelRefresh(); } }); r2.append(ci, b); p.append(r2);
@@ -826,6 +827,7 @@ function xmlEditor(p, clave, tit, nota, resumen) {
   try { const d = new DOMParser().parseFromString(M[clave], 'application/xml'); p.append(el('h4', {}, 'Resumen')); p.append(el('div', {}, resumen(d))); } catch (e) { }
 }
 function tabEventos(p) {
+  if (typeof EVU !== 'undefined') return EVU.tab(p, xmlEditor);
   xmlEditor(p, 'eventos', 'Eventos', 'Eventos del mapa (XML de FAO). Las salidas 1 y 2 usan la accion 3 con (mapa, punto). En Dos Coronas solo se leen; no se conectan todavia.', d => {
     const ev = [...d.querySelectorAll('事件')]; return `${ev.length} eventos<br>` + ev.map(e => `#${e.getAttribute('編號')} cursor ${e.getAttribute('游標')} · ${[...e.querySelectorAll('動作')].map(a => 'accion ' + a.getAttribute('編號') + '(' + [...a.querySelectorAll('參數')].map(q => q.getAttribute('數值')).join(',') + ')').join(' ')}`).join('<br>');
   });

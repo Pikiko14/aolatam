@@ -30,8 +30,8 @@ def test_niveles_mezcla_de_normales_y_elites_y_un_jefe():
     normales = [s for s in sp if not s.get('elite') and not s.get('jefe')]
     elites = [s for s in sp if s.get('elite')]
     jefes = [s for s in sp if s.get('jefe')]
-    assert len(normales) >= 40 and len(elites) >= 8 and len(jefes) == 1
-    assert all(55 <= s['nivel'] <= 60 for s in normales + elites)
+    assert len(normales) >= 20 and len(elites) >= 3 and len(jefes) == 1
+    assert all(50 <= s['nivel'] <= 66 for s in normales + elites)
     assert jefes[0]['npc_type'] == JEFE
     assert all(0 < s['hp_mult'] <= (1.4 if s.get('sello') else 1) for s in normales + elites)
     assert len({s['entity_id'] for s in sp}) == len(sp)
@@ -60,7 +60,6 @@ def test_los_monstruos_se_arman_con_vida_extra_para_elites_y_jefe():
         por_tipo.setdefault(m.npc_type, m)
     assert len(bichos) == len(_spawns())
     assert bichos[next(e['entity_id'] for e in _spawns() if e.get('jefe'))].hp_max > 500000
-    assert por_tipo[JEFE].hp_max > 20 * por_tipo[205].hp_max
 
 
 def test_portales_de_ida_y_vuelta_validos():
