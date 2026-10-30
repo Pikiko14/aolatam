@@ -47,11 +47,15 @@ _CMDS_SETMAP = ('setmap', 'setstage', 'tpjugador', 'enviarmapa')
 # no estan en item.xml ni en magic.xml y no hay capturas con arco ni con arma+escudo: asi
 # se prueban en el juego y luego se fija la buena en combate.GOLPE_POR_SKILL.
 _CMDS_ANIM = ('anim', 'golpe')
+# Prueba del 0x001D kind 9 (hechizo) con un tercer campo a eleccion. Solo se midio con
+# rango I (valor 1). Sirve para averiguar si un valor (p.ej. 0) le quita al cliente un
+# hechizo, que es lo que haria falta para que el rango II tape al I sin reloguear.
+_CMDS_HECHIZO = ('hechizo', 'spellpkt')
 _CMDS = frozenset(('help',) + _CMDS_ITEM + _CMDS_LEVEL + _CMDS_SETLEVEL + _CMDS_GOLD
                   + _CMDS_LEVELALL + _CMDS_SKILLS + _CMDS_SKILLSALL + _CMDS_SKILLS5
                   + _CMDS_CLEARSKILLS + _CMDS_PET + _CMDS_QUEST + _CMDS_BALL
                   + _CMDS_GUILDLEVEL + _CMDS_GUILDREP + _CMDS_GUILD
-                  + _CMDS_TW + _CMDS_FARM + _CMDS_SETMAP + _CMDS_ANIM)
+                  + _CMDS_TW + _CMDS_FARM + _CMDS_SETMAP + _CMDS_ANIM + _CMDS_HECHIZO)
 # _CMDS se quedaba sin 'gold' y 'setlevel' (se anadieron arriba, al vuelo: no se tocan las
 # tuplas que ya tenia cada quien para no reordenar nada). No cambia nada vivo: _CMDS solo lo
 # usa texto_de(), y nada del servidor llama a texto_de() hoy (ver mas abajo, PALABRAS).
@@ -72,13 +76,13 @@ _CMDS = frozenset(('help',) + _CMDS_ITEM + _CMDS_LEVEL + _CMDS_SETLEVEL + _CMDS_
 PALABRAS = _CMDS
 _GRUPOS_DELEGADOS = (_CMDS_LEVEL, _CMDS_SETLEVEL, _CMDS_GOLD, _CMDS_LEVELALL,
                     _CMDS_SKILLS, _CMDS_SKILLSALL, _CMDS_SKILLS5, _CMDS_CLEARSKILLS,
-                    _CMDS_PET, _CMDS_QUEST, _CMDS_BALL, _CMDS_SETMAP, _CMDS_ANIM)
+                    _CMDS_PET, _CMDS_QUEST, _CMDS_BALL, _CMDS_SETMAP, _CMDS_ANIM, _CMDS_HECHIZO)
 PALABRAS_DELEGADAS = frozenset(w for grupo in _GRUPOS_DELEGADOS for w in grupo)
 # Los 'kind' que gm.parsear() puede devolver para PALABRAS_DELEGADAS, para que el
 # dispatcher de app.py sepa cuales reenviar a gm.aplicar().
 RESULTADOS_DELEGADOS = frozenset((
     'level', 'levelall', 'setlevel', 'gold', 'skills', 'skillsall', 'skills5',
-    'clearskills', 'pet', 'quest', 'ball', 'setmap', 'anim',
+    'clearskills', 'pet', 'quest', 'ball', 'setmap', 'anim', 'hechizo',
 ))
 
 AYUDA = ("GM: /item <id> [qty]  /level <n>  /levelall <n>  /setlevel <name|all> <n>/guildlevel <1..10>  /guildrep <n>  "
@@ -86,6 +90,7 @@ AYUDA = ("GM: /item <id> [qty]  /level <n>  /levelall <n>  /setlevel <name|all> 
          "/pet level|exp|path|evolve  /ball reset  /quest <id> <step>  "
          "/setmap <name> <stage> [x] [y]  (teleports online OR offline players)  "
          "/anim <tipo> <animacion> | /anim off  (prueba el golpe basico)  "
+         "/hechizo <magic_id> <valor>  (prueba el 0x001D de un hechizo)  "
          "/rango [1..20]  /estacion <normal|navidad|halloween|sakura|verano>  /farm enter  /plant <id>  "
          "/twstart [min]  /twstop  /tw  /settw <campo> <liga>  /twtotem <1..8>  /notice <texto>")
 
@@ -641,6 +646,14 @@ def parsear(texto: str):
             return ('anim', (int(parts[1], 0), int(parts[2], 0)))
         except ValueError:
             return ('err', uso)
+    if cmd in _CMDS_HECHIZO:
+        uso = 'usage: /hechizo <magic_id> <valor>'
+        if len(parts) < 3:
+            return ('err', uso)
+        try:
+            return ('hechizo', int(parts[1], 0), int(parts[2], 0))
+        except ValueError:
+            return ('err', uso)
     if cmd in _CMDS_GUILDLEVEL:
         if len(parts) < 2:
             return ('err', 'usage: /guildlevel <1..10>')
@@ -766,6 +779,14 @@ def aplicar(ses, parsed) -> str:
         return msg
     if kind == 'setmap':
         return cambiar_mapa_jugador(ses, parsed[1], parsed[2], parsed[3], parsed[4])
+    if kind == 'hechizo':
+        import clases as _cl_h
+        p = ses.personaje
+        ses.enviar(struct.pack('<HIB', 0x001D, p.entity_id, 1)
+                   + struct.pack('<BII', _cl_h.KIND_HECHIZO, parsed[1], parsed[2]))
+        msg = 'spell packet: magic %d, valor %d' % (parsed[1], parsed[2])
+        _avisar(ses, msg)
+        return msg
     if kind == 'anim':
         ses._golpe_prueba = parsed[1]
         msg = ('basic attack: tipo %d, anim %d (solo tu sesion)' % parsed[1]

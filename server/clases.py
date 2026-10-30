@@ -229,7 +229,8 @@ def otorgar_hechizos(entity_id: int, numeros) -> bytes:
     """
     import skills
     fuera = []
-    numeros = list(numeros)
+    # Un icono por linea: el rango mas alto aprendido tapa a los de abajo.
+    numeros = skills.rango_mayor_por_linea(list(numeros))
     for i in range(0, max(1, len(numeros)), 255):
         trozo = numeros[i:i + 255]
         if not trozo:

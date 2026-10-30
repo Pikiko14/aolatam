@@ -22,7 +22,16 @@ sys.path.insert(0, str(RAIZ / 'server'))
 sys.path.insert(0, str(RAIZ))
 
 import clases
+import skills
 from proto.framing import pack_submessages, submessages
+
+# otorgar_hechizos deja solo el rango mas alto de cada linea (test_hechizos_un_rango_por_linea.py).
+# Para probar el troceo hacen falta hechizos que no se junten: ids sin 群組編號.
+_SIN_LINEA = [m for m in range(1, 20000) if skills._grupo_y_rango(m) is None]
+
+
+def _relleno(n):
+    return _SIN_LINEA[:n]
 
 
 def _lo_que_lee_el_cliente(envio):
@@ -39,7 +48,7 @@ def _lo_que_lee_el_cliente(envio):
 
 
 def test_devuelve_una_lista_de_mensajes():
-    msgs = clases.otorgar_hechizos(100, list(range(1, 300)))
+    msgs = clases.otorgar_hechizos(100, _relleno(299))
     assert isinstance(msgs, list), type(msgs)
     assert len(msgs) == 2, len(msgs)
     for m in msgs:
@@ -48,26 +57,27 @@ def test_devuelve_una_lista_de_mensajes():
 
 
 def test_no_se_pierde_ninguno_con_mas_de_255():
-    numeros = list(range(1, 285))
+    numeros = _relleno(284)
     leidos = _lo_que_lee_el_cliente(clases.otorgar_hechizos(100, numeros))
     assert leidos == numeros, (len(leidos), len(numeros))
 
 
 def test_pegados_en_uno_se_perderian():
     """La prueba de que el fallo era el enmarcado, no el troceo."""
-    numeros = list(range(1, 285))
+    numeros = _relleno(284)
     msgs = clases.otorgar_hechizos(100, numeros)
     leidos = _lo_que_lee_el_cliente([b''.join(msgs)])
     assert len(leidos) == 255, len(leidos)
 
 
 def test_gnash_sobrevive():
-    """El caso de verdad: 284 hechizos con Gnash III y V al final."""
-    numeros = sorted(set(range(1, 283)) | {13123, 13125})
+    """El caso de verdad: Gnash al final, pasado el hechizo 255. El V tapa al III (un icono
+    por linea), pero tiene que llegar aunque vaya en el segundo mensaje."""
+    numeros = _relleno(282) + [13123, 13125]
     leidos = _lo_que_lee_el_cliente(clases.otorgar_hechizos(100, numeros))
-    assert 13123 in leidos, 'Gnash III se perdio'
     assert 13125 in leidos, 'Gnash V se perdio'
-    assert len(leidos) == len(numeros)
+    assert 13123 not in leidos, 'Gnash III deberia quedar tapado por el V'
+    assert len(leidos) == len(numeros) - 1
 
 
 def test_pocos_hechizos_siguen_en_un_solo_mensaje():

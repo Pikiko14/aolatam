@@ -514,6 +514,43 @@ def info_pergamino(item_id: int):
         return None
 
 
+_GRUPO_RANGO = None
+
+
+def _grupo_y_rango(mid: int):
+    """(群組編號, 法術等級) del hechizo, o None si no trae grupo (copias internas)."""
+    global _GRUPO_RANGO
+    if _GRUPO_RANGO is None:
+        _GRUPO_RANGO = {}
+        if DB_PATH.exists():
+            con = sqlite3.connect(DB_PATH)
+            try:
+                for i, g, lv in con.execute('select id, "群組編號", "法術等級" from magic'):
+                    gi, li = _entero(g), _entero(lv)
+                    if _entero(i) is not None and gi and li:
+                        _GRUPO_RANGO[int(i)] = (gi, li)
+            finally:
+                con.close()
+    return _GRUPO_RANGO.get(int(mid))
+
+
+def rango_mayor_por_linea(mids) -> list:
+    """De cada linea (群組編號) deja solo el rango mas alto, en el orden de entrada.
+
+    El juego muestra un icono por linea: aprendido Slicing Hit II (612), el I (601) ya no
+    sale. Mandando los dos, el cliente los ponia por separado ("no se stakea en el arbol").
+    Lo que no trae grupo se deja tal cual."""
+    def _id(x):
+        return int(x[0] if isinstance(x, (list, tuple)) else x)
+    mejor = {}   # grupo -> (rango, id)
+    for x in mids:
+        gr = _grupo_y_rango(_id(x))
+        if gr and (gr[0] not in mejor or gr[1] > mejor[gr[0]][0]):
+            mejor[gr[0]] = (gr[1], _id(x))
+    ganadores = {v[1] for v in mejor.values()}
+    return [x for x in mids if not _grupo_y_rango(_id(x)) or _id(x) in ganadores]
+
+
 _MAGIC_LV_CACHE = {}
 
 
