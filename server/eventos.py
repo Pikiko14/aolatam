@@ -561,6 +561,10 @@ def traducir(numero, parms):
         return ('botin_sorteo', _p(parms, 0))
     if numero == 72:
         return ('cambiar_evento', _p(parms, 0))
+    if numero == 73:
+        # BATTLE_CRYSTAL: el angel del Holy Battlefield recibe el cristal enemigo
+        # (eventos 9 y 10 del MPC 112). Ver competiciones.entregar_por_evento.
+        return ('holy_entregar',)
     if numero == 78:
         return ('chat_npc', [m for m in parms[0:5] if m])
     if numero == 89:
@@ -596,7 +600,7 @@ def traducir(numero, parms):
 # Las acciones que traducir() convierte en efecto.
 SE_TRADUCEN = frozenset((1, 3, 4, 7, 8, 9, 10, 12, 13, 14, 18, 19, 20, 21, 22, 24,
                          25, 34, 37, 29, 30, 31, 33, 36, 39, 41, 42, 47, 50, 51, 52, 53,
-                         54, 55, 56, 57, 60, 63, 67, 70, 72, 78, 81,
+                         54, 55, 56, 57, 60, 63, 67, 70, 72, 73, 78, 81,
                          16, 59, 69, 89, 90, 91, 92, 93, 94, 95, 96, 104, 107, 111, 112))
 def _alguna(condiciones, ctx):
     for c in condiciones:

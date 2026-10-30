@@ -915,8 +915,44 @@ def _publicar_cristales(r):
             hb.marcador(s,r)
 
 
+def _anotar_entrega(r, member, p, team):
+    """El cristal enemigo que lleva p llega a su angel: punto para el equipo, 500 al portador
+    y 20 a los que ayudaron a llevarlo. El cristal vuelve a su base (deja de tener portador)."""
+    import holy_battlefield as hb
+    enemy = str(3-team)
+    r['portadores'].pop(enemy)
+    r['puntos'][str(team)] += 1
+    log.info('[holy] %s entrega el cristal %s: equipo %s lleva %s', p.nombre, enemy, team, r['puntos'][str(team)])
+    member['cristales'] += 1
+    hb.score(r,p.char_id,500)
+    state = r.get('cristales_estado',{}).pop(enemy,{})
+    for cid in state.get('participantes',[]):
+        if cid!=p.char_id:
+            hb.score(r,cid,20)
+
+
+def entregar_por_evento(ses):
+    """Accion 73 (BATTLE_CRYSTAL) del evento del angel en el MPC 112: los eventos 9 y 10 la
+    disparan con TEAMID y BATTLE_CHECK_CRYSTAL ya cumplidos, despues del mensaje 7634. Hace lo
+    mismo que entregar pulsando al angel. True si se entrego."""
+    p = ses.personaje
+    r = ronda(112)
+    member = _miembro(r, ses) if r else None
+    if not p or p.stage != 112 or fase(r) != 'combate' or not member or member['espectador']:
+        return False
+    team = member['equipo']
+    if r['portadores'].get(str(3-team)) != p.char_id:
+        return False
+    _anotar_entrega(r, member, p, team)
+    _guardar(r)
+    _publicar_cristales(r)
+    if max(r['puntos'].values()) >= 20:
+        terminar(112, motivo='20 crystals')
+    return True
+
+
 def pulsar(ses, eid):
-    portal = next((x for x in portales(ses.personaje.stage) if x['entity']==eid),None) if ses.personaje else None
+    portal =next((x for x in portales(ses.personaje.stage) if x['entity']==eid),None) if ses.personaje else None
     if portal and not portal['arena_menu']:
         p = ses.personaje
         member=_miembro(ronda(p.stage),ses)
@@ -980,16 +1016,7 @@ def pulsar(ses, eid):
         if exige_propio and (str(team) in r['portadores'] or r.get('cristales_estado',{}).get(str(team),{}).get('tile')):
             aviso(ses, 'Your own crystal must be back at your base before you can deliver.')
             return True
-        r['portadores'].pop(enemy)
-        r['puntos'][str(team)] += 1
-        log.info('[holy] %s entrega el cristal %s: equipo %s lleva %s', p.nombre, enemy, team, r['puntos'][str(team)])
-        member['cristales'] += 1
-        import holy_battlefield as hb
-        hb.score(r,p.char_id,500)
-        state = r.get('cristales_estado',{}).pop(enemy,{})
-        for cid in state.get('participantes',[]):
-            if cid!=p.char_id:
-                hb.score(r,cid,20)
+        _anotar_entrega(r, member, p, team)
     _guardar(r)
     _publicar_cristales(r)
     if target and own!=team:

@@ -228,3 +228,26 @@ def test_leaving_map_does_not_drop_crystal_at_lobby_coordinates(battle):
     a.personaje.stage,a.personaje.tile_x,a.personaje.tile_y=114,22,36
     c.abandonar(a,112)
     assert hb.posicion_cristal(c.ronda(112),2)==(100,88)
+
+
+def test_angel_event_delivers_carried_crystal(battle):
+    """Reported: 'si llevo el cristal a mi angel no me da los puntos, no me lo quita y no vuelve a
+    aparecer'. The angel's map event (MPC112 ev 9/10) said 7634 but ignored action 73."""
+    import eventos as ev
+    import eventos_mundo as evm
+    w,a,b = battle
+    r = c.ronda(112)
+    team = c._miembro(r,a)['equipo']
+    enemy = 3-team
+    a.personaje.tile_x,a.personaje.tile_y = c.CRISTALES[enemy][1]
+    c.pulsar(a,c.CRISTALES[enemy][0])
+    assert c.ronda(112)['portadores'] == {str(enemy): a.personaje.char_id}
+    efectos = ev.ejecutar(112, 9 if team==1 else 10, 3, evm.ContextoSesion(a))
+    assert ('holy_entregar',) in efectos
+    app._aplicar_efectos(a, None, efectos)
+    r = c.ronda(112)
+    assert not r['portadores']
+    assert r['puntos'][str(team)] == 1
+    assert hb.posicion_cristal(r,enemy) == c.CRISTALES[enemy][1]
+    # Without the crystal the same event only talks.
+    assert ('holy_entregar',) not in ev.ejecutar(112, 9 if team==1 else 10, 3, evm.ContextoSesion(a))

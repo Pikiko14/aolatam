@@ -3348,6 +3348,7 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
                 except Exception:
                     log.exception('baja de mision de un companero')
         _eventos_al_morir(ses, m, addr)
+        _eventos_propios_al_morir(ses, m, addr)
         for _s_gb in _grupo_en_sala(ses):
             if _s_gb is not ses:
                 try:
@@ -5750,6 +5751,9 @@ def _aplicar_efectos(ses, addr, efectos, motivo=''):
                 continue
             if que == 'daily_pk':
                 __import__('daily_events').pk(ses)
+                continue
+            if que == 'holy_entregar':
+                __import__('competiciones').entregar_por_evento(ses)
                 continue
             if que == 'dar':
                 tocadas = []
@@ -9390,6 +9394,49 @@ def _eventos_al_morir(ses, monstruo, addr):
                              ' pendientes tras morir %s' % getattr(monstruo, 'nombre', '?'))
     except Exception:
         log.exception('fallo el evento al morir el monstruo')
+
+
+def _eventos_propios_al_morir(ses, monstruo, addr):
+    """Las reglas "matar X monstruos" del editor (server/eventos_propios.py). Solo cuenta la
+    baja del que la hace: los del grupo no suman otra vez."""
+    if not ses.personaje:
+        return
+    try:
+        import eventos_propios as _evp
+        import clases as _cl
+        import presencia as _pr
+        for regla, premios in _evp.al_morir(ses, monstruo):
+            efectos, ag, portales = _evp.efectos_de(premios)
+            if regla.get('aviso'):
+                ses.enviar(_cl.aviso(str(regla['aviso']), tipo=0))
+            _aplicar_efectos(ses, addr, efectos, ' por la regla %s' % regla['id'])
+            if ag and getattr(ses, 'usuario', None):
+                __import__('item_mall').sumar_ag(ses.usuario, ag)
+                ses.enviar(_cl.aviso('%d Angel Gold' % ag, tipo=0, msg_id=_cl.MSG_ITEM))
+            for pr in portales:
+                donde = pr.get('donde', 'monstruo')
+                tile = (monstruo.tile_x, monstruo.tile_y) if donde == 'monstruo' else tuple(donde)
+                eid = _evp.abrir_portal(ses.personaje.stage, tile, pr['destino'], pr['llegada'],
+                                        pr.get('segundos', 120))
+                paquete = _evp.paquete_portal(eid)
+                vivas = list(_pr._vivas(ses.personaje.stage))
+                for s in vivas:
+                    s.enviar(paquete, _cl.aviso('A portal has appeared!', tipo=0))
+
+                def _cerrar(eid=eid, vivas_stage=ses.personaje.stage):
+                    import combate as _cb_p
+                    _evp._limpiar()
+                    for s in list(_pr._vivas(vivas_stage)):
+                        try:
+                            s.enviar_inmediato(_cb_p.despawn_monstruo(eid))
+                        except Exception:
+                            pass
+                try:
+                    asyncio.get_event_loop().call_later(max(5, int(pr.get('segundos', 120))) + 1, _cerrar)
+                except Exception:
+                    pass
+    except Exception:
+        log.exception('fallo una regla de eventos propios')
 
 
 def _cerrar_viaje(ses, addr, stage, tile, nombre_dest):
@@ -19000,6 +19047,8 @@ class Servidor:
             import dialogos
             ent = struct.unpack_from('<I', cuerpo, 0)[0]
             if ses.personaje and __import__('elementary').pulsar(ses,ent):
+                return
+            if ses.personaje and __import__('eventos_propios').pulsar(ses, ent):
                 return
             if __import__('travel_items').pulsar(ses,ent):
                 return
