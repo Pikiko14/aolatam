@@ -15746,6 +15746,10 @@ class Servidor:
                 if not (1 <= _dentro <= 36):
                     log.warning(f"[{addr}] cambio de rama: rama invalida {_dentro}")
                     return
+                if (_p.nivel or 1) > 20:
+                    log.warning(f"[{addr}] cambio de rama rechazado: nivel {_p.nivel} > 20")
+                    ses.enviar(_cl2.aviso('You can only change your skill branch before level 20.', tipo=0))
+                    return
                 _pos = next((k for k, h in enumerate(_habs) if h[0] == _fuera), None)
                 if _pos is None:
                     log.warning(f"[{addr}] cambio de rama: no se lleva la "

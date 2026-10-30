@@ -192,7 +192,7 @@ def test_quien_se_desconecta_dentro_de_la_instancia_vuelve_a_la_entrada_al_entra
              'stage_id': STAGE, 'tile_x': 13, 'tile_y': 50, 'inventario': {}}
     assert not transitable.se_pisa(STAGE, 13, 50)
     p = cuentas.personaje_de({'personajes': [ficha]}, 0)
-    assert (p.stage, p.tile_x, p.tile_y) == (MAPA_ENTRADA, 18, 16)
+    assert (p.stage, p.tile_x, p.tile_y) == (MAPA_ENTRADA, 134, 70)
     ficha.update(stage_id=MAPA_ENTRADA, tile_x=100, tile_y=100)
     p = cuentas.personaje_de({'personajes': [ficha]}, 0)
     assert (p.stage, p.tile_x, p.tile_y) == (MAPA_ENTRADA, 100, 100)

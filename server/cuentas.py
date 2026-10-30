@@ -739,8 +739,10 @@ def personaje_de(cuenta, ranura=0):
     elif _st in (46, 900):
         # La instancia oscura (900) no se reanuda: su mapa se rehace al entrar y la casilla guardada puede caer en roca.
         # El 46 es el Training Cave original: ahi se guardo gente mientras la instancia vivio con ese numero.
-        # Se vuelve a la entrada del portal. Estuvo en el Lyceum (41,160,36); se movio a Thorn Wasteland.
-        _st, _tx, _ty = 16, 18, 16
+        # Se vuelve a la entrada del portal (offset +4 en x para no caer encima y reentrar solo). Estuvo en el Lyceum
+        # (41,160,36); se movio a Thorn Wasteland (16,18,16) y luego a (16,130,70) -- el (18,16) original quedaba
+        # a 7 casillas del tornado de North of Mirror Lake.
+        _st, _tx, _ty = 16, 134, 70
     return Personaje(
         entity_id=1000 + p['char_id'] % 1000,
         char_id=p['char_id'],

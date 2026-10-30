@@ -1298,8 +1298,8 @@
    {
     "entity": 7550010,
     "tile": [
-     14,
-     16
+     130,
+     70
     ],
     "destino": 900,
     "llegada": [
@@ -1308,7 +1308,7 @@
     ],
     "preguntar": false,
     "dibujar": true,
-    "nota": "Thorn Wasteland -> mapa propio map900 (Dark Cavern), instancia oscura Lv55-60. Movido desde el Lyceum a pedido del usuario; (14,16) es una esquina abierta y caminable del mapa, a mas de 20 casillas de cualquier spawn de thorn_wasteland.json y sin solape con los otros tornados del mapa. Entrada propia del servidor, no medida en Celestia."
+    "nota": "Thorn Wasteland -> mapa propio map900 (Dark Cavern), instancia oscura Lv55-60. Vuelto a mover a pedido del usuario: (14,16) quedaba a solo 7 casillas del tornado 100720 (Thorn Wasteland -> North of Mirror Lake, tile (10,9), radio 2), facil de confundir con el. (130,70) esta caminable (comprobado un 3x3 alrededor con transitable.se_pisa), a mas de 20 casillas de cualquier spawn de thorn_wasteland.json y a mas de 100 casillas de los otros cuatro tornados del mapa (4,162)/(10,9)/(291,16)/(296,123). Entrada propia del servidor, no medida en Celestia."
    }
   ],
   "21": [
