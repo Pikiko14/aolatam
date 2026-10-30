@@ -168,3 +168,16 @@ def test_puzzles_cada_puerta_cerrada_dibuja_su_cortina_de_luz_y_al_abrirse_la_qu
     io.al_morir(ses, monstruos[2])
     quitados = [pk for pk in ses.enviados if len(pk) == 7 and struct.unpack_from('<H', pk)[0] == 0x0007]
     assert len(quitados) == len(puertas[0]['barrera'])
+
+
+def test_quien_se_desconecta_dentro_de_la_instancia_vuelve_al_lyceum_al_entrar():
+    """La casilla guardada de la instancia puede caer en roca del mapa nuevo: el cliente se cerraba al cargar."""
+    import cuentas
+    ficha = {'ranura': 0, 'char_id': 7, 'nombre': 'X', 'habilidades': [], 'barra': [], 'quests': [],
+             'stage_id': STAGE, 'tile_x': 13, 'tile_y': 50, 'inventario': {}}
+    assert not transitable.se_pisa(STAGE, 13, 50)
+    p = cuentas.personaje_de({'personajes': [ficha]}, 0)
+    assert (p.stage, p.tile_x, p.tile_y) == (41, 160, 36)
+    ficha.update(stage_id=41, tile_x=100, tile_y=100)
+    p = cuentas.personaje_de({'personajes': [ficha]}, 0)
+    assert (p.stage, p.tile_x, p.tile_y) == (41, 100, 100)
