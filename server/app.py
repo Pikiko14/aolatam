@@ -12860,6 +12860,22 @@ class Servidor:
                     ses.enviar(_cl_req.aviso('You need the proper weapon equipped to use this skill.', tipo=7))
                     log.info('[%s] habilidad %s rechazada: pide %s y lleva %s', addr, tipo, _req_arma, _manos)
                     return
+            # SP Y MANA ANTES DE GASTAR NADA. Cada camino de abajo cobraba el SP antes
+            # de mirar el mana (sin mana, se perdia el SP) y marcaba el cooldown antes
+            # de los dos (sin mana, el hechizo quedaba en cooldown sin salir); el SP
+            # ademas fallaba sin avisar, y Wolf Spirit y los encantos no lo miraban.
+            if tipo != _cb.ATAQUE_NORMAL and ses.personaje:
+                import clases as _cl_cost
+                _sp_pide = int(mag.get('cost_sp', 0) or 0)
+                if _sp_pide > 0 and (getattr(ses, 'sp', 0) or 0) < _sp_pide:
+                    ses.enviar(_cl_cost.aviso('Not enough SP.', tipo=0))
+                    log.info(f"[{addr}] habilidad {tipo} rechazada: SP {getattr(ses, 'sp', 0)}/{_sp_pide}")
+                    return
+                _mp_pide = int(mag.get('mp', 0) or 0)
+                if _mp_pide > 0 and (ses.personaje.mp or 0) < _mp_pide:
+                    ses.enviar(_cl_cost.aviso('Not enough Mana.', tipo=0))
+                    log.info(f"[{addr}] habilidad {tipo} rechazada: MP {ses.personaje.mp}/{_mp_pide}")
+                    return
             if (__import__('daily_events').basic_only(ses.personaje.stage)
                     and tipo != _cb.ATAQUE_NORMAL and (mag.get('es_ataque') or mag.get('es_invocacion'))):
                 __import__('daily_events').aviso(ses,'Only normal attacks are allowed in Quick Reflexes.')
@@ -18348,10 +18364,28 @@ class Servidor:
                     _c.aviso(mnombre, tipo=7, msg_id=_c.MSG_HECHIZO),
                     *_refrescar(ses, [ranura])
                 ]
-                ses.enviar(*salida)
                 ses.personaje.hechizos_aprendidos.add(mid)
+                # El rango nuevo pasa a la barra en el sitio del viejo de su linea (el I
+                # se quedaba en F1 aunque se aprendiera el II). login._barra hace lo mismo
+                # al entrar; aqui se reenvia el 0x005B para verlo sin reloguear.
+                import skills as _sk_bar
+                import login as _lg_bar
+                _barra_vieja = list(ses.personaje.barra or [])
+                _barra_nueva = []
+                for _x in _barra_vieja:
+                    _t, _m = _lg_bar.entrada_barra(_x)
+                    if _t == 1 and _m and _sk_bar.rango_mayor_de(_m, (mid,)) == mid:
+                        _x = [1, mid]
+                    _barra_nueva.append(_x)
+                _barra_cambio = _barra_nueva != _barra_vieja
+                if _barra_cambio:
+                    ses.personaje.barra = _barra_nueva
+                    salida.append(_lg_bar._barra(ses.personaje, b''))
+                ses.enviar(*salida)
 
                 if getattr(ses, 'usuario', None):
+                    if _barra_cambio:
+                        cuentas.guardar_barra(ses.usuario, cid, ses.personaje.barra)
                     cuentas.guardar_hechizos(ses.usuario, cid, list(ses.personaje.hechizos_aprendidos))
                     cuentas.guardar_inventario(ses.usuario, cid, bolsa, _cantidades(ses))
                 log.info(f"[{addr}] pergamino usado: {item_id} -> aprendio {mid} ({mnombre} Lv {mlv})")

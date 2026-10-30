@@ -20,7 +20,7 @@ NOMBRE_RAMA = {
     16: 'Finesse', 17: 'Longbow', 18: 'Snipe', 19: 'Eagle Eye',
     20: 'Collect', 21: 'Fishing', 22: 'Dig', 23: 'Lumber',
     24: 'Mechanism', 25: 'Drive', 26: 'Weapon', 27: 'Armor',
-    28: 'Sew', 29: 'Technics', 30: 'Alchemy', 31: 'Cook',
+    28: 'Sew', 29: 'Technics', 30: 'ShadowBlade', 31: 'Cook',
     32: 'Mantle', 33: 'Garment', 34: 'Vestment', 35: 'Avatar', 36: 'Assault'
 }
 
@@ -45,7 +45,10 @@ RAMA_A_CHINO = {
     17: '弓箭技能',  # Longbow
     18: '狙擊技能',  # Snipe
     19: '鷹眼技能',  # Eagle Eye
-    32: '影刃技能',  # Mantle
+    # ShadowBlade es la 30, no la 32: el cliente llama 30 = ShadowBlade y 32 = Mantle
+    # (la armadura ligera que lleva tambien el arco). Con el 影刃 en la 32, todo Bow
+    # -- que elige Mantle -- se llevaba Stab I, Nimble I y Poisoned Dagger I.
+    30: '影刃技能',  # ShadowBlade
     35: '幻化技能',  # Avatar
     36: '奇襲技能',  # Assault
 }
@@ -56,7 +59,7 @@ CHINO_A_RAMA = {v: k for k, v in RAMA_A_CHINO.items()}
 # ramas en 技能限制1..5. Las de arma las aprende un guerrero; las de las
 # cuatro magias, un mago. Panther Killing, Bloody Storm y Crazy Roar caen
 # en el lado de arma.
-RAMAS_MELEE = (9, 10, 11, 14, 17, 32)
+RAMAS_MELEE = (9, 10, 11, 14, 17, 30)
 RAMAS_MAGIA = (1, 2, 3, 4)
 GRUPO_COMUN_MIN = 1000
 GRUPO_COMUN_MAX = 1199
@@ -72,7 +75,7 @@ HECHIZOS_INICIALES_RAMA = {
     10: [(701, 'Basic Beating I'), (702, 'Ferocious Song I'), (703, 'Fighting Shield I')],
     11: [(801, 'Basic Attack I'), (802, 'Bloody Song I'), (803, 'Endless Energy I')],
     17: [(901, 'Basic Shot I'), (902, 'Accurate Song I'), (903, 'Dodge Step I')],
-    32: [(5401, 'Stab I'), (5406, 'Nimble I'), (5411, 'Poisoned Dagger I')],
+    30: [(5401, 'Stab I'), (5406, 'Nimble I'), (5411, 'Poisoned Dagger I')],   # ShadowBlade
 }
 
 _SCROLL_CACHE = {}
@@ -549,6 +552,19 @@ def rango_mayor_por_linea(mids) -> list:
             mejor[gr[0]] = (gr[1], _id(x))
     ganadores = {v[1] for v in mejor.values()}
     return [x for x in mids if not _grupo_y_rango(_id(x)) or _id(x) in ganadores]
+
+
+def rango_mayor_de(mid: int, conocidos) -> int:
+    """El rango mas alto de la linea de `mid` entre los hechizos `conocidos` (o el mismo)."""
+    gr = _grupo_y_rango(mid)
+    if not gr:
+        return int(mid)
+    mejor, rango = int(mid), gr[1]
+    for c in conocidos or ():
+        g = _grupo_y_rango(c)
+        if g and g[0] == gr[0] and g[1] > rango:
+            mejor, rango = int(c), g[1]
+    return mejor
 
 
 _MAGIC_LV_CACHE = {}

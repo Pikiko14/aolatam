@@ -1596,9 +1596,14 @@ def _barra(p, base):
     m = Msg.registry[(0x005B, 's2c', 'privado')]
     if not p.barra:
         return struct.pack('<H', 0x005B) + base
+    import skills as _sk_b
+    aprendidos = getattr(p, 'hechizos_aprendidos', None) or ()
     r = []
     for x in p.barra[:24]:
         tipo, mid = entrada_barra(x)
+        if tipo == 1 and mid:
+            # Aprendido el rango II, el icono de la barra seguia siendo el I.
+            mid = _sk_b.rango_mayor_de(mid, aprendidos)
         r.append({'usada': tipo, 'magic_id': int(mid or 0), 'resto': bytes(4)})
     r += [{'usada': 0, 'magic_id': 0, 'resto': bytes(4)}] * (24 - len(r))
     return m.build(ranuras=r)

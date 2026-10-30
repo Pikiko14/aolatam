@@ -79,7 +79,7 @@ RAMA_POR_SKILL = {
     10: '斧錘技能',     # Axe         -> Basic Beating / Ferocious Song / Fighting Shield
     11: '槍術技能',     # Spear       -> Basic Attack / Bloody Song / Endless Energy
     17: '弓箭技能',     # Longbow     -> Basic Shot / Accurate Song / Dodge Step
-    32: '影刃技能',     # Mantle      -> Stab / Nimble / Poisoned Dagger
+    30: '影刃技能',     # ShadowBlade -> Stab / Nimble / Poisoned Dagger
     1: '生命技能',      # Life        -> Shock Wave / Cure Spell / Silver Shield
     2: '死靈技能',      # Wraith      -> Poison Hit / Soul Entangle / Summon Skeleton
     3: '混亂技能',      # Chaos       -> Magic Bomb / Charming Blessing / Sage Blessing
@@ -96,7 +96,7 @@ NOMBRE_RAMA = {
     16: 'Finesse', 17: 'Longbow', 18: 'Snipe', 19: 'Eagle Eye',
     20: 'Collect', 21: 'Fishing', 22: 'Dig', 23: 'Lumber',
     24: 'Mechanism', 25: 'Drive', 26: 'Weapon', 27: 'Armor',
-    28: 'Sew', 29: 'Technics', 30: 'Alchemy', 31: 'Cooking',
+    28: 'Sew', 29: 'Technics', 30: 'ShadowBlade', 31: 'Cooking',
     32: 'Mantle', 33: 'Garment', 34: 'Vestment',
     35: 'Avatar', 36: 'Assault',
 }
@@ -484,7 +484,7 @@ def chat_whisper(emisor: str, receptor: str, texto: str, err_code: int = 0) -> b
 #     19820 FreshmanRound Shield  盾    <- Shield  (14)
 #     19850 FreshmanWalking Stick 杖    <- Staff Hit (8)
 #     19844 FreshmanCatapult      彈弓  <- Longbow (17)
-#     19856 FreshmanSharp Knife   影刃  <- Mantle  (32)
+#     19856 FreshmanSharp Knife   影刃  <- ShadowBlade (30)
 #     19814 FreshmanCask          機甲  <- Mechanism (24)
 #
 # El emparejamiento sale de los nombres, no de una captura. Lo unico medido es
@@ -496,7 +496,7 @@ def chat_whisper(emisor: str, receptor: str, texto: str, err_code: int = 0) -> b
 # en ranuras 3 y 4.
 ARMA_POR_SKILL = {
     8: 19850, 9: 10, 10: 19832, 11: 19838,
-    14: 19820, 17: 19844, 20: 63, 21: 22, 22: 21, 23: 20, 32: 19856,
+    14: 19820, 17: 19844, 20: 63, 21: 22, 22: 21, 23: 20, 30: 19856,
 }
 # Con que mano se empuna. Las reglas salen de lo poco medido y de como
 # funcionan las clases en el juego:
@@ -722,7 +722,7 @@ SKILL_POR_CATEGORIA = {
     '斧': 10, '錘': 10,        # hacha (210) y martillo (178) -> Axe
     '槍': 11,                  # lanza (384) -> Spear
     '弓箭': 17, '彈弓': 17,    # arco (363) y tirachinas (21) -> Longbow
-    '影刃': 32,                # hoja de sombra (331) -> Mantle / ShadowBlade
+    '影刃': 30,                # hoja de sombra (331) -> ShadowBlade (la 32 es Mantle, armadura)
     '盾': 14,                  # escudo (267) -> Shield
     '杖': 8,                   # baston (386) -> Staff Hit
     '鐵鍬': 22,                # pala -> Dig
@@ -814,7 +814,7 @@ def es_dos_manos(item_id) -> bool:
                 pass
     if not item_id:
         return False
-    if skill_de_item(item_id) == 32:      # 影刃: una mano, solo en la derecha
+    if skill_de_item(item_id) == 30:      # 影刃: una mano, solo en la derecha
         return False
     return not _MANOS_ITEM.get(int(item_id), True)
 
