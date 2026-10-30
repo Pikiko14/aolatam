@@ -42,11 +42,39 @@ _CMDS_GUILD = ('guild', 'gremio', 'liga')
 _CMDS_TW = ('settw', 'settotemwar', 'tw', 'totemwar', 'twstart', 'twstop',
             'notice', 'aviso', 'anuncio', 'gmsg', 'twtotem')
 _CMDS_FARM = ('plant', 'sembrar', 'farm', 'granja')
-_CMDS = frozenset(('help',) + _CMDS_ITEM + _CMDS_LEVEL + _CMDS_LEVELALL
-                  + _CMDS_SKILLS + _CMDS_SKILLSALL + _CMDS_SKILLS5
+_CMDS = frozenset(('help',) + _CMDS_ITEM + _CMDS_LEVEL + _CMDS_SETLEVEL + _CMDS_GOLD
+                  + _CMDS_LEVELALL + _CMDS_SKILLS + _CMDS_SKILLSALL + _CMDS_SKILLS5
                   + _CMDS_CLEARSKILLS + _CMDS_PET + _CMDS_QUEST + _CMDS_BALL
                   + _CMDS_GUILDLEVEL + _CMDS_GUILDREP + _CMDS_GUILD
                   + _CMDS_TW + _CMDS_FARM)
+# _CMDS se quedaba sin 'gold' y 'setlevel' (se anadieron arriba, al vuelo: no se tocan las
+# tuplas que ya tenia cada quien para no reordenar nada). No cambia nada vivo: _CMDS solo lo
+# usa texto_de(), y nada del servidor llama a texto_de() hoy (ver mas abajo, PALABRAS).
+
+# ---------------------------------------------------------------------------------------
+# Un solo lugar para los comandos de GM, para que app.py no mantenga sus propias copias
+# de estas listas (se fueron desincronizando: por ejemplo, /quest y /ball nunca llegaban a
+# esta parte del codigo desde el chat porque la copia de app.py no los tenia en su lista de
+# "esto se lo paso a gm.py"). Lo que expone este modulo:
+#
+#   PALABRAS            todas las palabras que reconoce ESTE archivo (para detectar que un
+#                        texto de chat es un comando de GM, lo resuelva quien lo resuelva)
+#   PALABRAS_DELEGADAS   de esas, las que app.py debe pasarle a gm.parsear()/gm.aplicar().
+#                        item/help los resuelve app.py mismo (su propio /item final); guild*,
+#                        settw/tw y plant/farm tienen su propia rama ya escrita en
+#                        app._gm_parsear, asi que tampoco se delegan (las de guild* que SI
+#                        trae gm.aplicar() quedan sin usar: no se tocan por ahora).
+PALABRAS = _CMDS
+_GRUPOS_DELEGADOS = (_CMDS_LEVEL, _CMDS_SETLEVEL, _CMDS_GOLD, _CMDS_LEVELALL,
+                    _CMDS_SKILLS, _CMDS_SKILLSALL, _CMDS_SKILLS5, _CMDS_CLEARSKILLS,
+                    _CMDS_PET, _CMDS_QUEST, _CMDS_BALL)
+PALABRAS_DELEGADAS = frozenset(w for grupo in _GRUPOS_DELEGADOS for w in grupo)
+# Los 'kind' que gm.parsear() puede devolver para PALABRAS_DELEGADAS, para que el
+# dispatcher de app.py sepa cuales reenviar a gm.aplicar().
+RESULTADOS_DELEGADOS = frozenset((
+    'level', 'levelall', 'setlevel', 'gold', 'skills', 'skillsall', 'skills5',
+    'clearskills', 'pet', 'quest', 'ball',
+))
 
 AYUDA = ("GM: /item <id> [qty]  /level <n>  /levelall <n>  /setlevel <name|all> <n>/guildlevel <1..10>  /guildrep <n>  "
          "/skills [lv]  /skillsall [lv]  /skills5  /clearskills  "

@@ -1551,29 +1551,20 @@ def _gm_dar_item(ses, item_id: int, n: int = 1) -> str:
 # Las primeras palabras que valen como comando sin la barra delante. Tiene
 # que llevar TODAS las que entiende _gm_parsear: lo que falte aqui no llega
 # nunca, porque el cliente se come la barra.
+# Las palabras de /item, /level, /gold, /pet, /quest, /ball, /guild*, /settw-/tw, /plant-/farm
+# y /help salen de gm.PALABRAS: ese modulo es quien de verdad las define (ver su comentario
+# junto a PALABRAS_DELEGADAS). Aqui solo van las que NO tiene gm.py.
 PALABRAS_GM = frozenset((
-    'item', 'give', 'i', 'help',
     'rama', 'skill', 'branch',
     'estacion', 'season', 'modo',
     'rango', 'rank',
     'sistemas', 'album', 'logros', 'cartas', 'estrellas', 'casa',
-    'level', 'lvl', 'lv', 'levelall', 'lvlall', 'setlevel', 'setlvl', 'nivelde', 'gold', 'oro', 'givegold', 'dargold',
-    'skills', 'spells', 'skillsall', 'learnall', 'skillall', 'skills5', 'skill5',
-    'clearskills', 'clearskill',
-    'pet', 'mascota',
     'emote', 'e', 'emocion',
-    'ball', 'baile', 'fiesta',
-    'guildlevel', 'glevel', 'gldlevel', 'gldlvl', 'guildlvl', 'glvl', 'guildrank', 'grank', 'setguildlevel',
-    'guildrep', 'grep', 'gldrep',
-    'guild', 'gremio', 'liga',
-    'settw', 'settotemwar', 'tw', 'totemwar', 'twstart', 'twstop',
     'aastart', 'aastop', 'aa', 'angelarena', 'hbstart', 'hbstop', 'hb', 'holybf', 'holybattlefield',
     'daily', 'dailystart', 'dailystop', 'quiz', 'gvg',
     'recipes', 'recetas',
     'notice', 'aviso', 'anuncio', 'gmsg', 'twtotem',
-    'plant', 'sembrar',
-    'farm', 'granja',
-))
+)) | gm.PALABRAS
 
 
 def _gm_texto(cuerpo: bytes):
@@ -1689,12 +1680,11 @@ def _gm_parsear(texto: str):
             return ('rango', int(partes[1], 0))
         except ValueError:
             return ('err', 'usage: /rango [1..20]')
-    if cmd in ('level', 'lvl', 'lv', 'levelall', 'lvlall', 'setlevel', 'setlvl', 'nivelde', 'gold', 'oro', 'givegold', 'dargold',
-               'skills', 'spells', 'skillsall', 'learnall', 'skillall', 'skills5', 'skill5',
-               'clearskills', 'clearskill',
-               'pet', 'mascota'):
-        import gm as _gm
-        return _gm.parsear(texto)
+    if cmd in gm.PALABRAS_DELEGADAS:
+        # /quest y /ball viven aqui tambien desde ahora: antes esta lista los dejaba afuera
+        # (copiada a mano, se desincronizo) y esos dos comandos no se podian usar por chat,
+        # solo desde gm.py directo (consola / data/gm.txt).
+        return gm.parsear(texto)
     if cmd in ('emote', 'e', 'emocion'):
         if len(partes) < 2:
             return ('err', 'usage: /emote <id 0..36> | /emote unlock <id> | /emote unlockall | /emote list')
@@ -2264,9 +2254,10 @@ def _probar_gm(ses, cuerpo, addr) -> bool:
         ses.enviar(_cl.aviso(f"League '{g['nombre']}' reputation set to {rep_val} (Level: {actualizado['nivel']}).", tipo=0, msg_id=_cl.MSG_TEXTO))
         log.info(f"[{addr}] GM guildrep: {g['nombre']} -> rep {rep_val}")
         return True
-    if leido[0] in ('level', 'levelall', 'setlevel', 'gold', 'skills', 'skillsall', 'skills5', 'clearskills', 'skilllevel', 'pet', 'ball'):
-        import gm as _gm
-        msg = _gm.aplicar(ses, leido)
+    if leido[0] in gm.RESULTADOS_DELEGADOS:
+        # 'quest' se suma aqui tambien; antes faltaba y el 'skilllevel' que habia no
+        # corresponde a nada que parsear() devuelva (gm.py usa 'skills'/'skillsall'/'skills5').
+        msg = gm.aplicar(ses, leido)
         log.info('[%s] GM %s' % (addr, msg))
         return True
     _, iid, cant = leido

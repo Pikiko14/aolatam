@@ -40,6 +40,44 @@ def test_el_parser_tiene_comandos():
     assert len(_palabras_del_parser()) >= 4, _palabras_del_parser()
 
 
+def test_las_palabras_de_gm_py_son_la_fuente_unica():
+    """Antes PALABRAS_GM traia su propia copia a mano de las palabras de gm.py (item, level,
+    gold, pet, quest, ball, guild*, settw/tw, plant/farm): se desincronizo, y /quest y /ball
+    nunca llegaban a gm.py desde el chat porque la copia de _gm_parsear se quedo sin ellas.
+    Ahora PALABRAS_GM = (lo propio de app.py) | gm.PALABRAS, asi que esto ya no puede pasar."""
+    import gm
+    assert gm.PALABRAS <= app.PALABRAS_GM
+    assert {'quest', 'mision', 'ball', 'baile', 'fiesta'} <= gm.PALABRAS_DELEGADAS
+    # Lo que gm.parsear() puede devolver para esas palabras, el dispatcher de app.py
+    # (el "if leido[0] in gm.RESULTADOS_DELEGADOS") lo tiene que saber reenviar.
+    assert {'quest', 'ball'} <= gm.RESULTADOS_DELEGADOS
+
+
+def test_quest_y_ball_ya_llegan_por_chat():
+    """EL FALLO REPORTADO: /quest y /ball (y sus alias) se quedaban fuera de la lista que
+    _gm_parsear delegaba a gm.py, asi que escritos en el chat no hacian nada."""
+    assert app._gm_parsear('quest 102 2') == ('quest', 102, 2)
+    assert app._gm_parsear('mision 102 2') == ('quest', 102, 2)
+    assert app._gm_parsear('ball reset') == ('ball', 'reset')
+    assert app._gm_parsear('baile') == ('ball', 'reset')
+    assert app._gm_parsear('fiesta') == ('ball', 'reset')
+
+
+def test_lo_que_ya_funcionaba_sigue_igual():
+    """La consolidacion no debia mover nada de sitio: comprobado contra lo que cada rama
+    de _gm_parsear ya devolvia antes."""
+    assert app._gm_parsear('item 20103 2') == ('item', 20103, 2)
+    assert app._gm_parsear('gold 500') == ('gold', '', 500)
+    assert app._gm_parsear('setlevel all 50') == ('setlevel', 'all', 50)
+    assert app._gm_parsear('level 50') == ('level', 50)
+    assert app._gm_parsear('levelall 50') == ('levelall', 50)
+    assert app._gm_parsear('skills 10') == ('skills', 10)
+    assert app._gm_parsear('clearskills') == ('clearskills',)
+    assert app._gm_parsear('pet level 5') == ('pet', ['level', '5'])
+    assert app._gm_parsear('guildlevel 5') == ('guildlevel', 5)
+    assert app._gm_parsear('farm enter') == ('farm', ['enter'])
+
+
 def test_ninguna_palabra_se_queda_fuera_del_filtro():
     faltan = _palabras_del_parser() - set(app.PALABRAS_GM)
     assert not faltan, 'faltan en PALABRAS_GM: %s' % sorted(faltan)
