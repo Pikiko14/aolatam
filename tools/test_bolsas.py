@@ -238,6 +238,20 @@ def test_se_manda_el_icono_del_buff():
     assert "1, 4, bid, 0" in trozo, 'el icono no se apaga al expirar'
 
 
+def test_la_pocion_tambien_manda_su_icono_de_cooldown():
+    """Antes el servidor rechazaba en silencio el siguiente uso durante
+    COOLDOWN_POCION_S, pero el icono de la pocion no se enfriaba en pantalla:
+    el jugador no tenia forma de saber cuando podia volver a usarla. Mismo
+    mecanismo que las habilidades (0x001D kind 3, [item_id][ms]), documentado
+    en docs/01_HECHOS_VERIFICADOS.md ("3 cooldown [u4 objeto][u4 tiempo]")."""
+    fuente = (RAIZ / 'server' / 'app.py').read_text(encoding='utf-8')
+    i = fuente.index('Caso 5: Consumibles')
+    trozo = fuente[i:i + 4000]
+    assert "0x001D, yo, 1, 3, item_id, _cd_ms_pot" in trozo, 'no se manda el icono de cooldown de la pocion'
+    assert "1, 3, iid, 0" in trozo, 'el icono de la pocion no se apaga al expirar'
+    assert 'COOLDOWN_POCION_S' in trozo, 'el icono no usa la misma duracion que el rechazo del servidor'
+
+
 if __name__ == '__main__':
     fallos = 0
     for nombre, fn in sorted(globals().items()):

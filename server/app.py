@@ -3654,15 +3654,16 @@ VELOCIDAD_JUGADOR = int(os.environ.get('AO_VELOCIDAD', '110'))
 # Celestia hasta que sepamos modelar el nivel de la montura.
 RANURA_MONTURA = 10
 
-# Bono de montura, en por ciento, que PISA el move_speed del item. A peticion
-# del usuario: el Gryphon declara 50 y aqui se usa 150. Poner 0 para respetar
-# lo que diga item.xml.
+# Bono de montura, en por ciento, que PISA el move_speed del item. Antes era
+# 150 fijo (el Gryphon declara 50 en item.xml) a peticion del usuario, pero
+# resultaba demasiado rapido: ahora en 0, para que cada montura de la
+# velocidad que diga su propio item.xml.
 #
 # El campo del 0x0005 es U16, no un byte: en las capturas hay jugadores de
-# Celestia moviendose a 260 y a 283, asi que 275 (110 x 2,5) entra de sobra en
-# lo que el cliente maneja de verdad. El tope de 1000 es solo para que una
+# Celestia moviendose a 260 y a 283, asi que el cliente aguanta de sobra lo
+# que de cualquier montura real. El tope de 1000 es solo para que una
 # variable de entorno mal puesta no mande un numero absurdo.
-BONO_MONTURA = int(os.environ.get('AO_MONTURA_BONO', '150'))
+BONO_MONTURA = int(os.environ.get('AO_MONTURA_BONO', '0'))
 
 
 # Casillas que la mascota anda de una vez al seguir al dueño. Con tramos de 4
@@ -18472,6 +18473,20 @@ class Servidor:
                 salida.extend(_refrescar(ses, [ranura]))
                 # Y los stats, que es lo que refresca las barras del panel.
                 salida.append(_stats_ses(ses))
+                # El mismo 0x001D code=3 [objeto][tiempo] que usan las habilidades (docs/01_HECHOS_VERIFICADOS.md):
+                # el cliente lo lee por el id que trae la ranura de la barra (0x005B type=2 consumible), asi que
+                # sirve igual con un item_id que con un skill_id. Sin esto el icono de la pocion no se enfriaba
+                # en pantalla aunque el servidor ya rechazara el siguiente uso durante COOLDOWN_POCION_S.
+                _cd_ms_pot = int(_cfg_pot.COOLDOWN_POCION_S * 1000)
+                if _cd_ms_pot > 0:
+                    salida.append(struct.pack('<HIBBII', 0x001D, yo, 1, 3, item_id, _cd_ms_pot))
+                    try:
+                        asyncio.get_event_loop().call_later(
+                            _cd_ms_pot / 1000.0,
+                            lambda eid=yo, iid=item_id: ses.enviar_inmediato(
+                                struct.pack('<HIBBII', 0x001D, eid, 1, 3, iid, 0)))
+                    except Exception:
+                        pass
                 ses.enviar(*salida)
                 try:
                     import equipos as _eq
