@@ -9,22 +9,26 @@
   "exp_minimum": 50000,
   "exp_cap": 2000000,
   "skill_exp": 100,
-  "source": "Local values retained from Antigravity and Karma's requested 2M/100 rates; original server interval/formula not recovered."
+  "source": "Local values retained from Antigravity and Karma's requested 2M/100 rates; original server interval/formula not recovered.",
+  "nota_este_bloque_no_se_lee": "Ningun codigo importa este bloque: server/daily_experience.py trae sus propias constantes (INTERVAL/EXP_PER_LEVEL/EXP_CAP/EXP_MINIMUM/SKILL_EXP_AMOUNT), que son las que de verdad se usan. A pedido del usuario, hoy esas constantes dan 0 (el valor de este bloque se queda igual solo como referencia de lo que habia antes)."
  },
- "slots": [
+ "slots_otros_desactivados": [
   {"day":0,"alias":"swindle","start":"18:00"},
   {"day":0,"alias":"guard","start":"21:00"},
-  {"day":1,"alias":"quick","start":"18:00"},
   {"day":1,"alias":"bleach","start":"21:00"},
   {"day":2,"alias":"faction","start":"18:00"},
   {"day":2,"alias":"joy","start":"21:00"},
   {"day":3,"alias":"guard","start":"18:00"},
   {"day":3,"alias":"swindle","start":"21:00"},
   {"day":4,"alias":"happiness","start":"18:00"},
-  {"day":4,"alias":"quick","start":"21:00"},
   {"day":5,"alias":"joy","start":"18:00"},
   {"day":5,"alias":"faction","start":"21:00"},
   {"day":6,"alias":"bleach","start":"18:00"},
   {"day":6,"alias":"happiness","start":"21:00"}
+ ],
+ "_nota_quick_only": "A pedido del usuario, de momento solo corre Quick Reflexes: los demas eventos quedaron en slots_otros_desactivados (que calendario()/cron() no leen) para poder devolverlos despues tal cual estaban.",
+ "slots": [
+  {"day":1,"alias":"quick","start":"18:00"},
+  {"day":4,"alias":"quick","start":"21:00"}
  ]
 }

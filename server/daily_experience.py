@@ -9,10 +9,13 @@ import json
 import struct
 
 INTERVAL=10
-EXP_PER_LEVEL=4800
+# A pedido del usuario, de momento sin EXP de presencia (ni de personaje ni de habilidad)
+# mientras se valida el funcionamiento de Quick Reflexes. Los valores de antes quedan
+# comentados al lado para volver a ponerlos cuando se reactive.
+EXP_PER_LEVEL=0      # antes 4800
 EXP_CAP=2_000_000
-EXP_MINIMUM=50_000
-SKILL_EXP_AMOUNT=100
+EXP_MINIMUM=0        # antes 50_000
+SKILL_EXP_AMOUNT=0   # antes 100
 
 
 def _award(ses,r,stamp,interval):
@@ -26,7 +29,9 @@ def _award(ses,r,stamp,interval):
     pulse=max(0,int((stamp-r['start'])//interval))
     exp_gain=min(EXP_CAP,max(EXP_MINIMUM,int(p.nivel*EXP_PER_LEVEL*
         configuracion.multiplicador_exp(p.buffs))))
-    skill_gain=max(10,int(round(SKILL_EXP_AMOUNT*configuracion.multiplicador_skill_exp(p.buffs))))
+    # El piso de 10 solo aplica si de verdad se esta dando algo: en 0 se queda en 0.
+    skill_gain=int(round(SKILL_EXP_AMOUNT*configuracion.multiplicador_skill_exp(p.buffs)))
+    if SKILL_EXP_AMOUNT:skill_gain=max(10,skill_gain)
     before=[list(h) for h in (p.habilidades or [])]
     with cuentas._LOCK,cuentas._get_conn() as con:
         con.execute('BEGIN IMMEDIATE')

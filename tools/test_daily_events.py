@@ -45,12 +45,18 @@ def test_missing_original_box_contents_never_spend_daily_coins(world):
     assert stored(world,s)==before
 
 
-def test_daily_calendar_has_two_distinct_events_per_day_and_native_display_order(world):
+def test_daily_calendar_matches_the_configured_schedule_and_native_display_order(world):
+    """Las filas del calendario salen de daily_schedule.json ('slots'): una por cada bracket
+    de nivel de cada alias programado ese dia. Hoy, a pedido del usuario, solo corre Quick
+    Reflexes ('slots_otros_desactivados' guarda el resto para cuando se quiera reactivar)."""
+    cfg=daily.programacion()
+    esperadas=sum(len(daily.GAMES[daily.ALIASES[slot['alias']]][1]) for slot in cfg['slots'])
     rows=daily.calendario();packets=daily.paquetes()
-    assert len(rows)==42 and {r['day'] for r in rows}==set(range(7))
-    assert len({r['stage'] for r in rows})==21
-    for day in range(7):assert len({r['name'] for r in rows if r['day']==day})==2
-    assert {r['name'] for r in rows if r['day']==0}!={r['name'] for r in rows if r['day']==1}
+    assert len(rows)==esperadas and {r['day'] for r in rows}<=set(range(7))
+    dias=sorted({slot['day'] for slot in cfg['slots']})
+    for day in dias:
+        nombres_dia={slot['alias'] for slot in cfg['slots'] if slot['day']==day}
+        assert len({r['name'] for r in rows if r['day']==day})==len(nombres_dia)
     for r,p in zip(rows,packets):
         assert len(p)==74 and struct.unpack_from('<I',p,58)[0]==r['id']
         assert struct.unpack_from('<I',p,66)[0]==r['entry']
@@ -66,7 +72,8 @@ def test_closed_daily_packets_do_not_consume_items_or_enter(world):
     s=world.player(items={20:8537});before=copy.deepcopy(stored(world,s))
     router=app.Servidor.__new__(app.Servidor)
     router.manejar(s,0x14b,None,None,'test',b'')
-    assert len(s.packets)==42 and all(p[:2]==b'\x57\x01' for p in s.packets)
+    esperadas=len(daily.calendario())
+    assert len(s.packets)==esperadas and all(p[:2]==b'\x57\x01' for p in s.packets)
     router.manejar(s,0x14a,None,None,'test',struct.pack('<I',1))
     assert stored(world,s)==before and not world.trips
     s.personaje.stage=41;s.personaje.tile_x,s.personaje.tile_y=161,93;daily.claim(s)
@@ -99,9 +106,15 @@ def test_all_seven_events_enter_the_correct_map_and_share_round_state(world,stag
 
 def test_registration_blocks_combat_and_reconnect_does_not_reset_killed_guard(world):
     s=world.player();daily.iniciar(374,registration=1);daily.entrar(s,374);daily.al_entrar(s)
-    m=next(iter(s.monstruos.values()))
+    # Durante el registro no hay NADA que ver ni que atacar: ni ses.monstruos ni daily.monstruos()
+    # entregan la sala todavia (se veian los cofres/objetivos puestos en pantalla desde que te
+    # inscribias, mucho antes de que el combate empezara de verdad).
+    assert s.monstruos=={} and daily.monstruos(374)=={}
+    m=next(iter(daily.room(daily.actual(374)).monstruos.values()))
     assert daily.controls_ai(s,m) and not daily.can_target(s,m)
     world.now[0]+=61;daily.cron()
+    # Al empezar el combate, cron() ya reparte la sala (y sus spawns) a quien estaba esperando.
+    assert s.monstruos and daily.monstruos(374)
     assert not daily.controls_ai(s,m) and daily.can_target(s,m)
     m.hp=0;daily.muerte_monstruo(s,m);daily.al_entrar(s)
     assert s.monstruos[m.entity_id].hp==0
@@ -156,11 +169,11 @@ def test_full_backpack_keeps_reward_pending_and_sql_error_rolls_back_claim(world
 
 
 def test_daily_scheduler_opens_only_today_slots_once_and_closes_at_deadline(world):
-    world.now[0]=dt.datetime(2026,10,25,17,45).timestamp()  # Sunday Swindle.
+    world.now[0]=dt.datetime(2026,10,26,17,45).timestamp()  # Monday Quick Reflexes (18:00).
     daily.cron();daily.cron()
     opened=[r for r in daily._ROUNDS.values() if daily.fase(r)=='registro']
-    assert {r['stage'] for r in opened}=={180,190,191,375}
-    assert len(opened)==4
+    assert {r['stage'] for r in opened}=={181,371}
+    assert len(opened)==2
     world.now[0]+=15*60;daily.cron()
     assert all(daily.fase(r)=='combate' for r in opened)
     world.now[0]+=30*60;daily.cron()
@@ -169,9 +182,12 @@ def test_daily_scheduler_opens_only_today_slots_once_and_closes_at_deadline(worl
 
 def test_daily_survival_objective_is_protected_and_waves_start_after_registration(world):
     s=world.player();daily.iniciar(376,registration=1);daily.entrar(s,376);daily.al_entrar(s)
-    assert len(s.monstruos)==1
-    tower=next(iter(s.monstruos.values()));assert tower.daily_objective
+    assert s.monstruos=={}  # nada visible todavia: el registro sigue abierto
+    tower=next(iter(daily.room(daily.actual(376)).monstruos.values()));assert tower.daily_objective
     world.now[0]+=61;daily.cron()
+    # cron() entrega la sala al empezar el combate; kind 6 ademas lanza su primera oleada
+    # en ese mismo tick, asi que ya no es solo la torre.
+    assert s.monstruos[tower.entity_id] is tower
     waves=[m for m in s.monstruos.values() if getattr(m,'daily_wave',False)]
     assert waves and not daily.can_target(s,tower)
     assert daily.controls_ai(s,waves[0])
@@ -251,6 +267,9 @@ def test_swindle_releases_forty_distributed_chests_and_opening_returns_to_factio
 
 
 def test_daily_experience_tick_awards_periodic_exp_and_skill_exp(world):
+    """A pedido del usuario, de momento EXP_PER_LEVEL/EXP_MINIMUM/SKILL_EXP_AMOUNT estan en 0
+    mientras se valida Quick Reflexes: el pulso corre igual (manda su aviso y su receipt),
+    pero reparte 0."""
     import daily_experience
     s, r = start_player(world, 374, level=410)
     s.personaje.habilidades = [(1, 10, 0)]  # Sword skill
@@ -258,8 +277,11 @@ def test_daily_experience_tick_awards_periodic_exp_and_skill_exp(world):
     init_exp = s.personaje.exp
     stamp = r['start'] + 10
     daily_experience.tick(r, stamp)
+    # exp sube igual: _award() siempre sube el exp guardado al minimo de su nivel si estaba
+    # mas bajo (el fixture usa exp=12345, muy por debajo del piso de nivel 410); eso no
+    # depende de EXP_PER_LEVEL. Lo que SI esta en 0 es la habilidad.
     assert s.personaje.exp > init_exp
-    assert s.personaje.habilidades[0][2] > 0
+    assert s.personaje.habilidades[0][2] == 0
     # Chat notices (0x000D) and status updates (0x001D) sent, NO fake damage/heal floats (0x000B)
     assert any(p[:2] == b'\x0d\x00' for p in s.packets)
     assert any(p[:2] == b'\x1d\x00' for p in s.packets)
@@ -285,7 +307,11 @@ def test_periodic_daily_reward_commits_progress_and_replay_receipt_together(worl
     with sqlite3.connect(world.db) as con:
         assert con.execute('SELECT COUNT(*) FROM daily_presence_awards').fetchone()[0]==1
     daily_experience.tick(r,stamp+10)
-    assert s.personaje.exp>before
+    # Nuevo pulso (distinto de los de arriba, que repetian el mismo): se registra aparte,
+    # pero con las cantidades en 0 de momento no suma nada por encima de 'before'.
+    with sqlite3.connect(world.db) as con:
+        assert con.execute('SELECT COUNT(*) FROM daily_presence_awards').fetchone()[0]==2
+    assert s.personaje.exp==before
 
 
 def test_daily_reward_sql_failure_can_retry_without_partial_skill_or_exp(world):
@@ -365,4 +391,19 @@ def test_simultaneous_daily_event_family_start_and_level_bracket_routing(world):
     # High level enters tier IV (stage 374)
     daily.entrar(s_high, 189)  # Even if requested 189, routed to 374 for level 410
     assert s_high.personaje.stage == 374
+
+
+def test_quick_reflexes_chests_are_hidden_until_combat_starts(world):
+    """EL FALLO REPORTADO: al inscribirse (fase 'registro') ya se veian los 40 Quick Hand
+    Treasure Box puestos en el mapa, antes de que empezara el combate de verdad."""
+    s=world.player(level=100);daily.iniciar(181,registration=1);daily.entrar(s,181);daily.al_entrar(s)
+    assert s.personaje.stage==181 and daily.fase(daily.actual(181))=='registro'
+    assert s.monstruos=={} and daily.monstruos(181)=={}
+    chests=daily.room(daily.actual(181)).monstruos
+    assert len(chests)==40 and all(m.npc_type==9234 for m in chests.values())
+    world.now[0]+=61;daily.cron()
+    assert daily.fase(daily.actual(181))=='combate'
+    assert len(s.monstruos)==40 and len(daily.monstruos(181))==40
+    chest=next(iter(s.monstruos.values()))
+    assert daily.can_target(s,chest)
 

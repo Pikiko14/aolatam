@@ -336,8 +336,16 @@ def generar(ses,stage,tag):
 
 
 def monstruos(stage):
+    """Los bichos/cofres del evento, SOLO en fase de combate.
+
+    room() los crea sin mirar la fase, y esto es lo que llama _monstruos_de()
+    para CUALQUIERA que este en el stage (inscrito o no): sin este filtro, los
+    Quick Hand Treasure Box de Quick Reflexes (y los objetivos de las demas
+    modalidades) salian ya puestos en pantalla durante el registro, antes de
+    que empezara el combate y de que can_target() dejara siquiera pegarles."""
     r=actual(stage)
-    return room(r).monstruos if r else {}
+    if not r or fase(r)!='combate':return {}
+    return room(r).monstruos
 
 
 def al_entrar(ses):
@@ -349,13 +357,19 @@ def al_entrar(ses):
         _return(ses);return
     ses._daily_round=r['id']
     ses._daily_presence=(r['id'],max(time.time(),r['start']))
-    ses.monstruos=room(r).monstruos
+    # Nada de bichos/cofres durante el registro: antes esto los ponia siempre, asi que se
+    # veian (y el servidor los llevaba en ses.monstruos, atacables o no) desde que te
+    # inscribias, mucho antes de que empezara el combate. cron() los manda en cuanto
+    # arranca de verdad (ver su comentario junto a 'phase'] = 'battle'').
+    en_combate=fase(r)=='combate'
+    ses.monstruos=room(r).monstruos if en_combate else {}
     ses.enviar(struct.pack('<HI',0x16a,max(0,int(r['end']-time.time()))))
     if r['kind']==5:p.buffs['daily_joy']={'fin':r['end'],'recoleccion_pct':90}
-    from login import _npc_spawn
-    for m in ses.monstruos.values():
-        if getattr(m,'daily_objective',False):ses.enviar(_npc_spawn(m.entity_id,m.npc_type,m.nombre,(m.tile_x,m.tile_y),sprite=m.sprite,klass=1))
-    aura(ses,fase(r)=='combate' and r['kind']==0)
+    if en_combate:
+        from login import _npc_spawn
+        for m in ses.monstruos.values():
+            if getattr(m,'daily_objective',False):ses.enviar(_npc_spawn(m.entity_id,m.npc_type,m.nombre,(m.tile_x,m.tile_y),sprite=m.sprite,klass=1))
+    aura(ses,en_combate and r['kind']==0)
 
 
 def marcas(ses,public=False,active=None):
@@ -593,7 +607,16 @@ def cron(now=None):
                 if family not in _ANUNCIOS_BATALLA:
                     _ANUNCIOS_BATALLA.add(family)
                     anuncio_banner('[Daily Event] %s battle has begun!'%r['name'])
+                # monstruos() ya no entrega nada durante el registro (ver su docstring): quien
+                # cargo el mapa mientras se registraba se quedo con ses.monstruos vacio, asi que
+                # al empezar el combate hay que mandarle ahora los spawns de la sala, igual que
+                # generar() hace con los cofres de Guard/Swindle al liberarlos.
+                import login
+                spawns=[login._npc_spawn(m.entity_id,m.npc_type,m.nombre,(m.tile_x,m.tile_y),sprite=m.sprite,klass=1)
+                        for m in room(r).monstruos.values() if m.vivo]
                 for p in _sessions(r):
+                    p.monstruos=room(r).monstruos
+                    if spawns:p.enviar(*spawns)
                     aura(p,r['kind']==0);aviso(p,r['name']+' has begun!')
             __import__('daily_experience').tick(r,stamp)
             _mechanics(r,stamp)
