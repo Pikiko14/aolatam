@@ -453,6 +453,18 @@ def paquetes_invocaciones(ses_owner) -> list:
     return pkts
 
 
+def _vida_publica(ses):
+    """0x0013 KIND_HP del jugador con su id publico, como lo manda pvp_liga a los demas.
+
+    Al presentar a un jugador no se mandaba su vida. Si el cliente que mira lo habia visto
+    morir (pvp_liga lo mata con la muerte de monstruo) o ese id publico lo habia llevado
+    otro que murio -- entidad_de reutiliza los numeros --, se le seguia viendo muerto."""
+    import combate as _cb
+    p = ses.personaje
+    hp = 0 if getattr(ses, 'muerto', False) else max(0, int(getattr(p, 'hp', 0) or 0))
+    return _cb.atributo(entidad_de(ses), hp, _cb.KIND_HP)
+
+
 def entrar(ses, stage):
     """El jugador llega a un mapa: se le presenta a los que ya estaban y al
     reves, incluyendo mascotas e invocaciones activas."""
@@ -474,7 +486,7 @@ def entrar(ses, stage):
             _presentar(s, ses)
             continue
         # Presentar a 'ses' ante 's'
-        _mandar(s, yo_spawn, *_vestir(ses), *paquetes_puesto(ses))
+        _mandar(s, yo_spawn, *_vestir(ses), *paquetes_puesto(ses), _vida_publica(ses))
         if ts_yo:
             _mandar(s, _cb.atributo(entidad_de(ses), ts_yo, _cb.KIND_TRANSFORM))
 
@@ -494,7 +506,7 @@ def entrar(ses, stage):
 
         # Presentar a 's' ante 'ses'
         s_spawn = _spawn(s)
-        _mandar(ses, s_spawn, *_vestir(s), *paquetes_puesto(s))
+        _mandar(ses, s_spawn, *_vestir(s), *paquetes_puesto(s), _vida_publica(s))
         ts_s = transform_sprite_de(s)
         if ts_s:
             _mandar(ses, _cb.atributo(entidad_de(s), ts_s, _cb.KIND_TRANSFORM))

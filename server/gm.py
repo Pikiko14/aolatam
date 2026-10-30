@@ -507,6 +507,11 @@ def _pet(ses, args) -> tuple:
         _ms.evolucionar(f, ramas[str(args[1]).lower()])
         f.pop('rama', None)
         msg = f'pet evolved to {f.get("nombre")} ({f.get("sprite")})'
+        try:
+            _app()._guardar_bolsa(ses, ses.personaje.char_id)
+        except Exception:
+            log.exception('GM /pet save')
+        return msg, [_ms.armar(f)] + _app()._pet_recrear(ses)
     else:
         return uso, []
     try:

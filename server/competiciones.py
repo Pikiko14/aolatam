@@ -1111,6 +1111,8 @@ async def reloj():
                 __import__('arena_premios_compat').caducados(ses)
                 __import__('item_mall').caducados(ses)
                 __import__('arena_premios_compat').caducados(ses, campo_fin='stone_fin', campo_item='stone_item')   # piedras de 30/60 dias
+                __import__('app')._items_con_tiempo(ses)      # equipo "(N days)": pone la fecha
+                __import__('arena_premios_compat').caducados(ses, campo_fin='item_fin', campo_item='item_fin_id')
                 __import__('competicion_premios').entregar(ses, automatico=True)
         except Exception:
             log.exception('competition clock')

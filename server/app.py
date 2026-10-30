@@ -2446,6 +2446,109 @@ def _pet_siguiente_entidad(ses):
     return _PET_ENT[0]
 
 
+def _pet_avisar_reaparicion(ses, old_eid):
+    """La mascota fuera cambio de aspecto (evoluciono) y se recreo con otra entidad: los
+    demas del mapa la seguian viendo con el sprite viejo hasta reloguear."""
+    try:
+        import presencia as _pr_pet
+        if old_eid:
+            _pr_pet.notificar_mascota_despawn(ses, int(old_eid))
+        _pr_pet.notificar_mascota_spawn(ses)
+    except Exception:
+        log.debug('aviso de mascota evolucionada', exc_info=True)
+
+
+_CUENTA_AL_EQUIPAR = {}
+_CLAVES_CON_PLAZO = ('mall_fin', 'arena_premio_fin', 'holy_pass_fin', 'cofre_fin', 'stone_fin')
+
+
+def _cuenta_al_equipar(item_id):
+    """使用計時 = 是: el plazo empieza al equiparlo, no al tenerlo."""
+    item_id = int(item_id)
+    if item_id not in _CUENTA_AL_EQUIPAR:
+        import sqlite3
+        import inventario as _iv_ce
+        v = False
+        db = pathlib.Path(__file__).parent.parent / 'corpus' / 'content.db'
+        if db.exists():
+            con = sqlite3.connect(db)
+            try:
+                fila = _iv_ce.fila_item(con, '"使用計時"', item_id)
+                v = bool(fila and str(fila[0] or '').strip() == '是')
+            except Exception:
+                v = False
+            finally:
+                con.close()
+        _CUENTA_AL_EQUIPAR[item_id] = v
+    return _CUENTA_AL_EQUIPAR[item_id]
+
+
+def _items_con_tiempo(ses, now=None):
+    """Pone fecha de caducidad al equipo con 持續時間 (minutos) que no la tenga.
+
+    Solo los del mall, Arena, Holy, cofres y piedras traian fecha: el resto de los
+    "(3 days)", "(30 Days)"... ni ensenaba la cuenta atras ni caducaba nunca. La fecha va
+    en las mejoras de la casilla (item_fin / item_fin_id), igual que mall_fin, asi que viaja
+    al moverlo y al banco, la pinta inventario.marcar_caducidad_holy y la retira
+    arena_premios_compat.caducados. Devuelve las casillas a las que se les puso fecha."""
+    import inventario as _iv_t
+    p = getattr(ses, 'personaje', None)
+    bolsa = getattr(ses, 'inventario', None) or {}
+    if not p or not bolsa:
+        return []
+    if not isinstance(getattr(p, 'mejoras', None), dict):
+        p.mejoras = {}
+    now = time.time() if now is None else now
+    puestas = []
+    for slot, item in list(bolsa.items()):
+        item = int(item or 0)
+        if not item or _iv_t.es_mascota(item) or _iv_t.ranura_equipo_de(item) is None:
+            continue
+        minutos = _iv_t._col_item(item, '持續時間')
+        if minutos <= 0:
+            continue
+        meta = p.mejoras.get(slot) or {}
+        if any(meta.get(k) for k in _CLAVES_CON_PLAZO):
+            continue
+        if meta.get('item_fin') and meta.get('item_fin_id') == item:
+            continue
+        if _cuenta_al_equipar(item) and not _iv_t.es_equipo(slot):
+            continue
+        meta = p.mejoras.setdefault(slot, {})
+        meta['item_fin'] = now + minutos * 60
+        meta['item_fin_id'] = item
+        puestas.append(slot)
+    if puestas:
+        if getattr(ses, 'usuario', None):
+            cuentas.guardar_mejoras(ses.usuario, p.char_id, p.mejoras)
+        ses.enviar(*_refrescar(ses, puestas))
+    return puestas
+
+
+def _pet_recrear(ses):
+    """Vuelve a sacar la mascota activa con su aspecto actual, para el dueno y los demas.
+    Devuelve los paquetes del dueno (vacio si no esta fuera)."""
+    import mascotas as _ms_r
+    import combate as _cb_r
+    p = getattr(ses, 'personaje', None)
+    f = getattr(p, 'mascota', None) if p else None
+    old = getattr(ses, 'pet_entity_id', None) or (f or {}).get('entidad')
+    if not isinstance(f, dict) or not f.get('fuera') or not old:
+        return []
+    yo = p.entity_id
+    nuevo = _pet_siguiente_entidad(ses)
+    f['entidad'] = nuevo
+    ses.pet_entity_id = nuevo
+    est = dict(f)
+    est.update({'entidad': nuevo, 'x': f.get('x', p.tile_x + 1), 'y': f.get('y', p.tile_y),
+                'dueno': yo, 'dueno_nombre': p.nombre, 'tipo': f.get('tipo', 0)})
+    salida = [_ms_r.quitar(int(old)), _ms_r.enlazar(yo, 0),
+              _ms_r.entidad_mundo(_pet_plantilla(), est), _ms_r.enlazar(yo, nuevo),
+              _ms_r.armar(f), _cb_r.atributo(nuevo, _ms_r.hp_eff(f), _cb_r.KIND_HP)]
+    _pet_avisar_reaparicion(ses, old)
+    return salida
+
+
 _PET_PL = [None]
 
 
@@ -3542,6 +3645,7 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
                             _ms.enlazar(yo, pet_eid),
                             _ms.armar(f_pet),
                         ])
+                        _pet_avisar_reaparicion(ses, old_eid)
                     if pet_eid:
                         salida_combate.append(_cb.atributo(int(pet_eid), _ms.hp_eff(f_pet), _cb.KIND_HP))
                         if int(f_pet.get('saciedad', 0)) > 100:
@@ -17539,6 +17643,8 @@ class Servidor:
                         salida_cert.append(struct.pack('<HIBBII', 0x001D, new_eid, 1, 4, 3796, max(60000, (int(_f_pet['saciedad']) - 100) * 60000)))
 
                 ses.enviar(*salida_cert)
+                if pet_eid and _f_pet.get('fuera'):
+                    _pet_avisar_reaparicion(ses, pet_eid)
                 log.info(f"[{addr}] mascota evoluciono con certificado etapa {_cert_etapa}: {_f_pet.get('nombre')}")
                 return
 
@@ -17848,6 +17954,7 @@ class Servidor:
                             _msp.enlazar(yo_pu, pet_eid),
                             _msp.armar(_f),
                         ])
+                        _pet_avisar_reaparicion(ses, old_eid_pu)
                     salida_pet.append(_cb_pu.atributo(int(pet_eid), _msp.hp_eff(_f), _cb_pu.KIND_HP))
                     if int(_f.get('saciedad', 0)) > 100:
                         salida_pet.append(struct.pack('<HIBBII', 0x001D, int(pet_eid), 1, 4, 3796, max(60000, (int(_f['saciedad']) - 100) * 60000)))
@@ -17920,6 +18027,7 @@ class Servidor:
                                 _msv.enlazar(yo_v, pet_eid_v),
                                 _msv.armar(_f),
                             ])
+                            _pet_avisar_reaparicion(ses, old_eid_v)
                         salida_v.append(_cbv.atributo(int(pet_eid_v), _msv.hp_eff(_f), _cbv.KIND_HP))
                         if int(_f.get('saciedad', 0)) > 100:
                             salida_v.append(struct.pack('<HIBBII', 0x001D, int(pet_eid_v), 1, 4, 3796, max(60000, (int(_f['saciedad']) - 100) * 60000)))
