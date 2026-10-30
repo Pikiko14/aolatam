@@ -1522,17 +1522,25 @@ def aplicar_certificado(ficha: dict, etapa_cert: int) -> tuple:
     etapa = ficha_de_sprite(sprite).get('etapa')
     nv = int(ficha.get('nivel', 1))
 
+    # MBC: nivel 35 y forma 初階 -> 中階. ABC: nivel 55 y SOLO sobre la 中階, o sea despues del
+    # MBC (antes dejaba usar el ABC en una 初階 y se saltaba el MBC).
     if etapa_cert == 2:
         if nv < NIVEL_MEDIO:
             return False, f"Pet must be Level {NIVEL_MEDIO} or higher to use Medium Blood Certificate."
-        if etapa not in ('初階', '原型'):
+        if etapa == '原型':
+            # Un huevo que no paso por la evolucion del nivel 15 (subir_nivel): se le hace aqui.
+            evolucionar(ficha, rama_por_crianza(ficha))
+            etapa = ficha_de_sprite(ficha.get('sprite')).get('etapa')
+        if etapa != '初階':
             return False, "This certificate can only be used on a first-stage pet."
         evolucionar(ficha, rama_por_crianza(ficha))
         return True, f"Your pet evolved to {ficha.get('nombre')}!"
     elif etapa_cert == 3:
         if nv < NIVEL_AVANZADO:
             return False, f"Pet must be Level {NIVEL_AVANZADO} or higher to use Advanced Blood Certificate."
-        if etapa not in ('中階', '初階'):
+        if etapa in ('原型', '初階'):
+            return False, "Your pet must use a Medium Blood Certificate before an Advanced Blood Certificate."
+        if etapa != '中階':
             return False, "This certificate can only be used on a medium-stage pet."
         evolucionar(ficha, rama_por_crianza(ficha))
         return True, f"Your pet evolved to {ficha.get('nombre')}!"
