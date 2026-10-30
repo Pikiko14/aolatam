@@ -73,18 +73,13 @@ ROPA_INICIAL = {
 }
 # Lo mismo para un personaje HOMBRE (primer byte de la apariencia = 1). El 26/28/30 es de mujer en item.xml del cliente (sus dolls 129/131/133
 # son el qipao, un mono de pelo y zapatos de mujer): puestos a un hombre no se dibujan y queda con el cuerpo descubierto.
-ROPA_INICIAL_HOMBRE = {
-    'cuerpo':  3410,    # Blue Students' Clothes(M)  (doll 15)
-    'guantes': 3409,    # Students' Gloves(M)        (doll 14)
-    'zapatos': 3411,    # Students' Shoes(M)         (doll 16)
-}
-INVENTARIO_INICIAL = [
-    20103,              # Level 1-10 Growth Box
-]
 
-# OJO: todavia no se entregan. Falta poder CONSTRUIR el 0x001B (el contenido
-# del contenedor); hoy server/equipo.py solo sabe reproducir los dos estados
-# que se capturaron. Ver docs/01_HECHOS_VERIFICADOS.md.
+# La Level 1-10 Growth Box (20103) NO se da aqui: se entrega mas tarde, al
+# terminar el tutorial (segunda charla con el Angels' Tutor), junto con la
+# caja de clase -- ver clases.premio_final() y clases.GROWTH_BOX. Antes habia
+# un INVENTARIO_INICIAL con este mismo item que nunca se leia desde ningun
+# sitio (personaje_nuevo() no lo usaba): parecia que la entrega estuviera
+# pendiente, pero ya ocurre, solo que por el otro camino.
 
 
 def apariencia_de_creacion(elegidos) -> list:
@@ -106,7 +101,7 @@ def apariencia_de_creacion(elegidos) -> list:
 def personaje_nuevo(nombre: str, ranura: int, char_id: int,
                     elegidos=None) -> dict:
     apariencia = apariencia_de_creacion(elegidos)
-    ropa = ROPA_INICIAL_HOMBRE if apariencia[0] == 1 else ROPA_INICIAL
+    ropa = ROPA_INICIAL
     return {
         'nombre': nombre,
         'char_id': char_id,
