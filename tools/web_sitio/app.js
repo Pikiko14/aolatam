@@ -12,6 +12,11 @@ downloadButton.addEventListener('click', () => {
     const link = document.createElement('a');
     link.href = url.href;
     link.download = '';
+    if (url.origin !== window.location.origin) {
+      // Un sitio externo (p.ej. Mediafire) ignora el download y navega: que abra en pestaña nueva.
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+    }
     document.body.appendChild(link);
     link.click();
     link.remove();
