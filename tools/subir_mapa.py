@@ -166,6 +166,28 @@ def registrar_stage(n, nombre):
     print('  fila del stage %d (%s) en stage.xml' % (n, nombre))
 
 
+REGISTRO_PAK = RAIZ / 'tools' / 'pak_launcher.txt'
+
+
+def pak_para(version, forzado=None):
+    """El pak donde el launcher instala esta version. El launcher solo sabe instalar en un pak donde esas entradas todavia no
+    estan (si ya existen falla y lo deja vacio): cada version NUEVA va al siguiente (update28..update31, el juego carga hasta el 31);
+    repetir la misma version reutiliza el suyo. Se recuerda en tools/pak_launcher.txt ("<version> <pak>")."""
+    if forzado:
+        return forzado
+    ver, pak = REGISTRO_PAK.read_text(encoding='utf-8').split() if REGISTRO_PAK.exists() else ('', 'update27')
+    if version == ver:
+        return pak
+    n = int(pak.replace('update', '')) + 1
+    if n > 31:
+        raise SystemExit('No quedan paks libres: el ultimo que carga el juego es update31 y la version %s ya usa %s. '
+                         'Hay que reiniciar el cliente (pak nuevo desde cero).' % (ver, pak))
+    nuevo = 'update%d' % n
+    REGISTRO_PAK.write_text('%s %s' % (version, nuevo) + chr(10), encoding='utf-8')
+    print('  version nueva %s -> el launcher la instala en %s.pak' % (version, nuevo))
+    return nuevo
+
+
 def hacer_commit(n, nombre, archivos):
     existentes = [f for f in archivos if (RAIZ / f).exists()]
     correr(['git', 'add'] + existentes)
@@ -209,8 +231,7 @@ def main():
     ap.add_argument('--instancia', action='store_true', help='registrarlo como instancia (los bichos no reaparecen)')
     ap.add_argument('--solo-local', action='store_true', help='solo prepara y prueba: ni git ni VPS')
     ap.add_argument('--sin-git', action='store_true', help='no hace commit ni push')
-    ap.add_argument('--pak', default=os.environ.get('AO_PARCHE_PAK_LAUNCHER', 'update28'),
-                    help='pak donde el launcher instala el parche (por defecto update28)')
+    ap.add_argument('--pak', help='pak donde el launcher instala el parche (por defecto, el siguiente libre: ver tools/pak_launcher.txt)')
     ap.add_argument('--sin-pruebas', action='store_true')
     a = ap.parse_args()
     n = a.numero
@@ -283,15 +304,17 @@ def main():
     else:
         print('  el mapa ya existe en el cliente: stage.xml no cambia')
     codigo("import sys; sys.path.insert(0,'server'); import parche; e=parche.generar(); print('  parche', e['version'], e['bytes'], 'bytes')")
+    version = json.loads((RAIZ / 'parches' / 'version.json').read_text(encoding='utf-8'))['version']
+    pak = pak_para(version, a.pak)
     correr([PY, '-I', 'tools/generar_paquetes_launcher.py'],
-           env={'AO_PARCHE_PAK_LAUNCHER': a.pak, 'AO_PARCHE_HOST': VPS.split('@')[-1]})
+           env={'AO_PARCHE_PAK_LAUNCHER': pak, 'AO_PARCHE_HOST': VPS.split('@')[-1]})
 
     if not a.sin_pruebas:
         paso(6, 'pruebas')
         pruebas = ['tools/test_eventos.py'] + (['tools/test_instancia_oscura.py'] if n == 900 else [])
         correr([PY, '-m', 'pytest'] + pruebas + ['-q', '-p', 'no:cacheprovider'])
 
-    archivos_git = ['tools/mapas_propios/map%d.mpc' % n, 'server/plantillas/transitable.bin', 'server/plantillas/eventos.json'] + codigo_cambiado
+    archivos_git = ['tools/pak_launcher.txt', 'tools/mapas_propios/map%d.mpc' % n, 'server/plantillas/transitable.bin', 'server/plantillas/eventos.json'] + codigo_cambiado
     archivos_vps = ['server/plantillas/transitable.bin', 'server/plantillas/eventos.json', 'parches/update27.pak', 'parches/version.json',
                     'parches/extras/map/map%d.mpc' % n] + codigo_cambiado
     if plantilla:
