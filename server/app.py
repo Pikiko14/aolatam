@@ -12818,6 +12818,21 @@ class Servidor:
                 if not _am0 or not _iv_mun0.es_municion(_am0):
                     log.info(f"[{addr}] ataque rechazado: {arma_puesta} sin municion en la mano izquierda")
                     return
+            # Una tecnica de arma (Sword/Axe/Spear/Longbow/Shadowblade) solo se
+            # puede usar con esa rama puesta. El Skill Angel la saca de
+            # habilidades al cambiar, pero el cliente seguia dejando pulsar su
+            # icono viejo en la barra: el servidor nunca comprobaba que la
+            # rama todavia estuviera equipada, asi que el golpe pasaba igual.
+            if tipo != _cb.ATAQUE_NORMAL:
+                import skills as _sk_arma
+                _rama_tipo = _sk_arma.skill_de_magia(tipo)
+                if _rama_tipo in _sk_arma.RAMAS_MELEE:
+                    _ramas_actuales = {h[0] if isinstance(h, (list, tuple)) else h
+                                       for h in (ses.personaje.habilidades or [])}
+                    if _rama_tipo not in _ramas_actuales:
+                        log.info(f"[{addr}] habilidad {tipo} rechazada: ya no se lleva "
+                                 f"la rama {_sk_arma.nombre_rama(_rama_tipo)}")
+                        return
             # Una habilidad de arma solo se usa con esa arma en una mano (o el escudo en la otra): con una espada no se lanzan las de hacha. Ni el robot sustituye al arma.
             _req_arma = mag.get('equip_req') if mag else None
             if _req_arma and ses.inventario is not None:

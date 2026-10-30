@@ -80,6 +80,8 @@ def test_buff_on_other_player_does_not_refill_either(battle):
 
 def test_explicit_instant_mana_recovery_is_preserved(battle):
     mag = cb.datos_magia(12960)  # Soul Discharge V
+    # Es tecnica de Sword: sin esa rama puesta el servidor ya no la deja lanzar.
+    battle.p.habilidades = [(9, 300, 0)]
     battle.s.sp = 2000
     battle.cast(12960)
     assert mag['mp_cura'] == 12000
