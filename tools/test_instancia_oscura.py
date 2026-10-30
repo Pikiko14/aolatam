@@ -1,4 +1,4 @@
-"""Instancia oscura Lv55-60 (Shadow Area, stage 55): plantilla, portales y jefe con piedras de Holy."""
+"""Instancia oscura Lv55-60 (Training Cave (big), stage 46): plantilla, portales y jefe con piedras de Holy."""
 import json
 import pathlib
 import sys
@@ -7,22 +7,22 @@ RAIZ = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(RAIZ / 'server'))
 import app
 import combate
-import eventos
 import transitable
 
 PLANT = RAIZ / 'server' / 'plantillas'
-STAGE = 55
+STAGE = 46
 JEFE = 5258
+STAGES_PROHIBIDOS = (55, 66)       # stage.xml con 強制傳送: el cliente se cierra al entrar
 PIEDRAS_HOLY = {8537, 8770, 24882, 28866, 40921}
 
 
 def _spawns():
-    return json.loads((PLANT / 'shadow_area.json').read_text(encoding='utf-8'))['spawns']
+    return json.loads((PLANT / 'training_cave_big.json').read_text(encoding='utf-8'))['spawns']
 
 
 def test_es_instancia_y_tiene_plantilla():
     assert app.es_instancia(STAGE)
-    assert app.mapas_poblados()[STAGE] == 'shadow_area.json'
+    assert app.mapas_poblados()[STAGE] == 'training_cave_big.json'
 
 
 def test_niveles_mezcla_de_normales_y_elites_y_un_jefe():
@@ -38,7 +38,8 @@ def test_niveles_mezcla_de_normales_y_elites_y_un_jefe():
 
 
 def test_todos_pisan_suelo_y_se_llega_a_ellos_desde_la_entrada():
-    llegada = tuple(eventos.casillas_de_tag(STAGE, 1)[0])
+    portales = json.loads((PLANT / 'portales.json').read_text(encoding='utf-8'))['mapas']
+    llegada = tuple(next(p for p in portales['41'] if p.get('destino') == STAGE)['llegada'])
     visto, cola = {llegada}, [llegada]
     while cola:
         x, y = cola.pop()
@@ -77,3 +78,11 @@ def test_el_jefe_solo_suelta_piedras_de_holy():
     for _ in range(50):
         botin = combate.botin_items(JEFE, 'Cursed Larry', 63)
         assert botin and all(item in PIEDRAS_HOLY for item, _n in botin)
+
+
+def test_el_mapa_elegido_no_lleva_flags_especiales_en_stage_xml():
+    xml = (RAIZ / 'extracted_paks' / 'update26' / 'setting' / 'eng' / 'stage.xml').read_text(encoding='utf-8', errors='replace')
+    fila = next(l for l in xml.splitlines() if '編號="%d"' % STAGE in l and '<場景' in l)
+    for flag in ('強制傳送', '陣營', '平行空間', 'PVP陣營對戰', '動態空間', '不可標記'):
+        assert flag not in fila, (flag, fila)
+    assert STAGE not in STAGES_PROHIBIDOS

@@ -1,4 +1,4 @@
-"""Genera server/plantillas/shadow_area.json: la instancia oscura de Lv55-60 (stage 55, Shadow Area).
+"""Genera server/plantillas/training_cave_big.json: la instancia oscura de Lv55-60 (stage 46, Training Cave (big)).
 
 Mezcla bichos normales (Lv55-60) con elites (Lv60, mas vida y ataque) en grupos repartidos por el mapa, y al fondo
 un jefe (Cursed Larry, npc_type 5258) con cuatro elites de guardia. El jefe suelta piedras de Holy Battlefield
@@ -16,10 +16,10 @@ RAIZ = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(RAIZ / 'server'))
 sys.stdout.reconfigure(encoding='utf-8')
 
-import eventos
 import transitable
 
-STAGE = 55
+STAGE = 46            # Training Cave (big): cueva oscura (brillo 160), sin faccion ni teletransporte forzoso.
+                      # Shadow Area (55) NO sirve: su stage.xml lleva 強制傳送 y el cliente se cerraba al entrar.
 ENTIDAD_BASE = 7550000
 SEMILLA = 55060
 
@@ -51,7 +51,12 @@ def alcanzables(origen):
 
 def main():
     azar = random.Random(SEMILLA)
-    llegada = tuple(eventos.casillas_de_tag(STAGE, 1)[0])
+    # Este mapa no trae tags de llegada: la entrada es el extremo de la zona caminable mas grande (arriba a la derecha)
+    # y el jefe queda en lo mas lejano que se camina desde ella.
+    todos = [(x, y) for x in range(200) for y in range(125) if transitable.se_pisa(STAGE, x, y)]
+    zona = alcanzables(todos[0])
+    abiertas = [t for t in zona if all((t[0] + dx, t[1] + dy) in zona for dx in range(-3, 4) for dy in range(-3, 4))]
+    llegada = max(abiertas, key=lambda t: t[0] - t[1])      # con espacio libre alrededor, no en el borde del mapa
     dist = alcanzables(llegada)
     libres = list(dist)
     cheb = lambda a, b: max(abs(a[0] - b[0]), abs(a[1] - b[1]))
@@ -103,13 +108,16 @@ def main():
                    'hp_mult': JEFE_HP, 'atk_mult': JEFE_ATK, 'jefe': True})
     for _ in range(4):
         poner(random.Random(azar.random()).choice(ELITES), jefe_tile, 7, elite=True)
-    datos = {'_nota': 'Shadow Area (stage 55) como instancia oscura Lv55-60: bichos normales y elites en %d grupos y, al fondo, '
+    datos = {'_nota': 'Training Cave (big), stage 46, como instancia oscura Lv55-60: bichos normales y elites en %d grupos y, al fondo, '
                       'el jefe Cursed Larry (suelta piedras de Holy Battlefield). Generado con tools/generar_instancia_oscura.py.' % len(centros),
              'stage': STAGE, 'spawns': spawns, 'recursos': []}
-    destino = RAIZ / 'server' / 'plantillas' / 'shadow_area.json'
+    destino = RAIZ / 'server' / 'plantillas' / 'training_cave_big.json'
     destino.write_text(json.dumps(datos, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
     n = collections.Counter('jefe' if s.get('jefe') else 'elite' if s.get('elite') else 'normal' for s in spawns)
-    print('escrito', destino, dict(n), 'jefe en', jefe_tile, 'llegada', llegada)
+    print('escrito', destino, dict(n), 'jefe en', jefe_tile, 'llegada', llegada, 'zona', len(dist))
+    # el portal de vuelta, a 3-4 casillas de la llegada
+    vuelta = next(t for t in sorted(abiertas, key=lambda t: dist[t]) if 3 <= cheb(t, llegada) <= 4)
+    print('portal de vuelta en', vuelta)
 
 
 if __name__ == '__main__':

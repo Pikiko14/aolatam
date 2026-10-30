@@ -1189,7 +1189,7 @@ PLANTILLAS_POR_STAGE = {
 }
 
 
-PLANTILLAS_POR_STAGE[55] = 'shadow_area.json'      # instancia oscura Lv55-60 (tools/generar_instancia_oscura.py)
+PLANTILLAS_POR_STAGE[46] = 'training_cave_big.json'      # instancia oscura Lv55-60 (tools/generar_instancia_oscura.py)
 PLANTILLAS_POR_STAGE.update({stage:'daily_%d.json'%stage for stage in __import__('daily_events').STAGES})
 
 HOUSE_INTERACTIVE_IDS = tuple(
