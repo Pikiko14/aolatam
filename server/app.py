@@ -20216,13 +20216,20 @@ class Servidor:
                     return
                 elif _el == 5063 and ses.personaje:
                     # Raphael (Fighting Palace): "I'm ready to go to the Angel Lyceum."
-                    # Manda la linea 5065 y luego teletransporta a Angel Lyceum (stage 41)
+                    # Manda la linea 5065 y luego teletransporta a Angel Lyceum (stage 41).
+                    #
+                    # ANTES llamaba al cambio de mapa directo (stage 41, tile 152,74), sin
+                    # pasar por _final_tutorial(): quien terminaba el examen de combate de
+                    # verdad llegaba al Lyceum SIN la caja de clase ni la Growth Box, mientras
+                    # que abandonar el tutorial a medias (opcion 5011, mas abajo) si las daba.
+                    # _final_tutorial() ya manda al mismo sitio (clases.STAGE_LYCEUM/TILE_LYCEUM
+                    # = 41, 152, 74) y ademas entrega las cajas, asi que basta con llamarla.
                     nom = ses.personaje.nombre if ses.personaje else 'Jugador'
                     submsg_5065 = dialogos.armar_linea(5065, 5, [])
                     submsg_fin = struct.pack('<H', 0x0012) + dialogos.FIN
                     ses.enviar(submsg_5065, submsg_fin)
                     ses.dlg_ent = None
-                    _sincronizar_cambio_mapa(ses, 41, 152, 74)
+                    _final_tutorial(ses, addr)
                     log.info(f"[{addr}] Raphael (Fighting Palace): combate completado -> teletransportado a Angel Lyceum (41)")
                     return
                 elif ses.personaje:

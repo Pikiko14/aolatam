@@ -77,6 +77,21 @@ class TestFightingPalaceTutorial(unittest.TestCase):
         res_5059 = dialogos.respuesta_a(5059)
         self.assertTrue(res_5059[0].endswith(dialogos.FIN))
 
+    def test_terminar_el_examen_de_combate_entrega_las_cajas_del_tutorial(self):
+        """EL FALLO REPORTADO: quien terminaba el examen de verdad (opcion 5063, "I'm
+        ready to go to the Angel Lyceum.") llegaba al Lyceum sin la caja de clase ni la
+        Growth Box, mientras que abandonar el tutorial a medias (opcion 5011) si las daba.
+        La rama de 5063 llamaba a _sincronizar_cambio_mapa() a secas en vez de pasar por
+        _final_tutorial(), que es quien reparte las cajas (clases.premio_final)."""
+        raiz = pathlib.Path(__file__).resolve().parent.parent
+        fuente = (raiz / 'server' / 'app.py').read_text(encoding='utf-8')
+        i = fuente.index("elif _el == 5063 and ses.personaje:")
+        trozo = fuente[i:i + 1500]
+        self.assertIn('_final_tutorial(ses, addr)', trozo,
+                      'la rama de "ir al Lyceum" del examen de combate no entrega las cajas del tutorial')
+        self.assertNotIn('_sincronizar_cambio_mapa(ses, 41, 152, 74)', trozo,
+                         'volvio el cambio de mapa a secas, sin pasar por _final_tutorial()')
+
 if __name__ == '__main__':
     unittest.main()
 
