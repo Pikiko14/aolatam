@@ -89,6 +89,100 @@ def catalogo():
     return _cat
 
 
+_items = []
+
+
+def items():
+    """[{id, nombre, nivel, clase}] de las tablas item..item9 de corpus/content.db, para los
+    selectores del creador de eventos (en vez de escribir el numero a mano)."""
+    if _items:
+        return _items
+    import sqlite3
+    db = os.path.join(_raiz(), 'corpus', 'content.db')
+    if not os.path.exists(db):
+        return _items
+    con = sqlite3.connect(db)
+    try:
+        for t in ['item'] + ['item%d' % i for i in range(2, 10)]:
+            try:
+                filas = con.execute('select id, 基本名稱, 物品等級, 物品類別 from %s' % t).fetchall()
+            except sqlite3.Error:
+                continue
+            vistos = {x['id'] for x in _items}
+            for i, nom, nv, cl in filas:
+                # El mismo id sale en varias tablas (lo repiten los .pak): vale el primero.
+                if str(i).isdigit() and nom and int(i) not in vistos:
+                    vistos.add(int(i))
+                    _items.append(dict(id=int(i), nombre=nom, nivel=int(nv) if str(nv or '').isdigit() else 0,
+                                       clase=cl or ''))
+    finally:
+        con.close()
+    _items.sort(key=lambda x: x['id'])
+    return _items
+
+
+def buscar_items(q, limite=60):
+    q = (q or '').strip().lower()
+    if not q:
+        return []
+    if q.isdigit():
+        return [x for x in items() if str(x['id']).startswith(q)][:limite]
+    return [x for x in items() if q in x['nombre'].lower()][:limite]
+
+
+def nombres_items(ids):
+    por_id = {x['id']: x['nombre'] for x in items()}
+    return {str(i): por_id.get(int(i), '') for i in ids if str(i).isdigit()}
+
+
+# ------------------------------------------------------------- reglas del servidor (matar X)
+def _archivo_reglas():
+    return os.path.join(E.PLANTILLAS, 'eventos_propios.json')
+
+
+def _validar_regla(r):
+    import importlib.util
+    f = os.path.join(_raiz(), 'server', 'eventos_propios.py')
+    spec = importlib.util.spec_from_file_location('eventos_propios_editor', f)
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m.validar(r)
+
+
+def reglas():
+    f = _archivo_reglas()
+    if not os.path.exists(f):
+        return dict(reglas=[])
+    return json.load(open(f, encoding='utf-8'))
+
+
+def guardar_reglas(lista):
+    """Valida y escribe server/plantillas/eventos_propios.json (con .bak). Devuelve los errores
+    por regla sin escribir si alguna esta mal."""
+    errores = {}
+    ids = set()
+    for i, r in enumerate(lista):
+        mal = _validar_regla(r)
+        if r.get('id') in ids:
+            mal.append('id repetido')
+        ids.add(r.get('id'))
+        if mal:
+            errores[r.get('id') or '#%d' % (i + 1)] = mal
+    if errores:
+        return dict(ok=False, errores=errores)
+    f = _archivo_reglas()
+    j = reglas() if os.path.exists(f) else {}
+    if os.path.exists(f):
+        shutil.copyfile(f, f + '.bak')
+    j.setdefault('_nota', 'Reglas "matar X monstruos" del servidor; ver server/eventos_propios.py. '
+                          'Se editan con tools/editor_mapas (pestana Eventos).')
+    j['reglas'] = lista
+    tmp = f + '.tmp'
+    open(tmp, 'w', encoding='utf-8').write(json.dumps(j, ensure_ascii=False, indent=1) + '\n')
+    os.replace(tmp, f)
+    return dict(ok=True, total=len(lista))
+
+
 def foto(sid):
     """PNG de un sprite de NPC o monstruo, o None."""
     global _idx_wait

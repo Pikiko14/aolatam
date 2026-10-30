@@ -1249,6 +1249,7 @@ def poblar(stage: int, player_level=1):
         salida += territorios_liga.paquetes(stage)
     salida += portales_de(stage)
     salida += __import__('instancia_oscura').poblar(stage)
+    salida += __import__('eventos_propios').poblar(stage)
     try:
         import casas as _cs_pob
         if stage in _cs_pob.MAPAS_EXHIBICION:

@@ -18,6 +18,8 @@ Vive en `tools/editor_mapas/` del repo. Lee los **assets del cliente** (carpeta 
 ---
 
 ## Eventos en español (pestaña "Eventos")
+- **Reglas del servidor: matar X monstruos** (arriba de la pestaña): "al matar N monstruos (de una lista o cualquiera), en este mapa o en cualquiera, por jugador o entre todos los del mapa, una vez o siempre" → dar un objeto, soltar uno al azar con probabilidad, oro, Angel Gold o **abrir un portal temporal** (donde murio el ultimo monstruo o en una casilla fija, con mapa y casilla de llegada y duracion). Se guardan en `server/plantillas/eventos_propios.json` (con `.bak`), las valida antes de escribir y el servidor las relee solo (`server/eventos_propios.py`); no hace falta parche del cliente. Las cuentas viven en memoria: un reinicio las pone a cero.
+- Objetos, monstruos y mapas se eligen con la **🔍** (buscador por nombre o numero): en las reglas y en los parametros "Objeto…", "Mapa…" y "Monstruo…" de los eventos del .mpc. El numero sigue visible y editable.
 - Constructor visual de la logica del mapa: un **evento** es "cuando pase X (disparador), si se cumple Y (condiciones), haz Z (acciones)". Todo en español, con la etiqueta de cada parametro.
 - **+ Evento nuevo desde plantilla**: salida a otro mapa, dar objeto o oro al hacer clic, cobrar y dar, abrir tienda, contador de bajas de una mision, evento vacio.
 - Cada condicion tiene "al reves" (反向) y cada disparador "basta con una" (旗標); se conserva el ALIAS/DEFINE del XML. Lo marcado con ⚠ **no lo ejecuta el servidor todavia** (se guarda igual).

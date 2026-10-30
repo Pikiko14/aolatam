@@ -117,10 +117,78 @@ function evCommit(mod, antes) {
   panelRefresh();
 }
 
+// ---------------------------------------------------------------------------------------------------- selectores
+// En vez de escribir el numero a mano: un buscador de objetos (corpus/content.db), de monstruos (catalogo del
+// cliente + los propios) o de mapas (los stage del servidor). El numero sigue visible y editable.
+const EV_NOM_ITEM = {};
+function evPedirNombres(ids) {
+  const faltan = [...new Set(ids.map(Number))].filter(i => i > 0 && !(i in EV_NOM_ITEM));
+  if (!faltan.length) return;
+  faltan.forEach(i => { EV_NOM_ITEM[i] = '…'; });
+  api('/api/ao/nombres_items?ids=' + faltan.join(',')).then(r => { Object.assign(EV_NOM_ITEM, r); panelRefresh(); }).catch(() => { });
+}
+function evNombreDe(tipo, v) {
+  if (tipo === 'item') { if (!(v in EV_NOM_ITEM)) evPedirNombres([v]); return EV_NOM_ITEM[v] || ''; }
+  if (tipo === 'mapa') return STAGE[v] || STAGE[String(v)] || '';
+  if (tipo === 'mob') {
+    if (!AOCAT) return '';
+    const m = AOCAT.find(c => (typeof v === 'string' && isNaN(+v) ? c.propio === v : (c.monstruo && c.id === +v && !c.propio)));
+    return m ? `${m.nombre} (Lv${m.nivel})${m.propio ? ' [propio]' : ''}` : '';
+  }
+  return '';
+}
+async function evOpciones(tipo, q) {
+  q = q.trim().toLowerCase();
+  if (tipo === 'item') return q ? (await api('/api/ao/items?q=' + encodeURIComponent(q))).map(x => [x.id, `${x.nombre}  · Lv${x.nivel} ${x.clase}`]) : [];
+  if (tipo === 'mapa') return Object.entries(STAGE).filter(([k, v]) => !q || k.startsWith(q) || String(v).toLowerCase().includes(q)).slice(0, 80).map(([k, v]) => [+k, v]);
+  if (tipo === 'mob') {
+    if (!AOCAT) AOCAT = await api('/api/ao/catalogo');
+    return AOCAT.filter(c => c.monstruo && (!q || c.nombre.toLowerCase().includes(q) || String(c.id).startsWith(q) || (c.propio || '').includes(q)))
+      .slice(0, 80).map(c => [c.propio || c.id, `${c.nombre} · Lv${c.nivel}${c.propio ? ' [propio]' : ' #' + c.id}`]);
+  }
+  return [];
+}
+// Campo con numero + nombre + lupa. alCambiar recibe el numero (o el id de texto de un monstruo propio).
+function evSelector(tipo, valor, alCambiar, ancho) {
+  const w = el('span'); w.style.cssText = 'display:inline-flex;gap:4px;align-items:center;position:relative;flex-wrap:wrap';
+  const num = el('input', { type: 'text', value: valor }); num.style.width = ancho || '80px';
+  num.onchange = () => alCambiar(tipo === 'mob' && isNaN(+num.value) ? num.value.trim() : (+num.value | 0));
+  const nom = el('span', { className: 'mu' }, ''); nom.textContent = valor ? (evNombreDe(tipo, valor) || '¿?') : '—';
+  nom.style.cssText = 'max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
+  const lupa = el('button', { className: 'btn sm' }, '🔍'); lupa.title = { item: 'Buscar objeto', mob: 'Buscar monstruo', mapa: 'Buscar mapa' }[tipo];
+  lupa.onclick = ev => {
+    ev.preventDefault();
+    if (w.querySelector('.evpop')) { w.querySelector('.evpop').remove(); return; }
+    const pop = el('div', { className: 'evpop' });
+    pop.style.cssText = 'position:absolute;top:100%;left:0;z-index:50;background:var(--p1,#222);border:1px solid var(--ac);border-radius:6px;padding:4px;width:300px;max-height:260px;overflow:auto;box-shadow:0 4px 14px #0008';
+    const bus = el('input', { type: 'text', placeholder: tipo === 'item' ? 'nombre o número del objeto…' : 'buscar…' }); bus.style.width = '100%';
+    const lista = el('div');
+    let t = 0;
+    const pintar = async () => {
+      const mio = ++t, ops = await evOpciones(tipo, bus.value).catch(() => []);
+      if (mio !== t) return;
+      lista.innerHTML = ops.length ? '' : `<div class="mu">${bus.value ? 'Nada.' : 'Escribe para buscar.'}</div>`;
+      for (const [v, txt] of ops) {
+        const f = el('div', {}, ''); f.textContent = txt; f.style.cssText = 'cursor:pointer;padding:2px 4px;border-radius:4px';
+        f.onmouseenter = () => { f.style.background = 'var(--p2)'; }; f.onmouseleave = () => { f.style.background = ''; };
+        f.onclick = () => { pop.remove(); if (tipo === 'item') EV_NOM_ITEM[v] = txt.split('  ·')[0]; alCambiar(v); };
+        lista.append(f);
+      }
+    };
+    bus.oninput = () => setTimeout(pintar, 150);
+    pop.append(bus, lista); w.append(pop); bus.focus(); pintar();
+  };
+  w.append(num, lupa, nom); return w;
+}
+// Que selector lleva un parametro, por su etiqueta.
+const evTipoDeEtiqueta = etq => /^Objeto/.test(etq) ? 'item' : /^Mapa/.test(etq) ? 'mapa' : /^Monstruo/.test(etq) ? 'mob' : null;
+
 function evCampoParam(tabla, n, i, valor, alCambiar) {
-  const etq = evEtq(tabla, n, i);
-  const w = el('label', { className: 'row' }); w.style.cssText = 'gap:6px;margin:2px 0';
+  const etq = evEtq(tabla, n, i), tipo = evTipoDeEtiqueta(etq);
+  // Con selector va en un div: dentro de un <label> cada clic en la lista de resultados se iba al primer input.
+  const w = el(tipo ? 'div' : 'label', { className: 'row' }); w.style.cssText = 'gap:6px;margin:2px 0';
   w.append(el('span', { className: 'mu' }, etq));
+  if (tipo) { w.append(evSelector(tipo, valor, v => alCambiar(+v | 0))); return w; }
   let c;
   if (etq.startsWith('Comparar')) {
     c = el('select'); for (const [v, t] of EV_COMPARA) c.append(new Option(t, v)); c.value = String(valor);
@@ -192,7 +260,128 @@ function evTarjeta(p, mod, ev, antes) {
   r.append(bt, bd); caja.append(r); p.append(caja);
 }
 
+// ---------------------------------------------------------------------------------------------------- reglas del servidor
+// "Al matar X monstruos -> premio / soltar algo / aparece un portal". Viven en server/plantillas/eventos_propios.json
+// (server/eventos_propios.py): no van en el .mpc y no necesitan parche del cliente.
+const EVR = { datos: null, abiertas: new Set(), sucio: false, errores: null };
+const EVR_PREMIOS = { dar: 'Dar un objeto', soltar: 'Soltar uno al azar (con probabilidad)', oro: 'Dar oro', ag: 'Dar Angel Gold', portal: 'Aparece un portal (TP)' };
+const evrStageActual = () => +((typeof M !== 'undefined' && M && (M.nombre || '').match(/(\d+)/)) || [])[1] || 0;
+const evrPremioNuevo = t => ({ dar: { tipo: 'dar', item: 0, cantidad: 1 }, soltar: { tipo: 'soltar', items: [[0, 1]], prob: 50 }, oro: { tipo: 'oro', cantidad: 1000 },
+  ag: { tipo: 'ag', cantidad: 50 }, portal: { tipo: 'portal', destino: 0, llegada: [0, 0], donde: 'monstruo', segundos: 120 } })[t];
+function evrReglaNueva() {
+  const ids = new Set((EVR.datos.reglas || []).map(r => r.id)); let n = 1; while (ids.has('regla' + n)) n++;
+  return { id: 'regla' + n, nombre: 'Matar monstruos', activa: true, stage: evrStageActual(),
+    matar: { mobs: [], cantidad: 30, alcance: 'jugador', repetir: true }, aviso: '', premios: [evrPremioNuevo('dar')] };
+}
+function evrCampo(etq, ...hijos) { const r = el('div', { className: 'row' }); r.style.cssText = 'gap:6px;margin:3px 0;flex-wrap:wrap;align-items:center'; r.append(el('span', { className: 'mu' }, etq), ...hijos); return r; }
+function evrNum(v, alCambiar, ancho) { const i = el('input', { type: 'number', value: v }); i.style.width = ancho || '70px'; i.onchange = () => { alCambiar(+i.value || 0); evrSucio(); }; return i; }
+function evrSucio() { EVR.sucio = true; panelRefresh(); }
+
+function evrPremio(caja, r, pr, i) {
+  const b = el('div'); b.style.cssText = 'border:1px dashed var(--bd);border-radius:6px;padding:4px 6px;margin:4px 0';
+  const sel = el('select'); for (const [k, v] of Object.entries(EVR_PREMIOS)) sel.append(new Option(v, k)); sel.value = pr.tipo;
+  sel.onchange = () => { r.premios[i] = evrPremioNuevo(sel.value); evrSucio(); };
+  const x = el('button', { className: 'btn sm' }, '✕'); x.title = 'Quitar premio'; x.onclick = () => { r.premios.splice(i, 1); evrSucio(); };
+  b.append(evrCampo('', sel, x));
+  if (pr.tipo === 'dar') b.append(evrCampo('Objeto', evSelector('item', pr.item, v => { pr.item = +v; evrSucio(); })), evrCampo('Cantidad', evrNum(pr.cantidad, v => { pr.cantidad = Math.max(1, v); })));
+  if (pr.tipo === 'soltar') {
+    pr.items.forEach((it, j) => {
+      const q = el('button', { className: 'btn sm' }, '✕'); q.onclick = () => { pr.items.splice(j, 1); evrSucio(); };
+      b.append(evrCampo('Objeto ' + (j + 1), evSelector('item', it[0], v => { it[0] = +v; evrSucio(); }), el('span', { className: 'mu' }, '×'), evrNum(it[1], v => { it[1] = Math.max(1, v); }, '50px'), q));
+    });
+    const mas = el('button', { className: 'btn sm' }, '+ objeto posible'); mas.onclick = () => { pr.items.push([0, 1]); evrSucio(); };
+    b.append(mas, evrCampo('Probabilidad %', evrNum(pr.prob, v => { pr.prob = Math.min(100, Math.max(0, v)); })));
+  }
+  if (pr.tipo === 'oro' || pr.tipo === 'ag') b.append(evrCampo('Cantidad', evrNum(pr.cantidad, v => { pr.cantidad = Math.max(1, v); }, '90px')));
+  if (pr.tipo === 'portal') {
+    b.append(evrCampo('Lleva al mapa', evSelector('mapa', pr.destino, v => { pr.destino = +v; evrSucio(); })));
+    b.append(evrCampo('Casilla de llegada x', evrNum(pr.llegada[0], v => { pr.llegada[0] = v; }, '60px'), el('span', { className: 'mu' }, 'y'), evrNum(pr.llegada[1], v => { pr.llegada[1] = v; }, '60px')));
+    const dn = el('select'); dn.append(new Option('donde murió el último monstruo', 'monstruo'), new Option('en una casilla fija', 'casilla'));
+    const fija = Array.isArray(pr.donde); dn.value = fija ? 'casilla' : 'monstruo';
+    dn.onchange = () => { pr.donde = dn.value === 'casilla' ? [0, 0] : 'monstruo'; evrSucio(); };
+    b.append(evrCampo('Aparece', dn));
+    if (fija) b.append(evrCampo('Casilla del portal x', evrNum(pr.donde[0], v => { pr.donde[0] = v; }, '60px'), el('span', { className: 'mu' }, 'y'), evrNum(pr.donde[1], v => { pr.donde[1] = v; }, '60px')));
+    b.append(evrCampo('Dura (segundos)', evrNum(pr.segundos, v => { pr.segundos = Math.max(5, v); })));
+  }
+  caja.append(b);
+}
+
+function evrTarjeta(p, r, idx) {
+  const abierta = EVR.abiertas.has(idx);
+  const mobsTxt = r.matar.mobs.length ? r.matar.mobs.map(m => evNombreDe('mob', m) || m).join(', ') : 'cualquier monstruo';
+  const cab = el('div', { className: 'att' + (abierta ? ' on' : '') });
+  cab.innerHTML = `<b>${r.activa === false ? '⏸ ' : ''}${r.nombre || r.id}</b><span class="mu"></span>`;
+  cab.lastChild.textContent = `matar ${r.matar.cantidad} × ${mobsTxt} → ${r.premios.map(x => EVR_PREMIOS[x.tipo] || x.tipo).join(', ')}`;
+  cab.onclick = () => { abierta ? EVR.abiertas.delete(idx) : EVR.abiertas.add(idx); panelRefresh(); };
+  p.append(cab);
+  if (EVR.errores && EVR.errores[r.id]) p.append(el('div', { className: 'mal' }, '⚠ ' + EVR.errores[r.id].join('; ')));
+  if (!abierta) return;
+  const c = el('div'); c.style.cssText = 'margin:0 0 8px 8px;border-left:2px solid var(--bd);padding-left:8px';
+  const nom = el('input', { type: 'text', value: r.nombre || '' }); nom.onchange = () => { r.nombre = nom.value; evrSucio(); };
+  const id = el('input', { type: 'text', value: r.id }); id.style.width = '110px'; id.onchange = () => { r.id = id.value.trim().replace(/\s+/g, '_'); evrSucio(); };
+  const act = el('input', { type: 'checkbox', checked: r.activa !== false }); act.onchange = () => { r.activa = act.checked; evrSucio(); };
+  c.append(evrCampo('Nombre', nom), evrCampo('Id', id, act, el('span', { className: 'mu' }, 'activa')));
+  c.append(evrCampo('Mapa', evSelector('mapa', r.stage || 0, v => { r.stage = +v; evrSucio(); }), el('span', { className: 'mu' }, '0 = cualquier mapa')));
+  c.append(el('h4', {}, 'Cuando se maten…'));
+  r.matar.mobs.forEach((m, j) => {
+    const q = el('button', { className: 'btn sm' }, '✕'); q.onclick = () => { r.matar.mobs.splice(j, 1); evrSucio(); };
+    c.append(evrCampo('Monstruo', evSelector('mob', m, v => { r.matar.mobs[j] = v; evrSucio(); }, '70px'), q));
+  });
+  const mm = el('button', { className: 'btn sm' }, '+ monstruo'); mm.title = 'Sin monstruos en la lista cuenta cualquiera';
+  mm.onclick = () => { r.matar.mobs.push(0); evrSucio(); };
+  c.append(mm, el('span', { className: 'mu' }, r.matar.mobs.length ? '' : '  (sin lista: vale cualquier monstruo)'));
+  c.append(evrCampo('Cuántos', evrNum(r.matar.cantidad, v => { r.matar.cantidad = Math.max(1, v); })));
+  const al = el('select'); al.append(new Option('cada jugador cuenta lo suyo', 'jugador'), new Option('todos los del mapa juntos', 'mapa'));
+  al.value = r.matar.alcance || 'jugador'; al.onchange = () => { r.matar.alcance = al.value; evrSucio(); };
+  const rep = el('input', { type: 'checkbox', checked: r.matar.repetir !== false }); rep.onchange = () => { r.matar.repetir = rep.checked; evrSucio(); };
+  c.append(evrCampo('Cuenta', al), evrCampo('', rep, el('span', { className: 'mu' }, 'se repite (si no, solo una vez)')));
+  c.append(el('h4', {}, 'Entonces…'));
+  const av = el('input', { type: 'text', value: r.aviso || '', placeholder: 'mensaje para el jugador (opcional)' }); av.style.width = '220px'; av.onchange = () => { r.aviso = av.value; evrSucio(); };
+  c.append(evrCampo('Aviso', av));
+  r.premios.forEach((pr, i) => evrPremio(c, r, pr, i));
+  const ap = el('select'); ap.append(new Option('+ añadir…', ''));
+  for (const [k, v] of Object.entries(EVR_PREMIOS)) ap.append(new Option(v, k));
+  ap.onchange = () => { if (ap.value) { r.premios.push(evrPremioNuevo(ap.value)); evrSucio(); } };
+  const bd = el('button', { className: 'btn sm' }, 'Borrar regla');
+  bd.onclick = () => { if (confirm('¿Borrar la regla ' + (r.nombre || r.id) + '?')) { EVR.datos.reglas.splice(idx, 1); EVR.abiertas.clear(); evrSucio(); } };
+  c.append(evrCampo('', ap, bd));
+  p.append(c);
+}
+
+EVU.reglas = function (p) {
+  p.append(el('h4', {}, 'Reglas del servidor: matar X monstruos'));
+  p.append(el('div', { className: 'mu' }, 'Al matar N monstruos (de una lista, o cualquiera) el servidor da objetos, oro, Angel Gold, suelta algo al azar o abre un portal temporal. No hace falta parche del cliente.'));
+  if (!EVR.datos) {
+    p.append(el('div', { className: 'mu' }, 'Cargando…'));
+    api('/api/ao/reglas').then(d => { EVR.datos = d; EVR.datos.reglas = d.reglas || [];
+      evPedirNombres(EVR.datos.reglas.flatMap(r => r.premios.flatMap(x => x.tipo === 'dar' ? [x.item] : x.tipo === 'soltar' ? x.items.map(i => i[0]) : [])));
+      if (!AOCAT) api('/api/ao/catalogo').then(l => { AOCAT = l; panelRefresh(); });
+      panelRefresh(); }).catch(e => p.append(el('div', { className: 'mal' }, e.message)));
+    return;
+  }
+  const est = evrStageActual(), reglas = EVR.datos.reglas;
+  const r = el('div', { className: 'row' });
+  const nueva = el('button', { className: 'btn sm' }, '+ Regla nueva');
+  nueva.onclick = () => { reglas.push(evrReglaNueva()); EVR.abiertas.add(reglas.length - 1); evrSucio(); };
+  const guardar = el('button', { className: 'btn sm' + (EVR.sucio ? ' on' : '') }, EVR.sucio ? '💾 Guardar reglas' : 'Guardado');
+  guardar.onclick = async () => {
+    try {
+      const res = await api('/api/ao/reglas', { method: 'POST', body: JSON.stringify({ reglas }) });
+      EVR.errores = res.ok ? null : res.errores;
+      if (res.ok) { EVR.sucio = false; msg(`Reglas guardadas (${res.total}) en server/plantillas/eventos_propios.json. El servidor las relee solo.`, 'ok'); }
+      else msg('Hay reglas con errores: no se guardó nada.', 'mal');
+    } catch (e) { msg(e.message, 'mal'); }
+    panelRefresh();
+  };
+  r.append(nueva, guardar); p.append(r);
+  const deEste = reglas.map((x, i) => [x, i]).filter(([x]) => !est || !x.stage || +x.stage === est);
+  p.append(el('div', { className: 'mu' }, `${deEste.length} de ${reglas.length} regla(s) ${est ? 'para este mapa (' + (STAGE[est] || est) + ') o cualquiera' : ''}`));
+  deEste.forEach(([x, i]) => evrTarjeta(p, x, i));
+};
+
 EVU.tab = function (p, xmlEditor) {
+  EVU.reglas(p);
+  p.append(el('h4', {}, 'Eventos del .mpc'));
   p.append(el('div', { className: 'mu' }, 'Eventos del mapa en español. Un evento es "cuando pase X, si se cumple Y, haz Z". Para que un objeto o NPC lo dispare, enlázalo en la pestaña Selección (campo Evento). Los ⚠ son cosas que el servidor aún no ejecuta.'));
   const r = el('div', { className: 'row' });
   const bav = el('button', { className: 'btn sm' + (EVU.avanzado ? ' on' : '') }, 'XML avanzado'); bav.onclick = () => { EVU.avanzado = !EVU.avanzado; panelRefresh(); };

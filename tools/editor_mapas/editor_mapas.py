@@ -385,6 +385,12 @@ class H(BaseHTTPRequestHandler):
                 return self.out(200, r, 'image/png') if r else self.out(404, b'')
             if u.path == '/api/ao/spawns':
                 return self.out(200, ao_servidor.spawns(g('mapa')))
+            if u.path == '/api/ao/items':
+                return self.out(200, ao_servidor.buscar_items(g('q')))
+            if u.path == '/api/ao/nombres_items':
+                return self.out(200, ao_servidor.nombres_items(g('ids').split(',')))
+            if u.path == '/api/ao/reglas':
+                return self.out(200, ao_servidor.reglas())
             if u.path == '/api/objdefs':
                 return self.out(200, {str(k): [v['nombre'], v['proceso'].replace('SP_CLASS_', ''), v['fuente'], 1 if v['bloquea'] else 0, 1 if frames_obj(v) else 0, v['flags']] for k, v in DEFS.items()})
             if u.path == '/api/obj':
@@ -440,6 +446,8 @@ class H(BaseHTTPRequestHandler):
                                           campamentos=len(j.get('campamentos') or []), campamentos_lua=rc, pack=pk))
             if u.path == '/api/ao/exportar':
                 return self.out(200, ao_servidor.exportar(j.get('mapa'), j.get('spawns') or []))
+            if u.path == '/api/ao/reglas':
+                return self.out(200, ao_servidor.guardar_reglas(j.get('reglas') or []))
             if u.path == '/api/guardar_proyecto':
                 nombre = re.sub(r'[^0-9A-Za-z_\-]', '', g('n', 'proyecto')) or 'proyecto'
                 open(os.path.join(PROYECTOS, nombre + '.json'), 'w', encoding='utf-8').write(json.dumps(j, ensure_ascii=False))
