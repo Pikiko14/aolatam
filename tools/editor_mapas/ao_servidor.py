@@ -24,9 +24,50 @@ def init(modulo):
     E = modulo
 
 
+# Tipos de monstruo en las plantillas: (elite, jefe, hp_mult, atk_mult) que pone el editor al
+# cambiarlo. Normal no lleva multiplicadores (en Dark Cavern tools/reparar_instancia_oscura.py le
+# pone el 0,7 de la instancia).
+TIPOS = {'normal': (False, False, None, None), 'elite': (True, False, 2.0, 1.15), 'jefe': (False, True, 10.0, 1.3)}
+STATS = ('hp', 'atk', 'def', 'matk', 'mdef', 'exp')
+
+
+def _raiz():
+    return os.path.dirname(os.path.dirname(os.path.abspath(E.PLANTILLAS)))
+
+
+def _stats_del_cliente():
+    """{npc_type: {hp, atk, def, matk, mdef, exp}} de corpus/content.db (lo mismo que usa el servidor)."""
+    import sqlite3
+    db = os.path.join(_raiz(), 'corpus', 'content.db')
+    if not os.path.exists(db):
+        return {}
+    con = sqlite3.connect(db)
+    try:
+        out = {}
+        for i, hp, atk, df, matk, mdef, exp in con.execute(
+                "select id, hp, atk_avg, def, matk, mdef, exp_value from monster where id glob '[0-9]*'"):
+            num = lambda x: int(float(x)) if str(x or '').replace('.', '', 1).isdigit() else 0
+            out[int(i)] = dict(hp=num(hp), atk=num(atk), **{'def': num(df)}, matk=num(matk), mdef=num(mdef), exp=num(exp))
+        return out
+    finally:
+        con.close()
+
+
+def _propios():
+    """Los monstruos propios del servidor (server/plantillas/monstruos_propios.json)."""
+    f = os.path.join(E.PLANTILLAS, 'monstruos_propios.json')
+    if not os.path.exists(f):
+        return []
+    mobs = json.load(open(f, encoding='utf-8')).get('mobs', {})
+    return [dict(id=int(m['base']), nombre=m['nombre'], sprite=int(m['sprite']), nivel=int(m['nivel']),
+                 monstruo=True, fuente='propio', propio=k, **{s: int(m[s]) for s in STATS})
+            for k, m in sorted(mobs.items(), key=lambda kv: kv[1]['nivel'])]
+
+
 def catalogo():
     if _cat:
         return _cat
+    stats = _stats_del_cliente()
     for arch, tipo in (('setting/eng/monster.xml', 'monstruo'), ('setting/eng/npc.xml', 'npc')):
         if arch not in E.INDEX:
             continue
@@ -36,10 +77,15 @@ def catalogo():
             if not (a.get('編號', '').isdigit() and a.get('圖號', '').isdigit() and a.get('名稱')):
                 continue
             mob = tipo == 'monstruo' and a.get('陣營') == '怪物陣營'
-            _cat.append(dict(id=int(a['編號']), nombre=a['名稱'], sprite=int(a['圖號']),
-                             nivel=int(a['等級']) if a.get('等級', '').isdigit() else 0,
-                             monstruo=bool(mob), fuente=tipo))
+            c = dict(id=int(a['編號']), nombre=a['名稱'], sprite=int(a['圖號']),
+                     nivel=int(a['等級']) if a.get('等級', '').isdigit() else 0,
+                     monstruo=bool(mob), fuente=tipo)
+            if mob:
+                c.update(stats.get(c['id'], {}))
+            _cat.append(c)
     _cat.sort(key=lambda c: (not c['monstruo'], c['nivel'], c['id']))
+    # Los propios primero: son los que se ponen a mano en las instancias propias.
+    _cat[:0] = _propios()
     return _cat
 
 
@@ -99,6 +145,21 @@ def spawns(mapa):
     return dict(stage=stage, archivo=os.path.basename(f), existe=existe, spawns=sp)
 
 
+def tipo_de(e):
+    return 'jefe' if e.get('jefe') else 'elite' if e.get('elite') else 'normal'
+
+
+def poner_tipo(e, tipo):
+    """Cambia un spawn a normal / elite / jefe con los multiplicadores de TIPOS. Lo demas
+    (sello, propio, zona...) se queda."""
+    elite, jefe, hp, atk = TIPOS[tipo]
+    for k, v in (('elite', elite), ('jefe', jefe), ('hp_mult', hp), ('atk_mult', atk)):
+        if v:
+            e[k] = v
+        else:
+            e.pop(k, None)
+
+
 def exportar(mapa, nuevos):
     """Escribe los spawns editados en la plantilla del servidor.
 
@@ -124,6 +185,8 @@ def exportar(mapa, nuevos):
         if eid is not None and int(eid) in viejos:
             v = dict(viejos[int(eid)])
             v.update(tile=tile, direccion=int(e.get('direccion', v.get('direccion', 0))))
+            if v.get('monstruo') and e.get('tipo') in TIPOS and e['tipo'] != tipo_de(v):
+                poner_tipo(v, e['tipo'])
             final.append(v)
             continue
         eid = max(usados | {900000}) + 1
@@ -134,6 +197,10 @@ def exportar(mapa, nuevos):
                  klass=1 if mob else 200, monstruo=mob, tile=tile, direccion=int(e.get('direccion', 0)), visible=0)
         if mob:
             d['nivel'] = int(e.get('nivel') or 1)
+            if e.get('propio'):
+                d['propio'] = str(e['propio'])
+            if e.get('tipo') in TIPOS and e['tipo'] != 'normal':
+                poner_tipo(d, e['tipo'])
         final.append(d)
     quedan = {int(e['entity_id']) for e in final}
     j['spawns'] = final

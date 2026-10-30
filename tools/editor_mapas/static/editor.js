@@ -284,7 +284,8 @@ async function cargarSpawnsAO() {
     const r = await api('/api/ao/spawns?mapa=' + encodeURIComponent(nombre));
     if (M !== mapa) return;
     M.aoStage = r.stage; M.aoArchivo = r.archivo; M.aoExiste = r.existe;
-    M.ao = (r.spawns || []).map(e => ({ entity_id: e.entity_id, nombre: e.nombre || '?', npc_type: e.npc_type, sprite: e.sprite, monstruo: !!e.monstruo, nivel: e.nivel || 0, dir: e.direccion || 0, cx: e.tile[0], cy: M.h - 1 - e.tile[1] }));
+    M.ao = (r.spawns || []).map(e => ({ entity_id: e.entity_id, nombre: e.nombre || '?', npc_type: e.npc_type, sprite: e.sprite, monstruo: !!e.monstruo, nivel: e.nivel || 0, dir: e.direccion || 0, cx: e.tile[0], cy: M.h - 1 - e.tile[1],
+      tipo: e.jefe ? 'jefe' : e.elite ? 'elite' : 'normal', hp_mult: e.hp_mult, atk_mult: e.atk_mult, propio: e.propio || null, sello: e.sello || null }));
     M.aoOk = r.stage != null; M.aoDirty = false;
     if (M.aoOk) msg('Servidor: stage ' + r.stage + ' (' + r.archivo + (r.existe ? '' : ', archivo nuevo') + '), ' + M.ao.length + ' NPC y monstruos.');
     else msg('El mapa no se llama mapNNN: no se sabe a que stage del servidor pertenece, no se podran exportar NPC y monstruos.', 'av');
@@ -296,14 +297,23 @@ function imgAO(sprite) {
   if (!o) { o = AOIMG[sprite] = { img: new Image(), ok: false }; o.img.onload = () => { o.ok = true; redraw(); }; o.img.onerror = () => { o.ok = false; }; o.img.src = '/api/ao/foto?id=' + sprite; }
   return o;
 }
+// Monstruo normal / elite / jefe (y NPC): color del punto y marca delante del nombre.
+const AO_TIPO = { normal: { col: '#9be15d', marca: '', txt: 'Normal' }, elite: { col: '#ffb347', marca: '★ ', txt: 'Élite' }, jefe: { col: '#ff3b3b', marca: '♛ ', txt: 'Jefe' } };
+// Lo que pone el servidor al cambiar el tipo (tools/editor_mapas/ao_servidor.py TIPOS).
+const AO_MULT = { normal: [null, null], elite: [2.0, 1.15], jefe: [10.0, 1.3] };
+function aoCatDe(a) { return (AOCAT || []).find(c => c.monstruo && (a.propio ? c.propio === a.propio : (!c.propio && c.id === a.npc_type))); }
+function aoStats(a) {
+  const c = aoCatDe(a); if (!c || c.hp == null) return null; const h = a.hp_mult || 1, k = a.atk_mult || 1;
+  return { hp: Math.round(c.hp * h), atk: Math.round(c.atk * k), def: c.def, matk: Math.round(c.matk * k), mdef: c.mdef, exp: c.exp, h, k };
+}
 function dibujarAO() {
   if (!M.ao) return; const z = cam.z * devicePixelRatio;
   for (const a of M.ao) {
-    const px = (a.cx + .5) * CELL, py = (a.cy + .5) * CELL, sel = S.ao.sel === a, col = a.monstruo ? '#ff5a5a' : '#4fd1ff';
+    const px = (a.cx + .5) * CELL, py = (a.cy + .5) * CELL, sel = S.ao.sel === a, col = a.monstruo ? AO_TIPO[a.tipo || 'normal'].col : '#4fd1ff';
     if (cam.z >= 0.25) { const o = imgAO(a.sprite); if (o.ok) { const w = o.img.naturalWidth, h = o.img.naturalHeight; ctx.imageSmoothingEnabled = false; ctx.drawImage(o.img, px - w / 2, py + CELL * .35 - h, w, h); } }
     ctx.lineWidth = (sel ? 3 : 1.5) / z; ctx.strokeStyle = sel ? '#fff' : '#000'; ctx.fillStyle = col;
     ctx.beginPath(); ctx.arc(px, py + CELL * .3, (sel ? 6 : 4.5) / z * 1.3, 0, 7); ctx.fill(); ctx.stroke();
-    if (cam.z > 0.3 || sel) { ctx.fillStyle = '#fff'; ctx.strokeStyle = '#000'; ctx.lineWidth = 3 / z; ctx.font = (12 / z * devicePixelRatio) + 'px sans-serif'; const t = a.nombre + (a.monstruo && a.nivel ? ' Lv' + a.nivel : ''); ctx.strokeText(t, px + 9 / z, py - 6 / z); ctx.fillText(t, px + 9 / z, py - 6 / z); }
+    if (cam.z > 0.3 || sel) { ctx.fillStyle = '#fff'; ctx.strokeStyle = '#000'; ctx.lineWidth = 3 / z; ctx.font = (12 / z * devicePixelRatio) + 'px sans-serif'; const t = (a.monstruo ? AO_TIPO[a.tipo || 'normal'].marca : '') + a.nombre + (a.monstruo && a.nivel ? ' Lv' + a.nivel : ''); ctx.strokeText(t, px + 9 / z, py - 6 / z); ctx.fillText(t, px + 9 / z, py - 6 / z); }
   }
 }
 function dibujarPrevAO() {
@@ -320,7 +330,7 @@ function iniciarAO(e) {
   if (!S.ao.tpl) { msg('Elige primero un NPC o monstruo en la pestana "NPC/Monstruos AO".', 'av'); setTab('ao'); return; }
   if (!M.aoOk) { msg('Este mapa no tiene stage del servidor (debe llamarse mapNNN).', 'mal'); return; }
   if (!casillaLibre(cur.cx, cur.cy)) { msg('Esa casilla esta bloqueada o fuera del mapa.', 'mal'); return; }
-  const t = S.ao.tpl, n = { entity_id: null, nombre: t.nombre, npc_type: t.id, sprite: t.sprite, monstruo: t.monstruo, nivel: t.nivel, dir: S.ao.dir, cx: cur.cx, cy: cur.cy };
+  const t = S.ao.tpl, n = { entity_id: null, nombre: t.nombre, npc_type: t.id, sprite: t.sprite, monstruo: t.monstruo, nivel: t.nivel, dir: S.ao.dir, cx: cur.cx, cy: cur.cy, tipo: 'normal', propio: t.propio || null };
   M.ao.push(n); S.ao.sel = n; M.aoDirty = true;
   push({ undo() { const i = M.ao.indexOf(n); if (i >= 0) M.ao.splice(i, 1); if (S.ao.sel === n) S.ao.sel = null; }, redo() { M.ao.push(n); } }); panelRefresh();
 }
@@ -330,7 +340,7 @@ function borrarAO(a) {
 }
 async function exportarAO(forzar) {
   if (!M || !M.aoOk || (!M.aoDirty && !forzar)) return null;
-  const spawns = M.ao.map(a => ({ entity_id: a.entity_id, nombre: a.nombre, npc_type: a.npc_type, sprite: a.sprite, monstruo: a.monstruo, nivel: a.nivel, direccion: a.dir, tile: aoTile(a.cx, a.cy) }));
+  const spawns = M.ao.map(a => ({ entity_id: a.entity_id, nombre: a.nombre, npc_type: a.npc_type, sprite: a.sprite, monstruo: a.monstruo, nivel: a.nivel, direccion: a.dir, tile: aoTile(a.cx, a.cy), tipo: a.tipo || 'normal', propio: a.propio || undefined }));
   const r = await api('/api/ao/exportar', { method: 'POST', body: JSON.stringify({ mapa: M.nombre, spawns }) });
   await cargarSpawnsAO(); M.aoDirty = false; return r;
 }
@@ -348,7 +358,23 @@ function tabAO() {
   const sel = S.ao.sel;
   if (sel) {
     p.append(el('h4', {}, 'Seleccionado'));
-    p.append(el('div', {}, `<b>${sel.nombre}</b> · npc_type ${sel.npc_type} · ${sel.monstruo ? 'monstruo Lv' + sel.nivel : 'NPC'} · casilla ${sel.cx},${sel.cy}${sel.entity_id ? ' · entidad ' + sel.entity_id : ' · nuevo'}`));
+    p.append(el('div', {}, `<b>${sel.nombre}</b> · npc_type ${sel.npc_type}${sel.propio ? ' · propio ' + sel.propio : ''}${sel.sello ? ' · sello ' + sel.sello : ''} · ${sel.monstruo ? 'monstruo Lv' + sel.nivel : 'NPC'} · casilla ${sel.cx},${sel.cy}${sel.entity_id ? ' · entidad ' + sel.entity_id : ' · nuevo'}`));
+    if (sel.monstruo) {
+      const rt = el('div', { className: 'row' }); rt.append(el('span', { className: 'mu' }, 'Tipo'));
+      const st = el('select'); for (const k of ['normal', 'elite', 'jefe']) st.append(el('option', { value: k, selected: (sel.tipo || 'normal') === k }, AO_TIPO[k].txt));
+      st.onchange = () => {
+        const o = { tipo: sel.tipo, hp_mult: sel.hp_mult, atk_mult: sel.atk_mult }, k = st.value, [h, a] = AO_MULT[k];
+        const poner = v => { sel.tipo = v.tipo; sel.hp_mult = v.hp_mult; sel.atk_mult = v.atk_mult; };
+        const n = { tipo: k, hp_mult: h ?? undefined, atk_mult: a ?? undefined }; poner(n); M.aoDirty = true;
+        push({ undo() { poner(o); }, redo() { poner(n); } }); panelRefresh(); redraw();
+      };
+      rt.append(st); p.append(rt);
+      const s = aoStats(sel);
+      if (!AOCAT) { p.append(el('div', { className: 'mu' }, 'Cargando stats…')); api('/api/ao/catalogo').then(l => { AOCAT = l; if (S.tab === 'ao') panelRefresh(); }); }
+      else if (!s) p.append(el('div', { className: 'mu' }, 'Sin stats en content.db para este monstruo.'));
+      else p.append(el('div', { className: 'mu' }, `Vida <b>${s.hp}</b> · Ataque <b>${s.atk}</b> · Def <b>${s.def}</b> · M.Ataque <b>${s.matk}</b> · M.Def <b>${s.mdef}</b> · Exp <b>${s.exp}</b>`
+        + (s.h !== 1 || s.k !== 1 ? `<br>(vida x${s.h}, ataque x${s.k} sobre la ficha${sel.propio ? ' propia' : ' del cliente'})` : '')));
+    }
     const r = el('div', { className: 'row' }); r.append(el('span', { className: 'mu' }, 'Direccion'));
     const d = el('select'); for (let i = 0; i < 8; i++) d.append(el('option', { value: i, selected: sel.dir === i }, i)); d.onchange = () => { const o = sel.dir, n = +d.value; sel.dir = n; M.aoDirty = true; push({ undo() { sel.dir = o; }, redo() { sel.dir = n; } }); };
     const bb = el('button', { className: 'btn sm' }, 'Borrar'); bb.onclick = () => borrarAO(sel); r.append(d, bb); p.append(r);
@@ -365,17 +391,28 @@ function tabAO() {
     const PAG = 30, pags = Math.max(1, Math.ceil(l.length / PAG)); S.ao.pag = clamp(S.ao.pag, 1, pags);
     caja.innerHTML = '';
     for (const c of l.slice((S.ao.pag - 1) * PAG, S.ao.pag * PAG)) {
-      const it = el('div', { className: 'oit' + (S.ao.tpl && S.ao.tpl.id === c.id && S.ao.tpl.monstruo === c.monstruo ? ' on' : ''), title: c.nombre + ' · id ' + c.id + ' · sprite ' + c.sprite });
-      it.innerHTML = `<div class="th"><img loading="lazy" src="/api/ao/foto?id=${c.sprite}" onerror="this.style.display='none'"></div><div class="nm">${c.nombre}<br>${c.monstruo ? 'Lv' + c.nivel : 'NPC'} · ${c.id}</div>`;
+      const on = S.ao.tpl && S.ao.tpl.id === c.id && S.ao.tpl.monstruo === c.monstruo && (S.ao.tpl.propio || null) === (c.propio || null);
+      const stt = c.hp != null ? ` · vida ${c.hp} · ataque ${c.atk} · def ${c.def} · exp ${c.exp}` : '';
+      const it = el('div', { className: 'oit' + (on ? ' on' : ''), title: c.nombre + ' · id ' + c.id + ' · sprite ' + c.sprite + (c.propio ? ' · PROPIO ' + c.propio : '') + stt });
+      it.innerHTML = `<div class="th"><img loading="lazy" src="/api/ao/foto?id=${c.sprite}" onerror="this.style.display='none'"></div><div class="nm">${c.propio ? '<b style="color:#ffb347">[propio]</b> ' : ''}${c.nombre}<br>${c.monstruo ? 'Lv' + c.nivel : 'NPC'} · ${c.propio || c.id}</div>`;
       it.onclick = () => { S.ao.tpl = c; if (S.tool !== 'ao') setTool('ao'); else panelRefresh(); }; caja.append(it);
     }
     nav.innerHTML = ''; const a = el('button', { className: 'btn sm' }, '◀'), n = el('button', { className: 'btn sm' }, '▶');
     a.onclick = () => { S.ao.pag--; pintar(); }; n.onclick = () => { S.ao.pag++; pintar(); }; nav.append(a, el('span', { className: 'mu' }, `${S.ao.pag}/${pags} · ${l.length} entradas`), n);
   };
   if (!AOCAT) api('/api/ao/catalogo').then(l => { AOCAT = l; if (S.tab === 'ao') pintar(); }).catch(e => { caja.innerHTML = '<div class="mal">' + e.message + '</div>'; }); else pintar();
-  p.append(el('h4', {}, 'En este mapa (' + ((M && M.ao) ? M.ao.length : 0) + ')'));
+  // Filtro de la lista por tipo, con cuantos hay de cada uno.
+  const claseDe = a => a.monstruo ? (a.tipo || 'normal') : 'npc';
+  const cuenta = k => (M.ao || []).filter(a => k === 'todos' || claseDe(a) === k).length;
+  S.ao.filtro = S.ao.filtro || 'todos';
+  const fl = el('div', { className: 'row' }); fl.append(el('span', { className: 'mu' }, 'Ver'));
+  const fs = el('select'); for (const [k, n] of [['todos', 'Todos'], ['normal', 'Normales'], ['elite', '★ Élites'], ['jefe', '♛ Jefes'], ['npc', 'NPC']]) fs.append(el('option', { value: k, selected: S.ao.filtro === k }, n + ' (' + cuenta(k) + ')'));
+  fs.onchange = () => { S.ao.filtro = fs.value; panelRefresh(); }; fl.append(fs);
+  p.append(el('h4', {}, 'En este mapa (' + ((M && M.ao) ? M.ao.length : 0) + ')'), fl);
   const tb = el('table', { className: 'tbl' }); p.append(tb);
-  (M.ao || []).slice(0, 400).forEach(a => { const tr = el('tr', { className: S.ao.sel === a ? 'sel' : '' }, `<td>${a.nombre}</td><td>${a.monstruo ? 'Lv' + a.nivel : 'NPC'}</td><td>${a.cx},${a.cy}</td>`); tr.onclick = () => { S.ao.sel = a; cam.x = (a.cx + .5) * CELL - cv.width / cam.z / devicePixelRatio / 2; cam.y = (a.cy + .5) * CELL - cv.height / cam.z / devicePixelRatio / 2; panelRefresh(); redraw(); }; tb.append(tr); });
+  const vista = (M.ao || []).filter(a => S.ao.filtro === 'todos' || claseDe(a) === S.ao.filtro);
+  vista.slice(0, 400).forEach(a => { const tr = el('tr', { className: S.ao.sel === a ? 'sel' : '' }, `<td>${a.monstruo ? AO_TIPO[a.tipo || 'normal'].marca : ''}${a.nombre}</td><td>${a.monstruo ? 'Lv' + a.nivel : 'NPC'}</td><td>${a.cx},${a.cy}</td><td><button class="btn sm" title="Borrar">✕</button></td>`);
+    tr.querySelector('button').onclick = ev => { ev.stopPropagation(); borrarAO(a); }; tr.onclick = () => { S.ao.sel = a; cam.x = (a.cx + .5) * CELL - cv.width / cam.z / devicePixelRatio / 2; cam.y = (a.cy + .5) * CELL - cv.height / cam.z / devicePixelRatio / 2; panelRefresh(); redraw(); }; tb.append(tr); });
   if ((M.ao || []).length > 400) p.append(el('div', { className: 'mu' }, 'Solo se listan los primeros 400.'));
 }
 
