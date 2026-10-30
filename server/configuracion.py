@@ -780,6 +780,10 @@ PARCHE_EN_LAUNCHER = _os.environ.get('AO_PARCHE_EN_LAUNCHER', '0') == '1'
 # Golpe de quien pelea con dos armas: True = tipo y animacion del arma de la mano derecha (el ataque automatico se ve); False = (0, 0), como antes.
 DUALES_GOLPE_COMO_ARMA = _os.environ.get('AO_DUALES_GOLPE', '1') != '0'
 PARCHE_HOST = _os.environ.get('AO_PARCHE_HOST', '127.0.0.1')
+# Pak donde el launcher del cliente guarda el parche (sin .pak). Vacio = update27, el de siempre. El launcher falla al fusionar
+# entradas que ya existen en el pak de destino (solo instalaba bien la primera vez), asi que cada entrega que cambie archivos
+# va a un pak nuevo (update28..update31: el juego carga hasta el 31 y gana el de numero mas alto).
+PARCHE_PAK_LAUNCHER = _os.environ.get('AO_PARCHE_PAK_LAUNCHER', '')
 PARCHE_ESCUCHAR = _os.environ.get('AO_PARCHE_ESCUCHAR', '127.0.0.1')
 try:
     _a, _b = _os.environ.get('AO_PARCHE_PASV', '0-0').split('-')

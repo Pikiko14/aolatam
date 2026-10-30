@@ -207,22 +207,6 @@
    "hp_mult": 0.7
   },
   {
-   "entity_id": 7550091,
-   "nombre": "Fifth Lord I",
-   "npc_type": 9492,
-   "sprite": 42278,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    42,
-    72
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 50,
-   "hp_mult": 0.7
-  },
-  {
    "entity_id": 7550092,
    "nombre": "超喰イノシシ",
    "npc_type": 3781,
@@ -634,23 +618,6 @@
    "tile": [
     129,
     63
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 60,
-   "sprite_original": 42322,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550117,
-   "nombre": "Cursed General",
-   "npc_type": 5255,
-   "sprite": 42093,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    127,
-    60
    ],
    "direccion": 4,
    "visible": 0,

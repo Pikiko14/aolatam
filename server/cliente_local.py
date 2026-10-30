@@ -1365,7 +1365,7 @@ def _info_del_parche(est) -> bytes:
     """
     import parche
     host = getattr(_cf, 'PARCHE_HOST', '127.0.0.1') or '127.0.0.1'
-    pak_destino = est['pak'].rsplit('.', 1)[0]
+    pak_destino = (getattr(_cf, 'PARCHE_PAK_LAUNCHER', '') or est['pak']).rsplit('.', 1)[0]
     lineas, total = [], 0
     for nombre, datos in sorted(entradas_del_launcher().items()):
         carpeta, _, base = nombre.rpartition('\\')
