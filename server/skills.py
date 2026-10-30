@@ -82,6 +82,39 @@ def nombre_rama(sid: int) -> str:
     return NOMBRE_RAMA.get(int(sid), f'Skill {sid}')
 
 
+# LAS ONCE REGLAS DE EXCLUSION ENTRE RAMAS (互斥N de setting/eng/skill.xml).
+#
+# El servidor nunca las comprobaba: solo se negaba el selector del cliente
+# (ver configuracion.RAMAS_SIN_EXCLUSION y cliente_local.quitar_exclusion_ramas,
+# que ademas quitan esa traba del lado cliente). Entre las dos cosas no
+# quedaba ninguna, asi que se podia llevar Life y Wraith -- o cualquier otro
+# par -- a la vez. Esto es lo que de verdad lo impide, sea cual sea el
+# cliente.
+RAMAS_EXCLUSIVAS = (
+    (1, 2),         # Life <-> Wraith
+    (3, 4),         # Chaos <-> Earth
+    (6, 12),        # Meditate <-> Enhance
+    (13, 18),       # Grapple <-> Snipe
+    (32, 33, 34),   # Mantle / Garment / Vestment, las tres entre si
+)
+
+
+def rama_en_conflicto(existentes, nueva):
+    """Si `nueva` es excluyente con alguna rama de `existentes`, devuelve esa
+    rama (la primera que encuentre). None si no hay conflicto. `existentes`
+    acepta tanto ids sueltos como (sid, nivel, exp)."""
+    nueva = int(nueva)
+    ids_existentes = {
+        int(e[0] if isinstance(e, (list, tuple)) else e) for e in (existentes or [])
+    }
+    for grupo in RAMAS_EXCLUSIVAS:
+        if nueva in grupo:
+            conflicto = (ids_existentes & set(grupo)) - {nueva}
+            if conflicto:
+                return next(iter(conflicto))
+    return None
+
+
 def hechizos_iniciales_de(skill_ids) -> list:
     """Devuelve [(magic_id, nombre)] de todos los hechizos iniciales de las ramas en skill_ids."""
     res = []

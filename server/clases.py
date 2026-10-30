@@ -568,7 +568,14 @@ def regalo(ids):
     elif arma is not None and principal in DOS_ARMAS:
         salida.append((4, arma))
     elif principal == 17:
-        salida.append((4, 458))    # Wooden Arrow
+        # El arma de arranque de Longbow (17) es FreshmanCatapult (19844,
+        # 彈弓 = honda/tirachinas: no hay Freshman Bow de verdad, ver el
+        # comentario de ARMA_POR_SKILL mas arriba). Una honda pide bolitas
+        # (彈藥/小鋼珠), NO flechas (箭矢): dar Wooden Arrow (458, categoria
+        # de ARCO y encima nivel 10 pedido con nivel 1) dejaba la mano
+        # izquierda incompatible con la derecha desde el minuto uno, y el
+        # primer equipo que tocara esas ranuras expulsaba una de las dos.
+        salida.append((4, 15000))  # 小鋼珠 (sling bullet), sin nivel pedido
 
     # Clases de productor: reciben el Freshman Cask (19814), el ride robot basico (ranura montura 10)
     CLASES_PROD = {10, 11, 12, 13, 14, 15, 19, 20}

@@ -747,7 +747,7 @@ FLECHAS_INFINITAS = False
 # (0x0155) no se refresca con nada nuevo. Los contadores (_logros_contar) se siguen sumando
 # igual -- no se pierde progreso -- para que al volver a poner esto en True los logros que ya
 # se cumplieron entre tanto se otorguen de una vez.
-LOGROS_ACTIVOS = True
+LOGROS_ACTIVOS = False
 
 
 # =====================================================================

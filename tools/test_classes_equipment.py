@@ -18,7 +18,11 @@ def test_classes_weapons():
         'Warrior': ([10, 12, 13, 15, 16, 33], [(3, 19832), (4, 19832)]),
         'Protector': ([10, 14, 12, 13, 15, 33], [(3, 19832), (4, 19820)]),
         'Spearman': ([11, 12, 13, 15, 16, 33], [(3, 19838)]),
-        'Bowman': ([17, 12, 13, 15, 16, 33], [(3, 19844), (4, 458)]),
+        # FreshmanCatapult (19844) es una honda (彈弓), no un arco: pide
+        # bolitas (小鋼珠, item 15000), no flechas (458 es Wooden Arrow,
+        # ademas nivel 10 contra un personaje recien hecho de nivel 1).
+        # Con 458 las dos manos quedaban incompatibles desde el arranque.
+        'Bowman': ([17, 12, 13, 15, 16, 33], [(3, 19844), (4, 15000)]),
         'Shadowblade': ([32, 12, 13, 15, 16, 33], [(3, 19856), (4, 19856)]),
         'Mage': ([1, 2, 3, 4, 15, 16], [(3, 19850)]),
         'Producer': ([24, 25, 26, 27, 28, 29], [(3, 19814)]),

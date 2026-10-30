@@ -13038,6 +13038,7 @@ class Servidor:
                 if ses.personaje and mp_coste > 0:
                     if ses.personaje.mp < mp_coste:
                         log.info(f"[{addr}] MP insuficiente ({ses.personaje.mp}/{mp_coste}) para AOE {tipo}")
+                        ses.enviar(__import__('clases').aviso('Not enough Mana.', tipo=0))
                         return
                     ses.personaje.mp = max(0, ses.personaje.mp - mp_coste)
                     ses.enviar(_cb.atributo(yo, ses.personaje.mp, _cb.KIND_MP))
@@ -13478,6 +13479,7 @@ class Servidor:
                     if ses.personaje and mp_coste > 0:
                         if ses.personaje.mp < mp_coste:
                             log.info(f"[{addr}] MP insuficiente ({ses.personaje.mp}/{mp_coste}) para habilidad {tipo}")
+                            ses.enviar(__import__('clases').aviso('Not enough Mana.', tipo=0))
                             return
                         ses.personaje.mp = max(0, ses.personaje.mp - mp_coste)
 
@@ -13972,6 +13974,7 @@ class Servidor:
                 if ses.personaje and mp_coste > 0:
                     if ses.personaje.mp < mp_coste:
                         log.info(f"[{addr}] MP insuficiente para Wolf Spirit {tipo}")
+                        ses.enviar(__import__('clases').aviso('Not enough Mana.', tipo=0))
                         return
                     ses.personaje.mp = max(0, ses.personaje.mp - mp_coste)
                     ses.enviar(_cb.atributo(yo, ses.personaje.mp, _cb.KIND_MP))
@@ -14053,6 +14056,7 @@ class Servidor:
                 if ses.personaje and mp_coste > 0:
                     if ses.personaje.mp < mp_coste:
                         log.info(f"[{addr}] MP insuficiente ({ses.personaje.mp}/{mp_coste}) para encanto {tipo}")
+                        ses.enviar(__import__('clases').aviso('Not enough Mana.', tipo=0))
                         return
                     ses.personaje.mp = max(0, ses.personaje.mp - mp_coste)
                     ses.enviar(_cb.atributo(yo, ses.personaje.mp, _cb.KIND_MP))
@@ -14153,6 +14157,7 @@ class Servidor:
                 if ses.personaje and mp_coste > 0:
                     if ses.personaje.mp < mp_coste:
                         log.info(f"[{addr}] MP insuficiente ({ses.personaje.mp}/{mp_coste}) para panico {tipo}")
+                        ses.enviar(__import__('clases').aviso('Not enough Mana.', tipo=0))
                         return
                     ses.personaje.mp = max(0, ses.personaje.mp - mp_coste)
                     ses.enviar(_cb.atributo(yo, ses.personaje.mp, _cb.KIND_MP))
@@ -14226,6 +14231,7 @@ class Servidor:
                 if ses.personaje and mp_coste > 0:
                     if ses.personaje.mp < mp_coste:
                         log.info(f"[{addr}] MP insuficiente ({ses.personaje.mp}/{mp_coste}) para maldicion {tipo}")
+                        ses.enviar(__import__('clases').aviso('Not enough Mana.', tipo=0))
                         return
                     ses.personaje.mp = max(0, ses.personaje.mp - mp_coste)
                     ses.enviar(_cb.atributo(yo, ses.personaje.mp, _cb.KIND_MP))
@@ -14322,6 +14328,7 @@ class Servidor:
                 if ses.personaje and mp_coste > 0:
                     if ses.personaje.mp < mp_coste:
                         log.info(f"[{addr}] MP insuficiente ({ses.personaje.mp}/{mp_coste}) para habilidad {tipo}")
+                        ses.enviar(__import__('clases').aviso('Not enough Mana.', tipo=0))
                         return
                     ses.personaje.mp = max(0, ses.personaje.mp - mp_coste)
                     ses.enviar(_cb.atributo(yo, ses.personaje.mp, _cb.KIND_MP))
@@ -15739,6 +15746,14 @@ class Servidor:
                                 f"{_fuera} ({_sk.nombre_rama(_fuera)})")
                     return
 
+                _restantes = [h for h in _habs if h[0] != _fuera]
+                _conf_sw = _sk.rama_en_conflicto(_restantes, _dentro)
+                if _conf_sw:
+                    log.warning(f"[{addr}] cambio de rama rechazado: "
+                                f"{_sk.nombre_rama(_dentro)} excluye con "
+                                f"{_sk.nombre_rama(_conf_sw)}")
+                    return
+
                 # Guardar el progreso de la rama que sale en el banco de habilidades
                 if not hasattr(_p, 'banco_habilidades') or _p.banco_habilidades is None:
                     _p.banco_habilidades = {}
@@ -16168,6 +16183,21 @@ class Servidor:
             ids = clases.parsear_eleccion(cuerpo)
             if not ids:
                 return
+            # Las ramas excluyentes (Life<->Wraith, Chaos<->Earth,
+            # Meditate<->Enhance, Grapple<->Snipe, Mantle/Garment/Vestment) no
+            # se pueden elegir juntas: antes nada lo comprobaba y una
+            # eleccion manipulada (o el cliente con RAMAS_SIN_EXCLUSION) colaba
+            # las dos a la vez.
+            import skills as _sk_cl
+            _vistas_cl = []
+            for _sid_cl in ids:
+                _conf_cl = _sk_cl.rama_en_conflicto(_vistas_cl, _sid_cl)
+                if _conf_cl:
+                    log.warning(f"[{addr}] eleccion de clase invalida: "
+                                f"{_sk_cl.nombre_rama(_conf_cl)} y "
+                                f"{_sk_cl.nombre_rama(_sid_cl)} son excluyentes")
+                    return
+                _vistas_cl.append(_sid_cl)
             # La clase se elige UNA vez. Sin esto se le puede volver a hablar
             # al NPC y cambiarla cuantas veces se quiera.
             if ses.personaje and ses.personaje.habilidades:

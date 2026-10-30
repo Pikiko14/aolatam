@@ -26,7 +26,11 @@ def avisos(ses):
     return b''.join(ses.paquetes)
 
 
-def test_el_oro_da_su_logro_sin_reconectar():
+def test_el_oro_da_su_logro_sin_reconectar(monkeypatch):
+    # LOGROS_ACTIVOS esta en False por ahora (configuracion.py); el mecanismo en si se
+    # prueba igual, encendido explicitamente para esta prueba.
+    import configuracion
+    monkeypatch.setattr(configuracion, 'LOGROS_ACTIVOS', True)
     ses = sesion(oro=600000)
     ses._logros_en_vivo = True
     assert app._logros_tick(ses, ahora=1000.0)

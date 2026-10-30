@@ -73,6 +73,17 @@ ROPA_INICIAL = {
 }
 # Lo mismo para un personaje HOMBRE (primer byte de la apariencia = 1). El 26/28/30 es de mujer en item.xml del cliente (sus dolls 129/131/133
 # son el qipao, un mono de pelo y zapatos de mujer): puestos a un hombre no se dibujan y queda con el cuerpo descubierto.
+# Confirmado en item.xml: 3410/3409/3411 llevan "男女裝備"="限男性" (solo hombre)
+# y los nombres "...(M)". Antes esto se quedaba solo en el comentario de
+# arriba -- personaje_nuevo() nunca miraba el genero y le daba SIEMPRE la
+# ropa de mujer, asi que un personaje hombre arrancaba con la ropa puesta
+# (servidor) pero invisible/mal dibujada (cliente): parecia que no le
+# hubieran dado la ropa clasica de estudiante.
+ROPA_INICIAL_HOMBRE = {
+    'cuerpo':  3410,    # Blue Students' Clothes (M)
+    'guantes': 3409,    # Students' Gloves (M)
+    'zapatos': 3411,    # Students' Shoes (M)
+}
 
 # La Level 1-10 Growth Box (20103) NO se da aqui: se entrega mas tarde, al
 # terminar el tutorial (segunda charla con el Angels' Tutor), junto con la
@@ -101,7 +112,7 @@ def apariencia_de_creacion(elegidos) -> list:
 def personaje_nuevo(nombre: str, ranura: int, char_id: int,
                     elegidos=None) -> dict:
     apariencia = apariencia_de_creacion(elegidos)
-    ropa = ROPA_INICIAL
+    ropa = ROPA_INICIAL_HOMBRE if apariencia[0] else ROPA_INICIAL
     return {
         'nombre': nombre,
         'char_id': char_id,
