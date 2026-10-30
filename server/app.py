@@ -12805,6 +12805,19 @@ class Servidor:
             arma_puesta = ses.inventario.get(3, 0) if ses.inventario else 0
 
             mag = _cb.datos_magia(tipo) if tipo != _cb.ATAQUE_NORMAL else {}
+            # Sin municion no se ataca con arco/honda (si FLECHAS_INFINITAS es False).
+            # Antes esto solo decidia si se DESCONTABA una flecha mas abajo: si no
+            # habia ninguna en la ranura 4, el golpe se dejaba pasar igual, sin
+            # arma de verdad. El aviso de "sin municion" que ve el jugador lo pinta
+            # el propio cliente; aqui falta el rechazo que lo haga cierto.
+            import configuracion as _cf_mun0
+            import inventario as _iv_mun0
+            if (tipo == _cb.ATAQUE_NORMAL and not getattr(_cf_mun0, 'FLECHAS_INFINITAS', True)
+                    and (_iv_mun0.es_arco(arma_puesta) or _iv_mun0.es_honda(arma_puesta))):
+                _am0 = (ses.inventario or {}).get(4)
+                if not _am0 or not _iv_mun0.es_municion(_am0):
+                    log.info(f"[{addr}] ataque rechazado: {arma_puesta} sin municion en la mano izquierda")
+                    return
             # Una habilidad de arma solo se usa con esa arma en una mano (o el escudo en la otra): con una espada no se lanzan las de hacha. Ni el robot sustituye al arma.
             _req_arma = mag.get('equip_req') if mag else None
             if _req_arma and ses.inventario is not None:
