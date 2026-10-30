@@ -673,14 +673,14 @@
      162,
      34
     ],
-    "destino": 46,
+    "destino": 900,
     "llegada": [
      24,
      62
     ],
     "preguntar": false,
     "dibujar": true,
-    "nota": "Lyceum -> mapa propio map046 (cueva nueva), instancia oscura Lv55-60, junto a los Slarm. Entrada propia del servidor, no medida en Celestia."
+    "nota": "Lyceum -> mapa propio map900 (Dark Cavern), instancia oscura Lv55-60, junto a los Slarm. Entrada propia del servidor, no medida en Celestia."
    }
   ],
   "43": [
@@ -19145,7 +19145,7 @@
     "nota": "Del mapa del cliente: map207.mpc, objeto 60001 en esa casilla, evento 1, que hace CHANGE_MAP(21, 30). Llegada (161, 105): la mas despejada de las 3 del TAG. Las casillas del TAG son [(151, 110), (161, 105), (150, 100)] y el servidor coge una al azar. Metodo comprobado contra las 546 llegadas que este json tiene medidas cruzando portales una por una: reproduce todas. Ver tools/mapa_del_cliente.py y tools/propagar_portales.py."
    }
   ],
-  "46": [
+  "900": [
    {
     "entity": 7550011,
     "tile": [
@@ -19159,7 +19159,7 @@
     ],
     "preguntar": false,
     "dibujar": true,
-    "nota": "mapa propio map046 -> Lyceum (vuelta de la instancia oscura)."
+    "nota": "mapa propio map900 -> Lyceum (vuelta de la instancia oscura)."
    }
   ]
  },

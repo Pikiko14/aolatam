@@ -1,4 +1,4 @@
-"""Instancia oscura Lv55-60 (mapa propio map046, stage 46): plantilla, portales y jefe con piedras de Holy."""
+"""Instancia oscura Lv55-60 (mapa propio map900, stage 900): plantilla, portales y jefe con piedras de Holy."""
 import json
 import pathlib
 import sys
@@ -10,19 +10,19 @@ import combate
 import transitable
 
 PLANT = RAIZ / 'server' / 'plantillas'
-STAGE = 46
+STAGE = 900
 JEFE = 209
 STAGES_PROHIBIDOS = (55, 66)       # stage.xml con 強制傳送: el cliente se cierra al entrar
 PIEDRAS_HOLY = {8537, 8770, 24882, 28866, 40921}
 
 
 def _spawns():
-    return json.loads((PLANT / 'training_cave_big.json').read_text(encoding='utf-8'))['spawns']
+    return json.loads((PLANT / 'dark_cavern.json').read_text(encoding='utf-8'))['spawns']
 
 
 def test_es_instancia_y_tiene_plantilla():
     assert app.es_instancia(STAGE)
-    assert app.mapas_poblados()[STAGE] == 'training_cave_big.json'
+    assert app.mapas_poblados()[STAGE] == 'dark_cavern.json'
 
 
 def test_niveles_mezcla_de_normales_y_elites_y_un_jefe():
@@ -80,12 +80,27 @@ def test_el_jefe_solo_suelta_piedras_de_holy():
         assert botin and all(item in PIEDRAS_HOLY for item, _n in botin)
 
 
-def test_el_mapa_elegido_no_lleva_flags_especiales_en_stage_xml():
-    xml = (RAIZ / 'extracted_paks' / 'update26' / 'setting' / 'eng' / 'stage.xml').read_text(encoding='utf-8', errors='replace')
+def test_la_fila_de_stage_xml_no_lleva_flags_especiales(tmp_path):
+    """El 強制傳送 del 55 cerraba el cliente: la fila nueva (copia de la del 46) va sin ninguno."""
+    import pytest
+    if not (RAIZ / 'parches' / 'update27.pak').exists():
+        pytest.skip('sin parches/update27.pak')
+    sys.path.insert(0, str(RAIZ / 'tools'))
+    import generar_instancia_oscura as g
+    g.registrar_stage(tmp_path)
+    xml = (tmp_path / 'setting' / 'eng' / 'stage.xml').read_text(encoding='utf-8')
     fila = next(l for l in xml.splitlines() if '編號="%d"' % STAGE in l and '<場景' in l)
+    assert 'map%03d.mpc' % STAGE in fila
     for flag in ('強制傳送', '陣營', '平行空間', 'PVP陣營對戰', '動態空間', '不可標記'):
         assert flag not in fila, (flag, fila)
     assert STAGE not in STAGES_PROHIBIDOS
+
+
+def test_el_mapa_46_original_no_se_toca():
+    """El 46 vuelve a ser el Training Cave original: ni su mapa se reparte ni la instancia lo usa."""
+    import pathlib as _p
+    assert 46 not in app.mapas_poblados() or app.mapas_poblados()[46] != 'dark_cavern.json'
+    assert not (RAIZ / 'parches' / 'extras' / 'map' / 'map046.mpc').exists()
 
 
 def test_los_sprites_de_los_monstruos_vienen_en_el_cliente():
@@ -104,9 +119,9 @@ def test_los_sprites_de_los_monstruos_vienen_en_el_cliente():
 def test_el_mapa_propio_es_el_que_usa_el_servidor():
     """map046.mpc (tools/mapas_propios) y transitable.bin cuentan lo mismo."""
     import struct
-    datos = (RAIZ / 'tools' / 'mapas_propios' / 'map046.mpc').read_bytes()
+    datos = (RAIZ / 'tools' / 'mapas_propios' / 'map900.mpc').read_bytes()
     ancho, alto = struct.unpack_from('<II', datos, 4)
-    for x, y in ((24, 62), (187, 62), (0, 0), (100, 3)):
+    for x, y in ((24, 62), (187, 62), (0, 0), (100, 3), (155, 95)):
         celda = (alto - 1 - y) * ancho + x
         libre = datos[96 + celda * 6 + 1] & 3 == 0
         assert transitable.se_pisa(STAGE, x, y) == libre, (x, y)

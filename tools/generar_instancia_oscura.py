@@ -22,11 +22,13 @@ sys.path.insert(0, str(RAIZ / 'tools'))
 sys.path.insert(0, str(RAIZ / 'tools' / 'editor_mapas'))
 sys.stdout.reconfigure(encoding='utf-8')
 
-STAGE = 46
+STAGE = 900                    # numero propio: el mapa 46 (Training Cave) lo sirve data1.pak y gana al del parche
+BASE = 46                      # del que se toman cabecera y pinceles (el original, de data1.pak)
 ANCHO, ALTO = 200, 125
 SEMILLA = 460055
 ENTIDAD_BASE = 7550000
-MAPA_PROPIO = RAIZ / 'tools' / 'mapas_propios' / 'map046.mpc'
+MAPA_PROPIO = RAIZ / 'tools' / 'mapas_propios' / 'map900.mpc'
+NOMBRE_STAGE = 'Dark Cavern'
 
 SUELO, ROCA, BORDE = 46, 65, 64        # pinceles de map046: tierra, roca y la franja que las une
 DECORADO_BLOQUEA = (5539, 5540, 5541, 5542, 9211, 9214, 9215, 9216, 9217, 9218, 9219, 9220, 9221, 9222)   # setas grandes, estalactitas
@@ -116,7 +118,9 @@ def hacer_mpc(libre, azar):
     import mpcio
     E.cargar()
     sys.argv = argv
-    base = mpcio.leer(E.datos('map/map046.mpc'))
+    import cliente_local
+    original = cliente_local._extraer_archivo_pak(pathlib.Path(cliente_local.ruta_cliente()) / 'data1.pak', 'MAP' + chr(92) + 'MAP%03d.MPC' % BASE)
+    base = mpcio.leer(original)
     plantillas = {}
     for o in base['objetos']:
         plantillas.setdefault(o[0], o)
@@ -278,24 +282,44 @@ def hacer_plantilla(libre, salas, azar):
     puzzles = {'sellos': sellos, 'objeto_barrera': OBJETO_BARRERA,
                'puertas': [{'id': 'A', 'nombre': 'to the deep cave', 'zona': casillas(za), 'barrera': casillas(ba), 'requiere': [1, 2]},
                            {'id': 'B', 'nombre': 'to the boss chamber', 'zona': casillas(zb), 'barrera': casillas(bb), 'requiere': [1, 2, 3]}]}
-    datos = {'_nota': 'Instancia oscura Lv55-60 en el mapa propio map046 (cueva nueva): grupos de bichos normales y elites por las salas y, '
+    datos = {'_nota': 'Instancia oscura Lv55-60 en el mapa propio map900 (Dark Cavern, cueva nueva): grupos de bichos normales y elites por las salas y, '
                       'al fondo, el jefe Dragonkin Moowad (suelta piedras de Holy Battlefield). Generado con tools/generar_instancia_oscura.py.',
              'stage': STAGE, 'spawns': spawns, 'recursos': [], 'puzzles': puzzles}
     return datos, llegada, jefe_tile, tile(salas[0][0] - 7, salas[0][1])
 
 
+def registrar_stage(extras):
+    """setting/eng/stage.xml con la fila del stage 900 (copia de la del 46: oscuro, sin flags) en parches/extras."""
+    import parche
+    bs = chr(92)
+    raw = (RAIZ / 'parches' / 'update27.pak').read_bytes()
+    base = {n: parche._leer(raw, e) for n, e in parche._directorio(raw).items()}['SETTING' + bs + 'ENG' + bs + 'STAGE.XML'].decode('utf-8')
+    if '編號="%d"' % STAGE not in base:
+        # la minimapa (雷達圖) se queda con la del Training Cave: no hay imagen smap para el mapa nuevo
+        fila = ('    <場景 編號="%d" 名稱="%s" 地圖檔="map' + bs + 'map%03d.mpc" 筆刷檔="brush' + bs + 'brush.gic" '
+                '雷達圖="smap' + bs + '046" 配樂檔1="music' + bs + '11.ogg" 亮度="160" 天氣="0" 不懲罰="是" />\r\n'
+                ) % (STAGE, NOMBRE_STAGE, STAGE)
+        fin = base.rindex('<DEFINE')
+        base = base[:fin].rstrip(' ') + fila + '    ' + base[fin:]
+    destino = extras / 'setting' / 'eng'
+    destino.mkdir(parents=True, exist_ok=True)
+    (destino / 'stage.xml').write_bytes(base.encode('utf-8'))
+
+
 def instalar(datos):
-    import shutil
     import instalar_mapa
-    from editor_mapas import packmapas
     import cliente_local
-    extras = RAIZ / 'parches' / 'extras' / 'map'
-    extras.mkdir(parents=True, exist_ok=True)
-    (extras / 'map046.mpc').write_bytes(datos)
+    extras = RAIZ / 'parches' / 'extras'
+    (extras / 'map').mkdir(parents=True, exist_ok=True)
+    (extras / 'map' / ('map%03d.mpc' % STAGE)).write_bytes(datos)
+    viejo = extras / 'map' / ('map%03d.mpc' % BASE)         # el 46 vuelve a ser el original: no se reparte el nuestro
+    if viejo.exists():
+        viejo.unlink()
+    registrar_stage(extras)
+    original = cliente_local._extraer_archivo_pak(pathlib.Path(cliente_local.ruta_cliente()) / 'data1.pak', 'MAP' + chr(92) + 'MAP%03d.MPC' % BASE)
+    instalar_mapa.actualizar_transitable(BASE, original)
     instalar_mapa.actualizar_transitable(STAGE, datos)
-    pack = pathlib.Path(cliente_local.ruta_cliente()) / 'update28.pak'
-    print(packmapas.guardar_mapa(str(pack), 'map046', datos))
-    print('instalado: parches/extras/map/map046.mpc, transitable.bin y', pack)
+    print('instalado: parches/extras (map%03d.mpc + stage.xml), transitable.bin (46 original, %d nuevo)' % (STAGE, STAGE))
 
 
 def main():
@@ -314,7 +338,7 @@ def main():
     datos, nobj = hacer_mpc(libre, azar)
     MAPA_PROPIO.parent.mkdir(parents=True, exist_ok=True)
     MAPA_PROPIO.write_bytes(datos)
-    destino = RAIZ / 'server' / 'plantillas' / 'training_cave_big.json'
+    destino = RAIZ / 'server' / 'plantillas' / 'dark_cavern.json'
     destino.write_text(json.dumps(plantilla, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
     n = collections.Counter('jefe' if s.get('jefe') else 'elite' if s.get('elite') else 'normal' for s in plantilla['spawns'])
     print('semilla', semilla, '| mapa', MAPA_PROPIO, len(datos), 'bytes,', nobj, 'objetos; casillas libres', sum(map(sum, libre)))

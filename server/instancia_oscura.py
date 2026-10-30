@@ -2,15 +2,15 @@
 
 La cueva tiene dos puertas invisibles en sus pasillos. Cada una se abre al derrotar a ciertos Guardianes del Sello
 (los monstruos de la plantilla con `sello: N`). Mientras esta cerrada, ningun paso, salto ni carga puede cruzar su
-zona: el cliente vuelve a la casilla de salida con un aviso. Los datos salen de `plantillas/training_cave_big.json`
+zona: el cliente vuelve a la casilla de salida con un aviso. Los datos salen de `plantillas/dark_cavern.json`
 (clave `puzzles`, escrita por tools/generar_instancia_oscura.py). El estado vive en la sesion y se reinicia al entrar.
 """
 import json
 import pathlib
 import time
 
-STAGE = 46
-_PLANTILLA = pathlib.Path(__file__).parent / 'plantillas' / 'training_cave_big.json'
+STAGE = 900
+_PLANTILLA = pathlib.Path(__file__).parent / 'plantillas' / 'dark_cavern.json'
 _CACHE = {}
 ENTIDAD_BARRERA = 7551000
 _PRUEBA = pathlib.Path(__file__).parent / 'plantillas' / 'instancia_oscura_prueba.json'

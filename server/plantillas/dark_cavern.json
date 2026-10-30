@@ -1,6 +1,6 @@
 {
- "_nota": "Instancia oscura Lv55-60 en el mapa propio map046 (cueva nueva): grupos de bichos normales y elites por las salas y, al fondo, el jefe Dragonkin Moowad (suelta piedras de Holy Battlefield). Generado con tools/generar_instancia_oscura.py.",
- "stage": 46,
+ "_nota": "Instancia oscura Lv55-60 en el mapa propio map900 (Dark Cavern, cueva nueva): grupos de bichos normales y elites por las salas y, al fondo, el jefe Dragonkin Moowad (suelta piedras de Holy Battlefield). Generado con tools/generar_instancia_oscura.py.",
+ "stage": 900,
  "spawns": [
   {
    "entity_id": 7550001,

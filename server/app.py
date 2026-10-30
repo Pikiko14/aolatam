@@ -428,7 +428,7 @@ def _monstruos_de(stage: int):
                     b.hp_max = b.hp = int(b.hp_max * float(e.get('hp_mult') or 1))
                     b.atk = int(b.atk * float(e.get('atk_mult') or 1))
                     b.matk = int(b.matk * float(e.get('atk_mult') or 1))
-            if stage == 46:
+            if stage == 900:
                 bichos = __import__('instancia_oscura').filtrar(bichos, d.get('spawns', []))
             # La ZONA de su generador (tools/zonas_de_plantilla.py): la miran
             # los portales que solo dejan pasar con la sala limpia
@@ -4013,7 +4013,7 @@ def _sincronizar_cambio_mapa(ses, stage_id: int, x: int = None, y: int = None):
     if x is not None and y is not None:
         p.tile_x, p.tile_y = x, y
     ses.monstruos = _monstruos_de(stage_id)
-    if stage_id == 46:
+    if stage_id == 900:
         __import__('instancia_oscura').reiniciar(ses)
     ses.mapa_cambiado_en = time.time()
 
@@ -20658,7 +20658,7 @@ class Servidor:
                     ses.enviar(ACK.build(), MOVE.build(entity_id=ses.personaje.entity_id,
                         cur_x=_px_hb,cur_y=_py_hb,dst_x=_px_hb,dst_y=_py_hb,speed=_velocidad_de(ses)))
                     return
-            if ses.personaje and ses.personaje.stage == 46 and __import__('instancia_oscura').bloquear_paso(
+            if ses.personaje and ses.personaje.stage == 900 and __import__('instancia_oscura').bloquear_paso(
                     ses, (ses.personaje.tile_x, ses.personaje.tile_y), (dst['x']//32, dst['y']//32)):
                 _px_io, _py_io = ses.personaje.tile_x*32, ses.personaje.tile_y*32
                 ses.enviar(ACK.build(), MOVE.build(entity_id=ses.personaje.entity_id,

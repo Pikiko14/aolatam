@@ -687,9 +687,10 @@ def personaje_de(cuenta, ranura=0):
             _fac = p.get('faction') or ''
             _ciudades = {'Aurora': (3, 150, 105), 'Beasts': (26, 140, 150), 'Steel': (29, 150, 120), 'Shadow': (38, 150, 120)}
             _st, _tx, _ty = _ciudades.get(_fac, (41, 244, 30))
-    elif _st == 46:
-        # La instancia oscura no se reanuda: su mapa se rehace al entrar y la casilla guardada puede caer en roca
-        # (el cliente se cerraba al cargar). Se vuelve a la entrada del portal, en el Lyceum.
+    elif _st in (46, 900):
+        # La instancia oscura (900) no se reanuda: su mapa se rehace al entrar y la casilla guardada puede caer en roca.
+        # El 46 es el Training Cave original: ahi se guardo gente mientras la instancia vivio con ese numero.
+        # Se vuelve a la entrada del portal, en el Lyceum.
         _st, _tx, _ty = 41, 160, 36
     return Personaje(
         entity_id=1000 + p['char_id'] % 1000,
