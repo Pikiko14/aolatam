@@ -42,11 +42,12 @@ _CMDS_GUILD = ('guild', 'gremio', 'liga')
 _CMDS_TW = ('settw', 'settotemwar', 'tw', 'totemwar', 'twstart', 'twstop',
             'notice', 'aviso', 'anuncio', 'gmsg', 'twtotem')
 _CMDS_FARM = ('plant', 'sembrar', 'farm', 'granja')
+_CMDS_SETMAP = ('setmap', 'setstage', 'tpjugador', 'enviarmapa')
 _CMDS = frozenset(('help',) + _CMDS_ITEM + _CMDS_LEVEL + _CMDS_SETLEVEL + _CMDS_GOLD
                   + _CMDS_LEVELALL + _CMDS_SKILLS + _CMDS_SKILLSALL + _CMDS_SKILLS5
                   + _CMDS_CLEARSKILLS + _CMDS_PET + _CMDS_QUEST + _CMDS_BALL
                   + _CMDS_GUILDLEVEL + _CMDS_GUILDREP + _CMDS_GUILD
-                  + _CMDS_TW + _CMDS_FARM)
+                  + _CMDS_TW + _CMDS_FARM + _CMDS_SETMAP)
 # _CMDS se quedaba sin 'gold' y 'setlevel' (se anadieron arriba, al vuelo: no se tocan las
 # tuplas que ya tenia cada quien para no reordenar nada). No cambia nada vivo: _CMDS solo lo
 # usa texto_de(), y nada del servidor llama a texto_de() hoy (ver mas abajo, PALABRAS).
@@ -67,18 +68,19 @@ _CMDS = frozenset(('help',) + _CMDS_ITEM + _CMDS_LEVEL + _CMDS_SETLEVEL + _CMDS_
 PALABRAS = _CMDS
 _GRUPOS_DELEGADOS = (_CMDS_LEVEL, _CMDS_SETLEVEL, _CMDS_GOLD, _CMDS_LEVELALL,
                     _CMDS_SKILLS, _CMDS_SKILLSALL, _CMDS_SKILLS5, _CMDS_CLEARSKILLS,
-                    _CMDS_PET, _CMDS_QUEST, _CMDS_BALL)
+                    _CMDS_PET, _CMDS_QUEST, _CMDS_BALL, _CMDS_SETMAP)
 PALABRAS_DELEGADAS = frozenset(w for grupo in _GRUPOS_DELEGADOS for w in grupo)
 # Los 'kind' que gm.parsear() puede devolver para PALABRAS_DELEGADAS, para que el
 # dispatcher de app.py sepa cuales reenviar a gm.aplicar().
 RESULTADOS_DELEGADOS = frozenset((
     'level', 'levelall', 'setlevel', 'gold', 'skills', 'skillsall', 'skills5',
-    'clearskills', 'pet', 'quest', 'ball',
+    'clearskills', 'pet', 'quest', 'ball', 'setmap',
 ))
 
 AYUDA = ("GM: /item <id> [qty]  /level <n>  /levelall <n>  /setlevel <name|all> <n>/guildlevel <1..10>  /guildrep <n>  "
          "/skills [lv]  /skillsall [lv]  /skills5  /clearskills  "
          "/pet level|exp|path|evolve  /ball reset  /quest <id> <step>  "
+         "/setmap <name> <stage> [x] [y]  (teleports online OR offline players)  "
          "/rango [1..20]  /estacion <normal|navidad|halloween|sakura|verano>  /farm enter  /plant <id>  "
          "/twstart [min]  /twstop  /tw  /settw <campo> <liga>  /twtotem <1..8>  /notice <texto>")
 
@@ -240,6 +242,62 @@ def poner_nivel_a_otros(gm_ses, quien: str, n: int) -> str:
         except Exception:
             log.exception('setlevel fallo para %s', getattr(s.personaje, 'nombre', '?'))
     return 'level %d set for %d player(s): %s' % (n, len(hechos), ', '.join(hechos[:10]) + ('...' if len(hechos) > 10 else ''))
+
+
+def _tile_valido(stage: int, x: int, y: int):
+    """(x, y) si se pisa en ese stage; si no, el mas cercano dentro de un radio de 10, o el
+    original si transitable no conoce el mapa o no encuentra ninguno (se manda igual: mejor
+    dejarlo en una pared que no mandarlo a ningun lado)."""
+    import transitable as _tr
+    if not _tr.conocido(stage):
+        return x, y
+    if _tr.se_pisa(stage, x, y):
+        return x, y
+    for radio in range(1, 11):
+        for dx in range(-radio, radio + 1):
+            for dy in (-radio, radio):
+                if _tr.se_pisa(stage, x + dx, y + dy):
+                    return x + dx, y + dy
+            for dy in range(-radio + 1, radio):
+                if _tr.se_pisa(stage, x + radio, y + dy):
+                    return x + radio, y + dy
+                if _tr.se_pisa(stage, x - radio, y + dy):
+                    return x - radio, y + dy
+    return x, y
+
+
+def cambiar_mapa_jugador(gm_ses, quien: str, stage: int, x: int = None, y: int = None) -> str:
+    """/setmap <nombre> <stage> [x] [y]: manda a OTRO jugador a ese mapa y casilla, este o no
+    conectado. Sin x/y se queda en su casilla actual (ajustada a la pared mas cercana si en
+    el mapa nuevo no se pisa). A diferencia de /setlevel, 'all' no vale aqui: mover a todo el
+    mundo de golpe es demasiado facil de escribir sin querer."""
+    a = _app()
+    quien = (quien or '').strip()
+    if not quien or quien.lower() in ('all', 'todos'):
+        return 'usage: /setmap <name> <stage> [x] [y]  (no "all": un jugador a la vez)'
+    online = next((s for s in a._tw_sesiones()
+                   if s is not gm_ses and getattr(s, 'personaje', None)
+                   and s.personaje.nombre.lower() == quien.lower()), None)
+    if online:
+        p = online.personaje
+        tx, ty = _tile_valido(stage, x if x is not None else p.tile_x, y if y is not None else p.tile_y)
+        a._sincronizar_cambio_mapa(online, stage, tx, ty)
+        if getattr(online, 'usuario', None):
+            cuentas.guardar_mapa(online.usuario, p.char_id, stage, tx, ty)
+        _avisar(online, 'A GM moved you to a new map.')
+        msg = '%s -> stage %d (%d,%d) [online]' % (p.nombre, stage, tx, ty)
+        _avisar(gm_ses, msg)
+        return msg
+    encontrado = cuentas.personaje_por_nombre(quien)
+    if not encontrado:
+        return 'character not found: %s' % quien
+    usuario, char_id, datos = encontrado
+    tx, ty = _tile_valido(stage, x if x is not None else int(datos.get('tile_x', 0)),
+                          y if y is not None else int(datos.get('tile_y', 0)))
+    cuentas.guardar_mapa(usuario, char_id, stage, tx, ty)
+    msg = '%s -> stage %d (%d,%d) [offline, se vera al conectar]' % (datos.get('nombre', quien), stage, tx, ty)
+    _avisar(gm_ses, msg)
+    return msg
 
 
 def poner_skills(ses, n: int) -> str:
@@ -558,6 +616,16 @@ def parsear(texto: str):
     if cmd in _CMDS_BALL:
         sub = parts[1].lower() if len(parts) > 1 else 'reset'
         return ('ball', sub)
+    if cmd in _CMDS_SETMAP:
+        if len(parts) < 3:
+            return ('err', 'usage: /setmap <name> <stage> [x] [y]')
+        try:
+            stage = int(parts[2], 0)
+            x = int(parts[3], 0) if len(parts) >= 4 else None
+            y = int(parts[4], 0) if len(parts) >= 5 else None
+        except ValueError:
+            return ('err', 'usage: /setmap <name> <stage> [x] [y]  (stage/x/y son numeros)')
+        return ('setmap', parts[1], stage, x, y)
     if cmd in _CMDS_GUILDLEVEL:
         if len(parts) < 2:
             return ('err', 'usage: /guildlevel <1..10>')
@@ -681,6 +749,8 @@ def aplicar(ses, parsed) -> str:
         msg = "House ball cooldown has been reset! You can host a ball now."
         _avisar(ses, msg)
         return msg
+    if kind == 'setmap':
+        return cambiar_mapa_jugador(ses, parsed[1], parsed[2], parsed[3], parsed[4])
     if kind == 'guildlevel':
         import gremios as _grm_cmd
         p = getattr(ses, 'personaje', None)

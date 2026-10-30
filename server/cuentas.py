@@ -576,6 +576,26 @@ def lista_de_personajes(usuario: str) -> list:
             con.close()
 
 
+def personaje_por_nombre(nombre: str):
+    """(usuario, char_id, datos) del personaje con ese nombre (NOCASE, es unico en toda la
+    base: ver guardar_personaje_nuevo), este o no conectado. None si no existe."""
+    nombre = (nombre or '').strip()
+    if not nombre:
+        return None
+    with _LOCK:
+        con = _get_conn()
+        try:
+            row = con.execute(
+                'SELECT usuario, char_id, datos FROM personajes WHERE nombre = ? COLLATE NOCASE',
+                (nombre,)).fetchone()
+        finally:
+            con.close()
+    if not row:
+        return None
+    usuario, char_id, datos_json = row
+    return usuario, char_id, json.loads(datos_json)
+
+
 def validar(usuario: str, cuerpo_auth: bytes = b'') -> tuple:
     """Valida la contrasena. Una cuenta sin contrasena guardada (nueva, o
     creada antes de esta validacion) se queda con la de este ingreso."""
