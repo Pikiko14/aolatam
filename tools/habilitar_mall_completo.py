@@ -79,13 +79,19 @@ QUITADAS = {31441: '2013 Taurus Swordman Lucky Bag', 31442: '2013 Taurus Axeman 
             9305: 'Little Red-cap Robot', 9306: 'Grape Kaz cayman Robot'}
 
 # PACKS DE 11 Y 110 en Lucky Weapon (29), Lucky Armor (30) y Ride (31), como los que ya hay en la
-# pestana Lucky Bag: 11 al precio de 10 y 110 al de 100 (30 / 300 / 3000).
+# pestana Lucky Bag. Precio fijo para todas las bolsas, como en la Lucky Bag: 300 el de 11 y 3000 el de 110
+# (pedido del usuario el 31/10/2026; antes era 10 y 100 veces el precio de la bolsa).
 CATS_CON_PACKS = (29, 30, 31)
 PACKS = ((11, 10), (110, 100))
+PRECIO_PACK = {11: 300, 110: 3000}
 PUBLICACION_PACK = 'pack 11/110 (tools/habilitar_mall_completo.py)'
 
 
 def packs(rows):
+    for r in rows:
+        if r['category'] in CATS_CON_PACKS and r['quantity'] in PRECIO_PACK and r.get('publication') == PUBLICACION_PACK:
+            r['price'], r['special_price'] = PRECIO_PACK[r['quantity']], 0
+            r['price_source'] = 'local: pack de %d a precio fijo' % r['quantity']
     hay = {(r['category'], r['item'], r['quantity']) for r in rows}
     ids = {r['id'] for r in rows}
     nuevas = []
@@ -98,9 +104,8 @@ def packs(rows):
             hay.add((r['category'], r['item'], cant))
             sig = max(ids | {PRIMER_ID_LOCAL - 1}) + 1
             ids.add(sig)
-            nuevas.append(dict(r, id=sig, quantity=cant, price=r['price'] * veces,
-                               special_price=r['special_price'] * veces,
-                               price_source='local: pack de %d al precio de %d' % (cant, veces),
+            nuevas.append(dict(r, id=sig, quantity=cant, price=PRECIO_PACK[cant], special_price=0,
+                               price_source='local: pack de %d a precio fijo' % cant,
                                publication=PUBLICACION_PACK))
     return rows + nuevas
 

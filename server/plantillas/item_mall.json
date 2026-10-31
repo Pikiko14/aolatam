@@ -4904,7 +4904,7 @@
             "sort": 2,
             "category": 29,
             "quantity": 11,
-            "price": 1290,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -4912,7 +4912,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -4922,7 +4922,7 @@
             "sort": 3,
             "category": 29,
             "quantity": 110,
-            "price": 12900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -4930,7 +4930,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -4940,7 +4940,7 @@
             "sort": 5,
             "category": 29,
             "quantity": 11,
-            "price": 1290,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -4948,7 +4948,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -4958,7 +4958,7 @@
             "sort": 6,
             "category": 29,
             "quantity": 110,
-            "price": 12900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -4966,7 +4966,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -4976,7 +4976,7 @@
             "sort": 8,
             "category": 29,
             "quantity": 11,
-            "price": 1290,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -4984,7 +4984,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -4994,7 +4994,7 @@
             "sort": 9,
             "category": 29,
             "quantity": 110,
-            "price": 12900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5002,7 +5002,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5012,7 +5012,7 @@
             "sort": 11,
             "category": 29,
             "quantity": 11,
-            "price": 1290,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5020,7 +5020,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5030,7 +5030,7 @@
             "sort": 12,
             "category": 29,
             "quantity": 110,
-            "price": 12900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5038,7 +5038,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5048,7 +5048,7 @@
             "sort": 14,
             "category": 29,
             "quantity": 11,
-            "price": 1290,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5056,7 +5056,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5066,7 +5066,7 @@
             "sort": 15,
             "category": 29,
             "quantity": 110,
-            "price": 12900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5074,7 +5074,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5084,7 +5084,7 @@
             "sort": 17,
             "category": 29,
             "quantity": 11,
-            "price": 1290,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5092,7 +5092,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5102,7 +5102,7 @@
             "sort": 18,
             "category": 29,
             "quantity": 110,
-            "price": 12900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5110,7 +5110,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5120,7 +5120,7 @@
             "sort": 20,
             "category": 29,
             "quantity": 11,
-            "price": 890,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5128,7 +5128,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5138,7 +5138,7 @@
             "sort": 21,
             "category": 29,
             "quantity": 110,
-            "price": 8900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5146,7 +5146,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5156,7 +5156,7 @@
             "sort": 23,
             "category": 29,
             "quantity": 11,
-            "price": 890,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5164,7 +5164,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5174,7 +5174,7 @@
             "sort": 24,
             "category": 29,
             "quantity": 110,
-            "price": 8900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5182,7 +5182,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5192,7 +5192,7 @@
             "sort": 26,
             "category": 29,
             "quantity": 11,
-            "price": 890,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5200,7 +5200,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5210,7 +5210,7 @@
             "sort": 27,
             "category": 29,
             "quantity": 110,
-            "price": 8900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5218,7 +5218,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5228,7 +5228,7 @@
             "sort": 29,
             "category": 29,
             "quantity": 11,
-            "price": 890,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5236,7 +5236,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5246,7 +5246,7 @@
             "sort": 30,
             "category": 29,
             "quantity": 110,
-            "price": 8900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5254,7 +5254,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5264,7 +5264,7 @@
             "sort": 32,
             "category": 29,
             "quantity": 11,
-            "price": 890,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5272,7 +5272,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5282,7 +5282,7 @@
             "sort": 33,
             "category": 29,
             "quantity": 110,
-            "price": 8900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5290,7 +5290,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5300,7 +5300,7 @@
             "sort": 35,
             "category": 29,
             "quantity": 11,
-            "price": 890,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5308,7 +5308,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5318,7 +5318,7 @@
             "sort": 36,
             "category": 29,
             "quantity": 110,
-            "price": 8900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5326,7 +5326,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5336,7 +5336,7 @@
             "sort": 38,
             "category": 29,
             "quantity": 11,
-            "price": 590,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5344,7 +5344,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5354,7 +5354,7 @@
             "sort": 39,
             "category": 29,
             "quantity": 110,
-            "price": 5900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5362,7 +5362,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5372,7 +5372,7 @@
             "sort": 41,
             "category": 29,
             "quantity": 11,
-            "price": 590,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5380,7 +5380,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5390,7 +5390,7 @@
             "sort": 42,
             "category": 29,
             "quantity": 110,
-            "price": 5900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5398,7 +5398,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5408,7 +5408,7 @@
             "sort": 44,
             "category": 29,
             "quantity": 11,
-            "price": 590,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5416,7 +5416,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5426,7 +5426,7 @@
             "sort": 45,
             "category": 29,
             "quantity": 110,
-            "price": 5900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5434,7 +5434,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5444,7 +5444,7 @@
             "sort": 47,
             "category": 29,
             "quantity": 11,
-            "price": 590,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5452,7 +5452,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5462,7 +5462,7 @@
             "sort": 48,
             "category": 29,
             "quantity": 110,
-            "price": 5900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5470,7 +5470,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5480,7 +5480,7 @@
             "sort": 50,
             "category": 29,
             "quantity": 11,
-            "price": 590,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5488,7 +5488,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5498,7 +5498,7 @@
             "sort": 51,
             "category": 29,
             "quantity": 110,
-            "price": 5900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5506,7 +5506,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5516,7 +5516,7 @@
             "sort": 53,
             "category": 29,
             "quantity": 11,
-            "price": 590,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5524,7 +5524,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5534,7 +5534,7 @@
             "sort": 54,
             "category": 29,
             "quantity": 110,
-            "price": 5900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5542,7 +5542,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5552,7 +5552,7 @@
             "sort": 2,
             "category": 30,
             "quantity": 11,
-            "price": 1890,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5560,7 +5560,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5570,7 +5570,7 @@
             "sort": 3,
             "category": 30,
             "quantity": 110,
-            "price": 18900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5578,7 +5578,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5588,7 +5588,7 @@
             "sort": 5,
             "category": 30,
             "quantity": 11,
-            "price": 1890,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5596,7 +5596,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5606,7 +5606,7 @@
             "sort": 6,
             "category": 30,
             "quantity": 110,
-            "price": 18900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5614,7 +5614,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5624,7 +5624,7 @@
             "sort": 8,
             "category": 30,
             "quantity": 11,
-            "price": 1890,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5632,7 +5632,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5642,7 +5642,7 @@
             "sort": 9,
             "category": 30,
             "quantity": 110,
-            "price": 18900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5650,7 +5650,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5660,7 +5660,7 @@
             "sort": 11,
             "category": 30,
             "quantity": 11,
-            "price": 1290,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5668,7 +5668,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5678,7 +5678,7 @@
             "sort": 12,
             "category": 30,
             "quantity": 110,
-            "price": 12900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5686,7 +5686,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5696,7 +5696,7 @@
             "sort": 14,
             "category": 30,
             "quantity": 11,
-            "price": 1290,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5704,7 +5704,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5714,7 +5714,7 @@
             "sort": 15,
             "category": 30,
             "quantity": 110,
-            "price": 12900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5722,7 +5722,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5732,7 +5732,7 @@
             "sort": 17,
             "category": 30,
             "quantity": 11,
-            "price": 1290,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5740,7 +5740,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5750,7 +5750,7 @@
             "sort": 18,
             "category": 30,
             "quantity": 110,
-            "price": 12900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5758,7 +5758,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5768,7 +5768,7 @@
             "sort": 20,
             "category": 30,
             "quantity": 11,
-            "price": 890,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5776,7 +5776,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5786,7 +5786,7 @@
             "sort": 21,
             "category": 30,
             "quantity": 110,
-            "price": 8900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5794,7 +5794,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5804,7 +5804,7 @@
             "sort": 23,
             "category": 30,
             "quantity": 11,
-            "price": 890,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5812,7 +5812,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5822,7 +5822,7 @@
             "sort": 24,
             "category": 30,
             "quantity": 110,
-            "price": 8900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5830,7 +5830,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5840,7 +5840,7 @@
             "sort": 26,
             "category": 30,
             "quantity": 11,
-            "price": 890,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5848,7 +5848,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5858,7 +5858,7 @@
             "sort": 27,
             "category": 30,
             "quantity": 110,
-            "price": 8900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5866,7 +5866,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5876,7 +5876,7 @@
             "sort": 29,
             "category": 30,
             "quantity": 11,
-            "price": 590,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5884,7 +5884,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5894,7 +5894,7 @@
             "sort": 30,
             "category": 30,
             "quantity": 110,
-            "price": 5900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5902,7 +5902,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5912,7 +5912,7 @@
             "sort": 32,
             "category": 30,
             "quantity": 11,
-            "price": 590,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5920,7 +5920,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5930,7 +5930,7 @@
             "sort": 33,
             "category": 30,
             "quantity": 110,
-            "price": 5900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5938,7 +5938,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5948,7 +5948,7 @@
             "sort": 35,
             "category": 30,
             "quantity": 11,
-            "price": 590,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5956,7 +5956,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5966,7 +5966,7 @@
             "sort": 36,
             "category": 30,
             "quantity": 110,
-            "price": 5900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5974,7 +5974,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -5984,7 +5984,7 @@
             "sort": 8,
             "category": 31,
             "quantity": 11,
-            "price": 1290,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -5992,7 +5992,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -6002,7 +6002,7 @@
             "sort": 9,
             "category": 31,
             "quantity": 110,
-            "price": 12900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -6010,7 +6010,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -6020,7 +6020,7 @@
             "sort": 11,
             "category": 31,
             "quantity": 11,
-            "price": 1290,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -6028,7 +6028,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -6038,7 +6038,7 @@
             "sort": 12,
             "category": 31,
             "quantity": 110,
-            "price": 12900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -6046,7 +6046,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -6056,7 +6056,7 @@
             "sort": 14,
             "category": 31,
             "quantity": 11,
-            "price": 590,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -6064,7 +6064,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -6074,7 +6074,7 @@
             "sort": 15,
             "category": 31,
             "quantity": 110,
-            "price": 5900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -6082,7 +6082,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -6092,7 +6092,7 @@
             "sort": 17,
             "category": 31,
             "quantity": 11,
-            "price": 590,
+            "price": 300,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -6100,7 +6100,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 11 al precio de 10",
+            "price_source": "local: pack de 11 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
@@ -6110,7 +6110,7 @@
             "sort": 18,
             "category": 31,
             "quantity": 110,
-            "price": 5900,
+            "price": 3000,
             "special_price": 0,
             "duration": 0,
             "start": "",
@@ -6118,7 +6118,7 @@
             "limit": 0,
             "gift": 0,
             "gift_quantity": 0,
-            "price_source": "local: pack de 110 al precio de 100",
+            "price_source": "local: pack de 110 a precio fijo",
             "publication": "pack 11/110 (tools/habilitar_mall_completo.py)"
         },
         {
