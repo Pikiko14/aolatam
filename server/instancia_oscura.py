@@ -136,3 +136,32 @@ def bloquear_paso(ses, desde, hasta):
                 _aviso(ses, 'A sealing force blocks the way. Defeat the Seal Guardians (%d left).' % len(faltan))
             return True
     return False
+
+
+# TICKETS DEL JEFE: el Dragonkin Moowad (el spawn con "jefe" de la plantilla) suelta de 2 a 5 tickets al azar de los
+# cuatro tipos que se canjean en Event Overview > Exchange > Enhanced Pestle and Ride Feed (grupo 595 de
+# exchange.xml, tools/canje_straw.py). Pedido del usuario el 31/10/2026.
+TICKETS = (20228, 20229, 20230, 20231)   # Lucky Enhanced Pestle / Ride / Piercing Hammer / Lucky Hammer Ticket
+TICKETS_DEL_JEFE = (2, 5)
+
+
+def _tipos_jefe():
+    marca = _PLANTILLA.stat().st_mtime_ns
+    if _CACHE.get('jefes_marca') != marca:
+        spawns = json.loads(_PLANTILLA.read_text(encoding='utf-8')).get('spawns') or []
+        _CACHE['jefes'] = {int(e['npc_type']) for e in spawns if e.get('jefe') and e.get('npc_type')}
+        _CACHE['jefes_marca'] = marca
+    return _CACHE['jefes']
+
+
+def tickets_del_jefe(stage, m):
+    """[(ticket, cantidad)] si `m` es el jefe de la instancia; [] si no."""
+    import random
+    if int(stage or 0) != STAGE or int(getattr(m, 'npc_type', 0) or 0) not in _tipos_jefe():
+        return []
+    cuantos = random.randint(*TICKETS_DEL_JEFE)
+    salen = {}
+    for _ in range(cuantos):
+        t = random.choice(TICKETS)
+        salen[t] = salen.get(t, 0) + 1
+    return sorted(salen.items())
