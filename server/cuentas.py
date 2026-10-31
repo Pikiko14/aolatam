@@ -48,6 +48,8 @@ CONFIGURACION_POR_DEFECTO = {
     'reemplazar_contrasena': ('0', 'Si la contrasena no coincide, se queda la nueva en vez de '
                                    'rechazar. Para cambiarlas: encender, entrar con la nueva en '
                                    'cada cuenta, apagar.'),
+    'crear_cuenta_al_entrar': ('0', 'Crear la cuenta si no existe al entrar con el juego (0 = las '
+                                    'cuentas se crean solo en la web, server/web_registro.py).'),
 }
 
 
@@ -623,6 +625,10 @@ def validar(usuario: str, cuerpo_auth: bytes = b'') -> tuple:
             cur = con.cursor()
             cur.execute("SELECT password FROM cuentas WHERE usuario = ?", (usuario,))
             row = cur.fetchone()
+            # LAS CUENTAS SE CREAN EN LA WEB (web_registro.py reserva el usuario). Antes el juego creaba la
+            # cuenta al entrar con cualquier nombre; ahora solo si se enciende crear_cuenta_al_entrar.
+            if row is None and not flag('crear_cuenta_al_entrar'):
+                return None, "la cuenta no existe (se crea en la web)"
             guardado = row[0] if row else ''
             if not validar_pw:
                 # Sin validar: entra cualquiera, y la cuenta se crea si no esta.
