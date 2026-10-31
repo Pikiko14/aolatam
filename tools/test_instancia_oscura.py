@@ -31,7 +31,10 @@ def test_niveles_mezcla_de_normales_y_elites_y_un_jefe():
     normales = [s for s in sp if not s.get('elite') and not s.get('jefe')]
     elites = [s for s in sp if s.get('elite')]
     jefes = [s for s in sp if s.get('jefe')]
-    assert len(normales) >= 20 and len(elites) >= 3 and len(jefes) == 1
+    assert len(normales) >= 20 and len(jefes) == 1
+    # Sin puertas ni sellos: solo lo que dibuja el usuario (31/10/2026).
+    assert not any(s.get('sello') for s in sp)
+    assert 'puzzles' not in json.loads((PLANT / 'dark_cavern.json').read_text(encoding='utf-8'))
     # La instancia es de nivel 45 a 60 (pedido del usuario, 30/10/2026).
     assert all(45 <= s['nivel'] <= 60 for s in normales + elites)
     assert jefes[0]['npc_type'] == JEFE
@@ -130,62 +133,12 @@ def test_el_mapa_propio_es_el_que_usa_el_servidor():
         assert transitable.se_pisa(STAGE, x, y) == libre, (x, y)
 
 
-class _Ses:
-    def __init__(self):
-        self.enviados = []
-        self.personaje = type('P', (), {'stage': STAGE})()
-
-    def enviar(self, *paquetes):
-        self.enviados.extend(paquetes)
-
-
-def test_puzzles_las_puertas_cierran_el_paso_hasta_romper_los_sellos():
+def test_sin_puertas_la_cueva_no_bloquea_nada():
+    """Sin puzzles en la plantilla no hay cortinas ni pasos cerrados."""
     import instancia_oscura as io
-    datos = io.datos()
-    a, b = datos['puertas']
-    ses = _Ses()
-    io.reiniciar(ses)
-    cruce = lambda p: (tuple(p['zona'][0]), tuple(p['zona'][0]))
-    assert io.bloquear_paso(ses, *cruce(a)) and io.bloquear_paso(ses, *cruce(b))
-    monstruos = {s['sello']: type('M', (), {'sello': s['sello']})() for s in _spawns() if s.get('sello')}
-    io.al_morir(ses, monstruos[1])
-    assert io.bloquear_paso(ses, *cruce(a))
-    io.al_morir(ses, monstruos[2])
-    assert not io.bloquear_paso(ses, *cruce(a)) and io.bloquear_paso(ses, *cruce(b))
-    io.al_morir(ses, monstruos[3])
-    assert not io.bloquear_paso(ses, *cruce(b))
-    io.reiniciar(ses)
-    assert io.bloquear_paso(ses, *cruce(a))
-
-
-def test_puzzles_los_sellos_llegan_al_monstruo_y_estan_antes_de_su_puerta():
-    bichos = app._monstruos_de(STAGE)
-    sellos = [b for b in bichos.values() if getattr(b, 'sello', None)]
-    assert sorted(b.sello for b in sellos) == [1, 2, 3]
-    import instancia_oscura as io
-    a, b = io.datos()['puertas']
-    s = {x.sello: x for x in sellos}
-    # el tercero esta pasada la puerta A y antes de la B, en el eje x del recorrido
-    assert s[1].tile[0] < a['zona'][0][0] and s[2].tile[0] < a['zona'][0][0]
-    assert a['zona'][0][0] < s[3].tile[0] < b['zona'][0][0]
-
-
-def test_puzzles_cada_puerta_cerrada_dibuja_su_cortina_de_luz_y_al_abrirse_la_quita():
-    import struct
-    import instancia_oscura as io
-    puertas = io.datos()['puertas']
-    paquetes = io.poblar(STAGE)
-    assert io.poblar(41) == []
-    assert len(paquetes) == sum(len(p['barrera']) for p in puertas) >= 6
-    assert all(struct.unpack_from('<H', pk)[0] == 0x000E for pk in paquetes)
-    assert len({struct.unpack_from('<I', pk, 2)[0] for pk in paquetes}) == len(paquetes)
-    ses = _Ses()
-    io.reiniciar(ses)
-    monstruos = {s['sello']: type('M', (), {'sello': s['sello']})() for s in _spawns() if s.get('sello')}
-    io.al_morir(ses, monstruos[1])
-    io.al_morir(ses, monstruos[2])
-    quitados = [pk for pk in ses.enviados if len(pk) == 7 and struct.unpack_from('<H', pk)[0] == 0x0007]
-    assert len(quitados) == len(puertas[0]['barrera'])
+    assert io.datos() == {} and io.poblar(STAGE) == []
+    ses = type('S', (), {'personaje': type('P', (), {'stage': STAGE})(), 'enviar': lambda *a: None})()
+    assert not io.bloquear_paso(ses, (71, 58), (76, 55))
 
 
 def test_quien_se_desconecta_dentro_de_la_instancia_vuelve_a_la_entrada_al_entrar():

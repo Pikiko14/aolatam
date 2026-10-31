@@ -3,8 +3,8 @@
 El editor exporta los monstruos que pones, pero no sabe de los puzzles ni de que el cliente solo dibuja los sprites que
 trae. Esta herramienta (idempotente) hace tres cosas:
 
-  1. Los 3 Guardianes del Sello (puzzles.sellos) existen: si los borraste, vuelven a su sitio (o a la casilla libre mas
-     cercana). Sin ellos las puertas no se abren nunca.
+  1. Sin puertas ni sellos: la cueva es solo lo que dibujas. Si en la plantilla quedan Guardianes del Sello o la clave
+     `puzzles`, se quitan (antes volvian solos; el usuario los quito el 31/10/2026).
   2. Cada monstruo se dibuja: los tipos cuyo sprite NO esta en el cliente (el monstruo existe pero no se ve) pasan a un
      sprite parecido que si esta. Se guarda el original en `sprite_original`; su npc_type, nombre y nivel no cambian.
   3. Los monstruos sin hp_mult llevan el de la instancia (VIDA = 0,7: un 30% menos de vida). El jefe (Dragonkin Moowad,
@@ -82,31 +82,13 @@ def main():
             e['hp_mult'] = VIDA
             cambios.append('vida x%.1f (%s)' % (VIDA, e['nombre']))
 
-    # 1. sellos
-    pz = d.get('puzzles') or {}
-    ids_sello = set(pz.get('sellos') or [])
-    existentes = {e['sello'] for e in sp if e.get('sello')}
-    por_defecto = {1: (47, 76), 2: (66, 43), 3: (141, 91)}
-    zona = {tuple(t) for p in pz.get('puertas', []) for t in p['zona']}
-    usados = [tuple(e['tile']) for e in sp]
-    mayor = max([e['entity_id'] for e in sp] + [7550000])
-    for n in (1, 2, 3):
-        if n in existentes:
-            continue
-        x0, y0 = por_defecto[n]
-        cand = sorted(((x0 + dx, y0 + dy) for dx in range(-6, 7) for dy in range(-6, 7)),
-                      key=lambda t: max(abs(t[0] - x0), abs(t[1] - y0)))
-        t = next(t for t in cand if all(libre(stage, (t[0] + a, t[1] + b)) for a in (-1, 0, 1) for b in (-1, 0, 1))
-                 and all(max(abs(t[0] - z[0]), abs(t[1] - z[1])) > 2 for z in zona)
-                 and all(max(abs(t[0] - u[0]), abs(t[1] - u[1])) >= 3 for u in usados))
-        mayor += 1
-        sp.append({'entity_id': mayor, 'nombre': 'Seal Guardian ' + 'I' * n, 'npc_type': SELLO[0], 'sprite': SELLO[2],
-                   'klass': 1, 'monstruo': True, 'tile': list(t), 'direccion': 4, 'visible': 0, 'nivel': SELLO[3],
-                   'hp_mult': 2.0 * VIDA, 'atk_mult': 1.15, 'elite': True, 'sello': n})
-        usados.append(t)
-        cambios.append('vuelve el Guardian del Sello %d en %s' % (n, t))
-    pz['sellos'] = [e['entity_id'] for e in sorted((e for e in sp if e.get('sello')), key=lambda e: e['sello'])]
-    d['puzzles'] = pz
+    # 1. Sin puertas ni sellos: la cueva es solo lo que dibuja el usuario (pedido del usuario, 31/10/2026). Antes aqui
+    # volvian los 3 Guardianes del Sello y las puertas de puzzles; si quedaron en la plantilla, se quitan.
+    sellos = [e for e in sp if e.get('sello')]
+    if sellos or 'puzzles' in d:
+        sp[:] = [e for e in sp if not e.get('sello')]
+        d.pop('puzzles', None)
+        cambios.append('sin puertas ni sellos (%d Guardianes del Sello quitados)' % len(sellos))
 
     print('\n'.join(cambios) if cambios else 'nada que reparar')
     if cambios and not solo_ver:

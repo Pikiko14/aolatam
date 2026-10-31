@@ -1,5 +1,5 @@
 {
- "_nota": "Instancia oscura Lv55-60 en el mapa propio map900 (Dark Cavern, cueva nueva): grupos de bichos normales y elites por las salas y, al fondo, el jefe Dragonkin Moowad (suelta piedras de Holy Battlefield). Generado con tools/generar_instancia_oscura.py.",
+ "_nota": "Instancia oscura en el mapa propio map900 (Dark Cavern): solo lo que dibuja el usuario en el editor (monstruos y el jefe Dragonkin Moowad, que suelta piedras de Holy). Sin puertas ni sellos (pedido del usuario, 31/10/2026). Se entra en la zona 71.",
  "stage": 900,
  "spawns": [
   {
@@ -16,7 +16,8 @@
    "direccion": 0,
    "visible": 0,
    "nivel": 46,
-   "propio": "dc46"
+   "propio": "dc46",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550182,
@@ -32,7 +33,8 @@
    "direccion": 0,
    "visible": 0,
    "nivel": 46,
-   "propio": "dc46"
+   "propio": "dc46",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550183,
@@ -48,7 +50,8 @@
    "direccion": 0,
    "visible": 0,
    "nivel": 46,
-   "propio": "dc46"
+   "propio": "dc46",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550184,
@@ -64,7 +67,8 @@
    "direccion": 0,
    "visible": 0,
    "nivel": 46,
-   "propio": "dc46"
+   "propio": "dc46",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550185,
@@ -80,7 +84,8 @@
    "direccion": 0,
    "visible": 0,
    "nivel": 46,
-   "propio": "dc46"
+   "propio": "dc46",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550186,
@@ -96,7 +101,8 @@
    "direccion": 0,
    "visible": 0,
    "nivel": 46,
-   "propio": "dc46"
+   "propio": "dc46",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550187,
@@ -112,7 +118,8 @@
    "direccion": 0,
    "visible": 0,
    "nivel": 45,
-   "propio": "dc45"
+   "propio": "dc45",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550188,
@@ -128,7 +135,8 @@
    "direccion": 0,
    "visible": 0,
    "nivel": 45,
-   "propio": "dc45"
+   "propio": "dc45",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550189,
@@ -144,7 +152,8 @@
    "direccion": 0,
    "visible": 0,
    "nivel": 45,
-   "propio": "dc45"
+   "propio": "dc45",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550190,
@@ -160,7 +169,8 @@
    "direccion": 0,
    "visible": 0,
    "nivel": 45,
-   "propio": "dc45"
+   "propio": "dc45",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550191,
@@ -176,7 +186,8 @@
    "direccion": 0,
    "visible": 0,
    "nivel": 45,
-   "propio": "dc45"
+   "propio": "dc45",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550192,
@@ -192,7 +203,8 @@
    "direccion": 0,
    "visible": 0,
    "nivel": 45,
-   "propio": "dc45"
+   "propio": "dc45",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550193,
@@ -208,7 +220,8 @@
    "direccion": 0,
    "visible": 0,
    "nivel": 45,
-   "propio": "dc45"
+   "propio": "dc45",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550194,
@@ -224,7 +237,8 @@
    "direccion": 0,
    "visible": 0,
    "nivel": 47,
-   "propio": "dc47"
+   "propio": "dc47",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550195,
@@ -240,7 +254,8 @@
    "direccion": 0,
    "visible": 0,
    "nivel": 47,
-   "propio": "dc47"
+   "propio": "dc47",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550196,
@@ -256,7 +271,8 @@
    "direccion": 0,
    "visible": 0,
    "nivel": 47,
-   "propio": "dc47"
+   "propio": "dc47",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550197,
@@ -272,7 +288,8 @@
    "direccion": 0,
    "visible": 0,
    "nivel": 47,
-   "propio": "dc47"
+   "propio": "dc47",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550198,
@@ -288,7 +305,8 @@
    "direccion": 5,
    "visible": 0,
    "nivel": 47,
-   "propio": "dc47"
+   "propio": "dc47",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550199,
@@ -304,7 +322,8 @@
    "direccion": 5,
    "visible": 0,
    "nivel": 47,
-   "propio": "dc47"
+   "propio": "dc47",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550200,
@@ -320,7 +339,8 @@
    "direccion": 5,
    "visible": 0,
    "nivel": 47,
-   "propio": "dc47"
+   "propio": "dc47",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550201,
@@ -336,7 +356,8 @@
    "direccion": 5,
    "visible": 0,
    "nivel": 47,
-   "propio": "dc47"
+   "propio": "dc47",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550202,
@@ -352,7 +373,8 @@
    "direccion": 5,
    "visible": 0,
    "nivel": 47,
-   "propio": "dc47"
+   "propio": "dc47",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550203,
@@ -368,7 +390,8 @@
    "direccion": 5,
    "visible": 0,
    "nivel": 47,
-   "propio": "dc47"
+   "propio": "dc47",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550204,
@@ -384,7 +407,8 @@
    "direccion": 5,
    "visible": 0,
    "nivel": 47,
-   "propio": "dc47"
+   "propio": "dc47",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550205,
@@ -400,7 +424,8 @@
    "direccion": 5,
    "visible": 0,
    "nivel": 47,
-   "propio": "dc47"
+   "propio": "dc47",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550206,
@@ -416,7 +441,8 @@
    "direccion": 5,
    "visible": 0,
    "nivel": 52,
-   "propio": "dc52"
+   "propio": "dc52",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550207,
@@ -432,7 +458,8 @@
    "direccion": 5,
    "visible": 0,
    "nivel": 52,
-   "propio": "dc52"
+   "propio": "dc52",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550208,
@@ -448,7 +475,8 @@
    "direccion": 5,
    "visible": 0,
    "nivel": 52,
-   "propio": "dc52"
+   "propio": "dc52",
+   "hp_mult": 0.7
   },
   {
    "entity_id": 7550209,
@@ -463,227 +491,11 @@
    ],
    "direccion": 5,
    "visible": 0,
-   "nivel": 65
+   "nivel": 65,
+   "hp_mult": 1.5,
+   "atk_mult": 1.3,
+   "jefe": true
   }
  ],
- "recursos": [],
- "puzzles": {
-  "sellos": [
-   7550135,
-   7550136,
-   7550137
-  ],
-  "objeto_barrera": 60402,
-  "puertas": [
-   {
-    "id": "A",
-    "nombre": "to the deep cave",
-    "zona": [
-     [
-      67,
-      57
-     ],
-     [
-      67,
-      58
-     ],
-     [
-      72,
-      55
-     ],
-     [
-      73,
-      54
-     ],
-     [
-      73,
-      55
-     ],
-     [
-      73,
-      56
-     ],
-     [
-      74,
-      54
-     ],
-     [
-      74,
-      55
-     ],
-     [
-      74,
-      56
-     ],
-     [
-      75,
-      53
-     ],
-     [
-      75,
-      54
-     ],
-     [
-      75,
-      55
-     ],
-     [
-      75,
-      56
-     ],
-     [
-      76,
-      53
-     ],
-     [
-      76,
-      54
-     ],
-     [
-      76,
-      55
-     ],
-     [
-      77,
-      54
-     ],
-     [
-      77,
-      55
-     ],
-     [
-      78,
-      54
-     ]
-    ],
-    "barrera": [
-     [
-      67,
-      58
-     ],
-     [
-      73,
-      55
-     ],
-     [
-      73,
-      56
-     ],
-     [
-      74,
-      55
-     ],
-     [
-      75,
-      54
-     ],
-     [
-      75,
-      55
-     ],
-     [
-      76,
-      54
-     ],
-     [
-      77,
-      54
-     ]
-    ],
-    "requiere": [
-     1,
-     2
-    ]
-   },
-   {
-    "id": "B",
-    "nombre": "to the boss chamber",
-    "zona": [
-     [
-      164,
-      62
-     ],
-     [
-      164,
-      63
-     ],
-     [
-      164,
-      64
-     ],
-     [
-      164,
-      65
-     ],
-     [
-      165,
-      62
-     ],
-     [
-      165,
-      63
-     ],
-     [
-      165,
-      64
-     ],
-     [
-      165,
-      65
-     ],
-     [
-      166,
-      60
-     ],
-     [
-      166,
-      61
-     ],
-     [
-      166,
-      62
-     ],
-     [
-      166,
-      63
-     ],
-     [
-      166,
-      64
-     ],
-     [
-      166,
-      65
-     ],
-     [
-      166,
-      66
-     ]
-    ],
-    "barrera": [
-     [
-      165,
-      62
-     ],
-     [
-      165,
-      63
-     ],
-     [
-      165,
-      64
-     ],
-     [
-      165,
-      65
-     ]
-    ],
-    "requiere": [
-     1,
-     2,
-     3
-    ]
-   }
-  ]
- }
+ "recursos": []
 }
