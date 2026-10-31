@@ -13,8 +13,9 @@ Parte de tools/editor_mapas/salida/MAP<numero>.mpc ("Exportar .mpc" en el editor
   1. copia el mapa a tools/mapas_propios/map<n>.mpc (lo que va a git) y a parches/extras/map
   2. actualiza la colision del servidor (plantillas/transitable.bin)
   3. registra la plantilla en login.PLANTILLAS_POR_STAGE (y en instancias.json con --instancia) si faltaba;
-     el 900 ademas pasa por tools/reparar_instancia_oscura.py (sellos, sprites que se ven, -30% de vida, jefe)
-  4. pasa los eventos del mapa al servidor (plantillas/eventos.json, solo ese mapa)
+     el 900 ademas pasa por tools/reparar_instancia_oscura.py (sin sellos ni puertas, sprites que se ven, -30% de vida, jefe)
+  4. pasa los eventos del mapa al servidor (plantillas/eventos.json, solo ese mapa) y, si el mapa trae una ZONA 71,
+     pone ahi la llegada de los tornados que van a el (plantillas/portales.json; ver tools/llegada_mapa.py)
   5. si el numero es nuevo, anade su fila a stage.xml; rehace el parche y los paquetes del launcher
   6. pruebas
   7. commit + push (solo los archivos de este mapa; nunca lo demas que tengas cambiado)
@@ -295,6 +296,11 @@ def main():
            "p.write_text(json.dumps(j,ensure_ascii=False,separators=(',',':')),encoding='utf-8');"
            "print('  eventos del mapa',n,':',len(d['disparadores']),'disparadores,',len(d['objetos']),'objetos enlazados')",
            n, guardado)
+    # Donde se aparece: la zona 71 del editor (ver tools/llegada_mapa.py). Si cambia, portales.json va a git y al VPS.
+    portales = PLANTILLAS / 'portales.json'
+    antes = portales.read_bytes()
+    correr([PY, 'tools/llegada_mapa.py', str(n), '--escribir'])
+    llegada_cambiada = portales.read_bytes() != antes
 
     paso(5, 'stage.xml, parche y paquetes del launcher')
     if nuevo and (a.nombre or not fila_hecha):
@@ -322,6 +328,9 @@ def main():
         archivos_vps.append('server/plantillas/%s' % plantilla)
     if xml_extras.exists():
         archivos_vps.append('parches/extras/setting/eng/stage.xml')
+    if llegada_cambiada:
+        archivos_git.append('server/plantillas/portales.json')
+        archivos_vps.append('server/plantillas/portales.json')
 
     if a.solo_local:
         print('\nListo en local. Para guardarlo en git y subirlo al VPS: python tools/subir_mapa.py %d' % n)
