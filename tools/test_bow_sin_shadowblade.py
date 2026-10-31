@@ -29,7 +29,7 @@ def test_bow_solo_recibe_lo_suyo():
 def test_shadowblade_sigue_recibiendo_lo_suyo():
     ids = {mid for mid, _ in clases.hechizos_iniciales(SHADOWBLADE)}
     assert {STAB, NIMBLE, POISONED} <= ids
-    assert dict(clases.regalo(SHADOWBLADE))[3] == 19856   # FreshmanSharp Knife
+    assert dict(clases.regalo(SHADOWBLADE))[3] == 13485   # FreshmanSharp Knife (la normal)
 
 
 def test_la_daga_y_sus_tecnicas_son_de_la_30():

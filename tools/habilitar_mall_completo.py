@@ -68,7 +68,11 @@ QUITADAS = {31441: '2013 Taurus Swordman Lucky Bag', 31442: '2013 Taurus Axeman 
             26312: 'Lucky Wish Bag', 12876: 'Dragon Egg Lucky Bag', 12877: 'Elf Egg Lucky Bag',
             # y de Special Potion (16) todo lo que no es Low-effect ni Common:
             1354: 'Mid-effect Red Potion 3', 1355: 'Mid-effect Blue Potion 3', 8101: 'Potent Red Potion',
-            8102: 'Potent Blue Potion', 23470: 'Potent Purple Potion', 18955: 'Effective Orange Potion'}
+            8102: 'Potent Blue Potion', 23470: 'Potent Purple Potion', 18955: 'Effective Orange Potion',
+            # de Fashion (24/25):
+            29857: 'Enchanted-Wild Wolf Voucher Egg', 8531: 'Lucky Bag (Boys)',
+            # y de Robot (17) los de nivel > 60 (el usuario deja hasta 60):
+            9305: 'Little Red-cap Robot', 9306: 'Grape Kaz cayman Robot'}
 
 # PACKS DE 11 Y 110 en Lucky Weapon (29), Lucky Armor (30) y Ride (31), como los que ya hay en la
 # pestana Lucky Bag: 11 al precio de 10 y 110 al de 100 (30 / 300 / 3000).
@@ -108,6 +112,32 @@ QUITADAS_DE_PESTANA = {13: {16073: 'Blessed Fusion Potion', 12612: "Haven's Favo
 # Pestanas que solo llevan estos objetos: Special > Teleport (27) con los Maple, los Mark normales
 # y Summon / Fly Book.
 SOLO_EN_PESTANA = {CAT_TELEPORTE: {20565, 20566, 3693, 3694, 1333, 2987}}
+
+
+# Huevos de traje (PD) que el usuario pidio en Fashion: Roll y Halloween Tricky, de hombre (24) y de
+# mujer (25). Dan una pieza al azar. Precio y packs como la Lucky Bag (Boys): 1/11/110 a 30/300/3000.
+AGREGADOS = {CAT_HOMBRE: (4978, 7471), CAT_MUJER: (4979, 7472)}
+PACKS_AGREGADOS = ((1, 30), (11, 300), (110, 3000))
+PUBLICACION_AGREGADO = 'pedido del usuario (tools/habilitar_mall_completo.py)'
+
+
+def agregar(rows):
+    hay = {(r['category'], r['item'], r['quantity']) for r in rows}
+    ids = {r['id'] for r in rows}
+    nuevas = []
+    for cat, items in AGREGADOS.items():
+        for orden, iid in enumerate(items):
+            for cant, precio in PACKS_AGREGADOS:
+                if (cat, iid, cant) in hay:
+                    continue
+                hay.add((cat, iid, cant))
+                sig = max(ids | {40000}) + 1
+                ids.add(sig)
+                nuevas.append(dict(id=sig, item=iid, flags=0x1, sort=orden, category=cat, quantity=cant,
+                                   price=precio, special_price=0, duration=0, start='', end='', limit=0,
+                                   gift=0, gift_quantity=0, price_source='local: como Lucky Bag (Boys)',
+                                   publication=PUBLICACION_AGREGADO))
+    return rows + nuevas
 
 
 def fuera_de_pestana(r):
@@ -219,7 +249,7 @@ def completar(d):
                        special_price=0, duration=0, start='', end='', limit=0, gift=0, gift_quantity=0,
                        price_source='local: %s, 1 de %d sets PD al azar' % (nombre, len(cajas)),
                        publication=PUBLICACION_PD))
-    d['rows'] = packs(on_sale(rows + nuevas + pd))
+    d['rows'] = agregar(packs(on_sale(rows + nuevas + pd)))
     if 6 + 57 * len(d['rows']) > 65500:
         raise ValueError('el catalogo no cabe en el paquete 0x005F')
     return nuevas, pd

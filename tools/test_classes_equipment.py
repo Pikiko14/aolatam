@@ -15,17 +15,17 @@ import inventario as _iv
 def test_classes_weapons():
     test_classes = {
         'Swordsman': ([9, 12, 13, 15, 16, 33], [(3, 10), (4, 10)]),
-        'Warrior': ([10, 12, 13, 15, 16, 33], [(3, 19832), (4, 19832)]),
-        'Protector': ([10, 14, 12, 13, 15, 33], [(3, 19832), (4, 19820)]),
-        'Spearman': ([11, 12, 13, 15, 16, 33], [(3, 19838)]),
-        # FreshmanCatapult (19844) es una honda (彈弓), no un arco: pide
+        'Warrior': ([10, 12, 13, 15, 16, 33], [(3, 14), (4, 14)]),
+        'Protector': ([10, 14, 12, 13, 15, 33], [(3, 14), (4, 23)]),
+        'Spearman': ([11, 12, 13, 15, 16, 33], [(3, 15)]),
+        # FreshmanCatapult (16) es una honda (彈弓), no un arco: pide
         # bolitas (小鋼珠, item 15000), no flechas (458 es Wooden Arrow,
         # ademas nivel 10 contra un personaje recien hecho de nivel 1).
         # Con 458 las dos manos quedaban incompatibles desde el arranque.
-        'Bowman': ([17, 12, 13, 15, 16, 33], [(3, 19844), (4, 15000)]),
-        'Shadowblade': ([32, 12, 13, 15, 16, 33], [(3, 19856), (4, 19856)]),
-        'Mage': ([1, 2, 3, 4, 15, 16], [(3, 19850)]),
-        'Producer': ([24, 25, 26, 27, 28, 29], [(3, 19814)]),
+        'Bowman': ([17, 12, 13, 15, 16, 33], [(3, 16), (4, 15000)]),
+        'Shadowblade': ([32, 12, 13, 15, 16, 33], [(3, 13485), (4, 13485)]),
+        'Mage': ([1, 2, 3, 4, 15, 16], [(3, 18)]),
+        'Producer': ([24, 25, 26, 27, 28, 29], [(3, 584)]),
     }
 
     for name, (ids, expected) in test_classes.items():
@@ -48,8 +48,8 @@ def test_inventory_preservation():
 
     # Comprobar que ranura 2 (Uniform) sigue estando equipada
     assert MockSes.inventario.get(2) == 26, "Students' Uniform (26) debe permanecer equipado en ranura 2"
-    assert MockSes.inventario.get(3) == 19832, "FreshmanStick debe estar en ranura 3"
-    assert MockSes.inventario.get(4) == 19832, "FreshmanStick debe estar en ranura 4"
+    assert MockSes.inventario.get(3) == 14, "FreshmanStick debe estar en ranura 3"
+    assert MockSes.inventario.get(4) == 14, "FreshmanStick debe estar en ranura 4"
 
     # Verificar construccion de 0x001A
     out = _con_oro(MockSes)

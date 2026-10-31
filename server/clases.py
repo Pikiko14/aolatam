@@ -494,9 +494,13 @@ def chat_whisper(emisor: str, receptor: str, texto: str, err_code: int = 0) -> b
 # otros es cosa suya.
 # Medido de AngelWar (mundo_163130_471128): Swordsman recibe dos FreshmanSabre (item 10)
 # en ranuras 3 y 4.
+# Los 198xx son las versiones "Exceptional-" (pegaban de mas para empezar; el usuario pidio las
+# normales, 31/10/2026): 19832 -> 14 FreshmanStick, 19838 -> 15 FreshmanSpear, 19820 -> 23
+# FreshmanRound Shield, 19844 -> 16 FreshmanCatapult, 19850 -> 18 FreshmanWalking Stick,
+# 19856 -> 13485 FreshmanSharp Knife y 19814 -> 584 FreshmanCask. El 10 ya era el normal.
 ARMA_POR_SKILL = {
-    8: 19850, 9: 10, 10: 19832, 11: 19838,
-    14: 19820, 17: 19844, 20: 63, 21: 22, 22: 21, 23: 20, 30: 19856,
+    8: 18, 9: 10, 10: 14, 11: 15,
+    14: 23, 17: 16, 20: 63, 21: 22, 22: 21, 23: 20, 30: 13485,
 }
 # Con que mano se empuna. Las reglas salen de lo poco medido y de como
 # funcionan las clases en el juego:
@@ -508,13 +512,14 @@ ARMA_POR_SKILL = {
 #     entrego DOS Sabre, en las ranuras 3 y 4
 #   - el resto, una sola arma en la derecha
 SKILL_ESCUDO = 14
-ESCUDO = 19820                     # FreshmanRound Shield
+ESCUDO = 23                        # FreshmanRound Shield (el normal, no el Exceptional 19820)
 DOS_ARMAS = {9, 10}                # Sword (9), Axe/Hammer (10 - Warrior): armas dobles. Shadowblade (32) lleva UNA, en la mano derecha
 # Las clases magicas (Priest, Summoner, Wizard, Magician) no tienen habilidad
 # de arma cuerpo a cuerpo, pero llevan baston. Si entre las seis hay alguna
 # habilidad de magia y ninguna de arma, se les da el baston.
 SKILLS_MAGIA = {1, 2, 3, 4, 5, 6}
-BASTON = 19850                     # FreshmanWalking Stick
+BASTON = 18                        # FreshmanWalking Stick (el normal, no el Exceptional 19850)
+CASK_PRODUCTOR = 584               # FreshmanCask (el normal, no el Exceptional 19814)
 
 # Guantes y zapatos NO van con la clase: el tutorial los entrega mas tarde,
 # en el tramo en que Angel Raphael dice "I will give you the uniform of the
@@ -578,10 +583,10 @@ def regalo(ids):
         # primer equipo que tocara esas ranuras expulsaba una de las dos.
         salida.append((4, 15000))  # 小鋼珠 (sling bullet), sin nivel pedido
 
-    # Clases de productor: reciben el Freshman Cask (19814), el ride robot basico (ranura montura 10)
+    # Clases de productor: reciben el Freshman Cask, el ride robot basico (ranura montura 10)
     CLASES_PROD = {10, 11, 12, 13, 14, 15, 19, 20}
     if any(i in SKILLS_PRODUCCION for i in skill_ids) or class_id(skill_ids) in CLASES_PROD:
-        salida.append((10, 19814))
+        salida.append((10, CASK_PRODUCTOR))
 
     return salida
 
@@ -1129,7 +1134,7 @@ def premio_final(ids):
     skill_ids = [s[0] if isinstance(s, (list, tuple)) else int(s) for s in (ids or [])]
     CLASES_PROD = {10, 11, 12, 13, 14, 15, 19, 20}
     if any(i in SKILLS_PRODUCCION for i in skill_ids) or class_id(skill_ids) in CLASES_PROD:
-        salida.append((10, 19814))
+        salida.append((10, CASK_PRODUCTOR))
     for k, caja in enumerate(cajas_de(ids) + [GROWTH_BOX]):
         salida.append((20 + k, caja))
     return salida

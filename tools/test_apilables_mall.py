@@ -10,7 +10,7 @@ import cliente_local
 
 def test_las_bolsas_del_mall_se_apilan():
     ids = cliente_local.apilables_del_mall()
-    assert {11767, 11963, 8531}.issubset(ids)
+    assert {11767, 11963, 4978, 4979}.issubset(ids)   # 8531 Lucky Bag (Boys) la quito el usuario
 
 
 def test_el_parche_pone_y_corrige_el_campo():

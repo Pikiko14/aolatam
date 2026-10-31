@@ -210,24 +210,24 @@ class TestProducers(unittest.TestCase):
     def test_freshman_cask_for_producer_classes(self):
         # 1. Swordsman: no robot mount (slot 10)
         swordsman_regalo = clases.regalo([9, 14, 12, 13, 15, 16])
-        self.assertNotIn(19814, [item for slot, item in swordsman_regalo])
+        self.assertNotIn(584, [item for slot, item in swordsman_regalo])
         self.assertNotIn(10, [slot for slot, item in swordsman_regalo])
 
-        # 2. Weaponsmith (26): gets Freshman Cask (19814) in slot 10
+        # 2. Weaponsmith (26): gets Freshman Cask (584) in slot 10
         weaponsmith_regalo = dict(clases.regalo([26, 22, 24, 25, 9, 14]))
-        self.assertEqual(weaponsmith_regalo.get(10), 19814)
+        self.assertEqual(weaponsmith_regalo.get(10), 584)
 
-        # 3. Chef (31): gets Freshman Cask (19814) in slot 10
+        # 3. Chef (31): gets Freshman Cask (584) in slot 10
         chef_regalo = dict(clases.regalo([31, 21, 24, 25, 32, 16]))
-        self.assertEqual(chef_regalo.get(10), 19814)
+        self.assertEqual(chef_regalo.get(10), 584)
 
         # 4. Tailor (28): gets Freshman Cask in slot 10
         tailor_regalo = dict(clases.regalo([28, 20, 24, 25, 30, 31]))
-        self.assertEqual(tailor_regalo.get(10), 19814)
+        self.assertEqual(tailor_regalo.get(10), 584)
 
-        # 5. premio_final also includes Freshman Cask (19814) in slot 10 for producers
+        # 5. premio_final also includes Freshman Cask (584) in slot 10 for producers
         chef_premio = dict(clases.premio_final([31, 21, 24, 25, 32, 16]))
-        self.assertEqual(chef_premio.get(10), 19814)
+        self.assertEqual(chef_premio.get(10), 584)
         swordsman_premio = dict(clases.premio_final([9, 14, 12, 13, 15, 16]))
         self.assertNotIn(10, swordsman_premio)
 
@@ -247,8 +247,8 @@ class TestProducers(unittest.TestCase):
         # Teleported to Lyceum (41, (152, 74))
         self.assertEqual(pj.stage, 41)
         self.assertEqual((pj.tile_x, pj.tile_y), (152, 74))
-        # Received Freshman Cask (19814) in slot 10
-        self.assertEqual(ses.inventario.get(10), 19814)
+        # Received Freshman Cask (584) in slot 10
+        self.assertEqual(ses.inventario.get(10), 584)
         # Received graduation gloves (28) and shoes (30) in slots 5 and 6
         self.assertEqual(ses.inventario.get(5), 28)
         self.assertEqual(ses.inventario.get(6), 30)
