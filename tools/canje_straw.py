@@ -37,6 +37,7 @@ PREMIOS = PESTLES + RIDE_FEED + PIERCING + HAMMERS          # los del Green Ange
 
 TICKET_PESTLE, TICKET_RIDE, TICKET_PIERCING, TICKET_HAMMER = 20228, 20229, 20230, 20231
 GRUPO_TICKETS = 595
+GRUPO_VACIO = 0        # donde van las recetas que sobran (ver reescribir)
 
 # {grupo: [(objeto, nombre, material, cuantos)]}
 CANJES = {
@@ -61,7 +62,12 @@ def reescribir(texto, grupo=ly.GRUPO_GREEN):
     nuevas = ''.join('\t<exchange 編號="%d" 群組="%d" 獎賞說明="%s" 獎賞1="%d" 獎賞1數量="1" 材料1="%d" 材料1數量="%d"/>%s'
                      % (n, grupo, nombre, item, material, cuantos, salto)
                      for n, (item, nombre, material, cuantos) in zip(numeros, recetas))
-    return texto[:filas[0].start()] + nuevas + texto[filas[-1].end():], numeros
+    # LAS QUE SOBRAN NO SE BORRAN: el cliente usa el 編號 como posicion en la lista (van 1, 2, 3... sin huecos) y
+    # quitando filas se descuadraba todo lo que venia detras: las ventanas de canje salian vacias (31/10/2026).
+    # Se quedan con su numero, en el grupo GRUPO_VACIO, que no abre nadie.
+    sobrantes = ''.join(re.sub(r'群組="\d+"', '群組="%d"' % GRUPO_VACIO, f.group(0), count=1)
+                        for f in filas[len(recetas):])
+    return texto[:filas[0].start()] + nuevas + sobrantes + texto[filas[-1].end():], numeros
 
 
 def main():
