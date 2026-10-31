@@ -287,7 +287,8 @@ def test_las_habilidades_de_sp_cuestan_un_porcentaje_de_vida():
     assert ses.personaje.hp >= 1, ses.personaje.hp
 
 
-def test_subir_de_nivel_no_se_queda_en_bucle():
+def test_subir_de_nivel_no_se_queda_en_bucle(monkeypatch):
+    monkeypatch.setattr(configuracion, 'NIVEL_MAXIMO_PERSONAJE', 9999)   # la curva entera, sin el tope del servidor
     """El bucle que sube de nivel colgaba el servidor entero.
 
     exp_para_nivel() recortaba a 0xFFFFFFFF, asi que del nivel 299 en
@@ -330,7 +331,8 @@ def test_subir_de_nivel_no_se_queda_en_bucle():
     assert nivel == 300, nivel
 
 
-def test_la_curva_de_niveles_es_la_del_parche_nuevo():
+def test_la_curva_de_niveles_es_la_del_parche_nuevo(monkeypatch):
+    monkeypatch.setattr(configuracion, 'NIVEL_MAXIMO_PERSONAJE', 9999)   # la curva entera, sin el tope del servidor
     """La experiencia por nivel cambio con cada parche.
 
     En data1 la tabla llegaba al nivel 80; en UPDATE13 al 301 y en update26

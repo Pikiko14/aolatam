@@ -3567,6 +3567,10 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
                         subio_nivel = True
                     else:
                         break
+                if p.nivel >= _tope_nivel:
+                    # En el tope (configuracion.NIVEL_MAXIMO_PERSONAJE) la EXP no se guarda: al subir el
+                    # tope no saltaria de golpe varios niveles.
+                    p.exp = min(int(p.exp), max(_cb.exp_para_nivel(p.nivel), _cb.exp_para_nivel(p.nivel + 1) - 1))
                 exp_actual_ui, exp_siguiente_ui = _cb.exp_para_barra(p.nivel, p.exp)
                 if subio_nivel:
                     p.hp = _vida_max(p)

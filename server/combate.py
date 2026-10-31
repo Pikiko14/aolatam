@@ -312,7 +312,9 @@ NIVEL_MAXIMO = 471
 def nivel_maximo() -> int:
     """El nivel mas alto al que se puede subir."""
     _cargar_curva_nivel()
-    return min(600,max(_CURVA_NIVEL)) if _CURVA_NIVEL else NIVEL_MAXIMO
+    tope = min(600,max(_CURVA_NIVEL)) if _CURVA_NIVEL else NIVEL_MAXIMO
+    import configuracion
+    return max(1, min(tope, int(getattr(configuracion, 'NIVEL_MAXIMO_PERSONAJE', tope) or tope)))
 
 
 def exp_para_nivel(nv: int) -> int:

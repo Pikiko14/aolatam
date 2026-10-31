@@ -11,6 +11,7 @@ import presencia
 
 
 def test_level_cap_and_test_notice_are_not_internal_sentinels(world,monkeypatch):
+    monkeypatch.setattr(__import__('configuracion'),'NIVEL_MAXIMO_PERSONAJE',9999)
     monkeypatch.setattr(c,'_modo_pruebas',lambda:True)
     r=c.iniciar(240,30,5,434)
     assert r['max']==combate.nivel_maximo()==471

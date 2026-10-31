@@ -484,6 +484,15 @@ DESCRIPCIONES_ITEMS = {
 
 
 # =====================================================================
+# NIVEL MAXIMO DEL PERSONAJE
+# =====================================================================
+# Hasta que nivel se puede subir. Llegado a el, la EXP deja de acumularse
+# (la barra se queda casi llena) y las habilidades tampoco pasan de aqui
+# (las de arma, de este nivel + 11). Para abrir mas niveles basta con subir
+# el numero y reiniciar. El juego llega como mucho a 471 (fin de level.xml).
+NIVEL_MAXIMO_PERSONAJE = 60
+
+# =====================================================================
 # MULTIPLICADORES BASE (Valores por defecto del servidor)
 # =====================================================================
 # 1.0 = Experiencia normal oficial
