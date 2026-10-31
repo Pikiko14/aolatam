@@ -63,7 +63,35 @@ QUITADAS = {31441: '2013 Taurus Swordman Lucky Bag', 31442: '2013 Taurus Axeman 
             11255: 'Swordsman Lucky Bag( 2 )', 11437: 'Rehael lucky bag',
             14565: 'Raymond Seabed Steed Lucky Bag', 14566: 'Round Mini Seal Lucky Bag',
             14554: 'RedNoble Elephant Lucky Bag', 14555: 'RedScarab Lucky Bag', 9453: 'Circus Elephant Lucky Bag',
-            9454: 'Stiff Beetle Lucky Bag', 9448: 'SwiftTurtle Lucky Bag', 9449: 'IronLand Bird Lucky Bag'}
+            9454: 'Stiff Beetle Lucky Bag', 9448: 'SwiftTurtle Lucky Bag', 9449: 'IronLand Bird Lucky Bag',
+            # y de Lucky Bag (28):
+            26312: 'Lucky Wish Bag', 12876: 'Dragon Egg Lucky Bag', 12877: 'Elf Egg Lucky Bag'}
+
+# PACKS DE 11 Y 110 en Lucky Weapon (29), Lucky Armor (30) y Ride (31), como los que ya hay en la
+# pestana Lucky Bag: 11 al precio de 10 y 110 al de 100 (30 / 300 / 3000).
+CATS_CON_PACKS = (29, 30, 31)
+PACKS = ((11, 10), (110, 100))
+PUBLICACION_PACK = 'pack 11/110 (tools/habilitar_mall_completo.py)'
+
+
+def packs(rows):
+    hay = {(r['category'], r['item'], r['quantity']) for r in rows}
+    ids = {r['id'] for r in rows}
+    nuevas = []
+    for r in rows:
+        if r['category'] not in CATS_CON_PACKS or r['quantity'] != 1:
+            continue
+        for cant, veces in PACKS:
+            if (r['category'], r['item'], cant) in hay:
+                continue
+            hay.add((r['category'], r['item'], cant))
+            sig = max(ids | {40000}) + 1
+            ids.add(sig)
+            nuevas.append(dict(r, id=sig, quantity=cant, price=r['price'] * veces,
+                               special_price=r['special_price'] * veces,
+                               price_source='local: pack de %d al precio de %d' % (cant, veces),
+                               publication=PUBLICACION_PACK))
+    return rows + nuevas
 
 
 def quitar(d):
@@ -160,7 +188,7 @@ def completar(d):
                        special_price=0, duration=0, start='', end='', limit=0, gift=0, gift_quantity=0,
                        price_source='local: %s, 1 de %d sets PD al azar' % (nombre, len(cajas)),
                        publication=PUBLICACION_PD))
-    d['rows'] = on_sale(rows + nuevas + pd)
+    d['rows'] = packs(on_sale(rows + nuevas + pd))
     if 6 + 57 * len(d['rows']) > 65500:
         raise ValueError('el catalogo no cabe en el paquete 0x005F')
     return nuevas, pd
