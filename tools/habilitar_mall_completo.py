@@ -70,7 +70,7 @@ QUITADAS = {31441: '2013 Taurus Swordman Lucky Bag', 31442: '2013 Taurus Axeman 
             1354: 'Mid-effect Red Potion 3', 1355: 'Mid-effect Blue Potion 3', 8101: 'Potent Red Potion',
             8102: 'Potent Blue Potion', 23470: 'Potent Purple Potion', 18955: 'Effective Orange Potion',
             # de Fashion (24/25):
-            29857: 'Enchanted-Wild Wolf Voucher Egg', 8531: 'Lucky Bag (Boys)',
+            29857: 'Enchanted-Wild Wolf Voucher Egg', 8531: 'Lucky Bag (Boys)', 8532: 'Lucky Bag (Girls)',
             # y de Robot (17) los de nivel > 60 (el usuario deja hasta 60):
             9305: 'Little Red-cap Robot', 9306: 'Grape Kaz cayman Robot'}
 
