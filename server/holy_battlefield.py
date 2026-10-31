@@ -682,8 +682,56 @@ def paso_guardian(ses,desde,hasta,demora=0):
     return False
 
 
+DISTANCIA_LLEGADA = 4   # casillas (Chebyshev) que la llegada deja entre el jugador y cada guardian
+
+
+@functools.lru_cache(maxsize=64)
+def llegada_segura(destination,team,number):
+    """Donde se aparece al cruzar una puerta: DELANTE de las estatuas, no encima.
+
+    Las casillas de llegada originales (tags 50..89) caen a veces sobre un guardian -- la de la puerta 6 del
+    equipo 2 es (126,74), la misma casilla que su guardian -- y el salto se dispara al pasar a 3 casillas o menos
+    de el, asi que el primer paso devolvia al jugador al otro lado. Se aparta en perpendicular a la puerta, hacia
+    el lado de la llegada, hasta la primera casilla pisable a DISTANCIA_LLEGADA o mas de los dos guardianes."""
+    import math,transitable
+    destination=tuple(destination)
+    pareja=[tuple(g['tile']) for g in datos()['structures']
+            if g['kind']=='guard' and g['team']==team and g['number']==number]
+    if len(pareja)!=2:
+        return destination
+    (x1,y1),(x2,y2)=pareja
+    cx,cy=(x1+x2)/2.0,(y1+y2)/2.0
+    gx,gy=x2-x1,y2-y1
+    largo=math.hypot(gx,gy) or 1.0
+    nx,ny=-gy/largo,gx/largo                  # normal a la linea de la puerta
+    lado=(destination[0]-cx)*nx+(destination[1]-cy)*ny
+    if abs(lado)<0.5:
+        # La llegada cae sobre la linea de la puerta: su lado es el contrario al de la otra llegada de la puerta.
+        tags=(50+number,60+number) if team==1 else (70+number,80+number)
+        otras=[tuple(datos()['tags'][str(t)][0]) for t in tags]
+        otra=next((t for t in otras if t!=destination),None)
+        lado=-((otra[0]-cx)*nx+(otra[1]-cy)*ny) if otra else 1.0
+    s=1.0 if lado>=0 else -1.0
+    # Las llegadas originales son tambien el disparador de la puerta (paso_guardian salta a 1 casilla de ellas):
+    # la nueva queda lejos de los guardianes y de esas casillas.
+    tags=(50+number,60+number) if team==1 else (70+number,80+number)
+    marcas=[tuple(datos()['tags'][str(t)][0]) for t in tags if str(t) in datos()['tags']]
+    lejos=lambda t:(all(max(abs(t[0]-g[0]),abs(t[1]-g[1]))>=DISTANCIA_LLEGADA for g in pareja)
+                    and all(max(abs(t[0]-m[0]),abs(t[1]-m[1]))>=3 for m in marcas))
+    if lejos(destination):
+        return destination
+    for k in range(1,13):
+        base=(destination[0]+s*nx*k,destination[1]+s*ny*k)
+        for dx,dy in ((0,0),(1,0),(-1,0),(0,1),(0,-1),(1,1),(-1,-1),(1,-1),(-1,1)):
+            t=(int(round(base[0]))+dx,int(round(base[1]))+dy)
+            if lejos(t) and transitable.se_pisa(112,*t):
+                return t
+    return destination
+
+
 def _cruzar_guardian(ses,destination,hasta,r,team,number,demora):
     import asyncio,competiciones as c
+    destination=llegada_segura(destination,team,number)
     def jump():
         ses.objetivo_actual=None
         salto(ses,destination)
