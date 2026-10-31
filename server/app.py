@@ -3724,7 +3724,7 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
         if con_botin:
             import lyceum_services as _ly_drop
             drops = list(drops) + _ly_drop.straw_drop_monstruo(ses.personaje.stage, m)
-            drops = list(drops) + __import__('instancia_oscura').tickets_del_jefe(ses.personaje.stage, m)
+            drops = list(drops) + __import__('instancia_oscura').botin_instancia(ses.personaje.stage, m)
         if ses.personaje:
             import misiones as _mis_drop
             drops_mis = _mis_drop.verificar_botin_mision(ses, m.npc_type, getattr(m, 'nombre', ''))

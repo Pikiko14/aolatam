@@ -45,3 +45,20 @@ def test_el_jefe_de_dark_cavern_suelta_de_2_a_5_tickets():
         salen = io.tickets_del_jefe(io.STAGE, Jefe())
         assert 2 <= sum(c for _i, c in salen) <= 5 and {i for i, _c in salen} <= set(io.TICKETS)
     assert io.tickets_del_jefe(41, Jefe()) == []
+
+
+def test_ride_and_robots_solo_monturas_raras_50_60_por_mount_coins():
+    """"que solo salgan aca las monturas lvl 60 ... monturas raras que no vendan los npc ... un mount coin"."""
+    for item, nombre, material, cuantos in canje_straw.CANJES[canje_straw.GRUPO_MONTURAS]:
+        assert material == canje_straw.MOUNT_COIN and cuantos in (30, 50)
+    assert (RAIZ / 'tools' / 'respaldos' / 'exchange_538_ride_and_robots.xml').exists()
+
+
+def test_dark_cavern_suelta_mount_coins():
+    import instancia_oscura as io
+
+    class Jefe:
+        npc_type = 209
+
+    monedas = dict(io.botin_instancia(io.STAGE, Jefe())).get(canje_straw.MOUNT_COIN, 0)
+    assert 3 <= monedas <= 5

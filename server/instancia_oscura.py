@@ -165,3 +165,23 @@ def tickets_del_jefe(stage, m):
         t = random.choice(TICKETS)
         salen[t] = salen.get(t, 0) + 1
     return sorted(salen.items())
+
+
+# MOUNT COIN (cliente_local.ITEM_MONEDA_MONTURA), para las monturas raras de Event Overview > Exchange > Ride and
+# Robots: cualquier monstruo de la instancia la suelta con PROB_MONEDA y el jefe da MONEDAS_DEL_JEFE.
+PROB_MONEDA = 0.08
+MONEDAS_DEL_JEFE = (3, 5)
+
+
+def botin_instancia(stage, m):
+    """[(objeto, cantidad)] que la instancia suma al botin de `m`: los tickets y las Mount Coins."""
+    import random
+    import cliente_local
+    if int(stage or 0) != STAGE:
+        return []
+    salen = tickets_del_jefe(stage, m)
+    if int(getattr(m, 'npc_type', 0) or 0) in _tipos_jefe():
+        salen.append((cliente_local.ITEM_MONEDA_MONTURA, random.randint(*MONEDAS_DEL_JEFE)))
+    elif random.random() < PROB_MONEDA:
+        salen.append((cliente_local.ITEM_MONEDA_MONTURA, 1))
+    return salen
