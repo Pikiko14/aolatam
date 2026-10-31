@@ -220,3 +220,9 @@ def test_fuera_de_pet_y_general_lo_que_pidio_el_usuario():
     assert not pet & {8643, 8644, 8645, 16982, 16073, 16074, 16241, 3451, 3452, 3453, 3454, 3465, 3466, 3467, 3468}
     assert {3460} <= pet                                     # Pet's Double EXP Card sigue
     assert not general & {23821, 23825, 10115, 10603, 9953, 10910, 4177, 4180}
+
+
+def test_ningun_id_de_producto_pasa_de_32767():
+    """Con ids de 36100 o 40000 el cliente no pintaba la fila: los packs x11/x110 de Weapon y Armor no salian."""
+    import item_mall
+    assert max(r['id'] for r in item_mall.datos()['rows']) < 32768

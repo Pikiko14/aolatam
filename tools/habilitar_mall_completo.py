@@ -30,7 +30,11 @@ JSON = RAIZ / 'server' / 'plantillas' / 'item_mall.json'
 DROPS = RAIZ / 'server' / 'plantillas' / 'drops_bolsas.json'
 CAT_HOMBRE, CAT_MUJER = 24, 25
 PRECIO_MALETA_PD = 599        # un traje al azar: por debajo de los trajes enteros del mall (699-989)
-PRIMER_ID_PD = 36100
+PRIMER_ID_PD = 32700
+# Las filas que anadimos nosotros van de la 32000 en adelante, justo despues de las del cliente (la mas alta
+# es la 31447). Con ids de 36100 o de 40000 el cliente no las pintaba: los packs de 11/110 de Weapon y Armor,
+# los Mark de On Sale y los huevos PD no salian aunque el servidor los mandara.
+PRIMER_ID_LOCAL = 32000
 PUBLICACION_PD = 'set PD (tools/habilitar_mall_completo.py)'
 CAT_ON_SALE, CAT_TELEPORTE = 23, 27
 # Maple Mark, Maple Teleportation Scroll, Mark Stone, Mark Portal Scroll.
@@ -92,7 +96,7 @@ def packs(rows):
             if (r['category'], r['item'], cant) in hay:
                 continue
             hay.add((r['category'], r['item'], cant))
-            sig = max(ids | {40000}) + 1
+            sig = max(ids | {PRIMER_ID_LOCAL - 1}) + 1
             ids.add(sig)
             nuevas.append(dict(r, id=sig, quantity=cant, price=r['price'] * veces,
                                special_price=r['special_price'] * veces,
@@ -154,7 +158,7 @@ def agregar(rows):
                 if (cat, iid, cant) in hay:
                     continue
                 hay.add((cat, iid, cant))
-                sig = max(ids | {40000}) + 1
+                sig = max(ids | {PRIMER_ID_LOCAL - 1}) + 1
                 ids.add(sig)
                 nuevas.append(dict(id=sig, item=iid, flags=0x1, sort=orden, category=cat, quantity=cant,
                                    price=precio, special_price=0, duration=0, start='', end='', limit=0,
@@ -196,7 +200,7 @@ def on_sale(rows):
         if (r['item'], r['quantity']) in hay:
             continue
         hay.add((r['item'], r['quantity']))
-        sig = max(ids | {40000}) + 1
+        sig = max(ids | {PRIMER_ID_LOCAL - 1}) + 1
         ids.add(sig)
         nuevas.append(dict(r, id=sig, category=CAT_ON_SALE, publication=PUBLICACION_ON_SALE))
     return rows + nuevas
@@ -265,7 +269,7 @@ def completar(d):
         if (r['item'], r['category'], r['quantity']) in hay or r['item'] in fuera or fuera_de_pestana(r):
             continue
         if r['id'] in ids:
-            r['id'] = max(ids | {40000}) + 1          # choca con una local: va despues de las nativas
+            r['id'] = max(ids | {PRIMER_ID_LOCAL - 1}) + 1          # choca con una local: va despues de las nativas
         ids.add(r['id'])
         hay.add((r['item'], r['category'], r['quantity']))
         r['publication'] = 'habilitado: todo el mall.xml (tools/habilitar_mall_completo.py)'
