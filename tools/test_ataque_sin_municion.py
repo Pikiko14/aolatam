@@ -61,3 +61,27 @@ def test_con_flechas_infinitas_no_hace_falta_municion(monkeypatch):
     server.manejar(s, 0x0006, None, None, 'test',
                    struct.pack('<HI', cb.ATAQUE_NORMAL, 9999))
     assert packets
+
+
+def _magia(server, s, magia):
+    server.manejar(s, 0x0006, None, None, 'test', struct.pack('<HI', magia, 9999))
+
+
+def test_habilidad_de_disparo_sin_municion_no_sale(monkeypatch):
+    """"que no me deje usar ninguna instance de bow o spell de bow si no tengo arrows"."""
+    s, packets = _sesion_con_arco(monkeypatch, con_municion=False)
+    _magia(app.Servidor.__new__(app.Servidor), s, 901)   # Basic Shot I
+    assert len(packets) == 1 and b'arrows or bullets' in packets[0]
+
+
+def test_buff_de_arco_sin_municion_si_sale(monkeypatch):
+    """"solo los buff de bow": Accurate Song no pide flechas."""
+    s, packets = _sesion_con_arco(monkeypatch, con_municion=False)
+    _magia(app.Servidor.__new__(app.Servidor), s, 902)   # Accurate Song I
+    assert not any(b'arrows or bullets' in pk for pk in packets)
+
+
+def test_habilidad_de_disparo_con_municion_no_avisa(monkeypatch):
+    s, packets = _sesion_con_arco(monkeypatch, con_municion=True)
+    _magia(app.Servidor.__new__(app.Servidor), s, 901)
+    assert not any(b'arrows or bullets' in pk for pk in packets)

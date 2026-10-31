@@ -555,6 +555,18 @@ def _precio_compra(item_id: int) -> int:
     return max(1, int(precio * DESCUENTO_COMPRA))
 
 
+# Las flechas y bolitas de las tiendas van en paquetes de 1000: el cliente las
+# muestra como "NewbieArrow(1000)" y el precio de lista es el del paquete.
+# Antes se entregaba 1 por compra.
+UNIDADES_PAQUETE_MUNICION = 1000
+
+
+def _unidades_por_compra(item_id: int) -> int:
+    """Cuantas unidades entrega la tienda por cada una que se compra."""
+    import inventario as _iv_up
+    return UNIDADES_PAQUETE_MUNICION if _iv_up.es_municion(item_id) else 1
+
+
 def _precio_venta(item_id: int) -> int:
     """Lo que paga la tienda por ese item.
 
@@ -13087,6 +13099,19 @@ class Servidor:
                 if not _am0 or not _iv_mun0.es_municion(_am0):
                     log.info(f"[{addr}] ataque rechazado: {arma_puesta} sin municion en la mano izquierda")
                     return
+            # Lo mismo para las habilidades de arco/honda que disparan (Basic Shot,
+            # Slow Snipe, Owl...): sin municion no salen. Los buffs de la rama
+            # (Accurate Song, Dodge Step, Sparrow, Anti-evil Tactics) no la piden.
+            if (tipo != _cb.ATAQUE_NORMAL and mag.get('es_ataque')
+                    and not getattr(_cf_mun0, 'FLECHAS_INFINITAS', True)
+                    and (_iv_mun0.es_arco(arma_puesta) or _iv_mun0.es_honda(arma_puesta))
+                    and (set(mag.get('equip_req') or ()) & {'弓箭', '彈弓'}
+                         or __import__('skills').skill_de_magia(tipo) in (17, 18, 19))):
+                _am1 = (ses.inventario or {}).get(4)
+                if not _am1 or not _iv_mun0.es_municion(_am1):
+                    ses.enviar(__import__('clases').aviso('You need arrows or bullets equipped to use this skill.', tipo=7))
+                    log.info(f"[{addr}] habilidad {tipo} rechazada: {arma_puesta} sin municion en la mano izquierda")
+                    return
             # Una tecnica de arma (Sword/Axe/Spear/Longbow/Shadowblade) solo se
             # puede usar con esa rama puesta. El Skill Angel la saca de
             # habilidades al cambiar, pero el cliente seguia dejando pulsar su
@@ -15538,7 +15563,7 @@ class Servidor:
             avisos = []
             total = 0
             for item_id, cant in pedido:
-                _r = _meter(ses, item_id, cant)
+                _r = _meter(ses, item_id, cant * _unidades_por_compra(item_id))
                 if _r is None:
                     log.warning(f"[{addr}] compra: no entra {item_id} x{cant}, "
                                 f"la mochila esta llena")
@@ -15603,12 +15628,14 @@ class Servidor:
                 vendidas = _sacar(ses, ranura, cant)
                 if not vendidas:
                     continue
-                ganancia = _precio_venta(it_id) * vendidas
+                # La municion se paga por paquete (ver _unidades_por_compra): sin
+                # esto 1000 flechas compradas por 14 se vendian por 4000.
+                ganancia = _precio_venta(it_id) * vendidas // _unidades_por_compra(it_id)
                 oro_ganado += ganancia
                 tocadas.append(ranura)
                 log.info(f"[{addr}] vendio {it_id} x{vendidas} de la casilla "
                          f"{ranura} por {ganancia} de oro")
-            if not oro_ganado:
+            if not tocadas:  # pocas flechas pueden dar 0 de oro, pero ya salieron de la mochila
                 return
             ses.oro = min(2000000000, getattr(ses, 'oro', 0) + oro_ganado)
             ses.personaje.oro = ses.oro

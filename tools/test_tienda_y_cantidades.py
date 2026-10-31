@@ -97,3 +97,13 @@ if __name__ == '__main__':
               test_apilable):
         f()
     print('\nTIENDA Y CANTIDADES: OK')
+
+
+def test_la_municion_se_compra_y_vende_por_paquete_de_1000():
+    """"NewbieBullet(1000)... al comprarlas me compras 1 nada mas"."""
+    import app
+    assert app._unidades_por_compra(138) == 1000    # Newbie Arrow
+    assert app._unidades_por_compra(147) == 1000    # Newbie Bullet
+    assert app._unidades_por_compra(6) == 1         # Newbie Bow
+    # Vender las 1000 da lo mismo que vender 1 antes (4), no 4000.
+    assert app._precio_venta(138) * 1000 // app._unidades_por_compra(138) == app._precio_venta(138)
