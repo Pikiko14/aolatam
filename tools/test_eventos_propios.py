@@ -68,6 +68,22 @@ def test_en_una_instancia_cada_copia_cuenta_y_ve_lo_suyo(tmp_path, monkeypatch):
     assert evp.pulsar(b, eid) is False                                      # b no puede usarlo
 
 
+def test_el_portal_de_una_instancia_llega_a_los_de_su_copia(monkeypatch):
+    # presencia guarda a los de una instancia bajo (stage, copia): con _vivas(900) no salia nadie.
+    import eventos_mundo
+    import presencia
+    a, b = _ses(1), _ses(2)
+    for s in (a, b):
+        s.cerrada = False
+    sa, sb = evp.sala_de(a), evp.sala_de(b)
+    clave = (lambda s, st: (900, s)) if eventos_mundo.grupo_de_instancia(900) else (lambda s, st: 900)
+    monkeypatch.setattr(presencia, '_POR_MAPA', {clave(sa, 900): [a], **({clave(sb, 900): [b]} if clave(sb, 900) != clave(sa, 900) else {})})
+    if clave(sa, 900) == 900:
+        presencia._POR_MAPA[900] = [a, b]
+    assert evp.destinatarios(900, sa) == [a]
+    assert evp.destinatarios(900, sb) == [b]
+
+
 def test_reglas_invalidas_se_ignoran(tmp_path, monkeypatch):
     _reglas(tmp_path, monkeypatch, dict(REGLA, premios=[]), dict(REGLA, id='', ))
     assert evp.reglas() == []

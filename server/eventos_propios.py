@@ -193,8 +193,18 @@ def abrir_portal(stage, tile, destino, llegada, segundos, sala=None):
 
 def destinatarios(stage, sala):
     """Las sesiones del mapa que ven ese portal: todas, o solo las de esa copia de la instancia."""
+    # presencia guarda a los de una instancia bajo (stage, copia) -- ver presencia.clave_de_mapa --, no bajo el stage:
+    # buscando en _vivas(900) la lista salia vacia y el portal no le llegaba a nadie, ni al que mato al jefe.
     import presencia
-    return [s for s in presencia._vivas(int(stage)) if sala is None or sala_de(s) == sala]
+    clave = int(stage)
+    if sala is not None:
+        try:
+            import eventos_mundo
+            if eventos_mundo.grupo_de_instancia(int(stage)):
+                clave = (int(stage), sala)
+        except Exception:
+            pass
+    return [s for s in presencia._vivas(clave) if sala is None or sala_de(s) == sala]
 
 
 def _limpiar(ahora=None):

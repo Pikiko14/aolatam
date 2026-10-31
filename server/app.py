@@ -9506,8 +9506,13 @@ def _eventos_propios_al_morir(ses, monstruo, addr):
                 eid = _evp.abrir_portal(ses.personaje.stage, tile, pr['destino'], pr['llegada'],
                                         pr.get('segundos', 120), sala=sala)
                 paquete = _evp.paquete_portal(eid)
-                for s in _evp.destinatarios(ses.personaje.stage, sala):
-                    s.enviar(paquete, _cl.aviso('A portal has appeared!', tipo=0))
+                quienes = _evp.destinatarios(ses.personaje.stage, sala)
+                if ses not in quienes:
+                    quienes.append(ses)          # el que lo mato lo ve siempre
+                for s in quienes:
+                    s.enviar_inmediato(paquete, _cl.aviso('A portal has appeared!', tipo=0))
+                log.info('[%s] regla %s: portal %d en %s -> stage %s (%d jugadores lo ven)'
+                         % (addr, regla['id'], eid, tile, pr['destino'], len(quienes)))
 
                 def _cerrar(eid=eid, vivas_stage=ses.personaje.stage, sala=sala):
                     import combate as _cb_p
