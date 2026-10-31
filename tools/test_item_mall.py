@@ -285,3 +285,12 @@ def test_la_elf_wings_bag_no_da_huevos_de_elfo():
     import inventario
     assert inventario.recompensas_caja(9420) is None                    # va por su tabla de Lucky Bag
     assert inventario.recompensas_caja(20102)[0][0] in (3396, 3397, 3398, 3399)   # la Elf Lucky Bag de verdad
+
+
+def test_las_bolsas_del_mall_no_dan_scrolls_high_effect():
+    """"esos scroll de 350 que no los den que den de 200": con el nivel tope en 60."""
+    import random
+    import bolsas
+    random.seed(5)
+    salen = {bolsas.abrir(9417)[0] for _ in range(3000)}                # Rose Sword Bag
+    assert not salen & set(bolsas.SCROLLS_DEL_MALL) and {3805, 3806} <= salen

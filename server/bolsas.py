@@ -458,9 +458,19 @@ def abrir(item_id: int):
     excluir = set(getattr(configuracion, 'QUITAR_DE_BOLSAS', {}).get(iid, ()))
     if _sin_pociones_fuertes(iid):
         excluir |= {it for it, _c, _p in _opciones(valor) if pocion_fuerte(it)}
-    if iid in bolsas_premio_al_1():
-        return _sorteo_premio_al_1(valor, excluir)
-    return _sorteo(valor, excluir)
+    sale = _sorteo_premio_al_1(valor, excluir) if iid in bolsas_premio_al_1() else _sorteo(valor, excluir)
+    if sale and iid in bolsas_del_mall() and sale[0] in SCROLLS_DEL_MALL:
+        sale = (SCROLLS_DEL_MALL[sale[0]], sale[1])
+    return sale
+
+
+# Con el nivel tope en 60, las bolsas del Item Mall no dan los scrolls High-effect (+350 ataque/defensa, +280 los
+# magicos): dan los normales (+200 / +160), con la misma cantidad. Pedido del usuario el 31/10/2026. El tooltip del
+# cliente dice lo mismo (tools/parche_lucky_bags.py).
+SCROLLS_DEL_MALL = {6239: 3805,     # High-effect Attack Scroll        -> Attack Scroll
+                    6240: 3806,     # High-effect Defense Scroll       -> Defense Scroll
+                    6241: 3807,     # High-effect Spell Attack Scroll  -> Spell Attack Scroll
+                    6242: 3808}     # High-effect Spell Defense Scroll -> Spell Defense Scroll
 
 
 # Pestanas del Item Mall cuyas bolsas dan su premio principal (el primero de la tabla: la Sword of Goddess de la

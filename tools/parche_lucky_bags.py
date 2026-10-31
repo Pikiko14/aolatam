@@ -65,20 +65,50 @@ def main():
     objetivo = tablas()
     cambiadas = []
 
+    del_mall = tablas_del_mall()
+    scrolls = []
+
     def fila(m):
         tag = m.group(0)
         num = re.search(r'編號="(\d+)"', tag)
-        if not num or int(num.group(1)) not in objetivo:
+        if not num:
+            return tag
+        n = int(num.group(1))
+        if n in del_mall:
+            nuevo = cambiar_scrolls(tag)
+            if nuevo != tag:
+                scrolls.append(n)
+                tag = nuevo
+        if n not in objetivo:
             return tag
         nuevo = ajustar_fila(tag)
         if nuevo != tag:
-            cambiadas.append(int(num.group(1)))
+            cambiadas.append(n)
         return nuevo
 
     texto = re.sub(r'<drop 編號="\d+"[^>]*>', fila, texto)
     SALIDA.parent.mkdir(parents=True, exist_ok=True)
     SALIDA.write_bytes(texto.encode('utf-8'))
-    print('bolsas del mall: %d tablas; al 1%%: %d -> %s' % (len(objetivo), len(cambiadas), SALIDA.relative_to(RAIZ)))
+    print('bolsas del mall: %d tablas; al 1%%: %d; scrolls High-effect cambiados en %d -> %s'
+          % (len(objetivo), len(cambiadas), len(scrolls), SALIDA.relative_to(RAIZ)))
+
+
+def tablas_del_mall():
+    """Las tablas de todas las bolsas del Item Mall (y de las que salen de ellas)."""
+    out = set()
+    for iid in bolsas.bolsas_del_mall():
+        que = bolsas._cargar().get(iid) or bolsas._cargar_extra().get(iid)
+        if que and str(que[1]).isdigit():
+            out.add(int(que[1]))
+    return out
+
+
+def cambiar_scrolls(tag):
+    """Los scrolls High-effect por los normales (bolsas.SCROLLS_DEL_MALL), como los da el servidor."""
+    def cambiar(m):
+        viejo = int(m.group(2))
+        return '%s"%d"' % (m.group(1), bolsas.SCROLLS_DEL_MALL.get(viejo, viejo))
+    return re.sub(r'(\sitem\d+=)"(\d+)"', cambiar, tag)
 
 
 if __name__ == '__main__':
