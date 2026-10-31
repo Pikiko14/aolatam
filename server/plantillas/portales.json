@@ -19149,17 +19149,17 @@
    {
     "entity": 7550011,
     "tile": [
-     13,
-     62
+     11,
+     41
     ],
     "destino": 16,
     "llegada": [
-     18,
-     16
+     134,
+     70
     ],
     "preguntar": false,
     "dibujar": true,
-    "nota": "mapa propio map900 -> Thorn Wasteland (vuelta de la instancia oscura). Llegada (18,16): junto al tornado de entrada (14,16), fuera de su radio para no reabrir el salto."
+    "nota": "mapa propio map900 -> Thorn Wasteland (vuelta de la instancia oscura). En (11,41), dentro de la zona 71 donde se aparece (14,44) y a 3 casillas: fuera del radio 2, no te saca al entrar (pedido del usuario, 31/10/2026; antes en (13,62), que no se alcanzaba). Llegada (134,70): junto al tornado de entrada (130,70), fuera de su radio."
    }
   ]
  },
