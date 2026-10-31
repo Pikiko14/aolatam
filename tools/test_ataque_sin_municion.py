@@ -114,3 +114,20 @@ def test_el_monstruo_contesta_ya_y_otro_golpe_no_le_reinicia_el_reloj(monkeypatc
     s.ultimo_golpe = 0
     server.manejar(s, 0x0006, None, None, 'test', struct.pack('<HI', cb.ATAQUE_NORMAL, 9999))
     assert m.ultimo_ataque == 123.0
+
+
+def test_al_primer_golpe_el_monstruo_no_espera_la_pausa_del_paseo(monkeypatch):
+    """Paseando, le quedaba la pausa aleatoria (hasta 0,9 s) antes de salir a por el jugador."""
+    import time
+    s, _ = _sesion_con_arco(monkeypatch, con_municion=True)
+    m = s.monstruos[9999]
+    ahora = time.time()
+    m.proximo_paso, m.llega_paseo = ahora + 5.0, ahora + 0.2     # andando 0,2 s mas y luego 4,8 s de pausa
+    server = app.Servidor.__new__(app.Servidor)
+    server.manejar(s, 0x0006, None, None, 'test', struct.pack('<HI', cb.ATAQUE_NORMAL, 9999))
+    assert m.proximo_paso <= ahora + 0.3
+
+
+def test_el_tramo_del_monstruo_dura_lo_que_dibuja_el_cliente():
+    # 3 casillas a velocidad 75: 96 px a 187,5 px/s = 0,51 s (antes se contaban 1,28 s).
+    assert abs(cb.segundos_de_tramo(3, 75) - 0.512) < 0.01

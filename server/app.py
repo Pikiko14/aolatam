@@ -6346,7 +6346,7 @@ def _volver_a_casa(ses, m, ahora):
         m.tile[0], m.tile[1] = sx, sy
     except Exception:
         pass
-    m.proximo_paso = ahora + pasos * 32.0 / spd
+    m.proximo_paso = ahora + __import__("combate").segundos_de_tramo(pasos, spd)
 TIC_CARRERA = 1.0
 PASOS_RIVAL = 3
 VELOCIDAD_RIVAL = 100
@@ -11730,7 +11730,7 @@ class Servidor:
                                             dst_x, dst_y = inv['tile_x'] * 32, inv['tile_y'] * 32
                                             _pasos = max(abs(stx), abs(sty)) or 1
                                             spd = inv.get('move_speed', 50) or 50
-                                            inv['proximo_paso'] = ahora + (_pasos * 32.0 / spd)
+                                            inv['proximo_paso'] = ahora + _cb.segundos_de_tramo(_pasos, spd)
                                             _mv_inv = MOVE.build(entity_id=inv['entity_id'],
                                                                  cur_x=cur_x, cur_y=cur_y,
                                                                  dst_x=dst_x, dst_y=dst_y,
@@ -11767,7 +11767,7 @@ class Servidor:
                                         dst_x, dst_y = inv['tile_x'] * 32, inv['tile_y'] * 32
                                         _pasos = max(abs(stx), abs(sty)) or 1
                                         spd = inv.get('move_speed', 50) or 50
-                                        inv['proximo_paso'] = ahora + (_pasos * 32.0 / spd)
+                                        inv['proximo_paso'] = ahora + _cb.segundos_de_tramo(_pasos, spd)
                                         _mv_inv = MOVE.build(entity_id=inv['entity_id'],
                                                              cur_x=cur_x, cur_y=cur_y,
                                                              dst_x=dst_x, dst_y=dst_y,
@@ -11921,7 +11921,7 @@ class Servidor:
                                             dst_x, dst_y = m.tile_x * 32, m.tile_y * 32
                                             _pasos = max(abs(stx), abs(sty)) or 1
                                             spd = m.move_speed or _cb.VELOCIDAD_PASEO
-                                            m.proximo_paso = ahora + (_pasos * 32.0 / spd)
+                                            m.proximo_paso = ahora + _cb.segundos_de_tramo(_pasos, spd)
                                             _mv_ch = MOVE.build(entity_id=m.entity_id,
                                                                   cur_x=cur_x, cur_y=cur_y,
                                                                   dst_x=dst_x, dst_y=dst_y,
@@ -11968,7 +11968,7 @@ class Servidor:
                                         m.tile[0], m.tile[1] = new_x, new_y
                                         dst_x, dst_y = new_x * 32, new_y * 32
                                         spd = int((m.move_speed or 50) * 1.25)
-                                        m.proximo_paso = ahora + (_pasos * 32.0 / spd)
+                                        m.proximo_paso = ahora + _cb.segundos_de_tramo(_pasos, spd)
                                         ses.enviar(MOVE.build(entity_id=m.entity_id,
                                                               cur_x=cur_x, cur_y=cur_y,
                                                               dst_x=dst_x, dst_y=dst_y,
@@ -12274,7 +12274,7 @@ class Servidor:
                                                 for deb in m.debuffs.values():
                                                     if deb.get('vel_mov_mod'):
                                                         spd = max(10, spd + deb['vel_mov_mod'])
-                                            m.proximo_paso = ahora + (_pasos * 32.0 / spd)
+                                            m.proximo_paso = ahora + _cb.segundos_de_tramo(_pasos, spd)
                                             ses.enviar(MOVE.build(entity_id=m.entity_id,
                                                                   cur_x=cur_x, cur_y=cur_y,
                                                                   dst_x=dst_x, dst_y=dst_y,
@@ -12310,6 +12310,8 @@ class Servidor:
                             _pasos = max(abs(new_x - m.tile_x), abs(new_y - m.tile_y)) or 1
                             m.proximo_paso = (ahora + _pasos * _cb.SEGUNDOS_POR_CASILLA
                                               + random.uniform(_cb.PAUSA_PASEO_MIN, _cb.PAUSA_PASEO_MAX))
+                            # Cuando acaba de ANDAR en pantalla (sin la pausa): si le pegan, reacciona desde ahi.
+                            m.llega_paseo = ahora + _cb.segundos_de_tramo(_pasos, m.move_speed or _cb.VELOCIDAD_PASEO)
                             cur_x, cur_y = m.tile_x * 32, m.tile_y * 32
                             m.tile_x = new_x
                             m.tile_y = new_y
@@ -14996,6 +14998,9 @@ class Servidor:
             if m.en_combate_con != yo:
                 m.en_combate_con = yo
                 m.ultimo_ataque = 0
+                # Si estaba paseando, sale a por el jugador en cuanto termina el paso que se ve, sin la pausa
+                # aleatoria del paseo (hasta 0,9 s mas de quedarse quieto despues del primer golpe).
+                m.proximo_paso = min(getattr(m, 'proximo_paso', 0), max(time.time(), getattr(m, 'llega_paseo', 0)))
             if not getattr(m, 'encantado', False):
                 __import__('avatar_clones').ordenar(ses,m)
                 if getattr(ses, 'invocacion', None):
