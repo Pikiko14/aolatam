@@ -30,7 +30,7 @@ class Ses:
         self.packets.extend(paquetes)
 
 
-@pytest.mark.parametrize('stage', [41, 3, 26, 29, 38, 21, 69, 128, 132, 57, 500, 501, 112])
+@pytest.mark.parametrize('stage', [41, 3, 26, 29, 38, 21, 132, 57, 500, 501, 112]   # 69 (Dungeon) y 128 (Desert) cerrados)
 def test_mainland_y_mapas_de_sistema_siguen_abiertos(stage):
     assert not configuracion.mapa_apagado(stage)
 

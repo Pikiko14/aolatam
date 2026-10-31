@@ -62,10 +62,16 @@ Ejemplo con Atlantis.
 Lo mismo al revés: vuelve a poner su bloque en `MAPAS_APAGADOS` (los números de mapa y sus nombres están en
 `setting/eng/jumpmap.xml` y en el historial de git de `configuracion.py`) y repite los pasos 2 a 5.
 
+## Dungeon
+
+Las mazmorras de Eden (Sad Abyss, Fiery Path, Lava Cave, Flaming Door, Underground Square, Hell Palace: mapas
+67-72) también están cerradas, con su bloque `# Dungeon` en `MAPAS_APAGADOS`. Se abren igual que una expansión.
+
 ## Pestañas que se ocultan siempre
 
-`tools/parche_pestanas_mapa.py` tiene `SIEMPRE_OCULTAS = {'dungeon'}`: la pestaña Dungeon del mapa no se ve
-aunque sus mapas estén abiertos. Para volver a mostrarla, quítala de ahí y repite los pasos 2 y 3.
+`tools/parche_pestanas_mapa.py` tiene `SIEMPRE_OCULTAS`: pestañas del mapa que no se ven aunque su región esté
+abierta. Ahora está vacía; para ocultar una, pon su nombre en minúsculas (por ejemplo `{'dungeon'}`) y repite los
+pasos 2 y 3.
 
 ## Comprobar
 

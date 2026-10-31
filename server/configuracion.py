@@ -21,7 +21,7 @@ STRAW_DROP_PROBABILIDAD = 0.50  # provisional; usuario recuerda caida alta
 # MAPAS APAGADOS
 # =====================================================================
 # Solo Mainland abierto: Angel Lyceum, Heart of Eden (cuatro ciudades,
-# territorios de faccion y campos de Totem War), las mazmorras de Eden y los
+# territorios de faccion y campos de Totem War) y los
 # mapas de sistema (casas, granja, competiciones, eventos). Las regiones son
 # las de setting/eng/jumpmapclass.xml; las instancias de cada region van con
 # ella. Para abrir una expansion, borra su bloque (pasos completos: docs/marcos/GUIA_EXPANSIONES.md).
@@ -30,6 +30,13 @@ STRAW_DROP_PROBABILIDAD = 0.50  # provisional; usuario recuerda caida alta
 # of Angel Wings se rechazan con aviso y sin gastar nada. Quien estaba dentro
 # aparece en el Angel Lyceum al conectar o al revivir.
 MAPAS_APAGADOS = frozenset({
+    # Dungeon (las mazmorras de Eden; cerradas el 31/10/2026)
+    67,  # Sad Abyss
+    68,  # Fiery Path
+    69,  # Lava Cave
+    70,  # Flaming Door
+    71,  # Underground Square
+    72,  # Hell Palace
     # Atlantis
     84,  # Blue Sea
     85,  # Colorful Coral Reefs

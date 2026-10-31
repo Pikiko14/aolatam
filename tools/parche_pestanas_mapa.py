@@ -30,8 +30,9 @@ VENTANA_MAPA = '556'
 PRIMERA_TANDA = {'12245', '12246', '12899', '12898', '12897', '12896', '12895', '12894'}
 SWITCH_MAPS = '24750'
 FUERA = 5000          # X fuera de cualquier pantalla
-# Pestanas que se quitan aunque su region este abierta (pedido del usuario el 31/10/2026: Dungeon).
-SIEMPRE_OCULTAS = {'dungeon'}
+# Pestanas que se quitan aunque su region este abierta. Dungeon estuvo aqui hasta que se cerraron sus mapas
+# (67-72, MAPAS_APAGADOS): ahora se va por la regla general y vuelve si se abren.
+SIEMPRE_OCULTAS = set()
 
 
 def regiones_cerradas():
