@@ -23,7 +23,7 @@ log = logging.getLogger('competiciones')
 ARENAS = (159, 239, 240)
 MAPAS = (112,) + ARENAS
 TRAMOS = (
-    (60, 89, 159, 0, 19, 30, 75000),
+    (50, 89, 159, 0, 19, 30, 75000),     # desde 50 (pedido del usuario, 31/10/2026; el original era 60)
     (90, 119, 159, 1, 19, 30, 350000),
     (120, 149, 159, 2, 19, 30, 1200000),
     (150, 179, 159, 3, 19, 30, 6000000),

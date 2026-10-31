@@ -85,3 +85,32 @@ def test_habilidad_de_disparo_con_municion_no_avisa(monkeypatch):
     s, packets = _sesion_con_arco(monkeypatch, con_municion=True)
     _magia(app.Servidor.__new__(app.Servidor), s, 901)
     assert not any(b'arrows or bullets' in pk for pk in packets)
+
+
+def test_el_golpe_basico_no_sale_justo_despues_de_una_habilidad(monkeypatch):
+    """"si soy bow y uso 1 turno de ataque ejemplo lanzo poder, no debe lanzar la flecha basica"."""
+    s, packets = _sesion_con_arco(monkeypatch, con_municion=True)
+    s.personaje.habilidades = [(17, 10, 0)]
+    s.volcar = lambda *a, **k: None
+    server = app.Servidor.__new__(app.Servidor)
+    try:
+        _magia(server, s, 901)                               # Basic Shot I
+    except AttributeError:
+        pass                                                 # el resto del lanzamiento pide una sesion entera
+    assert getattr(s, 'ultimo_golpe', 0) > 0
+    packets.clear()
+    server.manejar(s, 0x0006, None, None, 'test', struct.pack('<HI', cb.ATAQUE_NORMAL, 9999))
+    assert not packets
+
+
+def test_el_monstruo_contesta_ya_y_otro_golpe_no_le_reinicia_el_reloj(monkeypatch):
+    """"los mob cuando los comienzo atacar demoran en darme target"."""
+    s, _ = _sesion_con_arco(monkeypatch, con_municion=True)
+    m = s.monstruos[9999]
+    server = app.Servidor.__new__(app.Servidor)
+    server.manejar(s, 0x0006, None, None, 'test', struct.pack('<HI', cb.ATAQUE_NORMAL, 9999))
+    assert m.en_combate_con == s.entity_id and m.ultimo_ataque == 0
+    m.ultimo_ataque = 123.0                                   # la IA ya le hizo pegar
+    s.ultimo_golpe = 0
+    server.manejar(s, 0x0006, None, None, 'test', struct.pack('<HI', cb.ATAQUE_NORMAL, 9999))
+    assert m.ultimo_ataque == 123.0

@@ -13306,6 +13306,11 @@ class Servidor:
                              f"los {_espera:.3f}s y su cooldown es {_cd:.3f}s")
                     return
                 _usos[tipo] = _ahora_atk
+                # Una habilidad ofensiva ES el ataque de ese turno: el cliente manda el golpe basico justo
+                # detras y salia tambien la flecha normal ("si uso 1 turno de ataque... no debe lanzar la
+                # flecha basica"). El siguiente basico espera una cadencia entera desde la habilidad.
+                if mag.get('es_ataque'):
+                    ses.ultimo_golpe = max(getattr(ses, 'ultimo_golpe', 0), _ahora_atk)
             else:
                 _cad = _cb.cadencia_ataque(
                     getattr(ses.personaje, 'buffs', None) if ses.personaje else None,
@@ -14984,8 +14989,13 @@ class Servidor:
                 # --- Triggers de Buffs activos al atacar (Blazing Sun, Mana Overflow, Erosion, Spell Boost, etc.) ---
                 _pkgs_drain.extend(_procesar_triggers_buffs(ses, yo, m, addr=addr, en_ataque=True))
 
-            m.en_combate_con = yo
-            m.ultimo_ataque = time.time()
+            # El reloj de ataque del monstruo es SUYO: antes cada golpe del jugador lo ponia en "ahora", asi
+            # que el monstruo esperaba un ciclo entero tras el primer golpe y, si el jugador pegaba mas rapido
+            # que su cadencia, no llegaba a contestar nunca ("demoran en darme target"). Al entrar en combate
+            # contesta en el siguiente tick de la IA.
+            if m.en_combate_con != yo:
+                m.en_combate_con = yo
+                m.ultimo_ataque = 0
             if not getattr(m, 'encantado', False):
                 __import__('avatar_clones').ordenar(ses,m)
                 if getattr(ses, 'invocacion', None):

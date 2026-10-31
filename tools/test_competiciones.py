@@ -27,6 +27,8 @@ def world(tmp_path, monkeypatch):
     db = tmp_path / 'events.db'
     monkeypatch.setattr(cuentas, 'DB_PATH', db)
     monkeypatch.setattr(cuentas, '_notificar_cambio', lambda **kw: None)
+    # Los tramos altos de la arena, sin el tope de nivel del servidor (configuracion.NIVEL_MAXIMO_PERSONAJE).
+    monkeypatch.setattr(__import__('configuracion'), 'NIVEL_MAXIMO_PERSONAJE', 9999)
     monkeypatch.setattr(c, '_BASE', None)
     monkeypatch.setattr(c, '_RONDAS', {})
     # Stable default for tests asserting team-specific mechanics; production
@@ -483,3 +485,9 @@ def test_invalid_gm_start_does_not_open_or_move(world,bad):
     s = world.player()
     c.comando_gm(s,'aastart',bad)
     assert not c.ronda(240) and not world.trips
+
+
+def test_la_arena_empieza_en_nivel_50():
+    import competiciones
+    assert competiciones.tramo(49) is None
+    assert competiciones.tramo(50)[0] == 50
