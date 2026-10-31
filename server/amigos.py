@@ -39,12 +39,18 @@ def _list(s,rows):
     return struct.pack('<HII',0x27,s.personaje.char_id,len(rows))+records
 
 
+def _servidor():
+    """El nombre del servidor que va en los contactos: el del server.xml del cliente (configuracion.NOMBRE_SERVIDOR)."""
+    import configuracion
+    return getattr(configuracion, 'NOMBRE_SERVIDOR', 'AOF')
+
+
 def _added(s,other):
     """84-byte body: self/status/id/server17/name17/status/profile25."""
     p=other.personaje
     body=bytearray(84)
     struct.pack_into('<IHI',body,0,s.personaje.char_id,0,p.char_id)
-    body[10:27]=_str('Sofiel');body[27:44]=_str(p.nombre)
+    body[10:27]=_str(_servidor());body[27:44]=_str(p.nombre)
     struct.pack_into('<I',body,44,0 if _online(other) else 10)
     return struct.pack('<H',0x2a)+body
 
@@ -58,7 +64,7 @@ def _status(s,cid,name,other=None):
     #001A query, so a status reply cannot create a request/reply loop.
     body=bytearray(83)
     struct.pack_into('<IB',body,0,s.personaje.char_id,1)
-    body[5:22]=_str('Sofiel')
+    body[5:22]=_str(_servidor())
     struct.pack_into('<II',body,22,0,cid)
     if other is not None and _online(other):
         p=other.personaje

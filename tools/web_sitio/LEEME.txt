@@ -1,4 +1,4 @@
-ANGELS ONLINE LATAM - web de comunidad (paleta pastel, responsive, sin compilacion ni dependencias externas)
+ANGELS ONLINE FOREVER - web de comunidad (paleta pastel, responsive, sin compilacion ni dependencias externas)
 
 PUBLICAR: python tools/publicar_web.py  (sube la web, pone el launcher en descargas/ y la API de cuentas; --solo-web para solo la web)
 DESCARGAS: en config.js, downloadUrl = el cliente completo (.zip) y launcherUrl = el launcher (descargas/AngelsLauncher.exe,

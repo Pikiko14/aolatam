@@ -29,7 +29,9 @@ SALIDA = RAIZ / 'parches' / 'launcher_propio'
 EXE = 'AngelsLauncher.exe'
 FRAMEWORK = pathlib.Path(os.environ.get('WINDIR', r'C:\Windows')) / 'Microsoft.NET' / 'Framework64' / 'v4.0.30319'
 # Sube este numero al cambiar el launcher: los jugadores lo reciben solos (por el sha256, no por el numero).
-VERSION_LAUNCHER = '1.0.0'
+VERSION_LAUNCHER = '1.0.1'
+# El nombre del servidor que pinta el cliente (server.xml, 名稱): el launcher lo pone al lanzar el juego.
+NOMBRE_SERVIDOR = 'AOF'
 
 
 def _cadena(s):
@@ -48,10 +50,12 @@ def compilar(ip, puerto, titulo, subtitulo, destino=SALIDA):
             'namespace AngelsLauncher {\n static class Config {\n'
             '  public const string Servidor = %s;\n  public const int Puerto = %d;\n'
             '  public const string Titulo = %s;\n  public const string Subtitulo = %s;\n'
-            '  public const string VersionLauncher = %s;\n  public const string ArchivoLauncher = %s;\n }\n}\n'
-            % (_cadena(ip), int(puerto), _cadena(titulo), _cadena(subtitulo), _cadena(VERSION_LAUNCHER), _cadena(EXE)),
+            '  public const string VersionLauncher = %s;\n  public const string ArchivoLauncher = %s;\n'
+            '  public const string NombreServidor = %s;\n }\n}\n'
+            % (_cadena(ip), int(puerto), _cadena(titulo), _cadena(subtitulo), _cadena(VERSION_LAUNCHER), _cadena(EXE),
+               _cadena(NOMBRE_SERVIDOR)),
             encoding='utf-8')
-        args = [str(csc), '/nologo', '/target:winexe', '/optimize+', '/platform:anycpu',
+        args = [str(csc), '/nologo', '/target:winexe', '/optimize+', '/platform:anycpu', '/codepage:65001',
                 '/out:' + str(destino / EXE),
                 '/r:System.dll', '/r:System.Drawing.dll', '/r:System.Windows.Forms.dll',
                 '/r:' + str(FRAMEWORK / 'System.Web.Extensions.dll')]
@@ -129,7 +133,7 @@ def main():
     ap.add_argument('--ip', default=os.environ.get('AO_PARCHE_HOST'))
     ap.add_argument('--puerto', type=int, default=2121)
     ap.add_argument('--titulo', default='Angels Online')
-    ap.add_argument('--subtitulo', default='Latam')
+    ap.add_argument('--subtitulo', default='Forever')
     ap.add_argument('--probar', action='store_true')
     a = ap.parse_args()
     if not a.ip:

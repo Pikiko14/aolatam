@@ -262,8 +262,25 @@ namespace AngelsLauncher
             File.WriteAllText(ini, string.Join("\n", lineas) + "\n", new UTF8Encoding(false));
         }
 
+        // El nombre del servidor que el cliente pinta al entrar ("Impacty(AOF-1)") sale del 名稱 de server.xml. El
+        // server.xml va en el zip del cliente con el nombre viejo: se cambia aqui, sin tocar ip ni puertos.
+        public static void PonerNombreServidor()
+        {
+            string xml = Path.Combine(Carpeta, "server.xml");
+            if (!File.Exists(xml)) return;
+            byte[] crudo = File.ReadAllBytes(xml);
+            bool bom = crudo.Length >= 3 && crudo[0] == 0xEF && crudo[1] == 0xBB && crudo[2] == 0xBF;
+            string texto = new UTF8Encoding(false).GetString(crudo, bom ? 3 : 0, crudo.Length - (bom ? 3 : 0));
+            string nuevo = System.Text.RegularExpressions.Regex.Replace(texto, "(<伺服器\\s[^>]*?名稱\\s*=\\s*\")[^\"]*(\")",
+                m => m.Groups[1].Value + Config.NombreServidor + m.Groups[2].Value);
+            if (nuevo == texto) return;
+            File.WriteAllText(xml, nuevo, new UTF8Encoding(bom));
+        }
+
         public static void LanzarJuego()
         {
+            try { PonerNombreServidor(); }
+            catch (Exception) { }                   // un server.xml de solo lectura no impide jugar
             var info = new ProcessStartInfo(Path.Combine(Carpeta, Juego));
             info.WorkingDirectory = Carpeta;        // el juego lee reg.ini, server.xml y los .pak de ahi
             info.UseShellExecute = false;           // CreateProcess directo: angel.dat es un exe con otra extension

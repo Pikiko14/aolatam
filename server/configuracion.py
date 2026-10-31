@@ -22,6 +22,11 @@ DROPS_EVENTO = {
 }
 
 
+# Nombre del servidor: el que pinta el cliente al entrar ("Impacty(AOF-1)", server.xml 名稱, que pone el launcher:
+# tools/compilar_launcher.py NOMBRE_SERVIDOR) y el que va en los contactos de amigos. Marca: Angels Online Forever.
+NOMBRE_SERVIDOR = 'AOF'
+
+
 # =====================================================================
 # MAPAS APAGADOS
 # =====================================================================
