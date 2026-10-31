@@ -482,18 +482,63 @@ def bolsas_premio_al_1():
 _PREMIO_AL_1 = None
 
 
+# EL RESTO DE PREMIOS, POR IMPORTANCIA (pedido del usuario el 31/10/2026): pestles, hammers y comida de montura al 7%
+# cada uno, las cartas de EXP al 15%, y lo demas (scrolls, certificados...) se reparte por igual lo que sobra. Si
+# los fijos no caben en el 99% que deja el principal, se encogen en proporcion. Por palabra del nombre del item.
+_PROBS_CACHE = {}
+PESO_POR_TIPO = (('pestle', 0.07), ('hammer', 0.07), ('ride feed', 0.07), ('exp card', 0.15))
+
+
+_NOMBRE_POR_ID = None
+
+
+def _nombre_premio(item_id):
+    global _NOMBRE_POR_ID
+    if _NOMBRE_POR_ID is None:
+        _cargar_descripciones()
+        _NOMBRE_POR_ID = {i: nombre for nombre, ids in _POR_NOMBRE.items() for i in ids}
+    return _NOMBRE_POR_ID.get(int(item_id), '')
+
+
+def probabilidades_bolsa(opciones):
+    """[probabilidad 0..1] de cada premio de `opciones` ([(item, cantidad, peso)]) en una bolsa del mall con el
+    premio principal al 1%; None si la tabla no se toca (el principal ya salia menos, como las monturas al 0,5%).
+    La usan el sorteo del servidor y el tooltip del cliente (tools/parche_lucky_bags.py): dicen lo mismo."""
+    if len(opciones) < 2:
+        return None
+    p0, total = opciones[0][2], sum(p for _i, _c, p in opciones)
+    if total <= 0 or p0 / float(total) <= PROB_PREMIO_PRINCIPAL:
+        return None
+    resto = 1.0 - PROB_PREMIO_PRINCIPAL
+    fijos = {}
+    for k, (it, _c, _p) in enumerate(opciones[1:], 1):
+        nombre = _nombre_premio(it)
+        peso = next((v for clave, v in PESO_POR_TIPO if clave in nombre), None)
+        if peso is not None:
+            fijos[k] = peso
+    libres = [k for k in range(1, len(opciones)) if k not in fijos]
+    suma_fijos = sum(fijos.values())
+    tope = resto if not libres else resto * 0.9          # que a los libres les quede algo
+    if suma_fijos > tope:
+        fijos = {k: v * tope / suma_fijos for k, v in fijos.items()}
+        suma_fijos = tope
+    if not libres:                                       # todo fijo: lo que sobre, en proporcion a los fijos
+        fijos = {k: v * resto / suma_fijos for k, v in fijos.items()}
+    cada_libre = (resto - sum(fijos.values())) / len(libres) if libres else 0
+    return [PROB_PREMIO_PRINCIPAL] + [fijos.get(k, cada_libre) for k in range(1, len(opciones))]
+
+
 def _sorteo_premio_al_1(tabla_id, excluir=()):
-    """Como _sorteo, con el primer premio de la tabla a PROB_PREMIO_PRINCIPAL; el resto se queda con lo demas en
-    la misma proporcion entre ellos. Si ya salia menos (las monturas raras al 0,5%), no se toca."""
+    """Como _sorteo, con las probabilidades de probabilidades_bolsa (principal al 1%, el resto por importancia)."""
     opciones = [o for o in _opciones(tabla_id) if o[0] not in excluir]
     if not opciones:
         return None
-    (it0, ct0, p0), resto = opciones[0], opciones[1:]
-    total_resto = sum(p for _i, _c, p in resto)
-    if resto and total_resto > 0 and p0 / float(p0 + total_resto) > PROB_PREMIO_PRINCIPAL:
-        if random.random() < PROB_PREMIO_PRINCIPAL:
-            return (it0, ct0)
-        opciones = resto
+    clave = (tabla_id, tuple(o[0] for o in opciones))
+    if clave not in _PROBS_CACHE:
+        _PROBS_CACHE[clave] = probabilidades_bolsa(opciones)
+    probs = _PROBS_CACHE[clave]
+    if probs:
+        opciones = [(it, ct, p) for (it, ct, _p), p in zip(opciones, probs)]
     total = sum(p for _i, _c, p in opciones)
     tirada = random.uniform(0, total) if total > 0 else 0
     for it, ct, p in opciones:

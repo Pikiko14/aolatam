@@ -34,22 +34,29 @@ def tablas():
 
 
 def ajustar_fila(tag):
-    """La fila <drop> con prob1 = suma de las demas y las demas x99 (si el principal pasaba del 1%)."""
-    probs = {int(n): int(v) for n, v in re.findall(r'\sprob(\d+)="(\d+)"', tag)}
-    items = {int(n) for n, v in re.findall(r'\sitem(\d+)="(\d+)"', tag) if int(v) > 0}
-    probs = {n: p for n, p in probs.items() if n in items}
-    if 1 not in probs or len(probs) < 2:
+    """La fila <drop> con las probabilidades de bolsas.probabilidades_bolsa: el principal al 1% y el resto por
+    importancia (pestles, hammers y ride feed 7%, cartas de EXP 15%, lo demas a partes iguales)."""
+    items = {int(n): int(v) for n, v in re.findall(r'\sitem(\d+)="(\d+)"', tag) if int(v) > 0}
+    probs = {int(n): int(v) for n, v in re.findall(r'\sprob(\d+)="(\d+)"', tag) if int(n) in items}
+    orden = sorted(probs)
+    if not orden or orden[0] != 1:
         return tag
-    resto = sum(p for n, p in probs.items() if n != 1)
-    if resto <= 0 or probs[1] / float(probs[1] + resto) <= bolsas.PROB_PREMIO_PRINCIPAL:
+    reparto = bolsas.probabilidades_bolsa([(items[n], 1, probs[n]) for n in orden])
+    if not reparto:
         return tag
-    factor = round((1 - bolsas.PROB_PREMIO_PRINCIPAL) / bolsas.PROB_PREMIO_PRINCIPAL)      # 99
+    # EL CLIENTE NO DIVIDE POR LA SUMA: con factor="100" pinta cada prob como su porcentaje (prob1="10" -> 10%).
+    # Asi que cada prob es ya su parte del factor de la fila, en enteros que sumen el factor justo (los restos de
+    # redondear van a los que mas decimales perdieron). El factor no se toca.
+    escala = int(re.search(r'\sfactor="(\d+)"', tag).group(1)) if re.search(r'\sfactor="(\d+)"', tag) else 100
+    exactos = [escala * p for p in reparto]
+    enteros = [int(x) for x in exactos]
+    for k in sorted(range(len(exactos)), key=lambda k: exactos[k] - enteros[k], reverse=True)[:escala - sum(enteros)]:
+        enteros[k] += 1
+    nuevos = {n: max(1, v) for n, v in zip(orden, enteros)}
 
     def cambiar(m):
         n = int(m.group(1))
-        if n not in probs:
-            return m.group(0)
-        return ' prob%d="%d"' % (n, resto if n == 1 else probs[n] * factor)
+        return ' prob%d="%d"' % (n, nuevos[n]) if n in nuevos else m.group(0)
     return re.sub(r'\sprob(\d+)="\d+"', cambiar, tag)
 
 

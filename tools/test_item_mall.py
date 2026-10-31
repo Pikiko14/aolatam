@@ -258,9 +258,23 @@ def test_el_tooltip_del_cliente_dice_1_por_ciento():
     import sys
     sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
     import parche_lucky_bags as plb
-    fila = ('<drop 編號="4336" adv_prob1="40" item1="1477" count1="1" prob1="10" item2="8579" count2="1" prob2="10" '
-            'item3="3377" count3="1" prob3="10" />')
-    probs = {int(n): int(v) for n, v in re.findall(r'\sprob(\d+)="(\d+)"', plb.ajustar_fila(fila))}
-    assert probs[1] / sum(probs.values()) == 0.01 and probs[2] == probs[3]
+    # El cliente pinta cada prob como prob / factor (no divide por la suma): con factor 100, 1 = 1% y 11 = 11%.
+    fila = ('<drop 編號="4336" adv_prob1="40" factor="100" item1="1477" count1="1" prob1="10" item2="8579" '
+            'count2="1" prob2="10" item3="3377" count3="1" prob3="10" />')
+    nueva = plb.ajustar_fila(fila)
+    probs = {int(n): int(v) for n, v in re.findall(r'\sprob(\d+)="(\d+)"', nueva)}
+    assert probs[1] == 1 and sum(probs.values()) == 100 and 'factor="100"' in nueva
     assert 'adv_prob1="40"' in plb.ajustar_fila(fila)
     assert 4336 in plb.tablas()
+
+
+def test_los_premios_de_las_bolsas_van_por_importancia():
+    """"pestles hammer y ride feed un 7% exp card 15% nunca un item debe tener 99%": Rose Sword Bag (9417)."""
+    import bolsas
+    que = bolsas._cargar().get(9417) or bolsas._cargar_extra().get(9417)
+    opciones = bolsas._opciones(que[1])
+    probs = dict(zip((bolsas._nombre_premio(it) for it, _c, _p in opciones), bolsas.probabilidades_bolsa(opciones)))
+    assert abs(sum(probs.values()) - 1) < 1e-9 and max(probs.values()) < 0.99
+    assert probs['rose sword'] == 0.01
+    assert abs(probs['5-star lucky enhanced pestle'] - 0.07) < 1e-9 and abs(probs['lvl 5 lucky ride feed'] - 0.07) < 1e-9
+    assert abs(probs['newbie double exp card (30m)'] - 0.15) < 1e-9
