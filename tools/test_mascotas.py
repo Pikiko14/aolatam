@@ -104,12 +104,12 @@ def test_el_pienso_corriente_da_saciedad_no_stats():
     """
     est = {'saciedad': 40, 'atk': 100}
     valor, puede = ms.alimentar(est)
-    assert valor == 540 and puede
+    assert valor == 500 and puede
     assert est['atk'] == 100, 'el pienso corriente no toca los stats'
-    # No pasa del tope.
-    for _ in range(10):
-        ms.alimentar(est)
-    assert est['saciedad'] == ms.SACIEDAD_MAXIMA
+    # No suma: la deja en 500 aunque ya tuviera saciedad.
+    for antes in (100, 499, 600):
+        est['saciedad'] = antes
+        assert ms.alimentar(est)[0] == 500
 
 
 def test_los_improved_suben_los_stats():

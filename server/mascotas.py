@@ -513,9 +513,11 @@ def armar(estado: dict) -> bytes:
 
 
 def alimentar(estado: dict, cantidad: int = SACIEDAD_POR_PIENSO) -> tuple:
-    """El Pet Feed normal: sube la saciedad (hasta 600) y recupera intimidad."""
-    antes = int(estado.get('saciedad', 0))
-    estado['saciedad'] = min(SACIEDAD_MAXIMA, antes + cantidad)
+    """El Pet Feed normal: DEJA la saciedad en `cantidad` (500) y recupera intimidad.
+
+    No suma: con 100 de saciedad un pienso la ponia en 600 (lo vio el usuario en
+    la ficha, "600 / 100"). Pide que se quede en 500."""
+    estado['saciedad'] = min(SACIEDAD_MAXIMA, int(cantidad))
     estado['intimidad'] = min(100, int(estado.get('intimidad', 60)) + 5)
     return estado['saciedad'], estado['saciedad'] >= SACIEDAD_PARA_MEJORAR
 
