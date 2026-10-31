@@ -37,9 +37,9 @@
     "holy_exp_por_resultado": {
         "nota": "EXP ademas del AG de premios_holy, en partes por millon de la EXP que pide el nivel en curso. [con puntos_umbral o mas, con menos]. Pedido del usuario (31/10/2026).",
         "puntos_umbral": 500,
-        "ganador": [500000, 350000],
-        "perdedor": [250000, 200000],
-        "empate": [250000, 200000]
+        "ganador": [1000000, 500000],
+        "perdedor": [500000, 250000],
+        "empate": [200000, 200000]
     },
     "formato_arena": "supervivencia",
     "arena_preparacion_segundos": 60,
@@ -56,19 +56,19 @@
             "nivel_min": 1,
             "nivel_max": 10000,
             "resultado": "ganador",
-            "angel_gold": 5000
+            "angel_gold": 1500
         },
         {
             "nivel_min": 1,
             "nivel_max": 10000,
             "resultado": "perdedor",
-            "angel_gold": 2000
+            "angel_gold": 750
         },
         {
             "nivel_min": 1,
             "nivel_max": 10000,
             "resultado": "empate",
-            "angel_gold": 1000
+            "angel_gold": 500
         }
     ],
     "fuentes": {
