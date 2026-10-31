@@ -90,3 +90,17 @@ def test_renumerar_pasa_la_version_vieja_a_0_0_0_1_sin_tocar_el_pak(tmp_path):
     est = parche.renumerar(tmp_path)
     assert est['version'] == '0.0.0.1' and est['numero'] == 1 and est['sha256'] == 'abc'
     assert parche.renumerar(tmp_path)['version'] == '0.0.0.1'          # una segunda vez no cambia nada
+
+
+def test_los_item_xml_de_extras_llevan_los_packs_del_mall_apilables(tmp_path, monkeypatch):
+    """"no me deja sacar los items los stack de 11 y 110 nuevos": la copia de item.xml de parches/extras pisaba la
+    del cliente local sin 可堆疊 y la Store Cabinet pedia una casilla por bolsa."""
+    import cliente_local
+    eng = tmp_path / 'extras' / 'setting' / 'eng'
+    eng.mkdir(parents=True)
+    (eng / 'item.xml').write_bytes('<root>\r\n\t<道具 編號="9417" 基本名稱="Rose Sword  Bag" 物品類別="紅包" />\r\n</root>'
+                                   .encode('utf-8'))
+    monkeypatch.setattr(parche, 'DESTINO', tmp_path)
+    monkeypatch.setattr(cliente_local, 'apilables_del_mall', lambda: {9417})
+    datos = parche._extras()[chr(92).join(['SETTING', 'ENG', 'ITEM.XML'])].decode('utf-8')
+    assert '可堆疊="是"' in datos

@@ -17,6 +17,7 @@ import hashlib
 import json
 import logging
 import pathlib
+import re
 import struct
 import time
 import zlib
@@ -138,7 +139,15 @@ def _extras() -> dict:
     if base.is_dir():
         for f in base.rglob('*'):
             if f.is_file():
-                out[str(f.relative_to(base)).upper().replace('/', '\\')] = f.read_bytes()
+                nombre = str(f.relative_to(base)).upper().replace('/', '\\')
+                datos = f.read_bytes()
+                # Las copias de item*.xml de extras (tools/parche_materiales.py) pisan a las del cliente local, que
+                # llevan los packs del Item Mall como apilables: sin esto la Store Cabinet decia "There is not
+                # enough space in the bag" al sacar 110 bolsas aunque hubiera sitio (31/10/2026).
+                if re.fullmatch(r'SETTING\\ENG\\ITEM\d*\.XML', nombre):
+                    import cliente_local
+                    datos = cliente_local._parchear_apilables_xml_bytes(datos)
+                out[nombre] = datos
     return out
 
 
