@@ -50,7 +50,9 @@ QUITADAS = {31441: '2013 Taurus Swordman Lucky Bag', 31442: '2013 Taurus Axeman 
             14548: "Jiabli's Nail Lucky Bag", 14549: "Libelice's Torture Lucky Bag",
             14550: 'Carved Sin Blade Lucky Bag', 9427: 'Secret Sword Lucky Bag', 9428: 'Nemesis Axe Lucky Bag',
             9429: 'Thunder King Lucky Bag', 9430: 'Fire Tooth Lucky Bag', 9431: 'Mage Staff Lucky Bag',
-            14503: 'Life Aurora Lucky Bag'}
+            14503: 'Life Aurora Lucky Bag',
+            14556: 'Minaca Attacker Lucky Bag', 14557: "Shalio's Bone Lucky Bag", 14558: "Shaer's Will Lucky Bag",
+            14559: "Xilios's Soul Lucky Bag", 14560: "Selini's Direction Lucky Bag", 14561: 'Rage Claw Lucky Bag'}
 
 
 def quitar(d):
