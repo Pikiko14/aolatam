@@ -12,6 +12,10 @@
    SETS_PD_AL_AZAR), que al abrirse da el traje entero. Su tabla va a plantillas/drops_bolsas.json.
    Antes se vendian los 10 sets sueltos (20 filas); se quitan.
 
+3. ON SALE (搶購區, categoria 23) lleva SOLO lo que pidio el usuario: los Maple (Mark y
+   Teleportation Scroll) y Mark Stone y Mark Portal Scroll, con los precios y cantidades de la
+   pestana de teletransporte (27). Todo lo demas se quita de ahi.
+
 Las filas ya publicadas no se tocan. Se puede volver a correr: no duplica nada.
 """
 import json
@@ -28,6 +32,41 @@ CAT_HOMBRE, CAT_MUJER = 24, 25
 PRECIO_MALETA_PD = 599        # un traje al azar: por debajo de los trajes enteros del mall (699-989)
 PRIMER_ID_PD = 36100
 PUBLICACION_PD = 'set PD (tools/habilitar_mall_completo.py)'
+CAT_ON_SALE, CAT_TELEPORTE = 23, 27
+# Maple Mark, Maple Teleportation Scroll, Mark Stone, Mark Portal Scroll.
+ON_SALE = (20565, 20566, 3693, 3694)
+PUBLICACION_ON_SALE = 'On Sale (tools/habilitar_mall_completo.py)'
+
+
+# Quitadas por el usuario de la pestana Lucky Bag (28): las 2013 Taurus de las 7 clases.
+QUITADAS = {31441: '2013 Taurus Swordman Lucky Bag', 31442: '2013 Taurus Axeman Lucky Bag',
+            31443: '2013 Taurus Spearman Lucky Bag', 31444: '2013 Taurus Archer Lucky Bag',
+            31445: '2013 Taurus Master Lucky Bag', 31446: '2013 Taurus Assassin Lucky Bag',
+            31447: '2013 Taurus Artisan Lucky Bag'}
+
+
+def quitar(d):
+    ya = {int(e['item']) for e in d.setdefault('excluded', [])}
+    d['excluded'] += [dict(item=i, name=n, reason='Removed from Lucky Bag tab by user')
+                      for i, n in QUITADAS.items() if i not in ya]
+    d['rows'] = [r for r in d['rows'] if r['item'] not in QUITADAS]
+
+
+def on_sale(rows):
+    """Deja en On Sale solo ON_SALE; las que falten se copian de la pestana de teletransporte."""
+    rows = [r for r in rows if r['category'] != CAT_ON_SALE or r['item'] in ON_SALE]
+    ids = {r['id'] for r in rows}
+    hay = {(r['item'], r['quantity']) for r in rows if r['category'] == CAT_ON_SALE}
+    nuevas = []
+    for r in sorted((r for r in rows if r['category'] == CAT_TELEPORTE and r['item'] in ON_SALE),
+                    key=lambda r: (ON_SALE.index(r['item']), r['quantity'])):
+        if (r['item'], r['quantity']) in hay:
+            continue
+        hay.add((r['item'], r['quantity']))
+        sig = max(ids | {40000}) + 1
+        ids.add(sig)
+        nuevas.append(dict(r, id=sig, category=CAT_ON_SALE, publication=PUBLICACION_ON_SALE))
+    return rows + nuevas
 # Solo se conservan los flags que tienen sentido sin fechas ni regalos: "nuevo" y "cuenta desde ya".
 FLAGS_UTILES = {'最新商品': 0x1, '立即計時': 0x8}
 
@@ -100,7 +139,7 @@ def completar(d):
                        special_price=0, duration=0, start='', end='', limit=0, gift=0, gift_quantity=0,
                        price_source='local: %s, 1 de %d sets PD al azar' % (nombre, len(cajas)),
                        publication=PUBLICACION_PD))
-    d['rows'] = rows + nuevas + pd
+    d['rows'] = on_sale(rows + nuevas + pd)
     if 6 + 57 * len(d['rows']) > 65500:
         raise ValueError('el catalogo no cabe en el paquete 0x005F')
     return nuevas, pd
@@ -111,6 +150,7 @@ def main():
     d = json.loads(texto)
     # Mismo formato que el archivo: indent 4, ascii y CRLF.
     fmt = lambda x: (json.dumps(x, indent=4, ensure_ascii=True) + '\n').replace('\n', '\r\n').encode('ascii')
+    quitar(d)
     nuevas, pd = completar(d)
     print('ofertas del mall.xml que faltaban: %d; maletas PD: %d filas; total %d' % (len(nuevas), len(pd), len(d['rows'])))
     # La tabla de cada maleta: sus 10 maletas de set, mismo peso. drops_bolsas.json va con indent 4,
