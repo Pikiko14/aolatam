@@ -9,6 +9,8 @@ Proteccion contra cortes de luz:
     API nativa de SQLite (con.backup).
   - Mantiene un espejo en data/cuentas.json para compatibilidad e inspeccion manual.
 """
+import atexit
+import signal
 import sqlite3
 import json
 import pathlib
@@ -85,6 +87,11 @@ def _get_conn():
     con.execute('PRAGMA synchronous = FULL;')
     con.execute('PRAGMA foreign_keys = ON;')
     con.execute('PRAGMA busy_timeout = 10000;')
+    if _PROGRESO_PENDIENTE:
+        with _LOCK:
+            if _vaciar_progreso(con):
+                con.commit()
+                _notificar_cambio()
     return con
 
 
@@ -277,6 +284,7 @@ def hacer_backup(motivo="auto") -> pathlib.Path:
     global _CAMBIOS_DESDE_BACKUP, _ULTIMO_BACKUP
     with _LOCK:
         try:
+            vaciar_progreso()
             BACKUPS_DIR.mkdir(parents=True, exist_ok=True)
             ts = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
             backup_file = BACKUPS_DIR / f"cuentas_auto_{ts}.db"
@@ -516,27 +524,33 @@ def guardar_personaje_nuevo(usuario: str, p: dict):
             con.close()
 
 
+def _mutar_en(con, usuario: str, char_id: int, mutador_fn) -> bool:
+    cur = con.cursor()
+    cur.execute("SELECT ranura, datos FROM personajes WHERE usuario = ? AND char_id = ?", (usuario, char_id))
+    row = cur.fetchone()
+    if not row:
+        # Fallback: si char_id no coincide o hay 1 solo personaje para ese usuario
+        cur.execute("SELECT ranura, datos FROM personajes WHERE usuario = ?", (usuario,))
+        row = cur.fetchone()
+        if not row:
+            return False
+    ranura, datos_json = row
+    p = json.loads(datos_json)
+    mutador_fn(p)
+    con.execute(
+        "UPDATE personajes SET nombre = ?, datos = ?, actualizado_en = CURRENT_TIMESTAMP WHERE usuario = ? AND ranura = ?",
+        (p.get('nombre', ''), json.dumps(p, ensure_ascii=False), usuario, ranura)
+    )
+    return True
+
+
 def _actualizar_personaje(usuario: str, char_id: int, mutador_fn):
     """Modifica un personaje en SQLite bajo una transaccion atomica protegida."""
     with _LOCK:
         con = _get_conn()
         try:
-            cur = con.cursor()
-            cur.execute("SELECT ranura, datos FROM personajes WHERE usuario = ? AND char_id = ?", (usuario, char_id))
-            row = cur.fetchone()
-            if not row:
-                # Fallback: si char_id no coincide o hay 1 solo personaje para ese usuario
-                cur.execute("SELECT ranura, datos FROM personajes WHERE usuario = ?", (usuario,))
-                row = cur.fetchone()
-                if not row:
-                    return
-            ranura, datos_json = row
-            p = json.loads(datos_json)
-            mutador_fn(p)
-            con.execute(
-                "UPDATE personajes SET nombre = ?, datos = ?, actualizado_en = CURRENT_TIMESTAMP WHERE usuario = ? AND ranura = ?",
-                (p.get('nombre', ''), json.dumps(p, ensure_ascii=False), usuario, ranura)
-            )
+            if not _mutar_en(con, usuario, char_id, mutador_fn):
+                return
             con.commit()
             _notificar_cambio()
         finally:
@@ -1052,33 +1066,111 @@ def guardar_faccion(usuario: str, char_id: int, faccion: str):
     _actualizar_personaje(usuario, char_id, _mut)
 
 
+# EL PROGRESO (nivel, exp, hp/mp, sp, habilidades, buffs) SE GUARDA DIFERIDO.
+# El regen lo pedia cada 1-2 s por jugador, y cada golpe y cada baja tambien:
+# cada vez una conexion nueva, leer y reescribir el JSON entero del personaje
+# y un fsync, todo en el hilo que atiende el juego. Ahora guardar_progreso solo
+# anota los ultimos valores; un hilo los escribe juntos, en UNA transaccion,
+# cada ESPERA_PROGRESO segundos. Cualquier otra operacion sobre la base
+# (_get_conn) y el backup escriben antes lo pendiente, asi que nadie lee un
+# personaje atrasado ni una escritura vieja pisa otra nueva.
+_PROGRESO_PENDIENTE = {}          # (usuario, char_id) -> campos
+_PROGRESO_LOCK = threading.Lock()
+_HAY_PROGRESO = threading.Event()
+_HILO_PROGRESO = [None]
+ESPERA_PROGRESO = 2.0
+
+
+def _aplicar_progreso(p, c):
+    p['nivel'] = int(c['nivel'])
+    p['exp'] = int(c['exp'])
+    if c.get('sp') is not None:
+        p['sp'] = max(0, int(c['sp']))
+    if c.get('buffs') is not None:
+        p['buffs'] = {str(k): v for k, v in (c['buffs'] or {}).items()
+                      if isinstance(v, dict) and v.get('fin', 0) > 0}
+    for k in ('hp', 'hp_max', 'mp', 'mp_max'):
+        if c.get(k) is not None:
+            p[k] = int(c[k])
+    habilidades = c.get('habilidades')
+    if habilidades is not None:
+        p['habilidades'] = [list(h) for h in habilidades]
+        banco = p.setdefault('banco_habilidades', {})
+        for h in habilidades:
+            if isinstance(h, (list, tuple)) and len(h) >= 2:
+                banco[str(h[0])] = [int(h[1]), int(h[2]) if len(h) > 2 else 0]
+
+
+def _vaciar_progreso(con) -> int:
+    """Escribe en `con` el progreso pendiente (sin commit). Devuelve cuantos."""
+    with _PROGRESO_LOCK:
+        if not _PROGRESO_PENDIENTE:
+            return 0
+        pendiente = dict(_PROGRESO_PENDIENTE)
+        _PROGRESO_PENDIENTE.clear()
+    for (usuario, char_id), c in pendiente.items():
+        try:
+            _mutar_en(con, usuario, char_id, lambda p, c=c: _aplicar_progreso(p, c))
+        except Exception:
+            log.exception('progreso de %s/%s no se pudo guardar', usuario, char_id)
+    return len(pendiente)
+
+
+def vaciar_progreso():
+    """Escribe ya el progreso pendiente (lo usa el hilo, el backup y el cierre)."""
+    if not _PROGRESO_PENDIENTE:
+        return
+    with _LOCK:
+        con = _get_conn()          # _get_conn ya lo escribe y hace commit
+        con.close()
+
+
+def _al_terminar(signum, frame):
+    # systemctl restart manda SIGTERM y el proceso moria sin pasar por atexit:
+    # se escribe lo pendiente y se sigue con la senal como antes.
+    try:
+        vaciar_progreso()
+    finally:
+        signal.signal(signum, signal.SIG_DFL)
+        os.kill(os.getpid(), signum)
+
+
+atexit.register(vaciar_progreso)
+if threading.current_thread() is threading.main_thread() and hasattr(signal, 'SIGTERM'):
+    try:
+        if signal.getsignal(signal.SIGTERM) in (signal.SIG_DFL, None):
+            signal.signal(signal.SIGTERM, _al_terminar)
+    except (ValueError, OSError):
+        pass
+
+
+def _trabajador_progreso():
+    while True:
+        _HAY_PROGRESO.wait()
+        time.sleep(ESPERA_PROGRESO)
+        _HAY_PROGRESO.clear()
+        try:
+            vaciar_progreso()
+        except Exception:
+            log.exception('Error guardando el progreso en segundo plano')
+
+
 def guardar_progreso(usuario: str, char_id: int, nivel: int, exp: int,
                      hp: int = None, mp: int = None, habilidades: list = None,
                      hp_max: int = None, mp_max: int = None, sp: int = None,
                      buffs: dict = None):
-    def _mut(p):
-        p['nivel'] = int(nivel)
-        p['exp'] = int(exp)
-        if sp is not None:
-            p['sp'] = max(0, int(sp))
-        if buffs is not None:
-            p['buffs'] = {str(k): v for k, v in (buffs or {}).items()
-                          if isinstance(v, dict) and v.get('fin', 0) > 0}
-        if hp is not None:
-            p['hp'] = int(hp)
-        if hp_max is not None:
-            p['hp_max'] = int(hp_max)
-        if mp is not None:
-            p['mp'] = int(mp)
-        if mp_max is not None:
-            p['mp_max'] = int(mp_max)
-        if habilidades is not None:
-            p['habilidades'] = [list(h) for h in habilidades]
-            banco = p.setdefault('banco_habilidades', {})
-            for h in habilidades:
-                if isinstance(h, (list, tuple)) and len(h) >= 2:
-                    banco[str(h[0])] = [int(h[1]), int(h[2]) if len(h) > 2 else 0]
-    _actualizar_personaje(usuario, char_id, _mut)
+    nuevos = dict(nivel=nivel, exp=exp, hp=hp, mp=mp, hp_max=hp_max, mp_max=mp_max, sp=sp,
+                  habilidades=[list(h) for h in habilidades] if habilidades is not None else None,
+                  buffs={str(k): dict(v) for k, v in buffs.items() if isinstance(v, dict)}
+                  if buffs is not None else None)
+    with _PROGRESO_LOCK:
+        c = _PROGRESO_PENDIENTE.setdefault((usuario, int(char_id)), {})
+        c.update({k: v for k, v in nuevos.items() if v is not None or k not in c})
+    if _HILO_PROGRESO[0] is None or not _HILO_PROGRESO[0].is_alive():
+        _HILO_PROGRESO[0] = threading.Thread(target=_trabajador_progreso, name='progreso-cuentas',
+                                             daemon=True)
+        _HILO_PROGRESO[0].start()
+    _HAY_PROGRESO.set()
 
 
 def guardar_sistemas(usuario: str, char_id: int, p):

@@ -11,6 +11,7 @@ Configuracion elegida (las tres atestiguadas en produccion real):
   - S->C en texto plano (el servidor privado lo hace y el cliente lo acepta)
   - C->S descifrado con XOR evolutivo a partir de esa clave
 """
+import asyncio
 import os
 import sys
 import pathlib
@@ -177,9 +178,32 @@ class Session:
         servidor por su cuenta -- el paseo de los monstruos, sobre todo --
         se quedaba esperando a que el jugador se moviera. Se veia clavado:
         los bichos solo andaban cuando andabas tu.
+
+        Dentro del bucle asyncio no escribe en el acto: deja UNA escritura
+        para el final de la vuelta del bucle. Un golpe o un broadcast hacian
+        varios volcar() seguidos a la misma sesion, y cada uno era un
+        send() al socket; ahora salen todos juntos, en el mismo orden.
         """
+        if getattr(self, '_volcado_programado', False):
+            return
+        try:
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            return self.volcar_ya()
+        self._volcado_programado = True
+        loop.call_soon(self._volcado_diferido)
+
+    def _volcado_diferido(self):
+        self._volcado_programado = False
+        self.volcar_ya()
+
+    def volcar_ya(self):
+        """Como volcar, pero escribe en el socket ahora mismo."""
         out = self.drenar()
-        if out and getattr(self, 'writer', None):
+        writer = getattr(self, 'writer', None)
+        if out and writer:
+            if getattr(writer, 'is_closing', lambda: False)() is True:
+                return
             try:
                 if getattr(self, 'grab', None):
                     self.grab.salida(out)

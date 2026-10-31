@@ -26,10 +26,16 @@ SEQ_MAX = 0x7FFE
 
 def checksum(payload: bytes, length: int) -> int:
     """sub_81DBF0. Se calcula SIEMPRE sobre el payload en claro."""
-    v = 0xD31F
-    for i in range(0, min(length & ~1, len(payload)), 2):
-        v ^= struct.unpack_from('<H', payload, i)[0]
-    v &= 0xFFFF
+    # XOR de todas las palabras LE16. En vez de un bucle por palabra (49 us por
+    # KB, en cada frame que sale) se pliega el payload como un entero grande:
+    # la mitad alta XOR la baja, hasta que queda una palabra. Mismo resultado.
+    n = min(length & ~1, len(payload)) // 2
+    x = int.from_bytes(payload[:2 * n], 'little')
+    while n > 1:
+        h = (n + 1) // 2
+        x = (x & ((1 << (16 * h)) - 1)) ^ (x >> (16 * h))
+        n = h
+    v = (0xD31F ^ x) & 0xFFFF
     s = v & 0xF
     if s:
         v = ((v << s) | (v >> (16 - s))) & 0xFFFF
