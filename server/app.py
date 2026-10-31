@@ -9898,6 +9898,7 @@ def _ejecutar_proc_subhechizo(ses, yo, m, sub_id: int, addr=None) -> list:
         dano_base_p = int(float(d_sub.get('平均傷害') or 0)) or smag.get('dano_base', 0)
         denom_p = smag.get('base_denom', 200) or 200
         mult_p = (dano_base_p / float(denom_p)) if dano_base_p > 0 else 1.0
+        atk_pow = _cb.spl_atk_con_power(atk_pow, dano_base_p, denom_p)
         var_p = 0.05
         if smag.get('dano_coef', 0) > 0:
             mult_p *= (smag['dano_coef'] / 100.0)
@@ -13572,6 +13573,7 @@ class Servidor:
                             dano_base = mag.get('dano_base', 0)
                             denom = mag.get('base_denom', 200) or 200
                             mult_spell = (dano_base / float(denom)) if dano_base > 0 else 1.0
+                            ataque = _cb.spl_atk_con_power(ataque, dano_base, denom)
                             coef = mag.get('dano_coef', 0)
                             if coef > 0:
                                 mult_spell *= (coef / 100.0)
@@ -14818,6 +14820,7 @@ class Servidor:
                     mult_spell = dano_base / float(denom)
                 else:
                     mult_spell = 1.0
+                ataque = _cb.spl_atk_con_power(ataque, dano_base, denom)     # + el spell power
                 dano_var = _mag_ref.get('dano_var', 0)
                 if dano_var > 0:
                     var_pct = min(0.15, max(0.02, dano_var / float(denom)))
@@ -15265,7 +15268,7 @@ class Servidor:
                     habs = ses.personaje.habilidades if ses.personaje else None
                     buffs_act = getattr(ses.personaje, 'buffs', None)
                     st = _iv.stats(ses.inventario, habs, buffs=buffs_act, mejoras=_mejoras_de(ses))
-                    ataque_j = struct.unpack_from('<I', st, 2 + 44)[0]
+                    ataque_j = _cb.spl_atk_con_power(struct.unpack_from('<I', st, 2 + 44)[0], _sub_dano_base, _sub_denom)
                     _sub_mult = ((_sub_dano_base / float(_sub_denom))
                                  if _sub_dano_base > 0 else 1.0)
                     for _salto in range(_chain_jumps):

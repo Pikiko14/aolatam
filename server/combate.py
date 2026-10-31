@@ -2366,6 +2366,16 @@ PESO_STANCE = 2
 DENOM_HECHIZO = 200
 
 
+def spl_atk_con_power(spl_atk: int, dano_base: int, denom: int) -> int:
+    """El Spell Attack que entra en el golpe de un hechizo con power (平均傷害): spl_atk + denom.
+
+    El dano de un hechizo es Spl Atk x power/denom (con denom 200, ver DENOM_HECHIZO) MAS el power: con el
+    multiplicador power/denom, (spl_atk + denom) x power/denom es justo eso. Sin el power sumado un mago de nivel 1
+    (Spl Atk 20) pegaba 4 con Poison Hit I, que dice "Spell power: 34-42"; arriba no cambia nada: a nivel 300
+    (Spl Atk 57.000) el power es menos del 1% del golpe y lo medido con Forbidden Curse IV sigue igual."""
+    return int(spl_atk) + int(denom) if int(dano_base or 0) > 0 else int(spl_atk)
+
+
 def stance_de(magic_id: int) -> int:
     """El Stance power de esa habilidad, del campo `hp` de magic.xml."""
     return abs(int(datos_magia(magic_id).get('hp', 0) or 0))
