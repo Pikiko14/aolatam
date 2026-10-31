@@ -9899,7 +9899,7 @@ def _ejecutar_proc_subhechizo(ses, yo, m, sub_id: int, addr=None) -> list:
         denom_p = smag.get('base_denom', 200) or 200
         mult_p = (dano_base_p / float(denom_p)) if dano_base_p > 0 else 1.0
         atk_pow = _cb.spl_atk_con_power(atk_pow, dano_base_p, denom_p)
-        var_p = 0.05
+        var_p = _cb.variacion_power(dano_base_p, int(float(d_sub.get('傷害變數') or 0)) or smag.get('dano_var', 0))
         if smag.get('dano_coef', 0) > 0:
             mult_p *= (smag['dano_coef'] / 100.0)
     mods_eq_p = _iv.modificadores_porcentuales_equipo(ses.inventario)
@@ -13577,8 +13577,7 @@ class Servidor:
                             coef = mag.get('dano_coef', 0)
                             if coef > 0:
                                 mult_spell *= (coef / 100.0)
-                            dano_var = mag.get('dano_var', 0)
-                            var_pct = min(0.15, max(0.02, dano_var / float(denom))) if dano_var > 0 else 0.05
+                            var_pct = _cb.variacion_power(dano_base, mag.get('dano_var', 0))
                         else:
                             ataque = struct.unpack_from('<I', st, 2 + 20 + 4)[0]
                             stance = _cb.stance_de(tipo)
@@ -14821,9 +14820,7 @@ class Servidor:
                 else:
                     mult_spell = 1.0
                 ataque = _cb.spl_atk_con_power(ataque, dano_base, denom)     # + el spell power
-                dano_var = _mag_ref.get('dano_var', 0)
-                if dano_var > 0:
-                    var_pct = min(0.15, max(0.02, dano_var / float(denom)))
+                var_pct = _cb.variacion_power(dano_base, _mag_ref.get('dano_var', 0), var_pct)   # el minimo-maximo del power
                 coef = _mag_ref.get('dano_coef', 0)
                 if coef > 0:
                     mult_spell *= (coef / 100.0)
@@ -15292,7 +15289,8 @@ class Servidor:
                         _mult_j = 1.5 if _crit_j else 1.0
                         dano_j = mejor.recibir(ataque_j, es_magico=True,
                                                mult=_sub_mult * _mult_j,
-                                               var_pct=0.05)
+                                               var_pct=_cb.variacion_power(_sub_dano_base,
+                                                                           _sub_mag.get('dano_var', 0)))
                         _tipo_j = (_cb.TIPO_DANO_CRITICO if _crit_j
                                    else _cb.TIPO_DANO)
                         ses.enviar_inmediato(

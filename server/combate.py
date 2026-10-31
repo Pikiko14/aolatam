@@ -2366,6 +2366,17 @@ PESO_STANCE = 2
 DENOM_HECHIZO = 200
 
 
+def variacion_power(dano_base, dano_var, defecto: float = 0.05) -> float:
+    """Cuanto varia el golpe de un hechizo arriba y abajo (para Monstruo.recibir): dano_var / dano_base.
+
+    El golpe es power x (Spl Atk/denom + 1) (ver spl_atk_con_power), proporcional al power: tirarlo entre el minimo y
+    el maximo del tooltip ("Spell power: 34-42" = 38 +- 4) es variar el golpe +-4/38, un 10,5%. Antes se dividia por
+    el denom (4/200 = 2%) y el golpe casi no variaba."""
+    if int(dano_base or 0) > 0 and int(dano_var or 0) > 0:
+        return min(1.0, float(dano_var) / float(dano_base))
+    return defecto
+
+
 def spl_atk_con_power(spl_atk: int, dano_base: int, denom: int) -> int:
     """El Spell Attack que entra en el golpe de un hechizo con power (平均傷害): spl_atk + denom.
 
