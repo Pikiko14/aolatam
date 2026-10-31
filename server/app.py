@@ -11812,6 +11812,7 @@ class Servidor:
                         def _conduce_ia_de(mm, _men=_menores_ia):
                             return not any(max(abs(mm.tile_x - _x), abs(mm.tile_y - _y)) <= RADIO_IA
                                            for _x, _y in _men)
+                        _pos_yo = posicion_actual(ses, ahora)
                         for m in list((ses.monstruos or {}).values()):
                             if ses.personaje.stage in __import__('league_war').STAGES:
                                 continue
@@ -11975,8 +11976,12 @@ class Servidor:
                                                               speed=spd))
                                     continue
 
-                            dist_x = abs(m.tile_x - p.tile_x)
-                            dist_y = abs(m.tile_y - p.tile_y)
+                            # DONDE ESTA EL JUGADOR AHORA, no a donde va: p.tile_x/tile_y es el destino del ultimo
+                            # 0x0004. Andando hacia un bicho, el servidor ya lo ponia a su lado y el bicho pegaba
+                            # cuerpo a cuerpo mientras en pantalla el jugador seguia lejos (Harp Sheep, 31/10/2026).
+                            _yo_x, _yo_y = _pos_yo
+                            dist_x = abs(m.tile_x - _yo_x)
+                            dist_y = abs(m.tile_y - _yo_y)
                             dist = max(dist_x, dist_y)
 
                             # AGRO. Cada monstruo trae en monster.xml su 主動:
@@ -11993,7 +11998,7 @@ class Servidor:
                                     and not getattr(ses, 'muerto', False)
                                     and not _sigilo_activo(ses, ahora)
                                     and _se_ve_paso(_mapa_de_paso(m, ses.personaje.stage), (m.tile_x, m.tile_y),
-                                                    (p.tile_x, p.tile_y))):
+                                                    (_yo_x, _yo_y))):
                                 m.en_combate_con = yo
 
                             if getattr(m, 'volviendo_casa', False):
@@ -12008,7 +12013,7 @@ class Servidor:
                                 targ_valido = False
 
                                 if targ_eid == yo:
-                                    targ_x, targ_y = p.tile_x, p.tile_y
+                                    targ_x, targ_y = _pos_yo
                                     targ_valido = not getattr(ses, 'muerto', False)
                                 elif f_pet and f_pet.get('fuera') and pet_eid and targ_eid == pet_eid:
                                     targ_x, targ_y = f_pet.get('x', p.tile_x), f_pet.get('y', p.tile_y)

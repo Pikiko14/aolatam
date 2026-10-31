@@ -131,3 +131,17 @@ def test_al_primer_golpe_el_monstruo_no_espera_la_pausa_del_paseo(monkeypatch):
 def test_el_tramo_del_monstruo_dura_lo_que_dibuja_el_cliente():
     # 3 casillas a velocidad 75: 96 px a 187,5 px/s = 0,51 s (antes se contaban 1,28 s).
     assert abs(cb.segundos_de_tramo(3, 75) - 0.512) < 0.01
+
+
+def test_andando_hacia_un_monstruo_el_servidor_no_lo_pone_ya_a_su_lado(monkeypatch):
+    """"porque me ataca desde lejos si es un mob fisico": tile_x/tile_y es el DESTINO; la IA usa posicion_actual."""
+    import time
+    s, _ = _sesion_con_arco(monkeypatch, con_municion=True)
+    p = s.personaje
+    p.tile_x, p.tile_y = 110, 100                              # va hacia la casilla 110 ...
+    s._ultimo_tramo = (time.time(), 100 * 32, 100 * 32, 110 * 32, 100 * 32, 100)   # ... desde la 100, recien salido
+    x, _ = app.posicion_actual(s)
+    assert x <= 101                                            # todavia esta al principio del tramo
+    import inspect
+    fuente = inspect.getsource(app)
+    assert 'targ_x, targ_y = _pos_yo' in fuente and '_pos_yo = posicion_actual(ses, ahora)' in fuente
