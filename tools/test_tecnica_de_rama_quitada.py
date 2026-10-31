@@ -46,3 +46,10 @@ def test_con_spear_ya_no_se_puede_usar_la_tecnica_de_axe():
 def test_con_axe_puesto_la_tecnica_sigue_funcionando():
     packets, _ = _atacar([(10, 30, 0), (12, 1, 0)])   # Axe + Enhance
     assert packets
+
+
+def test_recovery_shield_vale_con_cualquiera_de_sus_ramas():
+    """"no esta usando el recovery shield": pide Sword, Axe, Spear, Longbow o ShadowBlade, y solo se miraba Sword."""
+    import skills
+    assert skills.ramas_de_magia(821) == {9, 10, 11, 17, 30}
+    assert skills.ramas_de_magia(703) == {10}

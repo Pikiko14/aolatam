@@ -13173,7 +13173,9 @@ class Servidor:
                 if _rama_tipo in _sk_arma.RAMAS_MELEE:
                     _ramas_actuales = {h[0] if isinstance(h, (list, tuple)) else h
                                        for h in (ses.personaje.habilidades or [])}
-                    if _rama_tipo not in _ramas_actuales:
+                    # Vale cualquiera de las ramas que admite (Recovery Shield II: Sword, Axe, Spear, Longbow o
+                    # ShadowBlade); mirando solo la primera se rechazaba a quien no llevaba Sword.
+                    if not (_sk_arma.ramas_de_magia(tipo) & _ramas_actuales):
                         log.info(f"[{addr}] habilidad {tipo} rechazada: ya no se lleva "
                                  f"la rama {_sk_arma.nombre_rama(_rama_tipo)}")
                         return

@@ -422,6 +422,18 @@ def calcular_class_id(skill_ids) -> int:
     return 0  # Novice
 
 
+def ramas_de_magia(magic_id: int) -> set:
+    """TODAS las ramas con las que se puede usar (技能限制1..5): Recovery Shield II pide "Sword, Axe, Spear, Longbow,
+    ShadowBlade", cualquiera de ellas. skill_de_magia solo da la primera. Si no trae ninguna, la del grupo."""
+    import combate as _cb
+    fila = _cb._magic_xml().get(int(magic_id or 0)) or {}
+    salida = {CHINO_A_RAMA.get(str(fila.get('技能限制%d' % i) or '').strip()) for i in range(1, 6)} - {None}
+    if not salida:
+        s = skill_de_magia(magic_id)
+        salida = {s} if s else set()
+    return salida
+
+
 def skill_de_magia(magic_id: int):
     """Devuelve el skill_id (1..35) de la rama a la que pertenece este hechizo/habilidad."""
     if not magic_id:
