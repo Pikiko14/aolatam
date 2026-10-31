@@ -1,19 +1,14 @@
-"""Servidor HTTP chico para la web: comprobar y reservar nombres de cuenta.
+"""Servidor HTTP chico para la web: comprobar nombres de cuenta y crear cuentas con su contrasena.
 
-POR QUE NO PIDE CONTRASENA. Este emulador no valida la contrasena contra un
-hash que la web pueda calcular: el cliente del juego manda un AUTH de 73
-bytes con un valor ya transformado (ver cuentas.hash_de_auth), y el algoritmo
-de esa transformacion no esta descifrado. Pedir una contrasena aqui y
-guardarla no serviria: con 'registrar_primer_hash' encendido (el valor por
-defecto), la PRIMERA VEZ que entras con el launcher, lo que mandes ahi se
-vuelve la contrasena de verdad, pisando cualquier cosa que se guardase desde
-la web. Asi que el flujo real es "elige un usuario libre en la web, pon la
-contrasena que quieras la primera vez que entres con el launcher".
+LA CONTRASENA DE LA WEB ES LA DEL JUEGO. El cliente manda la suya cifrada con Blowfish y una clave fija
+(server/clave_cliente.py, descifrado el 31/10/2026); el servidor la descifra y la compara con el PBKDF2 que
+se guarda aqui al crear la cuenta (cuentas.contrasena_hash). Antes no se sabia descifrar y la web solo
+reservaba el nombre: la contrasena quedaba fijada en el primer ingreso del juego.
 
 Expone, solo en 127.0.0.1 (nginx hace de proxy_pass en /api/cuenta/*):
 
     GET  /api/cuenta/disponible?usuario=X      -> {"disponible": true/false, "motivo": "..."}
-    POST /api/cuenta/registrar {"usuario": X}  -> {"ok": true/false, "mensaje": "..."}
+    POST /api/cuenta/registrar {"usuario": X, "password": P, "confirmar": P}  -> {"ok": true/false, "mensaje": "..."}
 
     python server/web_registro.py            # puerto 8281 (AO_WEB_REGISTRO_PUERTO lo cambia)
 """
@@ -35,11 +30,26 @@ PUERTO = int(os.environ.get('AO_WEB_REGISTRO_PUERTO', '8281'))
 USUARIO_VALIDO = re.compile(r'^[A-Za-z][A-Za-z0-9_]{3,15}$')
 
 
+# Lo que el cliente de Windows puede mandar: ASCII visible sin espacios (clave_cliente.contrasena), y su campo
+# de contrasena no admite mas de 16.
+CONTRASENA_VALIDA = re.compile(r'^[\x21-\x7e]{4,16}$')
+
+
 def _validar(usuario: str):
     if not usuario:
         return 'Escribe un nombre de usuario.'
     if not USUARIO_VALIDO.fullmatch(usuario):
         return 'De 4 a 16 caracteres: empieza por una letra y usa solo letras, numeros y guion bajo.'
+    return None
+
+
+def _validar_contrasena(pw: str, confirmar: str):
+    if not pw:
+        return 'Escribe una contraseña.'
+    if not CONTRASENA_VALIDA.fullmatch(pw):
+        return 'La contraseña debe tener de 4 a 16 caracteres, sin espacios ni acentos.'
+    if pw != confirmar:
+        return 'Las contraseñas no coinciden.'
     return None
 
 
@@ -88,15 +98,16 @@ class Handler(BaseHTTPRequestHandler):
         except (ValueError, UnicodeDecodeError):
             return self._json(400, {'ok': False, 'mensaje': 'Peticion invalida.'})
         usuario = str(cuerpo.get('usuario', '')).strip()
-        error = _validar(usuario)
+        pw, confirmar = str(cuerpo.get('password', '')), str(cuerpo.get('confirmar', ''))
+        error = _validar(usuario) or _validar_contrasena(pw, confirmar)
         if error:
             return self._json(200, {'ok': False, 'mensaje': error})
-        nuevo = cuentas.reservar_usuario(usuario)
+        nuevo = cuentas.reservar_usuario(usuario, pw)
         if not nuevo:
             return self._json(200, {'ok': False, 'mensaje': 'Ese usuario ya existe. Prueba con otro.'})
+        log.info('cuenta creada desde la web: %s', usuario)
         self._json(200, {'ok': True, 'mensaje':
-                         '¡Cuenta "%s" creada! Descarga el juego, ábrelo con el launcher y entra con ese usuario: '
-                         'la contraseña que escribas la primera vez queda como la tuya.' % usuario})
+                         '¡Cuenta "%s" creada! Descarga el juego y entra con tu usuario y tu contraseña.' % usuario})
 
 
 def main():

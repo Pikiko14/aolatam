@@ -73,8 +73,17 @@ def test_endpoint_disponible(tmp_path, monkeypatch):
 
 
 def test_endpoint_registrar(tmp_path, monkeypatch):
-    cuerpo = json.dumps({'usuario': 'NuevoHeroe'}).encode()
+    cuerpo = json.dumps({'usuario': 'NuevoHeroe', 'password': 'secreto1', 'confirmar': 'secreto1'}).encode()
     r = _llamar(monkeypatch, tmp_path, 'POST', '/api/cuenta/registrar', cuerpo)
     assert r['ok'] is True and 'NuevoHeroe' in r['mensaje']
     r2 = _llamar(monkeypatch, tmp_path, 'POST', '/api/cuenta/registrar', cuerpo)
     assert r2['ok'] is False
+
+
+def test_endpoint_registrar_pide_contrasena_y_que_coincida(tmp_path, monkeypatch):
+    for datos in ({'usuario': 'OtroHeroe'},
+                  {'usuario': 'OtroHeroe', 'password': 'secreto1', 'confirmar': 'secreto2'},
+                  {'usuario': 'OtroHeroe', 'password': 'con espacio', 'confirmar': 'con espacio'},
+                  {'usuario': 'OtroHeroe', 'password': 'abc', 'confirmar': 'abc'}):
+        r = _llamar(monkeypatch, tmp_path, 'POST', '/api/cuenta/registrar', json.dumps(datos).encode())
+        assert r['ok'] is False and r['mensaje'], datos

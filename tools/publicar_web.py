@@ -23,7 +23,7 @@ LAUNCHER = RAIZ / 'parches' / 'launcher_propio' / 'AngelsLauncher.exe'
 VPS = os.environ.get('AO_VPS', 'root@77.42.52.122')
 DESTINO_WEB = '/var/www/angels-web'
 DESTINO_JUEGO = os.environ.get('AO_VPS_DIR', '/opt/angels')
-CODIGO = ['server/cuentas.py', 'server/web_registro.py']
+CODIGO = ['server/cuentas.py', 'server/web_registro.py', 'server/clave_cliente.py']
 
 
 def ssh(orden, entrada=None):
@@ -56,7 +56,7 @@ def main():
              'rm -rf %(w)s.anterior; cp -a %(w)s %(w)s.anterior; rm -rf %(w)s/*; cp -a /tmp/publicar_web/web/. %(w)s/; '
              'chown -R www-data:www-data %(w)s' % {'w': DESTINO_WEB})
     if not a.solo_web:
-        orden += ('; cp /tmp/publicar_web/juego/server/*.py %(j)s/server/ && chown angels:angels %(j)s/server/cuentas.py '
+        orden += ('; cp /tmp/publicar_web/juego/server/*.py %(j)s/server/ && chown angels:angels %(j)s/server/cuentas.py %(j)s/server/clave_cliente.py '
                   '%(j)s/server/web_registro.py && systemctl restart angels.service && sleep 8 && systemctl is-active '
                   'angels.service angels-web-registro.service' % {'j': DESTINO_JUEGO})
     print(ssh(orden + '; rm -rf /tmp/publicar_web /tmp/publicar_web.tgz').strip())

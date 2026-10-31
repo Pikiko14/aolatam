@@ -41,6 +41,37 @@ def test_reservado_en_la_web_entra_y_se_queda_con_su_contrasena(db):
     assert cuentas.validar('nuevo', otra)[0] is None          # despues, la contrasena manda
 
 
+def _auth_real(usuario, pw, basura=b'\x5a'):
+    """Un AUTH como el del cliente de Windows: la contrasena, un 0 y basura, cifrado con Blowfish (clave_cliente)."""
+    import clave_cliente
+    bufer = (pw.encode() + b'\0' + basura * 32)[:32]
+    return usuario.encode().ljust(21, b'\0') + clave_cliente.cifrar(bufer) + bytes(20)
+
+
+def test_la_contrasena_de_la_web_es_la_del_juego(db):
+    assert cuentas.reservar_usuario('webheroe', 'secreto1')
+    # entra con la contrasena de la web, aunque la basura de detras cambie entre ingresos
+    assert cuentas.validar('webheroe', _auth_real('webheroe', 'secreto1'))[0] is not None
+    assert cuentas.validar('webheroe', _auth_real('webheroe', 'secreto1', b'\x13'))[0] is not None
+    cuenta, motivo = cuentas.validar('webheroe', _auth_real('webheroe', 'otraclave'))
+    assert cuenta is None and motivo == 'contrasena incorrecta'
+
+
+def test_una_cuenta_vieja_se_pasa_sola_al_formato_nuevo(db):
+    import clave_cliente
+    auth = _auth_real('vieja', 'clave123')
+    h = cuentas.hash_de_auth(auth)
+    with sqlite3.connect(cuentas.DB_PATH) as c:
+        c.execute("INSERT INTO cuentas VALUES ('vieja', ?)", ('ab$' + cuentas._firmar(h, 'ab'),))
+    cuenta, motivo = cuentas.validar('vieja', auth)
+    assert cuenta is not None and 'formato nuevo' in motivo
+    with sqlite3.connect(cuentas.DB_PATH) as c:
+        guardado = c.execute("SELECT password FROM cuentas WHERE usuario='vieja'").fetchone()[0]
+    assert guardado.startswith(cuentas.PREFIJO_PW) and cuentas.contrasena_ok(guardado, 'clave123')
+    # y desde entonces la basura de detras ya no importa
+    assert cuentas.validar('vieja', _auth_real('vieja', 'clave123', b'\x77'))[0] is not None
+
+
 def test_el_interruptor_vuelve_a_crearla_al_entrar(db):
     _poner('crear_cuenta_al_entrar', '1')
     cuenta, motivo = cuentas.validar('nuevo', AUTH)

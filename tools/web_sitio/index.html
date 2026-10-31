@@ -6,8 +6,8 @@
 <meta name="description" content="Crea tu cuenta, descarga el launcher y vuelve a vivir la magia de Angels Online.">
 <meta name="theme-color" content="#fff7fb">
 <link rel="stylesheet" href="styles.css?v=20261031">
-<link rel="stylesheet" href="cuenta.css?v=20261031">
-<script src="config.js?v=20261031b" defer></script><script src="news.js?v=20261031" defer></script><script src="app.js?v=20261031" defer></script><script src="cuenta.js?v=20261031" defer></script>
+<link rel="stylesheet" href="cuenta.css?v=20261031b">
+<script src="config.js?v=20261031b" defer></script><script src="news.js?v=20261031b" defer></script><script src="app.js?v=20261031" defer></script><script src="cuenta.js?v=20261031b" defer></script>
 </head>
 <body>
 <div class="petalos" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -40,19 +40,23 @@
     <div class="cuenta-texto">
       <span class="etiqueta">PASO 1 · TU CUENTA</span>
       <h2 id="titulo-cuenta">Crea tu <em>cuenta.</em></h2>
-      <p>Las cuentas se crean <b>solo aquí</b>: elige el nombre de usuario con el que entrarás al juego. Es gratis y toma un momento.</p>
+      <p>Las cuentas se crean <b>solo aquí</b>: elige tu usuario y tu contraseña, y con ellos entrarás al juego. Es gratis y toma un momento.</p>
       <ul class="lista-check">
         <li>De 4 a 16 caracteres, empezando por una letra.</li>
         <li>Solo letras, números y guion bajo.</li>
-        <li>La contraseña la eliges la primera vez que entras al juego.</li>
+        <li>La contraseña: de 4 a 16 caracteres, sin espacios ni acentos.</li>
       </ul>
     </div>
     <form id="account-form" class="account-form" novalidate>
       <label for="account-username">Nombre de usuario</label>
       <input id="account-username" name="usuario" type="text" autocomplete="username" minlength="4" maxlength="16" pattern="[A-Za-z][A-Za-z0-9_]{3,15}" placeholder="Ej. HeroeDeLaAcademia" required>
+      <label for="account-password">Contraseña</label>
+      <input id="account-password" name="password" type="password" autocomplete="new-password" minlength="4" maxlength="16" placeholder="De 4 a 16 caracteres" required>
+      <label for="account-confirm">Confirmar contraseña</label>
+      <input id="account-confirm" name="confirmar" type="password" autocomplete="new-password" minlength="4" maxlength="16" placeholder="Repite la contraseña" required>
       <button type="submit">Crear cuenta</button>
       <p id="account-status" class="account-status" role="status" aria-live="polite"></p>
-      <p class="account-note">Aquí no se pide contraseña: la primera vez que inicies sesión en el juego con este usuario, la contraseña que escribas queda guardada como la tuya. Guárdala bien.</p>
+      <p class="account-note">Con este usuario y esta contraseña entras al juego. Guárdala bien: no la podemos recuperar.</p>
     </form>
   </div>
 </section>
@@ -82,10 +86,10 @@
     </article>
   </div>
   <ol class="pasos" id="como-empezar">
-    <li><span class="numero">1</span><h3>Crea tu cuenta</h3><p>Reserva tu nombre de usuario en esta página.</p></li>
+    <li><span class="numero">1</span><h3>Crea tu cuenta</h3><p>Elige tu usuario y tu contraseña en esta página.</p></li>
     <li><span class="numero">2</span><h3>Descarga el cliente</h3><p>Descomprímelo en una carpeta, por ejemplo <code>C:\AngelsOnline</code>.</p></li>
     <li><span class="numero">3</span><h3>Pon el launcher</h3><p>Copia <code>AngelsLauncher.exe</code> dentro de esa carpeta, junto a <code>angel.dat</code>, y ábrelo.</p></li>
-    <li><span class="numero">4</span><h3>¡A jugar!</h3><p>Pulsa <b>JUGAR</b>, entra con tu usuario y escribe la contraseña que quieras: esa será la tuya.</p></li>
+    <li><span class="numero">4</span><h3>¡A jugar!</h3><p>Pulsa <b>JUGAR</b> y entra con el usuario y la contraseña de tu cuenta.</p></li>
   </ol>
   <p class="nota-suave">Si Windows muestra «Windows protegió su PC» al abrir el launcher, pulsa <b>Más información</b> → <b>Ejecutar de todas formas</b>. Es normal en programas nuevos sin firma.</p>
 </section>
@@ -123,7 +127,7 @@
   </div>
   <div class="faq">
     <details><summary>¿Cómo creo mi cuenta?</summary><p>En la sección «Crea tu cuenta» de esta página. Desde el juego ya no se pueden crear cuentas: si escribes un usuario que no existe, el juego dirá que la cuenta o la contraseña no son correctas.</p></details>
-    <details><summary>¿Dónde pongo mi contraseña?</summary><p>La primera vez que entras al juego con tu usuario. La contraseña que escribas en ese momento queda guardada como la tuya para las siguientes veces.</p></details>
+    <details><summary>¿Dónde pongo mi contraseña?</summary><p>Al crear tu cuenta en esta página. Es la misma con la que entras al juego. Guárdala bien: no la podemos recuperar.</p></details>
     <details><summary>¿Qué descargo?</summary><p>El cliente completo (una sola vez) y el launcher. El launcher va dentro de la carpeta del juego y lo mantiene actualizado.</p></details>
     <details><summary>¿Tengo que descargar el cliente en cada actualización?</summary><p>No. El launcher descarga solo lo que cambió y verifica que llegue completo.</p></details>
     <details><summary>¿Necesito instalar algo más?</summary><p>No. Funciona en Windows 10 y 11 sin instalar nada adicional.</p></details>

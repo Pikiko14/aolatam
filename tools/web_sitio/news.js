@@ -8,7 +8,7 @@ window.SERVER_NEWS = [
     summary: "Ya puedes descargar nuestro launcher: mantiene el juego al día solo y lo abre con un clic. Las cuentas se crean ahora en esta página.",
     paragraphs: [
       "El launcher descarga el parche completo y verifica que llegue sin errores, así que ya no hace falta volver a instalar el cliente en cada actualización. Cópialo dentro de la carpeta del juego, junto a angel.dat.",
-      "Las cuentas nuevas se crean en la sección «Crea tu cuenta». La contraseña la eliges la primera vez que entras al juego."
+      "Las cuentas nuevas se crean en la sección «Crea tu cuenta», con tu usuario y tu contraseña: son los mismos con los que entras al juego."
     ]
   },
   {

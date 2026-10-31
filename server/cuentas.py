@@ -480,17 +480,46 @@ def usuario_disponible(usuario: str) -> bool:
             con.close()
 
 
-def reservar_usuario(usuario: str) -> bool:
-    """Crea la cuenta sin contrasena (igual que el primer login sin validar). True si la reservo ahora,
-    False si ya existia. La contrasena de verdad queda fijada por el primer login real del juego
-    (ver validar(): con 'registrar_primer_hash', el cliente registra la suya encima de esta fila vacia)."""
+# CONTRASENAS: PBKDF2-SHA256 de la contrasena en claro, con sal. La web la pone al crear la cuenta y el juego la
+# comprueba descifrando lo que manda el cliente (clave_cliente). "pw$<sal hex>$<derivada hex>".
+PREFIJO_PW = 'pw$'
+ITERACIONES_PW = 120000
+
+
+def contrasena_hash(pw: str) -> str:
+    sal = os.urandom(16)
+    d = hashlib.pbkdf2_hmac('sha256', pw.encode('utf-8'), sal, ITERACIONES_PW)
+    return '%s%s$%s' % (PREFIJO_PW, sal.hex(), d.hex())
+
+
+def contrasena_ok(guardado: str, pw: str) -> bool:
+    try:
+        _, sal, d = guardado.split('$', 2)
+        calc = hashlib.pbkdf2_hmac('sha256', pw.encode('utf-8'), bytes.fromhex(sal), ITERACIONES_PW)
+        return hmac.compare_digest(calc.hex(), d)
+    except (ValueError, TypeError):
+        return False
+
+
+def _registro_para(pw, h):
+    """Lo que se guarda como contrasena: el formato nuevo si se pudo descifrar, si no (cliente LOVE) el viejo."""
+    if pw is not None:
+        return contrasena_hash(pw)
+    sal = os.urandom(16).hex()
+    return f"{sal}${_firmar(h, sal)}"
+
+
+def reservar_usuario(usuario: str, pw: str = None) -> bool:
+    """Crea la cuenta. True si la creo ahora, False si ya existia. Con `pw` (la web la pide) queda con esa
+    contrasena; sin ella la fija el primer ingreso del juego (validar(), 'registrar_primer_hash')."""
     with _LOCK:
         con = _get_conn()
         try:
             con.execute('BEGIN IMMEDIATE')
             ya = con.execute('SELECT 1 FROM cuentas WHERE usuario = ?', (usuario,)).fetchone() is not None
             if not ya:
-                con.execute("INSERT INTO cuentas (usuario, password) VALUES (?, '')", (usuario,))
+                con.execute("INSERT INTO cuentas (usuario, password) VALUES (?, ?)",
+                            (usuario, contrasena_hash(pw) if pw else ''))
             con.commit()
             if not ya:
                 _notificar_cambio(inmediato=True)
@@ -637,6 +666,21 @@ def validar(usuario: str, cuerpo_auth: bytes = b'') -> tuple:
                     con.commit()
                     _notificar_cambio(inmediato=True)
                 return {'personajes': _personajes(con, usuario)}, "ok (sin validar contrasena)"
+            # LA CONTRASENA EN CLARO (clave_cliente: el cliente de Windows la manda cifrada con Blowfish). Con ella
+            # se guarda y se comprueba un PBKDF2 ("pw$..."), igual que la que pone la web al crear la cuenta. El
+            # cliente LOVE manda otra cosa (None): para el queda el formato viejo, el hash de los 32 bytes.
+            import clave_cliente
+            pw = clave_cliente.contrasena(cuerpo_auth[OFF_HASH:OFF_HASH + LARGO_HASH])
+            if guardado.startswith(PREFIJO_PW):
+                if pw is not None and contrasena_ok(guardado, pw):
+                    return {'personajes': _personajes(con, usuario)}, "ok"
+                if not flag('reemplazar_contrasena'):
+                    return None, "contrasena incorrecta"
+                con.execute("UPDATE cuentas SET password = ? WHERE usuario = ?",
+                            (_registro_para(pw, h), usuario))
+                con.commit()
+                _notificar_cambio(inmediato=True)
+                return {'personajes': _personajes(con, usuario)}, "contrasena reemplazada"
             coincide = True
             if '$' in guardado:
                 sal, firma = guardado.split('$', 1)
@@ -661,19 +705,23 @@ def validar(usuario: str, cuerpo_auth: bytes = b'') -> tuple:
             if not coincide:
                 if not flag('reemplazar_contrasena'):
                     return None, "contrasena incorrecta"
-                sal = os.urandom(16).hex()
                 con.execute("UPDATE cuentas SET password = ? WHERE usuario = ?",
-                            (f"{sal}${_firmar(h, sal)}", usuario))
+                            (_registro_para(pw, h), usuario))
                 con.commit()
                 _notificar_cambio(inmediato=True)
                 return {'personajes': _personajes(con, usuario)}, "contrasena reemplazada"
             if '$' in guardado:
                 motivo = "ok"
+                if pw is not None:
+                    # Entro con el formato viejo: se pasa al nuevo sin que el jugador haga nada.
+                    con.execute("UPDATE cuentas SET password = ? WHERE usuario = ?", (contrasena_hash(pw), usuario))
+                    con.commit()
+                    _notificar_cambio(inmediato=True)
+                    motivo = "ok (contrasena pasada al formato nuevo)"
             elif not flag('registrar_primer_hash'):
                 return None, "la cuenta no tiene contrasena registrada"
             else:
-                sal = os.urandom(16).hex()
-                registro = f"{sal}${_firmar(h, sal)}"
+                registro = _registro_para(pw, h)
                 if row is None:
                     con.execute("INSERT INTO cuentas (usuario, password) VALUES (?, ?)",
                                 (usuario, registro))
