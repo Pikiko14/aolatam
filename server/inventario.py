@@ -2273,9 +2273,11 @@ def recompensas_caja(item_id: int):
         cat = str(row[1] or '')
         name = str(row[2] or '')
 
-        # Caso especial: Elf Lucky Bag / Elf Egg / 妖精蛋
-        # Da una de las 4 mascotas elfos elementales
-        if ('elf' in name.lower() and any(k in name.lower() for k in ('bag', 'lucky', 'egg'))) or '妖精' in name:
+        # Caso especial: Elf Lucky Bag / Elf Egg
+        # Da una de las 4 mascotas elfos elementales. POR NOMBRE EXACTO: con "tiene elf y bag" entraba tambien la
+        # Elf Wings Bag del Item Mall (9420), que daba solo huevos de elfo en vez de su tabla (31/10/2026), y con
+        # '妖精' decenas de disfraces y bastones.
+        if ' '.join(name.lower().split()) in ('elf lucky bag', 'elf egg'):
             mascotas_elfo = [3396, 3397, 3398, 3399]  # Water, Fire, Wind, Earth Elf Egg
             return [(random.choice(mascotas_elfo), 1)]
 

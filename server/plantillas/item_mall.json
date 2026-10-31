@@ -374,23 +374,6 @@
     ],
     "rows": [
         {
-            "id": 30495,
-            "item": 80495,
-            "flags": 3,
-            "sort": 2165,
-            "category": 22,
-            "quantity": 1,
-            "price": 399,
-            "special_price": 0,
-            "duration": 0,
-            "start": "",
-            "end": "",
-            "limit": 0,
-            "gift": 0,
-            "gift_quantity": 0,
-            "price_source": "local fallback"
-        },
-        {
             "id": 30544,
             "item": 9353,
             "flags": 3,
