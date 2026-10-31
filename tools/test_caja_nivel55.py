@@ -34,6 +34,17 @@ def test_la_fila_del_cliente_se_mete_una_sola_vez():
     assert cl._parchear_item9_xml_bytes(una) == una
 
 
+def test_las_maletas_pd_dan_un_set_entero_al_azar():
+    cl.registrar_medalla_en_servidor()
+    for iid, (_, cajas) in cl.MALETAS_PD.items():
+        assert bolsas.es_bolsa(iid)
+        for caja in cajas:
+            assert bolsas.contenido_descrito(caja)[0] == 'todo'     # la maleta del set da todas las piezas
+        assert {bolsas.abrir(iid) for _ in range(300)} == {(c, 1) for c in cajas}
+    base = '<root>\r\n</root>'.encode('utf-8')
+    assert all(('編號="%d"' % i).encode() in cl._parchear_item9_xml_bytes(base) for i in cl.MALETAS_PD)
+
+
 def test_se_abre_y_da_algo_del_contenido():
     cl.registrar_medalla_en_servidor()      # lo mismo que hace el servidor al arrancar
     assert bolsas.es_bolsa(CAJA)

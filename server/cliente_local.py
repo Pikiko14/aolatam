@@ -169,8 +169,35 @@ LINEA_XML_CAJA_55 = (
     '\u8aaa\u660e\u5b9a\u7fa9="%s" \u53ef\u4f7f\u7528="\u662f" />'
 ) % (ITEM_CAJA_55, ITEM_CAJA_55, _DESC_CAJA_55.replace('"', "'"))
 
+# LAS MALETAS DE TRAJE AL AZAR del Item Mall: cada una da UNA maleta de set PD (la que al
+# abrirse da el traje entero) de los 10 sets exoticos, al azar. Una de hombre y otra de mujer.
+# Mismo truco que la caja de nivel 55: 紅包 con 動態資料1 = su propia tabla en drops_bolsas.json.
+SETS_PD_AL_AZAR = (
+    ('Dark Wizard / Dark Witch', 61598, 61599), ('Grand Imperial', 35671, 35672),
+    ('Lucky Cat', 42129, 42130), ('Roman Officer', 57884, 57885), ('Fiery Onmyouji', 52424, 52425),
+    ('Exion Military', 47699, 47700), ('Redheart', 54288, 54289), ('Xmas Bunny', 40069, 40070),
+    ('Holy Priest / Priestess', 69732, 69733), ('Red Kimono', 72513, 72514),
+)
+ITEM_MALETA_PD_M, ITEM_MALETA_PD_F = 89056, 89057
+MALETAS_PD = {
+    ITEM_MALETA_PD_M: ('Random Exotic Costume Suitcase (M)', tuple(m for _, m, _f in SETS_PD_AL_AZAR)),
+    ITEM_MALETA_PD_F: ('Random Exotic Costume Suitcase (F)', tuple(f for _, _m, f in SETS_PD_AL_AZAR)),
+}
+_DESC_MALETA_PD = ('Open it to get one complete exotic costume set at random: '
+                   + ', '.join(t for t, _, _ in SETS_PD_AL_AZAR) + '.')
+
+
+def _linea_xml_maleta_pd(iid):
+    return ('    <道具 編號="%d" 原型介面="8967" '
+            '基本名稱="%s" 物品類別="紅包" '
+            '重量="10" 動態資料1="%d" log等級="80" '
+            '說明定義="%s" 可使用="是" />'
+            ) % (iid, MALETAS_PD[iid][0], iid, _DESC_MALETA_PD.replace('"', "'"))
+
+
 # Filas propias que van en item9.xml: (id, linea).
-LINEAS_ITEM9_PROPIAS = ((83266, LINEA_XML_MEDALLA), (ITEM_CAJA_55, LINEA_XML_CAJA_55))
+LINEAS_ITEM9_PROPIAS = ((83266, LINEA_XML_MEDALLA), (ITEM_CAJA_55, LINEA_XML_CAJA_55)) + tuple(
+    (iid, _linea_xml_maleta_pd(iid)) for iid in MALETAS_PD)
 
 
 # DONDE ESTA EL CLIENTE.
@@ -551,6 +578,16 @@ def registrar_medalla_en_servidor():
                      str(ITEM_CAJA_55), '80', _DESC_CAJA_55, '是', 'update26'))
                 con.commit()
                 log.info("Item %d (Lvl 55 Equipment Box) registrado en corpus/content.db", ITEM_CAJA_55)
+            for iid, (nombre, _) in MALETAS_PD.items():
+                if not con.execute('SELECT id FROM item9 WHERE id = ?', (str(iid),)).fetchone():
+                    con.execute(
+                        'INSERT INTO item9 (id, "原型介面", "基本名稱", "物品類別", weight, '
+                        '"動態資料1", "log等級", "說明定義", "可使用", _pak) '
+                        'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                        (str(iid), '8967', nombre, '紅包', '10', str(iid), '80', _DESC_MALETA_PD,
+                         '是', 'update26'))
+                    con.commit()
+                    log.info("Item %d (%s) registrado en corpus/content.db", iid, nombre)
             con.close()
         except Exception as e:
             log.warning(f"No se pudo registrar 83266 en content.db: {e}")
@@ -561,9 +598,11 @@ def registrar_medalla_en_servidor():
         try:
             raw = json.loads(f_json.read_text(encoding='utf-8'))
             nombres = raw.get('item_names')
-            if isinstance(nombres, dict) and ('83266' not in nombres or str(ITEM_CAJA_55) not in nombres):
-                nombres.setdefault('83266', 'Rank Promotion Medal')
-                nombres.setdefault(str(ITEM_CAJA_55), 'Lvl 55 Equipment Box')
+            propios = {'83266': 'Rank Promotion Medal', str(ITEM_CAJA_55): 'Lvl 55 Equipment Box'}
+            propios.update({str(i): n for i, (n, _) in MALETAS_PD.items()})
+            if isinstance(nombres, dict) and any(k not in nombres for k in propios):
+                for k, n in propios.items():
+                    nombres.setdefault(k, n)
                 f_json.write_text(json.dumps(raw, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
         except Exception:
             pass
