@@ -45,7 +45,12 @@ QUITADAS = {31441: '2013 Taurus Swordman Lucky Bag', 31442: '2013 Taurus Axeman 
             31447: '2013 Taurus Artisan Lucky Bag',
             # y de la pestana Lucky Weapon (29):
             9422: 'Hero Lucky Bag', 9423: 'Devil Lucky Bag', 9424: 'Knights Spirit Lucky Bag',
-            9425: 'Star Illusion Lucky Bag', 9426: 'Holy Lord Lucky Bag', 14502: 'Hell Lucky Bag'}
+            9425: 'Star Illusion Lucky Bag', 9426: 'Holy Lord Lucky Bag', 14502: 'Hell Lucky Bag',
+            14545: "Adam's Power Lucky Bag", 14546: "Elar's Leaf Lucky Bag", 14547: "Namila's Soul Lucky Bag",
+            14548: "Jiabli's Nail Lucky Bag", 14549: "Libelice's Torture Lucky Bag",
+            14550: 'Carved Sin Blade Lucky Bag', 9427: 'Secret Sword Lucky Bag', 9428: 'Nemesis Axe Lucky Bag',
+            9429: 'Thunder King Lucky Bag', 9430: 'Fire Tooth Lucky Bag', 9431: 'Mage Staff Lucky Bag',
+            14503: 'Life Aurora Lucky Bag'}
 
 
 def quitar(d):
