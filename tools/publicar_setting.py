@@ -101,7 +101,7 @@ def main():
         correr(['git', 'add', 'tools/pak_launcher.txt'])
         if subprocess.run(['git', 'diff', '--cached', '--quiet'], cwd=RAIZ).returncode:
             correr(['git', 'commit', '-q', '-m', 'Setting: %s (parche %s)' % (', '.join(fuentes), version)])
-            correr(['git', 'push', '-q'])
+            correr(['git', 'push', '-q', 'origin', 'HEAD'])     # master no tiene upstream configurado
         else:
             print('  nada nuevo para git')
 
