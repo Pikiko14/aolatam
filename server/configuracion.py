@@ -15,6 +15,11 @@ DURACION_ANGEL_ARENA_MIN = 30
 ASTRO_PESOS_NORMAL = (1, 1, 1)  # intensidades I / II / III
 ASTRO_PESOS_CRISTAL = (1, 1, 4)  # el tooltip promete mayor chance de III
 STRAW_DROP_PROBABILIDAD = 0.15  # 15%: pedido del usuario el 31/10/2026 (antes 0.50)
+# Objetos de evento que sueltan los monstruos de nivel 21+ (como la Straw, aparte del botin normal y sin la tasa
+# de drop): {objeto: probabilidad por monstruo}. Para cerrar el evento, quitalo de aqui.
+DROPS_EVENTO = {
+    82665: 0.05,    # Winter Holiday PD Voucher (Navidad): se canjea en Event Overview > Exchange > Winter Holiday PD
+}
 
 
 # =====================================================================
@@ -400,6 +405,11 @@ DESCRIPCIONES_MAGIAS = {
 # {objeto: texto}: al arrancar, el servidor las escribe en el cliente local
 # (update26.pak), con el juego cerrado. Cada jugador necesita ese .pak.
 DESCRIPCIONES_ITEMS = {
+    # Evento de Navidad (31/10/2026): ya no hay PD Enchanted y el voucher sale de los monstruos.
+    82665: ('Dropped by monsters Lv21+ during the Winter Holiday event. Exchange it in Event Overview > Exchange > '
+            'Winter Holiday PD for Winter Holiday PD items.'),
+    82664: ('Found in the Random Exotic Costume Suitcases of the Item Mall. Exchange it in Event Overview > '
+            'Exchange > Winter Holiday PD for a Winter Holiday Suitcase.'),
     11963: ('Open to get one of the following items: Power Ring, Polar Region Penguin Robot, '
             'Universal Gift Box, Advanced Koala Robot 2, Producing Fast Gear Lvl 3, '
             'Collecting Energy Core Lvl 3, Moon Warrior Helmet, Craftsman Soul Box, Pestle, '

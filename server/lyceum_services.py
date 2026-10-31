@@ -328,14 +328,24 @@ def straw_drop_monstruo(stage, monstruo):
     return straw_drop(stage, nivel)
 
 
-def straw_drop(stage, nivel):
-    """Chance de evento aparte del loot normal; sin mapas privados ni nivel del jugador."""
-    import configuracion
+def _mapa_de_evento(stage, nivel):
+    """Si un monstruo de ese nivel en ese mapa suelta los objetos de evento: nivel 21+, sin mapas privados."""
     r = xml_rows('stage.xml').get(int(stage))
-    if (int(nivel or 0) < 21 or not r or r.get('動態空間') == '是'
-            or r.get('分配類型') or r.get('平行空間')):
+    return not (int(nivel or 0) < 21 or not r or r.get('動態空間') == '是'
+                or r.get('分配類型') or r.get('平行空間'))
+
+
+def straw_drop(stage, nivel):
+    """Chance de evento aparte del loot normal; sin mapas privados ni nivel del jugador. Lleva tambien los objetos
+    de configuracion.DROPS_EVENTO (el Winter Holiday PD Voucher), cada uno con su probabilidad."""
+    import configuracion
+    if not _mapa_de_evento(stage, nivel):
         return []
-    return [(STRAW, 1)] if random.random() < configuracion.STRAW_DROP_PROBABILIDAD else []
+    sale = [(STRAW, 1)] if random.random() < configuracion.STRAW_DROP_PROBABILIDAD else []
+    for item, prob in (getattr(configuracion, 'DROPS_EVENTO', None) or {}).items():
+        if random.random() < float(prob):
+            sale.append((int(item), 1))
+    return sale
 
 
 def canjear(ses, receta_id, veces):

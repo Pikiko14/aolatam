@@ -321,6 +321,19 @@ def completar(d):
     return nuevas, pd
 
 
+# Ademas de su set, las maletas PD dan con SUITCASE_VOUCHER_PROB el Winter Holiday Suitcase Voucher (82664), que se
+# canjea por una maleta de invierno en Event Overview > Exchange (pedido del usuario el 31/10/2026).
+SUITCASE_VOUCHER = 82664
+SUITCASE_VOUCHER_PROB = 0.01
+
+
+def tabla_maleta_pd(cajas):
+    """[[objeto, cantidad, peso]]: cada set con el mismo peso y el voucher con SUITCASE_VOUCHER_PROB del total."""
+    peso_set = round((1 - SUITCASE_VOUCHER_PROB) * 1000)                   # 990 entre todos los sets ...
+    voucher = round(SUITCASE_VOUCHER_PROB * 1000 * len(cajas))            # ... y 10 por set para el voucher
+    return [[c, 1, peso_set] for c in cajas] + [[SUITCASE_VOUCHER, 1, voucher]]
+
+
 def main():
     texto = JSON.read_bytes()
     d = json.loads(texto)
@@ -334,7 +347,7 @@ def main():
     import cliente_local as cl
     drops = json.loads(DROPS.read_bytes())
     for iid, (_, cajas) in cl.MALETAS_PD.items():
-        drops[str(iid)] = [[c, 1, 1] for c in cajas]
+        drops[str(iid)] = tabla_maleta_pd(cajas)
     if '--write' in sys.argv:
         JSON.write_bytes(fmt(d))
         DROPS.write_bytes(json.dumps(drops, indent=4, ensure_ascii=False).replace('\n', '\r\n').encode('utf-8'))

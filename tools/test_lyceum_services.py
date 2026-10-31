@@ -183,7 +183,7 @@ class TestLyceum(unittest.TestCase):
             self.assertTrue(all(app._obtener_receta_exchange(i)['materiales'] for i in recetas))
 
     def test_drop_21_ambas_fuentes_solo_mapas_normales_con_chance(self):
-        with patch('random.random', return_value=0):
+        with patch('random.random', return_value=0), patch('configuracion.DROPS_EVENTO', {}):  # solo la Straw
             self.assertEqual(ly.straw_drop(21, 20), [])
             self.assertEqual(ly.straw_drop(21, 21), [(60469, 1)])
             self.assertEqual(ly.straw_drop(176, 400), [])
@@ -308,7 +308,7 @@ class TestLyceum(unittest.TestCase):
         for tipo, nombre in ((20754, 'Drac'), (20755, 'Drax')):
             m = combate.Monstruo(12345, tipo, nombre, (64,140), stage=336)
             self.assertFalse(hasattr(m, 'nivel'))  # Reproduce el fallo del log.
-            with patch('random.random', return_value=0):
+            with patch('random.random', return_value=0), patch('configuracion.DROPS_EVENTO', {}):
                 self.assertEqual(ly.straw_drop_monstruo(336, m), [(60469, 1)])
                 self.assertEqual(ly.straw_drop_monstruo(413, m), [])
             with patch('random.random', return_value=0.99):

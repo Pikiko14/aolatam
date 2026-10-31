@@ -184,7 +184,8 @@ MALETAS_PD = {
     ITEM_MALETA_PD_F: ('Random Exotic Costume Suitcase (F)', tuple(f for _, _m, f in SETS_PD_AL_AZAR)),
 }
 _DESC_MALETA_PD = ('Open it to get one complete exotic costume set at random: '
-                   + ', '.join(t for t, _, _ in SETS_PD_AL_AZAR) + '.')
+                   + ', '.join(t for t, _, _ in SETS_PD_AL_AZAR)
+                   + '. It may also contain a Winter Holiday Suitcase Voucher.')
 
 
 def _linea_xml_maleta_pd(iid):
@@ -561,6 +562,11 @@ def _parchear_descripciones_xml_bytes(xml_bytes: bytes, etiqueta: str = '道具'
     """Pone la descripcion de las filas de configuracion.<config>: el
     說明定義 de los objetos o el 說明 de las magias (el texto del icono del buff)."""
     cambios = {int(k): str(v) for k, v in (getattr(_cf, config, None) or {}).items()}
+    if config == 'DESCRIPCIONES_ITEMS':
+        # Las de los objetos propios que ya estaban en el cliente (item9 solo anade los que faltan): las maletas PD
+        # dicen ahora que pueden traer el Suitcase Voucher.
+        for iid in MALETAS_PD:
+            cambios.setdefault(iid, _DESC_MALETA_PD)
     if not cambios:
         return xml_bytes
     txt = xml_bytes.decode('utf-8', errors='ignore')
