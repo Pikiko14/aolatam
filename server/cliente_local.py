@@ -1174,7 +1174,8 @@ async def _manejar_http_parche(peticion: bytes, writer: asyncio.StreamWriter):
     contenido = _archivo_de_parche(ruta)
     if contenido is not None:
         cuerpo = contenido
-        tipo = b'text/plain' if ruta.lower().endswith('.ini') else b'application/octet-stream'
+        tipo = (b'text/plain' if ruta.lower().endswith('.ini') else
+                b'application/json; charset=utf-8' if ruta.lower().endswith('.json') else b'application/octet-stream')
         cab = (b'HTTP/1.1 200 OK\r\n'
                b'Content-Type: ' + tipo + b'\r\n'
                b'Content-Length: ' + str(len(cuerpo)).encode('ascii') + b'\r\n'
@@ -1457,12 +1458,39 @@ def _info_del_parche(est) -> bytes:
     return parche.armar_pak({_nombre_info(est).upper(): texto.encode('ascii')})
 
 
+# EL LAUNCHER PROPIO (launcher/ en el repo, tools/compilar_launcher.py). Pide GET /launcher.json en el mismo puerto de
+# parches (2121, que tambien habla HTTP): que version del parche hay, su tamano y sha256, las noticias y su propia
+# version para actualizarse solo. Baja update27.pak ENTERO y lo pone siempre en el mismo sitio: sin el limite de
+# update28..update31 del START.EXE de IGG, que solo sabia instalar en un pak donde esos archivos aun no estaban.
+LAUNCHER_EXE = 'AngelsLauncher.exe'
+
+
+def _manifiesto_launcher() -> bytes:
+    import hashlib
+    import parche
+    est = parche.estado()
+    m = {'version': est.get('version', ''), 'pak': est.get('pak', parche.NOMBRE_PAK),
+         'bytes': int(est.get('bytes') or 0), 'sha256': est.get('sha256', ''), 'noticias': _noticias(),
+         # Lo que puede llevar un update28..31 del START.EXE (versiones viejas de este parche y su relleno):
+         # el launcher solo retira esos paks si TODO lo que traen esta aqui.
+         'archivos': sorted(set(est.get('archivos') or []) | {RELLENO[0]})}
+    exe = parche.DESTINO / 'launcher_propio' / LAUNCHER_EXE
+    if exe.is_file():
+        datos = exe.read_bytes()
+        m['launcher'] = {'archivo': LAUNCHER_EXE, 'bytes': len(datos), 'sha256': hashlib.sha256(datos).hexdigest()}
+    return json.dumps(m, ensure_ascii=False).encode('utf-8')
+
+
 def _archivo_de_parche(ruta: str):
     """Lo que pide el launcher: el ini, el paquete de informacion, un archivo del
     parche en su mini-pak, o un archivo de parches/ por su nombre."""
     import parche
     partes = ruta.replace('\\', '/').strip('/').split('?', 1)[0].split('/')
     nombre = partes[-1]
+    if nombre.lower() == 'launcher.json':
+        return _manifiesto_launcher()
+    if len(partes) == 1 and nombre == LAUNCHER_EXE and (parche.DESTINO / 'launcher_propio' / LAUNCHER_EXE).is_file():
+        return (parche.DESTINO / 'launcher_propio' / LAUNCHER_EXE).read_bytes()
     if nombre.lower().endswith('.ini'):
         return _contenido_update3_ini()
     est = _anuncio_parche()

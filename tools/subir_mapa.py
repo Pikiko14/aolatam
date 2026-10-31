@@ -171,7 +171,8 @@ REGISTRO_PAK = RAIZ / 'tools' / 'pak_launcher.txt'
 
 
 def pak_para(version, forzado=None):
-    """El pak donde el launcher instala esta version. El launcher solo sabe instalar en un pak donde esas entradas todavia no
+    """El pak donde el START.EXE de IGG instala esta version (solo para quien aun no use el launcher propio, que baja
+    update27.pak entero y no tiene limite). El START.EXE solo sabe instalar en un pak donde esas entradas todavia no
     estan (si ya existen falla y lo deja vacio): cada version NUEVA va al siguiente (update28..update31, el juego carga hasta el 31);
     repetir la misma version reutiliza el suyo. Se recuerda en tools/pak_launcher.txt ("<version> <pak>")."""
     if forzado:
@@ -181,8 +182,12 @@ def pak_para(version, forzado=None):
         return pak
     n = int(pak.replace('update', '')) + 1
     if n > 31:
-        raise SystemExit('No quedan paks libres: el ultimo que carga el juego es update31 y la version %s ya usa %s. '
-                         'Hay que reiniciar el cliente (pak nuevo desde cero).' % (ver, pak))
+        # Ya no es un limite: el launcher propio (launcher/, tools/compilar_launcher.py) baja update27.pak entero y lo
+        # pone siempre en el mismo sitio. Esto solo afecta a quien siga con el START.EXE de IGG: en update31 ya
+        # no se puede instalar otra version, asi que se le avisa para que cambie al launcher nuevo.
+        print('  AVISO: el START.EXE de IGG ya no puede instalar mas versiones (llego a update31). Quien lo use necesita '
+              'el launcher nuevo: parches/launcher_propio/AngelsLauncher.exe')
+        n = 31
     nuevo = 'update%d' % n
     REGISTRO_PAK.write_text('%s %s' % (version, nuevo) + chr(10), encoding='utf-8')
     print('  version nueva %s -> el launcher la instala en %s.pak' % (version, nuevo))
@@ -331,6 +336,10 @@ def main():
     if llegada_cambiada:
         archivos_git.append('server/plantillas/portales.json')
         archivos_vps.append('server/plantillas/portales.json')
+    # El launcher propio (tools/compilar_launcher.py): el servidor lo anuncia en /launcher.json y los jugadores se
+    # actualizan solos cuando cambia.
+    if (RAIZ / 'parches' / 'launcher_propio' / 'AngelsLauncher.exe').is_file():
+        archivos_vps.append('parches/launcher_propio/AngelsLauncher.exe')
 
     if a.solo_local:
         print('\nListo en local. Para guardarlo en git y subirlo al VPS: python tools/subir_mapa.py %d' % n)
