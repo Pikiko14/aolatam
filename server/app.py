@@ -9689,6 +9689,8 @@ def _otorgar_skill_exp(ses, p, yo, arma_puesta=0, magic_id=0, accion=None, skill
     nuevas_habs = []
     subio_alguna = False
     mag_branch = _cl.skill_de_magia(magic_id) if magic_id else None
+    if mag_branch in _cl.RAMAS_DE_ARMA and mag_branch not in skills_arma:
+        mag_branch = None          # una habilidad de hacha sin hacha no entrena Axe (clases.RAMAS_DE_ARMA)
     if skills_forzadas is not None:
         candidatas = set(skills_forzadas)
     elif accion is not None:

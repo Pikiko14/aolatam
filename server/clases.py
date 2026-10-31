@@ -874,7 +874,13 @@ def skills_que_suben(accion: str, skills_arma=()):
     for sid in (skills_arma or ()):
         salida.add(sid)
         salida.update(EXTRA_POR_ARMA.get(sid, []))
-    return salida
+    return salida - (RAMAS_DE_ARMA - set(skills_arma or ()))
+
+
+# Las ramas de arma solo suben con ESA arma puesta ("axe no puede subir de lvl si no estoy con axe, lo mismo spear,
+# shadow blade y sword", 31/10/2026): con arco subia Axe, porque todo golpe melee entrenaba Sword, Axe y Spear, y
+# producir entrenaba ShadowBlade.
+RAMAS_DE_ARMA = {9, 10, 11, 17, 30}
 
 
 EXP_POR_NIVEL_SKILL = [3, 6, 8, 12, 16, 30, 40, 55, 70, 85]
