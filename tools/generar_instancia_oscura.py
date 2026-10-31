@@ -41,7 +41,7 @@ ELITES = [(195, 'Savage Chief Apu', 42203, 60), (810, 'Soul Slalin', 42280, 60),
 JEFE = (209, 'Dragonkin Moowad', 42091, 65)
 VIDA = 0.7                              # todos los bichos con un 30% menos de vida
 ELITE_HP, ELITE_ATK = 1.0 * VIDA, 1.15
-JEFE_HP, JEFE_ATK = 40.0 * VIDA, 1.3
+JEFE_HP, JEFE_ATK = 1.5, 1.3                # vida x1.5 (era 40 x VIDA = x28), pedido del usuario
 
 
 def _vecinos8(x, y):

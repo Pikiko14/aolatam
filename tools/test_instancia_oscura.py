@@ -61,7 +61,9 @@ def test_los_monstruos_se_arman_con_vida_extra_para_elites_y_jefe():
     for m in bichos.values():
         por_tipo.setdefault(m.npc_type, m)
     assert len(bichos) == len(_spawns())
-    assert bichos[next(e['entity_id'] for e in _spawns() if e.get('jefe'))].hp_max > 500000
+    # El jefe va a x1.5 de su vida (24.480 -> 36.720): con x28 tenia 685.440 (el usuario lo bajo, 31/10/2026).
+    jefe = bichos[next(e['entity_id'] for e in _spawns() if e.get('jefe'))]
+    assert 30000 < jefe.hp_max < 50000
 
 
 def test_portales_de_ida_y_vuelta_validos():

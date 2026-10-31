@@ -25,7 +25,7 @@ sys.stdout.reconfigure(encoding='utf-8')
 PLANTILLA = RAIZ / 'server' / 'plantillas' / 'dark_cavern.json'
 VIDA = 0.7
 SELLO = (208, 'Seal Guardian', 42093, 60)
-JEFE_TIPO, JEFE_HP, JEFE_ATK = 209, 40.0 * VIDA, 1.3     # Dragonkin Moowad: el jefe suelta las piedras de Holy (combate._DROPS_PONDERADOS_JEFES)
+JEFE_TIPO, JEFE_HP, JEFE_ATK = 209, 1.5, 1.3     # vida x1.5 (~36.700; era x28 = 685.440, pedido del usuario 31/10/2026). Dragonkin Moowad: el jefe suelta las piedras de Holy (combate._DROPS_PONDERADOS_JEFES)
 # sprite que falta -> sprite parecido que si esta en el cliente (los npc_type no cambian)
 SUSTITUTOS = {
     42495: 42063,   # Howling Wolf -> lobo
