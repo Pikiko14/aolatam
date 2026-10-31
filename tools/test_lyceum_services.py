@@ -277,30 +277,29 @@ class TestLyceum(unittest.TestCase):
             self.assertTrue(app._sacar_de_veta(self.s, 'test', 21, 123, material, mid21))
             self.assertIn(ly.STRAW, self.s.inventario.values())
 
-    def test_green_abre_catalogo_completo_con_nueve_monturas(self):
+    def test_green_abre_el_canje_de_pestles_ride_feed_y_hammers(self):
+        # Desde el 31/10/2026 (tools/canje_straw.py): 12 recetas de 100 Straws, ya no pociones ni monturas.
         self.assertTrue(ly.procesar_opcion(self.s, 'Green Angel', 513642))
         self.assertIn(struct.pack('<HI', 0x151, 401), self.s.enviados)
         self.assertEqual(self.s._lyceum_exchange, 401)
-        for receta, item, coste in [(15337+i, 65842+i, 1800) for i in range(3)] + \
-                                  [(15340+i, 65839+i, 1400) for i in range(3)] + \
-                                  [(15343+i, 15324+i, 1000) for i in range(3)]:
+        for receta, item in ((15328, 6897), (15333, 7041), (15339, 7087)):
             r = app._obtener_receta_exchange(receta)
-            self.assertEqual(r['materiales'], [(ly.STRAW, coste)])
+            self.assertEqual(r['materiales'], [(ly.STRAW, 100)])
             self.assertEqual(r['premios'], [(item, 1)])
 
-    def test_canjear_oso_consumo_persistencia_y_mochila_llena(self):
+    def test_canjear_consumo_persistencia_y_mochila_llena(self):
         self.s._lyceum_exchange = 401
         self.s.inventario = {s: 4 for s in range(20,45)}
         self.s.inventario[21] = ly.STRAW
         self.s.cantidades[21] = 2000
         antes = dict(self.s.inventario), dict(self.s.cantidades), self.datos()
-        self.assertTrue(ly.canjear(self.s, 15337, 1))
+        self.assertTrue(ly.canjear(self.s, 15339, 1))                 # 5-star Lucky Hammer por 100 Straws
         self.assertEqual(antes, (self.s.inventario, self.s.cantidades, self.datos()))
         del self.s.inventario[22]
-        self.assertTrue(ly.canjear(self.s, 15337, 1))
-        self.assertEqual(self.s.cantidades[21], 200)
-        self.assertEqual(self.s.inventario[22], 65842)
-        self.assertEqual(self.datos()['inventario']['22'], 65842)
+        self.assertTrue(ly.canjear(self.s, 15339, 1))
+        self.assertEqual(self.s.cantidades[21], 1900)
+        self.assertEqual(self.s.inventario[22], 7087)
+        self.assertEqual(self.datos()['inventario']['22'], 7087)
         self.assertEqual(self.s.cantidades[22], 1)
 
     def test_drac_drax_reales_sin_atributo_nivel_tienen_chance_de_straw(self):

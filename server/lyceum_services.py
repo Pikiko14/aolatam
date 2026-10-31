@@ -47,7 +47,8 @@ def bendecir(ses):
 def saludo(nombre):
     return {'Astrologer': (142501, [142502, 142503, 142504, 142505]),
             'Login Rewarder': (515006, [515007, 515008, 515009, 515010, 515011]),
-            'Green Angel': (513638, [513639, 513640, 513641, 513642, 513643])}[nombre]
+            # Green Angel: solo el canje de Straws y salir (31/10/2026).
+            'Green Angel': (513638, [513642, 513643])}[nombre]
 
 
 def bendicion_party(ses):
@@ -293,26 +294,13 @@ def procesar_opcion(ses, nombre, opcion):
         else:
             return False
     else:
-        if opcion in (513639, 513645):
-            mostrar(ses, [513644, 513646], [513647, 513648, 513649, 513653])
-        elif opcion == 513647:
-            mostrar(ses, [513650, 513651, 513652], [513640, 513653])
-        elif opcion == 513648:
-            mostrar(ses, [513654], [513641, 513653])
-        elif opcion in (513642, 513649):
-            # 348 es la version antigua, limitada a pociones. El 401 incluye
-            # Frozen White Bear / Speedy Horse / Mooing Calf y sus variantes.
+        # Green Angel: solo queda el canje (ver saludo). El buff de 30 Straws, el sello de 100 y sus explicaciones
+        # (513639..513641, 513645..513649, 513662) ya no se atienden aunque alguien los pida a mano.
+        if opcion == 513642:
+            # Grupo GRUPO_GREEN de exchange.xml: pestles, ride feed y hammers (tools/canje_straw.py).
             ses._lyceum_exchange = GRUPO_GREEN
             ses.enviar(struct.pack('<HI', 0x0151, GRUPO_GREEN), struct.pack('<H', 0x0012)+dialogos.FIN)
             ses.dlg_ent = None
-        elif opcion in (513640, 513641, 513662):
-            try:
-                mid = confirmar(ses, 'green_buff' if opcion == 513640 else 'green_stamp')
-                if mid:
-                    mostrar(ses, [({20428: 513658, 20429: 513659, 20430: 513657}.get(mid, 513660))],
-                            [513640, 513641, 513653])
-            except Rechazo as e:
-                mostrar(ses, [e.mensaje], [513640, 513641, 513653])
         else:
             return False
     return True
