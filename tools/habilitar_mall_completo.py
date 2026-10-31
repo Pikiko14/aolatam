@@ -118,6 +118,8 @@ REEMPLAZOS = {19406: (3805, 'DivineAttack Scroll -> Attack Scroll'),
               19409: (3808, 'DivineM.Defense Scroll -> Spell Defense Scroll')}
 # Quitadas solo de una pestana (en otras siguen): {categoria: {objeto: nombre}}.
 QUITADAS_DE_PESTANA = {13: {16073: 'Blessed Fusion Potion', 12612: "Haven's Favor Bag"},
+                       # Lucky Armor (30): fuera las tres bolsas amarillas (31/10/2026).
+                       30: {9445: 'Polis Lucky Bag', 9446: 'Storm Lucky Bag', 9447: 'Quintet Lucky Bag'},
                        # Pet (19), pedido del usuario el 31/10/2026: piedras y diamante de EXP, Poke Egg,
                        # pociones de fusion y de forma, y las pociones de mascota marcadas.
                        19: {8643: 'Phantom Exp Stone', 8644: 'Phantom Exp Stone', 8645: 'Phantom Exp Diamond',
