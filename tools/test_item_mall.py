@@ -294,3 +294,11 @@ def test_las_bolsas_del_mall_no_dan_scrolls_high_effect():
     random.seed(5)
     salen = {bolsas.abrir(9417)[0] for _ in range(3000)}                # Rose Sword Bag
     assert not salen & set(bolsas.SCROLLS_DEL_MALL) and {3805, 3806} <= salen
+
+
+def test_las_bolsas_del_mall_dan_una_unidad_de_cada_premio():
+    """"todas las lucky bag den 1 item de cada cosa"."""
+    import random
+    import bolsas
+    random.seed(9)
+    assert {bolsas.abrir(9417)[1] for _ in range(1000)} == {1}          # Rose Sword Bag: antes 12 cartas, 7 scrolls...

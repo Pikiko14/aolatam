@@ -459,8 +459,10 @@ def abrir(item_id: int):
     if _sin_pociones_fuertes(iid):
         excluir |= {it for it, _c, _p in _opciones(valor) if pocion_fuerte(it)}
     sale = _sorteo_premio_al_1(valor, excluir) if iid in bolsas_premio_al_1() else _sorteo(valor, excluir)
-    if sale and iid in bolsas_del_mall() and sale[0] in SCROLLS_DEL_MALL:
-        sale = (SCROLLS_DEL_MALL[sale[0]], sale[1])
+    if sale and iid in bolsas_del_mall():
+        # UNA UNIDAD de cada premio en las bolsas del Item Mall: daban 12 cartas de EXP, 7 scrolls, 2 pestles...
+        # (pedido del usuario el 31/10/2026). El tooltip dice lo mismo (tools/parche_lucky_bags.py).
+        sale = (SCROLLS_DEL_MALL.get(sale[0], sale[0]), 1)
     return sale
 
 

@@ -104,11 +104,13 @@ def tablas_del_mall():
 
 
 def cambiar_scrolls(tag):
-    """Los scrolls High-effect por los normales (bolsas.SCROLLS_DEL_MALL), como los da el servidor."""
+    """Los scrolls High-effect por los normales (bolsas.SCROLLS_DEL_MALL) y una unidad de cada premio, como los da
+    el servidor (bolsas.abrir)."""
     def cambiar(m):
         viejo = int(m.group(2))
         return '%s"%d"' % (m.group(1), bolsas.SCROLLS_DEL_MALL.get(viejo, viejo))
-    return re.sub(r'(\sitem\d+=)"(\d+)"', cambiar, tag)
+    tag = re.sub(r'(\sitem\d+=)"(\d+)"', cambiar, tag)
+    return re.sub(r'(\scount\d+=)"\d+"', lambda m: m.group(1) + '"1"', tag)
 
 
 if __name__ == '__main__':
