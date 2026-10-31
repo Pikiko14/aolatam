@@ -195,6 +195,50 @@ def _linea_xml_maleta_pd(iid):
             ) % (iid, MALETAS_PD[iid][0], iid, _DESC_MALETA_PD.replace('"', "'"))
 
 
+# WINTER HOLIDAY PD NORMAL: el servidor no tiene PD Enchanted (pedido del usuario, 31/10/2026) y el cliente solo
+# trae el Winter Holiday en version Enchanted (82662..82675, con ATK +3940 por pieza). Estas son copias SOLO
+# ESTETICAS: mismo icono y apariencia, sin stats. El Exchange "Winter Holiday PD" (exchange.xml, grupo 622) las da
+# en vez de las Enchanted. (id, gemelo Enchanted, icono, apariencia, nombre, columna de ranura, sexo)
+PD_INVIERNO = (
+    (89063, 82666, 50725, 5896, 'Winter Avidia Warm Fur Hat', '頭部裝備', '限男性'),
+    (89064, 82667, 50726, 5897, 'Winter Avidia Sweater', '身體裝備', '限男性'),
+    (89065, 82668, 50727, 5898, 'Winter Avidia Plush Gloves', '手部裝備', '限男性'),
+    (89066, 82669, 50728, 5899, 'Winter Avidia Snow Boots', '腳部裝備', '限男性'),
+    (89067, 82670, 50729, 5900, 'Winter Avidia Warm Fur Hat', '頭部裝備', '限女性'),
+    (89068, 82671, 50730, 5901, 'Winter Avidia Sweater', '身體裝備', '限女性'),
+    (89069, 82672, 50731, 5902, 'Winter Avidia Plush Gloves', '手部裝備', '限女性'),
+    (89070, 82673, 50732, 5903, 'Winter Avidia Snow Boots', '腳部裝備', '限女性'),
+    (89071, 82674, 50733, 5904, 'Winter Candy Pillow', None, None),
+    (89072, 82675, 49220, 5259, 'Winter Alarm Clock', None, None),
+)
+# Las maletas (como las Enchanted 82662/82663): una pieza al azar de las seis de su sexo. 紅包 con su propia
+# tabla en plantillas/drops_bolsas.json, como las maletas PD del Item Mall. (id, gemelo, nombre, piezas)
+MALETAS_INVIERNO = (
+    (89061, 82662, 'Winter Holiday Suitcase Box (M)', (89063, 89064, 89065, 89066, 89071, 89072)),
+    (89062, 82663, 'Winter Holiday Suitcase Box (F)', (89067, 89068, 89069, 89070, 89071, 89072)),
+)
+# Enchanted -> normal, para el exchange.xml.
+GEMELOS_INVIERNO = {gem: iid for iid, gem, *_ in PD_INVIERNO}
+GEMELOS_INVIERNO.update({gem: iid for iid, gem, _, _ in MALETAS_INVIERNO})
+
+
+def _linea_xml_pd_invierno(pieza):
+    iid, _, icono, apariencia, nombre, ranura, sexo = pieza
+    if ranura:
+        extra = '男女裝備="%s" %s="是" 說明定義="%s"' % (sexo, ranura, 'Male gear.' if sexo == '限男性' else 'Female gear.')
+    else:                                                    # almohada y reloj: arma de disfraz de las dos manos
+        extra = '動態資料1="50020" 右手裝備="是" 左手裝備="是"'
+    return ('    <道具 編號="%d" 原型介面="%d" 原型外觀="%d" 基本名稱="%s" 物品類別="紙娃娃" %s '
+            '綁定次數="1" log等級="80" 裝備綁定="是" />') % (iid, icono, apariencia, nombre, extra)
+
+
+def _linea_xml_maleta_invierno(maleta):
+    iid, _, nombre, piezas = maleta
+    return ('    <道具 編號="%d" 原型介面="28836" 基本名稱="%s" 物品類別="紅包" 重量="10" 動態資料1="%d" log等級="80" '
+            '說明定義="Open it to get one Winter Holiday PD item at random (appearance only, no stats)." 可使用="是" />'
+            ) % (iid, nombre, iid)
+
+
 # AURAS "LOW": versiones flojas de Might / Kyrio / Exu Angel's Aura (66374..66376), con el mismo icono de
 # item y de buff. Cada una es un item propio de item9.xml y un hechizo propio de magic.xml (MAGIAS_PROPIAS),
 # 3 horas como las originales. Grupo de buff (高權位) propio para no chocar con las fuertes.
@@ -244,7 +288,9 @@ def _parchear_magias_propias_xml_bytes(xml_bytes: bytes) -> bytes:
 # Filas propias que van en item9.xml: (id, linea).
 LINEAS_ITEM9_PROPIAS = ((83266, LINEA_XML_MEDALLA), (ITEM_CAJA_55, LINEA_XML_CAJA_55)) + tuple(
     (iid, _linea_xml_maleta_pd(iid)) for iid in MALETAS_PD) + tuple(
-    (aura[0], _linea_xml_aura(aura)) for aura in AURAS_LOW)
+    (aura[0], _linea_xml_aura(aura)) for aura in AURAS_LOW) + tuple(
+    (pieza[0], _linea_xml_pd_invierno(pieza)) for pieza in PD_INVIERNO) + tuple(
+    (maleta[0], _linea_xml_maleta_invierno(maleta)) for maleta in MALETAS_INVIERNO)
 
 
 # DONDE ESTA EL CLIENTE.
@@ -625,6 +671,29 @@ def registrar_medalla_en_servidor():
                      str(ITEM_CAJA_55), '80', _DESC_CAJA_55, '是', 'update26'))
                 con.commit()
                 log.info("Item %d (Lvl 55 Equipment Box) registrado en corpus/content.db", ITEM_CAJA_55)
+            for iid, _, icono, apariencia, nombre, ranura, sexo in PD_INVIERNO:
+                if not con.execute('SELECT id FROM item9 WHERE id = ?', (str(iid),)).fetchone():
+                    cols = {'id': str(iid), '原型介面': str(icono), '原型外觀': str(apariencia), '基本名稱': nombre,
+                            '物品類別': '紙娃娃', '綁定次數': '1', 'log等級': '80', '裝備綁定': '是', '_pak': 'update26'}
+                    if ranura:
+                        cols.update({'男女裝備': sexo, ranura: '是',
+                                     '說明定義': 'Male gear.' if sexo == '限男性' else 'Female gear.'})
+                    else:
+                        cols.update({'動態資料1': '50020', '右手裝備': '是', '左手裝備': '是'})
+                    con.execute('INSERT INTO item9 (%s) VALUES (%s)' % (', '.join('"%s"' % k for k in cols),
+                                                                       ', '.join('?' * len(cols))), tuple(cols.values()))
+                    con.commit()
+                    log.info("Item %d (%s, PD de invierno normal) registrado en corpus/content.db", iid, nombre)
+            for iid, _, nombre, _ in MALETAS_INVIERNO:
+                if not con.execute('SELECT id FROM item9 WHERE id = ?', (str(iid),)).fetchone():
+                    con.execute(
+                        'INSERT INTO item9 (id, "原型介面", "基本名稱", "物品類別", weight, "動態資料1", "log等級", '
+                        '"說明定義", "可使用", _pak) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                        (str(iid), '28836', nombre, '紅包', '10', str(iid), '80',
+                         'Open it to get one Winter Holiday PD item at random (appearance only, no stats).', '是',
+                         'update26'))
+                    con.commit()
+                    log.info("Item %d (%s) registrado en corpus/content.db", iid, nombre)
             for aura in AURAS_LOW:
                 iid, icono, nombre, mid, _, _, _, _, desc = aura
                 if not con.execute('SELECT id FROM item9 WHERE id = ?', (str(iid),)).fetchone():
@@ -659,6 +728,8 @@ def registrar_medalla_en_servidor():
             propios = {'83266': 'Rank Promotion Medal', str(ITEM_CAJA_55): 'Lvl 55 Equipment Box'}
             propios.update({str(i): n for i, (n, _) in MALETAS_PD.items()})
             propios.update({str(aura[0]): aura[2] for aura in AURAS_LOW})
+            propios.update({str(pieza[0]): pieza[4] for pieza in PD_INVIERNO})
+            propios.update({str(maleta[0]): maleta[2] for maleta in MALETAS_INVIERNO})
             if isinstance(nombres, dict) and any(k not in nombres for k in propios):
                 for k, n in propios.items():
                     nombres.setdefault(k, n)

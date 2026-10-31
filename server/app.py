@@ -21016,8 +21016,13 @@ class Servidor:
                 # exchange.xml, como el NPC de los Angelic Vouchers; el canje
                 # llega luego por el 0x0160 / 0x0148.
                 import house_services as _hs73
-                if any(int(r.get('群組') or 0) == int(parametro)
-                       for r in _hs73.xml_rows('exchange.xml').values()):
+                # Solo las tiendas que lista exchangegroup.xml (el usuario dejo 3 el 31/10/2026): las quitadas
+                # ya no salen en la ventana, pero un netcommand(73, grupo) a mano las seguia abriendo.
+                _grupos73 = {int(r.get('群組') or 0) for r in _hs73.xml_rows('exchangegroup.xml').values()}
+                if int(parametro) not in _grupos73:
+                    log.info(f"[{addr}] exchange: grupo {parametro} no esta en exchangegroup.xml")
+                elif any(int(r.get('群組') or 0) == int(parametro)
+                         for r in _hs73.xml_rows('exchange.xml').values()):
                     ses.enviar(struct.pack('<HI', 0x0151, int(parametro)))
                 else:
                     log.info(f"[{addr}] exchange: grupo {parametro} sin recetas")

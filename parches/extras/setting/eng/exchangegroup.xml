@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<root>
+	<兌換商店 編號="1" 名稱="Winter Holiday PD" 群組="622"/>
+	<兌換商店 編號="2" 名稱="Ride and Robots" 群組="538"/>
+	<兌換商店 編號="3" 名稱="Enhanced Pestle and Ride Feed" 群組="595"/>
+	<兌換商店/>
+	<兌換商店/>
+	<兌換商店/>
+	<兌換商店/>
+	<兌換商店/>
+	<兌換商店/>
+	<ALIAS exchangegroup="兌換商店" id="編號"/>
+	<ALIAS title="名稱" group="群組"/>
+</root>
