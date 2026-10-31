@@ -63,13 +63,18 @@ def main():
     ap.add_argument('archivos', nargs='+', help='nombres de setting/eng, p. ej. onlinegift.xml')
     ap.add_argument('--sin-vps', action='store_true')
     ap.add_argument('--sin-git', action='store_true')
+    ap.add_argument('--sin-copiar', action='store_true',
+                    help='el archivo ya esta preparado en parches/extras (p. ej. tools/parche_lucky_bags.py): '
+                         'solo va al parche de los jugadores')
     a = ap.parse_args()
 
     print('1. comprobando el XML')
     fuentes = {}
     for nombre in a.archivos:
         nombre = pathlib.Path(nombre).name.lower()
-        f = origen(nombre)
+        f = EXTRAS / nombre if a.sin_copiar else origen(nombre)
+        if not f.is_file():
+            raise SystemExit('  no esta %s' % f.relative_to(RAIZ))
         try:
             ET.parse(f)
         except ET.ParseError as e:
@@ -80,7 +85,8 @@ def main():
     print('2. copiando a parches/extras')
     EXTRAS.mkdir(parents=True, exist_ok=True)
     for nombre, f in fuentes.items():
-        shutil.copyfile(f, EXTRAS / nombre)
+        if not a.sin_copiar:
+            shutil.copyfile(f, EXTRAS / nombre)
 
     print('3. parche y paquetes del launcher')
     sys.path.insert(0, str(RAIZ / 'server'))
@@ -109,8 +115,8 @@ def main():
         print('listo (sin VPS)')
         return
     print('5. VPS')
-    archivos = [str(f.relative_to(RAIZ)).replace('\\', '/') for f in fuentes.values()] + extras_rel + [
-        'parches/update27.pak', 'parches/version.json']
+    originales = [] if a.sin_copiar else [str(f.relative_to(RAIZ)).replace('\\', '/') for f in fuentes.values()]
+    archivos = originales + extras_rel + ['parches/update27.pak', 'parches/version.json']
     tgz = RAIZ / 'publicar_setting.tgz'
     try:
         correr(['tar', 'czf', tgz.name] + archivos + ['parches/launcher'])
@@ -120,7 +126,7 @@ def main():
     print(ssh('set -e; cd %s && rm -rf parches/launcher.anterior && mv parches/launcher parches/launcher.anterior && '
               'tar xzf /tmp/publicar_setting.tgz && chown -R angels:angels parches %s && rm -f /tmp/publicar_setting.tgz && '
               'systemctl restart angels.service && sleep 10 && systemctl is-active angels.service angels-web-registro.service'
-              % (VPS_DIR, ' '.join(archivos[:len(fuentes)]))).strip())
+              % (VPS_DIR, ' '.join(originales + extras_rel))).strip())
     remoto = {l.split()[1]: l.split()[0] for l in ssh('cd %s && md5sum %s' % (VPS_DIR, ' '.join(archivos))).splitlines()}
     mal = [f for f in archivos if remoto.get(f) != hashlib.md5((RAIZ / f).read_bytes()).hexdigest()]
     print('  hashes iguales: %d de %d' % (len(archivos) - len(mal), len(archivos)))

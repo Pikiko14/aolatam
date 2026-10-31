@@ -249,3 +249,18 @@ def test_hot_vacia_y_el_premio_principal_de_las_bolsas_al_1():
         salen = collections.Counter(bolsas.abrir(bolsa)[0] for _ in range(n))
         assert 0.006 < salen[principal] / n < 0.014, salen[principal]
         assert len(salen) == 10                                     # los otros nueve siguen saliendo
+
+
+def test_el_tooltip_del_cliente_dice_1_por_ciento():
+    """"no se les actualizo el texto": el cliente pinta el % con su drop.xml (tools/parche_lucky_bags.py)."""
+    import pathlib
+    import re
+    import sys
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+    import parche_lucky_bags as plb
+    fila = ('<drop 編號="4336" adv_prob1="40" item1="1477" count1="1" prob1="10" item2="8579" count2="1" prob2="10" '
+            'item3="3377" count3="1" prob3="10" />')
+    probs = {int(n): int(v) for n, v in re.findall(r'\sprob(\d+)="(\d+)"', plb.ajustar_fila(fila))}
+    assert probs[1] / sum(probs.values()) == 0.01 and probs[2] == probs[3]
+    assert 'adv_prob1="40"' in plb.ajustar_fila(fila)
+    assert 4336 in plb.tablas()
