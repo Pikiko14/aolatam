@@ -269,12 +269,12 @@ def test_el_tooltip_del_cliente_dice_1_por_ciento():
 
 
 def test_los_premios_de_las_bolsas_van_por_importancia():
-    """"pestles hammer y ride feed un 7% exp card 15% nunca un item debe tener 99%": Rose Sword Bag (9417)."""
+    """"pestles hammer y ride feed un 3% (era 7%) exp card 15% nunca un item debe tener 99%": Rose Sword Bag (9417)."""
     import bolsas
     que = bolsas._cargar().get(9417) or bolsas._cargar_extra().get(9417)
     opciones = bolsas._opciones(que[1])
     probs = dict(zip((bolsas._nombre_premio(it) for it, _c, _p in opciones), bolsas.probabilidades_bolsa(opciones)))
     assert abs(sum(probs.values()) - 1) < 1e-9 and max(probs.values()) < 0.99
     assert probs['rose sword'] == 0.01
-    assert abs(probs['5-star lucky enhanced pestle'] - 0.07) < 1e-9 and abs(probs['lvl 5 lucky ride feed'] - 0.07) < 1e-9
+    assert abs(probs['5-star lucky enhanced pestle'] - 0.03) < 1e-9 and abs(probs['lvl 5 lucky ride feed'] - 0.03) < 1e-9
     assert abs(probs['newbie double exp card (30m)'] - 0.15) < 1e-9

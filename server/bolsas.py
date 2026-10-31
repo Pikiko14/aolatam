@@ -482,11 +482,11 @@ def bolsas_premio_al_1():
 _PREMIO_AL_1 = None
 
 
-# EL RESTO DE PREMIOS, POR IMPORTANCIA (pedido del usuario el 31/10/2026): pestles, hammers y comida de montura al 7%
+# EL RESTO DE PREMIOS, POR IMPORTANCIA (pedido del usuario el 31/10/2026): pestles, hammers y comida de montura al 3%
 # cada uno, las cartas de EXP al 15%, y lo demas (scrolls, certificados...) se reparte por igual lo que sobra. Si
 # los fijos no caben en el 99% que deja el principal, se encogen en proporcion. Por palabra del nombre del item.
 _PROBS_CACHE = {}
-PESO_POR_TIPO = (('pestle', 0.07), ('hammer', 0.07), ('ride feed', 0.07), ('exp card', 0.15))
+PESO_POR_TIPO = (('pestle', 0.03), ('hammer', 0.03), ('ride feed', 0.03), ('exp card', 0.15))
 
 
 _NOMBRE_POR_ID = None
