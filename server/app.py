@@ -2901,6 +2901,36 @@ def _coste_vida(ses, yo, mag, addr=''):
             _cb.numero_flotante(yo, coste, _cb.TIPO_COSTE_VIDA)]
 
 
+def _puede_pagar(ses, mag, addr=''):
+    """Si alcanza la vida y el mana para lanzar `mag`. Se mira ANTES de cobrar nada.
+
+    Bloody Storm (y Hot Blooded) cuestan un % de la vida maxima. Sin vida
+    suficiente no se puede usar (pedido del usuario): antes te dejaba en 1 de
+    vida y te daba el SP igual. Y el mana se miraba despues de _dar_sp, asi que
+    sin MP pagabas la vida, ganabas el SP y la habilidad no salia.
+    """
+    p = getattr(ses, 'personaje', None)
+    if not p or not mag:
+        return True
+    import clases as _cl
+    pct = mag.get('hp', 0) or 0
+    if pct < 0 and mag.get('sp_gana'):
+        tope = _vida_max(p)
+        coste = max(1, int(round((tope or 0) * abs(pct) / 100.0)))
+        if int(getattr(p, 'hp', 0) or 0) <= coste:
+            log.info('[%s] vida insuficiente (%s/%d) para %s'
+                     % (addr, getattr(p, 'hp', 0), coste, mag.get('nombre', '?')))
+            ses.enviar(_cl.aviso('Not enough HP.', tipo=0))
+            return False
+    mp_coste = mag.get('mp', 0) or 0
+    if mp_coste > 0 and int(getattr(p, 'mp', 0) or 0) < mp_coste:
+        log.info('[%s] MP insuficiente (%s/%d) para %s'
+                 % (addr, getattr(p, 'mp', 0), mp_coste, mag.get('nombre', '?')))
+        ses.enviar(_cl.aviso('Not enough Mana.', tipo=0))
+        return False
+    return True
+
+
 def _u32(v) -> int:
     """Recorta un numero al rango de un campo de 32 bits.
 
@@ -12546,7 +12576,7 @@ class Servidor:
                                             f_pet['y'] = ny_p
                                             ses.pet_tile = [nx_p, ny_p]
                                             dst_px, dst_py = nx_p * 32, ny_p * 32
-                                            f_pet['proximo_paso'] = ahora + (32.0 * pasos_dar / float(spd_p))
+                                            f_pet['proximo_paso'] = ahora + _cb.segundos_de_tramo(pasos_dar, spd_p)
                                             _p_mv = MOVE.build(entity_id=pet_eid, cur_x=cur_px, cur_y=cur_py, dst_x=dst_px, dst_y=dst_py, speed=spd_p)
                                             ses.enviar(_p_mv)
                                             import presencia as _pr
@@ -12590,7 +12620,7 @@ class Servidor:
                                     f_pet['y'] = ny_j
                                     ses.pet_tile = [nx_j, ny_j]
                                     dst_px, dst_py = nx_j * 32, ny_j * 32
-                                    f_pet['proximo_paso'] = ahora + (32.0 * pasos_dar / float(spd_p))
+                                    f_pet['proximo_paso'] = ahora + _cb.segundos_de_tramo(pasos_dar, spd_p)
                                     _p_mv = MOVE.build(entity_id=pet_eid, cur_x=cur_px, cur_y=cur_py, dst_x=dst_px, dst_y=dst_py, speed=spd_p)
                                     ses.enviar(_p_mv)
                                     import presencia as _pr
@@ -13255,6 +13285,8 @@ class Servidor:
                     ses.sentado = False
                     ses.enviar(struct.pack('<HIII', 0x000A, yo, 0, 0))
 
+                if not _puede_pagar(ses, mag, addr):
+                    return
                 cost_sp = mag.get('cost_sp', 0)
                 if cost_sp > 0:
                     if getattr(ses, 'sp', 0) < cost_sp:
@@ -13696,6 +13728,8 @@ class Servidor:
                         ses.sentado = False
                         ses.enviar(struct.pack('<HIII', 0x000A, yo, 0, 0))
 
+                    if not _puede_pagar(ses, mag, addr):
+                        return
                     cost_sp = mag.get('cost_sp', 0)
                     if cost_sp > 0:
                         if getattr(ses, 'sp', 0) < cost_sp:
@@ -14379,6 +14413,8 @@ class Servidor:
 
             # Hechizo de control de masas por miedo / panico (Soul Entangle, Crazy Roar, etc.)
             if tipo != _cb.ATAQUE_NORMAL and mag.get('es_panico'):
+                if not _puede_pagar(ses, mag, addr):
+                    return
                 cost_sp = mag.get('cost_sp', 0)
                 if cost_sp > 0:
                     if getattr(ses, 'sp', 0) < cost_sp:
@@ -14453,6 +14489,8 @@ class Servidor:
 
             # Hechizo de maldicion / debuff a enemigo (Exhaustion Curse, Weak Curse, Slow Curse, etc.)
             if tipo != _cb.ATAQUE_NORMAL and mag.get('es_debuff'):
+                if not _puede_pagar(ses, mag, addr):
+                    return
                 cost_sp = mag.get('cost_sp', 0)
                 if cost_sp > 0:
                     if getattr(ses, 'sp', 0) < cost_sp:
@@ -14550,6 +14588,8 @@ class Servidor:
             dano_extra = 0
             if tipo != _cb.ATAQUE_NORMAL:
                 mag = _cb.datos_magia(tipo)
+                if not _puede_pagar(ses, mag, addr):
+                    return
                 cost_sp = mag.get('cost_sp', 0)
                 if cost_sp > 0:
                     if getattr(ses, 'sp', 0) < cost_sp:

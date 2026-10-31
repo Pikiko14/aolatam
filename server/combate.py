@@ -2534,6 +2534,20 @@ CADENCIA_MONSTRUO_MIN = 0.40
 # velocidad 50 el mapa se veia quieto comparado con el suyo.
 PASO_PASEO_MAX = 3
 VELOCIDAD_PASEO = 75
+
+# A CUANTO ANDA DE VERDAD EL 'speed' DEL 0x0005: 2,5 pixeles por segundo por
+# punto. Medido en logs/sesiones (31/10/2026) con la posicion que manda el
+# propio cliente en cada 0x0004 mientras sigue andando hacia el mismo destino:
+# speed 110 -> 275 px/s, 154 -> 385, 275 -> 692, 330 -> 834 (4.000 muestras,
+# cociente 2,45-2,53 en todas). El servidor contaba 1 px/s por punto, asi que
+# la mascota hacia su tramo en el 40% del tiempo y se quedaba parada el resto
+# esperando al siguiente: andaba a saltos.
+PX_POR_SEGUNDO_POR_VELOCIDAD = 2.5
+
+
+def segundos_de_tramo(casillas: int, velocidad: int) -> float:
+    """Lo que tarda el cliente en dibujar un 0x0005 de `casillas` a `velocidad`."""
+    return 32.0 * max(1, casillas) / (max(1, velocidad) * PX_POR_SEGUNDO_POR_VELOCIDAD)
 SEGUNDOS_ENTRE_PASEOS = 5.6
 
 # Cuanto tarda un monstruo en recorrer una casilla, y cuanto descansa entre
