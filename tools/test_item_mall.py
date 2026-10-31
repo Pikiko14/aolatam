@@ -226,3 +226,10 @@ def test_ningun_id_de_producto_pasa_de_32767():
     """Con ids de 36100 o 40000 el cliente no pintaba la fila: los packs x11/x110 de Weapon y Armor no salian."""
     import item_mall
     assert max(r['id'] for r in item_mall.datos()['rows']) < 32768
+
+
+def test_todos_los_packs_x11_y_x110_valen_500_y_5000():
+    import item_mall
+    for r in item_mall.datos()['rows']:
+        if r['quantity'] in (11, 110):
+            assert r['price'] == {11: 500, 110: 5000}[r['quantity']], r

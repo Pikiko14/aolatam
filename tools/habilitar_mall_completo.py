@@ -79,11 +79,11 @@ QUITADAS = {31441: '2013 Taurus Swordman Lucky Bag', 31442: '2013 Taurus Axeman 
             9305: 'Little Red-cap Robot', 9306: 'Grape Kaz cayman Robot'}
 
 # PACKS DE 11 Y 110 en Lucky Weapon (29), Lucky Armor (30) y Ride (31), como los que ya hay en la
-# pestana Lucky Bag. Precio fijo para todas las bolsas, como en la Lucky Bag: 300 el de 11 y 3000 el de 110
+# pestana Lucky Bag. Precio fijo para todas las bolsas (PRECIO_PACK)
 # (pedido del usuario el 31/10/2026; antes era 10 y 100 veces el precio de la bolsa).
 CATS_CON_PACKS = (29, 30, 31)
 PACKS = ((11, 10), (110, 100))
-PRECIO_PACK = {11: 300, 110: 3000}
+PRECIO_PACK = {11: 500, 110: 5000}      # subido el 31/10/2026 (antes 300 / 3000); vale para TODOS los x11/x110
 PUBLICACION_PACK = 'pack 11/110 (tools/habilitar_mall_completo.py)'
 
 
@@ -149,7 +149,7 @@ SOLO_EN_PESTANA = {CAT_TELEPORTE: {20565, 20566, 3693, 3694, 1333, 2987},
 AGREGADOS = {CAT_HOMBRE: (4978, 7471), CAT_MUJER: (4979, 7472),
              # y en Furniture (32), que el usuario vacio para dejar solo estos (31/10/2026):
              32: (4978, 4979, 7471, 7472)}
-PACKS_AGREGADOS = ((1, 30), (11, 300), (110, 3000))
+PACKS_AGREGADOS = ((1, 30), (11, PRECIO_PACK[11]), (110, PRECIO_PACK[110]))
 PUBLICACION_AGREGADO = 'pedido del usuario (tools/habilitar_mall_completo.py)'
 
 
@@ -244,6 +244,15 @@ def filas_originales():
     return out
 
 
+def precio_packs(rows):
+    """Todos los packs de 11 y 110 del mall (Lucky Bag, Weapon, Armor, Ride, Fashion, Furniture) a PRECIO_PACK."""
+    for r in rows:
+        if r['quantity'] in PRECIO_PACK and r['price'] != PRECIO_PACK[r['quantity']]:
+            r['price'], r['special_price'] = PRECIO_PACK[r['quantity']], 0
+            r['price_source'] = 'local: pack de %d a precio fijo' % r['quantity']
+    return rows
+
+
 def orden_unico(rows):
     """Cada fila de una pestana con su propio `sort`. Los packs de 11/110 copiaban el sort de la de 1 y el
     cliente solo pintaba una por sort: en Weapon y Armor no salian los packs. Se numera 1, 2, 3... sin
@@ -300,7 +309,7 @@ def completar(d):
                        special_price=0, duration=0, start='', end='', limit=0, gift=0, gift_quantity=0,
                        price_source='local: %s, 1 de %d sets PD al azar' % (nombre, len(cajas)),
                        publication=PUBLICACION_PD))
-    d['rows'] = orden_unico(agregar(packs(on_sale(rows + nuevas + pd))))
+    d['rows'] = precio_packs(orden_unico(agregar(packs(on_sale(rows + nuevas + pd)))))
     if 6 + 57 * len(d['rows']) > 65500:
         raise ValueError('el catalogo no cabe en el paquete 0x005F')
     return nuevas, pd
