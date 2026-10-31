@@ -74,6 +74,7 @@ def main():
         return nuevo
 
     texto = re.sub(r'<法術 編號="(\d+)"[^>]*>', cambiar, texto)
+    texto = cliente_local._parchear_magias_propias_xml_bytes(texto.encode('utf-8')).decode('utf-8')   # auras Low
     SALIDA.parent.mkdir(parents=True, exist_ok=True)
     SALIDA.write_bytes(texto.encode('utf-8'))
     print('magias de pociones:', len(ids), 'filas cambiadas:', cambiadas, '->', SALIDA)

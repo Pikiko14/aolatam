@@ -2012,7 +2012,7 @@ def _magic_xml():
             if _EFECTOS_DISPONIBLES is None and raw.get('efectos_disponibles'):
                 _EFECTOS_DISPONIBLES = set(int(x) for x in raw['efectos_disponibles'])
             if _MAGIC_XML:
-                return _MAGIC_XML
+                return _magias_propias(_MAGIC_XML)
         except Exception:
             pass
     for raiz in (pathlib.Path(__file__).parent.parent / 'extracted_paks', pathlib.Path('G:/extracted_paks')):
@@ -2026,8 +2026,20 @@ def _magic_xml():
                     _MAGIC_XML[int(m.group(1))] = dict(
                         _re.findall(r'(\S+?)="([^"]*)"', l))
             if _MAGIC_XML:
-                return _MAGIC_XML
-    return _MAGIC_XML
+                return _magias_propias(_MAGIC_XML)
+    return _magias_propias(_MAGIC_XML)
+
+
+def _magias_propias(tabla):
+    """Los hechizos propios del servidor (las auras Low de cliente_local.MAGIAS_PROPIAS), que no estan en
+    ningun magic.xml extraido."""
+    try:
+        import cliente_local
+        for mid, fila in cliente_local.MAGIAS_PROPIAS.items():
+            tabla.setdefault(int(mid), dict(fila))
+    except Exception:
+        pass
+    return tabla
 
 
 def buff_al_reutilizar(magic_id, buffs, ahora=None, azar=None):

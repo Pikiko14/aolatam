@@ -195,9 +195,56 @@ def _linea_xml_maleta_pd(iid):
             ) % (iid, MALETAS_PD[iid][0], iid, _DESC_MALETA_PD.replace('"', "'"))
 
 
+# AURAS "LOW": versiones flojas de Might / Kyrio / Exu Angel's Aura (66374..66376), con el mismo icono de
+# item y de buff. Cada una es un item propio de item9.xml y un hechizo propio de magic.xml (MAGIAS_PROPIAS),
+# 3 horas como las originales. Grupo de buff (高權位) propio para no chocar con las fuertes.
+# (item, icono del item, nombre, hechizo, icono del buff, grupo, columnas del hechizo, texto del buff, descripcion)
+AURAS_LOW = (
+    (89058, 35119, 'Low Attack Angel Aura', 23401, 10729, 1004,
+     (('攻擊', 70), ('魔攻', 50), ('精準', 15)),
+     'ATK+70, Spell ATK+50, and Accuracy+15', 'Gives Melee ATK +70, Spell ATK +50, and Accuracy +15.'),
+    (89059, 39241, 'Low Defense Angel Aura', 23402, 10730, 1005,
+     (('防禦', 90), ('魔防', 60), ('靈敏', 15)),
+     'DEF+90, Spell DEF+60, and Agility+15', 'Gives Melee DEF +90, Spell DEF +60, and Agility +15.'),
+    (89060, 36987, 'Low Exu Angel Aura', 23403, 31174, 1006,
+     (('HP', 200), ('HP定義', '最大值'), ('MP', 150), ('MP定義', '最大值'), ('移動速度', 5), ('負重', 2000)),
+     'HP+200, MP+150, Load+2,000, and Movement Speed+5%',
+     'Gives HP +200, MP +150, Load +2000, and Movement Speed +5%.'),
+)
+
+
+def _linea_xml_aura(aura):
+    iid, icono, nombre, mid, _, _, _, _, desc = aura
+    return ('    <道具 編號="%d" 原型介面="%d" 基本名稱="%s" 物品類別="一般" 常駐法術="%d" 重量="1" '
+            'log等級="70" 說明定義="Right-click to use. %s" 不可交易="是" 可使用="是" 不可存倉庫="是" />'
+            ) % (iid, icono, nombre, mid, desc)
+
+
+# Los hechizos de las auras, como filas de magic.xml: {id: {columna: valor}}. El servidor los suma a los
+# de magic.xml (combate._magic_xml) y _parchear_magias_propias_xml_bytes los mete en el del cliente.
+MAGIAS_PROPIAS = {
+    mid: dict([('編號', str(mid)), ('介面圖號', str(icono_buff)), ('名稱', nombre), ('對象', '自己')]
+              + [(k, str(v)) for k, v in cols]
+              + [('高權位', str(grupo)), ('低權位', '1'), ('後置時間', '500'), ('持續時間', '10800'), ('公式', '2'),
+                 ('說明', 'Grants %s for %%1.' % texto), ('死亡不消失', '是'), ('同類無法使用', '是')])
+    for _, _, nombre, mid, icono_buff, grupo, cols, texto, _ in AURAS_LOW
+}
+
+
+def _parchear_magias_propias_xml_bytes(xml_bytes: bytes) -> bytes:
+    """Anade a magic.xml las filas de MAGIAS_PROPIAS que falten."""
+    txt = xml_bytes.decode('utf-8', errors='ignore')
+    nuevas = ''.join(chr(9) + '<法術 %s />' % ' '.join('%s="%s"' % kv for kv in fila.items()) + chr(13) + chr(10)
+                     for mid, fila in MAGIAS_PROPIAS.items() if '編號="%d"' % mid not in txt)
+    if not nuevas:
+        return xml_bytes
+    return txt.replace('</root>', nuevas + '</root>', 1).encode('utf-8')
+
+
 # Filas propias que van en item9.xml: (id, linea).
 LINEAS_ITEM9_PROPIAS = ((83266, LINEA_XML_MEDALLA), (ITEM_CAJA_55, LINEA_XML_CAJA_55)) + tuple(
-    (iid, _linea_xml_maleta_pd(iid)) for iid in MALETAS_PD)
+    (iid, _linea_xml_maleta_pd(iid)) for iid in MALETAS_PD) + tuple(
+    (aura[0], _linea_xml_aura(aura)) for aura in AURAS_LOW)
 
 
 # DONDE ESTA EL CLIENTE.
@@ -578,6 +625,17 @@ def registrar_medalla_en_servidor():
                      str(ITEM_CAJA_55), '80', _DESC_CAJA_55, '是', 'update26'))
                 con.commit()
                 log.info("Item %d (Lvl 55 Equipment Box) registrado en corpus/content.db", ITEM_CAJA_55)
+            for aura in AURAS_LOW:
+                iid, icono, nombre, mid, _, _, _, _, desc = aura
+                if not con.execute('SELECT id FROM item9 WHERE id = ?', (str(iid),)).fetchone():
+                    con.execute(
+                        'INSERT INTO item9 (id, "原型介面", "基本名稱", "物品類別", "常駐法術", weight, '
+                        '"log等級", "說明定義", "不可交易", "可使用", "不可存倉庫", _pak) '
+                        'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                        (str(iid), str(icono), nombre, '一般', str(mid), '1', '70', 'Right-click to use. ' + desc,
+                         '是', '是', '是', 'update26'))
+                    con.commit()
+                    log.info("Item %d (%s) registrado en corpus/content.db", iid, nombre)
             for iid, (nombre, _) in MALETAS_PD.items():
                 if not con.execute('SELECT id FROM item9 WHERE id = ?', (str(iid),)).fetchone():
                     con.execute(
@@ -600,6 +658,7 @@ def registrar_medalla_en_servidor():
             nombres = raw.get('item_names')
             propios = {'83266': 'Rank Promotion Medal', str(ITEM_CAJA_55): 'Lvl 55 Equipment Box'}
             propios.update({str(i): n for i, (n, _) in MALETAS_PD.items()})
+            propios.update({str(aura[0]): aura[2] for aura in AURAS_LOW})
             if isinstance(nombres, dict) and any(k not in nombres for k in propios):
                 for k, n in propios.items():
                     nombres.setdefault(k, n)
@@ -944,6 +1003,7 @@ def aplicar_modo_estacion(modo: str = None) -> str:
         raw_mag = (f_mag.read_bytes() if f_mag.exists()
                    else _extraer_archivo_pak(bak_mag if bak_mag.exists() else pak_mag, ruta_pak))
         if raw_mag:
+            raw_mag = _parchear_magias_propias_xml_bytes(raw_mag)
             raw_mag = _parchear_descripciones_xml_bytes(raw_mag, '法術', '說明', 'DESCRIPCIONES_MAGIAS')
             if pak_mag == pak26:
                 reemplazos[ruta_pak] = raw_mag

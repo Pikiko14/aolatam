@@ -582,19 +582,30 @@ def _campos_de_carta(mid, entrada):
     configuracion.BONO_CARTAS_VELOCIDAD_PCT."""
     import configuracion
     from house_services import xml_rows
-    fila = xml_rows('magic.xml').get(int(mid)) or {}
+    fila = xml_rows('magic.xml').get(int(mid))
+    if fila is None:
+        import cliente_local                                # hechizos propios (auras Low)
+        fila = cliente_local.MAGIAS_PROPIAS.get(int(mid)) or {}
     es_carta = int(fila.get('持續時間') or 0) >= 1800      # media hora o mas: cartas; los pasteles y pociones de 10-25 min no
     extra = 1 + (float(getattr(configuracion, 'BONO_CARTAS_VELOCIDAD_PCT', 0)) / 100 if es_carta else 0)
-    for columna, destino, escala in (('採集速度', 'recoleccion_pct', extra),
-                                     ('製作速度', 'fabricacion_pct', extra),
-                                     ('經驗加倍', 'exp_extra_pct', 1),
-                                     ('技能經驗加倍', 'skill_exp_extra_pct', 1),
-                                     ('掉寶加倍', 'drop_extra_pct', 1)):
+    columnas = (('採集速度', 'recoleccion_pct', extra),
+                ('製作速度', 'fabricacion_pct', extra),
+                ('經驗加倍', 'exp_extra_pct', 1),
+                ('技能經驗加倍', 'skill_exp_extra_pct', 1),
+                ('掉寶加倍', 'drop_extra_pct', 1))
+    # Una carta tiene UN solo efecto de carta y nada mas: la Exu Angel's Aura (vida, mana, carga, velocidad y
+    # +5% de recoleccion y fabricacion) no es una carta y no debe pisar a una Make Speedup.
+    efectos = [c for c, _, _ in columnas if str(fila.get(c) or '0') not in ('', '0')]
+    otros = any(str(fila.get(c) or '0') not in ('', '0') for c in ('HP', 'MP', '移動速度', '負重', '攻擊', '防禦', '魔攻', '魔防'))
+    for columna, destino, escala in columnas:
         v = str(fila.get(columna) or '')
         if v.isdigit() and int(v):
             entrada[destino] = round(int(v) * escala)
-            if es_carta:
+            if es_carta and len(efectos) == 1 and not otros:
                 entrada['carta'] = destino      # familia: una carta nueva pisa a la activa (cartas_pisadas)
+    v = str(fila.get('負重') or '')
+    if v.isdigit() and int(v):
+        entrada['carga'] = int(v)               # la suma inventario a la carga maxima (Exu Angel's Aura y la Low)
     if fila.get('死亡不消失') == '是':
         entrada['persist_death'] = True
 
@@ -614,10 +625,11 @@ def _familia(e):
     """La familia de una carta; las guardadas antes de que existiera 'carta' se reconocen por su campo."""
     if e.get('carta'):
         return e['carta']
-    if not (e.get('de_item') and e.get('persist_death')):
+    if not (e.get('de_item') and e.get('persist_death')) or any(e.get(k) for k in ('hp_bonus', 'mp_bonus', 'carga')):
         return None
-    return next((f for f in ('recoleccion_pct', 'fabricacion_pct', 'exp_extra_pct', 'skill_exp_extra_pct',
-                             'drop_extra_pct') if e.get(f)), None)
+    hay = [f for f in ('recoleccion_pct', 'fabricacion_pct', 'exp_extra_pct', 'skill_exp_extra_pct',
+                       'drop_extra_pct') if e.get(f)]
+    return hay[0] if len(hay) == 1 else None
 
 
 def se_gasta(item_id) -> bool:
