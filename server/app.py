@@ -21099,7 +21099,12 @@ class Servidor:
                         pass
                 if ses.personaje.stage==112:
                     _hb_walk=__import__('holy_battlefield')
-                    _hb_wait=math.hypot(dst['x']-d['cur_x'],dst['y']-d['cur_y'])/max(1,_velocidad_de(ses))
+                    # Lo que tarda DE VERDAD el cliente: 2,5 px/s por punto de speed
+                    # (combate.PX_POR_SEGUNDO_POR_VELOCIDAD). Contando 1 px/s el salto de
+                    # la puerta llegaba 2,5 veces tarde, cuando el cliente ya habia pedido
+                    # el tramo siguiente, y no saltaba: habia que moverse varias veces.
+                    _hb_wait=math.hypot(dst['x']-d['cur_x'],dst['y']-d['cur_y'])/(
+                        max(1,_velocidad_de(ses))*__import__('combate').PX_POR_SEGUNDO_POR_VELOCIDAD)
                     ses._holy_camino=(time.time()+_hb_wait,(_ox,_oy))
                     if _hb_walk.paso_guardian(ses,(_ox,_oy),(ses.personaje.tile_x,ses.personaje.tile_y),demora=_hb_wait):
                         return

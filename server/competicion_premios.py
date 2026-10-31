@@ -75,6 +75,22 @@ def _holy_exp(r, miembro):
                 skill_exp=0,oro=0,creditos=0,items=[],fuente=cfg.get('fuente','compatibilidad'))
 
 
+def exp_por_resultado(r, miembro, resultado):
+    """La EXP de Holy ademas del AG: un % de la EXP que pide el nivel en curso, segun gane o pierda
+    su equipo y sus puntos. Por defecto: ganador 50% con 500 puntos o mas y 35% con menos; perdedor
+    25% / 20% (pedido del usuario, 31/10/2026). Va en holy_exp_por_resultado de competiciones_config."""
+    import combate
+    cfg = r.get('holy_exp_resultado') or {}
+    tramo = cfg.get(resultado)
+    if not tramo:
+        return 0
+    alto = int(miembro.get('score', 0) or 0) >= int(cfg.get('puntos_umbral', 500))
+    ppm = int(tramo[0] if alto else tramo[1])
+    level = int(miembro['nivel'])
+    gap = max(0, combate.exp_para_nivel(level+1) - combate.exp_para_nivel(level))
+    return gap * ppm // 1000000
+
+
 def validar(rows, holy=False):
     if rows is None:
         return
@@ -135,6 +151,8 @@ def seleccionar(r, cid, miembro):
     row = matches[0]
     plan = {k:int(row.get(k, 0)) for k in ('exp','oro','creditos','skill_exp','skill_exp_ppm','angel_gold')}
     plan['items'] = copy.deepcopy(row.get('items', []))
+    if r['stage'] == 112:
+        plan['exp'] += exp_por_resultado(r, miembro, resultado)
     if any(v < 0 for k,v in plan.items() if k != 'items'):
         raise ValueError('Negative competition reward')
     for item in plan['items']:

@@ -248,6 +248,7 @@ def iniciar(stage, minutos, registro=15, nivel=401, por='gm', inicio=None, ident
     r['logros_habilitados'] = not testing or cfg.get('logros_en_pruebas', True)
     r['premios_config'] = copy.deepcopy(cfg.get('premios_holy' if stage == 112 else 'premios_arena'))
     r['holy_exp_config'] = copy.deepcopy(cfg.get('holy_exp')) if stage==112 else None
+    r['holy_exp_resultado'] = copy.deepcopy(cfg.get('holy_exp_por_resultado')) if stage==112 else None
     r['arena_premio_compat'] = copy.deepcopy(cfg.get('arena_premio_compat')) if stage in ARENAS else None
     __import__('competicion_premios').validar_holy_exp(r['holy_exp_config'])
     __import__('competicion_premios').validar(r['premios_config'], holy=stage == 112)

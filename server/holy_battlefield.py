@@ -692,8 +692,9 @@ def _cruzar_guardian(ses,destination,hasta,r,team,number,demora):
         jump()
         return True
     signature=(r['id'],tuple(destination),team,number)
-    pending=getattr(ses,'_holy_salto_pendiente',None)
-    if pending and pending[0]==signature:return True
+    # Un movimiento nuevo hacia la MISMA puerta reprograma el salto con su posicion y su final: antes se
+    # quedaba el temporizador viejo, que al vencer miraba si seguias junto al final del tramo VIEJO y, como
+    # ya ibas por el siguiente, no saltaba.
     token=(signature,object())
     ses._holy_salto_pendiente=token
     def arrived():
