@@ -65,7 +65,10 @@ QUITADAS = {31441: '2013 Taurus Swordman Lucky Bag', 31442: '2013 Taurus Axeman 
             14554: 'RedNoble Elephant Lucky Bag', 14555: 'RedScarab Lucky Bag', 9453: 'Circus Elephant Lucky Bag',
             9454: 'Stiff Beetle Lucky Bag', 9448: 'SwiftTurtle Lucky Bag', 9449: 'IronLand Bird Lucky Bag',
             # y de Lucky Bag (28):
-            26312: 'Lucky Wish Bag', 12876: 'Dragon Egg Lucky Bag', 12877: 'Elf Egg Lucky Bag'}
+            26312: 'Lucky Wish Bag', 12876: 'Dragon Egg Lucky Bag', 12877: 'Elf Egg Lucky Bag',
+            # y de Special Potion (16) todo lo que no es Low-effect ni Common:
+            1354: 'Mid-effect Red Potion 3', 1355: 'Mid-effect Blue Potion 3', 8101: 'Potent Red Potion',
+            8102: 'Potent Blue Potion', 23470: 'Potent Purple Potion', 18955: 'Effective Orange Potion'}
 
 # PACKS DE 11 Y 110 en Lucky Weapon (29), Lucky Armor (30) y Ride (31), como los que ya hay en la
 # pestana Lucky Bag: 11 al precio de 10 y 110 al de 100 (30 / 300 / 3000).
@@ -94,11 +97,39 @@ def packs(rows):
     return rows + nuevas
 
 
+# Special > General (13): los Divine Scroll pasan a ser los primeros scrolls (+200 ataque/defensa,
+# +160 magicos), en el mismo sitio, cantidad y precio.
+REEMPLAZOS = {19406: (3805, 'DivineAttack Scroll -> Attack Scroll'),
+              19407: (3806, 'DivineDefense Scroll -> Defense Scroll'),
+              19408: (3807, 'DivineM.Attack Scroll -> Spell Attack Scroll'),
+              19409: (3808, 'DivineM.Defense Scroll -> Spell Defense Scroll')}
+# Quitadas solo de una pestana (en otras siguen): {categoria: {objeto: nombre}}.
+QUITADAS_DE_PESTANA = {13: {16073: 'Blessed Fusion Potion', 12612: "Haven's Favor Bag"}}
+# Pestanas que solo llevan estos objetos: Special > Teleport (27) con los Maple, los Mark normales
+# y Summon / Fly Book.
+SOLO_EN_PESTANA = {CAT_TELEPORTE: {20565, 20566, 3693, 3694, 1333, 2987}}
+
+
+def fuera_de_pestana(r):
+    c = r['category']
+    return r['item'] in QUITADAS_DE_PESTANA.get(c, {}) or (c in SOLO_EN_PESTANA
+                                                          and r['item'] not in SOLO_EN_PESTANA[c])
+
+
 def quitar(d):
     ya = {int(e['item']) for e in d.setdefault('excluded', [])}
     d['excluded'] += [dict(item=i, name=n, reason='Removed from the Mall by user')
                       for i, n in QUITADAS.items() if i not in ya]
-    d['rows'] = [r for r in d['rows'] if r['item'] not in QUITADAS]
+    d['excluded'] += [dict(item=i, name=n, reason='Replaced in the Mall by user')
+                      for i, (_, n) in REEMPLAZOS.items() if i not in ya]
+    for r in d['rows']:
+        if r['item'] in REEMPLAZOS:
+            r['item'] = REEMPLAZOS[r['item']][0]
+            r['price_source'] = 'local: ' + REEMPLAZOS_NOMBRE.get(r['item'], '')
+    d['rows'] = [r for r in d['rows'] if r['item'] not in QUITADAS and not fuera_de_pestana(r)]
+
+
+REEMPLAZOS_NOMBRE = {nuevo: n for nuevo, n in REEMPLAZOS.values()}
 
 
 def on_sale(rows):
@@ -159,7 +190,7 @@ def completar(d):
     fuera = {int(e['item']) for e in d.get('excluded', [])}
     nuevas = []
     for r in filas_originales():
-        if (r['item'], r['category'], r['quantity']) in hay or r['item'] in fuera:
+        if (r['item'], r['category'], r['quantity']) in hay or r['item'] in fuera or fuera_de_pestana(r):
             continue
         if r['id'] in ids:
             r['id'] = max(ids | {40000}) + 1          # choca con una local: va despues de las nativas

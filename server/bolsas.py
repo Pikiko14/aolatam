@@ -261,8 +261,9 @@ def _cargar_descripciones():
 _RE_LISTA = re.compile(r'open[^:\n]{0,60}:\s*(.*)', re.S | re.I)
 
 
-def contenido_descrito(item_id: int):
-    """('todo' | 'uno', [(item, cantidad)], casillas pedidas) o None."""
+def contenido_descrito(item_id: int, filtrar: bool = True):
+    """('todo' | 'uno', [(item, cantidad)], casillas pedidas) o None.
+    Con `filtrar`, las bolsas del mall no dan pociones mejores que la Common."""
     import html
     iid = int(item_id or 0)
     desc = _cargar_descripciones().get(iid)
@@ -292,6 +293,8 @@ def contenido_descrito(item_id: int):
         if _CAT.get(elegido) == '寵物':
             return None
         premios.append((elegido, cant))
+    if filtrar and premios and _sin_pociones_fuertes(iid):
+        premios = [p for p in premios if not pocion_fuerte(p[0])]
     if not premios:
         return None
     mh = re.search(r'requires (\d+) slots', desc, re.I)
@@ -305,6 +308,89 @@ def es_bolsa(item_id: int) -> bool:
 
 
 _TABLA_CACHE = {}
+
+
+# ---------------------------------------------------------------------------
+# LAS BOLSAS DEL ITEM MALL NO DAN POCIONES MEJORES QUE LA COMMON.
+#
+# Pedido del usuario: "quita de todas las bag que tenemos en item mall pociones
+# de 2k, de 800, cualquier pocion de vida y mana que no sea max la common". La
+# Common Red Potion 2 cura 200 de HP y la Common Blue Potion 2 160 de MP (sus
+# hechizos 1756 y 1757). Una pocion que cure o de mas que eso no sale de una
+# bolsa que se vende en el mall, ni de las bolsas que salen de ellas. Los demas
+# premios conservan su peso, como en configuracion.QUITAR_DE_BOLSAS.
+# ---------------------------------------------------------------------------
+HP_POCION_COMMON, MP_POCION_COMMON = 200, 160
+_FUERTES = {}
+_BOLSAS_MALL = None
+
+
+def pocion_fuerte(item_id: int) -> bool:
+    """True si es una pocion de vida o mana mejor que la Common."""
+    iid = int(item_id or 0)
+    if iid not in _FUERTES:
+        _FUERTES[iid] = False
+        try:
+            import combate
+            import inventario
+            con = sqlite3.connect(_db())
+            try:
+                f = inventario.fila_item(con, '"原型名稱", "基本名稱", "常駐法術", "可使用"', iid)
+            finally:
+                con.close()
+            if f and 'potion' in ((f[0] or '') + (f[1] or '')).lower() and f[3] == '是' \
+                    and str(f[2] or '').isdigit():
+                m = combate.datos_magia(int(f[2])) or {}
+                hp = max(int(m.get('hp_cura_buff') or 0), int(m.get('hp_bonus') or 0))
+                mp = max(int(m.get('mp_cura') or 0), int(m.get('mp_bonus') or 0))
+                _FUERTES[iid] = hp > HP_POCION_COMMON or mp > MP_POCION_COMMON
+        except Exception:
+            log.debug('pocion_fuerte %s', iid, exc_info=True)
+    return _FUERTES[iid]
+
+
+def _hijos(item_id: int):
+    """Lo que puede dar una bolsa (por tabla o por descripcion), sin filtrar."""
+    que = _cargar().get(item_id) or _cargar_extra().get(item_id)
+    if que:
+        return [it for it, _c, _p in _opciones(que[1])]
+    d = contenido_descrito(item_id, filtrar=False)
+    return [it for it, _c in d[1]] if d else []
+
+
+def bolsas_del_mall() -> set:
+    """Las bolsas que vende el Item Mall y las que salen de ellas."""
+    global _BOLSAS_MALL
+    if _BOLSAS_MALL is None:
+        try:
+            import item_mall
+            pendientes = {int(r['item']) for r in item_mall.datos()['rows']}
+        except Exception:
+            log.exception('no se pudo leer el catalogo del mall')
+            pendientes = set()
+        vistas = set()
+        while pendientes:
+            iid = pendientes.pop()
+            if iid in vistas:
+                continue
+            hijos = _hijos(iid)
+            if hijos:
+                vistas.add(iid)
+                pendientes.update(h for h in hijos if h not in vistas)
+        _BOLSAS_MALL = vistas
+    return _BOLSAS_MALL
+
+
+def _sin_pociones_fuertes(item_id: int) -> bool:
+    return int(item_id or 0) in bolsas_del_mall()
+
+
+def _opciones(tabla_id):
+    """[(item, cuantos, peso)] de una tabla de drop_table o de drops_bolsas.json."""
+    if tabla_id in _TABLA_CACHE:
+        return _TABLA_CACHE[tabla_id]
+    _sorteo(tabla_id)
+    return _TABLA_CACHE.get(tabla_id, [])
 
 
 def _sorteo(tabla_id, excluir=()):
@@ -369,7 +455,10 @@ def abrir(item_id: int):
         return None
     clase, valor = que
     import configuracion
-    return _sorteo(valor, getattr(configuracion, 'QUITAR_DE_BOLSAS', {}).get(iid, ()))
+    excluir = set(getattr(configuracion, 'QUITAR_DE_BOLSAS', {}).get(iid, ()))
+    if _sin_pociones_fuertes(iid):
+        excluir |= {it for it, _c, _p in _opciones(valor) if pocion_fuerte(it)}
+    return _sorteo(valor, excluir)
 
 
 # ---------------------------------------------------------------------------
