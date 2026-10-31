@@ -108,7 +108,26 @@ REEMPLAZOS = {19406: (3805, 'DivineAttack Scroll -> Attack Scroll'),
               19408: (3807, 'DivineM.Attack Scroll -> Spell Attack Scroll'),
               19409: (3808, 'DivineM.Defense Scroll -> Spell Defense Scroll')}
 # Quitadas solo de una pestana (en otras siguen): {categoria: {objeto: nombre}}.
-QUITADAS_DE_PESTANA = {13: {16073: 'Blessed Fusion Potion', 12612: "Haven's Favor Bag"}}
+QUITADAS_DE_PESTANA = {13: {16073: 'Blessed Fusion Potion', 12612: "Haven's Favor Bag"},
+                       # Pet (19), pedido del usuario el 31/10/2026: piedras y diamante de EXP, Poke Egg,
+                       # pociones de fusion y de forma, y las pociones de mascota marcadas.
+                       19: {8643: 'Phantom Exp Stone', 8644: 'Phantom Exp Stone', 8645: 'Phantom Exp Diamond',
+                            16982: 'Luxurious Poke Egg', 16073: 'Blessed Fusion Potion',
+                            16074: 'Shape Fusion Potion', 16241: "Pet's Shapeshift Preview Scroll",
+                            3451: "Mid-effect Pet's Red Potion", 3452: "Mid-effect Pet's Blue Potion",
+                            3453: "High-effect Pet's Red Potion", 3454: "High-effect Pet's Blue Potion",
+                            3465: "Pet's Assault Potion", 3466: "Pet's Defence Potion",
+                            3467: "Pet's Evil Potion", 3468: "Pet's Demon Potion"},
+                       # Function > General (11): granja, Cottage, jabones, Ball Ticket, huevos de monstruo
+                       # y los Canister.
+                       11: {23821: 'Farm-Fertilizer Truck', 23822: 'Farm-Super Fertilizer',
+                            23823: 'Farm-Sprinkler', 23824: 'Farm-Pesticide', 23825: 'Farm-Harvester',
+                            10115: 'Cottage', 10603: 'Liquid Soap', 10626: 'Super Liquid Soap',
+                            9953: 'Ball Ticket', 10915: 'Lvl 90 Monster Egg', 10914: 'Lvl 80 Monster Egg',
+                            10913: 'Lvl 70 Monster Egg', 10912: 'Lvl 60 Monster Egg',
+                            10911: 'Lvl 50 Monster Egg', 10910: 'Lvl 40 Monster Egg',
+                            4177: 'Happy Canister', 4178: 'Love Canister', 4179: 'Couples Canister',
+                            4180: 'Pigeon Canister'}}
 # Pestanas que solo llevan estos objetos: Special > Teleport (27) con los Maple, los Mark normales
 # y Summon / Fly Book.
 SOLO_EN_PESTANA = {CAT_TELEPORTE: {20565, 20566, 3693, 3694, 1333, 2987},
@@ -216,6 +235,25 @@ def filas_originales():
     return out
 
 
+def orden_unico(rows):
+    """Cada fila de una pestana con su propio `sort`. Los packs de 11/110 copiaban el sort de la de 1 y el
+    cliente solo pintaba una por sort: en Weapon y Armor no salian los packs. Se numera 1, 2, 3... sin
+    cambiar el orden (sort de antes, luego cantidad), como la pestana Pet, que ya iba asi."""
+    por_cat = {}
+    for i, r in enumerate(rows):
+        por_cat.setdefault(r['category'], []).append((r['sort'], i, r))
+    for cat, filas in por_cat.items():
+        if cat == 22 or len({s for s, _, _ in filas}) == len(filas):
+            continue                                   # Top Sale (22) lo ordena el servidor
+        primero = {}
+        for s, i, r in filas:
+            primero.setdefault((s, r['item']), i)
+        filas.sort(key=lambda f: (f[0], primero[(f[0], f[2]['item'])], f[2]['quantity'], f[1]))
+        for n, (_, _, r) in enumerate(filas, 1):
+            r['sort'] = n
+    return rows
+
+
 def completar(d):
     import bolsas
     rows = d['rows']
@@ -253,7 +291,7 @@ def completar(d):
                        special_price=0, duration=0, start='', end='', limit=0, gift=0, gift_quantity=0,
                        price_source='local: %s, 1 de %d sets PD al azar' % (nombre, len(cajas)),
                        publication=PUBLICACION_PD))
-    d['rows'] = agregar(packs(on_sale(rows + nuevas + pd)))
+    d['rows'] = orden_unico(agregar(packs(on_sale(rows + nuevas + pd))))
     if 6 + 57 * len(d['rows']) > 65500:
         raise ValueError('el catalogo no cabe en el paquete 0x005F')
     return nuevas, pd

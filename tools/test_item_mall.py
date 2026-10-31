@@ -106,11 +106,11 @@ def receipt(w,s):
 
 def test_native_purchase_cabinet_claim_and_duplicate_claim(world):
     s=world.player()
-    dispatch(s,0x012B,struct.pack('<IB',3011,0))
+    dispatch(s,0x012B,struct.pack('<IB',30590,0))
     assert mall.saldo(s.usuario)==1000000-29 and not s.inventario
-    rows=receipt(world,s);assert len(rows)==1 and rows[0][1:]==(23821,1)
+    rows=receipt(world,s);assert len(rows)==1 and rows[0][1:]==(2017,1)
     dispatch(s,0x002F,struct.pack('<BII',22,rows[0][0],0xffffffff))
-    assert 23821 in s.inventario.values() and receipt(world,s)==[]
+    assert 2017 in s.inventario.values() and receipt(world,s)==[]
     saved=copy.deepcopy(stored(world,s))
     dispatch(s,0x002F,struct.pack('<BII',22,rows[0][0],0xffffffff))
     assert stored(world,s)==saved and mall.saldo(s.usuario)==999971
@@ -118,22 +118,22 @@ def test_native_purchase_cabinet_claim_and_duplicate_claim(world):
 
 def test_gift_is_charged_to_sender_and_claimed_only_by_receiver(world):
     a,b,c=world.player(),world.player(),world.player()
-    body=struct.pack('<I17s',3011,b.personaje.nombre.encode())
+    body=struct.pack('<I17s',30590,b.personaje.nombre.encode())
     dispatch(a,0x012C,body)
     rows=receipt(world,b)
     assert len(rows)==1 and mall.saldo(a.usuario)==999971 and mall.saldo(b.usuario)==1000000
     with pytest.raises(mall.Rechazo):mall.retirar(c,rows[0][0])
     assert receipt(world,b)==rows
     mall.retirar(b,rows[0][0])
-    assert 23821 in b.inventario.values() and not a.inventario and not c.inventario
+    assert 2017 in b.inventario.values() and not a.inventario and not c.inventario
 
 
 def test_no_funds_or_missing_recipient_never_creates_delivery(world):
     s=world.player();mall.saldo(s.usuario)
     with sqlite3.connect(world.db) as con:con.execute('UPDATE item_mall_wallet SET ag=1')
-    with pytest.raises(mall.Rechazo):mall.comprar(s,3011)
+    with pytest.raises(mall.Rechazo):mall.comprar(s,30590)
     assert mall.saldo(s.usuario)==1 and not receipt(world,s)
-    with pytest.raises(mall.Rechazo):mall.comprar(s,3011,'MissingPlayer')
+    with pytest.raises(mall.Rechazo):mall.comprar(s,30590,'MissingPlayer')
     assert mall.saldo(s.usuario)==1
 
 
@@ -147,7 +147,7 @@ def test_backfill_and_new_account_trigger_grant_once_not_on_login_or_new_charact
         con.execute("INSERT INTO cuentas VALUES('future','')")
     assert mall.saldo('future')==1000000
     assert mall.saldo(s.usuario.upper())==1000000
-    mall.comprar(s,3011)
+    mall.comprar(s,30590)
     with sqlite3.connect(world.db) as con:
         assert mall.inicializar_cuentas(con)==0
         assert con.execute("SELECT COUNT(*) FROM item_mall_movimientos WHERE motivo='initial'").fetchone()[0]==2
@@ -158,7 +158,7 @@ def test_backfill_and_new_account_trigger_grant_once_not_on_login_or_new_charact
 
 def test_full_bag_and_sql_failure_leave_entire_delivery_pending(world,monkeypatch):
     s=world.player(items={20:74136})
-    ident,_=mall.comprar(s,3011)
+    ident,_=mall.comprar(s,30590)
     monkeypatch.setattr(app,'_tope_bolsa',lambda bag:20)
     before=copy.deepcopy(stored(world,s))
     with pytest.raises(mall.Rechazo):mall.retirar(s,ident)
@@ -174,15 +174,15 @@ def test_purchase_sql_failure_rolls_back_gold_and_delivery(world):
     s=world.player();mall.saldo(s.usuario)
     with sqlite3.connect(world.db) as con:
         con.execute("CREATE TRIGGER fail_purchase BEFORE INSERT ON item_mall_cabinet BEGIN SELECT RAISE(ABORT,'test failure'); END")
-    with pytest.raises(sqlite3.IntegrityError):mall.comprar(s,3011)
+    with pytest.raises(sqlite3.IntegrityError):mall.comprar(s,30590)
     assert mall.saldo(s.usuario)==1000000 and not receipt(world,s)
 
 
 def test_cabinet_wire_is_native_33_byte_record(world):
-    s=world.player();ident,_=mall.comprar(s,3011)
+    s=world.player();ident,_=mall.comprar(s,30590)
     packet=mall.almacen(s.usuario)
     assert len(packet)==36 and packet[:3]==b'\x61\0\x01'
-    assert struct.unpack_from('<IIHI',packet,3)==(ident,23821,1,29)
+    assert struct.unpack_from('<IIHI',packet,3)==(ident,2017,1,29)
 
 
 def test_timed_delivery_preserves_deadline_through_save_move_and_expiry(world):
@@ -199,3 +199,24 @@ def test_timed_delivery_preserves_deadline_through_save_move_and_expiry(world):
     world.now[0]=meta['mall_fin']+1
     mall.caducados(s)
     assert not s.inventario and not s.personaje.mejoras
+
+
+def test_cada_fila_de_una_pestana_tiene_su_propio_sort():
+    """Los packs de 11/110 de Weapon y Armor copiaban el sort de la bolsa de 1 y el cliente no los pintaba."""
+    import collections
+    import item_mall
+    sorts = collections.defaultdict(list)
+    for r in item_mall.datos()['rows']:
+        sorts[r['category']].append(r['sort'])
+    for cat in (29, 30, 31, 32):
+        assert len(set(sorts[cat])) == len(sorts[cat]), cat
+
+
+def test_fuera_de_pet_y_general_lo_que_pidio_el_usuario():
+    import item_mall
+    filas = item_mall.datos()['rows']
+    pet = {r['item'] for r in filas if r['category'] == 19}
+    general = {r['item'] for r in filas if r['category'] == 11}
+    assert not pet & {8643, 8644, 8645, 16982, 16073, 16074, 16241, 3451, 3452, 3453, 3454, 3465, 3466, 3467, 3468}
+    assert {3460} <= pet                                     # Pet's Double EXP Card sigue
+    assert not general & {23821, 23825, 10115, 10603, 9953, 10910, 4177, 4180}

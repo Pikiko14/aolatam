@@ -593,8 +593,31 @@ def _campos_de_carta(mid, entrada):
         v = str(fila.get(columna) or '')
         if v.isdigit() and int(v):
             entrada[destino] = round(int(v) * escala)
+            if es_carta:
+                entrada['carta'] = destino      # familia: una carta nueva pisa a la activa (cartas_pisadas)
     if fila.get('死亡不消失') == '是':
         entrada['persist_death'] = True
+
+
+def cartas_pisadas(buffs, mid, entrada):
+    """Las cartas de la misma familia que la nueva (EXP, skill EXP, Lucky/loot, recoleccion, fabricacion),
+    que se quitan al usarla. Cada duracion (30 min, 3, 15 y 30 dias) es un hechizo distinto, asi que antes
+    quedaban todas puestas a la vez, con un icono cada una, en vez de que la nueva pisara a la anterior."""
+    familia = entrada.get('carta')
+    if not familia:
+        return []
+    return [k for k, e in (buffs or {}).items()
+            if k != mid and isinstance(e, dict) and _familia(e) == familia]
+
+
+def _familia(e):
+    """La familia de una carta; las guardadas antes de que existiera 'carta' se reconocen por su campo."""
+    if e.get('carta'):
+        return e['carta']
+    if not (e.get('de_item') and e.get('persist_death')):
+        return None
+    return next((f for f in ('recoleccion_pct', 'fabricacion_pct', 'exp_extra_pct', 'skill_exp_extra_pct',
+                             'drop_extra_pct') if e.get(f)), None)
 
 
 def se_gasta(item_id) -> bool:

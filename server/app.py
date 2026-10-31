@@ -18805,6 +18805,9 @@ class Servidor:
                     # acaba el buff. Gastarla le borraba el objeto al jugador.
                     if _bol0.se_gasta(item_id):
                         _sacar(ses, ranura, 1)
+                    _pisadas = _bol0.cartas_pisadas(ses.personaje.buffs, _mid_buff, _entrada)
+                    for _vieja in _pisadas:
+                        ses.personaje.buffs.pop(_vieja, None)
                     ses.personaje.buffs[_mid_buff] = _entrada
                     # EL ICONO DE ABAJO es el 0x001D de kind 4, con el id
                     # del hechizo y los milisegundos que dura. Sin el, el
@@ -18818,7 +18821,7 @@ class Servidor:
                     # kind 4 con la duracion. Al principio solo se mandaba
                     # el kind 4 y el icono salia pero SIN cuenta atras.
                     _cd = int(_entrada['mag'].get('cd_ms') or 0)
-                    _sal = []
+                    _sal = [struct.pack('<HIBBII', 0x001D, _yo, 1, 4, int(_v), 0) for _v in _pisadas]
                     if _cd > 0:
                         _sal.append(struct.pack('<HIBBII', 0x001D, _yo, 1, 3,
                                                 _mid_buff, _cd))
