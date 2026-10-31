@@ -13323,6 +13323,15 @@ class Servidor:
                     log.info(f"[{addr}] HABILIDAD {tipo} RECHAZADA: pidio a "
                              f"los {_espera:.3f}s y su cooldown es {_cd:.3f}s")
                     return
+                # UNA HABILIDAD A LA VEZ. Cada una tiene su cooldown (後置時間), pero no habia nada entre una y
+                # otra: el Angel Baby lanzaba Fighting Shield y Ferocious Song con 3 ms de diferencia y salian
+                # las dos juntas ("usa los 2 poderes de axe a la vez"). La siguiente espera a que acabe el
+                # lanzamiento (前置時間) y como minimo combate.PAUSA_ENTRE_HABILIDADES.
+                if _ahora_atk < getattr(ses, '_lanzando_hasta', 0):
+                    log.info(f"[{addr}] HABILIDAD {tipo} RECHAZADA: aun se esta lanzando la anterior")
+                    return
+                ses._lanzando_hasta = _ahora_atk + max(_cb.PAUSA_ENTRE_HABILIDADES,
+                                                       float(mag.get('cast_time', 0) or 0) / 1000.0)
                 _usos[tipo] = _ahora_atk
                 # Una habilidad ofensiva ES el ataque de ese turno: el cliente manda el golpe basico justo
                 # detras y salia tambien la flecha normal ("si uso 1 turno de ataque... no debe lanzar la

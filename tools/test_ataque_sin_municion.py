@@ -169,3 +169,18 @@ def test_al_llegar_si_sale_el_golpe_basico(monkeypatch):
     app.Servidor.__new__(app.Servidor).manejar(s, 0x0006, None, None, 'test',
                                                struct.pack('<HI', cb.ATAQUE_NORMAL, 9999))
     assert packets
+
+
+def test_dos_habilidades_a_la_vez_solo_sale_la_primera(monkeypatch):
+    """"usa los 2 poderes de axe a la vez": el Angel Baby mandaba Fighting Shield y Ferocious Song juntos."""
+    s, _ = _sesion_con_arco(monkeypatch, con_municion=True)
+    s.inventario = {3: 5}                        # Newbie Axe
+    s.personaje.habilidades = [(10, 10, 0)]      # rama Axe
+    s.volcar = lambda *a, **k: None
+    server = app.Servidor.__new__(app.Servidor)
+    for magia in (703, 702):
+        try:
+            _magia(server, s, magia)
+        except AttributeError:
+            pass
+    assert 703 in s.ultimo_uso and 702 not in s.ultimo_uso
