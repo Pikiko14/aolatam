@@ -497,9 +497,9 @@ NIVEL_MAXIMO_PERSONAJE = 60
 # =====================================================================
 # 1.0 = Experiencia normal oficial
 # 2.0 = Doble experiencia, etc.
-TASA_EXP_BASE = 2.0         # Multiplicador de EXP de personaje
+TASA_EXP_BASE = 1.5         # Multiplicador de EXP de personaje
 TASA_SKILL_EXP_BASE = 2     # Multiplicador de EXP de habilidades (stamina/skills)
-TASA_DROP_BASE = 0.1         # Multiplicador de probabilidad de drop de items
+TASA_DROP_BASE = 0.04         # Multiplicador de probabilidad de drop de items
 TASA_ORO_BASE = 2.0           # Multiplicador de oro obtenido de monstruos
 
 # =====================================================================
