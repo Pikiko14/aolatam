@@ -458,7 +458,50 @@ def abrir(item_id: int):
     excluir = set(getattr(configuracion, 'QUITAR_DE_BOLSAS', {}).get(iid, ()))
     if _sin_pociones_fuertes(iid):
         excluir |= {it for it, _c, _p in _opciones(valor) if pocion_fuerte(it)}
+    if iid in bolsas_premio_al_1():
+        return _sorteo_premio_al_1(valor, excluir)
     return _sorteo(valor, excluir)
+
+
+# Pestanas del Item Mall cuyas bolsas dan su premio principal (el primero de la tabla: la Sword of Goddess de la
+# Sword of Goddess Bag, la Top Heavy Armor Box, la Black Fight Lizard...) al 1% como mucho. Venian al 10%: uno de
+# cada diez premios. Pedido del usuario el 31/10/2026: Lucky Weapon (29), Lucky Armor (30) y Ride (31).
+PESTANAS_PREMIO_AL_1 = (29, 30, 31)
+PROB_PREMIO_PRINCIPAL = 0.01
+
+
+def bolsas_premio_al_1():
+    global _PREMIO_AL_1
+    if _PREMIO_AL_1 is None:
+        import item_mall
+        _PREMIO_AL_1 = {int(r['item']) for r in item_mall.datos()['rows']
+                        if r['category'] in PESTANAS_PREMIO_AL_1}
+    return _PREMIO_AL_1
+
+
+_PREMIO_AL_1 = None
+
+
+def _sorteo_premio_al_1(tabla_id, excluir=()):
+    """Como _sorteo, con el primer premio de la tabla a PROB_PREMIO_PRINCIPAL; el resto se queda con lo demas en
+    la misma proporcion entre ellos. Si ya salia menos (las monturas raras al 0,5%), no se toca."""
+    opciones = [o for o in _opciones(tabla_id) if o[0] not in excluir]
+    if not opciones:
+        return None
+    (it0, ct0, p0), resto = opciones[0], opciones[1:]
+    total_resto = sum(p for _i, _c, p in resto)
+    if resto and total_resto > 0 and p0 / float(p0 + total_resto) > PROB_PREMIO_PRINCIPAL:
+        if random.random() < PROB_PREMIO_PRINCIPAL:
+            return (it0, ct0)
+        opciones = resto
+    total = sum(p for _i, _c, p in opciones)
+    tirada = random.uniform(0, total) if total > 0 else 0
+    for it, ct, p in opciones:
+        if tirada < p:
+            return (it, ct)
+        tirada -= p
+    it, ct, _p = opciones[-1]
+    return (it, ct)
 
 
 # ---------------------------------------------------------------------------

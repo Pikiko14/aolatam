@@ -14,11 +14,12 @@ def dispatch(s,op,body=b''):
 
 
 def test_catalog_is_original_mall_not_npc_shop():
-    # El usuario recorta el catalogo a mano (tools/habilitar_mall_completo.py): Furniture 33-35 vacias desde el 31/10/2026.
+    # El usuario recorta el catalogo a mano (tools/habilitar_mall_completo.py): Furniture 33-35 y Lucky Bag > Hot (28)
+    # vacias desde el 31/10/2026.
     assert len(mall.datos()['rows'])>300 and mall.datos()['historical_rows']==475
     assert mall.datos()['historical'] and mall.datos()['purchases_enabled']
     assert mall.datos()['source'].endswith('mall.xml')
-    assert {r['category'] for r in mall.datos()['rows']} >= {11,13,16,19,24,25,28,32}
+    assert {r['category'] for r in mall.datos()['rows']} >= {11,13,16,19,24,25,29,32}
 
 
 def test_catalog_has_no_event_stock_boost_stones_or_placeholder_weapon_boxes():
@@ -233,3 +234,18 @@ def test_todos_los_packs_x11_y_x110_valen_500_y_5000():
     for r in item_mall.datos()['rows']:
         if r['quantity'] in (11, 110):
             assert r['price'] == {11: 500, 110: 5000}[r['quantity']], r
+
+
+def test_hot_vacia_y_el_premio_principal_de_las_bolsas_al_1():
+    """"todas las lucky bag ... baja el % del item de la bolsa a 1% ... las que estan en hot quitalas todas"."""
+    import collections
+    import random
+    import bolsas
+    import item_mall
+    assert not [r for r in item_mall.datos()['rows'] if r['category'] == 28]
+    random.seed(7)
+    n = 20000
+    for bolsa, principal in ((9407, 1477), (9432, 9455)):          # Sword of Goddess Bag, Heavy Beastman Suit Bag
+        salen = collections.Counter(bolsas.abrir(bolsa)[0] for _ in range(n))
+        assert 0.006 < salen[principal] / n < 0.014, salen[principal]
+        assert len(salen) == 10                                     # los otros nueve siguen saliendo

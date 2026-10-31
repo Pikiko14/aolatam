@@ -141,7 +141,9 @@ QUITADAS_DE_PESTANA = {13: {16073: 'Blessed Fusion Potion', 12612: "Haven's Favo
 # y Summon / Fly Book.
 SOLO_EN_PESTANA = {CAT_TELEPORTE: {20565, 20566, 3693, 3694, 1333, 2987},
                    # Furniture (32-35): fuera todos los huevos de muebles; en la 32 solo los huevos PD.
-                   32: {4978, 4979, 7471, 7472}, 33: set(), 34: set(), 35: set()}
+                   32: {4978, 4979, 7471, 7472}, 33: set(), 34: set(), 35: set(),
+                   # Lucky Bag > Hot (28): vacia (pedido del usuario, 31/10/2026).
+                   28: set()}
 
 
 # Huevos de traje (PD) que el usuario pidio en Fashion: Roll y Halloween Tricky, de hombre (24) y de
