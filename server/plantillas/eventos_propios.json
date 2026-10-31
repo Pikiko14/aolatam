@@ -1,0 +1,32 @@
+{
+ "_nota": "Reglas \"matar X monstruos\" del servidor; ver server/eventos_propios.py. Se editan con tools/editor_mapas (pestana Eventos).",
+ "reglas": [
+  {
+   "id": "dc_jefe_salida",
+   "nombre": "Dark Cavern: portal de salida al matar al jefe",
+   "activa": true,
+   "stage": 900,
+   "matar": {
+    "mobs": [
+     209
+    ],
+    "cantidad": 1,
+    "alcance": "mapa",
+    "repetir": true
+   },
+   "aviso": "Dragonkin Moowad has fallen! A portal back to Thorn Wasteland has opened.",
+   "premios": [
+    {
+     "tipo": "portal",
+     "destino": 16,
+     "llegada": [
+      134,
+      70
+     ],
+     "donde": "monstruo",
+     "segundos": 300
+    }
+   ]
+  }
+ ]
+}

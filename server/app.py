@@ -8854,6 +8854,14 @@ def _entrar_en_sala(ses, addr):
     ses.espejo = _espejar
     if p.stage==112:
         __import__('holy_battlefield').sincronizar_monstruos(ses,sala=e)
+    # Los portales de las reglas del editor que siguen abiertos en ESTA copia (eventos_propios.de_sala).
+    try:
+        _evp_s = __import__('eventos_propios')
+        _port_s = _evp_s.de_sala(p.stage, _evp_s.sala_de(ses))
+        if _port_s:
+            ses.enviar(*_port_s)
+    except Exception:
+        log.exception('portales de la sala')
     if e.monstruos is None:
         e.monstruos = ses.monstruos if ses.monstruos is not None else _monstruos_de(p.stage)
         ses.monstruos = e.monstruos
@@ -9493,17 +9501,18 @@ def _eventos_propios_al_morir(ses, monstruo, addr):
             for pr in portales:
                 donde = pr.get('donde', 'monstruo')
                 tile = (monstruo.tile_x, monstruo.tile_y) if donde == 'monstruo' else tuple(donde)
+                # En una instancia el portal es de ESA copia (la del equipo): los demas no lo ven ni lo usan.
+                sala = _evp.sala_de(ses)
                 eid = _evp.abrir_portal(ses.personaje.stage, tile, pr['destino'], pr['llegada'],
-                                        pr.get('segundos', 120))
+                                        pr.get('segundos', 120), sala=sala)
                 paquete = _evp.paquete_portal(eid)
-                vivas = list(_pr._vivas(ses.personaje.stage))
-                for s in vivas:
+                for s in _evp.destinatarios(ses.personaje.stage, sala):
                     s.enviar(paquete, _cl.aviso('A portal has appeared!', tipo=0))
 
-                def _cerrar(eid=eid, vivas_stage=ses.personaje.stage):
+                def _cerrar(eid=eid, vivas_stage=ses.personaje.stage, sala=sala):
                     import combate as _cb_p
                     _evp._limpiar()
-                    for s in list(_pr._vivas(vivas_stage)):
+                    for s in _evp.destinatarios(vivas_stage, sala):
                         try:
                             s.enviar_inmediato(_cb_p.despawn_monstruo(eid))
                         except Exception:

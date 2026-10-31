@@ -48,10 +48,24 @@ def test_otros_mobs_u_otro_mapa_no_cuentan(tmp_path, monkeypatch):
 
 
 def test_alcance_mapa_y_una_sola_vez(tmp_path, monkeypatch):
-    _reglas(tmp_path, monkeypatch, dict(REGLA, matar=dict(mobs=[], cantidad=2, alcance='mapa', repetir=False)))
-    assert not evp.al_morir(_ses(1), _mob(1))
-    assert evp.al_morir(_ses(2), _mob(2))                    # la segunda baja del mapa, de otro jugador
-    assert not evp.al_morir(_ses(1), _mob(1)) and not evp.al_morir(_ses(1), _mob(1))
+    # En un mapa normal (el 41) todos suman a la misma cuenta.
+    _reglas(tmp_path, monkeypatch, dict(REGLA, stage=41, matar=dict(mobs=[], cantidad=2, alcance='mapa', repetir=False)))
+    assert not evp.al_morir(_ses(1, 41), _mob(1))
+    assert evp.al_morir(_ses(2, 41), _mob(2))                # la segunda baja del mapa, de otro jugador
+    assert not evp.al_morir(_ses(1, 41), _mob(1)) and not evp.al_morir(_ses(1, 41), _mob(1))
+
+
+def test_en_una_instancia_cada_copia_cuenta_y_ve_lo_suyo(tmp_path, monkeypatch):
+    # El 900 es instancia: dos jugadores que van solos estan en copias distintas.
+    _reglas(tmp_path, monkeypatch, dict(REGLA, matar=dict(mobs=[], cantidad=2, alcance='mapa', repetir=True)))
+    a, b = _ses(1), _ses(2)
+    assert evp.sala_de(a) != evp.sala_de(b) and evp.sala_de(_ses(1, 41)) is None
+    assert not evp.al_morir(a, _mob(1)) and not evp.al_morir(b, _mob(2))   # una baja en cada copia
+    assert evp.al_morir(a, _mob(1))                                        # la segunda de la copia de a
+    eid = evp.abrir_portal(900, (5, 6), 16, (134, 70), 60, sala=evp.sala_de(a))
+    assert evp.poblar(900) == []                                            # no va al reparto general
+    assert len(evp.de_sala(900, evp.sala_de(a))) == 1 and evp.de_sala(900, evp.sala_de(b)) == []
+    assert evp.pulsar(b, eid) is False                                      # b no puede usarlo
 
 
 def test_reglas_invalidas_se_ignoran(tmp_path, monkeypatch):
