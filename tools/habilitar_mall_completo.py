@@ -42,12 +42,15 @@ PUBLICACION_ON_SALE = 'On Sale (tools/habilitar_mall_completo.py)'
 QUITADAS = {31441: '2013 Taurus Swordman Lucky Bag', 31442: '2013 Taurus Axeman Lucky Bag',
             31443: '2013 Taurus Spearman Lucky Bag', 31444: '2013 Taurus Archer Lucky Bag',
             31445: '2013 Taurus Master Lucky Bag', 31446: '2013 Taurus Assassin Lucky Bag',
-            31447: '2013 Taurus Artisan Lucky Bag'}
+            31447: '2013 Taurus Artisan Lucky Bag',
+            # y de la pestana Lucky Weapon (29):
+            9422: 'Hero Lucky Bag', 9423: 'Devil Lucky Bag', 9424: 'Knights Spirit Lucky Bag',
+            9425: 'Star Illusion Lucky Bag', 9426: 'Holy Lord Lucky Bag', 14502: 'Hell Lucky Bag'}
 
 
 def quitar(d):
     ya = {int(e['item']) for e in d.setdefault('excluded', [])}
-    d['excluded'] += [dict(item=i, name=n, reason='Removed from Lucky Bag tab by user')
+    d['excluded'] += [dict(item=i, name=n, reason='Removed from the Mall by user')
                       for i, n in QUITADAS.items() if i not in ya]
     d['rows'] = [r for r in d['rows'] if r['item'] not in QUITADAS]
 
