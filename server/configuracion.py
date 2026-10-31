@@ -496,7 +496,7 @@ TASA_ORO_BASE = 2.0           # Multiplicador de oro obtenido de monstruos
 # =====================================================================
 # CONFIGURACION DE CASAS, BAILES Y PET ROOM
 # =====================================================================
-MULTIPLICADOR_EXP_PET = 10.0           # Multiplicador de EXP para mascotas en el patio de crianza (477..486)
+MULTIPLICADOR_EXP_PET = 5.0           # Multiplicador de EXP para mascotas en el patio de crianza (477..486)
 EXP_BASE_PET_ROOM_TICK = 20           # EXP base por tick (~5 segundos) para mascotas entrenando en casa
 COOLDOWN_BAILE_SEGUNDOS = 172800          # Cooldown en segundos para volver a usar un Ball Ticket (por defecto 60s para testing rapido)
 TIEMPO_PREPARACION_BAILE_SEGUNDOS = 180 # Tiempo de preparacion antes del baile (oficial 180s = 3 minutos)
