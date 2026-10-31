@@ -13321,7 +13321,7 @@ class Servidor:
                 _romper_sigilo(ses, addr, f"por atacar con {mag.get('nombre') or 'un golpe normal'}")
 
             if tipo != _cb.ATAQUE_NORMAL:
-                _cd = max(0.0, mag.get('cd_ms', 0) / 1000.0)
+                _cd = max(_cb.COOLDOWN_MINIMO_HABILIDAD, mag.get('cd_ms', 0) / 1000.0)
                 _usos = getattr(ses, 'ultimo_uso', None)
                 if _usos is None:
                     _usos = {}

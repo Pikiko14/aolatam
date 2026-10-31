@@ -2596,6 +2596,9 @@ CADENCIA_ATAQUE = 1.15
 # Minimo entre dos habilidades DISTINTAS (cada una ademas tiene su cooldown). Sin esto el Angel Baby
 # lanzaba dos buffs a la vez. Algo menos que un golpe basico, para no frenar a quien encadena a mano.
 PAUSA_ENTRE_HABILIDADES = 0.5     # medio segundo (31/10/2026; antes 1 s)
+# Cooldown minimo de CADA habilidad: las de 0,5 s (Flying Dart...) quedan en 1 s ("que tengan 1 segundo de
+# cowldown", 31/10/2026). Las que tienen mas no cambian.
+COOLDOWN_MINIMO_HABILIDAD = 1.0
 
 
 def dano_recibido(ataque: int, defensa: int, elem_atk: int = 0, elem_def: int = 0) -> int:
