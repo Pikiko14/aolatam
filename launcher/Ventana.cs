@@ -14,9 +14,10 @@ namespace AngelsLauncher
     class Ventana : Form
     {
         // ---- colores
-        static readonly Color CieloArriba = Color.FromArgb(11, 20, 52);
-        static readonly Color CieloAbajo = Color.FromArgb(52, 28, 98);
-        static readonly Color Rosa = Color.FromArgb(255, 126, 179);
+        // A juego con el logo de Angels Online Forever: azul noche (ala de angel), carmesi (ala de demonio) y oro (halo).
+        static readonly Color CieloArriba = Color.FromArgb(10, 20, 62);
+        static readonly Color CieloAbajo = Color.FromArgb(92, 10, 30);
+        static readonly Color Rosa = Color.FromArgb(236, 72, 92);
         static readonly Color Oro = Color.FromArgb(255, 205, 96);
         static readonly Color OroOscuro = Color.FromArgb(232, 128, 44);
         static readonly Color TextoSuave = Color.FromArgb(214, 214, 236);
@@ -56,7 +57,7 @@ namespace AngelsLauncher
 
             rCerrar = new Rectangle(Width - 46, 14, 30, 30);
             rMinimizar = new Rectangle(Width - 84, 14, 30, 30);
-            rNoticias = new Rectangle(40, 168, 540, 290);
+            rNoticias = new Rectangle(40, 40, 500, 418);
             rJugar = new Rectangle(640, 330, 300, 78);
             rReparar = new Rectangle(640, 420, 144, 38);
             rCarpeta = new Rectangle(796, 420, 144, 38);
@@ -253,8 +254,7 @@ namespace AngelsLauncher
                 vServ = versionServidor; vLoc = versionLocal; nots = noticias;
             }
 
-            Fondo(g);
-            Titulo(g);
+            Fondo(g);                            // el logo va dentro de fondo.jpg
             BotonVentana(g, rMinimizar, "minimizar");
             BotonVentana(g, rCerrar, "cerrar");
             PanelNoticias(g, nots);
@@ -287,13 +287,10 @@ namespace AngelsLauncher
                     using (var b = new LinearGradientBrush(todo, CieloArriba, CieloAbajo, 90f))
                         g.FillRectangle(b, todo);
                 var izquierda = new Rectangle(0, 0, (int)(Width * 0.66), Height);
-                using (var b = new LinearGradientBrush(izquierda, Color.FromArgb(200, 12, 10, 34), Color.FromArgb(0, 12, 10, 34), 0f))
+                using (var b = new LinearGradientBrush(izquierda, Color.FromArgb(150, 8, 12, 36), Color.FromArgb(0, 8, 12, 36), 0f))
                     g.FillRectangle(b, izquierda);
-                var arriba = new Rectangle(0, 0, Width, 170);
-                using (var b = new LinearGradientBrush(arriba, Color.FromArgb(120, 12, 10, 34), Color.FromArgb(0, 12, 10, 34), 90f))
-                    g.FillRectangle(b, arriba);
-                var abajo = new Rectangle(0, Height - 150, Width, 150);
-                using (var b = new LinearGradientBrush(abajo, Color.FromArgb(0, 12, 10, 34), Color.FromArgb(225, 12, 10, 34), 90f))
+                                var abajo = new Rectangle(0, Height - 150, Width, 150);
+                using (var b = new LinearGradientBrush(abajo, Color.FromArgb(0, 10, 8, 26), Color.FromArgb(225, 10, 8, 26), 90f))
                     g.FillRectangle(b, new Rectangle(abajo.X, abajo.Y + 1, abajo.Width, abajo.Height));
             }
             return bmp;
@@ -304,14 +301,16 @@ namespace AngelsLauncher
             if (fondo == null) fondo = ComponerFondo();
             g.DrawImageUnscaled(fondo, 0, 0);
             var antes = g.Transform;
-            using (var b = new SolidBrush(Color.FromArgb(215, 255, 190, 214)))
-            using (var bc = new SolidBrush(Color.FromArgb(150, 255, 236, 244)))
+            // destellos dorados que caen y titilan (antes petalos rosas)
+            using (var bc = new SolidBrush(Color.FromArgb(230, 255, 250, 225)))
                 foreach (var p in particulas)
                 {
+                    float brillo = 0.55f + 0.45f * (float)Math.Sin(tiempo * 3 + p.Fase);
+                    float r = p.R * 0.8f;
                     g.TranslateTransform(p.X, p.Y);
-                    g.RotateTransform(p.Giro);
-                    g.FillEllipse(b, -p.R * 1.6f, -p.R * 0.9f, p.R * 3.2f, p.R * 1.8f);
-                    g.FillEllipse(bc, -p.R * 0.8f, -p.R * 0.45f, p.R * 1.6f, p.R * 0.9f);
+                    using (var b = new SolidBrush(Color.FromArgb((int)(70 * brillo), 255, 200, 90)))
+                        g.FillEllipse(b, -r * 2, -r * 2, r * 4, r * 4);
+                    g.FillEllipse(bc, -r * 0.45f, -r * 0.45f, r * 0.9f, r * 0.9f);
                     g.Transform = antes;
                 }
             using (var borde = Redondeado(new Rectangle(0, 0, Width - 1, Height - 1), 18))
@@ -331,25 +330,6 @@ namespace AngelsLauncher
                     g.FillPath(b, camino);
                 }
             }
-        }
-
-        void Titulo(Graphics g)
-        {
-            using (var f = new Font("Georgia", 44, FontStyle.Bold | FontStyle.Italic))
-            {
-                var pos = new PointF(36, 30);
-                // brillo: el mismo texto varias veces, desplazado y transparente
-                for (int i = 6; i >= 1; i--)
-                    using (var b = new SolidBrush(Color.FromArgb(18, Rosa)))
-                        for (int dx = -1; dx <= 1; dx++)
-                            g.DrawString(Config.Titulo, f, b, pos.X + dx * i, pos.Y + i * 0.4f);
-                using (var b = new LinearGradientBrush(new RectangleF(pos.X, pos.Y, 520, 70), Color.White,
-                                                       Color.FromArgb(255, 228, 240), 90f))
-                    g.DrawString(Config.Titulo, f, b, pos);
-            }
-            using (var f = new Font("Segoe UI", 13, FontStyle.Bold))
-            using (var b = new SolidBrush(Oro))
-                g.DrawString(Espaciado(Config.Subtitulo), f, b, 44, 104);
         }
 
         static string Espaciado(string s)
@@ -418,9 +398,9 @@ namespace AngelsLauncher
         void PanelDerecho(Graphics g, string vServ, string vLoc, bool ok, bool ocupado)
         {
             // fondo translucido para que las versiones se lean sobre la imagen
-            using (var camino = Redondeado(new Rectangle(624, 188, 332, 112), 14))
+            using (var camino = Redondeado(new Rectangle(624, 252, 332, 64), 14))
             {
-                using (var b = new SolidBrush(Color.FromArgb(150, 12, 10, 34))) g.FillPath(b, camino);
+                using (var b = new SolidBrush(Color.FromArgb(150, 10, 10, 32))) g.FillPath(b, camino);
                 using (var pen = new Pen(Color.FromArgb(60, 255, 255, 255))) g.DrawPath(pen, camino);
             }
             using (var f = new Font("Segoe UI", 10))
@@ -428,10 +408,10 @@ namespace AngelsLauncher
             using (var b = new SolidBrush(TextoSuave))
             using (var bB = new SolidBrush(Color.White))
             {
-                g.DrawString("Versión del servidor", f, b, 640, 200);
-                g.DrawString(vServ.Length > 0 ? vServ : "--", fB, bB, 640, 220);
-                g.DrawString("Versión instalada", f, b, 640, 252);
-                g.DrawString(vLoc.Length > 0 ? vLoc : "--", fB, bB, 640, 272);
+                g.DrawString("Versión del servidor", f, b, 640, 262);
+                g.DrawString(vServ.Length > 0 ? vServ : "--", fB, bB, 640, 282);
+                g.DrawString("Versión instalada", f, b, 800, 262);
+                g.DrawString(vLoc.Length > 0 ? vLoc : "--", fB, bB, 800, 282);
             }
 
             bool activo = ok && !ocupado;
