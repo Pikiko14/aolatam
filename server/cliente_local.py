@@ -1407,7 +1407,7 @@ def _anuncio_parche():
     if not getattr(_cf, 'PARCHE_EN_LAUNCHER', False) or os.environ.get('AO_PARCHE_ANUNCIAR') == '0':
         return None
     import parche
-    est = parche.estado()
+    est = parche.estado(parche.DESTINO)
     return est if est.get('version') and parche.entradas() else None
 
 
@@ -1468,7 +1468,7 @@ LAUNCHER_EXE = 'AngelsLauncher.exe'
 def _manifiesto_launcher() -> bytes:
     import hashlib
     import parche
-    est = parche.estado()
+    est = parche.estado(parche.DESTINO)
     m = {'version': est.get('version', ''), 'pak': est.get('pak', parche.NOMBRE_PAK),
          'bytes': int(est.get('bytes') or 0), 'sha256': est.get('sha256', ''), 'noticias': _noticias(),
          # Lo que puede llevar un update28..31 del START.EXE (versiones viejas de este parche y su relleno):
