@@ -1479,20 +1479,33 @@ def vaciar_diamante(ficha: dict) -> int:
     return int(d.get('exp') or 0)
 
 
-def dar_exp(ficha: dict, cantidad: int, ahora=None) -> int:
+def dar_exp(ficha: dict, cantidad: int, ahora=None, nivel_dueno: int = None) -> int:
     """Suma experiencia y sube de nivel lo que haga falta.
 
     Devuelve cuantos niveles subio. Los stats se recalculan con el nivel
     nuevo, que es como los da el juego: no se guardan sueltos.
+
+    LA MASCOTA NO PASA EL NIVEL DE SU DUENO (`nivel_dueno`): llegada a el se queda ahi y la EXP se para justo
+    antes del siguiente nivel, para subir en cuanto suba el dueno. Una que ya lo pasaba (de antes de esta
+    regla) no baja, pero no sube mas.
     """
     subidos = 0
     cantidad = int(max(0, int(cantidad)) * multiplicador_exp(ficha, ahora))
     ficha['exp'] = int(ficha.get('exp', 0)) + cantidad
     maximo = nivel_maximo(ficha.get('sprite'))
     sp = ficha.get('sprite')
+    if nivel_dueno and int(nivel_dueno) < maximo:
+        if int(ficha.get('nivel', 1)) >= int(nivel_dueno):
+            ficha['exp'] = min(ficha['exp'], max(0, exp_para_subir(ficha.get('nivel', 1), sp) - 1))
+            ficha['exp_max'] = exp_para_subir(ficha.get('nivel', 1), sp)
+            return 0
+        maximo = int(nivel_dueno)
     while True:
         if int(ficha.get('nivel', 1)) >= maximo:
-            ficha['exp'] = 0
+            if maximo == nivel_maximo(sp):
+                ficha['exp'] = 0
+            else:                                   # tope del dueno: guarda hasta el borde del siguiente nivel
+                ficha['exp'] = min(ficha['exp'], max(0, exp_para_subir(ficha.get('nivel', 1), sp) - 1))
             break
         tope = exp_para_subir(ficha.get('nivel', 1), sp)
         if ficha['exp'] < tope:

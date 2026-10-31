@@ -3659,7 +3659,7 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
             if pet_fuera and exp_pet > 0:
                 import mascotas as _ms
                 _sp_antes = f_pet.get('sprite')
-                _sub_p = _ms.dar_exp(f_pet, exp_pet)
+                _sub_p = _ms.dar_exp(f_pet, exp_pet, nivel_dueno=_nivel_dueno(ses))
                 _en_piedra = _ms.cargar_diamante(f_pet, exp_pet)
                 if _en_piedra:
                     salida_combate.append(_cl.aviso('You have deposited %d exp in the exp diamond.' % _en_piedra,
@@ -3864,6 +3864,12 @@ def _velocidad_seguir_pet(ses, propia, distancia) -> int:
     if distancia > 4:
         v = max(v, int(dueno * 1.2))
     return v
+
+
+def _nivel_dueno(ses):
+    """El nivel del personaje, tope de su mascota (mascotas.dar_exp)."""
+    p = getattr(ses, 'personaje', None)
+    return int(getattr(p, 'nivel', 0) or 0) or None
 
 
 def posicion_actual(ses, ahora=None):
@@ -10154,7 +10160,7 @@ class Servidor:
                                         p_mascs[str(p_slot)] = ficha
                                     if ficha:
                                         sp_antes = ficha.get('sprite')
-                                        subidos = _ms_p.dar_exp(ficha, exp_ganada)
+                                        subidos = _ms_p.dar_exp(ficha, exp_ganada, nivel_dueno=_nivel_dueno(ses))
                                         _en_piedra_p = _ms_p.cargar_diamante(ficha, exp_ganada)
                                         if _en_piedra_p:
                                             ses.enviar(_cl_p.aviso('You have deposited %d exp in the exp diamond.' % _en_piedra_p,
@@ -18112,18 +18118,12 @@ class Servidor:
                 import clases as _clp
                 import mascotas as _msp
                 import combate as _cb_pu
-                _f = None
-                if objetivo is not None and objetivo in bolsa and inv.es_mascota(bolsa[objetivo]):
-                    _f = _pet_ficha(ses, objetivo)
-                if not _f:
-                    _f = getattr(ses.personaje, 'mascota', None)
-                if not _f and bolsa:
-                    for _r_b, _iid_b in bolsa.items():
-                        if inv.es_mascota(_iid_b):
-                            _f = _pet_ficha(ses, _r_b)
-                            break
-                if not _f:
-                    ses.enviar(_clp.aviso('no tienes ninguna mascota', tipo=0))
+                # SOLO A LA MASCOTA QUE ESTA AFUERA. Antes, sin ninguna invocada, se iba a buscar una a la mochila
+                # (o a la elegida con el objetivo) y el Pet Feed se gastaba en una mascota guardada. Pedido del
+                # usuario el 31/10/2026: "al usar pet feed debe validar si esta algun pet afuera".
+                _f = getattr(ses.personaje, 'mascota', None)
+                if not (_f and _f.get('fuera')):
+                    ses.enviar(_clp.aviso('Summon your pet before using this item.', tipo=0))
                     return
                 _avisos_pu = []
                 _sp_ant_pu = _f.get('sprite')
@@ -18151,7 +18151,7 @@ class Servidor:
                                                  % (_dm['pct'], _dm['tope']), tipo=0))
                     _txt = 'piedra de exp %d%% hasta %d' % (_dm['pct'], _dm['tope'])
                 elif 'exp' in _pet_uso:
-                    _sub_pu = _msp.dar_exp(_f, _pet_uso['exp'])
+                    _sub_pu = _msp.dar_exp(_f, _pet_uso['exp'], nivel_dueno=_nivel_dueno(ses))
                     _txt = '+%d exp (%d niveles -> nv %d)' % (_pet_uso['exp'], _sub_pu, _f.get('nivel', 1))
                 else:
                     _msp.poner_buff_exp(_f, _pet_uso['segundos'],
@@ -18232,7 +18232,7 @@ class Servidor:
                                               tipo=0))
                         return
                     _sp_ant_v = _f.get('sprite')
-                    _sub = _msv.dar_exp(_f, _cuanto)
+                    _sub = _msv.dar_exp(_f, _cuanto, nivel_dueno=_nivel_dueno(ses))
                     _queda = ses.cantidades.get(ranura, 1) - 1
                     if _queda > 0:
                         ses.cantidades[ranura] = _queda
