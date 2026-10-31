@@ -13097,6 +13097,17 @@ class Servidor:
             arma_puesta = ses.inventario.get(3, 0) if ses.inventario else 0
 
             mag = _cb.datos_magia(tipo) if tipo != _cb.ATAQUE_NORMAL else {}
+            # ANDANDO NO SE DA EL GOLPE BASICO: el cliente lo sigue pidiendo mientras el jugador corre, y el
+            # servidor lo aceptaba midiendo el alcance desde el destino (tile_x/tile_y), no desde donde va.
+            # Le queda mas de una casilla del tramo: se suelta el objetivo y no sale el golpe.
+            if tipo == _cb.ATAQUE_NORMAL and ses.personaje:
+                _ax, _ay = posicion_actual(ses)
+                if max(abs(_ax - int(ses.personaje.tile_x or 0)), abs(_ay - int(ses.personaje.tile_y or 0))) > 1:
+                    if getattr(ses, 'objetivo_actual', None) == objetivo:
+                        ses.objetivo_actual = None
+                    log.debug(f"[{addr}] golpe basico ignorado: va andando ({_ax},{_ay}) -> "
+                              f"({ses.personaje.tile_x},{ses.personaje.tile_y})")
+                    return
             # Sin municion no se ataca con arco/honda (si FLECHAS_INFINITAS es False).
             # Antes esto solo decidia si se DESCONTABA una flecha mas abajo: si no
             # habia ninguna en la ranura 4, el golpe se dejaba pasar igual, sin

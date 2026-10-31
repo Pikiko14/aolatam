@@ -145,3 +145,27 @@ def test_andando_hacia_un_monstruo_el_servidor_no_lo_pone_ya_a_su_lado(monkeypat
     import inspect
     fuente = inspect.getsource(app)
     assert 'targ_x, targ_y = _pos_yo' in fuente and '_pos_yo = posicion_actual(ses, ahora)' in fuente
+
+
+def test_corriendo_no_sale_el_golpe_basico(monkeypatch):
+    """"si el player va corriendo deberia detener el ataque basico"."""
+    import time
+    s, packets = _sesion_con_arco(monkeypatch, con_municion=True)
+    p = s.personaje
+    p.tile_x, p.tile_y = 110, 100
+    s._ultimo_tramo = (time.time(), 100 * 32, 100 * 32, 110 * 32, 100 * 32, 100)
+    s.objetivo_actual = 9999
+    app.Servidor.__new__(app.Servidor).manejar(s, 0x0006, None, None, 'test',
+                                               struct.pack('<HI', cb.ATAQUE_NORMAL, 9999))
+    assert not packets and s.objetivo_actual is None
+
+
+def test_al_llegar_si_sale_el_golpe_basico(monkeypatch):
+    import time
+    s, packets = _sesion_con_arco(monkeypatch, con_municion=True)
+    p = s.personaje
+    p.tile_x, p.tile_y = 101, 100
+    s._ultimo_tramo = (time.time() - 5, 100 * 32, 100 * 32, 101 * 32, 100 * 32, 100)   # ya llego
+    app.Servidor.__new__(app.Servidor).manejar(s, 0x0006, None, None, 'test',
+                                               struct.pack('<HI', cb.ATAQUE_NORMAL, 9999))
+    assert packets
