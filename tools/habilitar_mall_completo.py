@@ -57,7 +57,13 @@ QUITADAS = {31441: '2013 Taurus Swordman Lucky Bag', 31442: '2013 Taurus Axeman 
             14563: 'Fane Armor Lucky Bag', 14562: 'Walker Armor Lucky Bag', 14564: 'Lucky Jack Gown Lucky Bag',
             14552: 'Embrace Armor Lucky Bag', 14551: 'Forest Armor Lucky Bag', 14553: 'Spring Gown Lucky Bag',
             9450: 'Holy Palace Armor Lucky Bag', 9451: 'Hermit Light Armor Lucky Bag',
-            9452: 'Sound Gown Lucky Bag'}
+            9452: 'Sound Gown Lucky Bag',
+            # y de Ride (31) las que dan monturas de nivel > 55 (el usuario deja hasta 55):
+            11259: 'Mage Lucky Bag( 2 )', 11257: 'Spearman Lucky Bag( 2 )', 11256: 'Axeman Lucky Bag( 2 )',
+            11255: 'Swordsman Lucky Bag( 2 )', 11437: 'Rehael lucky bag',
+            14565: 'Raymond Seabed Steed Lucky Bag', 14566: 'Round Mini Seal Lucky Bag',
+            14554: 'RedNoble Elephant Lucky Bag', 14555: 'RedScarab Lucky Bag', 9453: 'Circus Elephant Lucky Bag',
+            9454: 'Stiff Beetle Lucky Bag', 9448: 'SwiftTurtle Lucky Bag', 9449: 'IronLand Bird Lucky Bag'}
 
 
 def quitar(d):
