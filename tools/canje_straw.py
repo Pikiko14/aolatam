@@ -2,12 +2,12 @@
 
 * Green Angel (Angel Lyceum, grupo lyceum_services.GRUPO_GREEN = 401): pestles, ride feed y hammers de nivel 3, 4 y 5,
   uno por 100 Straws.
-* Event Overview > Exchange > Enhanced Pestle and Ride Feed (grupo 595): lo mismo, uno por 20 tickets de su tipo
-  (los suelta el jefe de Dark Cavern, instancia_oscura.tickets_del_jefe), y las gemas Clean por 20 Lucky Piercing
-  Hammer Ticket (no hay runas de nivel bajo).
+* Event Overview > Exchange > Enhanced Pestle and Ride Feed (grupo 595): lo mismo y ademas el nivel 6, por tickets de
+  su tipo (los suelta el jefe de Dark Cavern, instancia_oscura.tickets_del_jefe): 20 el nivel 3, 30 el 4, 40 el 5 y 50
+  el 6. Y las gemas de nivel 40 (Ruby, Orange Gem...) por 20 Lucky Piercing Hammer Ticket (no hay runas de nivel bajo).
 
 Reescribe las recetas de esos grupos en extracted_paks/update26/setting/eng/exchange.xml (el que lee el servidor),
-reusando los numeros de receta que ya tenia cada grupo; las que sobran se quitan. El cliente pinta la ventana con el
+reusando los numeros de receta que ya tenia cada grupo (si faltan, toma filas del GRUPO_VACIO). El cliente pinta la ventana con el
 mismo exchange.xml, asi que despues hay que publicarlo:
 
     python tools/canje_straw.py
@@ -31,13 +31,22 @@ RIDE_FEED = ((7039, 'Lvl 3 Lucky Ride Feed'), (7040, 'Lvl 4 Lucky Ride Feed'), (
 PIERCING = ((6907, '3-star Lucky Piercing Hammer'), (6908, '4-star Lucky Piercing Hammer'),
             (6909, '5-star Lucky Piercing Hammer'))
 HAMMERS = ((7085, '3-star Lucky Hammer'), (7086, '4-star Lucky Hammer'), (7087, '5-star Lucky Hammer'))
-GEMAS = ((3094, 'Clean Ruby'), (3099, 'Clean Orange Gem'), (3104, 'Clean Yellow Gem'), (3109, 'Clean Emerald'),
-         (3114, 'Clean Sapphire'), (3119, 'Clean Purple Gem'))
+# Nivel 6: solo en el canje por tickets (31/10/2026).
+NIVEL_6 = {'pestle': (6900, '6-star Lucky Enhanced Pestle'), 'ride': (7042, 'Lvl 6 Lucky Ride Feed'),
+           'piercing': (6910, '6-star Lucky Piercing Hammer'), 'hammer': (7088, '6-star Lucky Hammer')}
+# Las de nivel 40 (las Clean son de nivel 60).
+GEMAS = ((3093, 'Ruby'), (3098, 'Orange Gem'), (3103, 'Yellow Gem'), (3108, 'Emerald'), (3113, 'Sapphire'),
+         (3118, 'Purple Gem'))
 PREMIOS = PESTLES + RIDE_FEED + PIERCING + HAMMERS          # los del Green Angel (el orden de la ventana)
+TICKETS_POR_NIVEL = (20, 30, 40, 50)                        # niveles 3, 4, 5 y 6
 
 TICKET_PESTLE, TICKET_RIDE, TICKET_PIERCING, TICKET_HAMMER = 20228, 20229, 20230, 20231
 GRUPO_TICKETS = 595
 GRUPO_VACIO = 0        # donde van las recetas que sobran (ver reescribir)
+
+
+def _por_tickets(premios, ticket):
+    return [(i, n, ticket, cuantos) for (i, n), cuantos in zip(premios, TICKETS_POR_NIVEL)]
 
 # Event Overview > Exchange > Ride and Robots (grupo 538): monturas raras de nivel 50-60 que no vende ningun NPC, por
 # Mount Coins (cliente_local.ITEM_MONEDA_MONTURA, de Dark Cavern). Las 92 recetas que tenia (monturas y robots de
@@ -57,9 +66,10 @@ COINS_POR_NIVEL = {50: 30, 60: 50}
 # {grupo: [(objeto, nombre, material, cuantos)]}
 CANJES = {
     ly.GRUPO_GREEN: [(item, nombre, ly.STRAW, 100) for item, nombre in PREMIOS],
-    GRUPO_TICKETS: ([(i, n, TICKET_PESTLE, 20) for i, n in PESTLES] + [(i, n, TICKET_RIDE, 20) for i, n in RIDE_FEED]
-                    + [(i, n, TICKET_PIERCING, 20) for i, n in PIERCING]
-                    + [(i, n, TICKET_HAMMER, 20) for i, n in HAMMERS]
+    GRUPO_TICKETS: (_por_tickets(PESTLES + (NIVEL_6['pestle'],), TICKET_PESTLE)
+                    + _por_tickets(RIDE_FEED + (NIVEL_6['ride'],), TICKET_RIDE)
+                    + _por_tickets(PIERCING + (NIVEL_6['piercing'],), TICKET_PIERCING)
+                    + _por_tickets(HAMMERS + (NIVEL_6['hammer'],), TICKET_HAMMER)
                     + [(i, n, TICKET_PIERCING, 20) for i, n in GEMAS]),
     GRUPO_MONTURAS: [(i, n, MOUNT_COIN, COINS_POR_NIVEL[nv]) for i, n, nv in MONTURAS],
 }
@@ -69,6 +79,9 @@ def reescribir(texto, grupo=ly.GRUPO_GREEN):
     """El exchange.xml con las recetas de `grupo` cambiadas por CANJES[grupo]; (texto, numeros de receta usados)."""
     recetas = CANJES[grupo]
     filas = list(re.finditer(r'<exchange 編號="(\d+)" 群組="%d"[^>]*/>' % grupo, texto))
+    if len(filas) < len(recetas) and grupo != GRUPO_VACIO:
+        libres = list(re.finditer(r'<exchange 編號="(\d+)" 群組="%d"[^>]*/>' % GRUPO_VACIO, texto))
+        filas = sorted(filas + libres[:len(recetas) - len(filas)], key=lambda f: int(f.group(1)))
     if len(filas) < len(recetas):
         raise SystemExit('el grupo %d tiene %d recetas y hacen falta %d' % (grupo, len(filas), len(recetas)))
     numeros = [int(f.group(1)) for f in filas][:len(recetas)]

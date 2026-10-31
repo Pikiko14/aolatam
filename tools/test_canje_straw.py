@@ -26,12 +26,20 @@ def test_cada_receta_da_un_item_por_100_straws():
     assert premios == [(item, 1) for item, _ in canje_straw.PREMIOS]
 
 
-def test_el_canje_de_tickets_pide_20_de_su_tipo():
-    """"aca igual los mismos lvl de items de intensificar, agrega runas ... cada pestle cuesta 20"."""
-    for item, nombre, material, cuantos in canje_straw.CANJES[canje_straw.GRUPO_TICKETS]:
-        assert cuantos == 20 and material in (20228, 20229, 20230, 20231)
-    r = app._obtener_receta_exchange(21282)
+def test_el_canje_de_tickets_pide_20_30_40_50_segun_el_nivel():
+    """"los item lvl 3 piden 20 los 4 piden 30 y los 5 piden 40 tambien habilita lvl 6 solo ride feed y lucky hammer
+    y pircien y enhgacement"; las gemas, de nivel 40."""
+    recetas = canje_straw.CANJES[canje_straw.GRUPO_TICKETS]
+    for item, nombre, material, cuantos in recetas:
+        assert material in (20228, 20229, 20230, 20231)
+        nivel = next((n for n in (3, 4, 5, 6) if nombre.startswith(('%d-star' % n, 'Lvl %d ' % n))), None)
+        assert cuantos == (20 if nivel is None else {3: 20, 4: 30, 5: 40, 6: 50}[nivel])
+    assert {6900, 7042, 6910, 7088} <= {r[0] for r in recetas}
+    assert {3093, 3098, 3103, 3108, 3113, 3118} <= {r[0] for r in recetas}
+    r = app._obtener_receta_exchange(15340)
     assert r['materiales'] == [(20228, 20)] and r['premios'] == [(6897, 1)]
+    r = app._obtener_receta_exchange(15343)
+    assert r['materiales'] == [(20228, 50)] and r['premios'] == [(6900, 1)]
 
 
 def test_el_jefe_de_dark_cavern_suelta_de_2_a_5_tickets():
