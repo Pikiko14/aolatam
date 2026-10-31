@@ -3850,6 +3850,31 @@ def _velocidad_seguir_pet(ses, propia, distancia) -> int:
     return v
 
 
+def posicion_actual(ses, ahora=None):
+    """(x, y) en casillas donde esta el personaje AHORA, no a donde va.
+
+    personaje.tile_x/tile_y se pone al DESTINO en cuanto llega el 0x0004. Con el tramo guardado (desde, hasta,
+    velocidad e instante) se calcula por donde va, a 2,5 px/s por punto de speed (combate.PX_POR_SEGUNDO_POR_VELOCIDAD).
+    Lo usa el puesto de venta: se abria en el destino y, al intentar moverse, el servidor te llevaba ahi (un paso
+    adelante; lo vio un jugador en el VPS, 30/10/2026)."""
+    import math
+    import combate as _cb
+    p = getattr(ses, 'personaje', None)
+    tramo = getattr(ses, '_ultimo_tramo', None)
+    if not p:
+        return None
+    if not tramo:
+        return int(p.tile_x or 0), int(p.tile_y or 0)
+    t0, cx, cy, dx, dy, vel = tramo
+    # Solo si el tramo sigue siendo el del destino actual (un salto, un viaje o un portal lo invalidan).
+    if (dx // 32, dy // 32) != (int(p.tile_x or 0), int(p.tile_y or 0)):
+        return int(p.tile_x or 0), int(p.tile_y or 0)
+    largo = math.hypot(dx - cx, dy - cy)
+    recorrido = ((ahora or time.time()) - t0) * max(1, vel) * _cb.PX_POR_SEGUNDO_POR_VELOCIDAD
+    f = 1.0 if largo <= 0 else min(1.0, recorrido / largo)
+    return int((cx + (dx - cx) * f) // 32), int((cy + (dy - cy) * f) // 32)
+
+
 def _velocidad_de(ses) -> int:
     """Velocidad del 0x0005, con monturas y buffs activos de movimiento."""
     base = VELOCIDAD_JUGADOR
@@ -15666,8 +15691,13 @@ class Servidor:
             if getattr(ses, 'sentado', False):
                 ses.sentado = False
 
-            pos_x = int(getattr(ses.personaje, 'tile_x', 0) or 0)
-            pos_y = int(getattr(ses.personaje, 'tile_y', 0) or 0)
+            # Donde ESTA, no a donde iba (ver posicion_actual), y se le para ahi: cliente y servidor coinciden.
+            pos_x, pos_y = posicion_actual(ses)
+            ses.personaje.tile_x, ses.personaje.tile_y = pos_x, pos_y
+            ses._ultimo_tramo = None
+            _MOVE_P = Msg.registry[(0x0005, 's2c', '*')]
+            ses.enviar(_MOVE_P.build(entity_id=ses.personaje.entity_id, cur_x=pos_x * 32, cur_y=pos_y * 32,
+                                     dst_x=pos_x * 32, dst_y=pos_y * 32, speed=_velocidad_de(ses)))
             ses.puesto = {
                 'hawk': hawk,
                 'ventas': ventas,
@@ -21109,6 +21139,8 @@ class Servidor:
                     return
                 ses.personaje.tile_x = dst['x'] // 32
                 ses.personaje.tile_y = dst['y'] // 32
+                # tile_x/tile_y es a donde VA, no donde esta: para saber donde esta de verdad (posicion_actual) se guarda el tramo.
+                ses._ultimo_tramo = (time.time(), d['cur_x'], d['cur_y'], dst['x'], dst['y'], _velocidad_de(ses))
                 # La posicion del companero en el mapa del equipo sale del 0x0026: solo se mandaba al cambiar HP/MP, asi que el
                 # marcador se quedaba donde estaba al invitarlo (lejos). Ahora tambien al moverse, como mucho una vez por segundo.
                 _ahora_eq = time.time()
