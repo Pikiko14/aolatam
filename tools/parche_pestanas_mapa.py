@@ -30,6 +30,8 @@ VENTANA_MAPA = '556'
 PRIMERA_TANDA = {'12245', '12246', '12899', '12898', '12897', '12896', '12895', '12894'}
 SWITCH_MAPS = '24750'
 FUERA = 5000          # X fuera de cualquier pantalla
+# Pestanas que se quitan aunque su region este abierta (pedido del usuario el 31/10/2026: Dungeon).
+SIEMPRE_OCULTAS = {'dungeon'}
 
 
 def regiones_cerradas():
@@ -64,7 +66,7 @@ def main():
     texto = ORIGEN.read_bytes().decode('utf-8')
     cerradas = regiones_cerradas()
     botones = pestanas(texto)
-    ocultar = {i for i, t in botones.items() if t.lower() in cerradas}
+    ocultar = {i for i, t in botones.items() if t.lower() in cerradas | SIEMPRE_OCULTAS}
     segunda = {i for i, t in botones.items() if i not in PRIMERA_TANDA and i != SWITCH_MAPS and t.lower() != 'show all'}
     if segunda and segunda <= ocultar:
         ocultar.add(SWITCH_MAPS)
