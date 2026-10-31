@@ -14,7 +14,7 @@ DURACION_ANGEL_ARENA_MIN = 30
 # XML publicos. Son parametros de compatibilidad, NO tasas oficiales IGG.
 ASTRO_PESOS_NORMAL = (1, 1, 1)  # intensidades I / II / III
 ASTRO_PESOS_CRISTAL = (1, 1, 4)  # el tooltip promete mayor chance de III
-STRAW_DROP_PROBABILIDAD = 0.50  # provisional; usuario recuerda caida alta
+STRAW_DROP_PROBABILIDAD = 0.15  # 15%: pedido del usuario el 31/10/2026 (antes 0.50)
 
 
 # =====================================================================
@@ -506,7 +506,13 @@ NIVEL_MAXIMO_PERSONAJE = 60
 # 2.0 = Doble experiencia, etc.
 TASA_EXP_BASE = 1.5         # Multiplicador de EXP de personaje
 TASA_SKILL_EXP_BASE = 2     # Multiplicador de EXP de habilidades (stamina/skills)
-TASA_DROP_BASE = 0.04         # Multiplicador de probabilidad de drop de items
+# DROP: cada item de la tabla oficial del monstruo (serv_drop.xml) tira con SU probabilidad por esta tasa
+# (1.0 = la oficial; 2.0 = el doble...). Ejemplos a 1.0 por monstruo muerto: Harp Sheep ~1,5% de soltar algo,
+# Green Wolf ~1,1%, Evil Fire Elf ~0,07%. El fin de semana x1,5 y las Lucky Card suman encima.
+# (Hasta el 31/10/2026 decidia si caia algo, a 0,9 x tasa, y el item salia al azar: entonces estaba en 0.04.)
+TASA_DROP_BASE = 1.0         # Multiplicador de la probabilidad de drop de cada item
+# Monstruos SIN tabla oficial (sale una lista por nombre o por nivel): probabilidad de soltar un item, por la tasa.
+DROP_SIN_TABLA = 0.03
 TASA_ORO_BASE = 2.0           # Multiplicador de oro obtenido de monstruos
 
 # =====================================================================

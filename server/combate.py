@@ -1241,13 +1241,68 @@ def botin_items(npc_type: int, nombre: str = '', nivel: int = 0, buffs=None) -> 
     # de esos mapas se conserva el comportamiento previo de los jefes.
     jefe_garantizado = (npc_type in _JEFES_CHAOS if npc_type in _MONSTRUOS_CHAOS
                         else (es_jefe(npc_type) and not es_de_tropa(npc_type)))
+    oficial = _tabla_oficial(npc_type, candidatos)
     if jefe_garantizado:
-        drops.append(random.choice(candidatos))
+        if oficial:
+            items, _num = oficial
+            it, ct, _p = random.choices(items, weights=[max(p, 1e-12) for _i, _c, p in items], k=1)[0]
+            drops.append((it, ct))
+        else:
+            drops.append(random.choice(candidatos))
         return drops
-    prob = min(0.95, 0.90 * configuracion.multiplicador_drop(buffs))
+    mult = configuracion.multiplicador_drop(buffs)
+    if oficial:
+        # LA PROBABILIDAD DE CADA ITEM, la de la tabla oficial del monstruo (serv_drop.xml: prob / factor), por la
+        # tasa del servidor. Cada item tira por su cuenta y caen como mucho 個數 (casi siempre 1). Antes la tasa
+        # decidia si caia algo y el item salia al azar con la misma probabilidad para todos: la gorra comun y el
+        # equipo raro por igual. Pedido del usuario el 31/10/2026.
+        items, num = oficial
+        salen = [(it, ct) for it, ct, p in items if random.random() < min(1.0, p * mult)]
+        if len(salen) > num:
+            salen = random.sample(salen, num)
+        return salen
+    # Sin tabla oficial (las de por nombre o por nivel): un item al azar con DROP_SIN_TABLA.
+    prob = min(0.95, float(getattr(configuracion, 'DROP_SIN_TABLA', 0.03)) * mult)
     if random.random() < prob:
         drops.append(random.choice(candidatos))
     return drops
+
+
+_OFICIAL_CACHE = {}
+
+
+def _tabla_oficial(npc_type: int, candidatos: list):
+    """([(item, cantidad, probabilidad 0..1)], cuantos como mucho) de la tabla oficial del monstruo en serv_drop.xml,
+    o None. Solo si sus items son los mismos que `candidatos` (las pocas tablas que se tocaron a mano, como las
+    cajas de regalo, siguen con su lista)."""
+    if npc_type in _OFICIAL_CACHE:
+        return _OFICIAL_CACHE[npc_type]
+    res = None
+    try:
+        did = (_MON_INFO_CACHE.get(npc_type) or (None,))[0]
+        if did is None:
+            con = sqlite3.connect(pathlib.Path(__file__).parent.parent / 'corpus' / 'content.db')
+            r = con.execute('select drop_id from monster where id=?', (str(npc_type),)).fetchone()
+            con.close()
+            did = str(r[0] or '').strip() if r else ''
+        from house_services import xml_rows
+        fila = xml_rows('serv_drop.xml').get(int(did)) if str(did).isdigit() else None
+        if fila and str(fila.get('factor') or '').isdigit() and int(fila['factor']) > 0:
+            factor = float(fila['factor'])
+            items = []
+            for i in range(1, 41):
+                it, pr = str(fila.get('item%d' % i) or ''), str(fila.get('prob%d' % i) or '0')
+                if it.isdigit() and int(it) > 0:
+                    ct = str(fila.get('count%d' % i) or '1')
+                    items.append((int(it), max(1, int(ct) if ct.isdigit() else 1),
+                                  (int(pr) if pr.isdigit() else 0) / factor))
+            if items and {i for i, _c, _p in items} == {i for i, _c in candidatos}:
+                num = str(fila.get('個數') or '1')
+                res = (items, max(1, int(num) if num.isdigit() else 1))
+    except Exception:
+        res = None
+    _OFICIAL_CACHE[npc_type] = res
+    return res
 
 
 _MAGIC_CACHE = {}

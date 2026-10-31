@@ -81,13 +81,15 @@ def test_la_tasa_de_drop_manda_en_cuanto_cae():
     assert not cb.es_jefe(23765), 'el bicho de la prueba no puede ser jefe'
     original = cf.TASA_DROP_BASE
     try:
-        cf.TASA_DROP_BASE = 10.5
+        # Desde el 31/10/2026 la tasa multiplica la probabilidad OFICIAL de cada item (muy baja): para que caiga
+        # casi siempre hace falta una tasa enorme.
+        cf.TASA_DROP_BASE = 100000
         alto = sum(1 for _ in range(300) if cb.botin_items(23765, 'Hardworking Pig', 390))
         cf.TASA_DROP_BASE = 0.01
         bajo = sum(1 for _ in range(300) if cb.botin_items(23765, 'Hardworking Pig', 390))
     finally:
         cf.TASA_DROP_BASE = original
-    assert alto > 240, 'con tasa 10.5 solo cayo %d de 300' % alto
+    assert alto > 240, 'con tasa alta solo cayo %d de 300' % alto
     assert bajo < 60, 'con tasa 0.01 cayo %d de 300' % bajo
 
 
@@ -255,3 +257,19 @@ if __name__ == '__main__':
                 fallos += 1
                 print('  FALLA %s: %s' % (nombre, e))
     print('fallos:', fallos)
+
+
+def test_cada_item_cae_con_su_probabilidad_oficial():
+    """"vamos con la tasa por mob debe ser asi": Harp Sheep (serv_drop.xml 43) suelta mucho mas la Traveller
+    Rabbi's Cap (5211) que la Quality (868), y la Map Piece (8680) la que mas."""
+    import collections
+    import random
+    import configuracion as cf
+    original = cf.TASA_DROP_BASE
+    random.seed(11)
+    try:
+        cf.TASA_DROP_BASE = 20
+        salen = collections.Counter(it for _ in range(20000) for it, _c in cb.botin_items(43, 'Harp Sheep', 24))
+    finally:
+        cf.TASA_DROP_BASE = original
+    assert salen[3082] > salen[1341] > salen[1342] > 0
