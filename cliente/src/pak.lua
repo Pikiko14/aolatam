@@ -56,34 +56,58 @@ function P.abrir_cliente(carpeta, omitir)
     if f then f:close(); if not (omitir and omitir[n:lower()]) then lista[#lista + 1] = n end end
   end
   table.sort(lista, function(a, b) return ordenar(a) < ordenar(b) end)
-  for _, n in ipairs(lista) do
-    local f = io.open(carpeta .. sep .. n, 'rb')
-    if f then
-      self.archivos[n] = f
-      for _, e in ipairs(leer_directorio(f)) do
-        if e.nombre:sub(-1) ~= '/' then
-          e.pak = n
-          self.indice[e.nombre:lower()] = e
-          self.total = self.total + 1
-        end
-      end
+  self.sep, self.orden = sep, lista
+  setmetatable(self, { __index = P })
+  for _, n in ipairs(lista) do self:_indexar(n) end
+  return self
+end
+
+-- Abre (o vuelve a abrir) un pak y pone sus entradas en el indice. Un pak de numero mas bajo no pisa a uno mas alto.
+function P:_indexar(n)
+  if self.archivos[n] then self.archivos[n]:close() end
+  local f = io.open(self.carpeta .. self.sep .. n, 'rb')
+  self.archivos[n] = f
+  if not f then return end
+  local rango = ordenar(n)
+  for _, e in ipairs(leer_directorio(f)) do
+    if e.nombre:sub(-1) ~= '/' then
+      e.pak = n
+      local k = e.nombre:lower()
+      local previo = self.indice[k]
+      if not previo then self.total = self.total + 1 end
+      if not previo or previo.pak == n or ordenar(previo.pak) <= rango then self.indice[k] = e end
     end
   end
-  setmetatable(self, { __index = P })
-  return self
 end
 
 function P:existe(ruta) return self.indice[ruta:lower():gsub('\\', '/')] ~= nil end
 
--- Bytes del archivo (descomprimidos) o nil.
-function P:leer(ruta)
-  local e = self.indice[(ruta:lower():gsub('\\', '/'))]
-  if not e then return nil end
+local function _leer_entrada(self, e)
   local f = self.archivos[e.pak]
   f:seek('set', e.lo)
   local raw = f:read(e.cs)
   if e.meth == 8 then return love.data.decompress('string', 'deflate', raw) end
   return raw
+end
+
+-- Bytes del archivo (descomprimidos) o nil.
+-- EL PAK PUEDE CAMBIAR CON EL CLIENTE ABIERTO: el servidor local reescribe update27.pak al arrancar (parche.generar)
+-- y tools/subir_mapa.py tambien. El indice se lee al abrir y los datos despues, asi que los desplazamientos viejos
+-- caian en otro sitio ("Could not decompress zlib/gzip-compressed data"). Si falla, se vuelve a leer ese pak y se
+-- reintenta una vez.
+function P:leer(ruta)
+  local k = (ruta:lower():gsub('\\', '/'))
+  local e = self.indice[k]
+  if not e then return nil end
+  local ok, datos = pcall(_leer_entrada, self, e)
+  if ok then return datos end
+  self:_indexar(e.pak)
+  e = self.indice[k]
+  if not e then return nil end
+  ok, datos = pcall(_leer_entrada, self, e)
+  if ok then return datos end
+  print(('pak: no se pudo leer %s de %s (%s)'):format(ruta, e.pak, tostring(datos)))
+  return nil
 end
 
 -- Rutas que empiezan por un prefijo (en minusculas).

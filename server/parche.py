@@ -83,8 +83,17 @@ def cambios_del_cliente(ruta_cli: pathlib.Path) -> dict:
             if previo and previo[0] == entrada[0] and previo[2] == entrada[2]:
                 continue
             out[nombre] = _leer(actual_raw, entrada)
-    out.update(_extras())
-    out.update(_pack_del_editor(ruta_cli))
+    # El pack del editor y parches/extras pueden traer el MISMO mapa. Gana el mas reciente: antes el del editor
+    # pisaba siempre, y cuando su pack se quedaba atras se repartia un mapa viejo aunque tools/subir_mapa.py hubiera
+    # puesto el nuevo en extras (el 900 salio con el terreno de una version anterior, 30/10/2026).
+    extras, editor = _extras(), _pack_del_editor(ruta_cli)
+    pack = pathlib.Path(ruta_cli) / PACK_EDITOR if ruta_cli else None
+    t_pack = pack.stat().st_mtime if pack and pack.is_file() else 0
+    t_extras = _fechas_extras()
+    out.update(editor)
+    for nombre, datos in extras.items():
+        if nombre not in editor or t_extras.get(nombre, 0) >= t_pack:
+            out[nombre] = datos
     return out
 
 
@@ -94,7 +103,8 @@ PACK_EDITOR = 'update28.pak'
 
 def _pack_del_editor(ruta_cli) -> dict:
     """{NOMBRE: bytes} de los mapas del pack del editor, listos para repartir: a cada map###.mpc se le quitan los NPC que
-    el servidor ya manda (tools/mpc_sin_npc.py), para que el mapa muestre un solo punto por NPC. Pisan a los extras."""
+    el servidor ya manda (tools/mpc_sin_npc.py), para que el mapa muestre un solo punto por NPC. Si el mismo mapa esta
+    tambien en parches/extras, gana el mas reciente (ver cambios_del_cliente)."""
     f = pathlib.Path(ruta_cli) / PACK_EDITOR
     if not f.is_file():
         return {}
@@ -128,6 +138,15 @@ def _extras() -> dict:
             if f.is_file():
                 out[str(f.relative_to(base)).upper().replace('/', '\\')] = f.read_bytes()
     return out
+
+
+def _fechas_extras() -> dict:
+    """{NOMBRE: mtime} de los archivos de parches/extras (mismas claves que _extras)."""
+    base = DESTINO / 'extras'
+    if not base.is_dir():
+        return {}
+    return {str(f.relative_to(base)).upper().replace('/', '\\'): f.stat().st_mtime
+            for f in base.rglob('*') if f.is_file()}
 
 
 def armar_pak(archivos: dict) -> bytes:
