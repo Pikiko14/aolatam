@@ -3,1166 +3,467 @@
  "stage": 900,
  "spawns": [
   {
-   "entity_id": 7550079,
-   "nombre": "Puqi Local",
-   "npc_type": 1176,
-   "sprite": 42283,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    32,
-    35
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 52,
-   "sprite_original": 42421,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550080,
-   "nombre": "Puqi Local",
-   "npc_type": 1176,
-   "sprite": 42283,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    37,
-    32
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 52,
-   "sprite_original": 42421,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550081,
-   "nombre": "Puqi Local",
-   "npc_type": 1176,
-   "sprite": 42283,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    38,
-    29
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 52,
-   "sprite_original": 42421,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550082,
-   "nombre": "Puqi Local",
-   "npc_type": 1176,
-   "sprite": 42283,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    38,
-    26
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 52,
-   "sprite_original": 42421,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550083,
-   "nombre": "Puqi Local",
-   "npc_type": 1176,
-   "sprite": 42283,
+   "entity_id": 7550181,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
    "klass": 1,
    "monstruo": true,
    "tile": [
     31,
-    27
+    45
    ],
-   "direccion": 4,
+   "direccion": 0,
    "visible": 0,
-   "nivel": 52,
-   "sprite_original": 42421,
-   "hp_mult": 0.7
+   "nivel": 46,
+   "propio": "dc46"
   },
   {
-   "entity_id": 7550084,
-   "nombre": "Puqi Local",
-   "npc_type": 1176,
-   "sprite": 42283,
+   "entity_id": 7550182,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
    "klass": 1,
    "monstruo": true,
    "tile": [
-    30,
-    32
+    31,
+    39
    ],
-   "direccion": 4,
+   "direccion": 0,
    "visible": 0,
-   "nivel": 52,
-   "sprite_original": 42421,
-   "hp_mult": 0.7
+   "nivel": 46,
+   "propio": "dc46"
   },
   {
-   "entity_id": 7550085,
-   "nombre": "Puqi Local",
-   "npc_type": 1176,
-   "sprite": 42283,
+   "entity_id": 7550183,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
    "klass": 1,
    "monstruo": true,
    "tile": [
-    35,
-    29
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 52,
-   "sprite_original": 42421,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550086,
-   "nombre": "Death Leech 1",
-   "npc_type": 220,
-   "sprite": 42030,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    15,
-    67
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 53,
-   "sprite_original": 42144,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550087,
-   "nombre": "Death Leech 1",
-   "npc_type": 220,
-   "sprite": 42030,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    16,
-    62
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 53,
-   "sprite_original": 42144,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550088,
-   "nombre": "Death Leech 1",
-   "npc_type": 220,
-   "sprite": 42030,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    21,
-    60
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 53,
-   "sprite_original": 42144,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550089,
-   "nombre": "Death Leech 1",
-   "npc_type": 220,
-   "sprite": 42030,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    24,
-    65
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 53,
-   "sprite_original": 42144,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550090,
-   "nombre": "Death Leech 1",
-   "npc_type": 220,
-   "sprite": 42030,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    19,
-    68
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 53,
-   "sprite_original": 42144,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550092,
-   "nombre": "超喰イノシシ",
-   "npc_type": 3781,
-   "sprite": 42367,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    53,
-    102
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 55,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550093,
-   "nombre": "超喰イノシシ",
-   "npc_type": 3781,
-   "sprite": 42367,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    57,
-    100
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 55,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550094,
-   "nombre": "超喰イノシシ",
-   "npc_type": 3781,
-   "sprite": 42367,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    60,
-    97
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 55,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550097,
-   "nombre": "超喰イノシシ",
-   "npc_type": 3781,
-   "sprite": 42367,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    53,
-    99
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 55,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550098,
-   "nombre": "Howling Wolf",
-   "npc_type": 5068,
-   "sprite": 42063,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    64,
+    39,
     47
    ],
-   "direccion": 4,
+   "direccion": 0,
    "visible": 0,
-   "nivel": 55,
-   "sprite_original": 42495,
-   "hp_mult": 0.7
+   "nivel": 46,
+   "propio": "dc46"
   },
   {
-   "entity_id": 7550099,
-   "nombre": "Howling Wolf",
-   "npc_type": 5068,
-   "sprite": 42063,
+   "entity_id": 7550184,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
    "klass": 1,
    "monstruo": true,
    "tile": [
-    62,
-    42
+    47,
+    41
    ],
-   "direccion": 4,
+   "direccion": 0,
    "visible": 0,
-   "nivel": 55,
-   "sprite_original": 42495,
-   "hp_mult": 0.7
+   "nivel": 46,
+   "propio": "dc46"
   },
   {
-   "entity_id": 7550100,
-   "nombre": "Howling Wolf",
-   "npc_type": 5068,
-   "sprite": 42063,
+   "entity_id": 7550185,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
    "klass": 1,
    "monstruo": true,
    "tile": [
-    65,
-    37
+    48,
+    45
    ],
-   "direccion": 4,
+   "direccion": 0,
    "visible": 0,
-   "nivel": 55,
-   "sprite_original": 42495,
-   "hp_mult": 0.7
+   "nivel": 46,
+   "propio": "dc46"
   },
   {
-   "entity_id": 7550101,
-   "nombre": "Howling Wolf",
-   "npc_type": 5068,
-   "sprite": 42063,
+   "entity_id": 7550186,
+   "nombre": "Crystal Dragon Turtle",
+   "npc_type": 8137,
+   "sprite": 43043,
    "klass": 1,
    "monstruo": true,
    "tile": [
-    71,
+    39,
+    41
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 46,
+   "propio": "dc46"
+  },
+  {
+   "entity_id": 7550187,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    87,
     36
    ],
-   "direccion": 4,
+   "direccion": 0,
    "visible": 0,
-   "nivel": 55,
-   "sprite_original": 42495,
-   "hp_mult": 0.7
+   "nivel": 45,
+   "propio": "dc45"
   },
   {
-   "entity_id": 7550102,
-   "nombre": "Howling Wolf",
-   "npc_type": 5068,
-   "sprite": 42063,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    74,
-    42
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 55,
-   "sprite_original": 42495,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550103,
-   "nombre": "Howling Wolf",
-   "npc_type": 5068,
-   "sprite": 42063,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    71,
-    47
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 55,
-   "sprite_original": 42495,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550104,
-   "nombre": "Howling Wolf",
-   "npc_type": 5068,
-   "sprite": 42063,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    81,
-    70
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 55,
-   "sprite_original": 42495,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550105,
-   "nombre": "Howling Wolf",
-   "npc_type": 5068,
-   "sprite": 42063,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    79,
-    67
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 55,
-   "sprite_original": 42495,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550106,
-   "nombre": "Howling Wolf",
-   "npc_type": 5068,
-   "sprite": 42063,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    80,
-    62
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 55,
-   "sprite_original": 42495,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550107,
-   "nombre": "Howling Wolf",
-   "npc_type": 5068,
-   "sprite": 42063,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    86,
-    68
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 55,
-   "sprite_original": 42495,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550108,
-   "nombre": "Howling Wolf",
-   "npc_type": 5068,
-   "sprite": 42063,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    85,
-    92
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 55,
-   "sprite_original": 42495,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550109,
-   "nombre": "Howling Wolf",
-   "npc_type": 5068,
-   "sprite": 42063,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    89,
-    95
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 55,
-   "sprite_original": 42495,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550110,
-   "nombre": "Howling Wolf",
-   "npc_type": 5068,
-   "sprite": 42063,
+   "entity_id": 7550188,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
    "klass": 1,
    "monstruo": true,
    "tile": [
     95,
-    93
+    30
    ],
-   "direccion": 4,
+   "direccion": 0,
    "visible": 0,
-   "nivel": 55,
-   "sprite_original": 42495,
-   "hp_mult": 0.7
+   "nivel": 45,
+   "propio": "dc45"
   },
   {
-   "entity_id": 7550111,
-   "nombre": "Howling Wolf",
-   "npc_type": 5068,
-   "sprite": 42063,
+   "entity_id": 7550189,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    102,
+    34
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45,
+   "propio": "dc45"
+  },
+  {
+   "entity_id": 7550190,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    96,
+    39
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45,
+   "propio": "dc45"
+  },
+  {
+   "entity_id": 7550191,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    96,
+    35
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45,
+   "propio": "dc45"
+  },
+  {
+   "entity_id": 7550192,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    100,
+    39
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45,
+   "propio": "dc45"
+  },
+  {
+   "entity_id": 7550193,
+   "nombre": "Iron Can Snail",
+   "npc_type": 8138,
+   "sprite": 43106,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    100,
+    32
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45,
+   "propio": "dc45"
+  },
+  {
+   "entity_id": 7550194,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    89,
+    108
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 47,
+   "propio": "dc47"
+  },
+  {
+   "entity_id": 7550195,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    92,
+    106
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 47,
+   "propio": "dc47"
+  },
+  {
+   "entity_id": 7550196,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
    "klass": 1,
    "monstruo": true,
    "tile": [
     97,
-    89
+    106
    ],
-   "direccion": 4,
+   "direccion": 0,
    "visible": 0,
-   "nivel": 55,
-   "sprite_original": 42495,
-   "hp_mult": 0.7
+   "nivel": 47,
+   "propio": "dc47"
   },
   {
-   "entity_id": 7550112,
-   "nombre": "Howling Wolf",
-   "npc_type": 5068,
-   "sprite": 42063,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    91,
-    88
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 55,
-   "sprite_original": 42495,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550113,
-   "nombre": "Howling Wolf",
-   "npc_type": 5068,
-   "sprite": 42063,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    91,
-    92
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 55,
-   "sprite_original": 42495,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550114,
-   "nombre": "Fane Priest",
-   "npc_type": 207,
-   "sprite": 42088,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    141,
-    91
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 61,
-   "sprite_original": 42208,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550115,
-   "nombre": "Cursed General",
-   "npc_type": 5255,
-   "sprite": 42093,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    129,
-    69
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 60,
-   "sprite_original": 42322,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550116,
-   "nombre": "Cursed General",
-   "npc_type": 5255,
-   "sprite": 42093,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    129,
-    63
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 60,
-   "sprite_original": 42322,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550118,
-   "nombre": "Cursed General",
-   "npc_type": 5255,
-   "sprite": 42093,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    125,
-    69
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 60,
-   "sprite_original": 42322,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550119,
-   "nombre": "Cursed General",
-   "npc_type": 5255,
-   "sprite": 42093,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    134,
-    67
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 60,
-   "sprite_original": 42322,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550120,
-   "nombre": "Cursed General",
-   "npc_type": 5255,
-   "sprite": 42093,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    113,
-    38
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 60,
-   "sprite_original": 42322,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550121,
-   "nombre": "Cursed General",
-   "npc_type": 5255,
-   "sprite": 42093,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    113,
-    33
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 60,
-   "sprite_original": 42322,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550122,
-   "nombre": "Cursed General",
-   "npc_type": 5255,
-   "sprite": 42093,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    119,
-    34
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 60,
-   "sprite_original": 42322,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550123,
-   "nombre": "Cursed General",
-   "npc_type": 5255,
-   "sprite": 42093,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    120,
-    39
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 60,
-   "sprite_original": 42322,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550124,
-   "nombre": "Cursed General",
-   "npc_type": 5255,
-   "sprite": 42093,
+   "entity_id": 7550197,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
    "klass": 1,
    "monstruo": true,
    "tile": [
     99,
-    56
+    106
    ],
-   "direccion": 4,
+   "direccion": 0,
    "visible": 0,
-   "nivel": 60,
-   "sprite_original": 42322,
-   "hp_mult": 0.7
+   "nivel": 47,
+   "propio": "dc47"
   },
   {
-   "entity_id": 7550125,
-   "nombre": "Cursed General",
-   "npc_type": 5255,
-   "sprite": 42093,
+   "entity_id": 7550198,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
    "klass": 1,
    "monstruo": true,
    "tile": [
-    98,
-    50
+    89,
+    104
    ],
-   "direccion": 4,
+   "direccion": 5,
    "visible": 0,
-   "nivel": 60,
-   "sprite_original": 42322,
-   "hp_mult": 0.7
+   "nivel": 47,
+   "propio": "dc47"
   },
   {
-   "entity_id": 7550126,
-   "nombre": "Cursed General",
-   "npc_type": 5255,
-   "sprite": 42093,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    104,
-    48
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 60,
-   "sprite_original": 42322,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550127,
-   "nombre": "Cursed General",
-   "npc_type": 5255,
-   "sprite": 42093,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    110,
-    50
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 60,
-   "sprite_original": 42322,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550128,
-   "nombre": "Cursed General",
-   "npc_type": 5255,
-   "sprite": 42093,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    103,
-    56
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 60,
-   "sprite_original": 42322,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550129,
-   "nombre": "Puqi Pirate",
-   "npc_type": 1185,
-   "sprite": 42076,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    149,
-    70
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 62,
-   "sprite_original": 42425,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550130,
-   "nombre": "Puqi Pirate",
-   "npc_type": 1185,
-   "sprite": 42076,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    149,
-    65
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 62,
-   "sprite_original": 42425,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550131,
-   "nombre": "Puqi Pirate",
-   "npc_type": 1185,
-   "sprite": 42076,
+   "entity_id": 7550199,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
    "klass": 1,
    "monstruo": true,
    "tile": [
     156,
-    64
+    114
    ],
-   "direccion": 4,
+   "direccion": 5,
    "visible": 0,
-   "nivel": 62,
-   "sprite_original": 42425,
-   "hp_mult": 0.7
+   "nivel": 47,
+   "propio": "dc47"
   },
   {
-   "entity_id": 7550132,
-   "nombre": "Puqi Pirate",
-   "npc_type": 1185,
-   "sprite": 42076,
+   "entity_id": 7550200,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
    "klass": 1,
    "monstruo": true,
    "tile": [
-    155,
-    68
+    159,
+    107
    ],
-   "direccion": 4,
+   "direccion": 5,
    "visible": 0,
-   "nivel": 62,
-   "sprite_original": 42425,
-   "hp_mult": 0.7
+   "nivel": 47,
+   "propio": "dc47"
   },
   {
-   "entity_id": 7550133,
-   "nombre": "Puqi Pirate",
-   "npc_type": 1185,
-   "sprite": 42076,
+   "entity_id": 7550201,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
    "klass": 1,
    "monstruo": true,
    "tile": [
-    152,
-    67
+    162,
+    99
    ],
-   "direccion": 4,
+   "direccion": 5,
    "visible": 0,
-   "nivel": 62,
-   "sprite_original": 42425,
-   "hp_mult": 0.7
+   "nivel": 47,
+   "propio": "dc47"
   },
   {
-   "entity_id": 7550134,
+   "entity_id": 7550202,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    154,
+    110
+   ],
+   "direccion": 5,
+   "visible": 0,
+   "nivel": 47,
+   "propio": "dc47"
+  },
+  {
+   "entity_id": 7550203,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    151,
+    114
+   ],
+   "direccion": 5,
+   "visible": 0,
+   "nivel": 47,
+   "propio": "dc47"
+  },
+  {
+   "entity_id": 7550204,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    143,
+    116
+   ],
+   "direccion": 5,
+   "visible": 0,
+   "nivel": 47,
+   "propio": "dc47"
+  },
+  {
+   "entity_id": 7550205,
+   "nombre": "Clawed Swift Dragon",
+   "npc_type": 8140,
+   "sprite": 43088,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    148,
+    111
+   ],
+   "direccion": 5,
+   "visible": 0,
+   "nivel": 47,
+   "propio": "dc47"
+  },
+  {
+   "entity_id": 7550206,
+   "nombre": "Steel Armor Tiger",
+   "npc_type": 8153,
+   "sprite": 43073,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    162,
+    84
+   ],
+   "direccion": 5,
+   "visible": 0,
+   "nivel": 52,
+   "propio": "dc52"
+  },
+  {
+   "entity_id": 7550207,
+   "nombre": "Steel Armor Tiger",
+   "npc_type": 8153,
+   "sprite": 43073,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    158,
+    66
+   ],
+   "direccion": 5,
+   "visible": 0,
+   "nivel": 52,
+   "propio": "dc52"
+  },
+  {
+   "entity_id": 7550208,
+   "nombre": "Steel Armor Tiger",
+   "npc_type": 8153,
+   "sprite": 43073,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    161,
+    48
+   ],
+   "direccion": 5,
+   "visible": 0,
+   "nivel": 52,
+   "propio": "dc52"
+  },
+  {
+   "entity_id": 7550209,
    "nombre": "Dragonkin Moowad",
    "npc_type": 209,
    "sprite": 42091,
    "klass": 1,
    "monstruo": true,
    "tile": [
-    185,
-    57
+    161,
+    15
    ],
-   "direccion": 4,
+   "direccion": 5,
    "visible": 0,
-   "nivel": 65,
-   "hp_mult": 28.0,
-   "atk_mult": 1.3,
-   "jefe": true
-  },
-  {
-   "entity_id": 7550135,
-   "nombre": "Seal Guardian I",
-   "npc_type": 208,
-   "sprite": 42093,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    47,
-    76
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 1.4,
-   "atk_mult": 1.15,
-   "elite": true,
-   "sello": 1
-  },
-  {
-   "entity_id": 7550136,
-   "nombre": "Seal Guardian II",
-   "npc_type": 208,
-   "sprite": 42093,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    66,
-    43
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 1.4,
-   "atk_mult": 1.15,
-   "elite": true,
-   "sello": 2
-  },
-  {
-   "entity_id": 7550137,
-   "nombre": "Seal Guardian III",
-   "npc_type": 208,
-   "sprite": 42093,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    138,
-    88
-   ],
-   "direccion": 4,
-   "visible": 0,
-   "nivel": 60,
-   "hp_mult": 1.4,
-   "atk_mult": 1.15,
-   "elite": true,
-   "sello": 3
-  },
-  {
-   "entity_id": 7550138,
-   "nombre": "Mane Boar",
-   "npc_type": 120,
-   "sprite": 42065,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    53,
-    93
-   ],
-   "direccion": 0,
-   "visible": 0,
-   "nivel": 15,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550139,
-   "nombre": "Mane Boar",
-   "npc_type": 120,
-   "sprite": 42065,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    52,
-    97
-   ],
-   "direccion": 0,
-   "visible": 0,
-   "nivel": 15,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550140,
-   "nombre": "Mane Boar",
-   "npc_type": 120,
-   "sprite": 42065,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    55,
-    98
-   ],
-   "direccion": 0,
-   "visible": 0,
-   "nivel": 15,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550141,
-   "nombre": "Mane Boar",
-   "npc_type": 120,
-   "sprite": 42065,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    57,
-    98
-   ],
-   "direccion": 0,
-   "visible": 0,
-   "nivel": 15,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550142,
-   "nombre": "Mane Boar",
-   "npc_type": 120,
-   "sprite": 42065,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    57,
-    95
-   ],
-   "direccion": 0,
-   "visible": 0,
-   "nivel": 15,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550143,
-   "nombre": "Mane Boar",
-   "npc_type": 120,
-   "sprite": 42065,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    55,
-    94
-   ],
-   "direccion": 0,
-   "visible": 0,
-   "nivel": 15,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550144,
-   "nombre": "Mane Boar",
-   "npc_type": 120,
-   "sprite": 42065,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    53,
-    94
-   ],
-   "direccion": 0,
-   "visible": 0,
-   "nivel": 15,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550145,
-   "nombre": "Mane Boar",
-   "npc_type": 120,
-   "sprite": 42065,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    54,
-    96
-   ],
-   "direccion": 0,
-   "visible": 0,
-   "nivel": 15,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550146,
-   "nombre": "Mane Boar",
-   "npc_type": 120,
-   "sprite": 42065,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    58,
-    97
-   ],
-   "direccion": 0,
-   "visible": 0,
-   "nivel": 15,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550147,
-   "nombre": "Mane Boar",
-   "npc_type": 120,
-   "sprite": 42065,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    59,
-    95
-   ],
-   "direccion": 0,
-   "visible": 0,
-   "nivel": 15,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550148,
-   "nombre": "Mane Boar",
-   "npc_type": 120,
-   "sprite": 42065,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    52,
-    92
-   ],
-   "direccion": 0,
-   "visible": 0,
-   "nivel": 15,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550149,
-   "nombre": "Mane Boar",
-   "npc_type": 120,
-   "sprite": 42065,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    53,
-    90
-   ],
-   "direccion": 0,
-   "visible": 0,
-   "nivel": 15,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550150,
-   "nombre": "Mane Boar",
-   "npc_type": 120,
-   "sprite": 42065,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    55,
-    91
-   ],
-   "direccion": 0,
-   "visible": 0,
-   "nivel": 15,
-   "hp_mult": 0.7
-  },
-  {
-   "entity_id": 7550151,
-   "nombre": "Mane Boar",
-   "npc_type": 120,
-   "sprite": 42065,
-   "klass": 1,
-   "monstruo": true,
-   "tile": [
-    56,
-    93
-   ],
-   "direccion": 0,
-   "visible": 0,
-   "nivel": 15,
-   "hp_mult": 0.7
+   "nivel": 65
   }
  ],
  "recursos": [],
