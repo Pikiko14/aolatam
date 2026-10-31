@@ -95,8 +95,8 @@ class Handler(BaseHTTPRequestHandler):
         if not nuevo:
             return self._json(200, {'ok': False, 'mensaje': 'Ese usuario ya existe. Prueba con otro.'})
         self._json(200, {'ok': True, 'mensaje':
-                         'Usuario "%s" reservado. Abre el launcher del juego y entra con ese usuario: '
-                         'la contrasena que escribas la primera vez queda fijada como la tuya.' % usuario})
+                         '¡Cuenta "%s" creada! Descarga el juego, ábrelo con el launcher y entra con ese usuario: '
+                         'la contraseña que escribas la primera vez queda como la tuya.' % usuario})
 
 
 def main():

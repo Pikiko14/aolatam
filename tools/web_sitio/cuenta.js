@@ -43,7 +43,7 @@ accountForm.addEventListener('submit', async (ev) => {
   const usuario = accountInput.value.trim();
   if (!usuario) { ponEstado('Escribe un nombre de usuario.', 'error'); return; }
   accountButton.disabled = true;
-  ponEstado('Reservando…');
+  ponEstado('Creando tu cuenta…');
   try {
     const resp = await fetch('/api/cuenta/registrar', {
       method: 'POST',

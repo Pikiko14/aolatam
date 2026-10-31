@@ -1,32 +1,38 @@
-const downloadButton = document.getElementById('download-game');
-const downloadStatus = document.getElementById('download-status');
-downloadButton.addEventListener('click', () => {
-  const value = (window.SERVER_CONFIG?.downloadUrl || '').trim();
-  if (!value) {
-    downloadStatus.textContent = 'La descarga del juego estará disponible próximamente.';
-    return;
-  }
-  try {
-    const url = new URL(value, window.location.href);
-    if (!['http:', 'https:', 'file:'].includes(url.protocol)) throw new Error('Invalid protocol');
-    const link = document.createElement('a');
-    link.href = url.href;
-    link.download = '';
-    if (url.origin !== window.location.origin) {
-      // Un sitio externo (p.ej. Mediafire) ignora el download y navega: que abra en pestaña nueva.
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
+// Botones de descarga: el cliente (downloadUrl) y el launcher (launcherUrl), de config.js.
+function prepararDescarga(botonId, estadoId, clave, nombre) {
+  const boton = document.getElementById(botonId);
+  const estado = document.getElementById(estadoId);
+  if (!boton) return;
+  boton.addEventListener('click', () => {
+    const valor = (window.SERVER_CONFIG?.[clave] || '').trim();
+    if (!valor) {
+      estado.textContent = 'La descarga de ' + nombre + ' estará disponible próximamente.';
+      return;
     }
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    downloadStatus.textContent = 'Abriendo la descarga del juego…';
-  } catch {
-    downloadStatus.textContent = 'La descarga no está disponible en este momento.';
-  }
-});
+    try {
+      const url = new URL(valor, window.location.href);
+      if (!['http:', 'https:'].includes(url.protocol)) throw new Error('protocolo');
+      const link = document.createElement('a');
+      link.href = url.href;
+      link.download = '';
+      if (url.origin !== window.location.origin) {
+        // Un sitio externo (p.ej. Mediafire) ignora el download y navega: que abra en pestaña nueva.
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+      }
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      estado.textContent = 'Abriendo la descarga de ' + nombre + '…';
+    } catch {
+      estado.textContent = 'La descarga no está disponible en este momento.';
+    }
+  });
+}
+prepararDescarga('download-game', 'download-status', 'downloadUrl', 'el cliente');
+prepararDescarga('download-launcher', 'launcher-status', 'launcherUrl', 'el launcher');
 
-// Renderizado seguro: los textos de las noticias nunca se interpretan como HTML.
+// Noticias. Renderizado seguro: los textos nunca se interpretan como HTML.
 const newsList = document.getElementById('news-list');
 const entries = Array.isArray(window.SERVER_NEWS) ? [...window.SERVER_NEWS] : [];
 entries.sort((a, b) => String(b.date).localeCompare(String(a.date)));

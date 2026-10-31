@@ -1,5 +1,10 @@
-ANGELS ONLINE
-Abre index.html. Publica todos los archivos y assets juntos.
-DESCARGA: configura downloadUrl en config.js con la URL del cliente.
-NOTICIAS: edita SERVER_NEWS en news.js. Cada entrada tiene date (AAAA-MM-DD), category, title, summary y paragraphs (lista de textos). Se muestran por fecha descendente. Publica de nuevo los archivos para que todos vean los cambios. No incluye panel de administración ni publicación automática.
-Diseño responsive, sin compilación ni dependencias externas.
+ANGELS ONLINE LATAM - web de comunidad (paleta pastel, responsive, sin compilacion ni dependencias externas)
+
+PUBLICAR: python tools/publicar_web.py  (sube la web, pone el launcher en descargas/ y la API de cuentas; --solo-web para solo la web)
+DESCARGAS: en config.js, downloadUrl = el cliente completo (.zip) y launcherUrl = el launcher (descargas/AngelsLauncher.exe,
+           que publicar_web.py copia desde parches/launcher_propio).
+CUENTAS: se crean SOLO aqui (seccion "Crea tu cuenta" -> /api/cuenta/, server/web_registro.py). El juego ya no crea cuentas
+         al entrar (interruptor crear_cuenta_al_entrar en la tabla configuracion). La contrasena se fija en el primer ingreso.
+NOTICIAS: edita SERVER_NEWS en news.js. Cada entrada tiene date (AAAA-MM-DD), category, title, summary y paragraphs (lista
+          de textos). Se muestran por fecha descendente. Publica de nuevo para que todos vean los cambios.
+IMAGENES: assets/angels-online-*.jpg (1600 px, ~350 KB cada una).

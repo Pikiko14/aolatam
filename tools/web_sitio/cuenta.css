@@ -1,14 +1,16 @@
-/* Seccion "crear cuenta": reutiliza la paleta de styles.css (--gold, --ink, --paper) sin tocar ese archivo. */
-.account-form{max-width:420px;margin:18px auto 0;display:flex;flex-direction:column;gap:14px}
-.account-form label{font:italic 15px Georgia,serif;color:#e1b96b;letter-spacing:.5px}
-.account-form input{background:#1c233a;border:1px solid #c8a56766;color:#f2e4c6;border-radius:4px;padding:13px 15px;font-size:15px}
-.account-form input:focus-visible{outline:2px solid #e7bf70;outline-offset:2px}
-.account-form input[data-estado="libre"]{border-color:#7fbf8a}
-.account-form input[data-estado="ocupado"]{border-color:#d9766f}
-.account-form button{border:1px solid #f3dbab;background:linear-gradient(135deg,#f7dfab,#d5ab66);color:#26392c;border-radius:4px;padding:14px 20px;font-size:13px;letter-spacing:1.5px;font-weight:600;cursor:pointer;transition:transform .2s,filter .2s}
-.account-form button:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-2px)}
-.account-form button:disabled{opacity:.55;cursor:default}
-.account-status{font-size:13px;line-height:1.6;color:#d4decf;min-height:20px}
-.account-status[data-tipo="ok"]{color:#9fe3ab}
-.account-status[data-tipo="error"]{color:#f0a39c}
-.account-note{max-width:620px;margin:20px auto 0;font-size:13px;line-height:1.7;color:#bfc4d6;text-align:center}
+/* Formulario "Crea tu cuenta" (cuenta.js). Usa las variables pastel de styles.css. */
+.account-form{display:flex;flex-direction:column;gap:12px;align-self:center;background:#fff;border:1px solid var(--borde);border-radius:22px;padding:28px}
+.account-form label{font-weight:600;font-size:14px;color:var(--tinta)}
+.account-form input{background:var(--crema);border:2px solid var(--borde);color:var(--tinta);border-radius:14px;padding:14px 16px;font-size:16px;transition:border-color .2s,box-shadow .2s}
+.account-form input::placeholder{color:#b9aecb}
+.account-form input:focus-visible{outline:none;border-color:var(--lila-fuerte);box-shadow:0 0 0 4px var(--lila)}
+.account-form input[data-estado="libre"]{border-color:var(--menta-fuerte)}
+.account-form input[data-estado="ocupado"]{border-color:var(--rosa-fuerte)}
+.account-form button{border:0;border-radius:999px;padding:15px 20px;font:600 15px "Segoe UI",sans-serif;cursor:pointer;color:#fff;
+  background:linear-gradient(135deg,var(--rosa-fuerte),var(--lila-fuerte));box-shadow:0 10px 24px rgba(157,127,232,.3);transition:transform .2s,filter .2s}
+.account-form button:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.05)}
+.account-form button:disabled{opacity:.6;cursor:default}
+.account-status{font-size:14px;line-height:1.5;color:var(--tinta-suave);min-height:21px;margin:0}
+.account-status[data-tipo="ok"]{color:#2f9a74;font-weight:600}
+.account-status[data-tipo="error"]{color:#d4517f;font-weight:600}
+.account-note{font-size:13px;line-height:1.6;color:var(--tinta-suave);margin:4px 0 0;padding:12px 14px;background:var(--cielo);border-radius:14px}
