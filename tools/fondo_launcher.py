@@ -50,4 +50,31 @@ fondo.convert('RGB').save(dst_fondo, quality=92)
 print('logo en la ventana: alto', alto // S)
 ic = Image.open(icono_src).convert('RGBA')
 ic = ic.crop(ic.getbbox())
-ic.save(dst_ico, sizes=[(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)])
+lado = max(ic.size)                 # cuadrado: con 63x64 Windows no usaba el icono
+cuadro = Image.new('RGBA', (lado, lado)); cuadro.alpha_composite(ic, ((lado - ic.width) // 2, (lado - ic.height) // 2))
+ic = cuadro
+
+def emblema(lado):
+    """Para 16-48 px el logo entero es una mancha: circulo azul/carmesi, borde de oro y una A blanca con halo."""
+    from PIL import ImageFont
+    k = 8; L = lado * k
+    e = Image.new('RGBA', (L, L)); d = ImageDraw.Draw(e)
+    d.ellipse((0, 0, L - 1, L - 1), fill=(240, 190, 70))
+    m = int(L * 0.07)
+    d.pieslice((m, m, L - m, L - m), 90, 270, fill=(22, 52, 160))
+    d.pieslice((m, m, L - m, L - m), 270, 90, fill=(176, 18, 44))
+    try:
+        f = ImageFont.truetype('C:/Windows/Fonts/georgiab.ttf', int(L * 0.66))
+    except OSError:
+        f = ImageFont.load_default()
+    d.text((L / 2, L * 0.6), 'A', font=f, anchor='mm', fill=(255, 255, 255), stroke_width=max(1, L // 40),
+           stroke_fill=(60, 30, 10))
+    hw, hy = L * 0.22, L * 0.2
+    d.ellipse((L / 2 - hw, hy - L * 0.055, L / 2 + hw, hy + L * 0.055), outline=(255, 214, 90), width=max(2, L // 22))
+    return e.resize((lado, lado), Image.LANCZOS)
+
+
+chicos = {s: emblema(s) for s in (16, 24, 32, 48)}
+grandes = {s: ic.resize((s, s), Image.LANCZOS) for s in (64, 128, 256)}
+imgs = [chicos.get(s) or grandes[s] for s in (256, 128, 64, 48, 32, 24, 16)]
+imgs[0].save(dst_ico, format='ICO', sizes=[i.size for i in imgs], append_images=imgs[1:])
