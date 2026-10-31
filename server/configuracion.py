@@ -24,7 +24,7 @@ STRAW_DROP_PROBABILIDAD = 0.50  # provisional; usuario recuerda caida alta
 # territorios de faccion y campos de Totem War), las mazmorras de Eden y los
 # mapas de sistema (casas, granja, competiciones, eventos). Las regiones son
 # las de setting/eng/jumpmapclass.xml; las instancias de cada region van con
-# ella. Para abrir una expansion, borra su bloque (pasos completos: docs/GUIA_EXPANSIONES.md).
+# ella. Para abrir una expansion, borra su bloque (pasos completos: docs/marcos/GUIA_EXPANSIONES.md).
 #
 # Nadie entra a estos mapas: los portales, NPC, pergaminos, Superwing y Ring
 # of Angel Wings se rechazan con aviso y sin gastar nada. Quien estaba dentro

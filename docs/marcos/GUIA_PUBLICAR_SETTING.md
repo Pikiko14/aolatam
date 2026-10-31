@@ -45,6 +45,11 @@ Opciones: `--sin-vps` (prepara todo pero no sube) y `--sin-git` (sin commit).
 - Quien siga con el `START.EXE` de IGG ya no recibe parches (llegó a `update31`): necesita el launcher
   propio (`AngelsLauncher.exe`, en la web).
 
+## Números de versión
+
+Cada publicación sube la versión del parche: 0.0.0.1, 0.0.0.2, 0.0.0.3... El launcher no actualiza por el número
+sino por el contenido (sha256 del pak): el número es solo el nombre que ven los jugadores al descargar.
+
 ## Si algo sale mal
 
 - **"esta roto: ... line N"**: el XML tiene un error en esa línea (comillas, `/>` o atributo repetido).

@@ -27,8 +27,10 @@ RAIZ = pathlib.Path(__file__).resolve().parent.parent
 DESTINO = RAIZ / 'parches'
 NOMBRE_PAK = 'update27.pak'
 ESTADO = 'version.json'
-# La version del cliente de IGG (reg.ini Version). El parche sube el ultimo numero.
-VERSION_BASE = '8.5.1'
+# La version del parche: 0.0.0.1, 0.0.0.2... (el launcher propio la escribe en reg.ini Version; decide si
+# actualizar por el sha256 del pak, no por el numero). Hasta el 31/10/2026 era la de IGG, 8.5.1.N: al
+# encontrar una de otra base se vuelve a empezar por 1.
+VERSION_BASE = '0.0.0'
 VERSION_INICIAL = 0
 
 # Campos fijos de cada entrada del directorio, copiados de update26.pak.
@@ -221,6 +223,21 @@ def version(destino: pathlib.Path = DESTINO) -> str:
     return estado(destino).get('version') or '%s.%d' % (VERSION_BASE, VERSION_INICIAL)
 
 
+def _de_esta_base(est: dict) -> bool:
+    return str(est.get('version') or '').startswith(VERSION_BASE + '.')
+
+
+def renumerar(destino: pathlib.Path = DESTINO) -> dict:
+    """Pone el parche actual, sin tocarlo, como el primero de la base nueva (VERSION_BASE.1). El pak y su sha256
+    no cambian, asi que nadie vuelve a bajar nada."""
+    est = estado(destino)
+    if not est or _de_esta_base(est):
+        return est
+    est.update(version='%s.%d' % (VERSION_BASE, VERSION_INICIAL + 1), numero=VERSION_INICIAL + 1)
+    (destino / ESTADO).write_text(json.dumps(est, indent=1, ensure_ascii=False), encoding='utf-8')
+    return est
+
+
 def generar(ruta_cli: pathlib.Path = None, destino: pathlib.Path = DESTINO) -> dict:
     """Rehace parches/update27.pak si lo que hay que repartir cambio y sube la version."""
     import os
@@ -237,7 +254,7 @@ def generar(ruta_cli: pathlib.Path = None, destino: pathlib.Path = DESTINO) -> d
     if previo.get('huella') == huella and pak.exists():
         _copiar_al_cliente(pak, ruta_cli)
         return previo
-    numero = int(previo.get('numero', VERSION_INICIAL)) + 1
+    numero = (int(previo.get('numero', VERSION_INICIAL)) if _de_esta_base(previo) else VERSION_INICIAL) + 1
     escribir_pak(pak, archivos)
     nuevo = {
         'version': '%s.%d' % (VERSION_BASE, numero),

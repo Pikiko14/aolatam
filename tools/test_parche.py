@@ -42,7 +42,7 @@ def test_la_version_sube_solo_si_cambia_el_contenido(tmp_path, monkeypatch):
     b = parche.generar(tmp_path, tmp_path / 'parches')
     contenido['SETTING\\ENG\\ITEM.XML'] = b'otro'
     c = parche.generar(tmp_path, tmp_path / 'parches')
-    assert a['version'] == b['version'] == '8.5.1.1' and c['version'] == '8.5.1.2'
+    assert a['version'] == b['version'] == '0.0.0.1' and c['version'] == '0.0.0.2'
 
 
 @pytest.fixture
@@ -81,3 +81,12 @@ def test_el_http_tambien(servidor):
     puerto, destino = servidor
     with urllib.request.urlopen('http://127.0.0.1:%d/alog-patch/update27.pak' % puerto, timeout=10) as r:
         assert r.read() == (destino / 'update27.pak').read_bytes()
+
+
+def test_renumerar_pasa_la_version_vieja_a_0_0_0_1_sin_tocar_el_pak(tmp_path):
+    """"podemos bajar las versiones de los path para empezar desde la 0.0.0.1"."""
+    import json
+    (tmp_path / parche.ESTADO).write_text(json.dumps({'version': '8.5.1.28', 'numero': 28, 'sha256': 'abc'}))
+    est = parche.renumerar(tmp_path)
+    assert est['version'] == '0.0.0.1' and est['numero'] == 1 and est['sha256'] == 'abc'
+    assert parche.renumerar(tmp_path)['version'] == '0.0.0.1'          # una segunda vez no cambia nada
