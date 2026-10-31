@@ -14,10 +14,11 @@ def dispatch(s,op,body=b''):
 
 
 def test_catalog_is_original_mall_not_npc_shop():
-    assert len(mall.datos()['rows'])>400 and mall.datos()['historical_rows']==475
+    # El usuario recorta el catalogo a mano (tools/habilitar_mall_completo.py): Furniture 33-35 vacias desde el 31/10/2026.
+    assert len(mall.datos()['rows'])>300 and mall.datos()['historical_rows']==475
     assert mall.datos()['historical'] and mall.datos()['purchases_enabled']
     assert mall.datos()['source'].endswith('mall.xml')
-    assert {r['category'] for r in mall.datos()['rows']} >= {11,13,16,19,24,25,28,32,35}
+    assert {r['category'] for r in mall.datos()['rows']} >= {11,13,16,19,24,25,28,32}
 
 
 def test_catalog_has_no_event_stock_boost_stones_or_placeholder_weapon_boxes():
@@ -34,7 +35,7 @@ def test_catalog_has_no_event_stock_boost_stones_or_placeholder_weapon_boxes():
 def test_catalog_wire_matches_native_count_and_57_byte_records():
     packet=mall.catalogo(now=2_000_000_000)
     count=struct.unpack_from('<I',packet,2)[0]
-    assert packet[:2]==b'\x5f\0' and count>400
+    assert packet[:2]==b'\x5f\0' and count>300
     assert len(packet)==6+57*count
     for i,r in enumerate(mall.disponibles(2_000_000_000)):
         data=struct.unpack_from('<9I11siIH',packet,6+57*i)

@@ -111,12 +111,16 @@ REEMPLAZOS = {19406: (3805, 'DivineAttack Scroll -> Attack Scroll'),
 QUITADAS_DE_PESTANA = {13: {16073: 'Blessed Fusion Potion', 12612: "Haven's Favor Bag"}}
 # Pestanas que solo llevan estos objetos: Special > Teleport (27) con los Maple, los Mark normales
 # y Summon / Fly Book.
-SOLO_EN_PESTANA = {CAT_TELEPORTE: {20565, 20566, 3693, 3694, 1333, 2987}}
+SOLO_EN_PESTANA = {CAT_TELEPORTE: {20565, 20566, 3693, 3694, 1333, 2987},
+                   # Furniture (32-35): fuera todos los huevos de muebles; en la 32 solo los huevos PD.
+                   32: {4978, 4979, 7471, 7472}, 33: set(), 34: set(), 35: set()}
 
 
 # Huevos de traje (PD) que el usuario pidio en Fashion: Roll y Halloween Tricky, de hombre (24) y de
 # mujer (25). Dan una pieza al azar. Precio y packs como la Lucky Bag (Boys): 1/11/110 a 30/300/3000.
-AGREGADOS = {CAT_HOMBRE: (4978, 7471), CAT_MUJER: (4979, 7472)}
+AGREGADOS = {CAT_HOMBRE: (4978, 7471), CAT_MUJER: (4979, 7472),
+             # y en Furniture (32), que el usuario vacio para dejar solo estos (31/10/2026):
+             32: (4978, 4979, 7471, 7472)}
 PACKS_AGREGADOS = ((1, 30), (11, 300), (110, 3000))
 PUBLICACION_AGREGADO = 'pedido del usuario (tools/habilitar_mall_completo.py)'
 
