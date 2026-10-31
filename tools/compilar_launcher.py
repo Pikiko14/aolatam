@@ -58,6 +58,9 @@ def compilar(ip, puerto, titulo, subtitulo, destino=SALIDA):
         icono = FUENTES / 'icono.ico'
         if icono.exists():
             args.append('/win32icon:' + str(icono))
+        fondo = FUENTES / 'fondo.jpg'          # la imagen de fondo va dentro del exe (Ventana.ComponerFondo)
+        if fondo.exists():
+            args.append('/resource:%s,AngelsLauncher.fondo.jpg' % fondo)
         args += [str(f) for f in sorted(FUENTES.glob('*.cs'))] + [str(config)]
         r = subprocess.run(args, capture_output=True, text=True, encoding='utf-8', errors='replace')
         if r.returncode:

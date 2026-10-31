@@ -34,7 +34,8 @@ namespace AngelsLauncher
         string sobre = "";                       // boton bajo el raton
 
         // ---- particulas del fondo
-        class Particula { public float X, Y, R, V, Fase; }
+        class Particula { public float X, Y, R, V, Fase, Giro; }
+        Bitmap fondo;                            // la imagen con sus sombreados, compuesta una sola vez
         readonly List<Particula> particulas = new List<Particula>();
         readonly Random azar = new Random(7);
         readonly System.Windows.Forms.Timer reloj = new System.Windows.Forms.Timer();
@@ -61,7 +62,7 @@ namespace AngelsLauncher
             rCarpeta = new Rectangle(796, 420, 144, 38);
             rBarra = new Rectangle(40, 520, 900, 12);
 
-            for (int i = 0; i < 70; i++) particulas.Add(NuevaParticula(true));
+            for (int i = 0; i < 45; i++) particulas.Add(NuevaParticula(true));
             reloj.Interval = 33;
             reloj.Tick += (s, e) => { Animar(); Invalidate(); };
             reloj.Start();
@@ -200,14 +201,16 @@ namespace AngelsLauncher
         }
 
         // ------------------------------------------------------------------ animacion
+        // Petalos de sakura que caen (a juego con la imagen de fondo).
         Particula NuevaParticula(bool cualquierAltura)
         {
             var p = new Particula();
-            p.X = (float)(azar.NextDouble() * Width);
-            p.Y = cualquierAltura ? (float)(azar.NextDouble() * Height) : Height + 10;
-            p.R = (float)(1.0 + azar.NextDouble() * 3.2);
-            p.V = (float)(0.15 + azar.NextDouble() * 0.55);
+            p.X = (float)(azar.NextDouble() * (Width + 200)) - 100;
+            p.Y = cualquierAltura ? (float)(azar.NextDouble() * Height) : -12;
+            p.R = (float)(2.6 + azar.NextDouble() * 3.4);
+            p.V = (float)(0.45 + azar.NextDouble() * 0.9);
             p.Fase = (float)(azar.NextDouble() * Math.PI * 2);
+            p.Giro = (float)(azar.NextDouble() * 360);
             return p;
         }
 
@@ -217,9 +220,10 @@ namespace AngelsLauncher
             for (int i = 0; i < particulas.Count; i++)
             {
                 var p = particulas[i];
-                p.Y -= p.V;
-                p.X += (float)Math.Sin(tiempo + p.Fase) * 0.2f;
-                if (p.Y < -10) particulas[i] = NuevaParticula(false);
+                p.Y += p.V;
+                p.X += 0.35f + (float)Math.Sin(tiempo * 1.3 + p.Fase) * 0.6f;
+                p.Giro += 1.5f + p.V;
+                if (p.Y > Height + 12 || p.X > Width + 20) particulas[i] = NuevaParticula(false);
             }
         }
 
@@ -258,23 +262,60 @@ namespace AngelsLauncher
             Barra(g, est, prog, fallo);
         }
 
+        // La imagen de fondo (fondo.jpg, metida en el exe al compilar) con sombras para que se lean el titulo, las
+        // noticias y la barra: oscura a la izquierda y abajo, y limpia en el centro, donde estan los personajes.
+        Bitmap ComponerFondo()
+        {
+            var bmp = new Bitmap(Width, Height);
+            using (var g = Graphics.FromImage(bmp))
+            {
+                var todo = new Rectangle(0, 0, Width, Height);
+                Image imagen = null;
+                try
+                {
+                    var s = typeof(Ventana).Assembly.GetManifestResourceStream("AngelsLauncher.fondo.jpg");
+                    if (s != null) imagen = Image.FromStream(s);
+                }
+                catch (Exception) { }
+                if (imagen != null)
+                {
+                    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    g.DrawImage(imagen, todo);
+                    imagen.Dispose();
+                }
+                else
+                    using (var b = new LinearGradientBrush(todo, CieloArriba, CieloAbajo, 90f))
+                        g.FillRectangle(b, todo);
+                var izquierda = new Rectangle(0, 0, (int)(Width * 0.66), Height);
+                using (var b = new LinearGradientBrush(izquierda, Color.FromArgb(200, 12, 10, 34), Color.FromArgb(0, 12, 10, 34), 0f))
+                    g.FillRectangle(b, izquierda);
+                var arriba = new Rectangle(0, 0, Width, 170);
+                using (var b = new LinearGradientBrush(arriba, Color.FromArgb(120, 12, 10, 34), Color.FromArgb(0, 12, 10, 34), 90f))
+                    g.FillRectangle(b, arriba);
+                var abajo = new Rectangle(0, Height - 150, Width, 150);
+                using (var b = new LinearGradientBrush(abajo, Color.FromArgb(0, 12, 10, 34), Color.FromArgb(225, 12, 10, 34), 90f))
+                    g.FillRectangle(b, new Rectangle(abajo.X, abajo.Y + 1, abajo.Width, abajo.Height));
+            }
+            return bmp;
+        }
+
         void Fondo(Graphics g)
         {
-            var todo = new Rectangle(0, 0, Width, Height);
-            using (var b = new LinearGradientBrush(todo, CieloArriba, CieloAbajo, 90f))
-                g.FillRectangle(b, todo);
-            // resplandor rosado abajo, y uno dorado tenue arriba a la derecha
-            Resplandor(g, new RectangleF(Width * 0.15f, Height * 0.55f, Width * 0.7f, Height * 0.9f), Color.FromArgb(110, Rosa));
-            Resplandor(g, new RectangleF(Width * 0.55f, -Height * 0.35f, Width * 0.6f, Height * 0.8f), Color.FromArgb(55, Oro));
-            foreach (var p in particulas)
-            {
-                int a = (int)(90 + 80 * Math.Sin(tiempo * 2 + p.Fase));
-                a = Math.Max(20, Math.Min(200, a));
-                using (var b = new SolidBrush(Color.FromArgb(a, 255, 240, 250)))
-                    g.FillEllipse(b, p.X - p.R, p.Y - p.R, p.R * 2, p.R * 2);
-            }
+            if (fondo == null) fondo = ComponerFondo();
+            g.DrawImageUnscaled(fondo, 0, 0);
+            var antes = g.Transform;
+            using (var b = new SolidBrush(Color.FromArgb(215, 255, 190, 214)))
+            using (var bc = new SolidBrush(Color.FromArgb(150, 255, 236, 244)))
+                foreach (var p in particulas)
+                {
+                    g.TranslateTransform(p.X, p.Y);
+                    g.RotateTransform(p.Giro);
+                    g.FillEllipse(b, -p.R * 1.6f, -p.R * 0.9f, p.R * 3.2f, p.R * 1.8f);
+                    g.FillEllipse(bc, -p.R * 0.8f, -p.R * 0.45f, p.R * 1.6f, p.R * 0.9f);
+                    g.Transform = antes;
+                }
             using (var borde = Redondeado(new Rectangle(0, 0, Width - 1, Height - 1), 18))
-            using (var pen = new Pen(Color.FromArgb(70, 255, 255, 255), 1.5f))
+            using (var pen = new Pen(Color.FromArgb(90, 255, 255, 255), 1.5f))
                 g.DrawPath(pen, borde);
         }
 
@@ -376,6 +417,12 @@ namespace AngelsLauncher
 
         void PanelDerecho(Graphics g, string vServ, string vLoc, bool ok, bool ocupado)
         {
+            // fondo translucido para que las versiones se lean sobre la imagen
+            using (var camino = Redondeado(new Rectangle(624, 188, 332, 112), 14))
+            {
+                using (var b = new SolidBrush(Color.FromArgb(150, 12, 10, 34))) g.FillPath(b, camino);
+                using (var pen = new Pen(Color.FromArgb(60, 255, 255, 255))) g.DrawPath(pen, camino);
+            }
             using (var f = new Font("Segoe UI", 10))
             using (var fB = new Font("Segoe UI", 10, FontStyle.Bold))
             using (var b = new SolidBrush(TextoSuave))
@@ -415,9 +462,10 @@ namespace AngelsLauncher
         {
             using (var camino = Redondeado(r, 10))
             {
-                int a = !activo ? 25 : (sobre == cual ? 80 : 45);
-                using (var b = new SolidBrush(Color.FromArgb(a, 255, 255, 255))) g.FillPath(b, camino);
-                using (var pen = new Pen(Color.FromArgb(activo ? 110 : 40, 255, 255, 255))) g.DrawPath(pen, camino);
+                // oscuro como los paneles: sobre la imagen un boton blanco translucido no se leia
+                int a = !activo ? 110 : (sobre == cual ? 215 : 170);
+                using (var b = new SolidBrush(Color.FromArgb(a, 12, 10, 34))) g.FillPath(b, camino);
+                using (var pen = new Pen(Color.FromArgb(activo ? (sobre == cual ? 220 : 130) : 50, 255, 255, 255))) g.DrawPath(pen, camino);
             }
             using (var f = new Font("Segoe UI", 10, FontStyle.Bold))
             using (var sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
