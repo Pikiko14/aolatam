@@ -2735,7 +2735,7 @@ def _usar_mejora(ses, addr, ranura, objetivo) -> bool:
     p = ses.personaje
     if getattr(p, 'mejoras', None) is None:
         p.mejoras = {}
-    nivel_pieza = _iv.nivel_de_item(pieza) if hasattr(_iv, 'nivel_de_item') else 0
+    nivel_pieza = _iv.nivel_requerido_de_item(pieza)
     tipo = _tipo_de_pieza(pieza, objetivo)
     seguro = getattr(_cf, 'MEJORAS_SIEMPRE_EXITO', False)
     _buffs_eilian = getattr(p, 'buffs', {}) or {}
@@ -2819,6 +2819,15 @@ def _usar_mejora(ses, addr, ranura, objetivo) -> bool:
         cartel = _cl.aviso(nombre, tipo=7, msg_id=_mj.MSG_ATRIBUTOS_OK)
     else:
         cartel = _cl.aviso(nombre, tipo=7, msg_id=_mj.MSG_MEJORA_FALLO)
+
+    # Si no sirve para el nivel de la pieza no es un intento fallido: no se gasta y se dice por que (antes salia
+    # "Failed to intensify" y se perdia el objeto).
+    if not ok and 'sirve hasta nivel' in str(msg):
+        tope_txt = _mj.tope_nivel(item)
+        ses.enviar(_cl.aviso('%s only works on gear up to Lvl %d (%s is Lvl %d).'
+                             % (_nombre_item(item), tope_txt, nombre, nivel_pieza), tipo=0))
+        log.info('[%s] mejora: %s sobre %s -> %s', addr, _nombre_item(item), nombre, msg)
+        return True
 
     # El objeto se gasta pase lo que pase: todas las descripciones dicen que
     # un fallo no rompe la pieza pero si consume el intento.

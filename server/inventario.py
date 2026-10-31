@@ -1664,6 +1664,25 @@ def nivel_de_item(item_id: int) -> int:
         return 0
 
 
+def nivel_requerido_de_item(item_id: int) -> int:
+    """El "Level required" del tooltip (等級限制), o el 物品等級 si no lo declara.
+
+    Es el que vale para los topes de las mejoras ("for rides under Lvl 59"): la Flame Warrior es 物品等級 60 pero
+    pide nivel 50, y el Lvl 5 Lucky Ride Feed la rechazaba aunque el jugador la ve como de nivel 50 (31/10/2026).
+    """
+    try:
+        db = pathlib.Path(__file__).parent.parent / 'corpus' / 'content.db'
+        if db.exists():
+            con = sqlite3.connect(db)
+            fila = fila_item(con, '等級限制', item_id)
+            con.close()
+            if fila and fila[0] and int(fila[0]) > 0:
+                return int(fila[0])
+    except Exception:
+        pass
+    return nivel_de_item(item_id)
+
+
 def velocidad_de_montura(item_id: int) -> int:
     """El move_speed de una montura, en por ciento, o 0 si no lo es.
 

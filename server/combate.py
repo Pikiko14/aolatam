@@ -2601,13 +2601,19 @@ PAUSA_ENTRE_HABILIDADES = 0.5     # medio segundo (31/10/2026; antes 1 s)
 COOLDOWN_MINIMO_HABILIDAD = 1.0
 
 
+# La constante de la mitigacion de la defensa (ver Monstruo.recibir).
+K_DEFENSA = 420.0
+
+
 def dano_recibido(ataque: int, defensa: int, elem_atk: int = 0, elem_def: int = 0) -> int:
-    """Dano que recibe el jugador, ya reducido por su defensa fisica y elemental."""
+    """Dano que recibe el jugador, ya reducido por su defensa fisica y elemental.
+
+    La misma defensa que la de los monstruos (Monstruo.recibir): la mitigacion 420/(def+420) o la resta, la que mas
+    pegue. Solo con la resta, un bicho con menos ataque que tu defensa pegaba 1: la Lily (ataque 23) a una maga con
+    23 de defensa ("la lily me baja 1 de dano", 31/10/2026). Ahora le quita ~22, y la defensa sigue pesando arriba.
+    """
     def_eff = max(0, defensa)
-    if ataque > def_eff:
-        d = ataque - def_eff
-    else:
-        d = max(1, int(round(ataque * 0.05)))
+    d = max(1, int(round(max(ataque * K_DEFENSA / (def_eff + K_DEFENSA), ataque - def_eff))))
     if elem_atk > 0:
         elem_d = max(0, elem_atk - max(0, elem_def))
         d += elem_d
