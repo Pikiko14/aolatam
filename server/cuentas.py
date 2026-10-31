@@ -248,11 +248,7 @@ def _migrar_desde_json(con):
                 continue
 
     if not datos_cargados:
-        datos_cargados = {
-            "cuentas": {
-                "karma": {"password": "123456", "personajes": []}
-            }
-        }
+        return  # sin JSON que importar se empieza en blanco: las cuentas se crean en la web
 
     proximo_char_id = 1001
     cur = con.cursor()
