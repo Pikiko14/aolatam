@@ -16,4 +16,4 @@ def test_va_al_paso_del_dueno(monkeypatch):
 def test_montado_no_se_queda_atras(monkeypatch):
     monkeypatch.setattr(app, '_velocidad_de', lambda ses: 275)
     assert app._velocidad_seguir_pet(None, 105, 3) == 275
-    assert app._velocidad_seguir_pet(None, 105, 10) == int(275 * 1.25)
+    assert app._velocidad_seguir_pet(None, 105, 10) == int(275 * 1.2)   # alcanza sin correr de mas

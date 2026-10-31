@@ -3817,14 +3817,36 @@ BONO_MONTURA = int(os.environ.get('AO_MONTURA_BONO', '0'))
 TRAMO_PET = 8
 
 
+# Paso propio de la mascota: el del jugador a pie con saciedad (> 100) y algo menos sin ella. Era 140 / 105,
+# que con el paso a su ritmo real (2,5 px/s por punto) la hacia andar mas rapido que el dueño.
+VELOCIDAD_PET, VELOCIDAD_PET_HAMBRE = 110, 95
+
+
+def _velocidad_pet(f_pet) -> int:
+    return VELOCIDAD_PET if int(f_pet.get('saciedad', 0) or 0) > 100 else VELOCIDAD_PET_HAMBRE
+
+
+# Segundos entre golpes de la mascota: la base del jugador (1,15 s) y la agilidad la acorta. Era
+# 1,55 - agilidad*0,002 con suelo 1,15 (0,95 saciada): con 30 de agilidad pegaba cada 1,49 s.
+CADENCIA_PET_BASE = 1.15
+CADENCIA_PET_SUELO, CADENCIA_PET_SUELO_SACIADA = 0.75, 0.65
+
+
+def _cadencia_pet(agilidad, saciada) -> float:
+    suelo = CADENCIA_PET_SUELO_SACIADA if saciada else CADENCIA_PET_SUELO
+    return max(suelo, min(CADENCIA_PET_BASE, CADENCIA_PET_BASE - int(agilidad) * 0.002))
+
+
 def _velocidad_seguir_pet(ses, propia, distancia) -> int:
     """La mascota va al paso del dueño (a pie o montado) y, si se ha quedado
     atras, un 25% mas rapido para alcanzarlo. Antes iba a 105 fijos y con
     montura (~275) se quedaba atras, corria, y acababa saltando a su lado."""
+    # Desde que el paso va a su ritmo real (combate.PX_POR_SEGUNDO_POR_VELOCIDAD) los 200
+    # de minimo para alcanzar se veian como una carrera: ahora solo un 20% mas que el dueño.
     dueno = _velocidad_de(ses)
     v = max(int(propia), dueno)
     if distancia > 4:
-        v = max(v, int(dueno * 1.25), 200)
+        v = max(v, int(dueno * 1.2))
     return v
 
 
@@ -12461,7 +12483,7 @@ class Servidor:
                                 agi_total = int(f_pet.get('agilidad', 15)) + int(b_star.get('agilidad', 0)) + int(b_bf_atk.get('agilidad', 0))
                                 if sac_buff:
                                     agi_total = int(round(agi_total * 1.2))
-                                cadencia_pet = max(0.95 if sac_buff else 1.15, min(1.55, 1.55 - agi_total * 0.002))
+                                cadencia_pet = _cadencia_pet(agi_total, sac_buff)
                                 if b_bf_atk.get('atk_speed'):
                                     cadencia_pet = max(0.75, cadencia_pet * (1.0 - min(0.40, b_bf_atk['atk_speed'] / 100.0)))
                                 if dist_pet <= r_pet:
@@ -12560,7 +12582,7 @@ class Servidor:
                                             _procesar_muerte_monstruo(ses, pet_targ, yo, addr, espera=0.1)
                                 else:
                                     if ahora >= f_pet.get('proximo_paso', 0):
-                                        spd_p = 140 if int(f_pet.get('saciedad', 0)) > 100 else 105
+                                        spd_p = _velocidad_pet(f_pet)
                                         # Por casillas que se pisan, como al seguir al jugador.
                                         (nx_p, ny_p), _ok_pet = _transitable.tramo(
                                             int(getattr(p, 'stage', 0) or 0), (pet_x, pet_y),
@@ -12585,7 +12607,7 @@ class Servidor:
                                 dp_x = p.tile_x - pet_x
                                 dp_y = p.tile_y - pet_y
                                 dist_jug = max(abs(dp_x), abs(dp_y))
-                                spd_p = 140 if int(f_pet.get('saciedad', 0)) > 100 else 105
+                                spd_p = _velocidad_pet(f_pet)
                                 # Va por casillas que se pisan (antes en linea
                                 # recta: cruzaba barrancos) y, si se queda
                                 # atras, corre para alcanzar en vez de

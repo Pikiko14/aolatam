@@ -40,6 +40,14 @@ def test_una_habilidad_normal_no_mira_la_vida():
     assert app._puede_pagar(ses, {'mp': 0, 'hp': 0})
 
 
+def test_la_mascota_va_al_paso_del_dueno_y_pega_como_el():
+    assert app._velocidad_pet({'saciedad': 500}) == app.VELOCIDAD_JUGADOR
+    assert app._velocidad_pet({'saciedad': 50}) < app.VELOCIDAD_JUGADOR
+    assert app._cadencia_pet(0, False) == 1.15
+    assert app._cadencia_pet(30, False) < 1.15
+    assert app._cadencia_pet(10_000, False) == 0.75 and app._cadencia_pet(10_000, True) == 0.65
+
+
 def test_el_tramo_dura_lo_que_tarda_el_cliente():
     # speed 110 son 275 px/s: 8 casillas (256 px) en ~0,93 s, no en 2,3 s.
     assert abs(cb.segundos_de_tramo(8, 110) - 256 / 275) < 1e-9
