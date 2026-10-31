@@ -80,9 +80,9 @@ ROPA_INICIAL = {
 # (servidor) pero invisible/mal dibujada (cliente): parecia que no le
 # hubieran dado la ropa clasica de estudiante.
 ROPA_INICIAL_HOMBRE = {
-    'cuerpo':  3410,    # Blue Students' Clothes (M)
-    'guantes': 3409,    # Students' Gloves (M)
-    'zapatos': 3411,    # Students' Shoes (M)
+    'cuerpo':  26,    # Blue Students' Clothes (M)
+    'guantes': 28,    # Students' Gloves (M)
+    'zapatos': 30,    # Students' Shoes (M)
 }
 
 # La Level 1-10 Growth Box (20103) NO se da aqui: se entrega mas tarde, al
