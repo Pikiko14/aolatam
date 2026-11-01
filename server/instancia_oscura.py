@@ -187,9 +187,9 @@ PROB_MONEDA = 0.08
 MONEDAS_DEL_JEFE = (3, 5)
 
 
-# ANGEL GOLD: solo lo da el jefe ("que el ag solo lo de el jefe final", 31/10/2026). Antes cada monstruo propio daba
-# 50 (monstruos_propios.json, botin.ag): 28 de la instancia = 1.400 por corrida, que ahora da el jefe de una vez.
-AG_DEL_JEFE = 1400
+# ANGEL GOLD: solo lo da el jefe, 50 por baja ("que el ag solo lo de el jefe final" y "debe dar 50 ag por kill, no
+# 1400", 01/11/2026). Antes daba 50 cada monstruo propio (monstruos_propios.json, botin.ag).
+AG_DEL_JEFE = 50
 
 
 def ag_de(stage, m, ag_propio):
