@@ -11443,6 +11443,11 @@ class Servidor:
                 return
             ses.entity_id = p.entity_id
             ses.personaje = p
+            # Quien salio (o se reinicio el servidor) estando muerto entraba con 0 de vida: el cliente lo dibujaba de pie,
+            # sin la ventana de revivir y con el Escape sin opciones (01/11/2026). Entra revivido, con la vida llena.
+            if int(getattr(p, 'hp', 1) or 0) <= 0:
+                p.hp = _vida_max(p, bolsa=getattr(p, 'inventario', None) or {})
+                log.info(f"[{addr}] {p.nombre} estaba muerto al salir: entra revivido")
             import configuracion as _cfg_ap
             if _cfg_ap.mapa_apagado(p.stage):
                 import clases as _cl_ap

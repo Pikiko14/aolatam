@@ -82,7 +82,7 @@ def procesar(ses, body) -> bool:
     if magia == DEATH_NOTICE:
         texto = 'used a Death Notice on %s: %s will die in %d seconds.' % (q.nombre, q.nombre, dur_ms // 1000)
         import asyncio
-        asyncio.get_event_loop().call_later(dur_ms / 1000.0, _matar, objetivo, int(q.char_id))
+        asyncio.get_event_loop().call_later(dur_ms / 1000.0, _matar, objetivo, int(q.char_id), ses)
     else:
         texto = 'used a %s on %s: Maximum HP +%d for %d h.' % (
             NOMBRE[item], q.nombre, int(mag.get('hp_bonus') or 0), dur_ms // 3600000)
@@ -96,8 +96,12 @@ def procesar(ses, body) -> bool:
     return True
 
 
-def _matar(objetivo, char_id):
-    """Lo que hace el Death Notice a los 30 s: el objetivo muere si sigue conectado, vivo y con el mismo personaje."""
+def _matar(objetivo, char_id, lanzador=None):
+    """Lo que hace el Death Notice a los 30 s: el objetivo muere si sigue conectado, vivo y con el mismo personaje.
+
+    Como en PvP (pvp_liga._aplicar): 0x000A tipo muerte de la victima con OTRO como asesino -- quien uso el notice,
+    con su id publico. Con la propia victima de asesino el cliente se quedaba con 0 de vida pero de pie, sin la
+    ventana de revivir (01/11/2026)."""
     import app
     import combate
     q = getattr(objetivo, 'personaje', None)
@@ -107,9 +111,15 @@ def _matar(objetivo, char_id):
     q.hp = 0
     objetivo.muerto = True
     try:
-        objetivo.enviar_inmediato(combate.ataque(q.entity_id, q.entity_id, 0, combate.TIPO_MUERTE),
+        import presencia
+        asesino = 0
+        lp = getattr(lanzador, 'personaje', None)
+        if (lp is not None and lanzador is not objetivo
+                and presencia.clave_de_mapa(lanzador, lp.stage) == presencia.clave_de_mapa(objetivo, q.stage)):
+            asesino = presencia.entidad_de(lanzador)       # su cliente lo conoce: estan en el mismo mapa
+        objetivo.enviar_inmediato(combate.ataque(q.entity_id, asesino, 0, combate.TIPO_MUERTE),
                                   combate.atributo(q.entity_id, 0, combate.KIND_HP))
-        app._avisar_muerte_a_los_demas(objetivo, 0)
+        app._avisar_muerte_a_los_demas(objetivo, asesino)
     except Exception:
         log.exception('Death Notice: no se pudo matar a %s', q.nombre)
         return
