@@ -184,7 +184,10 @@ def _spawn(ses):
     b = bytearray(PLANTILLA)
     struct.pack_into('<I', b, OFF_ENTIDAD, eid)
     import supremo as _su_spawn
-    struct.pack_into('<I', b, 4, _su_spawn.estado(p, base=0))
+    import combate as _cb_spawn
+    # El alma (quedarse como alma tras morir) se presenta como alma: con el estado normal se le veia vivo.
+    struct.pack_into('<I', b, 4, _su_spawn.estado(p, base=0)
+                     | (_cb_spawn.ESTADO_FANTASMA if getattr(ses, 'fantasma', False) else 0))
     struct.pack_into('<I', b, OFF_X, tx)
     struct.pack_into('<I', b, OFF_Y, ty)
     n = nombre.encode('ascii', 'replace')[:TAM_NOMBRE - 1]

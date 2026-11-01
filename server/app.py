@@ -7578,6 +7578,26 @@ def _tw_levantar_todos():
             log.debug('Totem War: modo PvP al empezar', exc_info=True)
 
 
+def _tw_echar_del_campo(stage):
+    """Tomado el campo, los de las otras facciones que esten en el vuelven a su ciudad ("al coger el totem no tepea
+    a los otros personajes a su city", 01/11/2026). Los muertos se quedan: revivir ya los saca."""
+    import totem_war as _tw_e
+    duena = _tw_e.faccion_duena(stage)
+    for s in list(_tw_sesiones()):
+        p = getattr(s, 'personaje', None)
+        if p is None or int(getattr(p, 'stage', 0) or 0) != int(stage) or getattr(s, 'muerto', False):
+            continue
+        if _tw_e.codigo_faccion(p) == duena:
+            continue
+        st_c, tile_c = CIUDAD_POR_FACCION.get(getattr(p, 'faction', ''), CIUDAD_DE_FACCION['Aurora'])
+        try:
+            _sincronizar_cambio_mapa(s, st_c, tile_c[0], tile_c[1])
+            s.volcar()
+            log.info('Totem War: %s sale del campo %s a su ciudad (%s)', p.nombre, stage, st_c)
+        except Exception:
+            log.exception('Totem War: no se pudo sacar a %s del campo', getattr(p, 'nombre', '?'))
+
+
 def _tw_totem_roto(ses, m, addr):
     import totem_war as _tw_k
     if not _tw_k.activa():
@@ -7593,6 +7613,7 @@ def _tw_totem_roto(ses, m, addr):
     # 0x0131 seguia el de la duena anterior (Beast sobre un totem de Aurora).
     _tw_difundir(*_tw_k.anuncio(texto))
     _tw_difundir(_tw_k.paquete_territorios())
+    _tw_echar_del_campo(int(m.stage))
     try:
         asyncio.get_event_loop().call_later(_tw_k.SEGUNDOS_RELEVANTAR,
                                             lambda st=int(m.stage): _tw_relevantar(st))
@@ -21151,6 +21172,21 @@ class Servidor:
                            struct.pack('<HIII', 0x000A, _yo_al, 0, 0))
                 if hasattr(ses, 'volcar'):
                     ses.volcar()
+                # A los demas, su alma: el estado con ESTADO_FANTASMA y el "de pie" con su id publico, en ese orden
+                # (con el estado primero se levanta como angelito). Sin nada le veian de pie y vivo (01/11/2026).
+                try:
+                    import presencia as _pr_al
+                    _pub_al = _pr_al.entidad_de(ses)
+                    _est_al = __import__('supremo').estado(ses.personaje, base=0) | _cb_al.ESTADO_FANTASMA
+                    _pkts_al = (_cb_al.atributo(_pub_al, _est_al, _cb_al.KIND_ESTADO),
+                                struct.pack('<HIII', 0x000A, _pub_al, 0, 0))
+                    for _s_al in _pr_al._vivas(_pr_al.clave_de_mapa(ses, ses.personaje.stage)):
+                        if _s_al is not ses:
+                            (getattr(_s_al, 'enviar_sin_espejo', None) or _s_al.enviar)(*_pkts_al)
+                            if hasattr(_s_al, 'volcar'):
+                                _s_al.volcar()
+                except Exception:
+                    log.debug('alma a los demas', exc_info=True)
                 log.info(f"[{addr}] {ses.personaje.nombre} sigue como alma")
                 return
             if accion == 2 and ses.personaje and getattr(ses, 'muerto', False):
