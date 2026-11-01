@@ -3353,6 +3353,12 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
     if getattr(m, 'sello', None):
         __import__('instancia_oscura').al_morir(ses, m)
 
+    # El ranking de dano de los jefes, a todos los de la sala (contador_dano.py)
+    try:
+        __import__('contador_dano').anunciar([ses] + _companeros(ses), m)
+    except Exception:
+        log.exception('ranking de dano del jefe')
+
     if getattr(m, 'es_estructura_hb', False):
         # Building death/construction is persisted by Holy's own engine.
         # Never award the guard's normal monster loot, EXP or respawn.
