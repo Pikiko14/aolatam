@@ -3843,6 +3843,10 @@ BONO_MONTURA = int(os.environ.get('AO_MONTURA_BONO', '0'))
 # paraba cada 4 casillas aunque el dueño siguiera andando.
 TRAMO_PET = 8
 
+# A cuantas casillas del dueño se queda la mascota al seguirlo: pegada a 1 se le metia encima ("revisa que no se
+# acerque a menos de 2 cuadros del jugador", 31/10/2026).
+DIST_PET_DUENO = 2
+
 
 # Paso propio de la mascota: el del jugador a pie con saciedad (> 100) y algo menos sin ella. Era 140 / 105,
 # que con el paso a su ritmo real (2,5 px/s por punto) la hacia andar mas rapido que el dueño.
@@ -11760,7 +11764,9 @@ class Servidor:
                                                 _procesar_muerte_monstruo(ses, targ, yo, addr, espera=0.1)
                                             else:
                                                 pkgs_inv_hit.append(_cb.atributo(targ.entity_id, targ.porcentaje))
-                                                ses.enviar_inmediato(*pkgs_inv_hit)
+                                                # sin espejo: notificar_companero_accion ya se lo da a los demas
+                                                ses.enviar_sin_espejo(*pkgs_inv_hit)
+                                                ses.volcar()
                                             import presencia as _pr_inv_action
                                             _pr_inv_action.notificar_companero_accion(
                                                 ses, *pkgs_inv_hit)
@@ -12662,7 +12668,10 @@ class Servidor:
                                                 _cb.numero_flotante(pet_targ.entity_id, dano_pet),
                                                 _cb.atributo(pet_targ.entity_id, pet_targ.porcentaje if pet_targ.hp > 0 else 0)
                                             )
-                                            ses.enviar_inmediato(*_pkgs_pet_hit)
+                                            # Sin espejo: notificar_companero_accion ya se lo manda a los demas; con los dos lo veian doble
+                                            # ("los pet pegan doble, usan el poder 2 veces", 31/10/2026).
+                                            ses.enviar_sin_espejo(*_pkgs_pet_hit)
+                                            ses.volcar()
                                             import presencia as _pr_pet_hit
                                             _pr_pet_hit.notificar_companero_accion(
                                                 ses, *_pkgs_pet_hit)
@@ -12688,7 +12697,10 @@ class Servidor:
                                                 _cb.numero_flotante(pet_targ.entity_id, dano_pet),
                                                 _cb.atributo(pet_targ.entity_id, pet_targ.porcentaje if pet_targ.hp > 0 else 0)
                                             )
-                                            ses.enviar_inmediato(*_pkgs_pet_basic)
+                                            # Sin espejo: notificar_companero_accion ya se lo manda a los demas; con los dos lo veian doble
+                                            # ("los pet pegan doble, usan el poder 2 veces", 31/10/2026).
+                                            ses.enviar_sin_espejo(*_pkgs_pet_basic)
+                                            ses.volcar()
                                             import presencia as _pr_pet_basic
                                             _pr_pet_basic.notificar_companero_accion(
                                                 ses, *_pkgs_pet_basic)
@@ -12731,10 +12743,10 @@ class Servidor:
                                 # al lado si no hay camino o esta muy lejos.
                                 _st_pet = int(getattr(p, 'stage', 0) or 0)
                                 _fin_pet, _hay_camino = ((pet_x, pet_y), True)
-                                if 1 < dist_jug <= 30 and ahora >= f_pet.get('proximo_paso', 0):
+                                if DIST_PET_DUENO < dist_jug <= 30 and ahora >= f_pet.get('proximo_paso', 0):
                                     _fin_pet, _hay_camino = _transitable.tramo(
                                         _st_pet, (pet_x, pet_y), (p.tile_x, p.tile_y),
-                                        min(dist_jug - 1, TRAMO_PET), parar_a=1)
+                                        min(dist_jug - DIST_PET_DUENO, TRAMO_PET), parar_a=DIST_PET_DUENO)
                                 if dist_jug > 30 or not _hay_camino:
                                     _lado = p.tile_x + 1 if _transitable.se_pisa(_st_pet, p.tile_x + 1, p.tile_y) else p.tile_x
                                     f_pet['x'] = _lado
@@ -12748,7 +12760,7 @@ class Servidor:
                                     )
                                     import presencia as _pr
                                     _pr.notificar_mascota_movimiento(ses, pet_eid, _p_mv)
-                                elif dist_jug > 1 and ahora >= f_pet.get('proximo_paso', 0) \
+                                elif dist_jug > DIST_PET_DUENO and ahora >= f_pet.get('proximo_paso', 0) \
                                         and _fin_pet != (pet_x, pet_y):
                                     nx_j, ny_j = _fin_pet
                                     pasos_dar = max(1, max(abs(nx_j - pet_x), abs(ny_j - pet_y)))
