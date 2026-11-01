@@ -594,7 +594,10 @@ def spawn_totem_campo(m) -> bytes:
     n = nombre_totem(m.stage).encode('latin-1', 'replace')[:16]
     b[16:33] = n.ljust(17, bytes(1))
     struct.pack_into('<H', b, 34, sprite_totem(m.stage))
-    b[38] = 0 if liga_duena(m.stage) else 8
+    # +38 es la FACCION del totem: el cliente la guarda en +0x2e8 del objeto (0x0060b98a), el mismo campo que el byte
+    # 60 del 0x0001 de un jugador (0x005e9866). Con un 0 en los totems con duena el cliente no los dejaba atacar
+    # ("sigue sin dejarme atacar los totem de otras ligas", 01/11/2026). Neutro: 8, como en la captura de Celestia.
+    b[38] = faccion_duena(m.stage) or 8
     struct.pack_into('<H', b, 45, int(getattr(m, 'npc_type', TOTEM_TIPO_CAMPO)))
     # El cartel es la ventana 0x2fda (REA 0064ab90):
     #   +40 nivel (+0x24c); el cartel pinta nivel + 1, por eso va nivel - 1.

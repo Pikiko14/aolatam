@@ -227,7 +227,7 @@ def test_guerra_antigua_totem_en_el_campo(monkeypatch):
     assert b[:2] == b'.'
     assert struct.unpack_from('<II', b, 10) == (162, 88)          # casilla, no pixeles
     assert b[18:30].rstrip(b'\x00') == b'Aurora Totem'
-    assert struct.unpack_from('<H', b, 36)[0] == 60237 and b[40] == 8
+    assert struct.unpack_from('<H', b, 36)[0] == 60237 and b[40] == 1   # +38: la faccion (Aurora), no 8
     w = tw.ventana_totem(m)
     assert w[:2] == b'/' and struct.unpack_from('<I', w, 6)[0] == 1
     s = types.SimpleNamespace(personaje=types.SimpleNamespace(char_id=1, stage=205, tile_x=0, tile_y=0))

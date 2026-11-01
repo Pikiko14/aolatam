@@ -28,3 +28,13 @@ def test_los_totems_tienen_10k_por_nivel(monkeypatch):
         monkeypatch.setattr(totem_war, 'nivel_totem', lambda s, n=nivel: (n, 0))
         m = totem_war.crear_totem(st)
         assert m.hp_max == m.hp == 10_000 * nivel
+
+
+def test_el_totem_lleva_la_faccion_de_su_duena(monkeypatch):
+    """El +38 del 0x012E es la faccion (el cliente no deja atacar uno con faccion 0)."""
+    st = sorted(totem_war.TOTEM_CAMPO)[0]
+    m = totem_war.crear_totem(st)
+    monkeypatch.setattr(totem_war, 'faccion_duena', lambda s: 2)
+    assert totem_war.spawn_totem_campo(m)[2 + 38] == 2
+    monkeypatch.setattr(totem_war, 'faccion_duena', lambda s: 0)
+    assert totem_war.spawn_totem_campo(m)[2 + 38] == 8
