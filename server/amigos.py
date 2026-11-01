@@ -45,13 +45,39 @@ def _servidor():
     return getattr(configuracion, 'NOMBRE_SERVIDOR', 'AOF')
 
 
+def _perfil(other):
+    """Los 25 bytes del perfil que pinta el tooltip del amigo (string 749, REA 00644480, copiados del +0x2b del 0x0028
+    a la ficha +0x47 en 0x0057011d): genero (1 hombre), nivel u32, faccion, oficio (class_id), rango y la liga (17).
+    Iban en cero y el tooltip decia "Level 00 / Neutrally / Novice" (01/11/2026)."""
+    import login
+    b=bytearray(25)
+    p=getattr(other,'personaje',None)
+    if p is None:
+        return bytes(b)
+    ap=getattr(p,'apariencia',None) or [0]
+    b[0]=1 if ap and ap[0] else 0
+    struct.pack_into('<I',b,1,max(0,int(getattr(p,'nivel',1) or 1)))
+    b[5]=login.CODIGO_FACCION.get(getattr(p,'faction','') or '',5)&0xFF
+    b[6]=int(getattr(p,'class_id',0) or 0)&0xFF
+    b[7]=max(0,min(20,int(getattr(p,'rango',1) or 1)))
+    try:
+        import gremios
+        g=gremios.obtener_gremio_de(int(p.char_id))
+    except Exception:
+        g=None
+    b[8:25]=_str((g or {}).get('nombre',''))
+    return bytes(b)
+
+
 def _added(s,other):
-    """84-byte body: self/status/id/server17/name17/status/profile25."""
+    """84-byte body: self/status/id/server17/name17/status/birthday11/profile25."""
     p=other.personaje
     body=bytearray(84)
     struct.pack_into('<IHI',body,0,s.personaje.char_id,0,p.char_id)
     body[10:27]=_str(_servidor());body[27:44]=_str(p.nombre)
     struct.pack_into('<I',body,44,0 if _online(other) else 10)
+    # +48..+58 cumpleanos y demas (en cero: "Keep a secret"); +59..+83 el perfil (REA 00570f76: paquete +0x3d).
+    body[59:84]=_perfil(other)
     return struct.pack('<H',0x2a)+body
 
 
@@ -66,9 +92,11 @@ def _status(s,cid,name,other=None):
     struct.pack_into('<IB',body,0,s.personaje.char_id,1)
     body[5:22]=_str(_servidor())
     struct.pack_into('<II',body,22,0,cid)
+    # +30..+40 son los 11 bytes de cumpleanos, sangre, residencia, identidad, aspecto y personalidad (a la ficha +0x3c):
+    # aqui iban el mapa, la casilla y el genero, y salia "Birthday: 54 month". En cero el cliente pinta "Keep a secret".
+    # +41..+65, el perfil (_perfil).
     if other is not None and _online(other):
-        p=other.personaje
-        struct.pack_into('<IIHB',body,30,int(p.stage),int(p.tile_x),int(p.tile_y),int(getattr(p,'genero',0))&1)
+        body[41:66]=_perfil(other)
     body[66:83]=_str(name)
     return struct.pack('<H',0x28)+body
 
