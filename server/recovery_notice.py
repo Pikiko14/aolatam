@@ -109,6 +109,7 @@ def _matar(objetivo, char_id, lanzador=None):
             or getattr(objetivo, 'desconectado', False) or not getattr(objetivo, 'conectado', True)):
         return
     q.hp = 0
+    app._quitar_buffs_al_morir(objetivo)
     objetivo.muerto = True
     try:
         import presencia

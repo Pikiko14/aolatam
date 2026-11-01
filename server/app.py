@@ -7635,6 +7635,47 @@ def _pergamino_revivir(item_id):
     return _PERGAMINOS_REVIVIR[item_id]
 
 
+def _quitar_buffs_al_morir(ses):
+    """Al morir se caen los buffs que no llevan 死亡不消失 en magic.xml, la transformacion la primera.
+
+    No se quitaba ninguno. Transformado (el cactus de Shapeshifting MidSummer Cactus Baby no tiene 死亡不消失), el
+    cliente no hacia la animacion de muerte: se quedaba de pie con 0 de vida, sin la ventana de revivir, y los demas
+    le veian vivo (01/11/2026). Va a la victima ANTES del 0x000A de muerte."""
+    import combate as _cb_bm
+    p = getattr(ses, 'personaje', None)
+    if p is None or not getattr(p, 'buffs', None):
+        return
+    yo = p.entity_id
+    pkts, transformado = [], False
+    for bid in list(p.buffs):
+        if not str(bid).isdigit():
+            continue
+        fila = _cb_bm._magic_xml().get(int(bid)) or {}
+        if str(fila.get('死亡不消失') or '') == '是':
+            continue
+        b = p.buffs.pop(bid)
+        transformado = transformado or str(fila.get('變身型') or '') == '是' or (isinstance(b, dict)
+                                                                            and b.get('es_transform'))
+        pkts.append(struct.pack('<HIBBII', 0x001D, yo, 1, 4, int(bid), 0))
+    if not pkts:
+        return
+    if transformado:
+        pkts.append(_cb_bm.atributo(yo, 0, _cb_bm.KIND_TRANSFORM))
+    pkts.append(_stats_ses(ses))
+    (getattr(ses, 'enviar_sin_espejo', None) or ses.enviar)(*pkts)
+    if transformado:
+        try:
+            import presencia as _pr_bm
+            _pr_bm.notificar_transformacion(ses, 0)
+        except Exception:
+            log.debug('quitar transformacion al morir', exc_info=True)
+    if getattr(ses, 'usuario', None):
+        try:
+            cuentas.guardar_progreso(ses.usuario, p.char_id, p.nivel, p.exp, p.hp, p.mp, buffs=p.buffs)
+        except Exception:
+            log.debug('guardar buffs al morir', exc_info=True)
+
+
 def _avisar_muerte_a_los_demas(ses, asesino_eid):
     """Que los demas del mapa vean caer a quien mato un monstruo ("morimos y mi companero no sale muerto").
 
@@ -11452,11 +11493,13 @@ class Servidor:
                 return
             ses.entity_id = p.entity_id
             ses.personaje = p
-            # Quien salio (o se reinicio el servidor) estando muerto entraba con 0 de vida: el cliente lo dibujaba de pie,
-            # sin la ventana de revivir y con el Escape sin opciones (01/11/2026). Entra revivido, con la vida llena.
-            if int(getattr(p, 'hp', 1) or 0) <= 0:
-                p.hp = _vida_max(p, bolsa=getattr(p, 'inventario', None) or {})
-                log.info(f"[{addr}] {p.nombre} estaba muerto al salir: entra revivido")
+            # Quien salio (o se reinicio el servidor) estando muerto entraba con 0 de vida pero de pie, sin la ventana
+            # de revivir y con el Escape sin opciones. Sigue muerto: al cargar el mapa (0x0002) se le manda la muerte
+            # y el cliente le ofrece revivir en la ciudad o en un totem ("si muero y me reconecto no debe revivirme",
+            # 01/11/2026).
+            ses._entra_muerto = int(getattr(p, 'hp', 1) or 0) <= 0
+            if ses._entra_muerto:
+                log.info(f"[{addr}] {p.nombre} estaba muerto al salir: entra muerto")
             import configuracion as _cfg_ap
             if _cfg_ap.mapa_apagado(p.stage):
                 import clases as _cl_ap
@@ -12268,6 +12311,7 @@ class Servidor:
 
                                                     if pj.hp <= 0:
                                                         ses.enviar_inmediato(*pkgs_imp_yo)
+                                                        _quitar_buffs_al_morir(ses)
                                                         ses.enviar_inmediato(
                                                             _cb.ataque(yo, m.entity_id, 0, _cb.TIPO_MUERTE),
                                                             _cb.atributo(yo, 0, _cb.KIND_HP))
@@ -13010,7 +13054,7 @@ class Servidor:
                 b = getattr(ses, 'inventario', None) or getattr(p, 'inventario', None) or {}
                 eff_hp_max = _vida_max(p, bolsa=b)
                 eff_mp_max = _mana_max(p, bolsa=b)
-                p.hp = min(eff_hp_max, max(1, p.hp))
+                p.hp = 0 if getattr(ses, '_entra_muerto', False) else min(eff_hp_max, max(1, p.hp))
                 p.mp = min(eff_mp_max, max(0, p.mp))
                 p.exp = max(int(p.exp or 0), _cb.exp_para_nivel(p.nivel))
                 exp_actual_ui, exp_sig = _cb.exp_para_barra(p.nivel, p.exp)
@@ -13151,6 +13195,16 @@ class Servidor:
                         log.exception('casas: fallo al enviar estado interior de casa')
                 ses.enviar(*salida)
                 log.info(f"[{addr}] 0x0002 mapa {p.stage} sincronizado para {p.nombre}")
+                if getattr(ses, '_entra_muerto', False):
+                    # La muerte como la de un monstruo (0x000A tipo muerte con un asesino que el cliente conoce: un
+                    # bicho del mapa). Con la propia victima de asesino el cliente no la daba por muerta.
+                    ses._entra_muerto = False
+                    _quitar_buffs_al_morir(ses)
+                    ses.muerto = True
+                    _asesino = next(iter(ses.monstruos or {}), 0)
+                    ses.enviar_inmediato(_cb.ataque(yo, int(_asesino), 0, _cb.TIPO_MUERTE),
+                                         _cb.atributo(yo, 0, _cb.KIND_HP))
+                    _avisar_muerte_a_los_demas(ses, int(_asesino))
                 try:
                     import equipos as _eq
                     _eq.al_cambiar_de_mapa(ses)

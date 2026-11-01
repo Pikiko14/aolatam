@@ -235,6 +235,9 @@ def _aplicar(ses, otro, dano, es_crit, con_efecto, tipo, efecto, magia, *, orige
     apub, bpub = presencia.entidad_de(ses), presencia.entidad_de(otro)
     visibles = presencia._vivas(presencia.clave_de_mapa(ses, p.stage))
     tipo_num = combate.TIPO_DANO_CRITICO if es_crit else combate.TIPO_DANO
+    if not q.hp:
+        # Primero se le caen los buffs y la transformacion: transformado no hacia la animacion de muerte.
+        __import__('app')._quitar_buffs_al_morir(otro)
     for visor in visibles:
         a = origen_eid if origen_eid is not None else (p.entity_id if visor is ses else apub)
         b = q.entity_id if visor is otro else bpub
