@@ -71,3 +71,5 @@ tools/editor_mapas/dc_mapas/
 tools/editor_mapas/dc_editados/
 tools/editor_mapas/dcdump/
 tools/editor_mapas/__pycache__/
+data/subastas.db
+data/subastas.db-*

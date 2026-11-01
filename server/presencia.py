@@ -477,6 +477,8 @@ def entrar(ses, stage):
     ts_yo = transform_sprite_de(ses)
     # Con que forma le ven los demas (ver notificar_transformacion).
     ses._forma_publica = int(ts_yo or 0)
+    # El subastador (subastas.py), si es su mapa
+    _mandar(ses, *__import__('subastas').presentacion(stage))
 
     for s in otros:
         if s is ses:

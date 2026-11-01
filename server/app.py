@@ -15849,6 +15849,15 @@ class Servidor:
             if not ventas and not compras:
                 return
 
+            # Junto al subastador el puesto no se abre: lo de la pestana Sell pasa a la casa de subastas
+            # (subastas.py). El cliente ya dibujo su ventana de puesto: el 0x0031 se la cierra.
+            import subastas as _sub
+            if _sub.cerca(ses):
+                ses.enviar(struct.pack('<H', 0x0031))
+                if ventas:
+                    _sub.publicar(ses, ventas)
+                return
+
             if getattr(ses, 'recoleccion', None):
                 _parar_recoleccion(ses)
             if getattr(ses, 'sentado', False):
@@ -15888,6 +15897,10 @@ class Servidor:
             import clases as _c
             import presencia as _pres
             target_eid = struct.unpack_from('<I', cuerpo, 0)[0]
+            import subastas as _sub
+            if target_eid == _sub.ENTIDAD:
+                ses.enviar(_sub.vista())
+                return
             vendedor = _pres.sesion_por_entidad(ses, target_eid)
             if vendedor is None and ses.personaje.entity_id == target_eid:
                 vendedor = ses
@@ -15904,6 +15917,10 @@ class Servidor:
             import inventario as _iv
             import presencia as _pres
             target_eid, n_items = struct.unpack_from('<II', cuerpo, 0)
+            import subastas as _sub
+            if target_eid == _sub.ENTIDAD:
+                _sub.comprar(ses, cuerpo)
+                return
             vendedor = _pres.sesion_por_entidad(ses, target_eid)
             if (not vendedor or vendedor is ses
                     or not getattr(vendedor, 'puesto', None)
