@@ -19087,6 +19087,13 @@ class Servidor:
             # Lo que sale esta en la columna 動態資料1 del propio item: apunta
             # a una fila de drop_table y se sortea con sus pesos reales.
             if _bol.es_bolsa(item_id):
+                # Sin hueco no se abre ni se toca nada ("estando la bag llena aun me dejaba spammear las bags"):
+                # antes se sacaba la bolsa, el premio no cabia y se devolvia sin refrescar la bolsa del cliente.
+                _libres_b = sum(1 for r in range(20, _tope_bolsa(bolsa) + 1) if r not in bolsa)
+                if _libres_b + (1 if _cant_de(ses, ranura) == 1 else 0) < 1:
+                    ses.enviar(_c.aviso('Inventory is full.', tipo=7, msg_id=_c.MSG_TEXTO),
+                               *_refrescar(ses, [ranura]))
+                    return
                 premio = _bol.abrir(item_id)
                 if not premio:
                     # Tabla vacia: NO se gasta la bolsa. Mas vale que se la
@@ -19100,9 +19107,10 @@ class Servidor:
                 _sacar(ses, ranura, 1)
                 destino = _meter(ses, premio_id, premio_n)
                 if destino is None:
-                    # Inventario lleno: devolver la bolsa
-                    _meter(ses, item_id, 1)
-                    ses.enviar(_c.aviso('Inventory is full.', tipo=7, msg_id=_c.MSG_TEXTO))
+                    # Inventario lleno: devolver la bolsa y que el cliente lo vea
+                    vuelta = _meter(ses, item_id, 1)
+                    ses.enviar(_c.aviso('Inventory is full.', tipo=7, msg_id=_c.MSG_TEXTO),
+                               *_refrescar(ses, [r for r in (ranura, vuelta) if r is not None]))
                     return
                 nom_premio = _nombre_item(premio_id)
                 tocadas = [ranura, destino]
