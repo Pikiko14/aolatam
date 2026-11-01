@@ -13657,10 +13657,7 @@ class Servidor:
                             dano_base = mag.get('dano_base', 0)
                             _cb_aoe_info = _cb.combo_de(tipo)
                             es_combo_aoe = bool(_cb_aoe_info and _cb_aoe_info.get('golpes', 1) > 1)
-                            if es_combo_aoe:
-                                mult_spell = 1.2
-                            else:
-                                mult_spell = 1.35
+                            mult_spell = _cb.mult_fisico(tipo)       # su poder, no 1,35 fijo
                             coef = mag.get('dano_coef', 0)
                             if coef > 0:
                                 mult_spell *= (coef / 100.0)
@@ -14899,10 +14896,7 @@ class Servidor:
                 if tipo != _cb.ATAQUE_NORMAL:
                     _cb_data = _cb.combo_de(tipo)
                     es_combo_skill = bool(_cb_data and _cb_data.get('golpes', 1) > 1)
-                    if es_combo_skill:
-                        mult_spell = 1.2
-                    else:
-                        mult_spell = 1.35
+                    mult_spell = _cb.mult_fisico(tipo)               # su poder, no 1,35 fijo
 
                     # Boss penalty para Rapidfire (reduccion al 50% frente a Jefes)
                     is_rapidfire = bool(5766 <= tipo <= 5770 or 5957 <= tipo <= 5961 or 'Rapidfire' in mag.get('nombre', ''))

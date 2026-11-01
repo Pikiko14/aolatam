@@ -25,3 +25,10 @@ def test_mas_defensa_nunca_pega_mas():
 
 def test_el_elemental_se_suma():
     assert combate.dano_recibido(23, 23, elem_atk=10, elem_def=4) == 28
+
+
+def test_las_fisicas_usan_su_poder_y_nunca_pasan_de_1_35():
+    """"con mi arquero pego 2k con slow snipe eso esta roto": la formula 15 da 0,76 (medido con Thunder Sword III)."""
+    assert combate.mult_fisico(904) == 0.76            # Slow Snipe I
+    assert combate.mult_fisico(943) == 0.76            # Basic Shot IV
+    assert combate.mult_fisico(15523) == combate.MULT_SIN_RAMA     # Holy Guard I: no 18x

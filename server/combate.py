@@ -2387,6 +2387,31 @@ def spl_atk_con_power(spl_atk: int, dano_base: int, denom: int) -> int:
     return int(spl_atk) + int(denom) if int(dano_base or 0) > 0 else int(spl_atk)
 
 
+# Las habilidades fisicas de un solo golpe multiplicaban el ataque por 1,35 fijo, sin mirar su poder: un arquero de
+# nivel 60 pegaba 1.600 (2.500 con critico) con Slow Snipe ("eso esta roto", 31/10/2026). Lo medido es otra cosa:
+# Thunder Sword III (formula 15, la de Slow Snipe y Basic Shot) da 0,76 del ataque (RATIO_POR_FORMULA) y Advance
+# Chop V pego algo MENOS que un golpe basico (ver PESO_STANCE). Los combos de varios golpes siguen con MULT_COMBO.
+MULT_COMBO = 1.2
+MULT_SIN_RAMA = 1.35
+
+
+def mult_fisico(magic_id: int) -> float:
+    """Cuanto multiplica el ataque una habilidad fisica: su poder (平均傷害, o el ratio de su formula) / 200."""
+    c = combo_de(magic_id)
+    if c and c.get('golpes', 1) > 1:
+        return MULT_COMBO
+    import skills
+    if not skills.skill_de_magia(magic_id):
+        # Las de objetos, trampas, altares y mascotas (sin rama): su 平均傷害 es un poder fijo de 500-1700, no un
+        # multiplicador. Siguen como estaban.
+        return MULT_SIN_RAMA
+    d = datos_magia(magic_id) or {}
+    base, denom = d.get('dano_base') or 0, d.get('base_denom') or DENOM_HECHIZO
+    # Nunca por encima de lo que tenian: unas pocas (Holy Guard, Spirit's Blessing, Ember Brand) traen un 平均傷害 de
+    # 900-4000 que es un poder fijo y daria 5x-20x.
+    return min(MULT_SIN_RAMA, base / float(denom)) if base > 0 else 1.0
+
+
 def tiempo_buff_cliente(magic_id: int, dur_ms: int) -> int:
     """El tiempo que va en el 0x001D codigo 4 de un buff.
 
