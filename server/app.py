@@ -21053,9 +21053,13 @@ class Servidor:
                 import combate as _cb_al
                 ses.fantasma = True
                 _yo_al = ses.personaje.entity_id
-                ses.enviar(__import__('supremo').paquete_estado(
+                # SIN espejo: el 0x000A (yo, 0, 0, 0) es "levantarse" y, reenviado, los demas le veian revivir
+                # ("Baco esta muerto y sigue saliendo vivo", 01/11/2026). Para ellos sigue caido.
+                (getattr(ses, 'enviar_sin_espejo', None) or ses.enviar)(__import__('supremo').paquete_estado(
                                ses.personaje, __import__('supremo').ESTADO_PROPIO | _cb_al.ESTADO_FANTASMA),
                            struct.pack('<HIII', 0x000A, _yo_al, 0, 0))
+                if hasattr(ses, 'volcar'):
+                    ses.volcar()
                 log.info(f"[{addr}] {ses.personaje.nombre} sigue como alma")
                 return
             if accion == 2 and ses.personaje and getattr(ses, 'muerto', False):

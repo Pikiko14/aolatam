@@ -288,6 +288,12 @@ def _aplicar(ses, otro, dano, es_crit, con_efecto, tipo, efecto, magia, *, orige
         if getattr(otro, 'usuario', None):
             cuentas._actualizar_personaje(otro.usuario, q.char_id,
                 lambda d: d.update(pvp_deaths=int(d.get('pvp_deaths', 0))+1))
+    # La vida en el panel del equipo (0x0026): con los monstruos ya se avisaba, en PvP no, y el equipo le seguia
+    # viendo vivo ("sigue saliendo vivo en el team").
+    try:
+        __import__('equipos').notificar_stats(otro)
+    except Exception:
+        log.debug('vida al equipo en PvP', exc_info=True)
     if getattr(otro, 'usuario', None):
         cuentas.guardar_progreso(otro.usuario, q.char_id, q.nivel, q.exp, q.hp, q.mp)
 
