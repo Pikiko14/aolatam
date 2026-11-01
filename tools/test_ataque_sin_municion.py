@@ -103,6 +103,22 @@ def test_el_golpe_basico_no_sale_justo_despues_de_una_habilidad(monkeypatch):
     assert not packets
 
 
+def test_tras_una_stance_tampoco_sale_la_flecha_basica(monkeypatch):
+    """"el bow cuando lanza una spell o stance no puede lanzar flecha": un buff tambien ocupa el turno."""
+    s, packets = _sesion_con_arco(monkeypatch, con_municion=True)
+    s.personaje.habilidades = [(17, 10, 0)]
+    s.volcar = lambda *a, **k: None
+    server = app.Servidor.__new__(app.Servidor)
+    try:
+        _magia(server, s, 902)                               # Accurate Song I (buff)
+    except AttributeError:
+        pass
+    assert getattr(s, 'ultimo_golpe', 0) > 0
+    packets.clear()
+    server.manejar(s, 0x0006, None, None, 'test', struct.pack('<HI', cb.ATAQUE_NORMAL, 9999))
+    assert not packets
+
+
 def test_el_monstruo_contesta_ya_y_otro_golpe_no_le_reinicia_el_reloj(monkeypatch):
     """"los mob cuando los comienzo atacar demoran en darme target"."""
     s, _ = _sesion_con_arco(monkeypatch, con_municion=True)

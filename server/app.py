@@ -13575,11 +13575,13 @@ class Servidor:
                 ses._lanzando_hasta = _ahora_atk + max(_cb.PAUSA_ENTRE_HABILIDADES,
                                                        float(mag.get('cast_time', 0) or 0) / 1000.0)
                 _usos[tipo] = _ahora_atk
-                # Una habilidad ofensiva ES el ataque de ese turno: el cliente manda el golpe basico justo
-                # detras y salia tambien la flecha normal ("si uso 1 turno de ataque... no debe lanzar la
-                # flecha basica"). El siguiente basico espera una cadencia entera desde la habilidad.
-                if mag.get('es_ataque'):
-                    ses.ultimo_golpe = max(getattr(ses, 'ultimo_golpe', 0), _ahora_atk)
+                # Una habilidad ES el ataque de ese turno: el cliente manda el golpe basico justo detras y salia
+                # tambien la flecha normal ("si uso 1 turno de ataque... no debe lanzar la flecha basica"). Vale
+                # para TODAS, tambien las de stance o buff, y cuenta desde que termina de lanzarse: con el arco
+                # la flecha salia mientras se lanzaba ("el bow cuando lanza una spell o stance no puede lanzar
+                # flecha", 01/11/2026). El siguiente basico espera una cadencia entera desde ahi.
+                ses.ultimo_golpe = max(getattr(ses, 'ultimo_golpe', 0),
+                                       _ahora_atk + float(mag.get('cast_time', 0) or 0) / 1000.0)
             else:
                 _cad = _cb.cadencia_ataque(
                     getattr(ses.personaje, 'buffs', None) if ses.personaje else None,
