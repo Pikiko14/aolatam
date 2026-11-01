@@ -317,7 +317,8 @@ def mapa_apagado(stage) -> bool:
 USUARIOS_GM = frozenset({
     # 'miusuario',
     'olasanmi',
-    'elezeta'
+    'elezeta',
+    'baco01'
 })
 AVISO_SIN_PERMISO_GM = 'GM commands are not available.'
 
