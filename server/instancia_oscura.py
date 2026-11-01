@@ -187,6 +187,18 @@ PROB_MONEDA = 0.08
 MONEDAS_DEL_JEFE = (3, 5)
 
 
+# ANGEL GOLD: solo lo da el jefe ("que el ag solo lo de el jefe final", 31/10/2026). Antes cada monstruo propio daba
+# 50 (monstruos_propios.json, botin.ag): 28 de la instancia = 1.400 por corrida, que ahora da el jefe de una vez.
+AG_DEL_JEFE = 1400
+
+
+def ag_de(stage, m, ag_propio):
+    """El Angel Gold que da `m` al morir: en la instancia, AG_DEL_JEFE el jefe y nada los demas."""
+    if int(stage or 0) != STAGE:
+        return int(ag_propio or 0)
+    return AG_DEL_JEFE if int(getattr(m, 'npc_type', 0) or 0) in _tipos_jefe() else 0
+
+
 def botin_instancia(stage, m):
     """[(objeto, cantidad)] que la instancia suma al botin de `m`: los tickets y las Mount Coins."""
     import random

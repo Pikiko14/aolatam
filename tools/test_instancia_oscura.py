@@ -163,3 +163,18 @@ def test_los_mobs_tienen_el_doble_de_vida_y_el_jefe_no():
     vida = a.hp_max
     io.doblar_vida({1: a, 2: j}, [{'entity_id': 1}, {'entity_id': 2, 'jefe': True}])
     assert a.hp_max == a.hp == vida * 2 and j.hp_max == vida
+
+
+def test_el_angel_gold_solo_lo_da_el_jefe():
+    """"que el ag solo lo de el jefe final"."""
+    import instancia_oscura as io
+
+    class Bicho:
+        npc_type = 1
+
+    class Jefe:
+        npc_type = 209                                                 # Dragonkin Moowad
+
+    assert io.ag_de(io.STAGE, Bicho(), 50) == 0
+    assert io.ag_de(io.STAGE, Jefe(), 0) == io.AG_DEL_JEFE
+    assert io.ag_de(41, Bicho(), 50) == 50                             # fuera de la instancia no cambia

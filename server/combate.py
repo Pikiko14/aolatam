@@ -2387,6 +2387,18 @@ def spl_atk_con_power(spl_atk: int, dano_base: int, denom: int) -> int:
     return int(spl_atk) + int(denom) if int(dano_base or 0) > 0 else int(spl_atk)
 
 
+def tiempo_buff_cliente(magic_id: int, dur_ms: int) -> int:
+    """El tiempo que va en el 0x001D codigo 4 de un buff.
+
+    Lo normal es la duracion en ms. Los de 到期時間型 ("tipo hora de vencimiento", 1750 en magic.xml: el Recovery
+    Notice, las cartas de exp...) los lee el cliente como HORA DE FIN absoluta en segundos, igual que el vencimiento
+    de los objetos (inventario.marcar_caducidad_mercenario). Con la duracion no pintaba el tiempo ("RN si funciona
+    pero no sale el tiempo", 31/10/2026)."""
+    if str((_magic_xml().get(int(magic_id or 0)) or {}).get('到期時間型') or '') == '是':
+        return int(time.time() + max(0, int(dur_ms)) / 1000.0)
+    return max(0, int(dur_ms))
+
+
 def stance_de(magic_id: int) -> int:
     """El Stance power de esa habilidad, del campo `hp` de magic.xml."""
     return abs(int(datos_magia(magic_id).get('hp', 0) or 0))

@@ -3722,6 +3722,7 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
             # en el que se basa. Y su Angel Gold, para quien se lleva el botin.
             drops = _cb.botin_propio()
             _ag_propio = int(_cb.monstruos_propios().get('botin', {}).get('ag', 0) or 0)
+            _ag_propio = __import__('instancia_oscura').ag_de(ses.personaje.stage, m, _ag_propio)
             if _ag_propio and getattr(ses, 'usuario', None):
                 try:
                     __import__('item_mall').sumar_ag(ses.usuario, _ag_propio)
@@ -3735,6 +3736,15 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
             import lyceum_services as _ly_drop
             drops = list(drops) + _ly_drop.straw_drop_monstruo(ses.personaje.stage, m)
             drops = list(drops) + __import__('instancia_oscura').botin_instancia(ses.personaje.stage, m)
+            # El Angel Gold del jefe de la instancia (los monstruos propios ya no lo dan, ver ag_de)
+            if not getattr(m, 'propio', None) and getattr(ses, 'usuario', None):
+                _ag_jefe = __import__('instancia_oscura').ag_de(ses.personaje.stage, m, 0)
+                if _ag_jefe:
+                    try:
+                        __import__('item_mall').sumar_ag(ses.usuario, _ag_jefe)
+                        salida_combate.append(_cl.aviso('%d Angel Gold' % _ag_jefe, tipo=0, msg_id=_cl.MSG_ITEM))
+                    except Exception:
+                        log.exception('[%s] Angel Gold del jefe', addr)
         if ses.personaje:
             import misiones as _mis_drop
             drops_mis = _mis_drop.verificar_botin_mision(ses, m.npc_type, getattr(m, 'nombre', ''))
@@ -9371,7 +9381,7 @@ def _buff_a_otro(s, tipo, entrada, dur_ms, mag, lanzador=None, ef=0):
     # Subir el maximo no cura ni devuelve mana. Solo recortar si disminuyo.
     p2.hp = min(p2.hp, _vida_max(p2, s.inventario))
     p2.mp = min(p2.mp, _mana_max(p2, s.inventario))
-    s.enviar_inmediato(struct.pack('<HIBBII', 0x001D, yo2, 1, 4, int(tipo), max(0, int(dur_ms))),
+    s.enviar_inmediato(struct.pack('<HIBBII', 0x001D, yo2, 1, 4, int(tipo), _cb_o.tiempo_buff_cliente(tipo, dur_ms)),
                        _cb_o.atributo(yo2, p2.hp, _cb_o.KIND_HP),
                        _cb_o.atributo(yo2, p2.mp, _cb_o.KIND_MP),
                        _stats_ses(s))
