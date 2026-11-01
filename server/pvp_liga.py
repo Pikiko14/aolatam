@@ -245,8 +245,9 @@ def _aplicar(ses, otro, dano, es_crit, con_efecto, tipo, efecto, magia, *, orige
                      combate.cierre_de_dano(a, b, tipo, efecto=efecto, es_magia=magia)]
         elif con_efecto:
             pkts.append(combate.ataque(a, b))
+        # A la victima su vida tal cual; a los demas en porcentaje (presencia._vida_publica), o la barra sale llena.
         pkts += [combate.numero_flotante(b, dano, tipo_num),
-                 combate.atributo(b, q.hp, combate.KIND_HP)]
+                 combate.atributo(b, q.hp, combate.KIND_HP) if visor is otro else presencia._vida_publica(otro)]
         if not q.hp:
             if visor is otro:
                 # La victima muere como cuando la mata un monstruo (app, IA de

@@ -7486,6 +7486,9 @@ def _espejar(ses, submsgs):
         for o in offs:
             if len(b) >= 6 + o and struct.unpack_from('<I', b, 2 + o)[0] == yo:
                 struct.pack_into('<I', b, 2 + o, publico)
+        if _vida_propia and len(b) >= 12:
+            # A los demas la vida va en PORCENTAJE (presencia._vida_publica): la absoluta les llenaba la barra.
+            b = bytearray(_pr_e._vida_publica(ses))
         salen.append(bytes(b))
     if not salen:
         return

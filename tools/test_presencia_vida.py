@@ -33,8 +33,11 @@ def test_al_entrar_cada_uno_recibe_la_vida_del_otro():
         presencia._POR_MAPA[STAGE] = [vivo]
         vivo._mapa_presencia = STAGE
         presencia.entrar(nuevo, STAGE)
-        assert combate.atributo(presencia.entidad_de(vivo), 4321, combate.KIND_HP) in nuevo.sent
-        assert combate.atributo(presencia.entidad_de(nuevo), 1234, combate.KIND_HP) in vivo.sent
+        # En porcentaje (01/11/2026): con la absoluta la barra de los demas salia siempre llena.
+        import equipos
+        assert combate.atributo(presencia.entidad_de(vivo), equipos._vida_pct(vivo), combate.KIND_HP) in nuevo.sent
+        assert combate.atributo(presencia.entidad_de(nuevo), equipos._vida_pct(nuevo), combate.KIND_HP) in vivo.sent
+        assert 0 < equipos._vida_pct(nuevo) < equipos._vida_pct(vivo) <= 100
     finally:
         presencia._POR_MAPA[STAGE] = old
         for s in (vivo, nuevo):

@@ -460,8 +460,12 @@ def _vida_publica(ses):
     morir (pvp_liga lo mata con la muerte de monstruo) o ese id publico lo habia llevado
     otro que murio -- entidad_de reutiliza los numeros --, se le seguia viendo muerto."""
     import combate as _cb
-    p = ses.personaje
-    hp = 0 if getattr(ses, 'muerto', False) else max(0, int(getattr(p, 'hp', 0) or 0))
+    import equipos
+    # En PORCENTAJE, como la de los monstruos: con la vida absoluta (2340 de 2500) el cliente de los demas la leia
+    # como mas de 100 % y la barra (y el retrato del grupo, que se une a la entidad) salia siempre llena (01/11/2026).
+    hp = 0 if getattr(ses, 'muerto', False) else equipos._vida_pct(ses)
+    if not getattr(ses, 'muerto', False) and int(getattr(ses.personaje, 'hp', 0) or 0) > 0:
+        hp = max(1, hp)
     return _cb.atributo(entidad_de(ses), hp, _cb.KIND_HP)
 
 
