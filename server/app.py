@@ -13209,6 +13209,7 @@ class Servidor:
                     _asesino = next(iter(ses.monstruos or {}), 0)
                     ses.enviar_inmediato(_cb.ataque(yo, int(_asesino), 0, _cb.TIPO_MUERTE),
                                          _cb.atributo(yo, 0, _cb.KIND_HP))
+                    log.info(f"[{addr}] {p.nombre} entra muerto: muerte enviada (asesino {_asesino})")
                     _avisar_muerte_a_los_demas(ses, int(_asesino))
                 try:
                     import equipos as _eq
@@ -21177,6 +21178,11 @@ class Servidor:
                 return
             if accion == 4 and ses.personaje:
                 if getattr(ses, 'puesto', None):
+                    return
+                if getattr(ses, 'muerto', False):
+                    # Muerto no se sienta: la respuesta "de pie" (0x000A tipo 0) es la que el cliente usa para
+                    # revivir y cierra la ventana de muerte (CloseDeadWnd, 0x005ed1f9). Quedaba con 0 de vida, de
+                    # pie y sin opciones al pulsar Escape (01/11/2026).
                     return
                 yo = ses.personaje.entity_id
                 ses.sentado = not getattr(ses, 'sentado', False)
