@@ -3,13 +3,15 @@
 Pedido del usuario el 31/10/2026 ("debe ser una pestana nativa", "Nativa, venta directa"). El cliente no trae
 subastas, pero si los puestos de jugadores, y esas ventanas se pueden llenar con lo que queramos:
 
-* EL SUBASTADOR es un personaje falso ("Auction House") parado en el Angel Lyceum con el cartel de puesto encima
-  (presencia.paquetes_puesto: 0x000A accion 10 + 0x0043). Al pinchar el cartel el cliente manda el 0x0024 de ver un
-  puesto y se le contesta con el 0x0032 de siempre, armado con lo que hay en venta (los MAX_VISTA mas nuevos).
-* PUBLICAR: abrir tu puesto normal (0x0022, la misma ventana de precios) a DIST_PUBLICAR casillas o menos del
-  subastador. En vez de quedarte vendiendo, lo de la pestana Sell pasa a la subasta (con sus mejoras, gemas o la
-  ficha de la mascota) y puedes irte. Lo de la pestana Buy no se usa.
-* COMPRAR: el 0x0025 de comprar en un puesto. El vendedor cobra el precio menos COMISION aunque este desconectado.
+* VER: el comando /ah (o /auction, /subasta) manda el 0x0032 de ver un puesto, armado con lo que hay en venta (los
+  MAX_VISTA mas nuevos). Iba a ser Ctrl+H, pero el cliente no avisa al servidor de las teclas que no conoce: haria
+  falta tocar angel.dat (01/11/2026). Ya no hay subastador en el mapa (MOSTRAR_SUBASTADOR).
+* PUBLICAR: abrir tu puesto normal (0x0022, la misma ventana de precios) con un mensaje (Hawk) que empiece por "AH".
+  En vez de quedarte vendiendo, lo de la pestana Sell pasa a la subasta (con sus mejoras, gemas o la ficha de la
+  mascota) y puedes irte. Lo de la pestana Buy no se usa.
+* COMPRAR: el 0x0025 de comprar en un puesto. Se reconoce por la instancia de lo comprado (marca 0x5A en el byte
+  alto, ver instancia()), no por la entidad: abierta con /ah, el cliente manda la del ultimo puesto que miro. El
+  vendedor cobra el precio menos COMISION aunque este desconectado.
 * RETIRAR: comprar algo tuyo te lo devuelve sin pagar.
 
 Lo publicado se guarda en data/subastas.db, asi que sobrevive a los reinicios.
@@ -32,6 +34,9 @@ NOMBRE = 'Auction House'
 HAWK = 'Auction House: open your stall here to sell'
 ESTILO = 6                          # el cartel mas vistoso (0..6)
 DIST_PUBLICAR = 6
+MOSTRAR_SUBASTADOR = False         # el personaje falso del Lyceum; ahora se abre con /ah
+COMANDOS = ('/ah', '/auction', '/subasta')
+PREFIJO_HAWK = 'ah'
 MAX_VISTA = 50                      # el 0x0032 lleva el indice 20+i y el cliente solo acepta hasta 94
 MAX_POR_VENDEDOR = 20
 COMISION = 0.05
@@ -99,7 +104,7 @@ def en_su_mapa(stage) -> bool:
 
 def presentacion(stage):
     """Los paquetes que dibujan al subastador y su cartel; [] fuera de su mapa."""
-    if not en_su_mapa(stage):
+    if not MOSTRAR_SUBASTADOR or not en_su_mapa(stage):
         return []
     import presencia
     b = bytearray(presencia.PLANTILLA)
@@ -115,6 +120,24 @@ def presentacion(stage):
     return [spawn,
             struct.pack('<HIIBBH', 0x000A, ENTIDAD, 0, 10, ESTILO, 0),
             struct.pack('<HIB', 0x0043, ENTIDAD, 0) + hawk + b'\x00']
+
+
+def es_publicacion(ses, hawk) -> bool:
+    """Si el puesto que se abre va a la subasta: su mensaje empieza por "AH" (o, con el subastador, se abre al lado)."""
+    h = (hawk or '').strip().lower()
+    return h == PREFIJO_HAWK or h.startswith(PREFIJO_HAWK + ' ') or h.startswith(PREFIJO_HAWK + ':') or (
+        MOSTRAR_SUBASTADOR and cerca(ses))
+
+
+def es_comando(texto) -> bool:
+    return (texto or '').strip().lower() in COMANDOS
+
+
+def es_compra(cuerpo) -> bool:
+    """Si un 0x0025 compra algo de la subasta: alguna instancia lleva la marca de instancia()."""
+    n = struct.unpack_from('<I', cuerpo, 4)[0] if len(cuerpo) >= 8 else 0
+    return any(id_de_instancia(cuerpo[8 + 12 * i:16 + 12 * i]) is not None
+               for i in range(min(int(n), MAX_VISTA)) if len(cuerpo) >= 20 + 12 * i)
 
 
 def cerca(ses) -> bool:

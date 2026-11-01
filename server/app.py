@@ -10751,6 +10751,12 @@ class Servidor:
         import clases as _cl
         txt_lower = texto.lower()
 
+        # 0. La casa de subastas (subastas.py): /ah
+        import subastas as _sub_chat
+        if _sub_chat.es_comando(texto):
+            ses.enviar(_sub_chat.vista())
+            return
+
         # 1. Super Broadcast (% o /sb o /super, o ventana 0x0128 canal 11)
         es_sb = False
         msg_sb = ''
@@ -15874,7 +15880,7 @@ class Servidor:
             # Junto al subastador el puesto no se abre: lo de la pestana Sell pasa a la casa de subastas
             # (subastas.py). El cliente ya dibujo su ventana de puesto: el 0x0031 se la cierra.
             import subastas as _sub
-            if _sub.cerca(ses):
+            if _sub.es_publicacion(ses, hawk):
                 ses.enviar(struct.pack('<H', 0x0031))
                 if ventas:
                     _sub.publicar(ses, ventas)
@@ -15940,7 +15946,7 @@ class Servidor:
             import presencia as _pres
             target_eid, n_items = struct.unpack_from('<II', cuerpo, 0)
             import subastas as _sub
-            if target_eid == _sub.ENTIDAD:
+            if target_eid == _sub.ENTIDAD or _sub.es_compra(cuerpo):
                 _sub.comprar(ses, cuerpo)
                 return
             vendedor = _pres.sesion_por_entidad(ses, target_eid)

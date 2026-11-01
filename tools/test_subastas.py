@@ -36,7 +36,13 @@ def _compra(eid, inst8, cant=1):
     return struct.pack('<II', eid, 1) + struct.pack('<8sI', inst8, cant)
 
 
-def test_el_subastador_solo_sale_en_el_lyceum_con_su_cartel():
+def test_ya_no_hay_subastador_en_el_mapa():
+    """"quita ese npc de ahi": se abre con /ah."""
+    assert subastas.presentacion(subastas.STAGE) == []
+
+
+def test_el_subastador_solo_sale_en_el_lyceum_con_su_cartel(monkeypatch):
+    monkeypatch.setattr(subastas, 'MOSTRAR_SUBASTADOR', True)
     pk = subastas.presentacion(subastas.STAGE)
     assert pk[0][:2] == b'\x01\x00' and b'Auction House' in pk[0]
     assert pk[1] == struct.pack('<HIIBBH', 0x000A, subastas.ENTIDAD, 0, 10, subastas.ESTILO, 0)
@@ -91,6 +97,13 @@ def test_comprar_lo_propio_lo_retira_gratis(monkeypatch):
     assert ARMA in v.inventario.values() and v.oro == 0 and subastas.listado() == []
 
 
-def test_solo_se_publica_cerca_del_subastador():
-    assert subastas.cerca(_ses(1, 'A', {}, cerca=True))
-    assert not subastas.cerca(_ses(1, 'A', {}, cerca=False))
+def test_se_publica_con_un_puesto_cuyo_mensaje_empieza_por_ah():
+    s = _ses(1, 'A', {}, cerca=False)
+    assert subastas.es_publicacion(s, 'AH') and subastas.es_publicacion(s, 'ah cheap gems')
+    assert not subastas.es_publicacion(s, "A's Stall") and not subastas.es_publicacion(s, 'ahora vendo')
+
+
+def test_se_abre_con_ah_y_la_compra_se_reconoce_por_la_instancia():
+    assert subastas.es_comando('/ah') and subastas.es_comando(' /AUCTION ') and not subastas.es_comando('/ahh')
+    assert subastas.es_compra(_compra(2001, subastas.instancia(7)))      # la entidad que sea
+    assert not subastas.es_compra(_compra(2001, struct.pack('<Q', 0x030000)))
