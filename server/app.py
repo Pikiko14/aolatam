@@ -209,6 +209,23 @@ def _angels_go():
     return _ANGELS_GO
 
 
+_ANGELS_GO_RENUMERADO = None
+
+
+def _angels_go_original(ido) -> int:
+    """El 編號 ORIGINAL de jumpmap.xml del destino que pide el cliente.
+
+    El parche del cliente lleva jumpmap.xml renumerado sin huecos (tools/parche_tp_expansiones.py: el cliente usa el
+    número como posicion en la lista) y plantillas/angels_go_renumerado.json dice a que destino original va cada uno.
+    Sin ese archivo el numero ya es el original."""
+    global _ANGELS_GO_RENUMERADO
+    import json
+    if _ANGELS_GO_RENUMERADO is None:
+        f = pathlib.Path(__file__).parent / 'plantillas' / 'angels_go_renumerado.json'
+        _ANGELS_GO_RENUMERADO = json.loads(f.read_text(encoding='utf-8')) if f.exists() else {}
+    return int(_ANGELS_GO_RENUMERADO.get(str(int(ido)), ido))
+
+
 # Las CUATRO facciones de verdad, por su codigo en la ficha. El 5 es
 # "Heaven", que es con lo que se sale del Lyceum antes de elegir, y el 0 es
 # "Neutrally": ninguno de los dos es una faccion, son el estado de no tener.
@@ -17151,7 +17168,7 @@ class Servidor:
             import clases as _cgo
             if not ses.personaje or not tiene_faccion(ses.personaje):
                 return
-            ido = struct.unpack_from('<I', cuerpo, 0)[0]
+            ido = _angels_go_original(struct.unpack_from('<I', cuerpo, 0)[0])
             d = _angels_go().get(str(ido))
             if d is None:
                 log.warning(f"[{addr}] Angels GO! a un destino que no esta "

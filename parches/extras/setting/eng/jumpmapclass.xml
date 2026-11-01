@@ -2,13 +2,13 @@
 <root>
     <跳地圖類別 編號="1" 類別名稱="Show All" />
     <跳地圖類別 編號="2" 類別名稱="Heart Of Eden" />
-    <跳地圖類別 編號="12" 類別名稱="Angel Lyceum" />
-    <跳地圖類別 編號="13" 類別名稱="Four Main Cities" />
-    <跳地圖類別 編號="14" 類別名稱="Aurora Faction Territory" />
-    <跳地圖類別 編號="15" 類別名稱="Shadow Faction Territory" />
-    <跳地圖類別 編號="16" 類別名稱="Beasts Faction Territory" />
-    <跳地圖類別 編號="17" 類別名稱="Steel Faction Territory" />
-    <跳地圖類別 編號="18" 類別名稱="Totem War Area" />
-    <跳地圖類別 編號="20" 類別名稱="Special Event Area" />
+    <跳地圖類別 編號="3" 類別名稱="Angel Lyceum" />
+    <跳地圖類別 編號="4" 類別名稱="Four Main Cities" />
+    <跳地圖類別 編號="5" 類別名稱="Aurora Faction Territory" />
+    <跳地圖類別 編號="6" 類別名稱="Shadow Faction Territory" />
+    <跳地圖類別 編號="7" 類別名稱="Beasts Faction Territory" />
+    <跳地圖類別 編號="8" 類別名稱="Steel Faction Territory" />
+    <跳地圖類別 編號="9" 類別名稱="Totem War Area" />
+    <跳地圖類別 編號="10" 類別名稱="Special Event Area" />
     <ALIAS id="編號" classname="類別名稱" jumpmapclass="跳地圖類別" />
 </root>
