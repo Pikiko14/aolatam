@@ -12741,7 +12741,7 @@ class Servidor:
                                                     _cb.atributo(int(pet_eid), _ms.hp_eff(f_pet), _cb.KIND_HP),
                                                     _ms.armar(f_pet),
                                                 ])
-                                            if jug_herido:
+                                            if jug_herido and not getattr(ses, 'muerto', False):   # muerto no se cura
                                                 p.hp = min(_vida_max(p, ses.inventario), p.hp + cura_p)
                                                 pkgs_c_p.extend([
                                                     _cb.efecto_curacion_inicio(int(pet_eid), yo, cura_p, efecto=ef_p_c),
@@ -14220,6 +14220,8 @@ class Servidor:
                         _otros_c, _a_mi_c = (([], True) if es_target_pet
                                              else _receptores_de_buff(ses, tipo, objetivo, mag.get('area')))
                         for _s_c in _otros_c:
+                            if getattr(_s_c, 'muerto', False):
+                                continue              # a un muerto no le cura nadie (01/11/2026)
                             try:
                                 _p_c = _s_c.personaje
                                 _p_c.hp = min(_vida_max(_p_c, _s_c.inventario), _p_c.hp + cura)
@@ -17936,6 +17938,14 @@ class Servidor:
             _rev = _pergamino_revivir(int(bolsa[ranura]))
             if _rev is not None:
                 _usar_pergamino_revivir(ses, addr, ranura, _rev)
+                return
+
+            # Muerto (o alma) no se usa nada mas: las pociones le curaban y quedaba con vida estando muerto ("no me
+            # cure si estoy muerto", 01/11/2026). Se repinta la casilla por si el cliente ya la daba por gastada.
+            if getattr(ses, 'muerto', False):
+                import clases as _cl_mu
+                ses.enviar(_cl_mu.aviso('You cannot use items while dead.', tipo=0), *_refrescar(ses, [ranura]))
+                log.info('[%s] objeto de la casilla %s rechazado: esta muerto', addr, ranura)
                 return
 
             # Libros de compañero y "Spacious" (formulas de uso 2, 7, 13, 14).
