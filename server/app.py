@@ -7553,7 +7553,12 @@ def _tw_relevantar(stage):
         if getattr(getattr(s, 'personaje', None), 'stage', None) == int(stage):
             try:
                 mandar = getattr(s, 'enviar_sin_espejo', None) or s.enviar
-                mandar(*pkts)
+                # Y el modo PvP otra vez, como al entrar al mapa (_tw_al_entrar): con el el cliente decide si el
+                # campo es propio o ajeno. Tras una captura cambia la duena y, sin volver a mandarlo, el totem
+                # nuevo no se podia seleccionar hasta salir y volver a entrar (01/11/2026). Sin mensaje (el 1751).
+                extra = ((_tw_r.modo_pvp(s.personaje.entity_id, True),)
+                         if _tw_r.activa() and getattr(s, 'tw_modo_pvp', False) else ())
+                mandar(*pkts, *extra)
                 if hasattr(s, 'volcar'):
                     s.volcar()
             except Exception:
