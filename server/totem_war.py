@@ -521,6 +521,11 @@ def motivo_no_pegar(ses, m) -> str:
     return 'Your faction already holds this totem.'
 
 
+# La vida de los totems de campo: 10.000 el nivel 1, 20.000 el 2... 80.000 el 8 ("nivel 1 10k, nivel 2 20k, nivel
+# 3 30k y asi hasta el lvl 8", 01/11/2026).
+VIDA_POR_NIVEL = 10_000
+
+
 def crear_totem(stage):
     """El Monstruo del totem para la sala compartida del mapa TW."""
     if es_totem_decorativo(stage):
@@ -537,9 +542,14 @@ def crear_totem(stage):
     if MODO == 'antigua' and int(stage) in TOTEM_CAMPO:
         # monster.xml: 21397 "Totem Lv 1" (300.000 HP) .. 21404 "Totem Lv 8"
         # (17.689.000 HP). El nivel lo suben las ofrendas.
-        tipo = TOTEM_TIPO_CAMPO + max(1, min(NIVEL_MAX_TOTEM, nivel_totem(stage)[0])) - 1
+        nivel = max(1, min(NIVEL_MAX_TOTEM, nivel_totem(stage)[0]))
+        tipo = TOTEM_TIPO_CAMPO + nivel - 1
         m = _totem_clase()(eid_totem(stage), tipo, nombre_totem(stage),
                            list(TOTEM_CAMPO[int(stage)]), sprite_totem(stage), stage=int(stage))
+        # La vida no es la de monster.xml (300.000 a 17.689.000): VIDA_POR_NIVEL por nivel (01/11/2026).
+        # Directo al _hp: el setter de TotemTW no deja BAJAR la vida fuera de la guerra.
+        m.hp_max = VIDA_POR_NIVEL * nivel
+        m.__dict__['_hp'] = m.hp_max
     else:
         m = _totem_clase()(eid_totem(stage), TOTEM_NPC, nombre_totem(stage),
                            TOTEM_TILE, TOTEM_SPRITE, stage=int(stage))

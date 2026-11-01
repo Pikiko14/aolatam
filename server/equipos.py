@@ -178,8 +178,10 @@ def serializar_miembro(s, para=None) -> bytes:
       +25  u32 stage (el id de mapa donde esta el miembro)
       +29  u16 tile_x
       +31  u16 tile_y
-      +33  u16 hp_pct (0..100)
-      +35  u16 mp_pct (0..100)
+      +33  u32 hp_pct (0..100). DE CUATRO BYTES: la barra del retrato (game.initpartnerWnd -> 0x6498a0) se ata
+           a este campo y en cada cuadro lo relee como u32 (0x692ec3). Con la vida en u16 y el mana en +35, leia
+           vida + mana * 65536, se recortaba al maximo y la barra salia siempre llena (01/11/2026). El retrato
+           no tiene barra de mana.
       +37  10 * u16 buffs (20 bytes)
       +57  10 * u16 debuffs (20 bytes)
       +77  u8 genero (0=masculino, 1=femenino)
@@ -195,8 +197,7 @@ def serializar_miembro(s, para=None) -> bytes:
         struct.pack_into('<I', b, 25, int(getattr(p, 'stage', 0) or 0))
         struct.pack_into('<H', b, 29, max(0, int(getattr(p, 'tile_x', 0) or 0)))
         struct.pack_into('<H', b, 31, max(0, int(getattr(p, 'tile_y', 0) or 0)))
-        struct.pack_into('<H', b, 33, _vida_pct(s))
-        struct.pack_into('<H', b, 35, _mp_pct(s))
+        struct.pack_into('<I', b, 33, _vida_pct(s))
         buffs = getattr(p, 'buffs', {}) or {}
         if isinstance(buffs, dict):
             b_ids = [int(bid) for bid in buffs.keys() if str(bid).isdigit()][:10]
