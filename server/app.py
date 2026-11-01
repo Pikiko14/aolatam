@@ -6134,6 +6134,11 @@ def _aplicar_efectos(ses, addr, efectos, motivo=''):
                            _cb_rb.atributo(p.entity_id, p.hp, _cb_rb.KIND_HP),
                            _cb_rb.atributo(p.entity_id, p.mp, _cb_rb.KIND_MP),
                            struct.pack('<HIII', 0x000A, p.entity_id, 0, 0))
+                try:
+                    import presencia as _pr_rb
+                    _pr_rb.entrar(ses, p.stage)      # que los demas lo vean de pie otra vez
+                except Exception:
+                    log.debug('revivir alli mismo: presencia', exc_info=True)
                 log.info('[%s] %s revive alli mismo%s', addr, p.nombre, motivo)
             elif que == 'monstruo_evento':
                 _monstruo_con_evento(ses, addr, estado.stage, int(ef[1]), int(ef[2]),
@@ -7433,8 +7438,11 @@ def _espejar(ses, submsgs):
         # y el golpe 0x000A) se reenvian tambien cuando el que actua es el propio
         # jugador. El 0x001D no: ese cambia iconos y cooldowns del que lo recibe.
         _opc = struct.unpack_from('<H', sm, 0)[0]
+        # La VIDA propia (0x0013 KIND_HP) tambien: sin ella los demas no veian bajar la barra de quien pelea con
+        # el jefe, ni llegar a 0 al morir ("cuando mueren siguen con hp", 31/10/2026).
+        _vida_propia = (_opc == 0x0013 and len(sm) >= 8 and ents[:1] == [yo] and sm[7] == 0)
         if not (any(x in bichos for x in ents)
-                or (_opc in (0x0011, 0x000A) and yo in ents)):
+                or (_opc in (0x0011, 0x000A) and yo in ents) or _vida_propia):
             continue
         b = bytearray(sm)
         for o in offs:
@@ -7584,6 +7592,29 @@ def _pergamino_revivir(item_id):
             log.exception('pergamino de revivir %s', item_id)
         _PERGAMINOS_REVIVIR[item_id] = pct
     return _PERGAMINOS_REVIVIR[item_id]
+
+
+def _avisar_muerte_a_los_demas(ses, asesino_eid):
+    """Que los demas del mapa vean caer a quien mato un monstruo ("morimos y mi companero no sale muerto").
+
+    A la victima se le manda el 0x000A de muerte y su vida en 0. Los demas solo recibian la copia del 0x000A
+    (por _espejar, porque lleva al bicho) y no la vida en 0, asi que lo seguian viendo de pie. Se manda lo mismo
+    que pvp_liga a quien mira una muerte: el 0x000A tipo 7 y la vida 0, con el id publico de la victima."""
+    try:
+        import combate as _cb_mu
+        import presencia as _pr_mu
+        pub = _pr_mu.entidad_de(ses)
+        pkts = (_cb_mu.muerte_monstruo(pub, int(asesino_eid or 0)), _cb_mu.atributo(pub, 0, _cb_mu.KIND_HP))
+        stage = getattr(ses, '_mapa_presencia', None)
+        if stage is None:
+            stage = _pr_mu.clave_de_mapa(ses, getattr(ses.personaje, 'stage', None))
+        for s in _pr_mu._vivas(stage):
+            if s is not ses:
+                # sin espejo: lleva al bicho y cada receptor lo volveria a reenviar a todos
+                s.enviar_sin_espejo(*[_pr_mu.para_receptor(s, x) for x in pkts])
+                s.volcar()
+    except Exception:
+        log.debug('aviso de muerte a los demas', exc_info=True)
 
 
 def _usar_pergamino_revivir(ses, addr, ranura, pct):
@@ -10262,6 +10293,8 @@ class Servidor:
                             toca_regen = True
                             ses.ultimo_regen_tick = ahora
 
+                if getattr(ses, 'muerto', False) or getattr(p, 'hp', 1) <= 0:
+                    toca_regen = False       # muerto no se regenera ("estando muerto me recupera la hp")
                 if toca_regen:
                     pkgs = []
                     bolsa_pj = getattr(ses, 'inventario', None)
@@ -12187,6 +12220,7 @@ class Servidor:
                                                         ses.muerto = True
                                                         m.en_combate_con = None
                                                         _logros_contar(ses, 'muertes', addr=addr)
+                                                        _avisar_muerte_a_los_demas(ses, m.entity_id)
                                                     else:
                                                         if getattr(m, 'vivo', False) and m.hp > 0:
                                                             pkgs_imp_yo.extend(_procesar_triggers_buffs(ses, yo, m, addr=addr, en_ataque=False))
