@@ -9,6 +9,7 @@ la pantalla (totem_war.cartel_deslizante, 0x0128 canal 0), que tambien queda en 
 import combate
 
 TOP = 3
+ACTIVO = False          # apagado: "quita el contador de damage" (01/11/2026)
 
 
 def es_jefe(m) -> bool:
@@ -30,8 +31,8 @@ def texto(m, nombres) -> str:
 
 
 def anunciar(sesiones, m):
-    """Manda el ranking a `sesiones` si `m` es un jefe."""
-    if not es_jefe(m):
+    """Manda el ranking a `sesiones` si `m` es un jefe (y ACTIVO)."""
+    if not ACTIVO or not es_jefe(m):
         return
     sesiones = [s for s in sesiones if getattr(s, 'personaje', None)]
     t = texto(m, {int(s.personaje.char_id): s.personaje.nombre for s in sesiones})

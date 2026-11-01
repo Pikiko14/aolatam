@@ -7702,6 +7702,54 @@ def _quitar_buffs_al_morir(ses):
             log.debug('guardar buffs al morir', exc_info=True)
 
 
+def _alma_a_los_demas(ses):
+    """A los demas del mapa, que `ses` es un alma: estado con ESTADO_FANTASMA y el "de pie" con su id publico, en
+    ese orden (con el estado primero se levanta como angelito)."""
+    import combate as _cb_al
+    import presencia as _pr_al
+    _pub_al = _pr_al.entidad_de(ses)
+    _est_al = __import__('supremo').estado(ses.personaje, base=0) | _cb_al.ESTADO_FANTASMA
+    _pkts_al = (_cb_al.atributo(_pub_al, _est_al, _cb_al.KIND_ESTADO), struct.pack('<HIII', 0x000A, _pub_al, 0, 0))
+    for _s_al in _pr_al._vivas(_pr_al.clave_de_mapa(ses, ses.personaje.stage)):
+        if _s_al is not ses:
+            (getattr(_s_al, 'enviar_sin_espejo', None) or _s_al.enviar)(*_pkts_al)
+            if hasattr(_s_al, 'volcar'):
+                _s_al.volcar()
+
+
+def _reaplicar_muerte(ses):
+    """Al terminar de cargar un mapa, el que esta muerto lo sigue estando en su cliente y en el de los demas.
+
+    El mapa nuevo (portal, teletransporte, reconexion) te presenta vivo: el alma volvia a verse de pie y el muerto
+    sin la ventana de revivir, mientras el servidor seguia contandolo muerto ("si muero, me paro como angel, me doy
+    tp o dc, aparezco de pie", 01/11/2026). Al alma se le repite el estado de alma; al muerto, la muerte."""
+    p = getattr(ses, 'personaje', None)
+    if p is None or not getattr(ses, 'muerto', False):
+        return
+    import combate as _cb_rm
+    import supremo as _su_rm
+    p.hp = 0
+    _quitar_buffs_al_morir(ses)
+    yo = p.entity_id
+    mandar = getattr(ses, 'enviar_sin_espejo', None) or ses.enviar
+    if getattr(ses, 'fantasma', False):
+        mandar(_su_rm.paquete_estado(p, _su_rm.ESTADO_PROPIO | _cb_rm.ESTADO_FANTASMA),
+               struct.pack('<HIII', 0x000A, yo, 0, 0))
+        try:
+            _alma_a_los_demas(ses)
+        except Exception:
+            log.debug('alma a los demas al cargar el mapa', exc_info=True)
+    else:
+        # La muerte como la de un monstruo: 0x000A tipo muerte con un asesino que el cliente conoce (un bicho
+        # del mapa) y la vida a 0.
+        _asesino = int(next(iter(getattr(ses, 'monstruos', None) or {}), 0))
+        mandar(_cb_rm.ataque(yo, _asesino, 0, _cb_rm.TIPO_MUERTE), _cb_rm.atributo(yo, 0, _cb_rm.KIND_HP))
+        _avisar_muerte_a_los_demas(ses, _asesino)
+    if hasattr(ses, 'volcar'):
+        ses.volcar()
+    log.info('%s sigue %s al cargar el mapa', p.nombre, 'como alma' if getattr(ses, 'fantasma', False) else 'muerto')
+
+
 def _avisar_muerte_a_los_demas(ses, asesino_eid):
     """Que los demas del mapa vean caer a quien mato un monstruo ("morimos y mi companero no sale muerto").
 
@@ -11524,6 +11572,7 @@ class Servidor:
             # y el cliente le ofrece revivir en la ciudad o en un totem ("si muero y me reconecto no debe revivirme",
             # 01/11/2026).
             ses._entra_muerto = int(getattr(p, 'hp', 1) or 0) <= 0
+            ses.muerto = ses._entra_muerto or bool(getattr(ses, 'muerto', False))
             if ses._entra_muerto:
                 log.info(f"[{addr}] {p.nombre} estaba muerto al salir: entra muerto")
             import configuracion as _cfg_ap
@@ -12915,6 +12964,12 @@ class Servidor:
                     ses.ia_monstruos_task = asyncio.create_task(_ia_monstruos())
 
             _iniciar_ia_monstruos()
+            if getattr(ses, 'muerto', False):
+                # Al reconectar el cliente no siempre manda 0x0002 ni 0x0009: la muerte va un momento despues.
+                try:
+                    asyncio.get_event_loop().call_later(2.0, _reaplicar_muerte, ses)
+                except Exception:
+                    log.debug('muerte al reconectar', exc_info=True)
             log.info(f"[{addr}] entro al mundo: '{p.nombre}' entidad={p.entity_id} "
                      f"char_id={p.char_id} tile=({p.tile_x},{p.tile_y})")
             log.info(f"[{addr}] (credenciales NO validadas: formato aun sin descifrar)")
@@ -13221,17 +13276,8 @@ class Servidor:
                         log.exception('casas: fallo al enviar estado interior de casa')
                 ses.enviar(*salida)
                 log.info(f"[{addr}] 0x0002 mapa {p.stage} sincronizado para {p.nombre}")
-                if getattr(ses, '_entra_muerto', False):
-                    # La muerte como la de un monstruo (0x000A tipo muerte con un asesino que el cliente conoce: un
-                    # bicho del mapa). Con la propia victima de asesino el cliente no la daba por muerta.
-                    ses._entra_muerto = False
-                    _quitar_buffs_al_morir(ses)
-                    ses.muerto = True
-                    _asesino = next(iter(ses.monstruos or {}), 0)
-                    ses.enviar_inmediato(_cb.ataque(yo, int(_asesino), 0, _cb.TIPO_MUERTE),
-                                         _cb.atributo(yo, 0, _cb.KIND_HP))
-                    log.info(f"[{addr}] {p.nombre} entra muerto: muerte enviada (asesino {_asesino})")
-                    _avisar_muerte_a_los_demas(ses, int(_asesino))
+                ses._entra_muerto = False
+                _reaplicar_muerte(ses)
                 try:
                     import equipos as _eq
                     _eq.al_cambiar_de_mapa(ses)
@@ -15755,6 +15801,7 @@ class Servidor:
                 ses.terminar_carga_mapa()
             log.info(f"[{addr}] mapa cargado exitosamente: stage {p.stage} "
                      f"tile ({p.tile_x},{p.tile_y})")
+            _reaplicar_muerte(ses)
             return
 
         # --- comprar en una tienda ---------------------------------------
@@ -21172,19 +21219,9 @@ class Servidor:
                            struct.pack('<HIII', 0x000A, _yo_al, 0, 0))
                 if hasattr(ses, 'volcar'):
                     ses.volcar()
-                # A los demas, su alma: el estado con ESTADO_FANTASMA y el "de pie" con su id publico, en ese orden
-                # (con el estado primero se levanta como angelito). Sin nada le veian de pie y vivo (01/11/2026).
+                # A los demas, su alma (sin nada le veian de pie y vivo, 01/11/2026).
                 try:
-                    import presencia as _pr_al
-                    _pub_al = _pr_al.entidad_de(ses)
-                    _est_al = __import__('supremo').estado(ses.personaje, base=0) | _cb_al.ESTADO_FANTASMA
-                    _pkts_al = (_cb_al.atributo(_pub_al, _est_al, _cb_al.KIND_ESTADO),
-                                struct.pack('<HIII', 0x000A, _pub_al, 0, 0))
-                    for _s_al in _pr_al._vivas(_pr_al.clave_de_mapa(ses, ses.personaje.stage)):
-                        if _s_al is not ses:
-                            (getattr(_s_al, 'enviar_sin_espejo', None) or _s_al.enviar)(*_pkts_al)
-                            if hasattr(_s_al, 'volcar'):
-                                _s_al.volcar()
+                    _alma_a_los_demas(ses)
                 except Exception:
                     log.debug('alma a los demas', exc_info=True)
                 log.info(f"[{addr}] {ses.personaje.nombre} sigue como alma")

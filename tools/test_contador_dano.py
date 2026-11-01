@@ -19,7 +19,21 @@ def test_el_cartel_lleva_el_top_3_con_su_porcentaje():
                  '3. Carolina95 22,990 (19%)')
 
 
-def test_se_manda_a_todos_los_de_la_sala_y_no_por_un_bicho_normal():
+def test_apagado_no_manda_nada():
+    llegan = []
+
+    class S:
+        personaje = type('P', (), {'char_id': 1, 'nombre': 'Impacty'})()
+
+        def enviar_sin_espejo(self, pkt):
+            llegan.append(pkt)
+
+    contador_dano.anunciar([S()], Jefe())
+    assert not contador_dano.ACTIVO and llegan == []
+
+
+def test_se_manda_a_todos_los_de_la_sala_y_no_por_un_bicho_normal(monkeypatch):
+    monkeypatch.setattr(contador_dano, 'ACTIVO', True)
     llegan = []
 
     class P:
