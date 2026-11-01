@@ -229,7 +229,14 @@ def notificar_stats(ses):
                 if hasattr(otro, 'volcar'):
                     otro.volcar()
             except Exception:
-                pass
+                log.exception('0x0026 de %s a %s', _nombre(ses), _nombre(otro))
+    # Para ver en el VPS si el aviso sale ("sigue sin actualizar la vida en el panel", 01/11/2026); como mucho uno
+    # cada 10 s por jugador.
+    import time
+    if time.time() - getattr(ses, '_log_0026', 0) >= 10:
+        ses._log_0026 = time.time()
+        log.info('0x0026: %s vida %d%% a %s', _nombre(ses), _vida_pct(ses),
+                 ', '.join(_nombre(o) for o in miembros if o is not ses))
 
 
 def lista_del_grupo(lider_id, para=None) -> bytes:
