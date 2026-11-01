@@ -152,3 +152,14 @@ def test_quien_se_desconecta_dentro_de_la_instancia_vuelve_a_la_entrada_al_entra
     ficha.update(stage_id=MAPA_ENTRADA, tile_x=100, tile_y=100)
     p = cuentas.personaje_de({'personajes': [ficha]}, 0)
     assert (p.stage, p.tile_x, p.tile_y) == (MAPA_ENTRADA, 100, 100)
+
+
+def test_los_mobs_tienen_el_doble_de_vida_y_el_jefe_no():
+    """"en la dungeon sube la vida de los mob x2"."""
+    import combate
+    import instancia_oscura as io
+    a = combate.Monstruo(1, 7, 'Lily', (1, 1), 0, stage=io.STAGE)
+    j = combate.Monstruo(2, 7, 'Lily', (1, 1), 0, stage=io.STAGE)
+    vida = a.hp_max
+    io.doblar_vida({1: a, 2: j}, [{'entity_id': 1}, {'entity_id': 2, 'jefe': True}])
+    assert a.hp_max == a.hp == vida * 2 and j.hp_max == vida

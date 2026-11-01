@@ -47,6 +47,20 @@ def filtrar(bichos, spawns):
     return {k: v for k, v in bichos.items() if k not in quitar}
 
 
+# Los monstruos de la instancia (no el jefe) con el doble de vida: morian de un golpe ("en la dungeon sube la vida de
+# los mob x2", 31/10/2026). Va despues del hp_mult de la plantilla.
+VIDA_MOBS = 2.0
+
+
+def doblar_vida(bichos, spawns):
+    """Multiplica por VIDA_MOBS la vida de los monstruos que no son el jefe."""
+    jefes = {e['entity_id'] for e in spawns if e.get('jefe')}
+    for eid, b in bichos.items():
+        if eid not in jefes:
+            b.hp_max = b.hp = int(b.hp_max * VIDA_MOBS)
+    return bichos
+
+
 def datos():
     marca = _PLANTILLA.stat().st_mtime_ns
     if _CACHE.get('marca') != marca:

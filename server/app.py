@@ -433,6 +433,7 @@ def _monstruos_de(stage: int):
                     b.matk = int(b.matk * float(e.get('atk_mult') or 1))
             if stage == 900:
                 bichos = __import__('instancia_oscura').filtrar(bichos, d.get('spawns', []))
+                bichos = __import__('instancia_oscura').doblar_vida(bichos, d.get('spawns', []))
             # La ZONA de su generador (tools/zonas_de_plantilla.py): la miran
             # los portales que solo dejan pasar con la sala limpia
             # (GENERATOR_ALIVE). Por cercania casi no se contaban.
