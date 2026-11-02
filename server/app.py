@@ -10887,6 +10887,17 @@ class Servidor:
             ses.enviar(_sub_chat.vista())
             return
 
+        # /lua <codigo> (solo GM): prueba el canal servidor -> Lua (canal_lua.py, tools/parche_canal_lua.py).
+        import canal_lua as _clua
+        if _clua.es_comando_gm(texto):
+            import configuracion as _cf_lua
+            if _cf_lua.es_gm(getattr(ses, 'usuario', None)):
+                ses.enviar(_clua.paquete(_clua.codigo_del_comando(texto)))
+                log.info('[%s] /lua de GM: %s', addr, _clua.codigo_del_comando(texto)[:200])
+            else:
+                ses.enviar(_cl.aviso(_cf_lua.AVISO_SIN_PERMISO_GM, tipo=0))
+            return
+
         # 1. Super Broadcast (% o /sb o /super, o ventana 0x0128 canal 11)
         es_sb = False
         msg_sb = ''
