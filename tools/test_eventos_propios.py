@@ -109,3 +109,16 @@ def test_portal_temporal_se_ve_al_entrar_y_caduca(tmp_path, monkeypatch):
     assert len(evp.poblar(900)) == 1 and evp.poblar(41) == []
     ahora[0] += 61
     assert evp.portal(eid) is None and evp.poblar(900) == []
+
+
+def test_un_solo_portal_por_copia_y_otra_baja_lo_alarga(monkeypatch):
+    """El jefe de Dark Cavern reaparece cada minuto y medio: cada baja abria otro portal y se apilaban (02/11/2026)."""
+    import time
+    eid = evp.abrir_portal(900, (5, 6), 16, (134, 70), 60, sala='A')
+    assert evp.portal_abierto(900, 16, sala='A') == eid
+    assert evp.portal_abierto(900, 16, sala='B') is None          # otra copia abre el suyo
+    assert evp.portal_abierto(900, 41, sala='A') is None          # otro destino tambien
+    antes = evp._portales[eid]['hasta']
+    monkeypatch.setattr(time, 'time', lambda: antes - 10)
+    evp.alargar(eid, 300)
+    assert evp._portales[eid]['hasta'] == antes + 290

@@ -181,6 +181,21 @@ def sala_de(ses):
         return None
 
 
+def portal_abierto(stage, destino, sala=None):
+    """El portal que ya esta abierto en ese mapa (o copia de instancia) hacia ese destino, o None."""
+    _limpiar()
+    return next((e for e, d in _portales.items()
+                 if d['stage'] == int(stage) and d['destino'] == int(destino) and d.get('sala') == sala), None)
+
+
+def alargar(eid, segundos):
+    """Le da al portal `segundos` mas desde ahora. Asi no se apilan: el jefe de Dark Cavern reaparece cada minuto
+    y medio y cada baja abria otro portal de cinco minutos, hasta cuatro remolinos a la vez (02/11/2026)."""
+    d = _portales.get(int(eid))
+    if d:
+        d['hasta'] = max(d['hasta'], time.time() + max(5, int(segundos or 60)))
+
+
 def abrir_portal(stage, tile, destino, llegada, segundos, sala=None):
     _limpiar()
     _sig_portal[0] += 1

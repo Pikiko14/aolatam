@@ -9727,20 +9727,27 @@ def _eventos_propios_al_morir(ses, monstruo, addr):
                 tile = (monstruo.tile_x, monstruo.tile_y) if donde == 'monstruo' else tuple(donde)
                 # En una instancia el portal es de ESA copia (la del equipo): los demas no lo ven ni lo usan.
                 sala = _evp.sala_de(ses)
-                eid = _evp.abrir_portal(ses.personaje.stage, tile, pr['destino'], pr['llegada'],
-                                        pr.get('segundos', 120), sala=sala)
-                paquete = _evp.paquete_portal(eid)
-                quienes = _evp.destinatarios(ses.personaje.stage, sala)
-                if ses not in quienes:
-                    quienes.append(ses)          # el que lo mato lo ve siempre
-                for s in quienes:
-                    s.enviar_inmediato(paquete, _cl.aviso('A portal has appeared!', tipo=0))
-                log.info('[%s] regla %s: portal %d en %s -> stage %s (%d jugadores lo ven)'
-                         % (addr, regla['id'], eid, tile, pr['destino'], len(quienes)))
+                # Uno solo por copia: si ya hay uno abierto hacia ese destino se alarga y no se abre otro.
+                eid = _evp.portal_abierto(ses.personaje.stage, pr['destino'], sala=sala)
+                if eid is not None:
+                    _evp.alargar(eid, pr.get('segundos', 120))
+                    log.info('[%s] regla %s: portal %d ya abierto, se alarga' % (addr, regla['id'], eid))
+                else:
+                    eid = _evp.abrir_portal(ses.personaje.stage, tile, pr['destino'], pr['llegada'],
+                                            pr.get('segundos', 120), sala=sala)
+                    paquete = _evp.paquete_portal(eid)
+                    quienes = _evp.destinatarios(ses.personaje.stage, sala)
+                    if ses not in quienes:
+                        quienes.append(ses)          # el que lo mato lo ve siempre
+                    for s in quienes:
+                        s.enviar_inmediato(paquete, _cl.aviso('A portal has appeared!', tipo=0))
+                    log.info('[%s] regla %s: portal %d en %s -> stage %s (%d jugadores lo ven)'
+                             % (addr, regla['id'], eid, tile, pr['destino'], len(quienes)))
 
                 def _cerrar(eid=eid, vivas_stage=ses.personaje.stage, sala=sala):
                     import combate as _cb_p
-                    _evp._limpiar()
+                    if _evp.portal(eid):
+                        return                       # lo alargo otra baja: lo cierra el temporizador de esa
                     for s in _evp.destinatarios(vivas_stage, sala):
                         try:
                             s.enviar_inmediato(_cb_p.despawn_monstruo(eid))
