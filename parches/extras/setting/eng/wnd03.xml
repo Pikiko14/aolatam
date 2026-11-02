@@ -2290,10 +2290,9 @@
         <child>3592</child>
         <child>3593</child>
     </window>
-    <window class="WND_CLASS_ITEMBUTTON" id="3590" range="4,2,36,36" fcolor="103" font="3" tpos="0,26" tooltip="10040" tooltext="Drag an item from your backpack here to sell it">
-        <style wsDrop="" ssRight="" wsTab="" />
+    <window class="WND_CLASS_BUTTON" id="3590" range="4,2,36,36" icon="484" fcolor="103" font="3" tpos="0,26" tooltip="10040" tooltext="Drag an item from your backpack here to sell it">
+        <style wsDrop="" wsTab="" />
         <OnDrop>OnSubastaSoltar</OnDrop>
-        <OnCommand>OnSubastaQuitar</OnCommand>
     </window>
     <window class="WND_CLASS_STATIC" id="3591" range="46,5,186,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />

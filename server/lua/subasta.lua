@@ -31,7 +31,7 @@ end
 
 local function limpiar_venta()
   S.venta = nil
-  window.seticon(hijo(3590), 0)
+  window.seticon(hijo(3590), 484)          -- la casilla vacia del juego
   window.settitle(hijo(3590), "")
   window.settitle(hijo(3593), "")
 end

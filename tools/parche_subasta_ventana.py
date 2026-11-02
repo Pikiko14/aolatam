@@ -48,15 +48,15 @@ ATRIBUTOS = {
     3538: {'title': '1'},
 }
 OCULTAS = (3512, 3513, 3514, 3515, 3516)
-# Lo de vender, sobre las cajas de arriba a la izquierda del fondo. La casilla es WND_CLASS_ITEMBUTTON, como las de
-# fusion e intercambio: con un WND_CLASS_BUTTON el juego no la tomaba como destino al arrastrar desde la mochila.
+# Lo de vender, sobre las cajas de arriba a la izquierda del fondo. La casilla es un WND_CLASS_BUTTON con wsDrop, como
+# la papelera de la mochila (3037), que si recibe lo que se suelta, con el icono 484 (w011_2, la casilla vacia del
+# juego): un WND_CLASS_ITEMBUTTON sin icono no se dibuja (el marco de las de fusion lo pone su fondo) y no se veia.
 # La casilla y el precio solo se ven en Mine (los ensena el Lua); el nombre (3591) hace de rotulo en las dos.
 NUEVAS = (
-    '<window class="WND_CLASS_ITEMBUTTON" id="3590" range="4,2,36,36" fcolor="103" font="3" tpos="0,26" '
+    '<window class="WND_CLASS_BUTTON" id="3590" range="4,2,36,36" icon="484" fcolor="103" font="3" tpos="0,26" '
     'tooltip="10040" tooltext="Drag an item from your backpack here to sell it">',
-    '    <style wsDrop="" ssRight="" wsTab="" />',
-    '    <OnDrop>OnSubastaSoltar</OnDrop>',
-    '    <OnCommand>OnSubastaQuitar</OnCommand>',
+    '    <style wsDrop="" wsTab="" />',
+    '    <OnDrop>OnSubastaSoltar</OnDrop>',            # solo OnDrop, como la papelera: un OnCommand puede quedarse el clic
     '</window>',
     '<window class="WND_CLASS_STATIC" id="3591" range="46,5,186,14" title="" fcolor="103" font="1">',
     '    <style wsVisible="" ssVCenter="" />',
