@@ -21538,6 +21538,13 @@ class Servidor:
                     ses.enviar(ACK.build(), MOVE.build(entity_id=ses.personaje.entity_id,
                         cur_x=_px_hb,cur_y=_py_hb,dst_x=_px_hb,dst_y=_py_hb,speed=_velocidad_de(ses)))
                     return
+            # Los puentes de la Torre de Babel que siguen cerrados (torre_babel.py), igual que las puertas de Dark Cavern.
+            if ses.personaje and ses.personaje.stage == 133 and __import__('torre_babel').bloquear_paso(
+                    ses, (ses.personaje.tile_x, ses.personaje.tile_y), (dst['x']//32, dst['y']//32)):
+                _px_tb, _py_tb = ses.personaje.tile_x*32, ses.personaje.tile_y*32
+                ses.enviar(ACK.build(), MOVE.build(entity_id=ses.personaje.entity_id,
+                    cur_x=_px_tb, cur_y=_py_tb, dst_x=_px_tb, dst_y=_py_tb, speed=_velocidad_de(ses)))
+                return
             if ses.personaje and ses.personaje.stage == 900 and __import__('instancia_oscura').bloquear_paso(
                     ses, (ses.personaje.tile_x, ses.personaje.tile_y), (dst['x']//32, dst['y']//32)):
                 _px_io, _py_io = ses.personaje.tile_x*32, ses.personaje.tile_y*32

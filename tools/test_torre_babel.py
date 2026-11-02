@@ -190,3 +190,37 @@ def test_la_ventana_se_abre_cambia_de_modo_y_entra(mundo):
     tb.procesar(a, struct.pack('<BII', tb.CMD_TORRE, 3, 0))
     assert a.enviados[-1][2:-1] == b'TorreCerrar()' and mundo.viajes == [('Impacty', tb.STAGE)]
     assert not tb.procesar(a, struct.pack('<BII', 168, 1, 0))
+
+
+def test_el_mapa_tiene_60_arenas_y_cada_puente_su_cortina():
+    import json
+    import sys as _s
+    _s.path.insert(0, str(RAIZ / 'tools' / 'editor_mapas'))
+    import mpcio
+    lay = tb.mapa()
+    assert len(lay['pisos']) == 60 and all('cortina' in d and 'puente' in d for d in lay['pisos'][:59])
+    m = mpcio.leer((RAIZ / 'parches' / 'extras' / 'map' / 'map133.mpc').read_bytes())
+    pisa = lambda x, y: m['celdas'][(y * m['w'] + x) * 6 + 1] == 0
+    assert pisa(*tb.entrada()) and all(pisa(*d['centro']) for d in lay['pisos'])
+    assert all(pisa(*t) for d in lay['pisos'][:59] for t in d['puente'])
+    # Entre dos arenas solo se pasa por el puente: lo de alrededor es cielo.
+    x, y = lay['pisos'][0]['cortina'][0]
+    assert not pisa(x, y - 2) and not pisa(x, y + 4)
+
+
+def test_las_cortinas_cierran_el_puente_hasta_matar_al_jefe(mundo):
+    a = mundo.nueva(1, 'Impacty')
+    tb.iniciar(a, '?', tb.SOLO)
+    a.personaje.tile_x, a.personaje.tile_y = tb.casilla_jefe(1)
+    tb.al_entrar(a)
+    assert sum(1 for p in a.enviados if p[:2] == b'\x0e\x00') == 59 * 3      # todas las cortinas, del 1 al 59
+    puente = tb.mapa()['pisos'][0]['puente']
+    lejos = puente[-1]
+    assert tb.bloquear_paso(a, tb.casilla_jefe(1), lejos)
+    c = tb.corrida(a)
+    n = len(a.enviados)
+    tb.al_morir(a, a.monstruos[c['jefe']])
+    quitadas = [p for p in a.enviados[n:] if p[:2] == b'\x07\x00']
+    assert len(quitadas) == 3
+    assert not tb.bloquear_paso(a, tb.casilla_jefe(1), lejos)                 # el puente 1 ya esta abierto
+    assert tb.bloquear_paso(a, tb.casilla_jefe(2), tb.mapa()['pisos'][1]['puente'][-1])   # el 2 aun no

@@ -5,9 +5,10 @@ supuesto"; se abre desde una accion (el boton de la barra) donde sale el ranking
 intento empieza de cero; premio por piso.
 
 * LOS PISOS: plantillas/torre_babel.json (tools/generar_torre_babel.py): el jefe de cada piso y sus stats.
-* EL MAPA: el 133 (en el cliente "年獸洞窟", sin uso aqui y sin castigo al morir), renombrado "Tower of Babel" en
-  stage.xml (tools/parche_subasta_ventana.py) y dinamico en plantillas/instancias.json: cada jugador solo o cada
-  party tiene su propia copia (eventos_mundo._clave_corrida).
+* EL MAPA: el 133, rehecho por tools/generar_mapa_torre.py: 60 arenas sobre el cielo estrellado, en zigzag hacia
+  arriba, unidas por puentes que cierra una cortina de luz hasta matar al jefe del piso (bloquear_paso). Se llama
+  "Tower of Babel" en stage.xml (tools/parche_subasta_ventana.py) y es dinamico en plantillas/instancias.json: cada
+  jugador solo o cada party tiene su propia copia (eventos_mundo._clave_corrida).
 * LA CORRIDA: iniciar() lleva al piso 1. Al cargar el mapa (al_entrar) sale el jefe del piso en su casilla
   (app._poner_generado, sin reaparicion); al morir (al_morir, desde app._procesar_muerte_monstruo) se anuncia el
   piso siguiente y su jefe sale a los PAUSA segundos. Cada 10 pisos, ademas del botin del jefe, todos los de la
@@ -32,8 +33,76 @@ import canal_lua
 log = logging.getLogger('torre_babel')
 
 STAGE = 133
-ENTRADA = (118, 66)
-CASILLA_JEFE = (110, 66)
+# El mapa lo hace tools/generar_mapa_torre.py: 60 arenas en el cielo, en zigzag hacia arriba, unidas por puentes. De
+# alli salen la entrada, el centro de cada arena (donde sale su jefe) y la cortina de luz de cada puente.
+MAPA_JSON = pathlib.Path(__file__).parent / 'plantillas' / 'torre_babel_mapa.json'
+OBJETO_CORTINA = 60402        # la cortina de luz, como las puertas de Dark Cavern (instancia_oscura.py)
+ENTIDAD_CORTINA = 7_560_000   # + puente * 10 + casilla; fuera de los rangos de presencia y de las de Dark Cavern
+_MAPA = None
+
+
+def mapa():
+    global _MAPA
+    if _MAPA is None:
+        _MAPA = json.loads(MAPA_JSON.read_text(encoding='utf-8'))
+    return _MAPA
+
+
+def entrada():
+    return tuple(mapa()['entrada'])
+
+
+def casilla_jefe(piso):
+    return tuple(mapa()['pisos'][piso - 1]['centro'])
+
+
+def _eid_cortina(puente, i):
+    return ENTIDAD_CORTINA + puente * 10 + i
+
+
+def cortinas(desde_piso):
+    """Los 0x000E de las cortinas de los puentes que siguen cerrados: el del piso en curso y los de arriba."""
+    import login
+    salida = []
+    for d in mapa()['pisos'][desde_piso - 1:]:
+        for i, t in enumerate(d.get('cortina', [])):
+            salida.append(login._map_object_spawn(_eid_cortina(d['piso'], i), OBJETO_CORTINA, tuple(t)))
+    return salida
+
+
+def abrir_puente(ses, puente):
+    """Quita la cortina del puente del piso `puente` a todos los de la copia."""
+    import combate
+    d = mapa()['pisos'][puente - 1]
+    pk = [combate.despawn_monstruo(_eid_cortina(puente, i)) for i in range(len(d.get('cortina', [])))]
+    for s in _en_la_copia(ses):
+        try:
+            (getattr(s, 'enviar_sin_espejo', None) or s.enviar)(*pk)
+            s.volcar()
+        except Exception:
+            pass
+
+
+def bloquear_paso(ses, desde, hasta):
+    """True si ir de `desde` a `hasta` cruza un puente aun cerrado (el de un piso cuyo jefe sigue vivo)."""
+    p = getattr(ses, 'personaje', None)
+    if not p or getattr(p, 'stage', None) != STAGE:
+        return False
+    c = corrida(ses)
+    if c is None:
+        return False
+    import app
+    cruzadas = set(app._casillas_del_tramo(tuple(desde), tuple(hasta)))
+    for d in mapa()['pisos'][c['piso'] - 1:]:
+        if cruzadas & {tuple(t) for t in d.get('puente', [])}:
+            ahora = time.time()
+            if ahora - getattr(ses, '_aviso_torre', 0.0) > 3:
+                ses._aviso_torre = ahora
+                import clases
+                ses.enviar(clases.aviso('A sealing light blocks the way: defeat the boss of floor %d first.'
+                                        % c['piso'], tipo=0))
+            return True
+    return False
 PISOS_JSON = pathlib.Path(__file__).parent / 'plantillas' / 'torre_babel.json'
 DB_PATH = pathlib.Path(__file__).parent.parent / 'data' / 'torre_babel.db'
 CMD_TORRE = 169
@@ -176,7 +245,7 @@ def iniciar(ses, addr, modo):
             nueva = True
         c['nombres'].add(ses.personaje.nombre)
     log.info('%s entra a la Torre de Babel (%s, piso %d)', ses.personaje.nombre, MODOS[modo], c['piso'])
-    app._viajar_por_portal(ses, addr, {'destino': STAGE, 'llegada': ENTRADA}, motivo='a la Torre de Babel')
+    app._viajar_por_portal(ses, addr, {'destino': STAGE, 'llegada': entrada()}, motivo='a la Torre de Babel')
     if nueva and modo == PARTY:
         log.info('Torre de Babel: %s invita a %d de su party', ses.personaje.nombre, invitar(ses))
     return None
@@ -206,6 +275,7 @@ def al_entrar(ses, addr='?'):
         _sacar(ses, addr)
         return
     c['nombres'].add(p.nombre)
+    ses.enviar(*cortinas(c['piso']))            # los puentes de su piso en adelante siguen cerrados
     if not _jefe_vivo(ses, c):
         poner_jefe(ses, c)
     _cartel(ses, 'Tower of Babel - Floor %d / %d: %s' % (c['piso'], total_pisos(), pisos()[c['piso'] - 1]['nombre']))
@@ -217,7 +287,7 @@ def poner_jefe(ses, c):
     datos = pisos()[c['piso'] - 1]
     eid = app._SIG_GENERADO[0]
     app._SIG_GENERADO[0] += 1
-    m = app._poner_generado(ses, eid, int(datos['npc_type']), CASILLA_JEFE, 0)
+    m = app._poner_generado(ses, eid, int(datos['npc_type']), casilla_jefe(c['piso']), 0)
     if m is None:
         log.warning('Torre de Babel: no se pudo sacar el jefe del piso %d (%s)', c['piso'], datos['npc_type'])
         return None
@@ -277,7 +347,8 @@ def al_morir(ses, m, addr='?'):
         terminar(ses, piso)
         return
     c['piso'] = piso + 1
-    _cartel(ses, 'Floor %d cleared! Next: floor %d - %s' % (piso, piso + 1, pisos()[piso]['nombre']))
+    abrir_puente(ses, piso)
+    _cartel(ses, 'Floor %d cleared! Cross the bridge to floor %d - %s' % (piso, piso + 1, pisos()[piso]['nombre']))
     try:
         import asyncio
         asyncio.get_event_loop().call_later(PAUSA, _siguiente, ses, c)
