@@ -2360,7 +2360,7 @@ _WEAPON_ATTACK_CACHE = {}
 #
 # Queda como constante para poder subirlo si en el juego se siente flojo. En
 # 1.0 es la suma pura, que es lo unico que respalda la medicion.
-PESO_STANCE = 2
+PESO_STANCE = 1      # la suma pura, lo medido ("ese x2 deberia ser x1", 01/11/2026; antes 2)
 
 # Divisor fijo del daño de hechizo. Ver la nota del 高權位 mas abajo.
 DENOM_HECHIZO = 200
