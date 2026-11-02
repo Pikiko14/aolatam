@@ -48,6 +48,16 @@ function SubastaAbrir(cats, nivs)
   end
   WND_ADTRADE = window.create(3501, 0, 0, SYSTEM_HANDLER)
   window.move(WND_ADTRADE, SYSTEM_SCREEN_WIDTH / 2 - 399, SYSTEM_SCREEN_HEIGHT / 2 - 246)
+  -- Los textos van aqui y no en wnd03.xml: wndtext03.xml (la traduccion) pisa los title del XML.
+  window.settitle(WND_ADTRADE, "Auction House")
+  for id, texto in pairs({[3502] = "All", [3503] = "Mine", [3512] = "Item", [3514] = "Qty.", [3516] = "Price",
+                          [3513] = "Seller", [3523] = "Category", [3526] = "Level"}) do
+    window.settitle(hijo(id), texto)
+  end
+  -- Lo del pregonero que no se usa: susurro, carta, Sell/Buy, el peso y el valor del vendedor.
+  for _, id in ipairs({3515, 3518, 3519, 3520, 3521, 3522, 3535, 3542}) do
+    window.show(hijo(id), false)
+  end
   window.settitle(hijo(3524), cats[S.cat + 1])
   window.settitle(hijo(3527), nivs[S.niv + 1])
   window.show(hijo(3511), true)
