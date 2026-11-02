@@ -74,7 +74,18 @@ NUEVAS = (
     '    <style ssVCenter="" />',
     '</window>',
 )
-IDS_NUEVAS = (3590, 3591, 3592, 3593)
+# El icono de cada objeto de la lista, en la casilla que el fondo dibuja a la izquierda de cada fila (cada 38 px desde
+# y=44). insertitemstrappnum tambien lo pintaba, pero ademas un numero sin sentido junto al nombre: estas casillas son
+# botones aparte, sin numero, y al pulsarlos se elige su fila (appdata = la fila; la 0 es la cabecera).
+ICONOS_FILAS = (3595, 3596, 3597, 3598, 3599, 3606, 3607, 3608, 3609)
+NUEVAS = NUEVAS + tuple(linea for fila, wid in enumerate(ICONOS_FILAS, 1) for linea in (
+    '<window class="WND_CLASS_BUTTON" id="%d" range="5,%d,32,32" fcolor="103" font="3" tpos="0,20" appdata="%d">'
+    % (wid, 44 + 38 * fila, fila),
+    '    <style wsVisible="" wsTab="" />',
+    '    <OnCommand>OnSubastaIcono</OnCommand>',
+    '</window>',
+))
+IDS_NUEVAS = (3590, 3591, 3592, 3593) + ICONOS_FILAS
 
 # Donde se podia soltar un objeto. Vacio: el juego no llama al OnDrop (ver arriba).
 SOLTAR_EN = ()

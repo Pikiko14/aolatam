@@ -9,6 +9,9 @@ local CMD_BUSCAR, CMD_COMPRAR, CMD_RETIRAR, CMD_PREPARAR, CMD_PUBLICAR = 161, 16
 local TODO, MIO, VENDER = 0, 1, 2
 local PESTANAS = {[TODO] = 3502, [MIO] = 3503, [VENDER] = 3594}
 local VENTA = {3592, 3593}        -- "G each" y precio: solo en Sell (la casilla 3590 ensena lo elegido en todas)
+-- Las casillas con el icono de cada fila de la lista (la fila 1 es la primera tras la cabecera).
+local ICONOS = {3595, 3596, 3597, 3598, 3599, 3606, 3607, 3608, 3609}
+local SANGRIA = "       "         -- el nombre empieza despues de la casilla del icono
 S.modo = S.modo or TODO
 S.orden = S.orden or 0            -- 0 lo mas nuevo, 1 lo mas barato
 S.cat = S.cat or 0
@@ -128,10 +131,20 @@ function SubastaLista(modo, pag, paginas, filas, oro, total)
     window.setsubitemstr(lista, 0, 2, "Price each", 0)
     window.setsubitemstr(lista, 0, 3, "Seller", 0)
   end
+  -- Los iconos van en sus casillas (ICONOS), no en la lista: insertitemstrappnum pintaba ademas un numero sin
+  -- sentido junto al nombre.
+  for k, id in ipairs(ICONOS) do
+    local f = filas[k]
+    if f then
+      window.seticon(hijo(id), game.getitemicon(f[6]))
+      window.settitle(hijo(id), f[3] > 1 and tostring(f[3]) or "")
+    else
+      window.seticon(hijo(id), 0)
+      window.settitle(hijo(id), "")
+    end
+  end
   for i, f in ipairs(filas) do
-    -- Solo el nombre: insertitemstrappnum pintaba ademas un numero sin sentido junto a el. El icono del elegido
-    -- sale en la casilla de arriba (OnSubastaFila).
-    window.insertitemstr(lista, f[2], 0)
+    window.insertitemstr(lista, SANGRIA .. f[2], 0)
     window.setsubitemstr(lista, i, 1, "x" .. tostring(f[3]), 0)
     window.setsubitemstr(lista, i, 2, f[4] ~= "" and (f[4] .. " G") or "", 0)
     window.setsubitemstr(lista, i, 3, f[5], 0)
@@ -296,6 +309,11 @@ function OnSubastaPagSig(dwID, dwCmdID, dwParam, pParam)
 end
 
 -- Elegir fila y cantidad
+-- Pulsar el icono de una fila es como pulsar la fila.
+function OnSubastaIcono(dwID, dwCmdID, dwParam, pParam)
+  return OnSubastaFila(dwID, dwCmdID, window.getappdata(dwID), pParam)
+end
+
 function OnSubastaFila(dwID, dwCmdID, dwParam, pParam)
   local f = S.filas[dwParam]          -- la fila 0 es la cabecera
   if not f then

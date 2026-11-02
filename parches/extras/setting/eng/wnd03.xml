@@ -2294,6 +2294,15 @@
         <child>3591</child>
         <child>3592</child>
         <child>3593</child>
+        <child>3595</child>
+        <child>3596</child>
+        <child>3597</child>
+        <child>3598</child>
+        <child>3599</child>
+        <child>3606</child>
+        <child>3607</child>
+        <child>3608</child>
+        <child>3609</child>
     </window>
     <window class="WND_CLASS_BUTTON" id="3590" range="4,2,36,36" icon="484" fcolor="103" font="3" tpos="0,26" tooltip="10040" tooltext="The item you are selling">
         <style wsTab="" />
@@ -2306,6 +2315,42 @@
     </window>
     <window class="WND_CLASS_STATIC" id="3592" range="118,22,62,14" title="G each" fcolor="103" font="1">
         <style ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="3595" range="5,82,32,32" fcolor="103" font="3" tpos="0,20" appdata="1">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnSubastaIcono</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="3596" range="5,120,32,32" fcolor="103" font="3" tpos="0,20" appdata="2">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnSubastaIcono</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="3597" range="5,158,32,32" fcolor="103" font="3" tpos="0,20" appdata="3">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnSubastaIcono</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="3598" range="5,196,32,32" fcolor="103" font="3" tpos="0,20" appdata="4">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnSubastaIcono</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="3599" range="5,234,32,32" fcolor="103" font="3" tpos="0,20" appdata="5">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnSubastaIcono</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="3606" range="5,272,32,32" fcolor="103" font="3" tpos="0,20" appdata="6">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnSubastaIcono</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="3607" range="5,310,32,32" fcolor="103" font="3" tpos="0,20" appdata="7">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnSubastaIcono</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="3608" range="5,348,32,32" fcolor="103" font="3" tpos="0,20" appdata="8">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnSubastaIcono</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="3609" range="5,386,32,32" fcolor="103" font="3" tpos="0,20" appdata="9">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnSubastaIcono</OnCommand>
     </window>
     <window class="WND_CLASS_STATIC" id="3512" range="8,8,30,14" title="Hawk" fcolor="103" font="1">
         <style ssVCenter="" />
