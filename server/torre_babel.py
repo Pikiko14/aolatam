@@ -303,8 +303,10 @@ def poner_jefe(ses, c):
 
 
 def _cartel(ses, texto):
-    import totem_war
-    pk = totem_war.cartel_deslizante(texto)
+    """El aviso a todos los de la copia, en el chat. No en el cartel que cruza la parte de arriba
+    (totem_war.cartel_deslizante): "que no salgan los mensajes aca" (02/11/2026)."""
+    import clases
+    pk = clases.aviso(texto, tipo=0)
     for s in _en_la_copia(ses):
         try:
             (getattr(s, 'enviar_sin_espejo', None) or s.enviar)(pk)

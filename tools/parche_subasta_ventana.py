@@ -33,8 +33,10 @@ SALIDA = RAIZ / 'parches' / 'extras' / 'setting' / 'eng' / 'wnd03.xml'
 # wndtext03.xml (la traduccion) pisa los title de aqui.
 ATRIBUTOS = {
     3501: {'title': 'Auction House'},
-    3502: {'title': 'All'},
-    3503: {'title': 'Mine'},
+    # Las pestanas con el icono del TEMA del cliente (2734, log/btn140, el de los botones "Set"): "que las pestanas
+    # sean del color configurado en el cliente" (02/11/2026). Las 3084/3085 de antes eran naranja y gris fijos.
+    3502: {'title': 'All', 'range': '9,442,32,17', 'icon': str(2734)},
+    3503: {'title': 'Mine', 'range': '47,442,32,17', 'icon': str(2734)},
     3517: {'title': 'Pick an item and press the check to buy it.', 'range': '88,449,370,14'},
     3522: {'title': 'New'},
     3542: {'title': 'Cheap'},
@@ -127,11 +129,11 @@ TORRE = (
     '<window class="WND_CLASS_STATIC" id="59021" range="8,4,284,14" title="" fcolor="103" font="1">',
     '    <style wsVisible="" ssVCenter="" />',
     '</window>',
-    '<window class="WND_CLASS_BUTTON" id="59022" range="8,22,32,15" title="Solo" fcolor="103" font="1" icon="3085">',
+    '<window class="WND_CLASS_BUTTON" id="59022" range="8,22,32,17" title="Solo" fcolor="103" font="1" icon="59030">',
     '    <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />',
     '    <OnCommand>OnTorreSolo</OnCommand>',
     '</window>',
-    '<window class="WND_CLASS_BUTTON" id="59023" range="44,22,32,15" title="Party" fcolor="103" font="1" icon="3084">',
+    '<window class="WND_CLASS_BUTTON" id="59023" range="44,22,32,17" title="Party" fcolor="103" font="1" icon="2734">',
     '    <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />',
     '    <OnCommand>OnTorreParty</OnCommand>',
     '</window>',
@@ -152,12 +154,19 @@ TORRE = (
     '</window>',
 )
 
+ICONO_PESTANA_ELEGIDA = 59030
+ICONO_PESTANA = (
+    r'<icon id="%d" dir="\log\" normal="btn140_d" focus="normal" down="normal" disable="normal">' % ICONO_PESTANA_ELEGIDA,
+    '    <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />',
+    '</icon>',
+)
+
 # Donde se podia soltar un objeto. Vacio: el juego no llama al OnDrop (ver arriba).
 SOLTAR_EN = ()
 
 # La tercera pestana, Sell, junto a All (3502) y Mine (3503) y con su mismo icono de pestana.
 PESTANA_VENDER = (
-    '<window class="WND_CLASS_BUTTON" id="3594" range="85,443,32,15" title="Sell" fcolor="103" font="1" icon="3084">',
+    '<window class="WND_CLASS_BUTTON" id="3594" range="85,442,32,17" title="Sell" fcolor="103" font="1" icon="2734">',
     '    <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />',
     '    <OnCommand>OnSubastaPestanaVender</OnCommand>',
     '</window>',
@@ -239,6 +248,11 @@ def generar(texto: str) -> str:
     if 'id="%d"' % TORRE_ID not in salida:
         m = re.search(r'[ \t]*<window [^>]*\bid="3501"[^>]*>[\s\S]*?</window>', salida)
         salida = salida[:m.end()] + ''.join(nl + sangria + linea for linea in TORRE) + salida[m.end():]
+    # La pestana ELEGIDA con el color del tema: el game no trae un icono asi (el 2734 solo lo pone al pulsar), y se
+    # define aqui con la imagen de pulsado y el atributo de tema.
+    if '<icon id="%d"' % ICONO_PESTANA_ELEGIDA not in salida:
+        m = re.search(r'[ \t]*<window [^>]*\bid="3501"[^>]*>[\s\S]*?</window>', salida)
+        salida = salida[:m.end()] + ''.join(nl + sangria + linea for linea in ICONO_PESTANA) + salida[m.end():]
     faltan = ids - hechos
     if faltan:
         raise SystemExit('no se encontraron en wnd03.xml: %s' % sorted(faltan))

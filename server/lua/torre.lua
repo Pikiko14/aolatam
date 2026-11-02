@@ -9,17 +9,26 @@ local function hijo(id)
   return window.find(WND_TORRE, id)
 end
 
+-- Recorta un texto a `n` letras con ".." al final: nada se sale de su columna o caja.
+local function corto(texto, n)
+  texto = tostring(texto or "")
+  if string.len(texto) > n then
+    return string.sub(texto, 1, n - 2) .. ".."
+  end
+  return texto
+end
+
 local function estado(texto)
-  window.settitle(hijo(59026), texto)
+  window.settitle(hijo(59026), corto(texto, 40))
 end
 
 local function pintar()
-  window.seticon(hijo(59022), T.modo == 0 and 3085 or 3084)
-  window.seticon(hijo(59023), T.modo == 1 and 3085 or 3084)
+  window.seticon(hijo(59022), T.modo == 0 and 59030 or 2734)   -- las del tema del cliente
+  window.seticon(hijo(59023), T.modo == 1 and 59030 or 2734)
   if T.modo == 0 then
     estado("Solo: you alone against every boss.")
   else
-    estado("Party: everyone in your party climbs together.")
+    estado("Party: your whole party climbs.")
   end
 end
 
@@ -36,10 +45,10 @@ function TorreAbrir(modos, pisos)
     window.setbgcolor(WND_TORRE, 52, 36, 12, 230)      -- azul oscuro casi opaco (azul, verde, rojo, alfa)
   end
   window.settitle(WND_TORRE, "Tower of Babel")
-  window.settitle(hijo(59021), tostring(pisos) .. " floors, one boss each. Every try starts at floor 1.")
+  window.settitle(hijo(59021), tostring(pisos) .. " floors, one boss per floor.")
   window.settitle(hijo(59022), modos[1])
   window.settitle(hijo(59023), modos[2])
-  window.settitle(hijo(59027), "Enter the tower")
+  window.settitle(hijo(59027), "Enter")
   T.invitacion = nil
   pintar()
 end
@@ -54,18 +63,19 @@ function TorreRanking(modo, filas)
   local lista = hijo(59024)
   window.clearlist(lista)
   window.insertitemstr(lista, "Best climbs", 0)
-  window.setsubitemstr(lista, 0, 1, "Floors", 0)
-  window.setsubitemstr(lista, 0, 2, "Time", 0)
+  -- setsubitemstr cuenta las columnas desde la segunda: la 0 es la que va tras el nombre (como OnTestMail de mail.lua).
+  window.setsubitemstr(lista, 0, 0, "Floors", 0)
+  window.setsubitemstr(lista, 0, 1, "Time", 0)
   for i, f in ipairs(filas) do
-    window.insertitemstr(lista, tostring(i) .. ". " .. f[1], 0)
-    window.setsubitemstr(lista, i, 1, tostring(f[2]), 0)
-    window.setsubitemstr(lista, i, 2, f[3], 0)
+    window.insertitemstr(lista, corto(tostring(i) .. ". " .. f[1], 13), 0)
+    window.setsubitemstr(lista, i, 0, tostring(f[2]), 0)
+    window.setsubitemstr(lista, i, 1, f[3], 0)
   end
   pintar()
   if invitacion and modo == 1 then
-    estado(invitacion .. " invites you (Party). Press the check to join.")
+    estado(corto(invitacion, 12) .. " invites you. Press the check.")
   elseif #filas == 0 then
-    estado("Nobody has climbed yet in this mode. Be the first!")
+    estado("No climbs yet. Be the first!")
   end
 end
 
@@ -78,8 +88,8 @@ function TorreInvitacion(lider, modos, pisos)
   T.modo = 1
   T.invitacion = lider
   pintar()
-  estado(lider .. " invites you (Party). Press the check to join.")
-  window.settitle(hijo(59027), "Join " .. lider)
+  estado(corto(lider, 12) .. " invites you. Press the check.")
+  window.settitle(hijo(59027), "Join")
 end
 
 function TorreAviso(texto)

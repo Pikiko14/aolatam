@@ -2242,6 +2242,9 @@
         <child>3511</child>
         <child>3551</child>
     </window>
+    <icon id="59030" dir="\log\" normal="btn140_d" focus="normal" down="normal" disable="normal">
+        <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />
+    </icon>
     <window class="WND_CLASS_DLG_1" range="0,0,300,270" id="59020" title="Tower of Babel" fcolor="104" font="1">
         <style wsVisible="" wsMoveable="" />
         <child>59021</child>
@@ -2255,11 +2258,11 @@
     <window class="WND_CLASS_STATIC" id="59021" range="8,4,284,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="59022" range="8,22,32,15" title="Solo" fcolor="103" font="1" icon="3085">
+    <window class="WND_CLASS_BUTTON" id="59022" range="8,22,32,17" title="Solo" fcolor="103" font="1" icon="59030">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnTorreSolo</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="59023" range="44,22,32,15" title="Party" fcolor="103" font="1" icon="3084">
+    <window class="WND_CLASS_BUTTON" id="59023" range="44,22,32,17" title="Party" fcolor="103" font="1" icon="2734">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnTorreParty</OnCommand>
     </window>
@@ -2287,17 +2290,17 @@
     <window class="WND_CLASS_LIST" id="59012" range="6,22,224,166" cols="3" rows="8" gapx="2" gapy="1" tpos="1,1" fcolor="103" font="1">
         <style wsVisible="" lsVCenter="" lsReport="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="3502" range="9,443,32,15" title="All" fcolor="103" font="1" icon="3085">
+    <window class="WND_CLASS_BUTTON" id="3502" range="9,442,32,17" title="All" fcolor="103" font="1" icon="2734">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <!-- 物品切頁 -->
         <OnCommand>OnADTrade_ChaPage_Item</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="3503" range="47,443,32,15" title="Mine" fcolor="103" font="1" icon="3084">
+    <window class="WND_CLASS_BUTTON" id="3503" range="47,442,32,17" title="Mine" fcolor="103" font="1" icon="2734">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <!-- 叫賣切頁 -->
         <OnCommand>OnADTrade_ChaPage_Player</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="3594" range="85,443,32,15" title="Sell" fcolor="103" font="1" icon="3084">
+    <window class="WND_CLASS_BUTTON" id="3594" range="85,442,32,17" title="Sell" fcolor="103" font="1" icon="2734">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnSubastaPestanaVender</OnCommand>
     </window>

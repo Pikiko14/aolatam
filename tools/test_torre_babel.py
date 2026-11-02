@@ -51,7 +51,9 @@ def mundo(tmp_path, monkeypatch):
     monkeypatch.setattr(app, '_sincronizar_cambio_mapa', sacar)
     monkeypatch.setattr(app, '_aplicar_efectos', lambda ses, addr, ef, motivo='': w.premios.append(
         (ses.personaje.nombre, ef)))
-    monkeypatch.setattr(totem_war, 'cartel_deslizante', lambda t: (w.carteles.append(t), b'\x28\x01')[1])
+    import clases
+    _aviso = clases.aviso
+    monkeypatch.setattr(clases, 'aviso', lambda t, **k: (w.carteles.append(t), _aviso(t, **k))[1])
     monkeypatch.setattr(presencia, 'clave_de_mapa', lambda ses, stage: (stage, eventos_mundo._clave_corrida(ses)))
     monkeypatch.setattr(presencia, '_vivas', lambda clave: [s for s in w.sesiones if s.personaje.stage == clave[0]
                                                             and eventos_mundo._clave_corrida(s) == clave[1]])

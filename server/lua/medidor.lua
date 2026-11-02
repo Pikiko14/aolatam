@@ -9,6 +9,15 @@ local function hijo(id)
   return window.find(WND_MEDIDOR, id)
 end
 
+-- Recorta un texto a `n` letras con ".." al final: nada se sale de su columna o caja.
+local function corto(texto, n)
+  texto = tostring(texto or "")
+  if string.len(texto) > n then
+    return string.sub(texto, 1, n - 2) .. ".."
+  end
+  return texto
+end
+
 function MedidorAbrir()
   if window.isexist(WND_MEDIDOR) then
     window.setforeground(WND_MEDIDOR)
@@ -43,16 +52,17 @@ function MedidorDatos(titulo, filas)
     game.netcommand2(CMD_MEDIDOR, 0, 0)            -- la cerraron con la X: que el servidor deje de mandar
     return
   end
-  window.settitle(hijo(59011), titulo)
+  window.settitle(hijo(59011), corto(titulo, 30))
   local lista = hijo(59012)
   window.clearlist(lista)
   -- La primera fila es la cabecera.
   window.insertitemstr(lista, "Name", 0)
-  window.setsubitemstr(lista, 0, 1, "Damage", 0)
-  window.setsubitemstr(lista, 0, 2, "%", 0)
+  -- setsubitemstr cuenta las columnas desde la segunda: la 0 es la que va tras el nombre (como OnTestMail de mail.lua).
+  window.setsubitemstr(lista, 0, 0, "Damage", 0)
+  window.setsubitemstr(lista, 0, 1, "%", 0)
   for i, f in ipairs(filas) do
-    window.insertitemstr(lista, tostring(i) .. ". " .. f[1], 0)
-    window.setsubitemstr(lista, i, 1, f[2], 0)
-    window.setsubitemstr(lista, i, 2, tostring(f[3]) .. "%", 0)
+    window.insertitemstr(lista, corto(tostring(i) .. ". " .. f[1], 10), 0)
+    window.setsubitemstr(lista, i, 0, f[2], 0)
+    window.setsubitemstr(lista, i, 1, tostring(f[3]) .. "%", 0)
   end
 end

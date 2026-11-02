@@ -4,6 +4,7 @@
 -- El fondo de la pestana ya trae dibujada una rejilla de 10 filas: una fila por objeto, con su icono.
 -- Tres pestanas: All (comprar), Mine (lo mio en venta: retirar) y Sell (la mochila: elegir, poner precio y publicar).
 SUBASTA = SUBASTA or {}
+WND_ADTRADE = WND_ADTRADE or 0    -- un numero: window.isexist(nil) da error (lo define adtrade.lua, pero por si acaso)
 local S = SUBASTA
 local CMD_BUSCAR, CMD_COMPRAR, CMD_RETIRAR, CMD_PREPARAR, CMD_PUBLICAR = 161, 162, 163, 164, 165
 local TODO, MIO, VENDER = 0, 1, 2
@@ -27,12 +28,21 @@ local function hijo(id)
   return window.find(WND_ADTRADE, id)
 end
 
+-- Recorta un texto a `n` letras con ".." al final: nada se sale de su columna o caja.
+local function corto(texto, n)
+  texto = tostring(texto or "")
+  if string.len(texto) > n then
+    return string.sub(texto, 1, n - 2) .. ".."
+  end
+  return texto
+end
+
 local function estado(texto)
   window.settitle(hijo(3517), texto)
 end
 
 local function rotulo(texto)
-  window.settitle(hijo(3591), texto)
+  window.settitle(hijo(3591), corto(texto, 26))
 end
 
 local function limpiar_venta()
@@ -45,7 +55,7 @@ end
 
 local function pintar_pestanas()
   for modo, id in pairs(PESTANAS) do
-    window.seticon(hijo(id), modo == S.modo and 3085 or 3084)
+    window.seticon(hijo(id), modo == S.modo and 59030 or 2734)   -- las del tema del cliente
   end
   for _, id in ipairs(VENTA) do
     window.show(hijo(id), S.modo == VENDER)
@@ -60,7 +70,7 @@ local function pintar_pestanas()
     rotulo(S.venta.nombre)
     estado("Write the price and Qty. up here, then the check.")
   else
-    rotulo("Pick an item of your backpack below")
+    rotulo("Pick an item below")
     estado("Pick the item you want to sell.")
   end
 end
@@ -124,13 +134,13 @@ function SubastaLista(modo, pag, paginas, filas, oro, total)
   -- La primera fila es la cabecera: dice que es cada columna. Elegirla no hace nada (OnSubastaFila).
   window.insertitemstr(lista, "Item", 0)
   if modo == VENDER then
-    window.setsubitemstr(lista, 0, 1, "Qty.", 0)
+    window.setsubitemstr(lista, 0, 0, "Qty.", 0)
+    window.setsubitemstr(lista, 0, 1, "", 0)
     window.setsubitemstr(lista, 0, 2, "", 0)
-    window.setsubitemstr(lista, 0, 3, "", 0)
   else
-    window.setsubitemstr(lista, 0, 1, "Qty.", 0)
-    window.setsubitemstr(lista, 0, 2, "Price each", 0)
-    window.setsubitemstr(lista, 0, 3, "Seller", 0)
+    window.setsubitemstr(lista, 0, 0, "Qty.", 0)
+    window.setsubitemstr(lista, 0, 1, "Price each", 0)
+    window.setsubitemstr(lista, 0, 2, "Seller", 0)
   end
   -- Los iconos van en sus casillas (ICONOS), no en la lista: insertitemstrappnum pintaba ademas un numero sin
   -- sentido junto al nombre.
@@ -145,10 +155,10 @@ function SubastaLista(modo, pag, paginas, filas, oro, total)
     end
   end
   for i, f in ipairs(filas) do
-    window.insertitemstr(lista, SANGRIA .. f[2], 0)
-    window.setsubitemstr(lista, i, 1, "x" .. tostring(f[3]), 0)
-    window.setsubitemstr(lista, i, 2, f[4] ~= "" and (f[4] .. " G") or "", 0)
-    window.setsubitemstr(lista, i, 3, f[5], 0)
+    window.insertitemstr(lista, SANGRIA .. corto(f[2], 20), 0)
+    window.setsubitemstr(lista, i, 0, "x" .. tostring(f[3]), 0)
+    window.setsubitemstr(lista, i, 1, f[4] ~= "" and (f[4] .. " G") or "", 0)
+    window.setsubitemstr(lista, i, 2, corto(f[5], 24), 0)
   end
   window.settitle(hijo(3532), tostring(pag) .. " / " .. tostring(paginas))
   window.settitle(hijo(3538), tostring(S.cant))
