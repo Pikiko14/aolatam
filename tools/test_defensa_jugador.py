@@ -32,3 +32,8 @@ def test_las_fisicas_usan_su_poder_y_nunca_pasan_de_1_35():
     assert combate.mult_fisico(904) == 0.76            # Slow Snipe I
     assert combate.mult_fisico(943) == 0.76            # Basic Shot IV
     assert combate.mult_fisico(15523) == combate.MULT_SIN_RAMA     # Holy Guard I: no 18x
+
+
+def test_el_fisico_va_al_70_por_ciento():
+    """"sigue pegando mucho el fisico, se puede reducir un 30%"."""
+    assert combate.FACTOR_DANO_FISICO == 0.7

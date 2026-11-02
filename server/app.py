@@ -13823,7 +13823,7 @@ class Servidor:
                             dano_base = mag.get('dano_base', 0)
                             _cb_aoe_info = _cb.combo_de(tipo)
                             es_combo_aoe = bool(_cb_aoe_info and _cb_aoe_info.get('golpes', 1) > 1)
-                            mult_spell = _cb.mult_fisico(tipo)       # su poder, no 1,35 fijo
+                            mult_spell = _cb.mult_fisico(tipo) * _cb.FACTOR_DANO_FISICO   # su poder, no 1,35 fijo
                             coef = mag.get('dano_coef', 0)
                             if coef > 0:
                                 mult_spell *= (coef / 100.0)
@@ -15076,6 +15076,7 @@ class Servidor:
                         mult_spell *= (coef / 100.0)
                 else:
                     mult_spell = 1.0
+                mult_spell *= _cb.FACTOR_DANO_FISICO          # golpe basico y habilidades fisicas, -30%
                 var_pct = 0.03
 
             # Modificadores porcentuales del equipo (ej. +30% spell damage de Snow Queen's Cufflink)

@@ -2392,6 +2392,9 @@ def spl_atk_con_power(spl_atk: int, dano_base: int, denom: int) -> int:
 # Thunder Sword III (formula 15, la de Slow Snipe y Basic Shot) da 0,76 del ataque (RATIO_POR_FORMULA) y Advance
 # Chop V pego algo MENOS que un golpe basico (ver PESO_STANCE). Los combos de varios golpes siguen con MULT_COMBO.
 MULT_COMBO = 1.2
+# Todo el dano FISICO de los jugadores (golpe basico y habilidades, contra monstruos y en PvP) por este factor: "sigue
+# pegando mucho el fisico, se puede reducir un 30%" (01/11/2026).
+FACTOR_DANO_FISICO = 0.7
 MULT_SIN_RAMA = 1.35
 
 
