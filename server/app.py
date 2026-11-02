@@ -9138,11 +9138,6 @@ def _entrar_en_sala(ses, addr):
     log.info('[%s] sala %d: %d bichos muertos, %d al dia, %d objetos, '
              '%d jugador(es) dentro', addr, e.stage, len(fuera), len(dentro),
              len(getattr(e, 'objetos', None) or {}), len(e.sesiones))
-    # La Torre de Babel: el jefe del piso en la copia, o fuera si no hay corrida (torre_babel.py)
-    try:
-        __import__('torre_babel').al_entrar(ses, addr)
-    except Exception:
-        log.exception('Torre de Babel: al entrar')
 
 
 def _dialogo_del_mapa(ses, addr, stage, nodo):
@@ -11674,6 +11669,13 @@ class Servidor:
                 _entrar_en_sala(ses, addr)
             except Exception:
                 log.exception('no se pudo entrar en la sala del mapa al conectar')
+            # La Torre de Babel: el jefe del piso en la copia, o fuera si no hay corrida (torre_babel.py). Va aqui y no
+            # dentro de _entrar_en_sala: esa vuelve antes de tiempo la primera vez que se entra a una copia, justo cuando
+            # hay que sacar el primer jefe.
+            try:
+                __import__('torre_babel').al_entrar(ses, addr)
+            except Exception:
+                log.exception('Torre de Babel: al entrar')
             bars, max_pts = _max_sp_info(p)
             # Ver arriba: empieza a cero, no al maximo.
             # El SP viene del personaje guardado. Empieza a cero solo la
@@ -15661,6 +15663,13 @@ class Servidor:
                 _entrar_en_sala(ses, addr)
             except Exception:
                 log.exception('no se pudo entrar en la sala del mapa')
+            # La Torre de Babel: el jefe del piso en la copia, o fuera si no hay corrida (torre_babel.py). Va aqui y no
+            # dentro de _entrar_en_sala: esa vuelve antes de tiempo la primera vez que se entra a una copia, justo cuando
+            # hay que sacar el primer jefe.
+            try:
+                __import__('torre_babel').al_entrar(ses, addr)
+            except Exception:
+                log.exception('Torre de Babel: al entrar')
             try:
                 _tw_al_entrar(ses)
             except Exception:
