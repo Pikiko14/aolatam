@@ -159,7 +159,7 @@ def test_no_se_vende_lo_intransferible_ni_lo_equipado(monkeypatch):
         assert 'Take it off' in _lua(v.enviados[-1])
 
 
-def test_publicar_desde_la_ventana_saca_de_la_mochila_y_sale_en_mine():
+def test_publicar_desde_la_ventana_saca_de_la_mochila_y_vuelve_a_sell():
     v = _ses(10, 'Vende', {23: ITEM})
     v.cantidades[23] = 5
     sv.procesar(v, _cmd(sv.CMD_PUBLICAR, (23 << 16) | 3, 1500))
@@ -167,7 +167,7 @@ def test_publicar_desde_la_ventana_saca_de_la_mochila_y_sale_en_mine():
     assert (fila['item_id'], fila['cantidad'], fila['precio'], fila['vendedor']) == (ITEM, 3, 1500, 'Vende')
     assert app._cant_de(v, 23) == 2
     textos = [_lua(p) for p in v.enviados if p[:2] == b'\xa0\x01']
-    assert textos[-2].startswith('SubastaLista(1,1,1,{{') and textos[-1].startswith('SubastaPublicada(')
+    assert textos[-2].startswith('SubastaLista(2,') and textos[-1].startswith('SubastaPublicada(')
 
 
 def test_sin_precio_no_se_publica():
@@ -202,3 +202,26 @@ def test_el_saludo_define_el_boton_de_la_barra_y_el_boton_abre_la_ventana():
 def test_el_diagnostico_de_soltar_solo_se_anota():
     s = _ses(1, 'A', {})
     assert sv.procesar(s, _cmd(sv.CMD_DIAG, 1, 0)) and s.enviados == []
+
+
+def test_sell_ensena_la_mochila_vendible_con_su_ranura_e_icono():
+    import house_services
+    v = _ses(10, 'Vende', {23: ITEM, 24: ARMA})
+    v.cantidades[23] = 5
+    sv.procesar(v, _cmd(sv.CMD_BUSCAR, sv.MODO_VENDER << 16, 1))
+    lista = _ultima_lista(v)
+    assert lista.startswith('SubastaLista(2,1,1,{{23,"Ruby",5,"","",%d}' % ITEM)
+    assert ',24,' not in lista.split('}}')[0] or '{24,' in lista
+
+
+def test_oro_corto_cabe_en_su_caja():
+    assert [sv.oro_corto(n) for n in (0, 9999, 966852, 1_000_000, 1_234_567)] == ['0', '9,999', '966K', '1M', '1.23M']
+
+
+def test_publicar_desde_sell_vuelve_a_sell():
+    v = _ses(10, 'Vende', {23: ITEM})
+    v.cantidades[23] = 5
+    sv.procesar(v, _cmd(sv.CMD_PUBLICAR, (23 << 16) | 2, 700))
+    textos = [_lua(p) for p in v.enviados if p[:2] == b'\xa0\x01']
+    assert textos[-2].startswith('SubastaLista(2,') and textos[-1].startswith('SubastaPublicada(')
+    assert subastas.listado()[0]['cantidad'] == 2

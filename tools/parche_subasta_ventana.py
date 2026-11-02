@@ -46,17 +46,20 @@ ATRIBUTOS = {
     3532: {'title': '1 / 1'},
     3535: {'title': '', 'fcolor': '103', 'font': '1'},
     3538: {'title': '1'},
+    # Las flechas de pagina y de cantidad: las 3043/3044 (btn057/btn059) no estan en el cliente y salian en blanco;
+    # las 2569/2571 (log/btn134, btn133) son flechas del mismo tamano que si estan.
+    3531: {'icon': '2569'}, 3537: {'icon': '2569'},
+    3533: {'icon': '2571'}, 3539: {'icon': '2571'},
 }
 OCULTAS = (3512, 3513, 3514, 3515, 3516)
-# Lo de vender, sobre las cajas de arriba a la izquierda del fondo. La casilla es un WND_CLASS_BUTTON con wsDrop, como
-# la papelera de la mochila (3037), que si recibe lo que se suelta, con el icono 484 (w011_2, la casilla vacia del
-# juego): un WND_CLASS_ITEMBUTTON sin icono no se dibuja (el marco de las de fusion lo pone su fondo) y no se veia.
-# La casilla y el precio solo se ven en Mine (los ensena el Lua); el nombre (3591) hace de rotulo en las dos.
+# Lo de vender, sobre las cajas de arriba a la izquierda del fondo: la casilla con el objeto elegido (3590, icono 484 =
+# w011_2, la casilla vacia del juego), su nombre (3591) y el precio (3593). NO se arrastra: el juego no llama al OnDrop
+# de estas ventanas (ni con BUTTON ni con ITEMBUTTON, ni en la lista; probado el 02/11/2026). En su lugar la pestana
+# Sell (3594) ensena la mochila en la rejilla y se elige con un clic. La casilla y el precio solo se ven en Sell.
 NUEVAS = (
     '<window class="WND_CLASS_BUTTON" id="3590" range="4,2,36,36" icon="484" fcolor="103" font="3" tpos="0,26" '
-    'tooltip="10040" tooltext="Drag an item from your backpack here to sell it">',
-    '    <style wsDrop="" wsTab="" />',
-    '    <OnDrop>OnSubastaSoltar</OnDrop>',            # solo OnDrop, como la papelera: un OnCommand puede quedarse el clic
+    'tooltip="10040" tooltext="The item you are selling">',
+    '    <style wsTab="" />',
     '</window>',
     '<window class="WND_CLASS_STATIC" id="3591" range="46,5,186,14" title="" fcolor="103" font="1">',
     '    <style wsVisible="" ssVCenter="" />',
@@ -70,8 +73,16 @@ NUEVAS = (
 )
 IDS_NUEVAS = (3590, 3591, 3592, 3593)
 
-# Tambien se puede soltar el objeto en cualquier parte de la rejilla, no solo en la casilla de arriba.
-SOLTAR_EN = (3530,)
+# Donde se podia soltar un objeto. Vacio: el juego no llama al OnDrop (ver arriba).
+SOLTAR_EN = ()
+
+# La tercera pestana, Sell, junto a All (3502) y Mine (3503) y con su mismo icono de pestana.
+PESTANA_VENDER = (
+    '<window class="WND_CLASS_BUTTON" id="3594" range="85,443,32,15" title="Sell" fcolor="103" font="1" icon="3084">',
+    '    <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />',
+    '    <OnCommand>OnSubastaPestanaVender</OnCommand>',
+    '</window>',
+)
 
 MANEJADORES = {
     3518: 'OnSubastaSusurrar',
@@ -135,6 +146,11 @@ def generar(texto: str) -> str:
     bloque = re.sub(r'[ \t]*</window>$', lambda m2: hijos + sangria + '</window>', bloque)
     nuevas = ''.join(sangria + linea + nl for linea in NUEVAS)
     salida = salida[:m.start()] + bloque + nl + nuevas.rstrip('\r\n') + salida[m.end():]
+    # La pestana Sell: hija de la 3501, definida detras de la 3503.
+    salida = re.sub(r'([ \t]*)<child>3503</child>', lambda m3: m3.group(0) + nl + m3.group(1) + '<child>3594</child>',
+                    salida, count=1)
+    m = re.search(r'[ \t]*<window [^>]*\bid="3503"[^>]*>[\s\S]*?</window>', salida)
+    salida = salida[:m.end()] + ''.join(nl + sangria + linea for linea in PESTANA_VENDER) + salida[m.end():]
     faltan = ids - hechos
     if faltan:
         raise SystemExit('no se encontraron en wnd03.xml: %s' % sorted(faltan))

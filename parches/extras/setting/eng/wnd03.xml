@@ -2238,6 +2238,7 @@
         <style wsVisible="" wsMoveable="" />
         <child>3502</child>
         <child>3503</child>
+        <child>3594</child>
         <child>3511</child>
         <child>3551</child>
     </window>
@@ -2250,6 +2251,10 @@
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <!-- 叫賣切頁 -->
         <OnCommand>OnADTrade_ChaPage_Player</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="3594" range="85,443,32,15" title="Sell" fcolor="103" font="1" icon="3084">
+        <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
+        <OnCommand>OnSubastaPestanaVender</OnCommand>
     </window>
     <!-- 廣告刊登買賣物品(物品頁) -->
     <window class="WND_CLASS_BASE" range="0,0,790,468" id="3511" icon="3511">
@@ -2290,9 +2295,8 @@
         <child>3592</child>
         <child>3593</child>
     </window>
-    <window class="WND_CLASS_BUTTON" id="3590" range="4,2,36,36" icon="484" fcolor="103" font="3" tpos="0,26" tooltip="10040" tooltext="Drag an item from your backpack here to sell it">
-        <style wsDrop="" wsTab="" />
-        <OnDrop>OnSubastaSoltar</OnDrop>
+    <window class="WND_CLASS_BUTTON" id="3590" range="4,2,36,36" icon="484" fcolor="103" font="3" tpos="0,26" tooltip="10040" tooltext="The item you are selling">
+        <style wsTab="" />
     </window>
     <window class="WND_CLASS_STATIC" id="3591" range="46,5,186,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
@@ -2385,7 +2389,7 @@
         <OnCommand>OnADTrade_Item_Search</OnCommand>
     </window>
     <window class="WND_CLASS_LIST" id="3530" range="6,41,783,381" cols="4" rows="10" gapx="4" gapy="1" tpos="1,1" fcolor="103" font="1">
-        <style wsDrop="" wsVisible="" lsVCenter="" lsCheck="" lsSCheck="" lsReport="" wsTab="" /><OnDrop>OnSubastaSoltar</OnDrop>
+        <style wsVisible="" lsVCenter="" lsCheck="" lsSCheck="" lsReport="" wsTab="" />
         <!-- 物品LIST -->
         <OnCommand>OnSubastaFila</OnCommand>
     </window>
@@ -2393,7 +2397,7 @@
         <style wsVisible="" ssHCenter="" ssVCenter="" />
         <!-- 頁數 -->
     </window>
-    <window class="WND_CLASS_BUTTON" id="3531" range="703,427,14,14" icon="3043">
+    <window class="WND_CLASS_BUTTON" id="3531" range="703,427,14,14" icon="2569">
         <style wsVisible="" wsTab="" />
         <!-- ← -->
         <OnCommand>OnSubastaPagAnt</OnCommand>
@@ -2401,7 +2405,7 @@
     <window class="WND_CLASS_STATIC" id="3532" range="718,427,50,14" title="1 / 1" fcolor="105" font="1">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="3533" range="769,427,14,14" icon="3044">
+    <window class="WND_CLASS_BUTTON" id="3533" range="769,427,14,14" icon="2571">
         <style wsVisible="" wsTab="" />
         <!-- → -->
         <OnCommand>OnSubastaPagSig</OnCommand>
@@ -2418,7 +2422,7 @@
         <style wsVisible="" ssVCenter="" />
         <!-- 數量 -->
     </window>
-    <window class="WND_CLASS_BUTTON" id="3537" range="652,449,14,14" icon="3043">
+    <window class="WND_CLASS_BUTTON" id="3537" range="652,449,14,14" icon="2569">
         <style wsVisible="" wsTab="" />
         <!-- ← -->
         <OnCommand>OnSubastaCantMenos</OnCommand>
@@ -2427,7 +2431,7 @@
         <style wsVisible="" ssHCenter="" ssVCenter="" />
         <!-- 數量 -->
     </window>
-    <window class="WND_CLASS_BUTTON" id="3539" range="718,449,14,14" icon="3044">
+    <window class="WND_CLASS_BUTTON" id="3539" range="718,449,14,14" icon="2571">
         <style wsVisible="" wsTab="" />
         <!-- → -->
         <OnCommand>OnSubastaCantMas</OnCommand>

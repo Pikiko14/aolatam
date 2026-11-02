@@ -39,7 +39,7 @@ COMANDOS = (CMD_SALUDO, CMD_BUSCAR, CMD_COMPRAR, CMD_RETIRAR, CMD_PREPARAR, CMD_
 SALUDO_LUA = ('function OnCommandSubasta(dwID, dwCmdID, dwParam, pParam) '
               'game.netcommand2(%d, 0, 0) return 1 end' % CMD_ABRIR)
 POR_PAGINA = 10                     # las filas de la lista 3530 (rows="10")
-MODO_TODO, MODO_MIO = 0, 1
+MODO_TODO, MODO_MIO, MODO_VENDER = 0, 1, 2      # pestanas All, Mine y Sell (la mochila)
 ORDEN_NUEVO, ORDEN_BARATO = 0, 1
 
 # Las categorias del desplegable: (texto, 物品類別 de item.xml). None = todas; 'resto' = lo que no cae en ninguna.
@@ -97,6 +97,16 @@ def es_comando(cuerpo) -> bool:
     return len(cuerpo) >= 9 and cuerpo[0] in COMANDOS
 
 
+def oro_corto(n) -> str:
+    """El oro en la cajita de abajo, que no cabe mas: 9,999 / 966K / 1.23M."""
+    n = int(n or 0)
+    if n < 10_000:
+        return _miles(n)
+    if n < 1_000_000:
+        return '%dK' % (n // 1000)
+    return ('%.2fM' % (n / 1_000_000.0)).replace('.00M', 'M')
+
+
 def _miles(n) -> str:
     return '{:,}'.format(int(n))
 
@@ -144,9 +154,28 @@ def _nombre(fila) -> str:
     return nombre
 
 
+def filas_mochila(ses, cat: int, niv: int):
+    """La pestana Sell: lo que hay en la mochila y se puede subastar, como filas [ranura, nombre, cantidad, '', '',
+    item]; la ranura hace de id, que es lo que manda el cliente al elegir una."""
+    import app
+    salida = []
+    for ranura in sorted(int(r) for r in ses.inventario):
+        if motivo_no_vendible(ses, ranura):
+            continue
+        item = int(ses.inventario[ranura])
+        if not pasa_filtro(item, cat, niv):
+            continue
+        veces = int(((getattr(ses.personaje, 'mejoras', None) or {}).get(ranura) or {}).get('veces') or 0)
+        nombre = (app._nombre_item(item) or 'Item %d' % item) + (' +%d' % veces if veces else '')
+        salida.append([ranura, nombre, int(app._cant_de(ses, ranura)), '', '', item])
+    return salida
+
+
 def filas(ses, modo: int, cat: int, niv: int, orden: int = ORDEN_NUEVO):
     """Todas las publicaciones que ve con esos filtros, ya como filas de la lista: [id, nombre, cantidad, precio,
     vendedor, item]. El listado viene de lo mas nuevo a lo mas viejo; "Cheap" ordena por precio."""
+    if modo == MODO_VENDER:
+        return filas_mochila(ses, cat, niv)
     import subastas
     p = ses.personaje
     lista = [f for f in subastas.listado(limite=None, char_id=p.char_id if modo == MODO_MIO else None)
@@ -163,7 +192,7 @@ def lista(ses, modo=MODO_TODO, cat=0, niv=0, pagina=1, orden=ORDEN_NUEVO):
     paginas = max(1, (len(todas) + POR_PAGINA - 1) // POR_PAGINA)
     pagina = min(max(1, int(pagina)), paginas)
     trozo = todas[(pagina - 1) * POR_PAGINA:pagina * POR_PAGINA]
-    return canal_lua.llamar('SubastaLista', modo, pagina, paginas, trozo, _miles(getattr(ses, 'oro', 0)), len(todas))
+    return canal_lua.llamar('SubastaLista', modo, pagina, paginas, trozo, oro_corto(getattr(ses, 'oro', 0)), len(todas))
 
 
 def abrir(ses):
@@ -227,8 +256,8 @@ def publicar(ses, ranura, cantidad, precio):
                                       'cantidad': int(cantidad), 'precio': int(precio)}])
     if not hechas:
         return [canal_lua.llamar('SubastaAviso', 'It could not be listed (see the chat).')]
-    ses.subasta_filtro = (MODO_MIO, 0, 0, 1, ORDEN_NUEVO)
-    return [lista(ses, MODO_MIO), canal_lua.llamar('SubastaPublicada', 'Listed in the Auction House!')]
+    ses.subasta_filtro = (MODO_VENDER, 0, 0, 1, ORDEN_NUEVO)
+    return [lista(ses, MODO_VENDER), canal_lua.llamar('SubastaPublicada', 'Listed! See it in the Mine tab.')]
 
 
 def procesar(ses, cuerpo) -> bool:
@@ -247,7 +276,8 @@ def procesar(ses, cuerpo) -> bool:
         return True
     estado = getattr(ses, 'subasta_filtro', None) or (MODO_TODO, 0, 0, 1, ORDEN_NUEVO)
     if cmd == CMD_BUSCAR:
-        modo = MODO_MIO if (a >> 16) & 0xFF == MODO_MIO else MODO_TODO
+        modo = (a >> 16) & 0xFF
+        modo = modo if modo in (MODO_TODO, MODO_MIO, MODO_VENDER) else MODO_TODO
         orden = ORDEN_BARATO if (a >> 24) & 0xFF == ORDEN_BARATO else ORDEN_NUEVO
         cat, niv = (a >> 8) & 0xFF, a & 0xFF
         cat = cat if cat < len(CATEGORIAS) else 0
