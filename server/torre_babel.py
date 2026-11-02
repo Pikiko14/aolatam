@@ -110,7 +110,13 @@ SOLO, PARTY = 0, 1
 MODOS = ('Solo', 'Party')
 PAUSA = 3.0                 # segundos entre la muerte de un jefe y la salida del siguiente
 MULT_PARTY = 2.0            # en Party los jefes x2: "aumenta un x2 a los jefes en el modo party" (02/11/2026)
-TICKETS = (20228, 20229, 20230, 20231)      # los de instancia_oscura: se canjean en Event Overview > Exchange
+# EL PREMIO CADA 10 PISOS: 5 de los vales que pide el canje de Event Overview > Exchange > Enhanced Pestle and Ride
+# Feed (Lucky Enhanced Pestle / Ride Feed / Piercing Hammer / Hammer Voucher, al azar entre los cuatro) y 5 Mount
+# Coins: "cada 10 pisos 5 materiales aleatorios para sacar de aca, y tambien mount coin 5" (02/11/2026).
+TICKETS = (20228, 20229, 20230, 20231)
+VALES_POR_PREMIO = 5
+MOUNT_COIN = 89073          # cliente_local.ITEM_MONEDA_MONTURA
+MONEDAS_POR_PREMIO = 5
 TOP = 10
 SALIDA = (41, (173, 91))    # el Angel Lyceum (app.REVIVIR_LYCEUM)
 
@@ -315,17 +321,24 @@ def _cartel(ses, texto):
             pass
 
 
-def _premio_cada_diez(ses, piso, addr):
-    """Cada 10 pisos: piso // 10 tickets al azar para cada uno de la copia."""
+def premio_cada_diez(rng=None):
+    """[(item, cantidad)] de un premio de 10 pisos: VALES_POR_PREMIO vales al azar de los cuatro y las Mount Coins."""
     import random
+    rng = rng or random
+    salen = {}
+    for _ in range(VALES_POR_PREMIO):
+        t = rng.choice(TICKETS)
+        salen[t] = salen.get(t, 0) + 1
+    return sorted(salen.items()) + [(MOUNT_COIN, MONEDAS_POR_PREMIO)]
+
+
+def _premio_cada_diez(ses, piso, addr):
+    """Cada 10 pisos, a cada uno de la copia: premio_cada_diez()."""
     import app
     for s in _en_la_copia(ses):
-        salen = {}
-        for _ in range(piso // 10):
-            t = random.choice(TICKETS)
-            salen[t] = salen.get(t, 0) + 1
+        salen = premio_cada_diez()
         try:
-            app._aplicar_efectos(s, getattr(s, 'addr', addr), [('dar', sorted(salen.items()))],
+            app._aplicar_efectos(s, getattr(s, 'addr', addr), [('dar', salen)],
                                  ' por el piso %d de la Torre de Babel' % piso)
         except Exception:
             log.exception('premio de la Torre de Babel')

@@ -140,8 +140,9 @@ def test_cada_diez_pisos_hay_premio_para_todos(mundo):
     c['piso'] = 10
     tb.poner_jefe(a, c)
     tb.al_morir(a, a.monstruos[c['jefe']])
-    assert len(mundo.premios) == 1 and sum(n for _, n in mundo.premios[0][1][0][1]) == 1
-    assert all(t in tb.TICKETS for t, _ in mundo.premios[0][1][0][1])
+    dado = dict(mundo.premios[0][1][0][1])
+    assert len(mundo.premios) == 1 and dado.pop(tb.MOUNT_COIN) == 5
+    assert sum(dado.values()) == 5 and set(dado) <= set(tb.TICKETS)
 
 
 def test_morir_y_salir_acaba_la_corrida_y_va_al_ranking(mundo):
@@ -205,9 +206,13 @@ def test_el_mapa_tiene_60_arenas_y_cada_puente_su_cortina():
     pisa = lambda x, y: m['celdas'][(y * m['w'] + x) * 6 + 1] == 0
     assert pisa(*tb.entrada()) and all(pisa(*d['centro']) for d in lay['pisos'])
     assert all(pisa(*t) for d in lay['pisos'][:59] for t in d['puente'])
-    # Entre dos arenas solo se pasa por el puente: lo de alrededor es cielo.
-    x, y = lay['pisos'][0]['cortina'][0]
-    assert not pisa(x, y - 2) and not pisa(x, y + 4)
+    # Entre dos pisos solo se sube por la escalera: a sus lados es muro, y la cortina cierra su fila de abajo.
+    puente = lay['pisos'][0]['puente']
+    xs = [x for x, _ in puente]
+    assert all(not pisa(min(xs) - 1, y) and not pisa(max(xs) + 1, y) for _, y in puente)
+    assert all(y == max(y for _, y in puente) for _, y in lay['pisos'][0]['cortina'])
+    # Encima de cada escalera va el objeto de la escalera dorada.
+    assert sum(1 for o in m['objetos'] if o[0] == 12583) == 59
 
 
 def test_las_cortinas_cierran_el_puente_hasta_matar_al_jefe(mundo):

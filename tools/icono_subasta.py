@@ -24,6 +24,20 @@ RAIZ = pathlib.Path(__file__).resolve().parent.parent
 SALIDA = RAIZ / 'parches' / 'extras' / 'shape' / 'wnd01'
 NOMBRE = 'aolat_ah'
 ANCHO, ALTO = 40, 56
+MARGEN = 5        # px libres a cada lado: "dale un poco de padding a los iconos" (02/11/2026), que iban pegados
+
+
+def con_margen(im: Image.Image) -> Image.Image:
+    """El dibujo reducido para que deje MARGEN libre a los lados, centrado y apoyado abajo como antes."""
+    caja = im.getbbox()
+    if not caja:
+        return im
+    dibujo = im.crop(caja)
+    f = min(1.0, (ANCHO - 2 * MARGEN) / dibujo.width, (ALTO - 2 * MARGEN) / dibujo.height)
+    dibujo = dibujo.resize((max(1, round(dibujo.width * f)), max(1, round(dibujo.height * f))), Image.LANCZOS)
+    out = Image.new('RGBA', (ANCHO, ALTO), (0, 0, 0, 0))
+    out.alpha_composite(dibujo, ((ANCHO - dibujo.width) // 2, min(caja[3], ALTO - 2) - dibujo.height))
+    return out
 
 
 def _rgb565(r, g, b):
@@ -108,7 +122,7 @@ def dibujar() -> Image.Image:
 
 def main():
     SALIDA.mkdir(parents=True, exist_ok=True)
-    normal = dibujar()
+    normal = con_margen(dibujar())
     foco = ImageEnhance.Brightness(normal).enhance(1.25)
     for sufijo, im in (('_n', normal), ('_f', foco)):
         ruta = SALIDA / (NOMBRE + sufijo + '.shp')

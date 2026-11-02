@@ -11,7 +11,7 @@ import sys
 from PIL import Image, ImageDraw, ImageEnhance
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-from icono_subasta import ANCHO, ALTO, SALIDA, a_shp
+from icono_subasta import ANCHO, ALTO, SALIDA, a_shp, con_margen
 
 NOMBRE = 'aolat_dm'
 
@@ -41,7 +41,7 @@ def dibujar() -> Image.Image:
 
 def main():
     SALIDA.mkdir(parents=True, exist_ok=True)
-    normal = dibujar()
+    normal = con_margen(dibujar())
     foco = ImageEnhance.Brightness(normal).enhance(1.25)
     for sufijo, im in (('_n', normal), ('_f', foco)):
         ruta = SALIDA / (NOMBRE + sufijo + '.shp')

@@ -267,9 +267,9 @@ STAGE_XML = RAIZ / 'parches' / 'extras' / 'setting' / 'eng' / 'stage.xml'
 # (id, x en la barra, texto de ayuda, funcion Lua, icono): la subasta y el contador de dano (server/medidor_dano.py,
 # 02/11/2026). Las imagenes las dibujan tools/icono_subasta.py y tools/icono_medidor.py.
 BOTONES_BARRA = (
-    (59001, 316, 'Auction House', 'OnCommandSubasta', 'aolat_ah'),
-    (59002, 276, 'Damage meter', 'OnCommandMedidor', 'aolat_dm'),
-    (59003, 236, 'Tower of Babel', 'OnCommandTorre', 'aolat_tb'),
+    (59001, 310, 'Auction House', 'OnCommandSubasta', 'aolat_ah'),
+    (59002, 264, 'Damage meter', 'OnCommandMedidor', 'aolat_dm'),
+    (59003, 218, 'Tower of Babel', 'OnCommandTorre', 'aolat_tb'),
 )
 
 
@@ -289,7 +289,8 @@ def boton_en_la_barra(texto: str) -> str:
     """wnd01.xml con los botones propios en la barra (no repite los que ya estan)."""
     nl = '\r\n' if '\r\n' in texto else '\n'
     for wid, x, ayuda, funcion, icono in BOTONES_BARRA:
-        if 'id="%d"' % wid in texto:
+        if 'id="%d"' % wid in texto:                   # ya esta: solo se pone en su sitio (6 px entre botones)
+            texto = re.sub(r'(<window [^>]*?range=")-?\d+(,-131,40,56" id="%d")' % wid, r'\g<1>%d\2' % x, texto)
             continue
         m = re.search(r'([ \t]*)<child>50001</child>', texto)
         if not m:
