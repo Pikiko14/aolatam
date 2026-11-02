@@ -49,8 +49,13 @@ _DB = RAIZ / 'corpus' / 'content.db'
 _TABLAS = ['item', 'item2', 'item3', 'item4', 'item5', 'item6', 'item7',
            'item8', 'item9']
 
-# Hasta donde se puede mejorar una pieza.
-MAX_MEJORA = 15
+# Hasta donde se puede mejorar una pieza. Era 15; el usuario lo dejo en +10 (02/11/2026): "que ese sea el tope".
+# Las piezas que ya pasaban de +10 se quedan como estan, solo que no suben mas.
+MAX_MEJORA = 10
+
+# Probabilidad de exito del intento que lleva a +N (+1..+3 son seguros). La aprobo el usuario el 02/11/2026: la curva
+# de antes (100% hasta +4 y -7% por punto) dejaba el +10 en un 58% y se llegaba al tope "muy facil".
+EXITO_POR_NIVEL = {4: 0.90, 5: 0.80, 6: 0.70, 7: 0.60, 8: 0.50, 9: 0.40, 10: 0.30}
 # Cuantos stats verdes caben en la entrada del inventario. Ver el comentario
 # de inventario.MAX_EXTRAS: el sexto pisaria el contenedor de la pieza.
 MAX_EXTRAS_ENTRADA = 5
@@ -323,7 +328,7 @@ def perforar(estado: dict, ranura, item_id, nivel_equipo: int, tipo: str,
     # vacios, esa frase no tendria sentido.
     if st.get('huecos', 0) > len(st['gemas']):
         return False, 'hay que engarzar una gema antes de abrir otro hueco'
-    chance = probabilidad(st.get('huecos', 0))
+    chance = probabilidad_hueco(st.get('huecos', 0))
     if st.get('huecos', 0) == 0:
         chance = min(1.0, chance + max(0.0, bono_primer_hueco))
     if exito_seguro or rng.random() < chance:
@@ -687,15 +692,19 @@ def aplicar(estado: dict, ranura, item_id, nivel_equipo: int, tipo: str,
 
 
 def probabilidad(veces: int) -> float:
-    """Que probabilidad tiene el siguiente intento.
-
-    No esta medida: no hay ninguna captura de un fallo. Se pone una curva que
-    baja con el nivel de mejora, empezando en segura y llegando al 20% en la
-    ultima. En cuanto haya numeros de verdad se cambia aqui y ya.
-    """
-    if veces <= 3:
+    """Que probabilidad tiene el siguiente intento, el que pasa de +veces a +veces+1 (EXITO_POR_NIVEL)."""
+    siguiente = int(veces) + 1
+    if siguiente <= 3:
         return 1.0
-    return max(0.20, 1.0 - (veces - 3) * 0.07)
+    return EXITO_POR_NIVEL.get(siguiente, min(EXITO_POR_NIVEL.values()))
+
+
+def probabilidad_hueco(huecos: int) -> float:
+    """La del martillo de perforar, que no se toco al cambiar la de las mejoras: los cuatro primeros huecos son
+    seguros y el quinto sale al 93%."""
+    if huecos <= 3:
+        return 1.0
+    return max(0.20, 1.0 - (huecos - 3) * 0.07)
 
 
 def pct_por_mejoras(tipo: str, veces: int) -> dict:

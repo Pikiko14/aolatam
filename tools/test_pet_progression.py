@@ -92,22 +92,23 @@ def test_first_feed_generates_bonuses_and_applies_its_increment(monkeypatch):
     pet = {'sprite': 3200, 'mejoras': 0, 'bonos': {}, 'estrellas': 1}
     monkeypatch.setattr(mascotas, 'sortear_bonos', lambda sprite: {'atk': 40})
     monkeypatch.setattr(mascotas, 'rangos_bonos_de', lambda sprite: {'atk': (40, 40)})
-    assert mascotas.mejorar_mascota(pet) == (True, 1)
+    assert mascotas.mejorar_mascota(pet, exito_seguro=True) == (True, 1)
     assert pet['bonos']['atk'] == 60
     assert pet['estrellas'] == mascotas.calcular_estrellas_total(pet['bonos'])
 
 
 def test_feed_recalculates_label_and_keeps_existing_bonuses():
     pet = copy.deepcopy(BATTLEMAID)
-    pet['mejoras'] = 14
+    pet['mejoras'] = 9
     pet['estrellas'] = 79  # stale label from old code
     before = pet['bonos'].copy()
-    assert mascotas.mejorar_mascota(pet) == (True, 15)
+    assert mascotas.mejorar_mascota(pet, exito_seguro=True) == (True, 10)
     assert all(pet['bonos'][k] > v for k, v in before.items())
     assert pet['estrellas'] == mascotas.calcular_estrellas_total(pet['bonos'])
 
 
-def test_feed_at_plus_fifteen_is_noop():
+def test_feed_at_or_above_the_cap_is_noop():
+    """El tope es +10; una que ya llevaba +15 de antes se queda asi."""
     pet = copy.deepcopy(BATTLEMAID)
     before = copy.deepcopy(pet)
     assert mascotas.mejorar_mascota(pet) == (False, 15)
@@ -195,3 +196,15 @@ def test_ineligible_fusion_spends_nothing(monkeypatch):
     assert set(p.mascotas) == {1, 2}
     assert not spent and not closed
     assert 'upper limits' in messages[-1]
+
+
+def test_feed_can_fail_and_keeps_everything():
+    """Ahora tiene la misma probabilidad que el equipo; un fallo no toca nada."""
+    import random
+    pet = copy.deepcopy(BATTLEMAID)
+    pet['mejoras'] = 6
+    before = copy.deepcopy(pet)
+    falla = random.Random(1)
+    falla.random = lambda: 0.99
+    assert mascotas.mejorar_mascota(pet, rng=falla) == (False, 6)
+    assert pet == before

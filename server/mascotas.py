@@ -640,14 +640,22 @@ def subir_estrella(ficha: dict, cantidad: int = 1) -> int:
     return nuevo
 
 
-def mejorar_mascota(ficha: dict) -> tuple:
-    """Aplica un Improved Pet Feed (寵物強化): sube el contador de intensificacion (+1..+15,
+def mejorar_mascota(ficha: dict, exito_seguro: bool = False, rng=None) -> tuple:
+    """Aplica un Improved Pet Feed (寵物強化): sube el contador de intensificacion (+1..+10,
     que el cliente muestra como 'has been intensified ( N ) times' en e[83] y +N en defensas
-    elementales) y mejora los bonos verdes de los stats especificos de la mascota."""
+    elementales) y mejora los bonos verdes de los stats especificos de la mascota.
+
+    Tiene el mismo tope y la misma probabilidad que el equipo (mejoras.MAX_MEJORA y mejoras.probabilidad); antes
+    salia siempre bien hasta +15. Un fallo gasta el pienso y no toca nada: no baja un punto como el equipo porque
+    los bonos que dio cada pienso son al azar y no se pueden deshacer."""
     import random
+    import mejoras
+    rng = rng or random
     sp = int(ficha.get('sprite') or 0)
     mej = int(ficha.get('mejoras') or 0)
-    if mej >= 15:
+    if mej >= mejoras.MAX_MEJORA:
+        return False, mej
+    if not exito_seguro and rng.random() >= mejoras.probabilidad(mej):
         return False, mej
     mej += 1
     ficha['mejoras'] = mej

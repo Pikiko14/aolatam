@@ -63,10 +63,11 @@ def test_no_pasa_del_tope_de_nivel():
     assert m.puede_mejorar(MORTERO_10, 100, 'arma', 0)[0]
 
 
-def test_el_tope_son_quince():
-    assert m.puede_mejorar(MORTERO_10, 100, 'arma', 14)[0]
-    ok, motivo = m.puede_mejorar(MORTERO_10, 100, 'arma', 15)
-    assert not ok and '15' in motivo, motivo
+def test_el_tope_son_diez():
+    assert m.puede_mejorar(MORTERO_10, 100, 'arma', 9)[0]
+    ok, motivo = m.puede_mejorar(MORTERO_10, 100, 'arma', 10)
+    assert not ok and '10' in motivo, motivo
+    assert not m.puede_mejorar(MORTERO_10, 100, 'arma', 15)[0]      # las que ya pasaban se quedan
 
 
 def test_el_pienso_de_montura_no_vale_para_un_arma():
@@ -612,3 +613,16 @@ if __name__ == '__main__':
                 print('  FALLA ' + nombre + ': ' + str(e))
     print('fallos:', fallos)
     sys.exit(1 if fallos else 0)
+
+
+def test_la_curva_de_exito_y_el_tope_de_mas_diez():
+    """La aprobada el 02/11/2026: +1..+3 seguras, +4 al 90% y 10 puntos menos cada una hasta el 30% del +10."""
+    assert m.MAX_MEJORA == 10
+    assert [m.probabilidad(v) for v in range(10)] == [1.0, 1.0, 1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3]
+    est = {20: {'veces': 10, 'gemas': [], 'extra': {}, 'huecos': 0}}
+    ok, motivo = m.aplicar(est, 20, MORTERO_10, 100, 'arma', exito_seguro=True)
+    assert not ok and est[20]['veces'] == 10, motivo
+
+
+def test_el_martillo_de_perforar_no_cambio():
+    assert [round(m.probabilidad_hueco(h), 2) for h in range(5)] == [1.0, 1.0, 1.0, 1.0, 0.93]

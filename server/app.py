@@ -2773,8 +2773,13 @@ def _usar_mejora(ses, addr, ranura, objetivo) -> bool:
                 veces_pet = int(f_pet.get('mejoras') or 0)
                 ok, msg = True, 'star level -> %0.1f' % (nueva_st / 10.0)
             else:
-                ok, veces_pet = _ms_app.mejorar_mascota(f_pet)
-                msg = 'mejora mascota +%d (star %0.1f)' % (veces_pet, f_pet.get('estrellas', 1) / 10.0) if ok else 'tope de 15 mejoras alcanzado'
+                ok, veces_pet = _ms_app.mejorar_mascota(f_pet, exito_seguro=seguro)
+                if ok:
+                    msg = 'mejora mascota +%d (star %0.1f)' % (veces_pet, f_pet.get('estrellas', 1) / 10.0)
+                elif veces_pet >= _mj.MAX_MEJORA:
+                    msg = 'tope de %d mejoras alcanzado' % _mj.MAX_MEJORA
+                else:
+                    msg = 'la mejora de la mascota fallo (sigue en +%d)' % veces_pet
         else:
             ok, msg = False, 'mascota no encontrada'
     elif clase == 'verde':
@@ -12815,13 +12820,15 @@ class Servidor:
                                             ef_pet = sk_datos.get('efecto') or 101
                                             _poder_pet = (base_matk_pet if _pet_skill_magic
                                                           else base_atk_pet)
-                                            _def_pet_targ = (getattr(pet_targ, 'mdef', 0)
-                                                             if _pet_skill_magic
-                                                             else getattr(pet_targ, 'defensa', 0))
-                                            dano_pet = max(25, int(_poder_pet * 2.2)
-                                                            - (_def_pet_targ // 3))
-                                            pet_targ.registrar_dano(min(pet_targ.hp, dano_pet), es_pet=True)
-                                            pet_targ.hp = max(0, pet_targ.hp - dano_pet)
+                                            # Como las habilidades del jugador: su multiplicador (1,35 sin rama, 1,2 los combos), el
+                                            # -30% de lo fisico y la defensa del monstruo con 420 (Monstruo.recibir). Antes era
+                                            # ataque x 2,2 - defensa/3, unas cuatro veces lo de un jugador ("los pet tienen mucho
+                                            # ataque", 02/11/2026).
+                                            _mult_pet = _cb.mult_fisico(sk_usada)
+                                            if not _pet_skill_magic:
+                                                _mult_pet *= _cb.FACTOR_DANO_FISICO
+                                            dano_pet = pet_targ.recibir(_poder_pet, es_magico=_pet_skill_magic,
+                                                                        mult=_mult_pet, var_pct=0.03, es_pet=True)
                                             _pkgs_pet_hit = (
                                                 _cb.ataque(pet_eid, pet_targ.entity_id,
                                                            _cb.anim_de_monstruo(f_pet.get('nombre', ''))),
@@ -12852,9 +12859,9 @@ class Servidor:
                                                             _ses, victima, _yo, _addr, espera=0.1))
                                                 f_pet['combo_hasta'] = ahora + _dur_combo_pet
                                         else:
-                                            dano_pet = max(10, int(base_atk_pet * 1.2) - (getattr(pet_targ, 'defensa', 0) // 3))
-                                            pet_targ.registrar_dano(min(pet_targ.hp, dano_pet), es_pet=True)
-                                            pet_targ.hp = max(0, pet_targ.hp - dano_pet)
+                                            # El golpe basico, como el del jugador: ataque x 0,7 con la defensa de 420 (era x 1,2 - def/3).
+                                            dano_pet = pet_targ.recibir(base_atk_pet, mult=_cb.FACTOR_DANO_FISICO,
+                                                                        var_pct=0.03, es_pet=True)
                                             _pkgs_pet_basic = (
                                                 _cb.ataque(pet_eid, pet_targ.entity_id,
                                                            _cb.anim_de_monstruo(f_pet.get('nombre', ''))),
