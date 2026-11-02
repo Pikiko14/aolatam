@@ -329,6 +329,14 @@ def main():
     t2 = re.sub(r'(<場景 編號="133" 名稱=")[^"]*(")', r'\1Tower of Babel\2', t, count=1)
     if t2 == t and 'Tower of Babel' not in t:
         raise SystemExit('no esta el mapa 133 en stage.xml')
+    # Su mapa es ahora el de la Limitless Tower (110, tools/generar_mapa_torre.py): su musica, y sin minimapa como
+    # ella (el del 133 era el de otro mapa).
+    m = re.search(r'<場景 編號="133" [^>]*/>', t2)
+    tag = re.sub(r'雷達圖="[^"]*"', lambda _: r'雷達圖="smap\004"', m.group(0))
+    tag = re.sub(r'配樂檔1="[^"]*"', lambda _: r'配樂檔1="music\39.ogg"', tag)
+    if '不顯示小地圖' not in tag:
+        tag = tag.replace(' />', ' 不顯示小地圖="是" />')
+    t2 = t2[:m.start()] + tag + t2[m.end():]
     STAGE_XML.write_bytes((b'\xef\xbb\xbf' if bom2 else b'') + t2.encode('utf-8'))
     print('escrito', STAGE_XML.relative_to(RAIZ))
 

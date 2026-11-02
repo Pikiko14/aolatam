@@ -43,7 +43,16 @@ def mundo(tmp_path, monkeypatch):
     def viajar(ses, addr, por, motivo=''):
         w.viajes.append((ses.personaje.nombre, por['destino']))
         ses.personaje.stage = por['destino']
+        ses.personaje.tile_x, ses.personaje.tile_y = por['llegada']
     monkeypatch.setattr(app, '_viajar_por_portal', viajar)
+    w.saltos = []
+
+    def reubicar(ses, tile, origen='spell'):
+        w.saltos.append((ses.personaje.nombre, tuple(tile)))
+        ses.personaje.tile_x, ses.personaje.tile_y = tile
+    import desplazamientos
+    monkeypatch.setattr(desplazamientos, 'reubicar', reubicar)
+    monkeypatch.setattr(presencia, 'notificar_companero_accion', lambda *a, **k: None)
 
     def sacar(ses, stage, x=None, y=None):
         w.sacados.append(ses.personaje.nombre)
@@ -61,7 +70,8 @@ def mundo(tmp_path, monkeypatch):
 
     def nueva(cid, nombre):
         env = []
-        s = SimpleNamespace(personaje=SimpleNamespace(char_id=cid, nombre=nombre, stage=41), monstruos={},
+        s = SimpleNamespace(personaje=SimpleNamespace(char_id=cid, nombre=nombre, stage=41, entity_id=cid, tile_x=0,
+                                                      tile_y=0), monstruos={},
                             enviados=env, muerto=False)
         s.enviar = lambda *pk: env.extend(pk)
         s.volcar = lambda: None
@@ -207,39 +217,34 @@ def test_la_ventana_se_abre_cambia_de_modo_y_entra(mundo):
     assert not tb.procesar(a, struct.pack('<BII', 168, 1, 0))
 
 
-def test_el_mapa_tiene_60_arenas_y_cada_puente_su_cortina():
-    import json
+def test_el_mapa_es_la_limitless_tower_y_cada_piso_una_sala():
     import sys as _s
     _s.path.insert(0, str(RAIZ / 'tools' / 'editor_mapas'))
     import mpcio
     lay = tb.mapa()
-    assert len(lay['pisos']) == 60 and all('cortina' in d and 'puente' in d for d in lay['pisos'][:59])
-    m = mpcio.leer((RAIZ / 'parches' / 'extras' / 'map' / 'map133.mpc').read_bytes())
+    datos = (RAIZ / 'parches' / 'extras' / 'map' / 'map133.mpc').read_bytes()
+    assert datos == (RAIZ / 'tools' / 'originales' / 'map110.mpc').read_bytes()
+    m = mpcio.leer(datos)
     pisa = lambda x, y: m['celdas'][(y * m['w'] + x) * 6 + 1] == 0
-    assert pisa(*tb.entrada()) and all(pisa(*d['centro']) for d in lay['pisos'])
-    assert all(pisa(*t) for d in lay['pisos'][:59] for t in d['puente'])
-    # Entre dos pisos solo se sube por la escalera: a sus lados es muro, y la cortina cierra su fila de abajo.
-    puente = lay['pisos'][0]['puente']
-    xs = [x for x, _ in puente]
-    assert all(not pisa(min(xs) - 1, y) and not pisa(max(xs) + 1, y) for _, y in puente)
-    assert all(y == max(y for _, y in puente) for _, y in lay['pisos'][0]['cortina'])
-    # Encima de cada escalera va el objeto de la escalera dorada.
-    assert sum(1 for o in m['objetos'] if o[0] == 12583) == 59
+    assert len(lay['pisos']) == 60 and lay['salas'] == 12
+    assert all(pisa(*d['centro']) and pisa(*d['llegada']) and d['centro'] != d['llegada'] for d in lay['pisos'])
+    assert [d['sala'] for d in lay['pisos'][:13]] == list(range(12)) + [0]      # una sala por piso, y vuelta a empezar
+    assert tb.entrada() == tb.llegada(1)
 
 
-def test_las_cortinas_cierran_el_puente_hasta_matar_al_jefe(mundo):
-    a = mundo.nueva(1, 'Impacty')
-    tb.iniciar(a, '?', tb.SOLO)
-    a.personaje.tile_x, a.personaje.tile_y = tb.casilla_jefe(1)
+def test_al_matar_al_jefe_todos_suben_a_la_sala_siguiente(mundo):
+    a, b = mundo.nueva(1, 'Impacty'), mundo.nueva(2, 'Baco')
+    b.canal_lua = 1
+    equipos._DE_QUIEN.update({1: 1, 2: 1})
+    equipos._GRUPOS.update({1: [a, b]})
+    tb.iniciar(a, '?', tb.PARTY)
     tb.al_entrar(a)
-    assert sum(1 for p in a.enviados if p[:2] == b'\x0e\x00') == 59 * 3      # todas las cortinas, del 1 al 59
-    puente = tb.mapa()['pisos'][0]['puente']
-    lejos = puente[-1]
-    assert tb.bloquear_paso(a, tb.casilla_jefe(1), lejos)
+    tb.iniciar(b, '?', tb.PARTY)
+    tb.al_entrar(b)
+    assert (a.personaje.tile_x, a.personaje.tile_y) == tb.llegada(1) == (b.personaje.tile_x, b.personaje.tile_y)
     c = tb.corrida(a)
-    n = len(a.enviados)
     tb.al_morir(a, a.monstruos[c['jefe']])
-    quitadas = [p for p in a.enviados[n:] if p[:2] == b'\x07\x00']
-    assert len(quitadas) == 3
-    assert not tb.bloquear_paso(a, tb.casilla_jefe(1), lejos)                 # el puente 1 ya esta abierto
-    assert tb.bloquear_paso(a, tb.casilla_jefe(2), tb.mapa()['pisos'][1]['puente'][-1])   # el 2 aun no
+    assert sorted(mundo.saltos) == [('Baco', tb.llegada(2)), ('Impacty', tb.llegada(2))]
+    assert a.monstruos[c['jefe']].npc_type == tb.pisos()[1]['npc_type'] and len(
+        [m for m in a.monstruos.values() if m.hp > 0]) == 2       # el jefe nuevo (el viejo no se quita en el test)
+    assert any('Going up to floor 2' in t for t in mundo.carteles)

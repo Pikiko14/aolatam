@@ -5,13 +5,13 @@ supuesto"; se abre desde una accion (el boton de la barra) donde sale el ranking
 intento empieza de cero; premio por piso.
 
 * LOS PISOS: plantillas/torre_babel.json (tools/generar_torre_babel.py): el jefe de cada piso y sus stats.
-* EL MAPA: el 133, rehecho por tools/generar_mapa_torre.py: 60 arenas sobre el cielo estrellado, en zigzag hacia
-  arriba, unidas por puentes que cierra una cortina de luz hasta matar al jefe del piso (bloquear_paso). Se llama
-  "Tower of Babel" en stage.xml (tools/parche_subasta_ventana.py) y es dinamico en plantillas/instancias.json: cada
-  jugador solo o cada party tiene su propia copia (eventos_mundo._clave_corrida).
+* EL MAPA: el 133, que tools/generar_mapa_torre.py hace copia de la Limitless Tower (110): cada piso es una de sus
+  salas, y al matar al jefe todos los de la copia suben (subir: un salto dentro del mapa) a la sala del piso
+  siguiente. Se llama "Tower of Babel" en stage.xml (tools/parche_subasta_ventana.py) y es dinamico en
+  plantillas/instancias.json: cada jugador solo o cada party tiene su propia copia (eventos_mundo._clave_corrida).
 * LA CORRIDA: iniciar() lleva al piso 1. Al cargar el mapa (al_entrar) sale el jefe del piso en su casilla
   (app._poner_generado, sin reaparicion); al morir (al_morir, desde app._procesar_muerte_monstruo) se anuncia el
-  piso siguiente y su jefe sale a los PAUSA segundos. Cada 10 pisos, ademas del botin del jefe, todos los de la
+  piso siguiente y a los PAUSA segundos todos suben a su sala, donde sale su jefe. Cada 10 pisos, ademas del botin del jefe, todos los de la
   copia reciben tickets. En Party los jefes salen con todo x MULT_PARTY (vida, ataque y defensas).
 * PARTY: solo el lider empieza la subida; al entrar el, a los demas de su party conectados les llega la
   solicitud (la ventana de la torre con TorreInvitacion) y con el boton de entrar se unen a su copia.
@@ -33,11 +33,10 @@ import canal_lua
 log = logging.getLogger('torre_babel')
 
 STAGE = 133
-# El mapa lo hace tools/generar_mapa_torre.py: 60 arenas en el cielo, en zigzag hacia arriba, unidas por puentes. De
-# alli salen la entrada, el centro de cada arena (donde sale su jefe) y la cortina de luz de cada puente.
+# El mapa lo hace tools/generar_mapa_torre.py: el 133 es una copia de la Limitless Tower (110) y cada piso una de sus
+# salas. De alli salen, por piso, donde se llega y donde sale su jefe.
 MAPA_JSON = pathlib.Path(__file__).parent / 'plantillas' / 'torre_babel_mapa.json'
-OBJETO_CORTINA = 60402        # la cortina de luz, como las puertas de Dark Cavern (instancia_oscura.py)
-ENTIDAD_CORTINA = 7_560_000   # + puente * 10 + casilla; fuera de los rangos de presencia y de las de Dark Cavern
+EFECTO_SUBIR, MAGIA_SUBIR = 45, 1640   # el destello de Swiftness (holy_battlefield.salto) al pasar de sala
 _MAPA = None
 
 
@@ -56,53 +55,34 @@ def casilla_jefe(piso):
     return tuple(mapa()['pisos'][piso - 1]['centro'])
 
 
-def _eid_cortina(puente, i):
-    return ENTIDAD_CORTINA + puente * 10 + i
+def llegada(piso):
+    return tuple(mapa()['pisos'][piso - 1]['llegada'])
 
 
-def cortinas(desde_piso):
-    """Los 0x000E de las cortinas de los puentes que siguen cerrados: el del piso en curso y los de arriba."""
-    import login
-    salida = []
-    for d in mapa()['pisos'][desde_piso - 1:]:
-        for i, t in enumerate(d.get('cortina', [])):
-            salida.append(login._map_object_spawn(_eid_cortina(d['piso'], i), OBJETO_CORTINA, tuple(t)))
-    return salida
-
-
-def abrir_puente(ses, puente):
-    """Quita la cortina del puente del piso `puente` a todos los de la copia."""
+def subir(ses, c):
+    """Lleva a todos los de la copia a la sala del piso de la corrida y saca alli su jefe: "que cada piso sea 1 tp al
+    piso nuevo" (02/11/2026). Es un salto dentro del mismo mapa (desplazamientos.reubicar), sin recargarlo."""
     import combate
-    d = mapa()['pisos'][puente - 1]
-    pk = [combate.despawn_monstruo(_eid_cortina(puente, i)) for i in range(len(d.get('cortina', [])))]
-    for s in _en_la_copia(ses):
+    import desplazamientos
+    import presencia
+    destino = llegada(c['piso'])
+    gente = _en_la_copia(ses) or [ses]
+    for s in gente:
         try:
-            (getattr(s, 'enviar_sin_espejo', None) or s.enviar)(*pk)
-            s.volcar()
+            p = s.personaje
+            s.enviar(combate.efecto_magia_self_inicio(p.entity_id, EFECTO_SUBIR, MAGIA_SUBIR, cast_time=0))
+            desplazamientos.reubicar(s, destino, 'torre')
+            s.enviar(combate.efecto_magia_self_fin(p.entity_id, EFECTO_SUBIR, MAGIA_SUBIR))
+            presencia.notificar_companero_accion(
+                s, combate.efecto_magia_self_fin(presencia.entidad_de(s), EFECTO_SUBIR, MAGIA_SUBIR))
         except Exception:
-            pass
+            log.exception('Torre de Babel: no se pudo subir a %s', getattr(getattr(s, 'personaje', None), 'nombre', '?'))
+    vivos = [s for s in gente if not getattr(s, 'muerto', False)] or [ses]
+    if not _jefe_vivo(vivos[0], c):
+        poner_jefe(vivos[0], c)
+    _cartel(ses, 'Tower of Babel - Floor %d / %d: %s' % (c['piso'], total_pisos(), pisos()[c['piso'] - 1]['nombre']))
 
 
-def bloquear_paso(ses, desde, hasta):
-    """True si ir de `desde` a `hasta` cruza un puente aun cerrado (el de un piso cuyo jefe sigue vivo)."""
-    p = getattr(ses, 'personaje', None)
-    if not p or getattr(p, 'stage', None) != STAGE:
-        return False
-    c = corrida(ses)
-    if c is None:
-        return False
-    import app
-    cruzadas = set(app._casillas_del_tramo(tuple(desde), tuple(hasta)))
-    for d in mapa()['pisos'][c['piso'] - 1:]:
-        if cruzadas & {tuple(t) for t in d.get('puente', [])}:
-            ahora = time.time()
-            if ahora - getattr(ses, '_aviso_torre', 0.0) > 3:
-                ses._aviso_torre = ahora
-                import clases
-                ses.enviar(clases.aviso('A sealing light blocks the way: defeat the boss of floor %d first.'
-                                        % c['piso'], tipo=0))
-            return True
-    return False
 PISOS_JSON = pathlib.Path(__file__).parent / 'plantillas' / 'torre_babel.json'
 DB_PATH = pathlib.Path(__file__).parent.parent / 'data' / 'torre_babel.db'
 CMD_TORRE = 169
@@ -251,7 +231,7 @@ def iniciar(ses, addr, modo):
             c = _CORRIDAS[clave] = {'modo': modo, 'piso': 1, 'inicio': time.time(), 'nombres': set(), 'jefe': None}
         c['nombres'].add(ses.personaje.nombre)
     log.info('%s entra a la Torre de Babel (%s, piso %d)', ses.personaje.nombre, MODOS[modo], c['piso'])
-    app._viajar_por_portal(ses, addr, {'destino': STAGE, 'llegada': entrada()}, motivo='a la Torre de Babel')
+    app._viajar_por_portal(ses, addr, {'destino': STAGE, 'llegada': llegada(c['piso'])}, motivo='a la Torre de Babel')
     if modo == PARTY and _es_lider(ses):
         # Cada vez que entra el lider, no solo al empezar: "la torre de babel party no le solicita aceptar el summon a
         # los demas" (02/11/2026) cuando la party ya tenia una subida a medias.
@@ -287,7 +267,9 @@ def al_entrar(ses, addr='?'):
         _sacar(ses, addr)
         return
     c['nombres'].add(p.nombre)
-    ses.enviar(*cortinas(c['piso']))            # los puentes de su piso en adelante siguen cerrados
+    if (p.tile_x, p.tile_y) != llegada(c['piso']) and c['piso'] > 1:
+        import desplazamientos                  # quien se une a medias, a la sala del piso en curso
+        desplazamientos.reubicar(ses, llegada(c['piso']), 'torre')
     if not _jefe_vivo(ses, c):
         poner_jefe(ses, c)
     _cartel(ses, 'Tower of Babel - Floor %d / %d: %s' % (c['piso'], total_pisos(), pisos()[c['piso'] - 1]['nombre']))
@@ -368,8 +350,7 @@ def al_morir(ses, m, addr='?'):
         terminar(ses, piso)
         return
     c['piso'] = piso + 1
-    abrir_puente(ses, piso)
-    _cartel(ses, 'Floor %d cleared! Cross the bridge to floor %d - %s' % (piso, piso + 1, pisos()[piso]['nombre']))
+    _cartel(ses, 'Floor %d cleared! Going up to floor %d in %d seconds...' % (piso, piso + 1, int(PAUSA)))
     try:
         import asyncio
         asyncio.get_event_loop().call_later(PAUSA, _siguiente, ses, c)
@@ -380,9 +361,7 @@ def al_morir(ses, m, addr='?'):
 def _siguiente(ses, c):
     if corrida(ses) is not c or getattr(getattr(ses, 'personaje', None), 'stage', None) != STAGE:
         return
-    vivos = [s for s in _en_la_copia(ses) if not getattr(s, 'muerto', False)] or [ses]
-    if not _jefe_vivo(vivos[0], c):
-        poner_jefe(vivos[0], c)
+    subir(ses, c)
 
 
 def terminar(ses, pisos_superados=None):
