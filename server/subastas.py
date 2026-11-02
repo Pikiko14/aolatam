@@ -57,13 +57,18 @@ def _con():
     return con
 
 
-def listado(limite=MAX_VISTA):
-    """Lo que hay en venta, lo mas nuevo primero."""
+def listado(limite=MAX_VISTA, char_id=None):
+    """Lo que hay en venta, lo mas nuevo primero (solo lo de `char_id` si se da; limite None = todo)."""
+    donde, args = 'cantidad > 0', []
+    if char_id is not None:
+        donde += ' AND char_id = ?'
+        args.append(int(char_id))
     with _LOCK:
         con = _con()
         try:
             filas = con.execute('SELECT id, usuario, char_id, vendedor, item_id, cantidad, precio, mejoras, mascota '
-                                'FROM subastas WHERE cantidad > 0 ORDER BY id DESC LIMIT ?', (int(limite),)).fetchall()
+                                'FROM subastas WHERE %s ORDER BY id DESC LIMIT ?' % donde,
+                                args + [-1 if limite is None else int(limite)]).fetchall()
         finally:
             con.close()
     claves = ('id', 'usuario', 'char_id', 'vendedor', 'item_id', 'cantidad', 'precio', 'mejoras', 'mascota')
@@ -278,21 +283,33 @@ def _pagar_al_vendedor(fila, oro):
 
 def comprar(ses, cuerpo):
     """El 0x0025 sobre el subastador: <II eid, n> + n x <8sI instancia, cantidad>."""
-    import app
-    import clases
-    import inventario as iv
     n = struct.unpack_from('<I', cuerpo, 4)[0]
-    p = ses.personaje
-    tocadas, avisos, pagado = [], [], 0
-    off = 8
+    pedidos, off = [], 8
     for _ in range(min(int(n), MAX_VISTA)):
         if off + 12 > len(cuerpo):
             break
         inst8, pedida = struct.unpack_from('<8sI', cuerpo, off)
         off += 12
         fid = id_de_instancia(inst8)
-        if fid is None or pedida <= 0:
-            continue
+        if fid is not None and pedida > 0:
+            pedidos.append((fid, int(pedida)))
+    tocadas, salida = tomar(ses, pedidos)
+    if tocadas:
+        ses.enviar(*salida, vista())
+    elif salida:
+        ses.enviar(*salida)
+
+
+def tomar(ses, pedidos, solo_propias=False):
+    """Compra (o retira, si son suyas) las publicaciones [(id, cantidad)]. Devuelve (ranuras tocadas, paquetes):
+    los paquetes son el refresco de la bolsa y el oro y los avisos, sin la vista. Con `solo_propias` no compra
+    nada ajeno (el boton de retirar de la ventana)."""
+    import app
+    import clases
+    import inventario as iv
+    p = ses.personaje
+    tocadas, avisos, pagado = [], [], 0
+    for fid, pedida in pedidos:
         with _LOCK:
             con = _con()
             try:
@@ -304,6 +321,9 @@ def comprar(ses, cuerpo):
                 fila = dict(zip(('id', 'usuario', 'char_id', 'vendedor', 'item_id', 'cantidad', 'precio',
                                  'mejoras', 'mascota'), f))
                 propio = int(fila['char_id']) == int(p.char_id)
+                if solo_propias and not propio:
+                    avisos.append(clases.aviso('That item is not yours.', tipo=0))
+                    continue
                 cant = min(int(pedida), int(fila['cantidad']))
                 costo = 0 if propio else cant * int(fila['precio'])
                 if getattr(ses, 'oro', 0) < costo:
@@ -347,15 +367,13 @@ def comprar(ses, cuerpo):
         log.info('%s %s %dx %s (subasta %d) por %d', p.nombre, 'retira' if propio else 'compra', cant, item_id,
                  fid, costo)
     if not tocadas:
-        if avisos:
-            ses.enviar(*avisos)
-        return
+        return [], avisos
     salida = list(app._refrescar(ses, tocadas, con_oro=True))
     if pagado:
         salida.append(clases.aviso('%d Gold' % pagado, tipo=0, msg_id=clases.MSG_PAGO))
-    ses.enviar(*salida, *avisos, vista())
     app._guardar_bolsa(ses, p.char_id)
     if getattr(ses, 'usuario', None):
         import cuentas
         cuentas.guardar_oro(ses.usuario, p.char_id, ses.oro)
         cuentas.guardar_mejoras(ses.usuario, p.char_id, getattr(p, 'mejoras', {}) or {})
+    return tocadas, salida + avisos

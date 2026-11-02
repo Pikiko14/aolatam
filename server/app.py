@@ -10884,7 +10884,11 @@ class Servidor:
         # 0. La casa de subastas (subastas.py): /ah
         import subastas as _sub_chat
         if _sub_chat.es_comando(texto):
-            ses.enviar(_sub_chat.vista())
+            import subasta_ventana as _sv_chat
+            if _sv_chat.tiene_ventana(ses):
+                ses.enviar(*_sv_chat.abrir(ses))         # la ventana propia (cliente con el canal Lua)
+            else:
+                ses.enviar(_sub_chat.vista())
             return
 
         # /lua <codigo> (solo GM): prueba el canal servidor -> Lua (canal_lua.py, tools/parche_canal_lua.py).
@@ -10892,8 +10896,13 @@ class Servidor:
         if _clua.es_comando_gm(texto):
             import configuracion as _cf_lua
             if _cf_lua.es_gm(getattr(ses, 'usuario', None)):
-                ses.enviar(_clua.paquete(_clua.codigo_del_comando(texto)))
-                log.info('[%s] /lua de GM: %s', addr, _clua.codigo_del_comando(texto)[:200])
+                try:
+                    _codigo_lua = _clua.codigo_del_comando(texto)
+                except (OSError, ValueError) as _e_lua:
+                    ses.enviar(_cl.aviso('/lua: %s' % _e_lua, tipo=0))
+                    return
+                ses.enviar(_clua.paquete(_codigo_lua))
+                log.info('[%s] /lua de GM: %s', addr, _codigo_lua[:200])
             else:
                 ses.enviar(_cl.aviso(_cf_lua.AVISO_SIN_PERMISO_GM, tipo=0))
             return
@@ -12991,6 +13000,16 @@ class Servidor:
                     asyncio.get_event_loop().call_later(2.0, _reaplicar_muerte, ses)
                 except Exception:
                     log.debug('muerte al reconectar', exc_info=True)
+            # Saludo del canal Lua: solo lo contesta un cliente con el parche (subasta_ventana.py).
+            def _saludo_lua():
+                if getattr(ses, 'personaje', None) and not getattr(ses, 'desconectado', False):
+                    import subasta_ventana as _sv_login
+                    ses.enviar(_sv_login.saludo())
+                    ses.volcar()
+            try:
+                asyncio.get_event_loop().call_later(3.0, _saludo_lua)
+            except Exception:
+                log.debug('saludo del canal Lua', exc_info=True)
             log.info(f"[{addr}] entro al mundo: '{p.nombre}' entidad={p.entity_id} "
                      f"char_id={p.char_id} tile=({p.tile_x},{p.tile_y})")
             log.info(f"[{addr}] (credenciales NO validadas: formato aun sin descifrar)")
@@ -16414,6 +16433,9 @@ class Servidor:
             #        425. Eso todavia no esta implementado aqui.
             # No mirabamos este byte, asi que un cambio de hechizo entraba
             # por el camino de partir pilas del inventario.
+            # La ventana de subasta (subasta_ventana.py): sus netcommand2 llevan 160..163 en el byte del contenedor.
+            if __import__('subasta_ventana').procesar(ses, cuerpo):
+                return
             if __import__('item_mall').procesar(ses,opcode,cuerpo):
                 return
             if __import__('salon').procesar(ses, cuerpo):

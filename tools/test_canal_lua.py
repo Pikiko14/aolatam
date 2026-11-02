@@ -35,6 +35,12 @@ def test_solo_el_comando_lua():
     assert not canal_lua.es_comando_gm('/luae') and not canal_lua.es_comando_gm('lua x')
 
 
+def test_arroba_manda_un_archivo_de_server_lua():
+    assert 'function SubastaAbrir' in canal_lua.codigo_del_comando('/lua @subasta')
+    with pytest.raises(ValueError):
+        canal_lua.codigo_del_comando('/lua @../app')
+
+
 @pytest.mark.skipif(not ANGEL.exists(), reason='sin angel_descomprimido.dat en esta maquina')
 def test_el_parche_registra_el_manejador_y_engancha_la_tabla():
     d = ANGEL.read_bytes()

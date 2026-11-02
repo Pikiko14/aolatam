@@ -7,6 +7,7 @@ para llenar ventanas Lua propias, como la de la subasta, llamando a sus funcione
 
 Un cliente sin el parche no tiene manejador para el 0x01A0 y lo ignora. Los GM pueden probarlo con /lua <codigo>.
 """
+import pathlib
 import struct
 
 OPCODE = 0x01A0
@@ -53,5 +54,15 @@ def es_comando_gm(texto: str) -> bool:
     return texto.strip().lower().startswith('/lua ')
 
 
+CARPETA = pathlib.Path(__file__).parent / 'lua'
+
+
 def codigo_del_comando(texto: str) -> str:
-    return texto.strip()[5:].strip()
+    """Lo que va tras /lua; "@nombre" manda server/lua/nombre.lua entero (el chat corta los textos largos)."""
+    codigo = texto.strip()[5:].strip()
+    if codigo.startswith('@'):
+        nombre = codigo[1:].strip()
+        if not nombre.replace('_', '').isalnum():
+            raise ValueError('nombre de archivo Lua no valido: %r' % nombre)
+        return (CARPETA / (nombre + '.lua')).read_text(encoding='utf-8')
+    return codigo
