@@ -850,6 +850,16 @@ def lleva_duales(inventario) -> bool:
     return manos > 1
 
 
+def lleva_escudo(inventario) -> bool:
+    """True si lleva un escudo (habilidad Shield, 14) en alguna mano."""
+    inv = inventario or {}
+    for ranura in (RANURA_MANO_DER, RANURA_MANO_IZQ):
+        item_id = inv.get(ranura) or inv.get(str(ranura))
+        if item_id and skill_de_item(item_id) == SKILL_ESCUDO:
+            return True
+    return False
+
+
 def skills_de_equipo(inventario):
     """Las habilidades de arma que entrena TODO lo equipado (ambas manos)."""
     salida = set()

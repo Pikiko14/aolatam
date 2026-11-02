@@ -233,17 +233,17 @@
 		<style wsVisible="" wsTab=""/>
 		<OnCommand>OnCommandStarCard</OnCommand>
 	</window>
-	<window class="WND_CLASS_BUTTON" range="218,-131,40,56" id="59003" icon="59003" tooltip="10043" tooltext="Tower of Babel">
+	<window class="WND_CLASS_BUTTON" range="218,-127,40,56" id="59003" icon="59003" tooltip="10043" tooltext="Tower of Babel">
 	    <style wsVisible="" wsTab="" />
 	    <OnCommand>OnCommandTorre</OnCommand>
 	</window>
 	<icon id="59003" dir="\wnd01\" normal="aolat_tb_n" focus="aolat_tb_f" down="aolat_tb_n" disable="normal" />
-	<window class="WND_CLASS_BUTTON" range="264,-131,40,56" id="59002" icon="59002" tooltip="10043" tooltext="Damage meter">
+	<window class="WND_CLASS_BUTTON" range="264,-127,40,56" id="59002" icon="59002" tooltip="10043" tooltext="Damage meter">
 	    <style wsVisible="" wsTab="" />
 	    <OnCommand>OnCommandMedidor</OnCommand>
 	</window>
 	<icon id="59002" dir="\wnd01\" normal="aolat_dm_n" focus="aolat_dm_f" down="aolat_dm_n" disable="normal" />
-	<window class="WND_CLASS_BUTTON" range="310,-131,40,56" id="59001" icon="59001" tooltip="10043" tooltext="Auction House">
+	<window class="WND_CLASS_BUTTON" range="310,-127,40,56" id="59001" icon="59001" tooltip="10043" tooltext="Auction House">
 	    <style wsVisible="" wsTab="" />
 	    <OnCommand>OnCommandSubasta</OnCommand>
 	</window>

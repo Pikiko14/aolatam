@@ -275,12 +275,13 @@ BOTONES_BARRA = (
     (59002, 264, 'Damage meter', 'OnCommandMedidor', 'aolat_dm'),
     (59003, 218, 'Tower of Babel', 'OnCommandTorre', 'aolat_tb'),
 )
+Y_BARRA = -127      # el pie a -71, como el Event Overview (-139 + 68) y el Star Blessing
 
 
 def _lineas_boton(wid, x, ayuda, funcion, icono):
     return (
-        '<window class="WND_CLASS_BUTTON" range="%d,-131,40,56" id="%d" icon="%d" tooltip="10043" '
-        'tooltext="%s">' % (x, wid, wid, ayuda),
+        '<window class="WND_CLASS_BUTTON" range="%d,%d,40,56" id="%d" icon="%d" tooltip="10043" '
+        'tooltext="%s">' % (x, Y_BARRA, wid, wid, ayuda),
         '    <style wsVisible="" wsTab="" />',
         '    <OnCommand>%s</OnCommand>' % funcion,
         '</window>',
@@ -294,7 +295,7 @@ def boton_en_la_barra(texto: str) -> str:
     nl = '\r\n' if '\r\n' in texto else '\n'
     for wid, x, ayuda, funcion, icono in BOTONES_BARRA:
         if 'id="%d"' % wid in texto:                   # ya esta: solo se pone en su sitio (6 px entre botones)
-            texto = re.sub(r'(<window [^>]*?range=")-?\d+(,-131,40,56" id="%d")' % wid, r'\g<1>%d\2' % x, texto)
+            texto = re.sub(r'(<window [^>]*?range=")-?\d+,-\d+(,40,56" id="%d")' % wid, r'\g<1>%d,%d\2' % (x, Y_BARRA), texto)
             continue
         m = re.search(r'([ \t]*)<child>50001</child>', texto)
         if not m:

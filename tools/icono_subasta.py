@@ -18,25 +18,43 @@ Lo transparente es lo que no cae en ningun tramo. tools/editor_mapas/editor_mapa
 import pathlib
 import struct
 
-from PIL import Image, ImageDraw, ImageEnhance
+from PIL import Image, ImageDraw, ImageEnhance, ImageFilter
 
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
 SALIDA = RAIZ / 'parches' / 'extras' / 'shape' / 'wnd01'
 NOMBRE = 'aolat_ah'
 ANCHO, ALTO = 40, 56
-MARGEN = 5        # px libres a cada lado: "dale un poco de padding a los iconos" (02/11/2026), que iban pegados
+# Como los iconos nativos de la barra (el Event Overview, el Star Blessing): el dibujo con un borde blanco de 1 px,
+# apoyado en un ovalo verde azulado oscuro. "Se ven raros, arreglalos" (02/11/2026): sin el ovalo ni el borde no
+# casaban con los de al lado. Los colores salen de una captura del juego.
+OVALO = (3, 42, 37, 54)               # x0, y0, x1, y1 del ovalo, abajo del todo
+TEAL_OSCURO = (0, 73, 90, 255)
+TEAL_CLARO = (24, 150, 156, 255)       # la franja de abajo del ovalo
+BLANCO = (255, 255, 255, 255)
+DIBUJO_ANCHO, DIBUJO_ALTO = 30, 42     # lo que puede ocupar el dibujo (deja aire a los lados)
+DIBUJO_PIE = 50                        # la fila donde se apoya el dibujo, dentro del ovalo
 
 
-def con_margen(im: Image.Image) -> Image.Image:
-    """El dibujo reducido para que deje MARGEN libre a los lados, centrado y apoyado abajo como antes."""
+def al_estilo_nativo(im: Image.Image) -> Image.Image:
+    """El dibujo reducido y centrado sobre el ovalo de los iconos nativos, con su borde blanco."""
     caja = im.getbbox()
     if not caja:
         return im
     dibujo = im.crop(caja)
-    f = min(1.0, (ANCHO - 2 * MARGEN) / dibujo.width, (ALTO - 2 * MARGEN) / dibujo.height)
+    f = min(1.0, DIBUJO_ANCHO / dibujo.width, DIBUJO_ALTO / dibujo.height)
     dibujo = dibujo.resize((max(1, round(dibujo.width * f)), max(1, round(dibujo.height * f))), Image.LANCZOS)
     out = Image.new('RGBA', (ANCHO, ALTO), (0, 0, 0, 0))
-    out.alpha_composite(dibujo, ((ANCHO - dibujo.width) // 2, min(caja[3], ALTO - 2) - dibujo.height))
+    d = ImageDraw.Draw(out)
+    x0, y0, x1, y1 = OVALO
+    d.ellipse((x0, y0, x1, y1), fill=BLANCO)
+    d.ellipse((x0 + 1, y0 + 1, x1 - 1, y1 - 1), fill=TEAL_CLARO)
+    d.ellipse((x0 + 1, y0 + 1, x1 - 1, y1 - 3), fill=TEAL_OSCURO)
+    capa = Image.new('RGBA', (ANCHO, ALTO), (0, 0, 0, 0))
+    capa.alpha_composite(dibujo, ((ANCHO - dibujo.width) // 2, DIBUJO_PIE - dibujo.height))
+    solido = capa.getchannel('A').point(lambda a: 255 if a >= 128 else 0)
+    borde = solido.filter(ImageFilter.MaxFilter(3))
+    out.paste(Image.new('RGBA', (ANCHO, ALTO), BLANCO), (0, 0), borde)
+    out.alpha_composite(capa)
     return out
 
 
@@ -122,7 +140,7 @@ def dibujar() -> Image.Image:
 
 def main():
     SALIDA.mkdir(parents=True, exist_ok=True)
-    normal = con_margen(dibujar())
+    normal = al_estilo_nativo(dibujar())
     foco = ImageEnhance.Brightness(normal).enhance(1.25)
     for sufijo, im in (('_n', normal), ('_f', foco)):
         ruta = SALIDA / (NOMBRE + sufijo + '.shp')

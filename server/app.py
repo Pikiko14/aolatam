@@ -15358,7 +15358,9 @@ class Servidor:
                                          magic_id=tipo if tipo != _cb.ATAQUE_NORMAL else 0)
 
             _tipo_golpe, _anim_golpe = (getattr(ses, '_golpe_prueba', None)
-                                        or _cb.golpe_de_arma(arma_puesta, duales=lleva_duales_ses(ses)))
+                                        or _cb.golpe_de_arma(arma_puesta, duales=lleva_duales_ses(ses),
+                                                          escudo=__import__('clases').lleva_escudo(
+                                                              getattr(ses, 'inventario', None))))
             _cierre_skill = None
             cast_time = _cb.calcular_cast_time(
                 max(100, mag.get('cast_time', 100)),

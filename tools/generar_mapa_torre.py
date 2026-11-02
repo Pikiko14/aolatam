@@ -33,8 +33,8 @@ SALIDA_JSON = RAIZ / 'server' / 'plantillas' / 'torre_babel_mapa.json'
 BASE = RAIZ / 'tools' / 'editor_mapas' / 'salida' / 'MAP900.mpc'      # de aqui salen cabecera, eventos y dialogos
 
 PISOS = 60
-ANCHO_SALA, ALTO_SALA = 24, 12          # lo que se pisa de cada piso
-ESCALERA, ANCHO_ESCALERA = 6, 3         # el suelo entre dos pisos, que la escalera atraviesa
+ANCHO_SALA, ALTO_SALA = 24, 11          # lo que se pisa de cada piso
+ESCALERA, ANCHO_ESCALERA = 5, 3         # el suelo entre dos pisos, que la escalera atraviesa
 MURO = 2                                # el grosor de los muros de los lados
 MARGEN = 6                              # cielo alrededor de la torre
 
@@ -51,6 +51,9 @@ AJUSTE_ESCALERA = 38                    # px: el centro de los escalones queda 3
 
 ANCHO = 2 * MARGEN + 2 * MURO + ANCHO_SALA
 ALTO = 2 * MARGEN + PISOS * ALTO_SALA + (PISOS - 1) * ESCALERA
+# El cliente guarda la posicion en pixeles como un entero de 16 bits con signo: con 1086 filas (34752 px) el piso 1
+# quedaba en y negativa ("no me veo", 02/11/2026). Todo el mapa tiene que caber en 32767 px.
+assert ALTO * 32 <= 32767, ALTO
 X_SALA = MARGEN + MURO                  # la primera columna que se pisa de las salas
 
 

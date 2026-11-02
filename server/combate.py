@@ -2940,11 +2940,14 @@ GOLPE_POR_SKILL = {
     17: (4, 1282),
 }
 GOLPE_POR_DEFECTO = (3, 1480)
+# Arma de una mano con escudo: "la animacion de ataque de 1 arma con escudo debe ser la anim 1" (02/11/2026), probado
+# por el usuario en el juego con /anim. Va con el tipo del tajo de una mano.
+GOLPE_CON_ESCUDO = (3, 1)
 ANIM_POR_SKILL = {}
 # -------------------------------------------------------------------------
 
 
-def golpe_de_arma(item_id: int = 0, duales: bool = False) -> tuple:
+def golpe_de_arma(item_id: int = 0, duales: bool = False, escudo: bool = False) -> tuple:
     """(tipo, animacion) del 0x000A para el arma que se lleva puesta.
 
     Con dos armas de una mano va (0, 0), que es lo que mas manda el servidor
@@ -2961,6 +2964,8 @@ def golpe_de_arma(item_id: int = 0, duales: bool = False) -> tuple:
     try:
         import clases as _cl
         sid = _cl.skill_de_item(item_id) if item_id else None
+        if escudo and not duales and sid != _cl.SKILL_ESCUDO and item_id and not _cl.es_dos_manos(item_id):
+            return GOLPE_CON_ESCUDO
         if sid in GOLPE_POR_SKILL:
             return GOLPE_POR_SKILL[sid]
     except Exception:
