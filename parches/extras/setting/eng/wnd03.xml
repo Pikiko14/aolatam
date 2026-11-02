@@ -2242,6 +2242,17 @@
         <child>3511</child>
         <child>3551</child>
     </window>
+    <window class="WND_CLASS_DLG_1" range="0,0,236,196" id="59010" title="Damage" fcolor="104" font="1">
+        <style wsVisible="" wsMoveable="" />
+        <child>59011</child>
+        <child>59012</child>
+    </window>
+    <window class="WND_CLASS_STATIC" id="59011" range="8,4,220,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_LIST" id="59012" range="6,22,224,166" cols="3" rows="8" gapx="2" gapy="1" tpos="1,1" fcolor="103" font="1">
+        <style wsVisible="" lsVCenter="" lsReport="" />
+    </window>
     <window class="WND_CLASS_BUTTON" id="3502" range="9,443,32,15" title="All" fcolor="103" font="1" icon="3085">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <!-- 物品切頁 -->

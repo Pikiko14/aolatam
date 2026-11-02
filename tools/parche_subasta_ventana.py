@@ -92,6 +92,24 @@ NUEVAS = NUEVAS + tuple(linea for fila, wid in enumerate(ICONOS_FILAS, 1) for li
 ))
 IDS_NUEVAS = (3590, 3591, 3592, 3593, 3576) + ICONOS_FILAS
 
+# El contador de dano (server/medidor_dano.py, server/lua/medidor.lua): un dialogo pequeno y movible con una linea
+# de titulo (la pelea o el jefe) y una lista de 8 filas: nombre, dano y %.
+MEDIDOR_ID = 59010
+MEDIDOR = (
+    '<window class="WND_CLASS_DLG_1" range="0,0,236,196" id="59010" title="Damage" fcolor="104" font="1">',
+    '    <style wsVisible="" wsMoveable="" />',
+    '    <child>59011</child>',
+    '    <child>59012</child>',
+    '</window>',
+    '<window class="WND_CLASS_STATIC" id="59011" range="8,4,220,14" title="" fcolor="103" font="1">',
+    '    <style wsVisible="" ssVCenter="" />',
+    '</window>',
+    '<window class="WND_CLASS_LIST" id="59012" range="6,22,224,166" cols="3" rows="8" gapx="2" gapy="1" tpos="1,1" '
+    'fcolor="103" font="1">',
+    '    <style wsVisible="" lsVCenter="" lsReport="" />',
+    '</window>',
+)
+
 # Donde se podia soltar un objeto. Vacio: el juego no llama al OnDrop (ver arriba).
 SOLTAR_EN = ()
 
@@ -172,6 +190,10 @@ def generar(texto: str) -> str:
                     salida, count=1)
     m = re.search(r'[ \t]*<window [^>]*\bid="3503"[^>]*>[\s\S]*?</window>', salida)
     salida = salida[:m.end()] + ''.join(nl + sangria + linea for linea in PESTANA_VENDER) + salida[m.end():]
+    # El contador de dano: ventana suelta, definida detras de la 3501.
+    if 'id="%d"' % MEDIDOR_ID not in salida:
+        m = re.search(r'[ \t]*<window [^>]*\bid="3501"[^>]*>[\s\S]*?</window>', salida)
+        salida = salida[:m.end()] + ''.join(nl + sangria + linea for linea in MEDIDOR) + salida[m.end():]
     faltan = ids - hechos
     if faltan:
         raise SystemExit('no se encontraron en wnd03.xml: %s' % sorted(faltan))
@@ -182,31 +204,41 @@ def generar(texto: str) -> str:
 # Blessing (50001): "que la auction lo abra un icono de aca" (02/11/2026). Su imagen la dibuja tools/icono_subasta.py.
 # El OnCommandSubasta lo define el servidor al entrar (subasta_ventana.SALUDO_LUA): pide abrir la ventana.
 WND01 = RAIZ / 'parches' / 'extras' / 'setting' / 'eng' / 'wnd01.xml'
-BOTON_BARRA = 59001
-LINEAS_BOTON = (
-    '<window class="WND_CLASS_BUTTON" range="316,-131,40,56" id="%d" icon="%d" tooltip="10043" '
-    'tooltext="Auction House">' % (BOTON_BARRA, BOTON_BARRA),
-    '    <style wsVisible="" wsTab="" />',
-    '    <OnCommand>OnCommandSubasta</OnCommand>',
-    '</window>',
-    r'<icon id="%d" dir="\wnd01\" normal="aolat_ah_n" focus="aolat_ah_f" down="aolat_ah_n" disable="normal" />'
-    % BOTON_BARRA,
+# (id, x en la barra, texto de ayuda, funcion Lua, icono): la subasta y el contador de dano (server/medidor_dano.py,
+# 02/11/2026). Las imagenes las dibujan tools/icono_subasta.py y tools/icono_medidor.py.
+BOTONES_BARRA = (
+    (59001, 316, 'Auction House', 'OnCommandSubasta', 'aolat_ah'),
+    (59002, 276, 'Damage meter', 'OnCommandMedidor', 'aolat_dm'),
 )
 
 
+def _lineas_boton(wid, x, ayuda, funcion, icono):
+    return (
+        '<window class="WND_CLASS_BUTTON" range="%d,-131,40,56" id="%d" icon="%d" tooltip="10043" '
+        'tooltext="%s">' % (x, wid, wid, ayuda),
+        '    <style wsVisible="" wsTab="" />',
+        '    <OnCommand>%s</OnCommand>' % funcion,
+        '</window>',
+        r'<icon id="%d" dir="\wnd01\" normal="%s_n" focus="%s_f" down="%s_n" disable="normal" />'
+        % (wid, icono, icono, icono),
+    )
+
+
 def boton_en_la_barra(texto: str) -> str:
-    """wnd01.xml con el boton de la subasta en la barra (no lo repite si ya esta)."""
-    if 'id="%d"' % BOTON_BARRA in texto:
-        return texto
+    """wnd01.xml con los botones propios en la barra (no repite los que ya estan)."""
     nl = '\r\n' if '\r\n' in texto else '\n'
-    m = re.search(r'([ \t]*)<child>50001</child>', texto)
-    if not m:
-        raise SystemExit('no esta el Star Blessing (50001) en la barra de wnd01.xml')
-    texto = texto[:m.end()] + nl + m.group(1) + '<child>%d</child>' % BOTON_BARRA + texto[m.end():]
-    m = re.search(r'[ \t]*<window [^>]*\bid="50001"[^>]*>[\s\S]*?</window>', texto)
-    sangria = re.match(r'[ \t]*', m.group(0)).group(0)
-    nuevas = ''.join(nl + sangria + linea for linea in LINEAS_BOTON)
-    return texto[:m.end()] + nuevas + texto[m.end():]
+    for wid, x, ayuda, funcion, icono in BOTONES_BARRA:
+        if 'id="%d"' % wid in texto:
+            continue
+        m = re.search(r'([ \t]*)<child>50001</child>', texto)
+        if not m:
+            raise SystemExit('no esta el Star Blessing (50001) en la barra de wnd01.xml')
+        texto = texto[:m.end()] + nl + m.group(1) + '<child>%d</child>' % wid + texto[m.end():]
+        m = re.search(r'[ \t]*<window [^>]*\bid="50001"[^>]*>[\s\S]*?</window>', texto)
+        sangria = re.match(r'[ \t]*', m.group(0)).group(0)
+        nuevas = ''.join(nl + sangria + linea for linea in _lineas_boton(wid, x, ayuda, funcion, icono))
+        texto = texto[:m.end()] + nuevas + texto[m.end():]
+    return texto
 
 
 def main():

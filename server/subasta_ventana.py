@@ -270,7 +270,8 @@ def procesar(ses, cuerpo) -> bool:
     if cmd == CMD_SALUDO:
         ses.canal_lua = int(a) or 1
         log.info('%s tiene el canal Lua (version %d)', getattr(ses.personaje, 'nombre', '?'), a)
-        ses.enviar(canal_lua.paquete(SALUDO_LUA))
+        import medidor_dano
+        ses.enviar(canal_lua.paquete(SALUDO_LUA), canal_lua.paquete(medidor_dano.SALUDO_LUA))
         return True
     if not tiene_ventana(ses):
         return True

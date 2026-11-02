@@ -647,6 +647,12 @@ class Monstruo:
             if not isinstance(getattr(self, 'dano_por', None), dict):
                 self.dano_por = {}
             self.dano_por[int(_cid)] = self.dano_por.get(int(_cid), 0) + c
+            # El contador de dano en vivo (medidor_dano.py): solo apunta, no manda nada.
+            try:
+                import medidor_dano
+                medidor_dano.anotar(_a, self, c)
+            except Exception:
+                pass
         if es_pet:
             self.dano_pet = getattr(self, 'dano_pet', 0) + c
         else:

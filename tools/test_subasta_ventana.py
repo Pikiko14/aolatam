@@ -193,8 +193,10 @@ def test_cheap_ordena_por_precio_y_cada_fila_lleva_su_item_y_el_total():
 def test_el_saludo_define_el_boton_de_la_barra_y_el_boton_abre_la_ventana():
     s = _ses(1, 'A', {}, canal=False)
     sv.procesar(s, _cmd(sv.CMD_SALUDO, 1))
-    assert _lua(s.enviados[-1]).startswith('function OnCommandSubasta(')
-    assert 'game.netcommand2(%d, 0, 0)' % sv.CMD_ABRIR in _lua(s.enviados[-1])
+    definidas = [_lua(p) for p in s.enviados]
+    assert any(t.startswith('function OnCommandSubasta(') and 'game.netcommand2(%d, 0, 0)' % sv.CMD_ABRIR in t
+               for t in definidas)
+    assert any(t.startswith('function OnCommandMedidor(') for t in definidas)     # el boton del contador de dano
     sv.procesar(s, _cmd(sv.CMD_ABRIR, 0))
     assert _lua(s.enviados[-1]).startswith('SubastaAbrir(')
 

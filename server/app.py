@@ -16436,6 +16436,8 @@ class Servidor:
             # La ventana de subasta (subasta_ventana.py): sus netcommand2 llevan 160..163 en el byte del contenedor.
             if __import__('subasta_ventana').procesar(ses, cuerpo):
                 return
+            if __import__('medidor_dano').procesar(ses, cuerpo):       # el contador de dano (168)
+                return
             if __import__('item_mall').procesar(ses,opcode,cuerpo):
                 return
             if __import__('salon').procesar(ses, cuerpo):
