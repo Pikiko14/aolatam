@@ -12820,15 +12820,11 @@ class Servidor:
                                             ef_pet = sk_datos.get('efecto') or 101
                                             _poder_pet = (base_matk_pet if _pet_skill_magic
                                                           else base_atk_pet)
-                                            # Como las habilidades del jugador: su multiplicador (1,35 sin rama, 1,2 los combos), el
-                                            # -30% de lo fisico y la defensa del monstruo con 420 (Monstruo.recibir). Antes era
-                                            # ataque x 2,2 - defensa/3, unas cuatro veces lo de un jugador ("los pet tienen mucho
-                                            # ataque", 02/11/2026).
-                                            _mult_pet = _cb.mult_fisico(sk_usada)
-                                            if not _pet_skill_magic:
-                                                _mult_pet *= _cb.FACTOR_DANO_FISICO
+                                            # Ataque x MULT_DANO_MASCOTA con la defensa del monstruo con 420 (Monstruo.recibir). Antes
+                                            # era ataque x 2,2 - defensa/3, unas cuatro veces lo de un jugador.
                                             dano_pet = pet_targ.recibir(_poder_pet, es_magico=_pet_skill_magic,
-                                                                        mult=_mult_pet, var_pct=0.03, es_pet=True)
+                                                                        mult=_cb.MULT_DANO_MASCOTA, var_pct=0.03,
+                                                                        es_pet=True)
                                             _pkgs_pet_hit = (
                                                 _cb.ataque(pet_eid, pet_targ.entity_id,
                                                            _cb.anim_de_monstruo(f_pet.get('nombre', ''))),
@@ -12859,8 +12855,8 @@ class Servidor:
                                                             _ses, victima, _yo, _addr, espera=0.1))
                                                 f_pet['combo_hasta'] = ahora + _dur_combo_pet
                                         else:
-                                            # El golpe basico, como el del jugador: ataque x 0,7 con la defensa de 420 (era x 1,2 - def/3).
-                                            dano_pet = pet_targ.recibir(base_atk_pet, mult=_cb.FACTOR_DANO_FISICO,
+                                            # El golpe basico igual que las habilidades (era x 1,2 - def/3).
+                                            dano_pet = pet_targ.recibir(base_atk_pet, mult=_cb.MULT_DANO_MASCOTA,
                                                                         var_pct=0.03, es_pet=True)
                                             _pkgs_pet_basic = (
                                                 _cb.ataque(pet_eid, pet_targ.entity_id,

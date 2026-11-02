@@ -2395,6 +2395,10 @@ MULT_COMBO = 1.2
 # Todo el dano FISICO de los jugadores (golpe basico y habilidades, contra monstruos y en PvP) por este factor: "sigue
 # pegando mucho el fisico, se puede reducir un 30%" (01/11/2026).
 FACTOR_DANO_FISICO = 0.7
+# Lo que multiplica el ataque de la mascota en cada golpe, basico o habilidad, fisico o magico. Por debajo de un
+# jugador (~0,53 con FACTOR_DANO_FISICO): "el dano de la mascota debe ser menos que el de un personaje, que quede en
+# 0.4" (02/11/2026).
+MULT_DANO_MASCOTA = 0.4
 MULT_SIN_RAMA = 1.35
 
 
