@@ -29,7 +29,7 @@ SALIDA = RAIZ / 'parches' / 'launcher_propio'
 EXE = 'AngelsLauncher.exe'
 FRAMEWORK = pathlib.Path(os.environ.get('WINDIR', r'C:\Windows')) / 'Microsoft.NET' / 'Framework64' / 'v4.0.30319'
 # Sube este numero al cambiar el launcher: los jugadores lo reciben solos (por el sha256, no por el numero).
-VERSION_LAUNCHER = '1.0.2'
+VERSION_LAUNCHER = '1.0.3'               # 1.0.3: tambien pone el angel.dat del servidor (02/11/2026)
 # El nombre del servidor que pinta el cliente (server.xml, 名稱): el launcher lo pone al lanzar el juego.
 NOMBRE_SERVIDOR = 'AOF'
 
@@ -86,8 +86,11 @@ def probar(exe):
         nuestros = {'MAP\\MAP900.MPC': b'mapa nuevo', 'SETTING\\ENG\\ITEM9.XML': b'<root/>'}
         pak = parche.armar_pak(nuestros)
         (web / 'update27.pak').write_bytes(pak)
+        juego_nuevo = b'MZ juego nuevo con el canal'
+        (web / 'angel.dat').write_bytes(juego_nuevo)
         (web / 'launcher.json').write_text(json.dumps({
             'version': '8.5.1.99', 'pak': 'update27.pak', 'bytes': len(pak), 'sha256': hashlib.sha256(pak).hexdigest(),
+            'juego': {'archivo': 'angel.dat', 'bytes': len(juego_nuevo), 'sha256': hashlib.sha256(juego_nuevo).hexdigest()},
             'archivos': sorted(nuestros) + ['SHAPE\\LOGO\\ZZ_FIN.TXT'],
             'noticias': [{'fecha': '2026-10-31', 'titulo': 'Prueba', 'texto': 'Hola'}]}), encoding='utf-8')
         (juego / 'angel.dat').write_bytes(b'MZ falso')
@@ -121,6 +124,10 @@ def probar(exe):
             fallos.append('no retiro update28.pak (solo llevaba archivos del parche)')
         if not (juego / 'update29.pak').exists():
             fallos.append('retiro update29.pak, que llevaba un archivo ajeno')
+        if (juego / 'angel.dat').read_bytes() != juego_nuevo:
+            fallos.append('angel.dat no es el del servidor')
+        if (juego / 'respaldo_launcher' / 'angel.dat.original').read_bytes() != b'MZ falso':
+            fallos.append('no guardo el angel.dat original en respaldo_launcher')
         reg = (juego / 'reg.ini').read_bytes()
         if b'Version = 8.5.1.99' not in reg or b'\r' in reg:
             fallos.append('reg.ini sin la version nueva o con CRLF: %r' % reg)

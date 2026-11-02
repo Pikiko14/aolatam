@@ -25,6 +25,9 @@ namespace AngelsLauncher
         public HashSet<string> Archivos = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         public string LauncherSha256;
         public long LauncherBytes;
+        // El exe del juego (angel.dat): el del servidor lleva el canal 0x01A0 de las ventanas propias (la subasta).
+        public string JuegoSha256;
+        public long JuegoBytes;
     }
 
     // Avisos hacia la ventana: texto de estado y progreso (0..1, o -1 si no se sabe).
@@ -106,6 +109,12 @@ namespace AngelsLauncher
                 var ld = (Dictionary<string, object>)l;
                 m.LauncherSha256 = Texto(ld, "sha256").ToLowerInvariant();
                 m.LauncherBytes = Numero(ld, "bytes");
+            }
+            if (d.TryGetValue("juego", out l) && l is Dictionary<string, object>)
+            {
+                var jd = (Dictionary<string, object>)l;
+                m.JuegoSha256 = Texto(jd, "sha256").ToLowerInvariant();
+                m.JuegoBytes = Numero(jd, "bytes");
             }
             return m;
         }
@@ -237,6 +246,43 @@ namespace AngelsLauncher
             EscribirVersion(m.Version);
         }
 
+        // True si el angel.dat de la carpeta no es el que anuncia el servidor.
+        public static bool HaceFaltaJuego(Manifiesto m)
+        {
+            if (string.IsNullOrEmpty(m.JuegoSha256)) return false;
+            string ruta = Path.Combine(Carpeta, Juego);
+            if (!File.Exists(ruta)) return true;
+            if (m.JuegoBytes > 0 && new FileInfo(ruta).Length != m.JuegoBytes) return true;
+            return Sha256DeArchivo(ruta) != m.JuegoSha256;
+        }
+
+        // Pone el angel.dat del servidor. El que habia se guarda en respaldo_launcher\ (el original solo la primera
+        // vez, para poder volver a el); la descarga se comprueba entera antes de reemplazarlo.
+        public static void InstalarJuego(Manifiesto m, Aviso aviso)
+        {
+            string ruta = Path.Combine(Carpeta, Juego);
+            try
+            {
+                if (File.Exists(ruta))
+                {
+                    string respaldo = Path.Combine(Carpeta, "respaldo_launcher");
+                    Directory.CreateDirectory(respaldo);
+                    string original = Path.Combine(respaldo, Juego + ".original");
+                    if (!File.Exists(original)) File.Copy(ruta, original);
+                }
+                Bajar(Juego, ruta, m.JuegoBytes, m.JuegoSha256, aviso, "Actualizando el juego");
+            }
+            catch (UnauthorizedAccessException)
+            {
+                throw new IOException("No se puede reemplazar " + Juego + ". Cierra el juego y vuelve a intentarlo.");
+            }
+            catch (IOException e)
+            {
+                if (e.Message.StartsWith("La descarga")) throw;
+                throw new IOException("No se puede reemplazar " + Juego + ". Cierra el juego y vuelve a intentarlo.");
+            }
+        }
+
         // El juego lee su version de reg.ini. Saltos de linea LF: con CRLF el START.EXE de IGG se rompia.
         public static void EscribirVersion(string version)
         {
@@ -303,6 +349,17 @@ namespace AngelsLauncher
                     salida.WriteLine("parche instalado: " + m.Pak);
                 }
                 else salida.WriteLine("el parche ya esta al dia");
+                if (HaceFaltaJuego(m))
+                {
+                    InstalarJuego(m, (e, p) => { });
+                    salida.WriteLine("juego actualizado: " + Juego);
+                }
+                else salida.WriteLine("el juego ya esta al dia");
+                if (HaceFaltaJuego(m))
+                {
+                    salida.WriteLine("verificado: NO (" + Juego + ")");
+                    return 1;
+                }
                 salida.WriteLine("verificado: " + (HaceFaltaParche(m) ? "NO" : "si"));
                 return HaceFaltaParche(m) ? 1 : 0;
             }

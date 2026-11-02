@@ -24,7 +24,7 @@ VPS = os.environ.get('AO_VPS', 'root@77.42.52.122')
 VPS_DIR = os.environ.get('AO_VPS_DIR', '/opt/angels')
 # Lo que cambia en el VPS por su cuenta y no se pisa nunca.
 NUNCA = {'server/configuracion_local.py'}
-EXTENSIONES = {'.py', '.json', '.bin', '.txt'}
+EXTENSIONES = {'.py', '.json', '.bin', '.txt', '.lua'}      # .lua: server/lua/ (las ventanas por el canal 0x01A0)
 
 
 def ssh(orden, entrada=None):

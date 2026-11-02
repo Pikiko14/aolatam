@@ -125,6 +125,8 @@ namespace AngelsLauncher
                     Actualizador.InstalarParche(m, Avisar);
                 else
                     Actualizador.EscribirVersion(m.Version);
+                if (reparar || Actualizador.HaceFaltaJuego(m))
+                    Actualizador.InstalarJuego(m, Avisar);
                 lock (cerrojo) versionLocal = m.Version;
                 Avisar("Todo al día. Listo para jugar.", 1);
                 puedeJugar = true;

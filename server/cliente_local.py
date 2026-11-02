@@ -1619,6 +1619,10 @@ def _info_del_parche(est) -> bytes:
 # version para actualizarse solo. Baja update27.pak ENTERO y lo pone siempre en el mismo sitio: sin el limite de
 # update28..update31 del START.EXE de IGG, que solo sabia instalar en un pak donde esos archivos aun no estaban.
 LAUNCHER_EXE = 'AngelsLauncher.exe'
+# EL EXE DEL JUEGO que reparte el launcher (desde la 1.0.3): parches/juego/angel.dat, el descomprimido con el icono y el
+# canal 0x01A0 de las ventanas propias (tools/parche_canal_lua.py). Si el del jugador no coincide (sha256), el launcher
+# guarda el suyo en respaldo_launcherngel.dat.original y pone este. Sin el archivo no se anuncia nada.
+JUEGO_EXE = 'angel.dat'
 
 
 def _manifiesto_launcher() -> bytes:
@@ -1634,6 +1638,10 @@ def _manifiesto_launcher() -> bytes:
     if exe.is_file():
         datos = exe.read_bytes()
         m['launcher'] = {'archivo': LAUNCHER_EXE, 'bytes': len(datos), 'sha256': hashlib.sha256(datos).hexdigest()}
+    juego = parche.DESTINO / 'juego' / JUEGO_EXE
+    if juego.is_file():
+        datos = juego.read_bytes()
+        m['juego'] = {'archivo': JUEGO_EXE, 'bytes': len(datos), 'sha256': hashlib.sha256(datos).hexdigest()}
     return json.dumps(m, ensure_ascii=False).encode('utf-8')
 
 
@@ -1647,6 +1655,8 @@ def _archivo_de_parche(ruta: str):
         return _manifiesto_launcher()
     if len(partes) == 1 and nombre == LAUNCHER_EXE and (parche.DESTINO / 'launcher_propio' / LAUNCHER_EXE).is_file():
         return (parche.DESTINO / 'launcher_propio' / LAUNCHER_EXE).read_bytes()
+    if len(partes) == 1 and nombre.lower() == JUEGO_EXE and (parche.DESTINO / 'juego' / JUEGO_EXE).is_file():
+        return (parche.DESTINO / 'juego' / JUEGO_EXE).read_bytes()
     if nombre.lower().endswith('.ini'):
         return _contenido_update3_ini()
     est = _anuncio_parche()
