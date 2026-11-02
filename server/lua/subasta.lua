@@ -5,6 +5,7 @@
 SUBASTA = SUBASTA or {}
 local S = SUBASTA
 local CMD_BUSCAR, CMD_COMPRAR, CMD_RETIRAR, CMD_PREPARAR, CMD_PUBLICAR = 161, 162, 163, 164, 165
+local CMD_DIAG = 167             -- diagnostico de soltar: queda en el log del servidor
 local VENTA = {3590, 3592, 3593}  -- casilla, "G each" y precio: solo en Mine
 S.modo = S.modo or 0              -- 0 todo lo que esta en venta, 1 lo mio
 S.orden = S.orden or 0            -- 0 lo mas nuevo, 1 lo mas barato
@@ -158,15 +159,24 @@ function SubastaPublicada(texto)
 end
 
 function OnSubastaSoltar(dwID, dwCmdID, dwParam, pParam)
-  if S.modo ~= 1 then
+  -- Lo primero, avisar de que el juego llamo aqui (167 1): si no llega nada al servidor es que no se llama.
+  game.netcommand2(CMD_DIAG, 1, pParam or 0)
+  local ok, item, tipo, conjunto, ranura, n = pcall(game.getdropdata, pParam)
+  if not ok then
+    game.netcommand2(CMD_DIAG, 2, 0)             -- getdropdata fallo
     return 1
   end
-  local item, tipo, conjunto, ranura, n = game.getdropdata(pParam)
-  -- Siempre se avisa al servidor, aunque no haya ranura: asi queda en su log que devolvio getdropdata.
+  game.netcommand2(CMD_DIAG, 3, tonumber(ranura) or 99999)
+  ranura = tonumber(ranura)
   if ranura == nil or ranura < 0 then
     ranura = 65535
   end
-  game.netcommand2(CMD_PREPARAR, ranura + 65536 * ((tipo or 0) % 256), item or 0)
+  if S.modo ~= 1 then                            -- soltado en All: pasa a Mine
+    S.modo = 1
+    S.pag = 1
+    SubastaPedir()
+  end
+  game.netcommand2(CMD_PREPARAR, ranura + 65536 * ((tonumber(tipo) or 0) % 256), tonumber(item) or 0)
   return 1
 end
 

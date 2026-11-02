@@ -188,3 +188,17 @@ def test_cheap_ordena_por_precio_y_cada_fila_lleva_su_item_y_el_total():
     assert lista.endswith(',3)')
     sv.procesar(c, _cmd(sv.CMD_BUSCAR, 0, 1))
     assert re.findall(r'"(\d+)","Vende"', _ultima_lista(c)) == ['500', '100', '900']
+
+
+def test_el_saludo_define_el_boton_de_la_barra_y_el_boton_abre_la_ventana():
+    s = _ses(1, 'A', {}, canal=False)
+    sv.procesar(s, _cmd(sv.CMD_SALUDO, 1))
+    assert _lua(s.enviados[-1]).startswith('function OnCommandSubasta(')
+    assert 'game.netcommand2(%d, 0, 0)' % sv.CMD_ABRIR in _lua(s.enviados[-1])
+    sv.procesar(s, _cmd(sv.CMD_ABRIR, 0))
+    assert _lua(s.enviados[-1]).startswith('SubastaAbrir(')
+
+
+def test_el_diagnostico_de_soltar_solo_se_anota():
+    s = _ses(1, 'A', {})
+    assert sv.procesar(s, _cmd(sv.CMD_DIAG, 1, 0)) and s.enviados == []

@@ -2385,7 +2385,7 @@
         <OnCommand>OnADTrade_Item_Search</OnCommand>
     </window>
     <window class="WND_CLASS_LIST" id="3530" range="6,41,783,381" cols="4" rows="10" gapx="4" gapy="1" tpos="1,1" fcolor="103" font="1">
-        <style wsVisible="" lsVCenter="" lsCheck="" lsSCheck="" lsReport="" wsTab="" />
+        <style wsDrop="" wsVisible="" lsVCenter="" lsCheck="" lsSCheck="" lsReport="" wsTab="" /><OnDrop>OnSubastaSoltar</OnDrop>
         <!-- 物品LIST -->
         <OnCommand>OnSubastaFila</OnCommand>
     </window>

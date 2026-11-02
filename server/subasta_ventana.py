@@ -15,6 +15,8 @@ abrirla. Los datos son los de subastas.py: esto es solo otra forma de verla y co
       163 retirar lo propio a = id de la publicacion
       164 preparar venta    a = ranura de la mochila soltada en la casilla, b = el item que dice el cliente
       165 publicar          a = ranura << 16 | cantidad, b = precio por unidad
+      166 abrir la ventana  (el boton de la barra de abajo)
+      167 diagnostico       lo que paso al soltar un objeto, para el log
   El primer byte del 0x002F es el contenedor en los demas usos (10, 11...): estos van muy por encima.
 * La respuesta es SubastaLista(modo, pagina, paginas, filas, oro, total) por el canal; cada fila lleva el item
   para que el cliente pinte su icono en la rejilla.
@@ -31,7 +33,11 @@ import canal_lua
 log = logging.getLogger('subasta_ventana')
 
 CMD_SALUDO, CMD_BUSCAR, CMD_COMPRAR, CMD_RETIRAR, CMD_PREPARAR, CMD_PUBLICAR = 160, 161, 162, 163, 164, 165
-COMANDOS = (CMD_SALUDO, CMD_BUSCAR, CMD_COMPRAR, CMD_RETIRAR, CMD_PREPARAR, CMD_PUBLICAR)
+CMD_ABRIR, CMD_DIAG = 166, 167
+COMANDOS = (CMD_SALUDO, CMD_BUSCAR, CMD_COMPRAR, CMD_RETIRAR, CMD_PREPARAR, CMD_PUBLICAR, CMD_ABRIR, CMD_DIAG)
+# Lo que se define en el cliente al contestar el saludo: el boton de la barra (wnd01.xml, 59001) llama a esto.
+SALUDO_LUA = ('function OnCommandSubasta(dwID, dwCmdID, dwParam, pParam) '
+              'game.netcommand2(%d, 0, 0) return 1 end' % CMD_ABRIR)
 POR_PAGINA = 10                     # las filas de la lista 3530 (rows="10")
 MODO_TODO, MODO_MIO = 0, 1
 ORDEN_NUEVO, ORDEN_BARATO = 0, 1
@@ -235,6 +241,7 @@ def procesar(ses, cuerpo) -> bool:
     if cmd == CMD_SALUDO:
         ses.canal_lua = int(a) or 1
         log.info('%s tiene el canal Lua (version %d)', getattr(ses.personaje, 'nombre', '?'), a)
+        ses.enviar(canal_lua.paquete(SALUDO_LUA))
         return True
     if not tiene_ventana(ses):
         return True
@@ -247,6 +254,12 @@ def procesar(ses, cuerpo) -> bool:
         niv = niv if niv < len(NIVELES) else 0
         ses.subasta_filtro = (modo, cat, niv, max(1, int(b)), orden)
         ses.enviar(lista(ses, *ses.subasta_filtro))
+        return True
+    if cmd == CMD_ABRIR:
+        ses.enviar(*abrir(ses))
+        return True
+    if cmd == CMD_DIAG:
+        log.info('%s soltar: paso %d, dato %d', getattr(ses.personaje, 'nombre', '?'), a, b)
         return True
     if cmd == CMD_PREPARAR:
         ranura, tipo = a & 0xFFFF, (a >> 16) & 0xFF

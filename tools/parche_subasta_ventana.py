@@ -70,6 +70,9 @@ NUEVAS = (
 )
 IDS_NUEVAS = (3590, 3591, 3592, 3593)
 
+# Tambien se puede soltar el objeto en cualquier parte de la rejilla, no solo en la casilla de arriba.
+SOLTAR_EN = (3530,)
+
 MANEJADORES = {
     3518: 'OnSubastaSusurrar',
     3519: 'OnSubastaRefrescar',
@@ -95,7 +98,7 @@ def _cambiar_etiqueta(etiqueta: str, cambios: dict) -> str:
 
 
 def generar(texto: str) -> str:
-    ids = set(ATRIBUTOS) | set(OCULTAS) | set(MANEJADORES)
+    ids = set(ATRIBUTOS) | set(OCULTAS) | set(MANEJADORES) | set(SOLTAR_EN)
     hechos = set()
 
     def tocar(m):
@@ -109,6 +112,9 @@ def generar(texto: str) -> str:
         bloque = nuevo + bloque[len(inicio):]
         if wid in OCULTAS:
             bloque = re.sub(r'(<style[^>]*?)\swsVisible=""', r'\1', bloque, count=1)
+        if wid in SOLTAR_EN:
+            bloque = re.sub(r'(<style)', r'\1 wsDrop=""', bloque, count=1)
+            bloque = re.sub(r'(<style[^>]*/>)', r'\1<OnDrop>OnSubastaSoltar</OnDrop>', bloque, count=1)
         if wid in MANEJADORES:
             bloque = re.sub(r'\s*<OnCommand>[^<]*</OnCommand>', '', bloque)
             sangria = re.match(r'[ \t]*', bloque).group(0)
@@ -135,6 +141,37 @@ def generar(texto: str) -> str:
     return salida
 
 
+# El boton de la barra de abajo (window 116 de wnd01.xml), a la izquierda del Event Overview (16199) y el Star
+# Blessing (50001): "que la auction lo abra un icono de aca" (02/11/2026). Su imagen la dibuja tools/icono_subasta.py.
+# El OnCommandSubasta lo define el servidor al entrar (subasta_ventana.SALUDO_LUA): pide abrir la ventana.
+WND01 = RAIZ / 'parches' / 'extras' / 'setting' / 'eng' / 'wnd01.xml'
+BOTON_BARRA = 59001
+LINEAS_BOTON = (
+    '<window class="WND_CLASS_BUTTON" range="316,-131,40,56" id="%d" icon="%d" tooltip="10043" '
+    'tooltext="Auction House">' % (BOTON_BARRA, BOTON_BARRA),
+    '    <style wsVisible="" wsTab="" />',
+    '    <OnCommand>OnCommandSubasta</OnCommand>',
+    '</window>',
+    r'<icon id="%d" dir="\wnd01\" normal="aolat_ah_n" focus="aolat_ah_f" down="aolat_ah_n" disable="normal" />'
+    % BOTON_BARRA,
+)
+
+
+def boton_en_la_barra(texto: str) -> str:
+    """wnd01.xml con el boton de la subasta en la barra (no lo repite si ya esta)."""
+    if 'id="%d"' % BOTON_BARRA in texto:
+        return texto
+    nl = '\r\n' if '\r\n' in texto else '\n'
+    m = re.search(r'([ \t]*)<child>50001</child>', texto)
+    if not m:
+        raise SystemExit('no esta el Star Blessing (50001) en la barra de wnd01.xml')
+    texto = texto[:m.end()] + nl + m.group(1) + '<child>%d</child>' % BOTON_BARRA + texto[m.end():]
+    m = re.search(r'[ \t]*<window [^>]*\bid="50001"[^>]*>[\s\S]*?</window>', texto)
+    sangria = re.match(r'[ \t]*', m.group(0)).group(0)
+    nuevas = ''.join(nl + sangria + linea for linea in LINEAS_BOTON)
+    return texto[:m.end()] + nuevas + texto[m.end():]
+
+
 def main():
     sys.stdout.reconfigure(encoding='utf-8')
     crudo = ORIGEN.read_bytes()
@@ -144,6 +181,11 @@ def main():
     SALIDA.parent.mkdir(parents=True, exist_ok=True)
     SALIDA.write_bytes((b'\xef\xbb\xbf' if bom else b'') + nuevo.encode('utf-8'))
     print('escrito', SALIDA.relative_to(RAIZ))
+    crudo = WND01.read_bytes()
+    bom1 = crudo.startswith(b'\xef\xbb\xbf')
+    nuevo1 = boton_en_la_barra(crudo.decode('utf-8-sig'))
+    WND01.write_bytes((b'\xef\xbb\xbf' if bom1 else b'') + nuevo1.encode('utf-8'))
+    print('escrito', WND01.relative_to(RAIZ))
 
 
 if __name__ == '__main__':

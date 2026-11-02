@@ -191,6 +191,7 @@
 	<window class="WND_CLASS_BASE" range="300,120,451,1" id="116" icon="116" style="wsVisible">
 	    <child>16199</child>
 		<child>50001</child>
+		<child>59001</child>
         <child>12600</child>
         <child>117</child>
         <child>118</child>
@@ -230,6 +231,11 @@
 		<style wsVisible="" wsTab=""/>
 		<OnCommand>OnCommandStarCard</OnCommand>
 	</window>
+	<window class="WND_CLASS_BUTTON" range="316,-131,40,56" id="59001" icon="59001" tooltip="10043" tooltext="Auction House">
+	    <style wsVisible="" wsTab="" />
+	    <OnCommand>OnCommandSubasta</OnCommand>
+	</window>
+	<icon id="59001" dir="\wnd01\" normal="aolat_ah_n" focus="aolat_ah_f" down="aolat_ah_n" disable="normal" />
 	<icon id="50001" dir="\wndstar\" normal="btn207_n" focus="btn207_f,#12, btn207_n" down="btn207_f" disable="normal"/>
 	
 	<window class="WND_CLASS_BUTTON" range="-18,-61,55,53" id="12600" icon="12600" tooltip="10043" tooltext="Item Mall[Alt+I]">
