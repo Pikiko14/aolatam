@@ -5,11 +5,15 @@ texto de una lista), ningun script lo abre y la mitad de sus botones no tienen O
 de subasta; la logica la pone server/lua/subasta.lua, que el servidor manda por el canal 0x01A0
 (tools/parche_canal_lua.py, server/canal_lua.py), y los datos server/subasta_ventana.py.
 
-Lo que cambia en el XML (solo dentro de la ventana 3501):
-- la lista 3530 con texto oscuro (fcolor 105, el de los desplegables): con el 103 de antes, texto claro sobre su
-  fondo blanco, las filas no se veian. Baja 17 px para dejar sitio a las cabeceras y avisa al elegir una fila.
-- las etiquetas del pregonero (3512..3517) pasan a ser las cabeceras de las columnas y la linea de estado; se
-  ocultan el susurro, la carta, Sell/Buy y el peso.
+Lo que cambia en el XML (solo dentro de la ventana 3501). El fondo de la pestana (icono 3511, shape/wnd01/w030_01)
+es una REJILLA de 10 filas x 4 columnas, cada celda con su casilla de objeto y su caja de texto, y arriba a la
+izquierda unas cajas de datos; todo eso ya viene dibujado, asi que la ventana se arma encima:
+- la lista 3530 vuelve a su sitio sobre la rejilla y SIN fondo (el bcolor 102 la tapaba de blanco): una fila por
+  publicacion, con el icono del objeto en la primera casilla, y texto claro sobre las cajas azules.
+- arriba a la izquierda, la fila de vender de la pestana Mine: la casilla donde se suelta el objeto (3590), su
+  nombre (3591) y el precio (3593) en las cajas que ya estan dibujadas.
+- los dos botones de arriba (susurro y carta) susurran al vendedor y refrescan; los dos circulos (Sell/Buy) ordenan
+  por lo mas nuevo o lo mas barato; el peso (3535) dice cuantas publicaciones hay.
 - los botones de pagina (3531, 3533), de cantidad (3537, 3539) y el de aceptar (3540) llevan su OnCommand.
 
     python tools/parche_subasta_ventana.py
@@ -20,55 +24,55 @@ import re
 import sys
 
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
-ORIGEN = RAIZ / 'extracted_paks' / 'update26' / 'setting' / 'eng' / 'wnd03.xml'
+# El original de update23.pak, guardado aparte: extracted_paks no sirve de base, porque el servidor local lo
+# sincroniza con el cliente al arrancar y alli ya esta el wnd03.xml de este parche.
+ORIGEN = RAIZ / 'tools' / 'originales' / 'wnd03.xml'
 SALIDA = RAIZ / 'parches' / 'extras' / 'setting' / 'eng' / 'wnd03.xml'
 
-# Columnas de la lista (cols=4 en 783 px): el cliente las reparte a partes iguales.
-X_COLUMNAS = (10, 206, 402, 598)
-
-# id: {atributo: valor}. 'title' y 'range' se reemplazan; None quita el atributo.
+# id: {atributo: valor}. 'title' y 'range' se reemplazan; None quita el atributo. Los textos los pone tambien el Lua:
+# wndtext03.xml (la traduccion) pisa los title de aqui.
 ATRIBUTOS = {
     3501: {'title': 'Auction House'},
     3502: {'title': 'All'},
     3503: {'title': 'Mine'},
-    3512: {'title': 'Item', 'range': '%d,43,120,14' % X_COLUMNAS[0]},
-    3514: {'title': 'Qty.', 'range': '%d,43,60,14' % X_COLUMNAS[1]},
-    3516: {'title': 'Price', 'range': '%d,43,80,14' % X_COLUMNAS[2]},
-    3513: {'title': 'Seller', 'range': '%d,43,120,14' % X_COLUMNAS[3]},
-    3517: {'title': 'Pick an item, set Qty. and press the check to buy.', 'range': '90,449,380,14'},
+    3517: {'title': 'Pick an item and press the check to buy it.', 'range': '88,449,370,14'},
+    3522: {'title': 'New'},
+    3542: {'title': 'Cheap'},
     3523: {'title': 'Category'},
     3524: {'title': 'All'},
     3526: {'title': 'Level'},
     3527: {'title': 'All'},
-    3530: {'range': '6,60,783,340', 'fcolor': '105'},
+    3530: {'bcolor': None, 'fcolor': '103'},
     3532: {'title': '1 / 1'},
+    3535: {'title': '', 'fcolor': '103', 'font': '1'},
     3538: {'title': '1'},
 }
-OCULTAS = (3515, 3518, 3519, 3520, 3521, 3522, 3535, 3542)
-# Lo nuevo de la pestana Mine, para publicar desde la ventana (02/11/2026): una casilla donde se suelta un objeto de
-# la mochila (la 484 es la de las casillas del juego), su nombre y el precio. Van ocultos: los ensena el Lua en Mine.
+OCULTAS = (3512, 3513, 3514, 3515, 3516)
+# Lo de vender, sobre las cajas de arriba a la izquierda del fondo. La casilla es WND_CLASS_ITEMBUTTON, como las de
+# fusion e intercambio: con un WND_CLASS_BUTTON el juego no la tomaba como destino al arrastrar desde la mochila.
+# La casilla y el precio solo se ven en Mine (los ensena el Lua); el nombre (3591) hace de rotulo en las dos.
 NUEVAS = (
-    '<window class="WND_CLASS_BUTTON" id="3590" range="8,404,36,36" icon="484" fcolor="103" font="3" tpos="0,26" '
+    '<window class="WND_CLASS_ITEMBUTTON" id="3590" range="4,2,36,36" fcolor="103" font="3" tpos="0,26" '
     'tooltip="10040" tooltext="Drag an item from your backpack here to sell it">',
-    '    <style wsDrop="" wsTab="" />',
+    '    <style wsDrop="" ssRight="" wsTab="" />',
     '    <OnDrop>OnSubastaSoltar</OnDrop>',
     '    <OnCommand>OnSubastaQuitar</OnCommand>',
     '</window>',
-    '<window class="WND_CLASS_STATIC" id="3591" range="52,406,330,14" title="Drag an item from your backpack to the box." '
-    'fcolor="103" font="1">',
-    '    <style ssVCenter="" />',
+    '<window class="WND_CLASS_STATIC" id="3591" range="46,5,186,14" title="" fcolor="103" font="1">',
+    '    <style wsVisible="" ssVCenter="" />',
     '</window>',
-    '<window class="WND_CLASS_STATIC" id="3592" range="52,425,60,14" title="Price each" fcolor="103" font="1">',
-    '    <style ssVCenter="" />',
-    '</window>',
-    '<window class="WND_CLASS_EDIT" id="3593" range="118,424,120,15" bcolor="102" fcolor="105" font="1" tpos="2,1" '
-    'limit="10">',
+    '<window class="WND_CLASS_EDIT" id="3593" range="46,23,66,12" fcolor="103" font="1" tpos="1,0" limit="10">',
     '    <style esNumber="" esVCenter="" wsTab="" />',
+    '</window>',
+    '<window class="WND_CLASS_STATIC" id="3592" range="118,22,62,14" title="G each" fcolor="103" font="1">',
+    '    <style ssVCenter="" />',
     '</window>',
 )
 IDS_NUEVAS = (3590, 3591, 3592, 3593)
 
 MANEJADORES = {
+    3518: 'OnSubastaSusurrar',
+    3519: 'OnSubastaRefrescar',
     3530: 'OnSubastaFila',
     3531: 'OnSubastaPagAnt',
     3533: 'OnSubastaPagSig',

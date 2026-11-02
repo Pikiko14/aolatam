@@ -1,11 +1,13 @@
 -- La ventana de la casa de subastas (el tablon 3501 de wnd03.xml, rehecho por tools/parche_subasta_ventana.py).
 -- La manda el servidor por el canal 0x01A0 al abrirla (server/subasta_ventana.py); los datos llegan despues con
 -- SubastaLista(...). Lo que pide la ventana va al servidor con game.netcommand2 (c2s 0x002F [u8 cmd][u32 a][u32 b]).
+-- El fondo de la pestana ya trae dibujada una rejilla de 10 filas: una publicacion por fila, con su icono.
 SUBASTA = SUBASTA or {}
 local S = SUBASTA
 local CMD_BUSCAR, CMD_COMPRAR, CMD_RETIRAR, CMD_PREPARAR, CMD_PUBLICAR = 161, 162, 163, 164, 165
-local VENTA = {3590, 3591, 3592, 3593}   -- la fila de vender de la pestana Mine (casilla, nombre, precio)
-S.modo = S.modo or 0          -- 0 todo lo que esta en venta, 1 lo mio
+local VENTA = {3590, 3592, 3593}  -- casilla, "G each" y precio: solo en Mine
+S.modo = S.modo or 0              -- 0 todo lo que esta en venta, 1 lo mio
+S.orden = S.orden or 0            -- 0 lo mas nuevo, 1 lo mas barato
 S.cat = S.cat or 0
 S.niv = S.niv or 0
 S.pag = 1
@@ -13,7 +15,7 @@ S.paginas = 1
 S.filas = {}
 S.sel = -1
 S.cant = 1
-S.venta = nil                 -- lo soltado en la casilla: {ranura, item, nombre, max}
+S.venta = nil                     -- lo soltado en la casilla: {ranura, item, nombre, max}
 
 local function hijo(id)
   return window.find(WND_ADTRADE, id)
@@ -23,11 +25,14 @@ local function estado(texto)
   window.settitle(hijo(3517), texto)
 end
 
+local function rotulo(texto)
+  window.settitle(hijo(3591), texto)
+end
+
 local function limpiar_venta()
   S.venta = nil
-  window.seticon(hijo(3590), 484)
+  window.seticon(hijo(3590), 0)
   window.settitle(hijo(3590), "")
-  window.settitle(hijo(3591), "Drag an item from your backpack to the box.")
   window.settitle(hijo(3593), "")
 end
 
@@ -38,21 +43,24 @@ local function pintar_pestanas()
   if S.modo == 0 then
     window.seticon(hijo(3502), 3085)
     window.seticon(hijo(3503), 3084)
-    estado("Pick an item, set Qty. and press the check to buy.")
+    rotulo("Auction House")
+    estado("Pick an item and press the check to buy it.")
   else
     window.seticon(hijo(3502), 3084)
     window.seticon(hijo(3503), 3085)
     if S.venta then
-      estado("Write the price for each unit, set Qty. and press the check.")
+      rotulo(S.venta.nombre)
+      estado("Write the price, set Qty. and press the check.")
     else
-      estado("Drag an item to the box to sell it, or pick one of yours to take it back.")
+      rotulo("<- Drag an item here to sell it")
+      estado("Drag an item to the box, or pick one to take back.")
     end
   end
 end
 
 function SubastaPedir()
   S.sel = -1
-  game.netcommand2(CMD_BUSCAR, S.modo * 65536 + S.cat * 256 + S.niv, S.pag)
+  game.netcommand2(CMD_BUSCAR, S.orden * 16777216 + S.modo * 65536 + S.cat * 256 + S.niv, S.pag)
 end
 
 function SubastaAbrir(cats, nivs)
@@ -65,16 +73,16 @@ function SubastaAbrir(cats, nivs)
   end
   WND_ADTRADE = window.create(3501, 0, 0, SYSTEM_HANDLER)
   window.move(WND_ADTRADE, SYSTEM_SCREEN_WIDTH / 2 - 399, SYSTEM_SCREEN_HEIGHT / 2 - 246)
-  -- Los textos van aqui y no en wnd03.xml: wndtext03.xml (la traduccion) pisa los title del XML.
+  -- Los textos van aqui: wndtext03.xml (la traduccion) pisa los title del XML.
   window.settitle(WND_ADTRADE, "Auction House")
-  for id, texto in pairs({[3502] = "All", [3503] = "Mine", [3512] = "Item", [3514] = "Qty.", [3516] = "Price",
-                          [3513] = "Seller", [3523] = "Category", [3526] = "Level"}) do
+  for id, texto in pairs({[3502] = "All", [3503] = "Mine", [3522] = "New", [3542] = "Cheap", [3523] = "Category",
+                          [3526] = "Level", [3592] = "G each"}) do
     window.settitle(hijo(id), texto)
   end
-  -- Lo del pregonero que no se usa: susurro, carta, Sell/Buy, el peso y el valor del vendedor.
-  for _, id in ipairs({3515, 3518, 3519, 3520, 3521, 3522, 3535, 3542}) do
+  for _, id in ipairs({3512, 3513, 3514, 3515, 3516}) do
     window.show(hijo(id), false)
   end
+  window.setradio(hijo(3520), S.orden)
   window.settitle(hijo(3524), cats[S.cat + 1])
   window.settitle(hijo(3527), nivs[S.niv + 1])
   window.show(hijo(3511), true)
@@ -85,8 +93,8 @@ function SubastaAbrir(cats, nivs)
   SubastaPedir()
 end
 
--- filas: {{id, nombre, cantidad, precio con comas, vendedor}, ...}
-function SubastaLista(modo, pag, paginas, filas, oro)
+-- filas: {{id, nombre, cantidad, precio con comas, vendedor, item}, ...}; total = publicaciones con estos filtros.
+function SubastaLista(modo, pag, paginas, filas, oro, total)
   if not window.isexist(WND_ADTRADE) then
     return
   end
@@ -101,22 +109,21 @@ function SubastaLista(modo, pag, paginas, filas, oro)
   local lista = hijo(3530)
   window.clearlist(lista)
   for i, f in ipairs(filas) do
-    window.insertitemstr(lista, f[2], 0)
-    window.setsubitemstr(lista, i - 1, 1, tostring(f[3]), 0)
-    window.setsubitemstr(lista, i - 1, 2, f[4], 0)
+    window.insertitemstrappnum(lista, f[2], game.getitemicon(f[6]), f[1])
+    window.setsubitemstr(lista, i - 1, 1, "x" .. tostring(f[3]), 0)
+    window.setsubitemstr(lista, i - 1, 2, f[4] .. " G", 0)
     window.setsubitemstr(lista, i - 1, 3, f[5], 0)
   end
   window.settitle(hijo(3532), tostring(pag) .. " / " .. tostring(paginas))
   window.settitle(hijo(3538), tostring(S.cant))
   window.settitle(hijo(3534), oro)
+  window.settitle(hijo(3535), tostring(total or #filas) .. " listed")
   pintar_pestanas()
-  if #filas == 0 then
+  if #filas == 0 and not S.venta then
     if modo == 0 then
       estado("Nothing for sale with these filters.")
     else
-      if not S.venta then
-        estado("You have nothing for sale. Drag an item from your backpack to the box.")
-      end
+      estado("Nothing for sale yet: drag an item to the box.")
     end
   end
 end
@@ -137,15 +144,15 @@ function SubastaPreparada(ranura, item, nombre, max)
   S.cant = max
   window.seticon(hijo(3590), game.getitemicon(item))
   window.settitle(hijo(3590), max > 1 and tostring(max) or "")
-  window.settitle(hijo(3591), nombre)
   window.settitle(hijo(3538), tostring(max))
-  estado("Write the price for each unit, set Qty. and press the check.")
+  pintar_pestanas()
   window.setfocus(hijo(3593))
 end
 
 function SubastaPublicada(texto)
   if window.isexist(WND_ADTRADE) then
     limpiar_venta()
+    pintar_pestanas()
     estado(texto)
   end
 end
@@ -154,11 +161,12 @@ function OnSubastaSoltar(dwID, dwCmdID, dwParam, pParam)
   if S.modo ~= 1 then
     return 1
   end
-  local item, tipo, conjunto, ranura = game.getdropdata(pParam)
-  if ranura == nil or ranura == -1 then
-    return 1
+  local item, tipo, conjunto, ranura, n = game.getdropdata(pParam)
+  -- Siempre se avisa al servidor, aunque no haya ranura: asi queda en su log que devolvio getdropdata.
+  if ranura == nil or ranura < 0 then
+    ranura = 65535
   end
-  game.netcommand2(CMD_PREPARAR, ranura, item or 0)
+  game.netcommand2(CMD_PREPARAR, ranura + 65536 * ((tipo or 0) % 256), item or 0)
   return 1
 end
 
@@ -179,6 +187,31 @@ end
 function OnADTrade_ChaPage_Player(dwID, dwCmdID, dwParam, pParam)
   S.modo = 1
   S.pag = 1
+  SubastaPedir()
+  return 1
+end
+
+-- Orden: los dos circulos de arriba (eran Sell / Buy).
+function OnADTrade_Item_BuyType(dwID, dwCmdID, dwParam, pParam)
+  S.orden = window.getappdata(dwID)
+  window.setradio(hijo(3520), S.orden)
+  S.pag = 1
+  SubastaPedir()
+  return 1
+end
+
+-- Los dos botones de arriba (eran susurro y carta): susurrar al vendedor y refrescar.
+function OnSubastaSusurrar(dwID, dwCmdID, dwParam, pParam)
+  local f = S.filas[S.sel + 1]
+  if f then
+    SetTell(f[5])
+  else
+    estado("Pick an item to whisper its seller.")
+  end
+  return 1
+end
+
+function OnSubastaRefrescar(dwID, dwCmdID, dwParam, pParam)
   SubastaPedir()
   return 1
 end
@@ -265,10 +298,11 @@ function OnSubastaFila(dwID, dwCmdID, dwParam, pParam)
   S.sel = dwParam
   S.cant = 1
   window.settitle(hijo(3538), "1")
+  rotulo(f[2])
   if S.modo == 0 then
-    estado(f[2] .. " - " .. f[4] .. " each. Set Qty. and press the check.")
+    estado(f[4] .. " G each. Set Qty. and press the check.")
   else
-    estado(f[2] .. " - press the check to take it back.")
+    estado("Press the check to take it back.")
   end
   return 1
 end

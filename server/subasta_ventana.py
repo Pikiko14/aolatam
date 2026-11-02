@@ -9,13 +9,15 @@ abrirla. Los datos son los de subastas.py: esto es solo otra forma de verla y co
   contesta y queda marcado (ses.canal_lua). /ah abre esta ventana a los marcados y el puesto de antes a los demas.
 * La ventana pide con game.netcommand2, que es el c2s 0x002F [u8 cmd][u32 a][u32 b]:
       160 saludo            a = version del canal
-      161 buscar            a = modo << 16 | categoria << 8 | nivel, b = pagina (1..)
+      161 buscar            a = orden << 24 | modo << 16 | categoria << 8 | nivel, b = pagina (1..);
+                            orden 0 lo mas nuevo, 1 lo mas barato
       162 comprar           a = id de la publicacion, b = cantidad
       163 retirar lo propio a = id de la publicacion
       164 preparar venta    a = ranura de la mochila soltada en la casilla, b = el item que dice el cliente
       165 publicar          a = ranura << 16 | cantidad, b = precio por unidad
   El primer byte del 0x002F es el contenedor en los demas usos (10, 11...): estos van muy por encima.
-* La respuesta es SubastaLista(modo, pagina, paginas, filas, oro) por el canal.
+* La respuesta es SubastaLista(modo, pagina, paginas, filas, oro, total) por el canal; cada fila lleva el item
+  para que el cliente pinte su icono en la rejilla.
 * PUBLICAR desde la propia ventana ("se deben subir los productos desde la misma auction", 02/11/2026): en la
   pestana Mine se arrastra un objeto de la mochila a la casilla (game.getdropdata da su ranura, la misma que usa el
   0x0013 de destruir), el servidor contesta SubastaPreparada con su nombre y cuantos hay, y con la cantidad y el
@@ -32,6 +34,7 @@ CMD_SALUDO, CMD_BUSCAR, CMD_COMPRAR, CMD_RETIRAR, CMD_PREPARAR, CMD_PUBLICAR = 1
 COMANDOS = (CMD_SALUDO, CMD_BUSCAR, CMD_COMPRAR, CMD_RETIRAR, CMD_PREPARAR, CMD_PUBLICAR)
 POR_PAGINA = 10                     # las filas de la lista 3530 (rows="10")
 MODO_TODO, MODO_MIO = 0, 1
+ORDEN_NUEVO, ORDEN_BARATO = 0, 1
 
 # Las categorias del desplegable: (texto, 物品類別 de item.xml). None = todas; 'resto' = lo que no cae en ninguna.
 CATEGORIAS = (
@@ -135,22 +138,26 @@ def _nombre(fila) -> str:
     return nombre
 
 
-def filas(ses, modo: int, cat: int, niv: int):
-    """Todas las publicaciones que ve con esos filtros, ya como filas de la lista."""
+def filas(ses, modo: int, cat: int, niv: int, orden: int = ORDEN_NUEVO):
+    """Todas las publicaciones que ve con esos filtros, ya como filas de la lista: [id, nombre, cantidad, precio,
+    vendedor, item]. El listado viene de lo mas nuevo a lo mas viejo; "Cheap" ordena por precio."""
     import subastas
     p = ses.personaje
-    lista = subastas.listado(limite=None, char_id=p.char_id if modo == MODO_MIO else None)
-    return [[int(f['id']), _nombre(f), int(f['cantidad']), _miles(f['precio']), f['vendedor']]
-            for f in lista if pasa_filtro(f['item_id'], cat, niv)]
+    lista = [f for f in subastas.listado(limite=None, char_id=p.char_id if modo == MODO_MIO else None)
+             if pasa_filtro(f['item_id'], cat, niv)]
+    if orden == ORDEN_BARATO:
+        lista.sort(key=lambda f: int(f['precio']))
+    return [[int(f['id']), _nombre(f), int(f['cantidad']), _miles(f['precio']), f['vendedor'], int(f['item_id'])]
+            for f in lista]
 
 
-def lista(ses, modo=MODO_TODO, cat=0, niv=0, pagina=1):
+def lista(ses, modo=MODO_TODO, cat=0, niv=0, pagina=1, orden=ORDEN_NUEVO):
     """El SubastaLista(...) de esa pagina."""
-    todas = filas(ses, modo, cat, niv)
+    todas = filas(ses, modo, cat, niv, orden)
     paginas = max(1, (len(todas) + POR_PAGINA - 1) // POR_PAGINA)
     pagina = min(max(1, int(pagina)), paginas)
     trozo = todas[(pagina - 1) * POR_PAGINA:pagina * POR_PAGINA]
-    return canal_lua.llamar('SubastaLista', modo, pagina, paginas, trozo, _miles(getattr(ses, 'oro', 0)))
+    return canal_lua.llamar('SubastaLista', modo, pagina, paginas, trozo, _miles(getattr(ses, 'oro', 0)), len(todas))
 
 
 def abrir(ses):
@@ -213,9 +220,9 @@ def publicar(ses, ranura, cantidad, precio):
     hechas = subastas.publicar(ses, [{'ranura': int(ranura), 'item_id': int(ses.inventario[ranura]),
                                       'cantidad': int(cantidad), 'precio': int(precio)}])
     if not hechas:
-        return [canal_lua.llamar('SubastaAviso', 'It could not be listed (see the message in the chat).')]
-    ses.subasta_filtro = (MODO_MIO, 0, 0, 1)
-    return [lista(ses, MODO_MIO), canal_lua.llamar('SubastaPublicada', 'Listed! It is now in the Auction House.')]
+        return [canal_lua.llamar('SubastaAviso', 'It could not be listed (see the chat).')]
+    ses.subasta_filtro = (MODO_MIO, 0, 0, 1, ORDEN_NUEVO)
+    return [lista(ses, MODO_MIO), canal_lua.llamar('SubastaPublicada', 'Listed in the Auction House!')]
 
 
 def procesar(ses, cuerpo) -> bool:
@@ -231,17 +238,24 @@ def procesar(ses, cuerpo) -> bool:
         return True
     if not tiene_ventana(ses):
         return True
-    estado = getattr(ses, 'subasta_filtro', None) or (MODO_TODO, 0, 0, 1)
+    estado = getattr(ses, 'subasta_filtro', None) or (MODO_TODO, 0, 0, 1, ORDEN_NUEVO)
     if cmd == CMD_BUSCAR:
         modo = MODO_MIO if (a >> 16) & 0xFF == MODO_MIO else MODO_TODO
+        orden = ORDEN_BARATO if (a >> 24) & 0xFF == ORDEN_BARATO else ORDEN_NUEVO
         cat, niv = (a >> 8) & 0xFF, a & 0xFF
         cat = cat if cat < len(CATEGORIAS) else 0
         niv = niv if niv < len(NIVELES) else 0
-        ses.subasta_filtro = (modo, cat, niv, max(1, int(b)))
+        ses.subasta_filtro = (modo, cat, niv, max(1, int(b)), orden)
         ses.enviar(lista(ses, *ses.subasta_filtro))
         return True
     if cmd == CMD_PREPARAR:
-        ses.enviar(preparar(ses, a, b))
+        ranura, tipo = a & 0xFFFF, (a >> 16) & 0xFF
+        log.info('%s suelta en la casilla: ranura=%d tipo=%d item=%d', getattr(ses.personaje, 'nombre', '?'),
+                 ranura, tipo, b)
+        if ranura == 0xFFFF:
+            ses.enviar(canal_lua.llamar('SubastaAviso', 'Drag the item from your backpack.'))
+        else:
+            ses.enviar(preparar(ses, ranura, b))
         return True
     if cmd == CMD_PUBLICAR:
         ses.enviar(*publicar(ses, (a >> 16) & 0xFFFF, a & 0xFFFF, b))
@@ -251,9 +265,9 @@ def procesar(ses, cuerpo) -> bool:
         cant = max(1, int(b)) if cmd == CMD_COMPRAR else 1 << 30
         tocadas, salida = subastas.tomar(ses, [(int(a), cant)], solo_propias=cmd == CMD_RETIRAR)
         if tocadas:
-            aviso = 'Done: the item is in your backpack.'
+            aviso = 'Done: it is in your backpack.'
         else:
-            aviso = 'Could not complete it (see the message in the chat).'
+            aviso = 'It could not be done (see the chat).'
         ses.enviar(*salida, lista(ses, *estado), canal_lua.llamar('SubastaAviso', aviso))
         return True
     return True

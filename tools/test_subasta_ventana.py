@@ -175,3 +175,16 @@ def test_sin_precio_no_se_publica():
     v.cantidades[23] = 5
     sv.procesar(v, _cmd(sv.CMD_PUBLICAR, (23 << 16) | 3, 0))
     assert subastas.listado() == [] and 'price' in _lua(v.enviados[-1])
+
+
+def test_cheap_ordena_por_precio_y_cada_fila_lleva_su_item_y_el_total():
+    v = _ses(10, 'Vende', {20: ITEM, 21: ITEM, 22: ITEM})
+    for r, precio in ((20, 900), (21, 100), (22, 500)):
+        _publicar(v, r, ITEM, 1, precio)
+    c = _ses(11, 'Compra', {})
+    sv.procesar(c, _cmd(sv.CMD_BUSCAR, sv.ORDEN_BARATO << 24, 1))
+    lista = _ultima_lista(c)
+    assert re.findall(r'"(\d+)","Vende",%d' % ITEM, lista) == ['100', '500', '900']
+    assert lista.endswith(',3)')
+    sv.procesar(c, _cmd(sv.CMD_BUSCAR, 0, 1))
+    assert re.findall(r'"(\d+)","Vende"', _ultima_lista(c)) == ['500', '100', '900']

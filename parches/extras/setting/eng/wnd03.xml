@@ -2290,66 +2290,68 @@
         <child>3592</child>
         <child>3593</child>
     </window>
-    <window class="WND_CLASS_BUTTON" id="3590" range="8,404,36,36" icon="484" fcolor="103" font="3" tpos="0,26" tooltip="10040" tooltext="Drag an item from your backpack here to sell it">
-        <style wsDrop="" wsTab="" />
+    <window class="WND_CLASS_ITEMBUTTON" id="3590" range="4,2,36,36" fcolor="103" font="3" tpos="0,26" tooltip="10040" tooltext="Drag an item from your backpack here to sell it">
+        <style wsDrop="" ssRight="" wsTab="" />
         <OnDrop>OnSubastaSoltar</OnDrop>
         <OnCommand>OnSubastaQuitar</OnCommand>
     </window>
-    <window class="WND_CLASS_STATIC" id="3591" range="52,406,330,14" title="Drag an item from your backpack to the box." fcolor="103" font="1">
-        <style ssVCenter="" />
+    <window class="WND_CLASS_STATIC" id="3591" range="46,5,186,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="3592" range="52,425,60,14" title="Price each" fcolor="103" font="1">
-        <style ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_EDIT" id="3593" range="118,424,120,15" bcolor="102" fcolor="105" font="1" tpos="2,1" limit="10">
+    <window class="WND_CLASS_EDIT" id="3593" range="46,23,66,12" fcolor="103" font="1" tpos="1,0" limit="10">
         <style esNumber="" esVCenter="" wsTab="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="3512" range="10,43,120,14" title="Item" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
+    <window class="WND_CLASS_STATIC" id="3592" range="118,22,62,14" title="G each" fcolor="103" font="1">
+        <style ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="3512" range="8,8,30,14" title="Hawk" fcolor="103" font="1">
+        <style ssVCenter="" />
         <!-- 叫賣 -->
     </window>
-    <window class="WND_CLASS_STATIC" id="3513" range="598,43,120,14" title="Seller" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
+    <window class="WND_CLASS_STATIC" id="3513" range="43,8,193,14" title="1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6" fcolor="103" font="1">
+        <style ssVCenter="" />
         <!-- 叫賣 -->
     </window>
-    <window class="WND_CLASS_STATIC" id="3514" range="206,43,60,14" title="Qty." fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
+    <window class="WND_CLASS_STATIC" id="3514" range="8,23,30,14" title="Seller" fcolor="103" font="1">
+        <style ssVCenter="" />
         <!-- 賣家 -->
     </window>
     <window class="WND_CLASS_STATIC" id="3515" range="43,23,74,14" title="1,2,3,4,5,6" fcolor="103" font="1">
         <style ssVCenter="" />
         <!-- 賣家 -->
     </window>
-    <window class="WND_CLASS_STATIC" id="3516" range="402,43,80,14" title="Price" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
+    <window class="WND_CLASS_STATIC" id="3516" range="148,23,30,14" title="Coordinates" fcolor="103" font="1">
+        <style ssVCenter="" />
         <!-- 座標 -->
     </window>
-    <window class="WND_CLASS_STATIC" id="3517" range="90,449,380,14" title="Pick an item, set Qty. and press the check to buy." fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="3517" range="88,449,370,14" title="Pick an item and press the check to buy it." fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
         <!-- 座標 -->
     </window>
     <window class="WND_CLASS_BUTTON" id="3518" range="330,13,26,18" icon="3516">
-        <style wsTab="" />
+        <style wsVisible="" wsTab="" />
         <!-- 密語 -->
+        <OnCommand>OnSubastaSusurrar</OnCommand>
     </window>
     <window class="WND_CLASS_BUTTON" id="3519" range="361,13,26,18" icon="3519">
-        <style wsTab="" />
+        <style wsVisible="" wsTab="" />
         <!-- 寄信 -->
+        <OnCommand>OnSubastaRefrescar</OnCommand>
     </window>
     <window class="WND_CLASS_BUTTON" id="3520" range="407,17,45,12" icon="3520" check="3521" appdata="0">
-        <style bsRadio="" bsRadioBegin="" wsTab="" />
+        <style wsVisible="" bsRadio="" bsRadioBegin="" wsTab="" />
         <OnCommand>OnADTrade_Item_BuyType</OnCommand>
     </window>
-    <window class="WND_CLASS_STATIC" id="3522" range="421,15,24,14" title="Sell" fcolor="103" font="1">
-        <style ssVCenter="" />
+    <window class="WND_CLASS_STATIC" id="3522" range="421,15,24,14" title="New" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
         <!-- 販賣 -->
     </window>
     <window class="WND_CLASS_BUTTON" id="3521" range="455,17,45,12" icon="3520" check="3521" appdata="1">
-        <style bsRadio="" bsRadioEnd="" wsTab="" />
+        <style wsVisible="" bsRadio="" bsRadioEnd="" wsTab="" />
         <OnCommand>OnADTrade_Item_BuyType</OnCommand>
     </window>
-    <window class="WND_CLASS_STATIC" id="3542" range="469,15,24,14" title="Buy" fcolor="103" font="1">
-        <style ssVCenter="" />
+    <window class="WND_CLASS_STATIC" id="3542" range="469,15,24,14" title="Cheap" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
         <!-- 收購 -->
     </window>
     <window class="WND_CLASS_STATIC" id="3523" range="503,15,48,14" title="Category" fcolor="103" font="1">
@@ -2383,7 +2385,7 @@
         <!-- 查詢 -->
         <OnCommand>OnADTrade_Item_Search</OnCommand>
     </window>
-    <window class="WND_CLASS_LIST" id="3530" range="6,60,783,340" cols="4" rows="10" gapx="4" gapy="1" tpos="1,1" bcolor="102" fcolor="105" font="1">
+    <window class="WND_CLASS_LIST" id="3530" range="6,41,783,381" cols="4" rows="10" gapx="4" gapy="1" tpos="1,1" fcolor="103" font="1">
         <style wsVisible="" lsVCenter="" lsCheck="" lsSCheck="" lsReport="" wsTab="" />
         <!-- 物品LIST -->
         <OnCommand>OnSubastaFila</OnCommand>
@@ -2409,8 +2411,8 @@
         <style wsVisible="" ssVCenter="" ssRight="" />
         <!-- 金錢 -->
     </window>
-    <window class="WND_CLASS_STATIC" id="3535" range="554,449,58,14">
-        <style />
+    <window class="WND_CLASS_STATIC" id="3535" range="554,449,58,14" title="" fcolor="103" font="1">
+        <style wsVisible="" />
         <!-- 負重 -->
     </window>
     <window class="WND_CLASS_STATIC" id="3536" range="626,449,24,14" title="Qty." fcolor="103" font="1">
