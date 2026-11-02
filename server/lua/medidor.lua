@@ -12,6 +12,11 @@ function MedidorAbrir()
     return
   end
   WND_MEDIDOR = window.create(59010, 0, 0, SYSTEM_HANDLER)
+  -- Al servidor, para su log: 8 = creada, 9 = no se pudo (sin la ventana 59010 en el wnd03.xml del cliente).
+  game.netcommand2(CMD_MEDIDOR, window.isexist(WND_MEDIDOR) and 8 or 9, WND_MEDIDOR or 0)
+  if not window.isexist(WND_MEDIDOR) then
+    return
+  end
   window.move(WND_MEDIDOR, SYSTEM_SCREEN_WIDTH - 250, 170)
   window.regsetting(WND_MEDIDOR, "WND_MEDIDOR")    -- recuerda donde la deja el jugador
   window.settitle(WND_MEDIDOR, "Damage")

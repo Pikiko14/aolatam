@@ -150,7 +150,13 @@ def procesar(ses, cuerpo) -> bool:
     import struct
     if len(cuerpo) < 9 or cuerpo[0] != CMD_MEDIDOR:
         return False
-    a = struct.unpack_from('<I', cuerpo, 1)[0]
+    a, b = struct.unpack_from('<II', cuerpo, 1)
+    nombre = getattr(getattr(ses, 'personaje', None), 'nombre', '?')
+    if a in (8, 9):                           # el cliente dice si pudo crear la ventana (MedidorAbrir)
+        log.info('%s: ventana del contador %s (%d)', nombre, 'creada' if a == 8 else 'NO se pudo crear', b)
+        return True
+    log.info('%s: contador de dano %s', nombre, 'cerrado con la X' if a == 0 else
+             ('se cierra' if abierto(ses) else 'se abre'))
     if a == 0:
         cerrar(ses, avisar_cliente=False)     # lo cerro con la X
     elif abierto(ses):
