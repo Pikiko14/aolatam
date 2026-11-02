@@ -3000,6 +3000,9 @@ def _sp_por_golpe(ses) -> int:
     return _cb.SP_POR_GOLPE * (2 + res_rank // 50)
 
 
+EFECTO_SP_ITEM = 145      # el fuego de Hot Blooded y Bloody Storm
+
+
 def _sumar_sp(ses, yo, cantidad, addr='') -> int:
     """Suma SP y refresca las barras visibles al cruzar una lampara."""
     import combate as _cb, inventario as _iv
@@ -18284,8 +18287,11 @@ class Servidor:
                 else:
                     ses.inventario.pop(ranura, None)
                     ses.cantidades.pop(ranura, None)
-                ses.enviar(_cbsp.numero_flotante(yo, _ganado,
-                                                 _cbsp.TIPO_CURA_SP))
+                # El fuego de las habilidades que dan SP (Hot Blooded, Bloody Storm: 特效編號 145) y el numero:
+                # "como un efecto de fuego y sale el numero 2000" (02/11/2026). La magia 1871 del SP Power
+                # Scroll no trae efecto propio en magic.xml.
+                ses.enviar(*_cbsp.efecto_magia_self(yo, EFECTO_SP_ITEM, inv.magia_de_item(item_id) or 0),
+                           _cbsp.numero_flotante(yo, _ganado, _cbsp.TIPO_CURA_SP))
                 ses.enviar(*_refrescar(ses, [ranura]))
                 _guardar_bolsa(ses, cid)
                 if getattr(ses, 'usuario', None):

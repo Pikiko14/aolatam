@@ -3357,6 +3357,20 @@ def sp_de_item(item_id: int) -> int:
         return 0
 
 
+def magia_de_item(item_id: int) -> int:
+    """El hechizo (常駐法術) que lanza ese objeto al usarlo, o 0. El SP Power Scroll (3696) da el 1871."""
+    try:
+        import sqlite3
+        db = pathlib.Path(__file__).parent.parent / 'corpus' / 'content.db'
+        if not db.exists():
+            return 0
+        con = sqlite3.connect(db)
+        h = str((fila_item(con, '"常駐法術"', item_id) or [None])[0] or '')
+        return int(h) if h.isdigit() else 0
+    except Exception:
+        return 0
+
+
 def es_tarjeta_emocion(item_id: int) -> bool:
     """Si el item es una tarjeta de expresion/emocion ('表情卡')."""
     return categoria_item(item_id) == '表情卡'
