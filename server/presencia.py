@@ -648,6 +648,12 @@ def salir(ses, avisar=True):
             inv.pop('objetivo_pvp', None)
             if getattr(ses, 'desconectado', False):
                 setattr(ses, key, None)
+    # Y la mascota que lleva fuera: sin esto, al desconectarse se quedaba en la pantalla de los demas
+    # ("mi amigo tenia 1 pet, se desconecto y queda ahi el pet", 02/11/2026).
+    f_pet = getattr(getattr(ses, 'personaje', None), 'mascota', None)
+    pet_eid = getattr(ses, 'pet_entity_id', None)
+    if avisar and stage is not None and pet_eid and isinstance(f_pet, dict) and f_pet.get('fuera'):
+        notificar_mascota_despawn(ses, pet_eid)
     if stage is None:
         liberar_entidad(ses)
         return
