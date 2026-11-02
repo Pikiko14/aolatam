@@ -38,7 +38,7 @@ COMANDOS = (CMD_SALUDO, CMD_BUSCAR, CMD_COMPRAR, CMD_RETIRAR, CMD_PREPARAR, CMD_
 # Lo que se define en el cliente al contestar el saludo: el boton de la barra (wnd01.xml, 59001) llama a esto.
 SALUDO_LUA = ('function OnCommandSubasta(dwID, dwCmdID, dwParam, pParam) '
               'game.netcommand2(%d, 0, 0) return 1 end' % CMD_ABRIR)
-POR_PAGINA = 10                     # las filas de la lista 3530 (rows="10")
+POR_PAGINA = 9                      # la lista 3530 tiene 10 filas y la primera es la cabecera
 MODO_TODO, MODO_MIO, MODO_VENDER = 0, 1, 2      # pestanas All, Mine y Sell (la mochila)
 ORDEN_NUEVO, ORDEN_BARATO = 0, 1
 
@@ -203,16 +203,16 @@ def abrir(ses):
 
 def motivo_no_vendible(ses, ranura):
     """Por que no se puede subastar lo de esa ranura, o None si se puede."""
-    import house_services
     import inventario as iv
     if ranura not in ses.inventario:
         return 'That item is no longer in your backpack.'
     if iv.es_equipo(ranura) or ranura == iv.RANURA_ORO:
         return 'Take it off before selling it.'
     item_id = int(ses.inventario[ranura])
-    fila = house_services.xml_rows('item.xml').get(item_id) or {}
-    if (fila.get('不可交易') == '是'
-            or __import__('arena_premios_compat').es_premio(ses, ranura)
+    estado = (getattr(ses.personaje, 'mejoras', None) or {}).get(ranura)
+    if not iv.puede_transferir(item_id, estado):
+        return 'That item is bound: it cannot be traded.'
+    if (__import__('arena_premios_compat').es_premio(ses, ranura)
             or __import__('item_mall').es_temporal(ses, ranura)
             or __import__('furniture_items').protegido(ses, ranura)):
         return 'That item cannot be traded.'

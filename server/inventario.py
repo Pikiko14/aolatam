@@ -1436,6 +1436,22 @@ def puede_equipar(item_id: int, char_id: int, estado: dict = None) -> bool:
     return restantes > 0
 
 
+def puede_transferir(item_id, estado=None) -> bool:
+    """Si el objeto puede cambiar de dueno (intercambio, puesto o subasta): ni intransferible (不可交易) ni con sus
+    "residual times" (綁定次數) gastados. Cada dueno nuevo que se lo equipa gasta una (vincular_equipo); con 0 queda
+    ligado al ultimo: "se debe validar si es un item que se puede tradear y que tenga rest time disponible, sino no se
+    puede trade ni vender" (02/11/2026)."""
+    import house_services
+    fila = house_services.xml_rows('item.xml').get(int(item_id)) or {}
+    if fila.get('不可交易') == '是':
+        return False
+    limite, _ = vinculaciones_de(item_id)
+    v = (estado or {}).get('vinculacion')
+    if limite and v and v.get('item_id') == int(item_id) and int(v.get('restantes', 0)) <= 0:
+        return False
+    return True
+
+
 def vincular_equipo(item_id, char_id, estado):
     """Consume una vinculacion una sola vez para el mismo propietario.
 

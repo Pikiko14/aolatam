@@ -1350,8 +1350,7 @@ def _intercambio(ses, addr, opcode, cuerpo):
             return
         r = int(r)
         item_id = int(bolsa[r])
-        fila = _hs_t.xml_rows('item.xml').get(item_id) or {}
-        if (fila.get('不可交易') == '是'
+        if (not _iv.puede_transferir(item_id, (getattr(p, 'mejoras', None) or {}).get(r))
                 or __import__('arena_premios_compat').es_premio(ses, r)
                 or __import__('item_mall').es_temporal(ses, r)
                 or __import__('furniture_items').protegido(ses, r)):
@@ -16018,7 +16017,8 @@ class Servidor:
                     log.warning(f"[{addr}] puesto 0x0022: instancia {inst8.hex()} no valida (ranura={ranura})")
                     continue
                 ranura = int(ranura)
-                if (__import__('arena_premios_compat').es_premio(ses,ranura)
+                if (not _iv.puede_transferir(int(bolsa[ranura]), (getattr(ses.personaje, 'mejoras', None) or {}).get(ranura))
+                        or __import__('arena_premios_compat').es_premio(ses,ranura)
                         or __import__('item_mall').es_temporal(ses,ranura)
                         or __import__('furniture_items').protegido(ses,ranura)):
                     continue

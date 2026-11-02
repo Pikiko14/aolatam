@@ -117,11 +117,23 @@ function SubastaLista(modo, pag, paginas, filas, oro, total)
   end
   local lista = hijo(3530)
   window.clearlist(lista)
+  -- La primera fila es la cabecera: dice que es cada columna. Elegirla no hace nada (OnSubastaFila).
+  window.insertitemstr(lista, "Item", 0)
+  if modo == VENDER then
+    window.setsubitemstr(lista, 0, 1, "Qty.", 0)
+    window.setsubitemstr(lista, 0, 2, "", 0)
+    window.setsubitemstr(lista, 0, 3, "", 0)
+  else
+    window.setsubitemstr(lista, 0, 1, "Qty.", 0)
+    window.setsubitemstr(lista, 0, 2, "Price each", 0)
+    window.setsubitemstr(lista, 0, 3, "Seller", 0)
+  end
   for i, f in ipairs(filas) do
-    window.insertitemstrappnum(lista, f[2], game.getitemicon(f[6]), f[1])
-    window.setsubitemstr(lista, i - 1, 1, "x" .. tostring(f[3]), 0)
-    window.setsubitemstr(lista, i - 1, 2, f[4] ~= "" and (f[4] .. " G") or "", 0)
-    window.setsubitemstr(lista, i - 1, 3, f[5], 0)
+    -- El cuarto argumento se pinta como un numero junto al nombre: va a 0 (la fila se busca por su posicion).
+    window.insertitemstrappnum(lista, f[2], game.getitemicon(f[6]), 0)
+    window.setsubitemstr(lista, i, 1, "x" .. tostring(f[3]), 0)
+    window.setsubitemstr(lista, i, 2, f[4] ~= "" and (f[4] .. " G") or "", 0)
+    window.setsubitemstr(lista, i, 3, f[5], 0)
   end
   window.settitle(hijo(3532), tostring(pag) .. " / " .. tostring(paginas))
   window.settitle(hijo(3538), tostring(S.cant))
@@ -284,11 +296,11 @@ end
 
 -- Elegir fila y cantidad
 function OnSubastaFila(dwID, dwCmdID, dwParam, pParam)
-  local f = S.filas[dwParam + 1]
+  local f = S.filas[dwParam]          -- la fila 0 es la cabecera
   if not f then
     return 1
   end
-  S.sel = dwParam
+  S.sel = dwParam - 1
   S.cant = 1
   window.settitle(hijo(3538), "1")
   if S.modo == VENDER then

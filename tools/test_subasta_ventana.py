@@ -77,7 +77,7 @@ def test_abrir_manda_su_lua_y_los_filtros_hasta_el_nivel_60():
     assert '"Lv 51-60"}' in llamada and 'Lv 61' not in llamada
 
 
-def test_buscar_pagina_de_diez_en_diez():
+def test_buscar_pagina_de_nueve_en_nueve():
     v = _ses(10, 'Vende', {20 + i: ITEM for i in range(12)})
     for i in range(12):
         _publicar(v, 20 + i, ITEM, 1, 100 + i)
@@ -85,7 +85,7 @@ def test_buscar_pagina_de_diez_en_diez():
     sv.procesar(c, _cmd(sv.CMD_BUSCAR, 0, 2))
     lista = _ultima_lista(c)
     assert lista.startswith('SubastaLista(0,2,2,{{')
-    assert len(re.findall(r'\{\d+,"Ruby"', lista)) == 2           # 12 = 10 + 2
+    assert len(re.findall(r'\{\d+,"Ruby"', lista)) == 3           # 12 = 9 + 3 (la primera fila es la cabecera)
 
 
 def test_mine_solo_ensena_lo_propio():
@@ -225,3 +225,19 @@ def test_publicar_desde_sell_vuelve_a_sell():
     textos = [_lua(p) for p in v.enviados if p[:2] == b'\xa0\x01']
     assert textos[-2].startswith('SubastaLista(2,') and textos[-1].startswith('SubastaPublicada(')
     assert subastas.listado()[0]['cantidad'] == 2
+
+
+def test_no_se_vende_lo_ligado_sin_residual_times_y_si_lo_que_aun_tiene():
+    import inventario as iv
+    ligable = next(i for i in (502, 503, 504, 1513, 1514) if iv.vinculaciones_de(i)[0])
+    v = _ses(10, 'Vende', {23: ligable, 24: ligable})
+    v.personaje.mejoras = {23: {'vinculacion': {'item_id': ligable, 'dueno': 10, 'restantes': 0}},
+                           24: {'vinculacion': {'item_id': ligable, 'dueno': 10, 'restantes': 1}}}
+    assert not iv.puede_transferir(ligable, v.personaje.mejoras[23])
+    assert iv.puede_transferir(ligable, v.personaje.mejoras[24])
+    assert iv.puede_transferir(ligable, {})                    # sin estrenar: le quedan todas
+    sv.procesar(v, _cmd(sv.CMD_PREPARAR, 23, ligable))
+    assert 'bound' in _lua(v.enviados[-1])
+    sv.procesar(v, _cmd(sv.CMD_BUSCAR, sv.MODO_VENDER << 16, 1))
+    lista = _ultima_lista(v)
+    assert '{24,' in lista and '{23,' not in lista
