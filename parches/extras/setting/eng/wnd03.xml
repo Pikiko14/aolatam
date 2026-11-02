@@ -2368,41 +2368,50 @@
     <window class="WND_CLASS_STATIC" id="3592" range="118,22,62,14" title="G each" fcolor="103" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="3595" range="5,82,32,32" fcolor="103" font="3" tpos="0,20" appdata="1">
+    <window class="WND_CLASS_BUTTON" id="3595" range="5,82,32,32" fcolor="103" font="3" tpos="0,20" appdata="1" tooltip="10041" tooldelay="5">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnSubastaIcono</OnCommand>
+        <OnTooltip>OnSubastaTooltip</OnTooltip>
     </window>
-    <window class="WND_CLASS_BUTTON" id="3596" range="5,120,32,32" fcolor="103" font="3" tpos="0,20" appdata="2">
+    <window class="WND_CLASS_BUTTON" id="3596" range="5,120,32,32" fcolor="103" font="3" tpos="0,20" appdata="2" tooltip="10041" tooldelay="5">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnSubastaIcono</OnCommand>
+        <OnTooltip>OnSubastaTooltip</OnTooltip>
     </window>
-    <window class="WND_CLASS_BUTTON" id="3597" range="5,158,32,32" fcolor="103" font="3" tpos="0,20" appdata="3">
+    <window class="WND_CLASS_BUTTON" id="3597" range="5,158,32,32" fcolor="103" font="3" tpos="0,20" appdata="3" tooltip="10041" tooldelay="5">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnSubastaIcono</OnCommand>
+        <OnTooltip>OnSubastaTooltip</OnTooltip>
     </window>
-    <window class="WND_CLASS_BUTTON" id="3598" range="5,196,32,32" fcolor="103" font="3" tpos="0,20" appdata="4">
+    <window class="WND_CLASS_BUTTON" id="3598" range="5,196,32,32" fcolor="103" font="3" tpos="0,20" appdata="4" tooltip="10041" tooldelay="5">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnSubastaIcono</OnCommand>
+        <OnTooltip>OnSubastaTooltip</OnTooltip>
     </window>
-    <window class="WND_CLASS_BUTTON" id="3599" range="5,234,32,32" fcolor="103" font="3" tpos="0,20" appdata="5">
+    <window class="WND_CLASS_BUTTON" id="3599" range="5,234,32,32" fcolor="103" font="3" tpos="0,20" appdata="5" tooltip="10041" tooldelay="5">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnSubastaIcono</OnCommand>
+        <OnTooltip>OnSubastaTooltip</OnTooltip>
     </window>
-    <window class="WND_CLASS_BUTTON" id="3606" range="5,272,32,32" fcolor="103" font="3" tpos="0,20" appdata="6">
+    <window class="WND_CLASS_BUTTON" id="3606" range="5,272,32,32" fcolor="103" font="3" tpos="0,20" appdata="6" tooltip="10041" tooldelay="5">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnSubastaIcono</OnCommand>
+        <OnTooltip>OnSubastaTooltip</OnTooltip>
     </window>
-    <window class="WND_CLASS_BUTTON" id="3607" range="5,310,32,32" fcolor="103" font="3" tpos="0,20" appdata="7">
+    <window class="WND_CLASS_BUTTON" id="3607" range="5,310,32,32" fcolor="103" font="3" tpos="0,20" appdata="7" tooltip="10041" tooldelay="5">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnSubastaIcono</OnCommand>
+        <OnTooltip>OnSubastaTooltip</OnTooltip>
     </window>
-    <window class="WND_CLASS_BUTTON" id="3608" range="5,348,32,32" fcolor="103" font="3" tpos="0,20" appdata="8">
+    <window class="WND_CLASS_BUTTON" id="3608" range="5,348,32,32" fcolor="103" font="3" tpos="0,20" appdata="8" tooltip="10041" tooldelay="5">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnSubastaIcono</OnCommand>
+        <OnTooltip>OnSubastaTooltip</OnTooltip>
     </window>
-    <window class="WND_CLASS_BUTTON" id="3609" range="5,386,32,32" fcolor="103" font="3" tpos="0,20" appdata="9">
+    <window class="WND_CLASS_BUTTON" id="3609" range="5,386,32,32" fcolor="103" font="3" tpos="0,20" appdata="9" tooltip="10041" tooldelay="5">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnSubastaIcono</OnCommand>
+        <OnTooltip>OnSubastaTooltip</OnTooltip>
     </window>
     <window class="WND_CLASS_STATIC" id="3512" range="8,8,30,14" title="Hawk" fcolor="103" font="1">
         <style ssVCenter="" />
@@ -2486,7 +2495,7 @@
         <OnCommand>OnADTrade_Item_Search</OnCommand>
     </window>
     <window class="WND_CLASS_LIST" id="3530" range="6,41,783,381" cols="4" rows="10" gapx="4" gapy="1" tpos="1,1" fcolor="103" font="1">
-        <style wsVisible="" lsVCenter="" lsCheck="" lsSCheck="" lsReport="" wsTab="" />
+        <style wsVisible="" lsVCenter="" lsReport="" wsTab="" />
         <!-- 物品LIST -->
         <OnCommand>OnSubastaFila</OnCommand>
     </window>

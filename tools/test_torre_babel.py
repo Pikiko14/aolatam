@@ -124,6 +124,18 @@ def test_en_party_empieza_el_lider_invita_y_el_jefe_sale_x2(mundo):
     assert len(a.monstruos) == 1
 
 
+def test_el_lider_invita_tambien_si_la_subida_ya_estaba_empezada(mundo):
+    a, b = mundo.nueva(1, 'Impacty'), mundo.nueva(2, 'Baco')
+    b.canal_lua = 1
+    equipos._DE_QUIEN.update({1: 1, 2: 1})
+    equipos._GRUPOS.update({1: [a, b]})
+    assert tb.iniciar(a, '?', tb.PARTY) is None
+    b.enviados.clear()
+    assert tb.iniciar(a, '?', tb.PARTY) is None                             # vuelve a entrar: misma corrida
+    assert any(p[2:].startswith(b'TorreInvitacion(') for p in b.enviados)
+    assert any('invitation sent to 1' in t for t in mundo.carteles)
+
+
 def test_sin_launcher_nuevo_la_invitacion_llega_por_el_chat(mundo):
     a, b = mundo.nueva(1, 'Impacty'), mundo.nueva(2, 'Baco')
     equipos._DE_QUIEN.update({1: 1, 2: 1})

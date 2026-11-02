@@ -155,10 +155,11 @@ function SubastaLista(modo, pag, paginas, filas, oro, total)
     end
   end
   for i, f in ipairs(filas) do
-    window.insertitemstr(lista, SANGRIA .. corto(f[2], 20), 0)
+    -- Cuatro columnas de ~195 px: el nombre (tras la casilla del icono) cabe en 14 letras y el vendedor en 18.
+    window.insertitemstr(lista, SANGRIA .. corto(f[2], 14), 0)
     window.setsubitemstr(lista, i, 0, "x" .. tostring(f[3]), 0)
     window.setsubitemstr(lista, i, 1, f[4] ~= "" and (f[4] .. " G") or "", 0)
-    window.setsubitemstr(lista, i, 2, corto(f[5], 24), 0)
+    window.setsubitemstr(lista, i, 2, corto(f[5], 18), 0)
   end
   window.settitle(hijo(3532), tostring(pag) .. " / " .. tostring(paginas))
   window.settitle(hijo(3538), tostring(S.cant))
@@ -322,6 +323,15 @@ end
 
 -- Elegir fila y cantidad
 -- Pulsar el icono de una fila es como pulsar la fila.
+-- Al pasar el cursor por la casilla de una fila: la ficha del item (game.setitemtooltip, como loginreward.lua).
+function OnSubastaTooltip(dwID, dwCmdID, dwParam, pParam)
+  local f = S.filas and S.filas[window.getappdata(dwID)]
+  if f then
+    game.setitemtooltip(dwID, f[6])
+  end
+  return 1
+end
+
 function OnSubastaIcono(dwID, dwCmdID, dwParam, pParam)
   return OnSubastaFila(dwID, dwCmdID, window.getappdata(dwID), pParam)
 end

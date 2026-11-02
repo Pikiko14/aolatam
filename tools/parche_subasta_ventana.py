@@ -57,7 +57,10 @@ OCULTAS = (3512, 3513, 3514, 3515, 3516)
 # id: estilo nuevo entero (el <style .../>), para los que cambian de clase.
 # (La cantidad de abajo, 3538, se probo como WND_CLASS_EDIT y salia un numero sin sentido: se queda STATIC y para
 # vender hay un campo propio, 3576.)
-ESTILOS = {}
+# La lista sin lsCheck/lsSCheck: con ellos el cliente le pone una columna de casillas detras del nombre, que salia
+# con numeros sin sentido y empujaba las demas (y el vendedor quedaba fuera). Las listas nativas que se pulsan
+# (3582, 3587) tampoco los llevan.
+ESTILOS = {3530: 'wsVisible="" lsVCenter="" lsReport="" wsTab=""'}
 # Lo de vender, sobre las cajas de arriba a la izquierda del fondo: la casilla con el objeto elegido (3590, icono 484 =
 # w011_2, la casilla vacia del juego), su nombre (3591) y el precio (3593). NO se arrastra: el juego no llama al OnDrop
 # de estas ventanas (ni con BUTTON ni con ITEMBUTTON, ni en la lista; probado el 02/11/2026). En su lugar la pestana
@@ -86,10 +89,11 @@ NUEVAS = (
 # botones aparte, sin numero, y al pulsarlos se elige su fila (appdata = la fila; la 0 es la cabecera).
 ICONOS_FILAS = (3595, 3596, 3597, 3598, 3599, 3606, 3607, 3608, 3609)
 NUEVAS = NUEVAS + tuple(linea for fila, wid in enumerate(ICONOS_FILAS, 1) for linea in (
-    '<window class="WND_CLASS_BUTTON" id="%d" range="5,%d,32,32" fcolor="103" font="3" tpos="0,20" appdata="%d">'
-    % (wid, 44 + 38 * fila, fila),
+    '<window class="WND_CLASS_BUTTON" id="%d" range="5,%d,32,32" fcolor="103" font="3" tpos="0,20" appdata="%d" '
+    'tooltip="10041" tooldelay="5">' % (wid, 44 + 38 * fila, fila),
     '    <style wsVisible="" wsTab="" />',
     '    <OnCommand>OnSubastaIcono</OnCommand>',
+    '    <OnTooltip>OnSubastaTooltip</OnTooltip>',      # la ficha del item, como las recompensas de wnd04.xml
     '</window>',
 ))
 IDS_NUEVAS = (3590, 3591, 3592, 3593, 3576) + ICONOS_FILAS

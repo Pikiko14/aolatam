@@ -224,7 +224,9 @@ def invitar(ses_lider):
             continue
         if getattr(s, 'canal_lua', 0):
             s.enviar(canal_lua.paquete(_lua()), canal_lua.llamar('TorreInvitacion', ses_lider.personaje.nombre,
-                                                                  list(MODOS), total_pisos()), lista(PARTY))
+                                                                  list(MODOS), total_pisos()), lista(PARTY),
+                     clases.aviso('%s invites you to the Tower of Babel: press Join in the tower window.'
+                                  % ses_lider.personaje.nombre, tipo=0))
         else:
             s.enviar(clases.aviso('%s invites you to the Tower of Babel: update your launcher to join.'
                                   % ses_lider.personaje.nombre, tipo=0))
@@ -243,17 +245,21 @@ def iniciar(ses, addr, modo):
     if motivo:
         return motivo
     clave = _clave(ses)
-    nueva = False
     with _LOCK:
         c = _CORRIDAS.get(clave)
         if c is None:
             c = _CORRIDAS[clave] = {'modo': modo, 'piso': 1, 'inicio': time.time(), 'nombres': set(), 'jefe': None}
-            nueva = True
         c['nombres'].add(ses.personaje.nombre)
     log.info('%s entra a la Torre de Babel (%s, piso %d)', ses.personaje.nombre, MODOS[modo], c['piso'])
     app._viajar_por_portal(ses, addr, {'destino': STAGE, 'llegada': entrada()}, motivo='a la Torre de Babel')
-    if nueva and modo == PARTY:
-        log.info('Torre de Babel: %s invita a %d de su party', ses.personaje.nombre, invitar(ses))
+    if modo == PARTY and _es_lider(ses):
+        # Cada vez que entra el lider, no solo al empezar: "la torre de babel party no le solicita aceptar el summon a
+        # los demas" (02/11/2026) cuando la party ya tenia una subida a medias.
+        import clases
+        n = invitar(ses)
+        log.info('Torre de Babel: %s invita a %d de su party', ses.personaje.nombre, n)
+        ses.enviar(clases.aviso('Tower of Babel: invitation sent to %d party member(s).' % n if n else
+                                'Tower of Babel: your whole party is already inside.', tipo=0))
     return None
 
 
