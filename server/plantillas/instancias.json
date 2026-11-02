@@ -792,6 +792,14 @@
    "asignacion": "",
    "tope_personas": 0,
    "sin_cambio_de_canal": false
+  },
+  "133": {
+   "nombre": "Tower of Babel",
+   "copias": 1,
+   "dinamica": true,
+   "asignacion": "",
+   "tope_personas": 0,
+   "sin_cambio_de_canal": false
   }
  }
 }

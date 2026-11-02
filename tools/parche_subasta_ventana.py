@@ -110,6 +110,48 @@ MEDIDOR = (
     '</window>',
 )
 
+# La Torre de Babel (server/torre_babel.py, server/lua/torre.lua): texto, pestanas Solo/Party, el ranking (11 filas:
+# la cabecera y el top 10) y el boton de entrar con su rotulo.
+TORRE_ID = 59020
+TORRE = (
+    '<window class="WND_CLASS_DLG_1" range="0,0,300,270" id="59020" title="Tower of Babel" fcolor="104" font="1">',
+    '    <style wsVisible="" wsMoveable="" />',
+    '    <child>59021</child>',
+    '    <child>59022</child>',
+    '    <child>59023</child>',
+    '    <child>59024</child>',
+    '    <child>59025</child>',
+    '    <child>59026</child>',
+    '    <child>59027</child>',
+    '</window>',
+    '<window class="WND_CLASS_STATIC" id="59021" range="8,4,284,14" title="" fcolor="103" font="1">',
+    '    <style wsVisible="" ssVCenter="" />',
+    '</window>',
+    '<window class="WND_CLASS_BUTTON" id="59022" range="8,22,32,15" title="Solo" fcolor="103" font="1" icon="3085">',
+    '    <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />',
+    '    <OnCommand>OnTorreSolo</OnCommand>',
+    '</window>',
+    '<window class="WND_CLASS_BUTTON" id="59023" range="44,22,32,15" title="Party" fcolor="103" font="1" icon="3084">',
+    '    <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />',
+    '    <OnCommand>OnTorreParty</OnCommand>',
+    '</window>',
+    '<window class="WND_CLASS_LIST" id="59024" range="6,42,288,190" cols="3" rows="11" gapx="2" gapy="1" tpos="1,1" '
+    'fcolor="103" font="1">',
+    '    <style wsVisible="" lsVCenter="" lsReport="" />',
+    '</window>',
+    '<window class="WND_CLASS_BUTTON" id="59025" range="266,240,26,18" icon="1154" tooltip="10040" '
+    'tooltext="Enter the Tower of Babel">',
+    '    <style wsVisible="" wsTab="" />',
+    '    <OnCommand>OnTorreEntrar</OnCommand>',
+    '</window>',
+    '<window class="WND_CLASS_STATIC" id="59026" range="8,224,284,14" title="" fcolor="103" font="1">',
+    '    <style wsVisible="" ssVCenter="" />',
+    '</window>',
+    '<window class="WND_CLASS_STATIC" id="59027" range="170,242,92,14" title="" fcolor="103" font="1">',
+    '    <style wsVisible="" ssVCenter="" ssRight="" />',
+    '</window>',
+)
+
 # Donde se podia soltar un objeto. Vacio: el juego no llama al OnDrop (ver arriba).
 SOLTAR_EN = ()
 
@@ -194,6 +236,9 @@ def generar(texto: str) -> str:
     if 'id="%d"' % MEDIDOR_ID not in salida:
         m = re.search(r'[ \t]*<window [^>]*\bid="3501"[^>]*>[\s\S]*?</window>', salida)
         salida = salida[:m.end()] + ''.join(nl + sangria + linea for linea in MEDIDOR) + salida[m.end():]
+    if 'id="%d"' % TORRE_ID not in salida:
+        m = re.search(r'[ \t]*<window [^>]*\bid="3501"[^>]*>[\s\S]*?</window>', salida)
+        salida = salida[:m.end()] + ''.join(nl + sangria + linea for linea in TORRE) + salida[m.end():]
     faltan = ids - hechos
     if faltan:
         raise SystemExit('no se encontraron en wnd03.xml: %s' % sorted(faltan))
@@ -204,11 +249,13 @@ def generar(texto: str) -> str:
 # Blessing (50001): "que la auction lo abra un icono de aca" (02/11/2026). Su imagen la dibuja tools/icono_subasta.py.
 # El OnCommandSubasta lo define el servidor al entrar (subasta_ventana.SALUDO_LUA): pide abrir la ventana.
 WND01 = RAIZ / 'parches' / 'extras' / 'setting' / 'eng' / 'wnd01.xml'
+STAGE_XML = RAIZ / 'parches' / 'extras' / 'setting' / 'eng' / 'stage.xml'
 # (id, x en la barra, texto de ayuda, funcion Lua, icono): la subasta y el contador de dano (server/medidor_dano.py,
 # 02/11/2026). Las imagenes las dibujan tools/icono_subasta.py y tools/icono_medidor.py.
 BOTONES_BARRA = (
     (59001, 316, 'Auction House', 'OnCommandSubasta', 'aolat_ah'),
     (59002, 276, 'Damage meter', 'OnCommandMedidor', 'aolat_dm'),
+    (59003, 236, 'Tower of Babel', 'OnCommandTorre', 'aolat_tb'),
 )
 
 
@@ -255,6 +302,15 @@ def main():
     nuevo1 = boton_en_la_barra(crudo.decode('utf-8-sig'))
     WND01.write_bytes((b'\xef\xbb\xbf' if bom1 else b'') + nuevo1.encode('utf-8'))
     print('escrito', WND01.relative_to(RAIZ))
+    # El mapa de la Torre de Babel (server/torre_babel.py) con su nombre: es el 133, "年獸洞窟" en el cliente.
+    crudo = STAGE_XML.read_bytes()
+    bom2 = crudo.startswith(b'\xef\xbb\xbf')
+    t = crudo.decode('utf-8-sig')
+    t2 = re.sub(r'(<場景 編號="133" 名稱=")[^"]*(")', r'\1Tower of Babel\2', t, count=1)
+    if t2 == t and 'Tower of Babel' not in t:
+        raise SystemExit('no esta el mapa 133 en stage.xml')
+    STAGE_XML.write_bytes((b'\xef\xbb\xbf' if bom2 else b'') + t2.encode('utf-8'))
+    print('escrito', STAGE_XML.relative_to(RAIZ))
 
 
 if __name__ == '__main__':

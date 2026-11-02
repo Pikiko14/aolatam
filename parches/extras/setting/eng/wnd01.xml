@@ -191,6 +191,7 @@
 	<window class="WND_CLASS_BASE" range="300,120,451,1" id="116" icon="116" style="wsVisible">
 	    <child>16199</child>
 		<child>50001</child>
+		<child>59003</child>
 		<child>59002</child>
 		<child>59001</child>
         <child>12600</child>
@@ -232,6 +233,11 @@
 		<style wsVisible="" wsTab=""/>
 		<OnCommand>OnCommandStarCard</OnCommand>
 	</window>
+	<window class="WND_CLASS_BUTTON" range="236,-131,40,56" id="59003" icon="59003" tooltip="10043" tooltext="Tower of Babel">
+	    <style wsVisible="" wsTab="" />
+	    <OnCommand>OnCommandTorre</OnCommand>
+	</window>
+	<icon id="59003" dir="\wnd01\" normal="aolat_tb_n" focus="aolat_tb_f" down="aolat_tb_n" disable="normal" />
 	<window class="WND_CLASS_BUTTON" range="276,-131,40,56" id="59002" icon="59002" tooltip="10043" tooltext="Damage meter">
 	    <style wsVisible="" wsTab="" />
 	    <OnCommand>OnCommandMedidor</OnCommand>

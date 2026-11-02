@@ -2242,6 +2242,40 @@
         <child>3511</child>
         <child>3551</child>
     </window>
+    <window class="WND_CLASS_DLG_1" range="0,0,300,270" id="59020" title="Tower of Babel" fcolor="104" font="1">
+        <style wsVisible="" wsMoveable="" />
+        <child>59021</child>
+        <child>59022</child>
+        <child>59023</child>
+        <child>59024</child>
+        <child>59025</child>
+        <child>59026</child>
+        <child>59027</child>
+    </window>
+    <window class="WND_CLASS_STATIC" id="59021" range="8,4,284,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59022" range="8,22,32,15" title="Solo" fcolor="103" font="1" icon="3085">
+        <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
+        <OnCommand>OnTorreSolo</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59023" range="44,22,32,15" title="Party" fcolor="103" font="1" icon="3084">
+        <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
+        <OnCommand>OnTorreParty</OnCommand>
+    </window>
+    <window class="WND_CLASS_LIST" id="59024" range="6,42,288,190" cols="3" rows="11" gapx="2" gapy="1" tpos="1,1" fcolor="103" font="1">
+        <style wsVisible="" lsVCenter="" lsReport="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59025" range="266,240,26,18" icon="1154" tooltip="10040" tooltext="Enter the Tower of Babel">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnTorreEntrar</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="59026" range="8,224,284,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59027" range="170,242,92,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssRight="" />
+    </window>
     <window class="WND_CLASS_DLG_1" range="0,0,236,196" id="59010" title="Damage" fcolor="104" font="1">
         <style wsVisible="" wsMoveable="" />
         <child>59011</child>

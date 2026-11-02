@@ -3373,6 +3373,11 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
 
     if getattr(m, 'sello', None):
         __import__('instancia_oscura').al_morir(ses, m)
+    # La Torre de Babel: el jefe del piso (torre_babel.py)
+    try:
+        __import__('torre_babel').al_morir(ses, m, addr)
+    except Exception:
+        log.exception('Torre de Babel: al morir el jefe')
 
     # El ranking de dano de los jefes, a todos los de la sala (contador_dano.py)
     try:
@@ -4290,6 +4295,7 @@ def _sincronizar_cambio_mapa(ses, stage_id: int, x: int = None, y: int = None):
     __import__('daily_events').antes_viajar(ses,stage_id)
     __import__('league_war').before_travel(ses,stage_id)
     __import__('competiciones').antes_de_viajar(ses, stage_id)
+    __import__('torre_babel').antes_de_viajar(ses, stage_id)
     p.stage = stage_id
     if x is not None and y is not None:
         p.tile_x, p.tile_y = x, y
@@ -9132,6 +9138,11 @@ def _entrar_en_sala(ses, addr):
     log.info('[%s] sala %d: %d bichos muertos, %d al dia, %d objetos, '
              '%d jugador(es) dentro', addr, e.stage, len(fuera), len(dentro),
              len(getattr(e, 'objetos', None) or {}), len(e.sesiones))
+    # La Torre de Babel: el jefe del piso en la copia, o fuera si no hay corrida (torre_babel.py)
+    try:
+        __import__('torre_babel').al_entrar(ses, addr)
+    except Exception:
+        log.exception('Torre de Babel: al entrar')
 
 
 def _dialogo_del_mapa(ses, addr, stage, nodo):
@@ -10661,6 +10672,10 @@ class Servidor:
                 _cerrar_puesto(ses, avisar_dueno=False)
             except Exception:
                 pass
+            try:
+                __import__('torre_babel').al_desconectar(ses)     # antes de salir de presencia: cuenta la copia
+            except Exception:
+                log.exception('Torre de Babel: al desconectar')
             try:
                 import presencia as _pres
                 _pres.salir(ses)
@@ -16437,6 +16452,8 @@ class Servidor:
             if __import__('subasta_ventana').procesar(ses, cuerpo):
                 return
             if __import__('medidor_dano').procesar(ses, cuerpo):       # el contador de dano (168)
+                return
+            if __import__('torre_babel').procesar(ses, cuerpo, addr):  # la Torre de Babel (169)
                 return
             if __import__('item_mall').procesar(ses,opcode,cuerpo):
                 return
