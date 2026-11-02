@@ -348,10 +348,20 @@ def monstruos(stage):
     return room(r).monstruos
 
 
+def quitar_reloj(ses):
+    """El reloj grande de evento (0x016A, este modulo y olympus) fuera, si se le puso. Solo se quitaba al salir por
+    antes_viajar / olympus.cambio_mapa: saliendo por otro lado (volver al Lyceum, revivir, otro portal) se quedaba en
+    pantalla ("si me registro a un evento y me salgo me queda el contador", 02/11/2026)."""
+    if getattr(ses,'_reloj_evento',False):
+        ses.enviar(struct.pack('<H',0x16b));ses._reloj_evento=False
+
+
 def al_entrar(ses):
     p=ses.personaje
     if p.stage not in STAGES:
-        p.buffs.pop('daily_joy',None);ses._daily_round=None;ses._daily_aura=False;return
+        p.buffs.pop('daily_joy',None);ses._daily_round=None;ses._daily_aura=False
+        if p.stage not in __import__('olympus').STAGES:quitar_reloj(ses)
+        return
     r=actual(p.stage)
     if not r or _key(ses) not in r['members'] or fase(r)=='cerrada':
         _return(ses);return
@@ -363,7 +373,7 @@ def al_entrar(ses):
     # arranca de verdad (ver su comentario junto a 'phase'] = 'battle'').
     en_combate=fase(r)=='combate'
     ses.monstruos=room(r).monstruos if en_combate else {}
-    ses.enviar(struct.pack('<HI',0x16a,max(0,int(r['end']-time.time()))))
+    ses.enviar(struct.pack('<HI',0x16a,max(0,int(r['end']-time.time()))));ses._reloj_evento=True
     if r['kind']==5:p.buffs['daily_joy']={'fin':r['end'],'recoleccion_pct':90}
     if en_combate:
         from login import _npc_spawn

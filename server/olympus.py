@@ -299,7 +299,7 @@ def efecto(ses,action,param=0):
         if getattr(p,'buffs',None) is None:p.buffs={}
         app._buff_a_otro(ses,MARK,entry,duration*1000,mag)
         cuentas.guardar_buffs(ses.usuario,p.char_id,p.buffs)
-        ses.enviar(struct.pack('<HI',0x016A,int(param//1000)))
+        ses.enviar(struct.pack('<HI',0x016A,int(param//1000)));ses._reloj_evento=True
     elif action==112:
         rid=getattr(ses,'_olympus_run',None)
         if not rid:return False
@@ -366,7 +366,10 @@ def tick(ses):
     if not p:return
     rid=getattr(ses,'_olympus_run',None)
     if p.stage not in STAGES:
-        ses._olympus_run=None;return
+        ses._olympus_run=None
+        _de=__import__('daily_events')
+        if p.stage not in _de.STAGES:_de.quitar_reloj(ses)   # el reloj, aunque se saliera sin cambio_mapa
+        return
     if not rid:return
     with cuentas._get_conn() as con:
         row=con.execute('SELECT fin,restante FROM olympus_runs WHERE id=? AND usuario=? AND char_id=?',
@@ -410,4 +413,4 @@ def al_entrar(ses):
             app._viajar_por_portal(ses,'olympus',{'destino':41,'llegada':eventos.casillas_de_tag(41,1)[0]})
             return
         ses._olympus_run=row[0]
-        if row[2] is None:ses.enviar(struct.pack('<HI',0x016A,max(0,int(row[1]-time.time()))))
+        if row[2] is None:ses.enviar(struct.pack('<HI',0x016A,max(0,int(row[1]-time.time()))));ses._reloj_evento=True
