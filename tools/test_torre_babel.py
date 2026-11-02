@@ -100,18 +100,34 @@ def test_una_corrida_solo_del_piso_1_al_siguiente(mundo):
     assert any('Floor 1 cleared' in t for t in mundo.carteles)
 
 
-def test_en_party_el_jefe_tiene_mas_vida_y_se_comparte(mundo):
+def test_en_party_empieza_el_lider_invita_y_el_jefe_sale_x2(mundo):
+    a, b = mundo.nueva(1, 'Impacty'), mundo.nueva(2, 'Baco')
+    b.canal_lua = 1
+    equipos._DE_QUIEN.update({1: 1, 2: 1})
+    equipos._GRUPOS.update({1: [a, b]})
+    assert 'Only the party leader' in tb.iniciar(b, '?', tb.PARTY)          # el que no es lider no empieza
+    assert tb.iniciar(a, '?', tb.PARTY) is None
+    invitacion = [p[2:-1].decode('latin1') for p in b.enviados if p[2:].startswith(b'TorreInvitacion(')]
+    assert invitacion == ['TorreInvitacion("Impacty",{"Solo","Party"},60)']
+    assert mundo.viajes == [('Impacty', tb.STAGE)]                           # Baco no se mueve hasta aceptar
+    tb.al_entrar(a)
+    c = tb.corrida(a)
+    p1 = tb.pisos()[0]
+    jefe = a.monstruos[c['jefe']]
+    assert (jefe.hp_max, jefe.atk, jefe.defensa) == (int(p1['hp'] * 2), int(p1['atk'] * 2), int(p1['def'] * 2))
+    assert tb.iniciar(b, '?', tb.PARTY) is None                              # acepta: se une a la misma corrida
+    assert tb.corrida(b) is c and c['nombres'] == {'Impacty', 'Baco'}
+    assert mundo.viajes[-1] == ('Baco', tb.STAGE)
+    tb.al_entrar(b)                                                          # no saca otro jefe
+    assert len(a.monstruos) == 1
+
+
+def test_sin_launcher_nuevo_la_invitacion_llega_por_el_chat(mundo):
     a, b = mundo.nueva(1, 'Impacty'), mundo.nueva(2, 'Baco')
     equipos._DE_QUIEN.update({1: 1, 2: 1})
     equipos._GRUPOS.update({1: [a, b]})
     tb.iniciar(a, '?', tb.PARTY)
-    tb.iniciar(b, '?', tb.PARTY)
-    tb.al_entrar(a)
-    c = tb.corrida(a)
-    assert tb.corrida(b) is c and c['nombres'] == {'Impacty', 'Baco'}
-    assert a.monstruos[c['jefe']].hp_max == int(tb.pisos()[0]['hp'] * (1 + tb.VIDA_POR_EXTRA))
-    tb.al_entrar(b)                                # el segundo no saca otro jefe
-    assert len(a.monstruos) == 1
+    assert any(b'update your launcher' in p for p in b.enviados)
 
 
 def test_cada_diez_pisos_hay_premio_para_todos(mundo):

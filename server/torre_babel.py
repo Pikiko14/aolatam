@@ -11,7 +11,9 @@ intento empieza de cero; premio por piso.
 * LA CORRIDA: iniciar() lleva al piso 1. Al cargar el mapa (al_entrar) sale el jefe del piso en su casilla
   (app._poner_generado, sin reaparicion); al morir (al_morir, desde app._procesar_muerte_monstruo) se anuncia el
   piso siguiente y su jefe sale a los PAUSA segundos. Cada 10 pisos, ademas del botin del jefe, todos los de la
-  copia reciben tickets. Con mas gente en la copia el jefe tiene mas vida (VIDA_POR_EXTRA por cada uno de mas).
+  copia reciben tickets. En Party los jefes salen con todo x MULT_PARTY (vida, ataque y defensas).
+* PARTY: solo el lider empieza la subida; al entrar el, a los demas de su party conectados les llega la
+  solicitud (la ventana de la torre con TorreInvitacion) y con el boton de entrar se unen a su copia.
 * EL FINAL: cuando el ultimo de la copia sale del mapa (muerte, portal, desconexion: antes_de_viajar), la corrida
   acaba y va al ranking (pisos superados y tiempo). Superar el 60 tambien la acaba y saca a todos. Quien vuelve a
   entrar al mapa sin una corrida viva sale al Angel Lyceum: cada intento empieza de cero.
@@ -38,7 +40,7 @@ CMD_TORRE = 169
 SOLO, PARTY = 0, 1
 MODOS = ('Solo', 'Party')
 PAUSA = 3.0                 # segundos entre la muerte de un jefe y la salida del siguiente
-VIDA_POR_EXTRA = 0.7        # +70% de vida del jefe por cada jugador de mas en la copia
+MULT_PARTY = 2.0            # en Party los jefes x2: "aumenta un x2 a los jefes en el modo party" (02/11/2026)
 TICKETS = (20228, 20229, 20230, 20231)      # los de instancia_oscura: se canjean en Event Overview > Exchange
 TOP = 10
 SALIDA = (41, (173, 91))    # el Angel Lyceum (app.REVIVIR_LYCEUM)
@@ -126,7 +128,37 @@ def motivo_para_no_entrar(ses, modo):
     c = _CORRIDAS.get(_clave(ses))
     if c and c['modo'] != modo:
         return 'Your party is already climbing in %s mode.' % MODOS[c['modo']]
+    if modo == PARTY and c is None and not _es_lider(ses):
+        return 'Only the party leader can start the climb.'
     return None
+
+
+def _es_lider(ses):
+    import equipos
+    return equipos.lider_de(ses) == int(getattr(ses.personaje, 'char_id', 0) or 0)
+
+
+def invitar(ses_lider):
+    """La solicitud a los de la party del lider que no estan ya en la torre: la ventana con la invitacion. Devuelve
+    a cuantos se les mando."""
+    import clases
+    import equipos
+    enviadas = 0
+    for s in equipos.grupo_de(ses_lider):
+        if s is ses_lider or getattr(getattr(s, 'personaje', None), 'stage', None) == STAGE:
+            continue
+        if getattr(s, 'canal_lua', 0):
+            s.enviar(canal_lua.paquete(_lua()), canal_lua.llamar('TorreInvitacion', ses_lider.personaje.nombre,
+                                                                  list(MODOS), total_pisos()), lista(PARTY))
+        else:
+            s.enviar(clases.aviso('%s invites you to the Tower of Babel: update your launcher to join.'
+                                  % ses_lider.personaje.nombre, tipo=0))
+        try:
+            s.volcar()
+        except Exception:
+            pass
+        enviadas += 1
+    return enviadas
 
 
 def iniciar(ses, addr, modo):
@@ -136,13 +168,17 @@ def iniciar(ses, addr, modo):
     if motivo:
         return motivo
     clave = _clave(ses)
+    nueva = False
     with _LOCK:
         c = _CORRIDAS.get(clave)
         if c is None:
             c = _CORRIDAS[clave] = {'modo': modo, 'piso': 1, 'inicio': time.time(), 'nombres': set(), 'jefe': None}
+            nueva = True
         c['nombres'].add(ses.personaje.nombre)
     log.info('%s entra a la Torre de Babel (%s, piso %d)', ses.personaje.nombre, MODOS[modo], c['piso'])
     app._viajar_por_portal(ses, addr, {'destino': STAGE, 'llegada': ENTRADA}, motivo='a la Torre de Babel')
+    if nueva and modo == PARTY:
+        log.info('Torre de Babel: %s invita a %d de su party', ses.personaje.nombre, invitar(ses))
     return None
 
 
@@ -185,9 +221,10 @@ def poner_jefe(ses, c):
     if m is None:
         log.warning('Torre de Babel: no se pudo sacar el jefe del piso %d (%s)', c['piso'], datos['npc_type'])
         return None
-    extra = max(0, len(_en_la_copia(ses)) - 1)
-    m.hp_max = m.hp = int(datos['hp'] * (1.0 + VIDA_POR_EXTRA * extra))
-    m.atk, m.defensa, m.matk, m.mdef = int(datos['atk']), int(datos['def']), int(datos['matk']), int(datos['mdef'])
+    k = MULT_PARTY if c['modo'] == PARTY else 1.0
+    m.hp_max = m.hp = int(datos['hp'] * k)
+    m.atk, m.defensa = int(datos['atk'] * k), int(datos['def'] * k)
+    m.matk, m.mdef = int(datos['matk'] * k), int(datos['mdef'] * k)
     m.nivel = int(datos['nivel'])
     m.piso_torre = c['piso']
     c['jefe'] = eid

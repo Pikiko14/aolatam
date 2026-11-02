@@ -40,6 +40,7 @@ function TorreAbrir(modos, pisos)
   window.settitle(hijo(59022), modos[1])
   window.settitle(hijo(59023), modos[2])
   window.settitle(hijo(59027), "Enter the tower")
+  T.invitacion = nil
   pintar()
 end
 
@@ -49,6 +50,7 @@ function TorreRanking(modo, filas)
     return
   end
   T.modo = modo
+  local invitacion = T.invitacion
   local lista = hijo(59024)
   window.clearlist(lista)
   window.insertitemstr(lista, "Best climbs", 0)
@@ -60,9 +62,24 @@ function TorreRanking(modo, filas)
     window.setsubitemstr(lista, i, 2, f[3], 0)
   end
   pintar()
-  if #filas == 0 then
+  if invitacion and modo == 1 then
+    estado(invitacion .. " invites you (Party). Press the check to join.")
+  elseif #filas == 0 then
     estado("Nobody has climbed yet in this mode. Be the first!")
   end
+end
+
+-- La solicitud del lider a los de su party: la misma ventana, en Party, con el aviso; el boton de entrar acepta.
+function TorreInvitacion(lider, modos, pisos)
+  TorreAbrir(modos, pisos)
+  if not window.isexist(WND_TORRE) then
+    return
+  end
+  T.modo = 1
+  T.invitacion = lider
+  pintar()
+  estado(lider .. " invites you (Party). Press the check to join.")
+  window.settitle(hijo(59027), "Join " .. lider)
 end
 
 function TorreAviso(texto)
