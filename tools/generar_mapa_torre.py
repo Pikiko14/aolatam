@@ -6,8 +6,8 @@ server/torre_babel.py) por uno hecho aqui, con tools/editor_mapas/mpcio.py:
 
 * Una sola COLUMNA alta y estrecha sobre el cielo estrellado: la torre. Sus muros (los lados y el suelo grueso entre
   un piso y otro) no se pisan.
-* Cada piso es una SALA de ANCHO_SALA x ALTO_SALA casillas de piedra (las de cada 10 pisos, de marmol), con su jefe
-  en el centro. El piso 1 abajo del todo y el 60 arriba.
+* Cada piso es una SALA de ANCHO_SALA x ALTO_SALA casillas, con su jefe en el centro. Toda la torre es de la misma
+  piedra dorada (SUELO): salas, escaleras y muros, que no se pisan. El piso 1 abajo del todo y el 60 arriba.
 * Del centro del borde de arriba de cada sala sale una ESCALERA que atraviesa el suelo y llega a la sala de encima:
   la unica forma de subir. Se pisan sus casillas (el pincel de escalones) y encima va el objeto de la escalera de
   marmol con barandas doradas de la Torre Dorada (12583), que baja hasta la sala de abajo y sube hasta la de arriba.
@@ -45,6 +45,9 @@ MARMOL = 0x7E           # marmol con emblema: las salas de cada 10 pisos
 MURO_PIEDRA = 0x16      # adoquin gris: los muros de la torre y el borde de las salas
 ESCALONES = 0x3A        # escalones de piedra: las escaleras
 LIBRE, OBSTACULO = 0, 1
+# "La de la torre debe verse homogeneo" (02/11/2026): toda la torre, salas, escaleras y muros, del mismo pincel; los
+# muros siguen sin pisarse y lo que separa un piso de otro es la escalera dorada.
+SUELO = PIEDRA
 CELDA = 32                              # px por casilla
 OBJETO_ESCALERA = 12583                 # 黃金塔_樓梯01: sus escalones suben recto, de abajo arriba de la imagen
 AJUSTE_ESCALERA = 38                    # px: el centro de los escalones queda 38 px por encima del ancla del sprite
@@ -97,21 +100,19 @@ def celdas():
             muro.add((x, y))
     for piso in range(1, PISOS + 1):                        # ...menos sus salas
         x0, y0 = _sala(piso)
-        suelo = MARMOL if piso % 10 == 0 else PIEDRA
         for x in range(x0, x0 + ANCHO_SALA):
             for y in range(y0, y0 + ALTO_SALA):
-                borde = x in (x0, x0 + ANCHO_SALA - 1) or y in (y0, y0 + ALTO_SALA - 1)
-                pisable[(x, y)] = MURO_PIEDRA if borde else suelo
+                pisable[(x, y)] = SUELO
         if piso < PISOS:                                    # ...y sus escaleras
             for c in _escalera(piso)[0]:
-                pisable[c] = ESCALONES
+                pisable[c] = SUELO
     grid = bytearray()
     for y in range(ALTO):
         for x in range(ANCHO):
             if (x, y) in pisable:
                 grid += bytes((pisable[(x, y)], LIBRE, 0, 0, 0, 0))
             elif (x, y) in muro:
-                grid += bytes((MURO_PIEDRA, OBSTACULO, 0, 0, 0, 0))
+                grid += bytes((SUELO, OBSTACULO, 0, 0, 0, 0))
             else:
                 grid += bytes((CIELO, OBSTACULO, 0, 0, 0, 0))
     return bytes(grid), pisable
@@ -122,7 +123,7 @@ def mapa():
     grid, pisable = celdas()
     m = dict(base)
     m.update(w=ANCHO, h=ALTO, celdas=grid, extra=b'', hueco=b'', objetos=objetos(), rutas=[], puntos=[], resto='',
-             tilesets=sorted({CIELO, PIEDRA, MARMOL, MURO_PIEDRA, ESCALONES}))
+             tilesets=sorted({CIELO, SUELO}))
     return mpcio.escribir(m), pisable
 
 
