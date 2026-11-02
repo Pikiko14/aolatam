@@ -27,7 +27,9 @@ sys.stdout.reconfigure(encoding='utf-8')
 
 import configuracion
 
-ENG = RAIZ / 'extracted_paks' / 'update26' / 'setting' / 'eng'
+# Los originales (de update26.pak), guardados aparte: extracted_paks no sirve de base, porque el servidor local lo
+# sincroniza con el cliente al arrancar y alli ya estan los jumpmap de este parche (02/11/2026).
+ENG = RAIZ / 'tools' / 'originales'
 SALIDA = RAIZ / 'parches' / 'extras' / 'setting' / 'eng'
 # Categorias que no son una region y se quedan siempre: Show All.
 SIEMPRE = {1}

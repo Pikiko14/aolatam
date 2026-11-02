@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<root>
+    <跳地圖類別 編號="1" 類別名稱="Show All" />
+    <跳地圖類別 編號="2" 類別名稱="Heart Of Eden" />
+    <跳地圖類別 編號="3" 類別名稱="Dungeon" />
+    <跳地圖類別 編號="4" 類別名稱="Atlantis" />
+    <跳地圖類別 編號="5" 類別名稱="Forest" />
+    <跳地圖類別 編號="6" 類別名稱="Desert" />
+    <跳地圖類別 編號="7" 類別名稱="Floating" />
+    <跳地圖類別 編號="8" 類別名稱="Candy" />
+    <跳地圖類別 編號="9" 類別名稱="Jurassic" />
+    <跳地圖類別 編號="10" 類別名稱="Pharaoh" />
+    <跳地圖類別 編號="11" 類別名稱="East Orient" />
+    <跳地圖類別 編號="12" 類別名稱="Angel Lyceum" />
+    <跳地圖類別 編號="13" 類別名稱="Four Main Cities" />
+    <跳地圖類別 編號="14" 類別名稱="Aurora Faction Territory" />
+    <跳地圖類別 編號="15" 類別名稱="Shadow Faction Territory" />
+    <跳地圖類別 編號="16" 類別名稱="Beasts Faction Territory" />
+    <跳地圖類別 編號="17" 類別名稱="Steel Faction Territory" />
+    <跳地圖類別 編號="18" 類別名稱="Totem War Area" />
+    <跳地圖類別 編號="19" 類別名稱="Instance" />
+    <跳地圖類別 編號="20" 類別名稱="Special Event Area" />
+    <跳地圖類別 編號="21" 類別名稱="Silversnow Realm" />
+    <跳地圖類別 編號="22" 類別名稱="Space Cowboy" />
+    <跳地圖類別 編號="23" 類別名稱="Sakura Festival " />
+    <跳地圖類別 編號="24" 類別名稱="Sequoia" />
+    <跳地圖類別 編號="25" 類別名稱="Shuwa" />
+    <跳地圖類別 編號="26" 類別名稱="Sylvan Chaos" />
+    <跳地圖類別 編號="27" 類別名稱="Magma Flux" />
+    <跳地圖類別 編號="28" 類別名稱="Arcana" />
+    <跳地圖類別 編號="29" 類別名稱="Aeternia" />
+    <跳地圖類別 編號="30" 類別名稱="Goldenia" />
+    <跳地圖類別 編號="31" 類別名稱="Abysston" />
+    <跳地圖類別 編號="32" 類別名稱="Bearscape" />
+    <跳地圖類別 編號="33" 類別名稱="Astralfield" />
+    <跳地圖類別 編號="34" 類別名稱="Desolate Sea" />
+    <跳地圖類別 編號="35" 類別名稱="Celestia" />
+    <跳地圖類別 編號="36" 類別名稱="Warring Realm" />
+    <跳地圖類別 編號="37" 類別名稱="Sun Sea Maze" />
+    <跳地圖類別 編號="38" 類別名稱="Cybertronica" />
+    <跳地圖類別 編號="39" 類別名稱="Night City Code" />
+    <ALIAS id="編號" classname="類別名稱" jumpmapclass="跳地圖類別" />
+</root>

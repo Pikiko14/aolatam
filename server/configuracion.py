@@ -64,6 +64,11 @@ MAPAS_APAGADOS = frozenset({
     97,  # Evil Ship
     98,  # Lost Region
     101,  # Horrible Lost Region
+    # Heart of Eden: los tres del Sunshine Palace, cerrados aparte (02/11/2026). El trono de 131 es la unica
+    # entrada a Mystic Space (132), que queda sin camino.
+    129,  # Hermit Wetland
+    130,  # Flower Corridor
+    131,  # Sunshine Palace
     # Forest
     102,  # River Valley
     103,  # Secret Den
