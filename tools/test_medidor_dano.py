@@ -76,14 +76,16 @@ def test_sin_dano_lo_dice():
     assert md.vista(_ses(1, 'Impacty')) == ('Hit something to start.', [])
 
 
-def test_el_boton_abre_y_cierra_y_la_x_solo_para_el_envio():
+def test_el_boton_abre_y_la_x_cierra():
+    """El boton solo abre (dos clics la cerraban otra vez); se cierra con su X."""
     s = _ses(1, 'Impacty')
     assert md.procesar(s, struct.pack('<BII', md.CMD_MEDIDOR, 1, 0)) and md.abierto(s)
     assert b'function MedidorDatos' in s.enviados[0] and s.enviados[1][2:-1] == b'MedidorAbrir()'
     md.procesar(s, struct.pack('<BII', md.CMD_MEDIDOR, 1, 0))
-    assert not md.abierto(s) and s.enviados[-1][2:-1] == b'MedidorCerrar()'
-    md.procesar(s, struct.pack('<BII', md.CMD_MEDIDOR, 1, 0))
+    assert md.abierto(s) and s.enviados[-1][2:-1] == b'MedidorAbrir()'
     n = len(s.enviados)
     md.procesar(s, struct.pack('<BII', md.CMD_MEDIDOR, 0, 0))      # cerrada con la X
+    assert not md.abierto(s) and len(s.enviados) == n
+    md.procesar(s, struct.pack('<BII', md.CMD_MEDIDOR, 8, 123))    # el aviso de "ventana creada": solo al log
     assert not md.abierto(s) and len(s.enviados) == n
     assert not md.procesar(s, struct.pack('<BII', 161, 0, 1))

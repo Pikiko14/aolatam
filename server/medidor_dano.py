@@ -13,7 +13,8 @@ QUE ENSENA:
 COMO LLEGA: combate.Monstruo.registrar_dano llama a anotar() con cada golpe. Mientras la ventana esta abierta, un
 bucle por sesion manda MedidorDatos(titulo, filas) cada segundo, solo si cambio. El cliente avisa al cerrarla.
 
-c2s 0x002F [u8 168][u32 a][u32 0]: a = 1 abrir o cerrar (el boton de la barra), 0 se cerro con la X.
+c2s 0x002F [u8 168][u32 a][u32 b]: a = 1 abrir (el boton de la barra; si ya esta abierta la trae al frente), 0 se cerro
+con la X, 8/9 la ventana se creo o no (b = su numero, para el log).
 """
 import asyncio
 import logging
@@ -155,12 +156,9 @@ def procesar(ses, cuerpo) -> bool:
     if a in (8, 9):                           # el cliente dice si pudo crear la ventana (MedidorAbrir)
         log.info('%s: ventana del contador %s (%d)', nombre, 'creada' if a == 8 else 'NO se pudo crear', b)
         return True
-    log.info('%s: contador de dano %s', nombre, 'cerrado con la X' if a == 0 else
-             ('se cierra' if abierto(ses) else 'se abre'))
+    log.info('%s: contador de dano %s', nombre, 'cerrado con la X' if a == 0 else 'abierto')
     if a == 0:
         cerrar(ses, avisar_cliente=False)     # lo cerro con la X
-    elif abierto(ses):
-        cerrar(ses)
     else:
-        abrir(ses)
+        abrir(ses)                            # el boton solo abre (o trae al frente); se cierra con su X
     return True

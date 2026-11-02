@@ -1,6 +1,9 @@
 -- El contador de dano en vivo (server/medidor_dano.py): la ventana 59010 de wnd03.xml, pequena y movible.
 -- El servidor la abre con MedidorAbrir() y la llena con MedidorDatos(titulo, filas) cada vez que cambia.
 local CMD_MEDIDOR = 168
+-- Tiene que ser un numero desde el principio: window.isexist(nil) da error y cortaba MedidorAbrir sin crear la
+-- ventana (la subasta no lo sufre porque WND_ADTRADE ya lo define adtrade.lua del juego).
+WND_MEDIDOR = WND_MEDIDOR or 0
 
 local function hijo(id)
   return window.find(WND_MEDIDOR, id)
