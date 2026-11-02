@@ -45,13 +45,16 @@ ATRIBUTOS = {
     3530: {'bcolor': None, 'fcolor': '103'},
     3532: {'title': '1 / 1'},
     3535: {'title': '', 'fcolor': '103', 'font': '1'},
-    3538: {'title': '1'},
+    # La cantidad se puede escribir ("que me permita seleccionar cuanta cantidad quiero vender", 02/11/2026).
+    3538: {'class': 'WND_CLASS_EDIT', 'title': '1', 'limit': '5'},
     # Las flechas de pagina y de cantidad: las 3043/3044 (btn057/btn059) no estan en el cliente y salian en blanco;
     # las 2569/2571 (log/btn134, btn133) son flechas del mismo tamano que si estan.
     3531: {'icon': '2569'}, 3537: {'icon': '2569'},
     3533: {'icon': '2571'}, 3539: {'icon': '2571'},
 }
 OCULTAS = (3512, 3513, 3514, 3515, 3516)
+# id: estilo nuevo entero (el <style .../>), para los que cambian de clase.
+ESTILOS = {3538: 'wsVisible="" esNumber="" esHCenter="" esVCenter="" wsTab=""'}
 # Lo de vender, sobre las cajas de arriba a la izquierda del fondo: la casilla con el objeto elegido (3590, icono 484 =
 # w011_2, la casilla vacia del juego), su nombre (3591) y el precio (3593). NO se arrastra: el juego no llama al OnDrop
 # de estas ventanas (ni con BUTTON ni con ITEMBUTTON, ni en la lista; probado el 02/11/2026). En su lugar la pestana
@@ -109,7 +112,7 @@ def _cambiar_etiqueta(etiqueta: str, cambios: dict) -> str:
 
 
 def generar(texto: str) -> str:
-    ids = set(ATRIBUTOS) | set(OCULTAS) | set(MANEJADORES) | set(SOLTAR_EN)
+    ids = set(ATRIBUTOS) | set(OCULTAS) | set(MANEJADORES) | set(SOLTAR_EN) | set(ESTILOS)
     hechos = set()
 
     def tocar(m):
@@ -121,6 +124,8 @@ def generar(texto: str) -> str:
         inicio = re.match(r'[ \t]*<window [^>]*>', bloque).group(0)
         nuevo = _cambiar_etiqueta(inicio, ATRIBUTOS.get(wid, {}))
         bloque = nuevo + bloque[len(inicio):]
+        if wid in ESTILOS:
+            bloque = re.sub(r'<style[^>]*/>', '<style %s />' % ESTILOS[wid], bloque, count=1)
         if wid in OCULTAS:
             bloque = re.sub(r'(<style[^>]*?)\swsVisible=""', r'\1', bloque, count=1)
         if wid in SOLTAR_EN:

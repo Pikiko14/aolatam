@@ -2427,8 +2427,8 @@
         <!-- ← -->
         <OnCommand>OnSubastaCantMenos</OnCommand>
     </window>
-    <window class="WND_CLASS_STATIC" id="3538" range="667,449,50,14" title="1" fcolor="105" font="1">
-        <style wsVisible="" ssHCenter="" ssVCenter="" />
+    <window class="WND_CLASS_EDIT" id="3538" range="667,449,50,14" title="1" fcolor="105" font="1" limit="5">
+        <style wsVisible="" esNumber="" esHCenter="" esVCenter="" wsTab="" />
         <!-- 數量 -->
     </window>
     <window class="WND_CLASS_BUTTON" id="3539" range="718,449,14,14" icon="2571">

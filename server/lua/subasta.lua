@@ -8,7 +8,7 @@ local S = SUBASTA
 local CMD_BUSCAR, CMD_COMPRAR, CMD_RETIRAR, CMD_PREPARAR, CMD_PUBLICAR = 161, 162, 163, 164, 165
 local TODO, MIO, VENDER = 0, 1, 2
 local PESTANAS = {[TODO] = 3502, [MIO] = 3503, [VENDER] = 3594}
-local VENTA = {3590, 3592, 3593}  -- casilla, "G each" y precio: solo en Sell
+local VENTA = {3592, 3593}        -- "G each" y precio: solo en Sell (la casilla 3590 ensena lo elegido en todas)
 S.modo = S.modo or TODO
 S.orden = S.orden or 0            -- 0 lo mas nuevo, 1 lo mas barato
 S.cat = S.cat or 0
@@ -129,8 +129,9 @@ function SubastaLista(modo, pag, paginas, filas, oro, total)
     window.setsubitemstr(lista, 0, 3, "Seller", 0)
   end
   for i, f in ipairs(filas) do
-    -- El cuarto argumento se pinta como un numero junto al nombre: va a 0 (la fila se busca por su posicion).
-    window.insertitemstrappnum(lista, f[2], game.getitemicon(f[6]), 0)
+    -- Solo el nombre: insertitemstrappnum pintaba ademas un numero sin sentido junto a el. El icono del elegido
+    -- sale en la casilla de arriba (OnSubastaFila).
+    window.insertitemstr(lista, f[2], 0)
     window.setsubitemstr(lista, i, 1, "x" .. tostring(f[3]), 0)
     window.setsubitemstr(lista, i, 2, f[4] ~= "" and (f[4] .. " G") or "", 0)
     window.setsubitemstr(lista, i, 3, f[5], 0)
@@ -167,10 +168,10 @@ function SubastaPreparada(ranura, item, nombre, max)
     return
   end
   S.venta = {ranura = ranura, item = item, nombre = nombre, max = max}
-  S.cant = max
+  S.cant = 1                                      -- empieza en 1: la cantidad se escribe o se sube con las flechas
   window.seticon(hijo(3590), game.getitemicon(item))
   window.settitle(hijo(3590), max > 1 and tostring(max) or "")
-  window.settitle(hijo(3538), tostring(max))
+  window.settitle(hijo(3538), "1")
   pintar_pestanas()
   window.setfocus(hijo(3593))
 end
@@ -309,6 +310,8 @@ function OnSubastaFila(dwID, dwCmdID, dwParam, pParam)
     return 1
   end
   rotulo(f[2])
+  window.seticon(hijo(3590), game.getitemicon(f[6]))
+  window.settitle(hijo(3590), f[3] > 1 and tostring(f[3]) or "")
   if S.modo == TODO then
     estado(f[4] .. " G each. Set Qty. and press the check.")
   else
@@ -343,6 +346,8 @@ function OnSubastaCantMas(dwID, dwCmdID, dwParam, pParam)
 end
 
 function OnSubastaAceptar(dwID, dwCmdID, dwParam, pParam)
+  -- La cantidad escrita a mano, dentro de lo que hay.
+  poner_cantidad(tonumber(window.gettitle(hijo(3538))) or S.cant)
   if S.modo == VENDER then
     if not S.venta then
       estado("Pick the item you want to sell.")
