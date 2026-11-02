@@ -90,8 +90,9 @@ def _multiplicador(ses, tipo, mag, magia):
         if mag.get('dano_coef'):
             mult *= float(mag['dano_coef']) / 100.0
     elif tipo != combate.ATAQUE_NORMAL:
-        combo = combate.combo_de(tipo)
-        mult = 1.2 if (combo and combo.get('golpes', 1) > 1) else 1.35
+        # El poder de la habilidad, como contra monstruos (combate.mult_fisico: 0,76 la formula 15, tope 1,35);
+        # aqui seguia el 1,35 fijo y un AoE de hacha mataba de un golpe a nivel 60 (01/11/2026).
+        mult = combate.mult_fisico(tipo)
         if mag.get('dano_coef'):
             mult *= float(mag['dano_coef']) / 100.0
     mods = inventario.modificadores_porcentuales_equipo(getattr(ses, 'inventario', None) or {})
