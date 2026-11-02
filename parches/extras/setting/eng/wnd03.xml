@@ -2285,6 +2285,24 @@
         <child>3540</child>
         <child>3541</child>
         <child>3542</child>
+        <child>3590</child>
+        <child>3591</child>
+        <child>3592</child>
+        <child>3593</child>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="3590" range="8,404,36,36" icon="484" fcolor="103" font="3" tpos="0,26" tooltip="10040" tooltext="Drag an item from your backpack here to sell it">
+        <style wsDrop="" wsTab="" />
+        <OnDrop>OnSubastaSoltar</OnDrop>
+        <OnCommand>OnSubastaQuitar</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="3591" range="52,406,330,14" title="Drag an item from your backpack to the box." fcolor="103" font="1">
+        <style ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="3592" range="52,425,60,14" title="Price each" fcolor="103" font="1">
+        <style ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_EDIT" id="3593" range="118,424,120,15" bcolor="102" fcolor="105" font="1" tpos="2,1" limit="10">
+        <style esNumber="" esVCenter="" wsTab="" />
     </window>
     <window class="WND_CLASS_STATIC" id="3512" range="10,43,120,14" title="Item" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
@@ -2365,7 +2383,7 @@
         <!-- 查詢 -->
         <OnCommand>OnADTrade_Item_Search</OnCommand>
     </window>
-    <window class="WND_CLASS_LIST" id="3530" range="6,60,783,362" cols="4" rows="10" gapx="4" gapy="1" tpos="1,1" bcolor="102" fcolor="105" font="1">
+    <window class="WND_CLASS_LIST" id="3530" range="6,60,783,340" cols="4" rows="10" gapx="4" gapy="1" tpos="1,1" bcolor="102" fcolor="105" font="1">
         <style wsVisible="" lsVCenter="" lsCheck="" lsSCheck="" lsReport="" wsTab="" />
         <!-- 物品LIST -->
         <OnCommand>OnSubastaFila</OnCommand>

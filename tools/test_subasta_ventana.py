@@ -131,3 +131,47 @@ def test_retirar_no_toca_lo_ajeno():
     assert c.oro == 10_000 and ARMA not in c.inventario.values() and len(subastas.listado()) == 1
     sv.procesar(v, _cmd(sv.CMD_RETIRAR, fid))
     assert ARMA in v.inventario.values() and subastas.listado() == []
+
+
+def test_soltar_un_objeto_prepara_la_venta_con_su_nombre_y_cantidad():
+    v = _ses(10, 'Vende', {23: ITEM})
+    v.cantidades[23] = 5
+    sv.procesar(v, _cmd(sv.CMD_PREPARAR, 23, ITEM))
+    assert _lua(v.enviados[-1]) == 'SubastaPreparada(23,%d,"Ruby",5)' % ITEM
+
+
+def test_si_la_ranura_no_cuadra_busca_el_objeto_en_la_mochila():
+    v = _ses(10, 'Vende', {25: ITEM})
+    v.cantidades[25] = 2
+    sv.procesar(v, _cmd(sv.CMD_PREPARAR, 23, ITEM))
+    assert _lua(v.enviados[-1]).startswith('SubastaPreparada(25,')
+
+
+def test_no_se_vende_lo_intransferible_ni_lo_equipado(monkeypatch):
+    import house_services
+    import inventario as iv
+    v = _ses(10, 'Vende', {23: ITEM, 3: ARMA})
+    monkeypatch.setattr(house_services, 'xml_rows', lambda n: {ITEM: {'不可交易': '是'}})
+    sv.procesar(v, _cmd(sv.CMD_PREPARAR, 23, ITEM))
+    assert 'cannot be traded' in _lua(v.enviados[-1])
+    if iv.es_equipo(3):
+        sv.procesar(v, _cmd(sv.CMD_PREPARAR, 3, ARMA))
+        assert 'Take it off' in _lua(v.enviados[-1])
+
+
+def test_publicar_desde_la_ventana_saca_de_la_mochila_y_sale_en_mine():
+    v = _ses(10, 'Vende', {23: ITEM})
+    v.cantidades[23] = 5
+    sv.procesar(v, _cmd(sv.CMD_PUBLICAR, (23 << 16) | 3, 1500))
+    fila = subastas.listado()[0]
+    assert (fila['item_id'], fila['cantidad'], fila['precio'], fila['vendedor']) == (ITEM, 3, 1500, 'Vende')
+    assert app._cant_de(v, 23) == 2
+    textos = [_lua(p) for p in v.enviados if p[:2] == b'\xa0\x01']
+    assert textos[-2].startswith('SubastaLista(1,1,1,{{') and textos[-1].startswith('SubastaPublicada(')
+
+
+def test_sin_precio_no_se_publica():
+    v = _ses(10, 'Vende', {23: ITEM})
+    v.cantidades[23] = 5
+    sv.procesar(v, _cmd(sv.CMD_PUBLICAR, (23 << 16) | 3, 0))
+    assert subastas.listado() == [] and 'price' in _lua(v.enviados[-1])

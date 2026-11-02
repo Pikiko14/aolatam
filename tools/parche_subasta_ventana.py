@@ -40,11 +40,34 @@ ATRIBUTOS = {
     3524: {'title': 'All'},
     3526: {'title': 'Level'},
     3527: {'title': 'All'},
-    3530: {'range': '6,60,783,362', 'fcolor': '105'},
+    3530: {'range': '6,60,783,340', 'fcolor': '105'},
     3532: {'title': '1 / 1'},
     3538: {'title': '1'},
 }
 OCULTAS = (3515, 3518, 3519, 3520, 3521, 3522, 3535, 3542)
+# Lo nuevo de la pestana Mine, para publicar desde la ventana (02/11/2026): una casilla donde se suelta un objeto de
+# la mochila (la 484 es la de las casillas del juego), su nombre y el precio. Van ocultos: los ensena el Lua en Mine.
+NUEVAS = (
+    '<window class="WND_CLASS_BUTTON" id="3590" range="8,404,36,36" icon="484" fcolor="103" font="3" tpos="0,26" '
+    'tooltip="10040" tooltext="Drag an item from your backpack here to sell it">',
+    '    <style wsDrop="" wsTab="" />',
+    '    <OnDrop>OnSubastaSoltar</OnDrop>',
+    '    <OnCommand>OnSubastaQuitar</OnCommand>',
+    '</window>',
+    '<window class="WND_CLASS_STATIC" id="3591" range="52,406,330,14" title="Drag an item from your backpack to the box." '
+    'fcolor="103" font="1">',
+    '    <style ssVCenter="" />',
+    '</window>',
+    '<window class="WND_CLASS_STATIC" id="3592" range="52,425,60,14" title="Price each" fcolor="103" font="1">',
+    '    <style ssVCenter="" />',
+    '</window>',
+    '<window class="WND_CLASS_EDIT" id="3593" range="118,424,120,15" bcolor="102" fcolor="105" font="1" tpos="2,1" '
+    'limit="10">',
+    '    <style esNumber="" esVCenter="" wsTab="" />',
+    '</window>',
+)
+IDS_NUEVAS = (3590, 3591, 3592, 3593)
+
 MANEJADORES = {
     3530: 'OnSubastaFila',
     3531: 'OnSubastaPagAnt',
@@ -92,6 +115,16 @@ def generar(texto: str) -> str:
 
     # Cada <window ...> ... </window> que no anida otra ventana (los de la 3501 son hojas o solo llevan <child>).
     salida = re.sub(r'([ \t]*<window [^>]*\bid="(\d+)"[^>]*>(?:(?!<window )[\s\S])*?</window>)', tocar, texto)
+    # La pestana 3511 los lleva como hijos, y van definidos justo detras de ella.
+    m = re.search(r'([ \t]*)<window class="WND_CLASS_BASE"[^>]*\bid="3511"[^>]*>[\s\S]*?</window>', salida)
+    if not m:
+        raise SystemExit('no esta la pestana 3511')
+    sangria, bloque = m.group(1), m.group(0)
+    nl = '\r\n' if '\r\n' in bloque else '\n'
+    hijos = ''.join('%s    <child>%d</child>%s' % (sangria, i, nl) for i in IDS_NUEVAS)
+    bloque = re.sub(r'[ \t]*</window>$', lambda m2: hijos + sangria + '</window>', bloque)
+    nuevas = ''.join(sangria + linea + nl for linea in NUEVAS)
+    salida = salida[:m.start()] + bloque + nl + nuevas.rstrip('\r\n') + salida[m.end():]
     faltan = ids - hechos
     if faltan:
         raise SystemExit('no se encontraron en wnd03.xml: %s' % sorted(faltan))

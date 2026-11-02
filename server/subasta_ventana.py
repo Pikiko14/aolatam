@@ -12,8 +12,15 @@ abrirla. Los datos son los de subastas.py: esto es solo otra forma de verla y co
       161 buscar            a = modo << 16 | categoria << 8 | nivel, b = pagina (1..)
       162 comprar           a = id de la publicacion, b = cantidad
       163 retirar lo propio a = id de la publicacion
+      164 preparar venta    a = ranura de la mochila soltada en la casilla, b = el item que dice el cliente
+      165 publicar          a = ranura << 16 | cantidad, b = precio por unidad
   El primer byte del 0x002F es el contenedor en los demas usos (10, 11...): estos van muy por encima.
 * La respuesta es SubastaLista(modo, pagina, paginas, filas, oro) por el canal.
+* PUBLICAR desde la propia ventana ("se deben subir los productos desde la misma auction", 02/11/2026): en la
+  pestana Mine se arrastra un objeto de la mochila a la casilla (game.getdropdata da su ranura, la misma que usa el
+  0x0013 de destruir), el servidor contesta SubastaPreparada con su nombre y cuantos hay, y con la cantidad y el
+  precio escritos el boton lo publica. Valen las mismas reglas que en el intercambio: nada equipado, ni
+  intransferible (不可交易), ni premio de arena, ni temporal del Item Mall, ni mueble protegido.
 """
 import logging
 
@@ -21,8 +28,8 @@ import canal_lua
 
 log = logging.getLogger('subasta_ventana')
 
-CMD_SALUDO, CMD_BUSCAR, CMD_COMPRAR, CMD_RETIRAR = 160, 161, 162, 163
-COMANDOS = (CMD_SALUDO, CMD_BUSCAR, CMD_COMPRAR, CMD_RETIRAR)
+CMD_SALUDO, CMD_BUSCAR, CMD_COMPRAR, CMD_RETIRAR, CMD_PREPARAR, CMD_PUBLICAR = 160, 161, 162, 163, 164, 165
+COMANDOS = (CMD_SALUDO, CMD_BUSCAR, CMD_COMPRAR, CMD_RETIRAR, CMD_PREPARAR, CMD_PUBLICAR)
 POR_PAGINA = 10                     # las filas de la lista 3530 (rows="10")
 MODO_TODO, MODO_MIO = 0, 1
 
@@ -152,6 +159,65 @@ def abrir(ses):
             canal_lua.llamar('SubastaAbrir', [c for c, _ in CATEGORIAS], [n for n, _, _ in NIVELES])]
 
 
+def motivo_no_vendible(ses, ranura):
+    """Por que no se puede subastar lo de esa ranura, o None si se puede."""
+    import house_services
+    import inventario as iv
+    if ranura not in ses.inventario:
+        return 'That item is no longer in your backpack.'
+    if iv.es_equipo(ranura) or ranura == iv.RANURA_ORO:
+        return 'Take it off before selling it.'
+    item_id = int(ses.inventario[ranura])
+    fila = house_services.xml_rows('item.xml').get(item_id) or {}
+    if (fila.get('不可交易') == '是'
+            or __import__('arena_premios_compat').es_premio(ses, ranura)
+            or __import__('item_mall').es_temporal(ses, ranura)
+            or __import__('furniture_items').protegido(ses, ranura)):
+        return 'That item cannot be traded.'
+    return None
+
+
+def _ranura_soltada(ses, ranura, item_id):
+    """La ranura que dice el cliente; si no tiene ese objeto, la primera que lo tenga."""
+    ranura = int(ranura)
+    if int(ses.inventario.get(ranura, -1)) == int(item_id):
+        return ranura
+    import inventario as iv
+    return next((int(r) for r, it in ses.inventario.items()
+                 if int(it) == int(item_id) and not iv.es_equipo(int(r))), ranura)
+
+
+def preparar(ses, ranura, item_id):
+    """El SubastaPreparada(...) del objeto soltado en la casilla, o un SubastaAviso con el motivo."""
+    import app
+    ranura = _ranura_soltada(ses, ranura, item_id)
+    motivo = motivo_no_vendible(ses, ranura)
+    if motivo:
+        return canal_lua.llamar('SubastaAviso', motivo)
+    item = int(ses.inventario[ranura])
+    veces = int(((getattr(ses.personaje, 'mejoras', None) or {}).get(ranura) or {}).get('veces') or 0)
+    nombre = (app._nombre_item(item) or 'Item %d' % item) + (' +%d' % veces if veces else '')
+    return canal_lua.llamar('SubastaPreparada', ranura, item, nombre, int(app._cant_de(ses, ranura)))
+
+
+def publicar(ses, ranura, cantidad, precio):
+    """Publica desde la ventana. Devuelve los paquetes de respuesta (la lista de Mine y el aviso)."""
+    import subastas
+    motivo = motivo_no_vendible(ses, ranura)
+    if not motivo and not 0 < int(precio) <= subastas.ORO_MAX:
+        motivo = 'Write a price for each unit.'
+    if not motivo and int(cantidad) <= 0:
+        motivo = 'The quantity must be at least 1.'
+    if motivo:
+        return [canal_lua.llamar('SubastaAviso', motivo)]
+    hechas = subastas.publicar(ses, [{'ranura': int(ranura), 'item_id': int(ses.inventario[ranura]),
+                                      'cantidad': int(cantidad), 'precio': int(precio)}])
+    if not hechas:
+        return [canal_lua.llamar('SubastaAviso', 'It could not be listed (see the message in the chat).')]
+    ses.subasta_filtro = (MODO_MIO, 0, 0, 1)
+    return [lista(ses, MODO_MIO), canal_lua.llamar('SubastaPublicada', 'Listed! It is now in the Auction House.')]
+
+
 def procesar(ses, cuerpo) -> bool:
     """Un 0x002F de la ventana. True si era suyo."""
     import struct
@@ -173,6 +239,12 @@ def procesar(ses, cuerpo) -> bool:
         niv = niv if niv < len(NIVELES) else 0
         ses.subasta_filtro = (modo, cat, niv, max(1, int(b)))
         ses.enviar(lista(ses, *ses.subasta_filtro))
+        return True
+    if cmd == CMD_PREPARAR:
+        ses.enviar(preparar(ses, a, b))
+        return True
+    if cmd == CMD_PUBLICAR:
+        ses.enviar(*publicar(ses, (a >> 16) & 0xFFFF, a & 0xFFFF, b))
         return True
     if cmd in (CMD_COMPRAR, CMD_RETIRAR):
         import subastas

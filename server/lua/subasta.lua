@@ -3,7 +3,8 @@
 -- SubastaLista(...). Lo que pide la ventana va al servidor con game.netcommand2 (c2s 0x002F [u8 cmd][u32 a][u32 b]).
 SUBASTA = SUBASTA or {}
 local S = SUBASTA
-local CMD_BUSCAR, CMD_COMPRAR, CMD_RETIRAR = 161, 162, 163
+local CMD_BUSCAR, CMD_COMPRAR, CMD_RETIRAR, CMD_PREPARAR, CMD_PUBLICAR = 161, 162, 163, 164, 165
+local VENTA = {3590, 3591, 3592, 3593}   -- la fila de vender de la pestana Mine (casilla, nombre, precio)
 S.modo = S.modo or 0          -- 0 todo lo que esta en venta, 1 lo mio
 S.cat = S.cat or 0
 S.niv = S.niv or 0
@@ -12,6 +13,7 @@ S.paginas = 1
 S.filas = {}
 S.sel = -1
 S.cant = 1
+S.venta = nil                 -- lo soltado en la casilla: {ranura, item, nombre, max}
 
 local function hijo(id)
   return window.find(WND_ADTRADE, id)
@@ -21,7 +23,18 @@ local function estado(texto)
   window.settitle(hijo(3517), texto)
 end
 
+local function limpiar_venta()
+  S.venta = nil
+  window.seticon(hijo(3590), 484)
+  window.settitle(hijo(3590), "")
+  window.settitle(hijo(3591), "Drag an item from your backpack to the box.")
+  window.settitle(hijo(3593), "")
+end
+
 local function pintar_pestanas()
+  for _, id in ipairs(VENTA) do
+    window.show(hijo(id), S.modo == 1)
+  end
   if S.modo == 0 then
     window.seticon(hijo(3502), 3085)
     window.seticon(hijo(3503), 3084)
@@ -29,7 +42,11 @@ local function pintar_pestanas()
   else
     window.seticon(hijo(3502), 3084)
     window.seticon(hijo(3503), 3085)
-    estado("Your items for sale: pick one and press the check to take it back.")
+    if S.venta then
+      estado("Write the price for each unit, set Qty. and press the check.")
+    else
+      estado("Drag an item to the box to sell it, or pick one of yours to take it back.")
+    end
   end
 end
 
@@ -62,6 +79,7 @@ function SubastaAbrir(cats, nivs)
   window.settitle(hijo(3527), nivs[S.niv + 1])
   window.show(hijo(3511), true)
   window.show(hijo(3551), false)
+  limpiar_venta()
   pintar_pestanas()
   S.pag = 1
   SubastaPedir()
@@ -77,7 +95,9 @@ function SubastaLista(modo, pag, paginas, filas, oro)
   S.paginas = paginas
   S.filas = filas
   S.sel = -1
-  S.cant = 1
+  if not (modo == 1 and S.venta) then
+    S.cant = 1
+  end
   local lista = hijo(3530)
   window.clearlist(lista)
   for i, f in ipairs(filas) do
@@ -87,14 +107,16 @@ function SubastaLista(modo, pag, paginas, filas, oro)
     window.setsubitemstr(lista, i - 1, 3, f[5], 0)
   end
   window.settitle(hijo(3532), tostring(pag) .. " / " .. tostring(paginas))
-  window.settitle(hijo(3538), "1")
+  window.settitle(hijo(3538), tostring(S.cant))
   window.settitle(hijo(3534), oro)
   pintar_pestanas()
   if #filas == 0 then
     if modo == 0 then
       estado("Nothing for sale with these filters.")
     else
-      estado("You have nothing for sale. Open a stall with the message AH to sell.")
+      if not S.venta then
+        estado("You have nothing for sale. Drag an item from your backpack to the box.")
+      end
     end
   end
 end
@@ -103,6 +125,47 @@ function SubastaAviso(texto)
   if window.isexist(WND_ADTRADE) then
     estado(texto)
   end
+end
+
+-- Vender: el objeto soltado en la casilla, ya comprobado por el servidor.
+function SubastaPreparada(ranura, item, nombre, max)
+  if not window.isexist(WND_ADTRADE) then
+    return
+  end
+  S.venta = {ranura = ranura, item = item, nombre = nombre, max = max}
+  S.sel = -1
+  S.cant = max
+  window.seticon(hijo(3590), game.getitemicon(item))
+  window.settitle(hijo(3590), max > 1 and tostring(max) or "")
+  window.settitle(hijo(3591), nombre)
+  window.settitle(hijo(3538), tostring(max))
+  estado("Write the price for each unit, set Qty. and press the check.")
+  window.setfocus(hijo(3593))
+end
+
+function SubastaPublicada(texto)
+  if window.isexist(WND_ADTRADE) then
+    limpiar_venta()
+    estado(texto)
+  end
+end
+
+function OnSubastaSoltar(dwID, dwCmdID, dwParam, pParam)
+  if S.modo ~= 1 then
+    return 1
+  end
+  local item, tipo, conjunto, ranura = game.getdropdata(pParam)
+  if ranura == nil or ranura == -1 then
+    return 1
+  end
+  game.netcommand2(CMD_PREPARAR, ranura, item or 0)
+  return 1
+end
+
+function OnSubastaQuitar(dwID, dwCmdID, dwParam, pParam)
+  limpiar_venta()
+  pintar_pestanas()
+  return 1
 end
 
 -- Pestanas: All / Mine
@@ -196,6 +259,9 @@ function OnSubastaFila(dwID, dwCmdID, dwParam, pParam)
   if not f then
     return 1
   end
+  if S.venta then
+    limpiar_venta()
+  end
   S.sel = dwParam
   S.cant = 1
   window.settitle(hijo(3538), "1")
@@ -208,12 +274,16 @@ function OnSubastaFila(dwID, dwCmdID, dwParam, pParam)
 end
 
 local function poner_cantidad(n)
-  local f = S.filas[S.sel + 1]
-  if not f then
+  local max
+  if S.modo == 1 and S.venta then
+    max = S.venta.max
+  elseif S.filas[S.sel + 1] then
+    max = S.filas[S.sel + 1][3]
+  else
     return
   end
   if n < 1 then n = 1 end
-  if n > f[3] then n = f[3] end
+  if n > max then n = max end
   S.cant = n
   window.settitle(hijo(3538), tostring(n))
 end
@@ -229,6 +299,16 @@ function OnSubastaCantMas(dwID, dwCmdID, dwParam, pParam)
 end
 
 function OnSubastaAceptar(dwID, dwCmdID, dwParam, pParam)
+  if S.modo == 1 and S.venta then
+    local precio = tonumber(window.gettitle(hijo(3593))) or 0
+    if precio <= 0 then
+      estado("Write the price for each unit first.")
+      window.setfocus(hijo(3593))
+      return 1
+    end
+    game.netcommand2(CMD_PUBLICAR, S.venta.ranura * 65536 + S.cant, precio)
+    return 1
+  end
   local f = S.filas[S.sel + 1]
   if not f then
     estado("Pick an item first.")
