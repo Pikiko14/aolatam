@@ -28,7 +28,7 @@ log = logging.getLogger('medidor_dano')
 CMD_MEDIDOR = 168
 PAUSA_PELEA = 20.0          # segundos sin dano: la pelea de party empieza de cero
 JEFE_TRAS_MORIR = 30.0      # segundos que sigue el ranking del jefe tras matarlo
-TOP = 8                     # filas de la lista (rows="8")
+TOP = 7                     # la lista tiene 8 filas (rows="8") y la primera es la cabecera
 INTERVALO = 1.0
 
 # Lo que define el cliente al saludar (subasta_ventana.procesar): el boton de la barra llama a esto.

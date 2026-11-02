@@ -22,6 +22,10 @@ function MedidorAbrir()
   end
   window.move(WND_MEDIDOR, SYSTEM_SCREEN_WIDTH - 250, 170)
   window.regsetting(WND_MEDIDOR, "WND_MEDIDOR")    -- recuerda donde la deja el jugador
+  -- El dialogo no trae relleno (en la subasta lo pone la imagen de la pestana) y se veia el mapa detras: fondo
+  -- azul oscuro casi opaco, como el que el juego pone con setbgcolor a su ventana de estadisticas de eventos. El
+  -- orden es azul, verde, rojo, alfa: el exe (0x687220) lo junta como b | g << 8 | r << 16 | a << 24 (ARGB).
+  window.setbgcolor(WND_MEDIDOR, 52, 36, 12, 230)
   window.settitle(WND_MEDIDOR, "Damage")
   window.settitle(hijo(59011), "Hit something to start.")
 end
@@ -42,9 +46,13 @@ function MedidorDatos(titulo, filas)
   window.settitle(hijo(59011), titulo)
   local lista = hijo(59012)
   window.clearlist(lista)
+  -- La primera fila es la cabecera.
+  window.insertitemstr(lista, "Name", 0)
+  window.setsubitemstr(lista, 0, 1, "Damage", 0)
+  window.setsubitemstr(lista, 0, 2, "%", 0)
   for i, f in ipairs(filas) do
     window.insertitemstr(lista, tostring(i) .. ". " .. f[1], 0)
-    window.setsubitemstr(lista, i - 1, 1, f[2], 0)
-    window.setsubitemstr(lista, i - 1, 2, tostring(f[3]) .. "%", 0)
+    window.setsubitemstr(lista, i, 1, f[2], 0)
+    window.setsubitemstr(lista, i, 2, tostring(f[3]) .. "%", 0)
   end
 end
