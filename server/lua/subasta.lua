@@ -8,7 +8,7 @@ local S = SUBASTA
 local CMD_BUSCAR, CMD_COMPRAR, CMD_RETIRAR, CMD_PREPARAR, CMD_PUBLICAR = 161, 162, 163, 164, 165
 local TODO, MIO, VENDER = 0, 1, 2
 local PESTANAS = {[TODO] = 3502, [MIO] = 3503, [VENDER] = 3594}
-local VENTA = {3592, 3593}        -- "G each" y precio: solo en Sell (la casilla 3590 ensena lo elegido en todas)
+local VENTA = {3592, 3593, 3576}  -- "G  Qty:", precio y cantidad: solo en Sell (la casilla 3590 ensena lo elegido)
 -- Las casillas con el icono de cada fila de la lista (la fila 1 es la primera tras la cabecera).
 local ICONOS = {3595, 3596, 3597, 3598, 3599, 3606, 3607, 3608, 3609}
 local SANGRIA = "       "         -- el nombre empieza despues de la casilla del icono
@@ -40,6 +40,7 @@ local function limpiar_venta()
   window.seticon(hijo(3590), 484)          -- la casilla vacia del juego
   window.settitle(hijo(3590), "")
   window.settitle(hijo(3593), "")
+  window.settitle(hijo(3576), "")
 end
 
 local function pintar_pestanas()
@@ -57,7 +58,7 @@ local function pintar_pestanas()
     estado("Pick one and press the check to take it back.")
   elseif S.venta then
     rotulo(S.venta.nombre)
-    estado("Write the price, set Qty. and press the check.")
+    estado("Write the price and Qty. up here, then the check.")
   else
     rotulo("Pick an item of your backpack below")
     estado("Pick the item you want to sell.")
@@ -90,7 +91,7 @@ function SubastaAbrir(cats, nivs)
   -- Los textos van aqui: wndtext03.xml (la traduccion) pisa los title del XML.
   window.settitle(WND_ADTRADE, "Auction House")
   for id, texto in pairs({[3502] = "All", [3503] = "Mine", [3594] = "Sell", [3522] = "New", [3542] = "Cheap",
-                          [3523] = "Category", [3526] = "Level", [3592] = "G each"}) do
+                          [3523] = "Category", [3526] = "Level", [3592] = "G   Qty:"}) do
     window.settitle(hijo(id), texto)
   end
   for _, id in ipairs({3512, 3513, 3514, 3515, 3516}) do
@@ -181,10 +182,11 @@ function SubastaPreparada(ranura, item, nombre, max)
     return
   end
   S.venta = {ranura = ranura, item = item, nombre = nombre, max = max}
-  S.cant = 1                                      -- empieza en 1: la cantidad se escribe o se sube con las flechas
+  S.cant = 1                                      -- empieza en 1: se escribe en 3576 o se sube con las flechas
   window.seticon(hijo(3590), game.getitemicon(item))
   window.settitle(hijo(3590), max > 1 and tostring(max) or "")
   window.settitle(hijo(3538), "1")
+  window.settitle(hijo(3576), "1")
   pintar_pestanas()
   window.setfocus(hijo(3593))
 end
@@ -351,6 +353,9 @@ local function poner_cantidad(n)
   if n > max then n = max end
   S.cant = n
   window.settitle(hijo(3538), tostring(n))
+  if S.modo == VENDER and S.venta then
+    window.settitle(hijo(3576), tostring(n))
+  end
 end
 
 function OnSubastaCantMenos(dwID, dwCmdID, dwParam, pParam)
@@ -365,7 +370,9 @@ end
 
 function OnSubastaAceptar(dwID, dwCmdID, dwParam, pParam)
   -- La cantidad escrita a mano, dentro de lo que hay.
-  poner_cantidad(tonumber(window.gettitle(hijo(3538))) or S.cant)
+  if S.modo == VENDER and S.venta then
+    poner_cantidad(tonumber(window.gettitle(hijo(3576))) or S.cant)
+  end
   if S.modo == VENDER then
     if not S.venta then
       estado("Pick the item you want to sell.")

@@ -45,8 +45,7 @@ ATRIBUTOS = {
     3530: {'bcolor': None, 'fcolor': '103'},
     3532: {'title': '1 / 1'},
     3535: {'title': '', 'fcolor': '103', 'font': '1'},
-    # La cantidad se puede escribir ("que me permita seleccionar cuanta cantidad quiero vender", 02/11/2026).
-    3538: {'class': 'WND_CLASS_EDIT', 'title': '1', 'limit': '5'},
+    3538: {'title': '1'},
     # Las flechas de pagina y de cantidad: las 3043/3044 (btn057/btn059) no estan en el cliente y salian en blanco;
     # las 2569/2571 (log/btn134, btn133) son flechas del mismo tamano que si estan.
     3531: {'icon': '2569'}, 3537: {'icon': '2569'},
@@ -54,7 +53,9 @@ ATRIBUTOS = {
 }
 OCULTAS = (3512, 3513, 3514, 3515, 3516)
 # id: estilo nuevo entero (el <style .../>), para los que cambian de clase.
-ESTILOS = {3538: 'wsVisible="" esNumber="" esHCenter="" esVCenter="" wsTab=""'}
+# (La cantidad de abajo, 3538, se probo como WND_CLASS_EDIT y salia un numero sin sentido: se queda STATIC y para
+# vender hay un campo propio, 3576.)
+ESTILOS = {}
 # Lo de vender, sobre las cajas de arriba a la izquierda del fondo: la casilla con el objeto elegido (3590, icono 484 =
 # w011_2, la casilla vacia del juego), su nombre (3591) y el precio (3593). NO se arrastra: el juego no llama al OnDrop
 # de estas ventanas (ni con BUTTON ni con ITEMBUTTON, ni en la lista; probado el 02/11/2026). En su lugar la pestana
@@ -68,6 +69,10 @@ NUEVAS = (
     '    <style wsVisible="" ssVCenter="" />',
     '</window>',
     '<window class="WND_CLASS_EDIT" id="3593" range="46,23,66,12" fcolor="103" font="1" tpos="1,0" limit="10">',
+    '    <style esNumber="" esVCenter="" wsTab="" />',
+    '</window>',
+    # La cantidad a vender, en la cajita de la derecha (183..235): mismo tipo de campo que el precio, que si funciona.
+    '<window class="WND_CLASS_EDIT" id="3576" range="186,23,46,12" fcolor="103" font="1" tpos="1,0" limit="5">',
     '    <style esNumber="" esVCenter="" wsTab="" />',
     '</window>',
     '<window class="WND_CLASS_STATIC" id="3592" range="118,22,62,14" title="G each" fcolor="103" font="1">',
@@ -85,7 +90,7 @@ NUEVAS = NUEVAS + tuple(linea for fila, wid in enumerate(ICONOS_FILAS, 1) for li
     '    <OnCommand>OnSubastaIcono</OnCommand>',
     '</window>',
 ))
-IDS_NUEVAS = (3590, 3591, 3592, 3593) + ICONOS_FILAS
+IDS_NUEVAS = (3590, 3591, 3592, 3593, 3576) + ICONOS_FILAS
 
 # Donde se podia soltar un objeto. Vacio: el juego no llama al OnDrop (ver arriba).
 SOLTAR_EN = ()

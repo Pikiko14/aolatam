@@ -2294,6 +2294,7 @@
         <child>3591</child>
         <child>3592</child>
         <child>3593</child>
+        <child>3576</child>
         <child>3595</child>
         <child>3596</child>
         <child>3597</child>
@@ -2311,6 +2312,9 @@
         <style wsVisible="" ssVCenter="" />
     </window>
     <window class="WND_CLASS_EDIT" id="3593" range="46,23,66,12" fcolor="103" font="1" tpos="1,0" limit="10">
+        <style esNumber="" esVCenter="" wsTab="" />
+    </window>
+    <window class="WND_CLASS_EDIT" id="3576" range="186,23,46,12" fcolor="103" font="1" tpos="1,0" limit="5">
         <style esNumber="" esVCenter="" wsTab="" />
     </window>
     <window class="WND_CLASS_STATIC" id="3592" range="118,22,62,14" title="G each" fcolor="103" font="1">
@@ -2472,8 +2476,8 @@
         <!-- ← -->
         <OnCommand>OnSubastaCantMenos</OnCommand>
     </window>
-    <window class="WND_CLASS_EDIT" id="3538" range="667,449,50,14" title="1" fcolor="105" font="1" limit="5">
-        <style wsVisible="" esNumber="" esHCenter="" esVCenter="" wsTab="" />
+    <window class="WND_CLASS_STATIC" id="3538" range="667,449,50,14" title="1" fcolor="105" font="1">
+        <style wsVisible="" ssHCenter="" ssVCenter="" />
         <!-- 數量 -->
     </window>
     <window class="WND_CLASS_BUTTON" id="3539" range="718,449,14,14" icon="2571">
