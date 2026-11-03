@@ -14,12 +14,13 @@ def dispatch(s,op,body=b''):
 
 
 def test_catalog_is_original_mall_not_npc_shop():
-    # El usuario recorta el catalogo a mano (tools/habilitar_mall_completo.py): Furniture 33-35 y Lucky Bag > Hot (28)
-    # vacias desde el 31/10/2026.
-    assert len(mall.datos()['rows'])>250 and mall.datos()['historical_rows']==475
+    # El usuario recorta el catalogo a mano (tools/habilitar_mall_completo.py, tools/ajustar_mall.py): Lucky Bag > Hot
+    # (28) vacia desde el 31/10/2026 y Furniture (32-35) entera desde el 03/11/2026 ("en furniture quita todo").
+    assert len(mall.datos()['rows'])>200 and mall.datos()['historical_rows']==475
     assert mall.datos()['historical'] and mall.datos()['purchases_enabled']
     assert mall.datos()['source'].endswith('mall.xml')
-    assert {r['category'] for r in mall.datos()['rows']} >= {11,13,16,19,24,25,29,32}
+    assert {r['category'] for r in mall.datos()['rows']} >= {11,13,16,19,24,25,29}
+    assert not {r['category'] for r in mall.datos()['rows']} & {32,33,34,35}
 
 
 def test_catalog_has_no_event_stock_boost_stones_or_placeholder_weapon_boxes():
@@ -36,7 +37,7 @@ def test_catalog_has_no_event_stock_boost_stones_or_placeholder_weapon_boxes():
 def test_catalog_wire_matches_native_count_and_57_byte_records():
     packet=mall.catalogo(now=2_000_000_000)
     count=struct.unpack_from('<I',packet,2)[0]
-    assert packet[:2]==b'\x5f\0' and count>250
+    assert packet[:2]==b'\x5f\0' and count>200
     assert len(packet)==6+57*count
     for i,r in enumerate(mall.disponibles(2_000_000_000)):
         data=struct.unpack_from('<9I11siIH',packet,6+57*i)
@@ -108,13 +109,13 @@ def receipt(w,s):
 def test_native_purchase_cabinet_claim_and_duplicate_claim(world):
     s=world.player()
     dispatch(s,0x012B,struct.pack('<IB',30590,0))
-    assert mall.saldo(s.usuario)==1000000-29 and not s.inventario
+    assert mall.saldo(s.usuario)==1000000-35 and not s.inventario          # Double Exp Card a 35 (ajustar_mall)
     rows=receipt(world,s);assert len(rows)==1 and rows[0][1:]==(2017,1)
     dispatch(s,0x002F,struct.pack('<BII',22,rows[0][0],0xffffffff))
     assert 2017 in s.inventario.values() and receipt(world,s)==[]
     saved=copy.deepcopy(stored(world,s))
     dispatch(s,0x002F,struct.pack('<BII',22,rows[0][0],0xffffffff))
-    assert stored(world,s)==saved and mall.saldo(s.usuario)==999971
+    assert stored(world,s)==saved and mall.saldo(s.usuario)==999965
 
 
 def test_gift_is_charged_to_sender_and_claimed_only_by_receiver(world):
@@ -122,7 +123,7 @@ def test_gift_is_charged_to_sender_and_claimed_only_by_receiver(world):
     body=struct.pack('<I17s',30590,b.personaje.nombre.encode())
     dispatch(a,0x012C,body)
     rows=receipt(world,b)
-    assert len(rows)==1 and mall.saldo(a.usuario)==999971 and mall.saldo(b.usuario)==1000000
+    assert len(rows)==1 and mall.saldo(a.usuario)==999965 and mall.saldo(b.usuario)==1000000
     with pytest.raises(mall.Rechazo):mall.retirar(c,rows[0][0])
     assert receipt(world,b)==rows
     mall.retirar(b,rows[0][0])
@@ -152,9 +153,9 @@ def test_backfill_and_new_account_trigger_grant_once_not_on_login_or_new_charact
     with sqlite3.connect(world.db) as con:
         assert mall.inicializar_cuentas(con)==0
         assert con.execute("SELECT COUNT(*) FROM item_mall_movimientos WHERE motivo='initial'").fetchone()[0]==2
-    assert mall.saldo(s.usuario)==999971
+    assert mall.saldo(s.usuario)==999965
     other=world.player();other.usuario=s.usuario
-    assert mall.saldo(other.usuario)==999971  # same account, different character
+    assert mall.saldo(other.usuario)==999965  # same account, different character
 
 
 def test_full_bag_and_sql_failure_leave_entire_delivery_pending(world,monkeypatch):
@@ -183,7 +184,7 @@ def test_cabinet_wire_is_native_33_byte_record(world):
     s=world.player();ident,_=mall.comprar(s,30590)
     packet=mall.almacen(s.usuario)
     assert len(packet)==36 and packet[:3]==b'\x61\0\x01'
-    assert struct.unpack_from('<IIHI',packet,3)==(ident,2017,1,29)
+    assert struct.unpack_from('<IIHI',packet,3)==(ident,2017,1,35)
 
 
 def test_timed_delivery_preserves_deadline_through_save_move_and_expiry(world):
