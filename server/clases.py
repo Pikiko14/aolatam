@@ -1151,6 +1151,7 @@ def premio_final(ids):
     CLASES_PROD = {10, 11, 12, 13, 14, 15, 19, 20}
     if any(i in SKILLS_PRODUCCION for i in skill_ids) or class_id(skill_ids) in CLASES_PROD:
         salida.append((10, CASK_PRODUCTOR))
-    for k, caja in enumerate(cajas_de(ids) + [GROWTH_BOX]):
+    # Sin la Lv 1-10 Growth Box: "que no me de mas esto" (03/11/2026). Solo las cajas de clase.
+    for k, caja in enumerate(cajas_de(ids)):
         salida.append((20 + k, caja))
     return salida

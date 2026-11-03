@@ -3589,6 +3589,10 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
 
             exp_jug = max(1, int(round(exp_ganada * pct_jug))) if pct_jug > 0 else 0
             exp_pet = max(1, int(round(exp_ganada * pct_pet))) if (pct_pet > 0 and pet_fuera) else 0
+            # En el nivel maximo no se gana exp ni sale el "Obtain N Exp": "si estoy en el lvl max no debo sumar ni mas
+            # exp de skill ni mas exp de jugador normal" (03/11/2026). Antes se sumaba y se recortaba despues.
+            if p.nivel >= _cb.nivel_maximo():
+                exp_jug = 0
 
             _u64 = lambda v: max(0, min(int(v or 0), 0xFFFFFFFFFFFFFFFF))
             if exp_jug > 0:
@@ -9926,11 +9930,12 @@ def _otorgar_skill_exp(ses, p, yo, arma_puesta=0, magic_id=0, accion=None, skill
     prob = _cb.PROB_SKILL_EXP if prob_override is None else float(prob_override)
     for h in p.habilidades:
         sid, slv, sexp = h[0], h[1], h[2]
-        if sid not in candidatas or (prob < 1.0 and random.random() >= prob):
+        max_lv = (p.nivel + 11) if sid in SKILLS_PRODUCTOR else p.nivel
+        # Una habilidad en su tope no gana exp ni avisa "has obtained N Exp" (03/11/2026, ver _premiar).
+        if sid not in candidatas or slv >= max_lv or (prob < 1.0 and random.random() >= prob):
             nuevas_habs.append((sid, slv, sexp))
             continue
         sexp += exp_ganada
-        max_lv = (p.nivel + 11) if sid in SKILLS_PRODUCTOR else p.nivel
         # La experiencia que pide cada nivel sale de level.xml por rama (sid 1..36).
         req = max(1, _cl.exp_requerida_skill(slv, sid))
         while sexp >= req and slv < max_lv:
