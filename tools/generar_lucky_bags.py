@@ -52,6 +52,9 @@ CLASES = (                         # nombre, armas, armadura, escudo
     ('Assassin', ('影刃',), '32', False),
 )
 NIVELES_CLASE = (60, 50, 40, 30)
+# Las de clase Lv60 no se venden ("quita los lvl 60", 03/11/2026): siguen existiendo, para que las que ya se compraron
+# se abran, pero no tienen fila en el Item Mall.
+FUERA_DEL_MALL = {'Lv60 %s Lucky Bag' % c for c, *_ in CLASES}
 ARMADURA = ('衣服', '頭飾', '手套', '鞋子')
 MONTURAS = ((60, 55, 60), (50, 45, 54), (35, 30, 39))
 RECETAS = ('26', '27', '28', '29', '31')   # armas, armaduras, costura, tecnica, cocina
@@ -185,6 +188,8 @@ def filas_mall(defs, base):
     """Las filas del Item Mall: cada bolsa de 1 y de 10, en su pestana."""
     out, orden = [], {PESTANA_EQUIPO: 0, PESTANA_MONTURA: 0}
     for d in defs:
+        if d['nombre'] in FUERA_DEL_MALL:
+            continue
         for cuantas, precio in PACKS:
             orden[d['pestana']] += 1
             fila = dict(base, id=FILA_MALL_BASE + len(out), item=d['id'], category=d['pestana'],
@@ -238,7 +243,7 @@ def main():
     MALL.write_bytes((json.dumps(mall, ensure_ascii=False, indent=4) + '\n').replace('\n', '\r\n').encode('utf-8'))
     for d in defs:
         print('%5d %-30s %3d objetos' % (d['id'], d['nombre'], len(d['contenido'])))
-    print('Item Mall: %d filas viejas fuera, %d nuevas' % (len(viejas), len(PACKS) * len(defs)))
+    print('Item Mall: %d filas viejas fuera, %d nuevas' % (len(viejas), len(PACKS) * sum(d['nombre'] not in FUERA_DEL_MALL for d in defs)))
 
 
 if __name__ == '__main__':

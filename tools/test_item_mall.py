@@ -244,7 +244,7 @@ def test_hot_vacia_y_el_premio_principal_de_las_bolsas_al_1():
     import bolsas
     import item_mall
     # Hot (28) solo con las Lucky Bag por clase y la de Craftsman ("deben ir en hot", 03/11/2026).
-    assert {r['item'] for r in item_mall.datos()['rows'] if r['category'] == 28} == set(range(89100, 89124)) | {89127}
+    assert {r['item'] for r in item_mall.datos()['rows'] if r['category'] == 28} == set(range(89106, 89124)) | {89127}     # sin las Lv60 ("quita los lvl 60")
     random.seed(7)
     n = 20000
     # Heavy Beastman y Light Ice Suit Bag (las de arma salieron del mall: su pestana es ahora la de las Lucky Bag por
@@ -322,10 +322,11 @@ def test_las_lucky_bag_de_clase_siguen_la_plantilla():
     import item_mall
     random.seed(3)
     n = 20000
-    salen = collections.Counter(bolsas.abrir(89101) for _ in range(n))
+    salen = collections.Counter(bolsas.abrir(89107) for _ in range(n))           # Lv50 Axeman Lucky Bag
     assert abs(salen[(19418, 3)] / n - 0.14) < 0.01 and abs(salen[(2003, 2)] / n - 0.081) < 0.01
-    assert abs(salen[(3085, 10)] / n - 0.116) < 0.01
-    filas = [r for r in item_mall.datos()['rows'] if r['item'] == 89101]
+    assert abs(salen[(3084, 10)] / n - 0.116) < 0.01
+    filas = [r for r in item_mall.datos()['rows'] if r['item'] == 89107]
+    assert not [r for r in item_mall.datos()['rows'] if r['item'] == 89101]       # la Lv60 ya no se vende
     assert sorted((r['quantity'], r['price']) for r in filas) == [(1, 50), (11, 500), (110, 5000)]
     drop = (pathlib.Path(__file__).resolve().parent.parent / 'parches' / 'extras' / 'setting' / 'eng' / 'drop.xml')
-    assert '<drop 編號="28901" 怪物名稱="Lv60 Axeman Lucky Bag"' in drop.read_bytes().decode('utf-8')
+    assert '<drop 編號="28907" 怪物名稱="Lv50 Axeman Lucky Bag"' in drop.read_bytes().decode('utf-8')
