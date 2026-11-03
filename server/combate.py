@@ -2373,7 +2373,7 @@ _WEAPON_ATTACK_CACHE = {}
 PESO_STANCE = 1      # la suma pura, lo medido ("ese x2 deberia ser x1", 01/11/2026; antes 2)
 
 # Divisor fijo del daño de hechizo. Ver la nota del 高權位 mas abajo.
-DENOM_HECHIZO = 200
+DENOM_HECHIZO = 150
 
 
 def variacion_power(dano_base, dano_var, defecto: float = 0.05) -> float:
@@ -2407,7 +2407,7 @@ MULT_COMBO = 1.2
 MULT_GOLPE_BASICO = 0.25
 # Todo el dano FISICO de los jugadores (golpe basico y habilidades, contra monstruos y en PvP) por este factor: "sigue
 # pegando mucho el fisico, se puede reducir un 30%" (01/11/2026).
-FACTOR_DANO_FISICO = 0.7
+FACTOR_DANO_FISICO = 1.0
 # Lo que multiplica el ataque de la mascota en cada golpe, basico o habilidad, fisico o magico. Por debajo de un
 # jugador (~0,53 con FACTOR_DANO_FISICO): "el dano de la mascota debe ser menos que el de un personaje, que quede en
 # 0.4" (02/11/2026).
