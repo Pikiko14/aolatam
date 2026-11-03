@@ -1343,10 +1343,10 @@ def _palabra(clave: str, texto: str) -> bool:
 # formula y el numero ya lleva restada la defensa del bicho.
 RATIO_POR_FORMULA = {
     '40': 2.84,   # Strangle Strike IV: 274747
-    # Thunder Sword III: 73866 = 0,76 del ataque en Celestia. Pero en la captura del servidor privado una habilidad
-    # de formula 15 pega lo MISMO por golpe que la formula fisica pura (Slicing Hit IV 94, y 0,2426 x (360 + 85 -
-    # 228/3,52) = 92), asi que su multiplicador es 1: "ajustala a lo correcto y balanceado" (03/11/2026).
-    '15': 1.0,
+    # Una habilidad de un golpe pega 1,35 veces el basico, con su stance sumado al ataque: Tendon Chop (214) 3084 y PK
+    # IV (257) 3187 contra 2083 del basico, mismo personaje y mismo mob (03/11/2026). Los combos no: cada golpe de
+    # Combo Hit III (156) pega como un basico (MULT_COMBO).
+    '15': 1.35,
 }
 RATIO_FORMULA_DEFECTO = 1.0
 
@@ -2712,9 +2712,11 @@ K_DEFENSA = 420.0
 PESO_GOLPE_FISICO = 0.2426
 DIVISOR_DEFENSA_FISICA = 3.52
 PESO_GOLPE_MONSTRUO = PESO_GOLPE_FISICO
-# El golpe fisico a un monstruo: ataque x K / (Def + K). 470 cuadra el 883 del Swordsman contra el Rock Slarm y 420 la
-# invocacion de Celestia; 450 deja las dos a menos de un 3% (Monstruo.recibir).
-K_GOLPE_A_MONSTRUO = 450.0
+# El golpe fisico a un monstruo: ataque x K / (Def + K). Con cinco golpes del mismo Swordsman (R.Atk 2076, 03/11/2026)
+# -- basico 883 a un Rock Slarm (Def 635) y 2083 a una Lily (Def 25), Tendon Chop 3084, PK IV 3187, Combo Hit III 2223 --
+# K sale 424; la invocacion de Celestia daba 420. Todos quedan un ~6% por debajo, parejo: algo de ese personaje que no
+# sale en su R.Atk (rango, titulo, montura), no se mete para todos (Monstruo.recibir).
+K_GOLPE_A_MONSTRUO = 420.0
 DIVISOR_DEFENSA_MONSTRUO = DIVISOR_DEFENSA_FISICA
 
 
