@@ -1391,6 +1391,10 @@ def datos_magia(magic_id: int) -> dict:
     d_xml = _magic_xml().get(int(magic_id or 0))
     if d_xml:
         d.update(d_xml)
+        # El HP del magic.xml manda sobre la columna `hp` de content.db, que se lee primero: si no, un ajuste hecho
+        # en client_tables.json (Panther Killing, Frozen Snipe) no llegaba nunca.
+        if d_xml.get('HP') is not None:
+            d['hp'] = d_xml['HP']
     if d:
         try:
             res['nombre'] = d.get('名稱') or d.get('name') or ''
@@ -2408,11 +2412,25 @@ MULT_DANO_MASCOTA = 0.4
 MULT_SIN_RAMA = 1.35
 
 
+def pct_del_arma(magic_id: int) -> int:
+    """El % del ataque que pega una habilidad fisica cuyo Stance power va en porcentaje (HP定義 = 百分比), o 0.
+
+    "El PK5 tiene 100 de stance power, quiere decir que pega el 100% del arma" (02/11/2026): Panther Killing V traia
+    HP 100 en 百分比 y se sumaba como +100 de ataque, menos que los 257 del IV."""
+    d = datos_magia(magic_id) or {}
+    if not d.get('hp_pct') or not d.get('es_ataque'):
+        return 0
+    return int(d['hp_pct'])
+
+
 def mult_fisico(magic_id: int) -> float:
     """Cuanto multiplica el ataque una habilidad fisica: su poder (平均傷害, o el ratio de su formula) / 200."""
     c = combo_de(magic_id)
     if c and c.get('golpes', 1) > 1:
         return MULT_COMBO
+    pct = pct_del_arma(magic_id)
+    if pct:
+        return pct / 100.0
     import skills
     if not skills.skill_de_magia(magic_id):
         # Las de objetos, trampas, altares y mascotas (sin rama): su 平均傷害 es un poder fijo de 500-1700, no un
@@ -2438,7 +2456,10 @@ def tiempo_buff_cliente(magic_id: int, dur_ms: int) -> int:
 
 
 def stance_de(magic_id: int) -> int:
-    """El Stance power de esa habilidad, del campo `hp` de magic.xml."""
+    """El Stance power de esa habilidad, del campo `hp` de magic.xml. Si va en porcentaje no se suma: es el
+    multiplicador (pct_del_arma)."""
+    if pct_del_arma(magic_id):
+        return 0
     return abs(int(datos_magia(magic_id).get('hp', 0) or 0))
 
 
