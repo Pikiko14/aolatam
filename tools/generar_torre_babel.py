@@ -7,7 +7,8 @@ el jefe (npc_type, su nombre) y los stats con los que sale (hp, atk, def, matk, 
 * Se usan los jefes NORMALES del juego (monster.王 = 是 en content.db): nombre en ingles (los de nombre japones o
   chino son copias de otros servidores) y vida dentro de la curva de los jefes de campo. Fuera quedan los de evento
   y los especiales (Boom Slarm con 99.999.999, Totem Guard, los "Lord" de 4-5 millones...).
-* Piso con jefe de su nivel: sale tal cual (si hay varios, el de mas vida, sin repetir el del piso anterior).
+* Ningun jefe se repite en los 60 pisos.
+* Piso con jefe de su nivel: sale tal cual (si hay varios, el de mas vida).
 * Piso sin jefe de su nivel: el jefe del nivel mas cercano, con sus stats escalados a la curva del piso
   (CURVA: la media de los jefes base de cada nivel, interpolada).
 
@@ -102,25 +103,25 @@ def _recortar(stats, normal):
 def pisos():
     jefes = jefes_base()
     cur = curva(jefes)
-    salida, anterior, usados = [], None, set()
+    salida, usados = [], set()
     for piso in range(1, PISOS + 1):
-        del_nivel = sorted((j for j in jefes if j['nivel'] == piso), key=lambda j: -j['hp'])
-        del_nivel = [j for j in del_nivel if j['npc_type'] != anterior] or del_nivel
+        # "Que los jefes no se repitan" (02/11/2026): ninguno sale dos veces en los 60 pisos, ni con otro id y el
+        # mismo nombre (hay Guard Fasit, Wind Lord... repetidos en monster.xml).
+        libres = [j for j in jefes if j['nombre'] not in usados]
+        del_nivel = sorted((j for j in libres if j['nivel'] == piso), key=lambda j: -j['hp'])
         if del_nivel:
             j = del_nivel[0]
             stats = {s: j[s] for s in STATS}
             ajustado = False
         else:
-            # El del nivel mas cercano, mejor uno que aun no haya salido (si no, los pisos 1-9 alternaban dos).
-            cerca = sorted((j for j in jefes if j['npc_type'] != anterior),
-                           key=lambda j: (abs(j['nivel'] - piso), j['npc_type'] in usados, -j['hp']))
+            # El del nivel mas cercano de los que aun no han salido; a igual distancia, el de por debajo.
+            cerca = sorted(libres, key=lambda j: (abs(j['nivel'] - piso), j['nivel'] > piso, -j['hp']))
             j = cerca[0]
             base = cur[j['nivel']] if j['nivel'] <= PISOS else cur[PISOS]
             stats = {s: max(1, int(round(j[s] * cur[piso][s] / base[s]))) if base[s] else j[s] for s in STATS}
             ajustado = True
         stats, recortado = _recortar(stats, cur[piso])
-        anterior = j['npc_type']
-        usados.add(j['npc_type'])
+        usados.add(j['nombre'])
         salida.append({'piso': piso, 'npc_type': j['npc_type'], 'nombre': j['nombre'], 'nivel': piso,
                        'nivel_original': j['nivel'], 'ajustado': ajustado or recortado, **stats})
     return salida

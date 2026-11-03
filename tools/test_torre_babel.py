@@ -273,3 +273,10 @@ def test_la_torre_va_sin_mapa_ni_minimapa():
     import struct as _st
     import login
     assert _st.unpack_from('<I', login.flags_de_mapa(133), 2)[0] & login.SIN_MAPA
+
+
+def test_los_jefes_no_se_repiten():
+    """"Que los jefes no se repitan" (02/11/2026): 60 pisos, 60 jefes distintos (ni el mismo nombre con otro id)."""
+    pisos = tb.pisos()
+    assert len(pisos) == 60
+    assert len({p['nombre'] for p in pisos}) == 60 and len({p['npc_type'] for p in pisos}) == 60
