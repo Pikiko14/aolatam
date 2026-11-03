@@ -12,7 +12,7 @@ intento empieza de cero; premio por piso.
 * LA CORRIDA: iniciar() lleva al piso 1. Al cargar el mapa (al_entrar) sale el jefe del piso en su casilla
   (app._poner_generado, sin reaparicion); al morir (al_morir, desde app._procesar_muerte_monstruo) se anuncia el
   piso siguiente y a los PAUSA segundos todos suben a su sala, donde sale su jefe. Cada 10 pisos, ademas del botin del jefe, todos los de la
-  copia reciben tickets. En Party los jefes salen con todo x MULT_PARTY (vida, ataque y defensas).
+  copia reciben tickets. Los jefes salen con todo x MULT_SOLO o x MULT_PARTY (vida, ataque y defensas).
 * PARTY: solo el lider empieza la subida; al entrar el, a los demas de su party conectados les llega la
   solicitud (la ventana de la torre con TorreInvitacion) y con el boton de entrar se unen a su copia.
 * EL FINAL: cuando el ultimo de la copia sale del mapa (muerte, portal, desconexion: antes_de_viajar), la corrida
@@ -89,7 +89,9 @@ CMD_TORRE = 169
 SOLO, PARTY = 0, 1
 MODOS = ('Solo', 'Party')
 PAUSA = 5.0                 # segundos entre la muerte de un jefe y el siguiente: "ponle tiempo de 5 seg" (03/11/2026)
-MULT_PARTY = 2.0            # en Party los jefes x2: "aumenta un x2 a los jefes en el modo party" (02/11/2026)
+# "Sube la dificultad: solo x2 y parties x3" (03/11/2026). Antes Solo x1 y Party x2. Vida, ataque y defensas.
+MULT_SOLO = 2.0
+MULT_PARTY = 3.0
 # EL PREMIO CADA 10 PISOS: 5 de los vales que pide el canje de Event Overview > Exchange > Enhanced Pestle and Ride
 # Feed (Lucky Enhanced Pestle / Ride Feed / Piercing Hammer / Hammer Voucher, al azar entre los cuatro) y 5 Mount
 # Coins: "cada 10 pisos 5 materiales aleatorios para sacar de aca, y tambien mount coin 5" (02/11/2026).
@@ -285,7 +287,7 @@ def poner_jefe(ses, c):
     if m is None:
         log.warning('Torre de Babel: no se pudo sacar el jefe del piso %d (%s)', c['piso'], datos['npc_type'])
         return None
-    k = MULT_PARTY if c['modo'] == PARTY else 1.0
+    k = MULT_PARTY if c['modo'] == PARTY else MULT_SOLO
     m.hp_max = m.hp = int(datos['hp'] * k)
     m.atk, m.defensa = int(datos['atk'] * k), int(datos['def'] * k)
     m.matk, m.mdef = int(datos['matk'] * k), int(datos['mdef'] * k)

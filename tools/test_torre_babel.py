@@ -106,13 +106,13 @@ def test_una_corrida_solo_del_piso_1_al_siguiente(mundo):
     c = tb.corrida(a)
     jefe = a.monstruos[c['jefe']]
     p1 = tb.pisos()[0]
-    assert (jefe.npc_type, jefe.hp_max, jefe.atk) == (p1['npc_type'], p1['hp'], p1['atk'])
+    assert (jefe.npc_type, jefe.hp_max, jefe.atk) == (p1['npc_type'], int(p1['hp'] * 2), int(p1['atk'] * 2))   # solo x2
     tb.al_morir(a, jefe)
     assert c['piso'] == 2 and c['jefe'] in a.monstruos and a.monstruos[c['jefe']].npc_type == tb.pisos()[1]['npc_type']
     assert any('Floor 1 cleared' in t for t in mundo.carteles)
 
 
-def test_en_party_empieza_el_lider_invita_y_el_jefe_sale_x2(mundo):
+def test_en_party_empieza_el_lider_invita_y_el_jefe_sale_x3(mundo):
     a, b = mundo.nueva(1, 'Impacty'), mundo.nueva(2, 'Baco')
     b.canal_lua = 1
     equipos._DE_QUIEN.update({1: 1, 2: 1})
@@ -126,7 +126,7 @@ def test_en_party_empieza_el_lider_invita_y_el_jefe_sale_x2(mundo):
     c = tb.corrida(a)
     p1 = tb.pisos()[0]
     jefe = a.monstruos[c['jefe']]
-    assert (jefe.hp_max, jefe.atk, jefe.defensa) == (int(p1['hp'] * 2), int(p1['atk'] * 2), int(p1['def'] * 2))
+    assert (jefe.hp_max, jefe.atk, jefe.defensa) == (int(p1['hp'] * 3), int(p1['atk'] * 3), int(p1['def'] * 3))  # party x3
     assert tb.iniciar(b, '?', tb.PARTY) is None                              # acepta: se une a la misma corrida
     assert tb.corrida(b) is c and c['nombres'] == {'Impacty', 'Baco'}
     assert mundo.viajes[-1] == ('Baco', tb.STAGE)
