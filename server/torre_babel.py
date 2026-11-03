@@ -92,6 +92,9 @@ PAUSA = 5.0                 # segundos entre la muerte de un jefe y el siguiente
 # "Sube la dificultad: solo x2 y parties x3" (03/11/2026). Antes Solo x1 y Party x2. Vida, ataque y defensas.
 MULT_SOLO = 2.0
 MULT_PARTY = 3.0
+# "Que tengan su agro normal" (03/11/2026): muchos jefes son bichos de mapa abierto, pasivos (agro 0), y se
+# quedaban quietos hasta que se les pegaba. En la torre se tiran encima de quien este a esta distancia.
+AGRO_JEFE = 8
 # EL PREMIO CADA 10 PISOS: 5 de los vales que pide el canje de Event Overview > Exchange > Enhanced Pestle and Ride
 # Feed (Lucky Enhanced Pestle / Ride Feed / Piercing Hammer / Hammer Voucher, al azar entre los cuatro) y 5 Mount
 # Coins: "cada 10 pisos 5 materiales aleatorios para sacar de aca, y tambien mount coin 5" (02/11/2026).
@@ -245,9 +248,40 @@ def iniciar(ses, addr, modo):
     return None
 
 
+def _jefe_de(ses, c):
+    """El jefe vivo del piso en curso, lo tenga quien lo tenga en la copia. "A veces salen 2 mobs" (03/11/2026): cada
+    uno de la party tiene sus propios bichos y se miraba solo en los de quien entraba, asi que el segundo sacaba otro."""
+    m = c.get('jefe_obj')
+    if m is None or int(getattr(m, 'entity_id', 0)) != c.get('jefe'):
+        m = None
+        for s in [ses] + list(_en_la_copia(ses)):
+            m = (getattr(s, 'monstruos', None) or {}).get(c.get('jefe'))
+            if m is not None:
+                break
+    return m if m is not None and getattr(m, 'hp', 0) > 0 and getattr(m, 'vivo', True) else None
+
+
 def _jefe_vivo(ses, c):
-    m = (getattr(ses, 'monstruos', None) or {}).get(c.get('jefe'))
-    return m is not None and getattr(m, 'hp', 0) > 0
+    return _jefe_de(ses, c) is not None
+
+
+def _mostrar_jefe(s, m, c):
+    """Mete el jefe en los bichos de `s` y se lo dibuja con su vida (si no lo tiene ya)."""
+    import combate
+    import login
+    if getattr(s, 'cerrada', False):
+        return
+    if getattr(s, 'monstruos', None) is None:
+        s.monstruos = {}
+    if s.monstruos.get(m.entity_id) is m:
+        return
+    s.monstruos[m.entity_id] = m
+    m.compartido = True       # en los bichos de varios: lo lleva un solo bucle de IA (app, _ia_monstruos)
+    aparece = login._npc_spawn(m.entity_id, int(m.npc_type), m.nombre, (m.tile_x, m.tile_y),
+                               sprite=getattr(m, 'sprite', 0), klass=1)
+    (getattr(s, 'enviar_sin_espejo', None) or s.enviar)(aparece, combate.atributo(m.entity_id, m.porcentaje))
+    if hasattr(s, 'volcar'):
+        s.volcar()
 
 
 def _sacar(ses, addr='?'):
@@ -272,8 +306,11 @@ def al_entrar(ses, addr='?'):
     if (p.tile_x, p.tile_y) != llegada(c['piso']) and c['piso'] > 1:
         import desplazamientos                  # quien se une a medias, a la sala del piso en curso
         desplazamientos.reubicar(ses, llegada(c['piso']), 'torre')
-    if not _jefe_vivo(ses, c):
+    jefe = _jefe_de(ses, c)
+    if jefe is None:
         poner_jefe(ses, c)
+    else:
+        _mostrar_jefe(ses, jefe, c)
     _cartel(ses, 'Tower of Babel - Floor %d / %d: %s' % (c['piso'], total_pisos(), pisos()[c['piso'] - 1]['nombre']))
 
 
@@ -293,27 +330,19 @@ def poner_jefe(ses, c):
     m.matk, m.mdef = int(datos['matk'] * k), int(datos['mdef'] * k)
     m.nivel = int(datos['nivel'])
     m.piso_torre = c['piso']
+    m.agro = max(int(getattr(m, 'agro', 0) or 0), AGRO_JEFE)
     c['jefe'] = eid
+    c['jefe_obj'] = m
     ses.volcar()
-    # "Si estoy en pt no veo el mob jefe de la torre" (03/11/2026): la aparicion solo iba al que lo saca y al resto
-    # por el espejo de la sala, que no siempre llegaba. Se le manda tambien a cada uno de la copia, con su vida, y el
-    # jefe entra en sus bichos (si no comparten ya la sala) para que puedan pegarle.
-    try:
-        import combate
-        import login
-        aparece = login._npc_spawn(eid, int(datos['npc_type']), m.nombre, tuple(casilla_jefe(c['piso'])),
-                                   sprite=getattr(m, 'sprite', 0), klass=1)
-        for s in _en_la_copia(ses):
-            if s is ses or getattr(s, 'cerrada', False):
-                continue
-            if getattr(s, 'monstruos', None) is None:
-                s.monstruos = {}
-            s.monstruos.setdefault(eid, m)
-            (getattr(s, 'enviar_sin_espejo', None) or s.enviar)(aparece, combate.atributo(eid, m.porcentaje))
-            if hasattr(s, 'volcar'):
-                s.volcar()
-    except Exception:
-        log.exception('Torre de Babel: no se pudo mostrar el jefe a la party')
+    # "Si estoy en pt no veo el mob jefe de la torre" (03/11/2026): cada uno de la copia tiene sus propios bichos y
+    # el espejo de la sala no se lo llevaba. Se le mete y se le dibuja a cada uno, una sola vez.
+    for s in _en_la_copia(ses):
+        if s is not ses:
+            try:
+                _mostrar_jefe(s, m, c)
+            except Exception:
+                log.exception('Torre de Babel: no se pudo mostrar el jefe a %s',
+                              getattr(getattr(s, 'personaje', None), 'nombre', '?'))
     return m
 
 
@@ -363,6 +392,20 @@ def al_morir(ses, m, addr='?'):
         return
     piso = c['piso']
     c['jefe'] = None
+    # A los demas de la copia que lo tenian en sus bichos (_mostrar_jefe): fuera, para que no se quede de pie.
+    for s in _en_la_copia(ses):
+        if (s is ses or getattr(s, 'monstruos', None) is getattr(ses, 'monstruos', None)
+                or (getattr(s, 'monstruos', None) or {}).get(m.entity_id) is not m):
+            continue
+        try:
+            import combate
+            (getattr(s, 'enviar_sin_espejo', None) or s.enviar)(combate.atributo(m.entity_id, 0),
+                                                                combate.despawn_monstruo(m.entity_id))
+            s.monstruos.pop(m.entity_id, None)
+            if hasattr(s, 'volcar'):
+                s.volcar()
+        except Exception:
+            log.exception('Torre de Babel: no se pudo quitar el jefe a un companero')
     if piso % 10 == 0:
         _premio_cada_diez(ses, piso, addr)
     if piso >= total_pisos():

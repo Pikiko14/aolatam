@@ -12107,6 +12107,23 @@ class Servidor:
                             if _ajenos_ia and (getattr(m, 'en_combate_con', None) in _ajenos_ia
                                                or m.entity_id in _ajenos_ia):
                                 continue
+                            # UN BICHO EN LOS DICCIONARIOS DE VARIOS (el jefe de la Torre de Babel en Party, 03/11/2026:
+                            # "el mob no ataca y a veces da lag"): lo lleva solo el bucle de con quien pelea o, suelto,
+                            # el de su dueno. Si no, el bucle de un companero le borraba el objetivo cada 100 ms (el
+                            # else de abajo: "no es mi objetivo") y se movia dos veces.
+                            # Si el bucle que lo lleva deja de tocarlo 2 s (muerto, fuera, desconectado), lo toma otro.
+                            if getattr(m, 'compartido', False):
+                                _cc_ia = getattr(m, 'en_combate_con', None)
+                                _mios_ia = {yo, pet_eid} | {(getattr(ses, _k_ia, None) or {}).get('entity_id')
+                                                            for _k_ia in ('invocacion', 'invocacion2')}
+                                _conductor = getattr(m, 'conductor_ia', None)
+                                _reciente = ahora - getattr(m, 'ultimo_toque_ia', 0) < 2.0
+                                if _cc_ia is not None and _cc_ia in _mios_ia:
+                                    pass                                    # pelea conmigo: lo llevo yo
+                                elif _reciente and _conductor is not None and _conductor is not ses:
+                                    continue                                # lo lleva otro
+                                m.conductor_ia = ses
+                                m.ultimo_toque_ia = ahora
 
                             if (not getattr(m, 'en_combate_con', None)
                                     and not getattr(m, 'encantado', False)

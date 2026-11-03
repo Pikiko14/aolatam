@@ -134,6 +134,34 @@ def test_en_party_empieza_el_lider_invita_y_el_jefe_sale_x3(mundo):
     assert len(a.monstruos) == 1
 
 
+def test_en_party_con_bichos_separados_hay_un_solo_jefe_y_todos_lo_ven(mundo, monkeypatch):
+    """"A veces salen 2 mobs" / "si estoy en pt no veo el jefe" (03/11/2026): en el VPS cada uno de la party tiene sus
+    propios bichos. El segundo que entra no saca otro jefe: recibe el mismo, dibujado, y al morir se le quita."""
+    def poner(ses, eid, npc_type, tile, zona):
+        m = Bicho(eid, npc_type)
+        m.nombre, m.tile_x, m.tile_y, m.vivo = 'Jefe', tile[0], tile[1], True
+        m.porcentaje = 100
+        ses.monstruos[eid] = m                    # solo en los de quien lo saca
+        return m
+    monkeypatch.setattr(app, '_poner_generado', poner)
+    a, b = mundo.nueva(1, 'Impacty'), mundo.nueva(2, 'Baco')
+    b.canal_lua = 1
+    equipos._DE_QUIEN.update({1: 1, 2: 1})
+    equipos._GRUPOS.update({1: [a, b]})
+    assert tb.iniciar(a, '?', tb.PARTY) is None
+    tb.al_entrar(a)
+    assert tb.iniciar(b, '?', tb.PARTY) is None
+    tb.al_entrar(b)
+    c = tb.corrida(a)
+    assert list(a.monstruos) == list(b.monstruos) == [c['jefe']]
+    assert a.monstruos[c['jefe']] is b.monstruos[c['jefe']]
+    assert any(p[:2] == struct.pack('<H', 0x0008) for p in b.enviados)                   # a Baco se le dibuja
+    jefe = a.monstruos[c['jefe']]
+    jefe.hp, jefe.vivo = 0, False
+    tb.al_morir(a, jefe)
+    assert jefe.entity_id not in b.monstruos                                 # y se le quita al morir
+
+
 def test_el_lider_invita_tambien_si_la_subida_ya_estaba_empezada(mundo):
     a, b = mundo.nueva(1, 'Impacty'), mundo.nueva(2, 'Baco')
     b.canal_lua = 1
