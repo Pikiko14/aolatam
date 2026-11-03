@@ -40,15 +40,15 @@ def test_las_fisicas_pesan_como_el_basico_y_nunca_pasan_de_1_35():
     assert combate.mult_fisico(15523) == combate.MULT_SIN_RAMA     # Holy Guard I: no 18x
 
 
-def test_el_golpe_del_jugador_a_un_mob_es_la_formula_medida():
-    """Jugador de la captura (360 de ataque) contra Thunder Rabbit (Def 228): ~94 por golpe."""
-    class Rabbit(combate.Monstruo):
-        defensa_efectiva = mdef_efectiva = 228
+def test_el_golpe_del_jugador_a_un_mob_es_el_medido():
+    """Swordsman con R.Atk 2076 contra un Rock Slarm (Def 635): 883 de golpe basico en el juego (03/11/2026)."""
+    class RockSlarm(combate.Monstruo):
+        defensa_efectiva = mdef_efectiva = 635
 
         def __init__(self):
             self.hp, self.debuffs, self.panico = 10 ** 9, {}, False
-    d = Rabbit().recibir(360 + 85, mult=1.0, var_pct=0)
-    assert abs(d - 94) <= 3, d
+    d = RockSlarm().recibir(2076, mult=combate.MULT_GOLPE_BASICO, var_pct=0)
+    assert abs(d - 883) <= 883 * 0.03, d
 
 
 def test_el_fisico_sin_recorte():

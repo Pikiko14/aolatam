@@ -18,8 +18,7 @@ def test_del_i_al_v_pegan_50_60_70_80_y_100_por_ciento_del_ataque():
     for fam in (PANTHER, FROZEN):
         assert [combate.pct_del_arma(m) for m in fam] == [50, 60, 70, 80, 100]
         for m, pct in zip(fam, (50, 60, 70, 80, 100)):
-            # % del ataque del personaje: el peso del golpe fisico por el multiplicador da justo el %.
-            assert abs(combate.PESO_GOLPE_FISICO * combate.mult_fisico(m) - pct / 100.0) < 1e-9
+            assert combate.mult_fisico(m) == pct / 100.0       # % del ataque del personaje
             assert combate.stance_de(m) == 0      # el % no se suma ademas como ataque plano
 
 

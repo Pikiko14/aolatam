@@ -795,10 +795,11 @@ class Monstruo:
         if es_magico or not golpe_medido:
             base_dano = max(1.0, bruto * factor_def, bruto - defensa_target)
         else:
-            # EL GOLPE FISICO, el mismo que reciben los jugadores (dano_recibido), medido en la captura: el jugador
-            # le hacia 94 por golpe a un Thunder Rabbit (Def 228) con Slicing Hit IV y 360 de ataque, y esto da 92
-            # (con lo de antes, 219). 03/11/2026.
-            base_dano = max(1.0, PESO_GOLPE_FISICO * mult * (ataque - defensa_target / DIVISOR_DEFENSA_FISICA))
+            # EL GOLPE FISICO A UN MONSTRUO, medido: un Swordsman con R.Atk 2076 le pega 883 de golpe basico a un
+            # Rock Slarm (Def 635), y una invocacion de ATK 249 a un Condor (Def 329) 140-143. Las dos cuadran con
+            # ataque x K / (Def + K), K = K_GOLPE_A_MONSTRUO (861 y 144). No es la recta de los golpes a jugadores
+            # (dano_recibido), que aqui daria la mitad (03/11/2026).
+            base_dano = max(1.0, mult * ataque * K_GOLPE_A_MONSTRUO / (max(0, defensa_target) + K_GOLPE_A_MONSTRUO))
         spread = 1.0 + random.uniform(-var_pct, var_pct)
         d = max(1, int(round(base_dano * spread)))
         if mit_pct != 0:
@@ -2448,9 +2449,9 @@ def mult_fisico(magic_id: int) -> float:
     pct = pct_del_arma(magic_id)
     if pct:
         # El % es del ATAQUE del personaje (R.Atk, con verdes y buffs), no del golpe basico: "debe ser el 80% del
-        # ataque del personaje incluyendo verde, buff y demas" (03/11/2026). El golpe fisico ya multiplica por
-        # PESO_GOLPE_FISICO, asi que aqui se le quita: FS IV = 0,80 x (Atk - Def/3,52).
-        return pct / 100.0 / PESO_GOLPE_FISICO
+        # ataque del personaje incluyendo verde, buff y demas" (03/11/2026). Contra un monstruo, como cualquier golpe,
+        # luego le quita su defensa (Monstruo.recibir); en PvP ver pvp_liga.dano_pvp (peso).
+        return pct / 100.0
     import skills
     if not skills.skill_de_magia(magic_id):
         # Las de objetos, trampas, altares y mascotas (sin rama): su 平均傷害 es un poder fijo de 500-1700, no un
@@ -2706,11 +2707,14 @@ K_DEFENSA = 420.0
 # La de antes (420/(Dfs+420) o la resta, la mayor) daba 125 a 94 en esos mismos casos: los monstruos pegaban de 4 a
 # 8 veces lo que en el juego.
 #
-# Y la misma recta vale al reves: los golpes del jugador a esos Thunder Rabbits (Monstruo.recibir) y entre jugadores
-# (pvp_liga.dano_pvp) salen con ella.
+# Vale para los golpes que RECIBE un jugador: de un monstruo y, en PvP, de otro jugador (pvp_liga.dano_pvp). Los que
+# recibe un monstruo van con K_GOLPE_A_MONSTRUO.
 PESO_GOLPE_FISICO = 0.2426
 DIVISOR_DEFENSA_FISICA = 3.52
 PESO_GOLPE_MONSTRUO = PESO_GOLPE_FISICO
+# El golpe fisico a un monstruo: ataque x K / (Def + K). 470 cuadra el 883 del Swordsman contra el Rock Slarm y 420 la
+# invocacion de Celestia; 450 deja las dos a menos de un 3% (Monstruo.recibir).
+K_GOLPE_A_MONSTRUO = 450.0
 DIVISOR_DEFENSA_MONSTRUO = DIVISOR_DEFENSA_FISICA
 
 
