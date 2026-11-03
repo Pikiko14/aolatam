@@ -19827,12 +19827,12 @@ class Servidor:
                     if getattr(ses, 'monstruo_encantado', None) and getattr(ses.monstruo_encantado, 'vivo', False):
                         ses.monstruo_encantado.charmed_objetivo = _m
                 ses.enviar(_cb0.atributo(ent, _m.porcentaje if getattr(_m, 'vivo', False) else 0))
-                # OBJETIVO FIJADO (03/11/2026): "presione con un guerrero [la habilidad], presione el mob y no va a
-                # atacarlo con el poder". La captura real contesta el clic con 0x000A [yo][mob][0x03060001] y sin
-                # el el cliente no manda el 0x0006 de la habilidad (01_HECHOS_VERIFICADOS, "Fijar el objetivo").
-                # Se habia quitado junto con un 0x0006 forzado, que era lo que hacia pegar doble.
-                if getattr(_m, 'vivo', False) and not getattr(_m, 'encantado', False):
-                    ses.enviar(_cb0.fijar_objetivo(ses.entity_id or ses.personaje.entity_id, ent))
+                # SIN 0x000A "OBJETIVO FIJADO" AL CLIC (03/11/2026). Se volvio a mandar [yo][mob][0x03060001] para
+                # que el cliente lanzara la habilidad elegida y paso lo contrario: con el, lulada no mando ni una
+                # habilidad mas (log del VPS: antes del deploy lanzaba la 701 sobre Slarm y Lily; despues, ningun
+                # 'PIDE HABILIDAD'). Para el cliente (FUN_005ecbd0) un 0x000A es un golpe: el 0x03060001 se lee
+                # como tipo 1 con animacion 0x0306, y lo deja animando. La correccion de 01_HECHOS_VERIFICADOS
+                # ("EL ATAQUE BASICO SE PIDE CON 0x0005") ya lo decia: al clic se contesta solo con la vida.
                 # Diagnostico (03/11/2026, "sigue sin salir la vida roja").
                 log.info(f"[{addr}] CLIC EN MOB {ent} {_m.nombre}: vida {_m.porcentaje}% ({_m.hp}/{_m.hp_max}) "
                          f"vivo={getattr(_m, 'vivo', False)} cuerpo {cuerpo.hex(' ')}")
