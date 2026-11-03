@@ -86,10 +86,28 @@ def subir(ses, c):
         except Exception:
             log.exception('Torre de Babel: no se pudo subir la mascota de %s',
                           getattr(getattr(s, 'personaje', None), 'nombre', '?'))
+    _diagnostico(gente, c)
     vivos = [s for s in gente if not getattr(s, 'muerto', False)] or [ses]
     if not _jefe_vivo(vivos[0], c):
         poner_jefe(vivos[0], c)
     _cartel(ses, 'Tower of Babel - Floor %d / %d: %s' % (c['piso'], total_pisos(), pisos()[c['piso'] - 1]['nombre']))
+
+
+def _diagnostico(gente, c):
+    """Diagnostico (03/11/2026, "no me ven atacar... no ven mover"): por piso, con quien comparte cada uno."""
+    try:
+        import app
+        import presencia
+        for s in gente:
+            e = app._sala_de(s)
+            log.info('Torre de Babel piso %d: %s presencia=%s vecinos=%s sala=%s mismos_bichos=%s companeros=%s',
+                     c['piso'], s.personaje.nombre, getattr(s, '_mapa_presencia', None),
+                     [o.personaje.nombre for o in presencia._vivas(getattr(s, '_mapa_presencia', None)) if o is not s],
+                     id(e) if e is not None else None,
+                     e is not None and s.monstruos is e.monstruos,
+                     [o.personaje.nombre for o in app._companeros(s)])
+    except Exception:
+        log.exception('Torre de Babel: diagnostico')
 
 
 def _traer_acompanantes(s, destino, gente):
