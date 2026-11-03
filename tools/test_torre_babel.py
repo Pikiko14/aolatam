@@ -185,6 +185,21 @@ def test_al_subir_de_piso_la_mascota_va_con_su_dueno_y_los_demas_la_ven(mundo, m
     assert ('Impacty', ('inv', 'Baco'), ('pet', 'Baco', x + 1)) in recibidos
 
 
+def test_quien_ya_estuvo_en_la_torre_comparte_la_sala_de_su_party(mundo, monkeypatch):
+    """"No se ve ninguna animacion de ataque de los companeros" (03/11/2026): cada uno reutilizaba la sala de su
+    ultima entrada al 133 (ses.estado_mapa) y la party no compartia bichos ni golpes."""
+    monkeypatch.setattr(eventos_mundo, '_CORRIDAS', {})
+    a, b = mundo.nueva(1, 'Impacty'), mundo.nueva(2, 'Baco')
+    for s in (a, b):
+        s.personaje.stage = tb.STAGE
+        s.usuario = s.personaje.nombre
+    vieja_b = eventos_mundo.estado_de(b)                      # Baco estuvo antes solo en la torre
+    equipos._DE_QUIEN.update({1: 1, 2: 1})
+    equipos._GRUPOS.update({1: [a, b]})
+    sala = eventos_mundo.estado_de(a)
+    assert eventos_mundo.estado_de(b) is sala and sala is not vieja_b
+
+
 def test_el_lider_invita_tambien_si_la_subida_ya_estaba_empezada(mundo):
     a, b = mundo.nueva(1, 'Impacty'), mundo.nueva(2, 'Baco')
     b.canal_lua = 1

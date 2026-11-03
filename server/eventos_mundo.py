@@ -310,9 +310,14 @@ def estado_de(ses):
         import granja_liga
         return granja_liga.sala(ses)
     e = getattr(ses, 'estado_mapa', None)
-    if e is not None and e.stage == stage:
-        return e
     grupo = grupo_de_instancia(stage)
+    # En una instancia, la sala guardada en la sesion solo vale si es la de SU corrida de ahora. Se devolvia
+    # cualquiera del mismo stage: quien habia entrado antes (solo, o con otra party) se quedaba en su sala vieja y
+    # la party no compartia bichos ni golpes. Torre de Babel, 03/11/2026: "no se ve ninguna animacion de ataque de
+    # los companeros ni los poderes que lanzan", dos jefes por piso.
+    if e is not None and e.stage == stage and (
+            not grupo or _CORRIDAS.get(_clave_corrida(ses), {}).get('estados', {}).get(stage) is e):
+        return e
     if grupo:
         c = corrida_de(ses, grupo)
         e = c['estados'].get(stage)
