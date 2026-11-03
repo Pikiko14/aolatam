@@ -88,23 +88,38 @@ def test_nonpositive_star_up_is_noop(amount):
     assert pet == before
 
 
-def test_first_feed_generates_bonuses_and_applies_its_increment(monkeypatch):
+def test_first_feed_generates_bonuses_and_counts_one_upgrade(monkeypatch):
+    """Un IPF ya no suma verde al azar: solo genera el verde si no habia y cuenta +1."""
     pet = {'sprite': 3200, 'mejoras': 0, 'bonos': {}, 'estrellas': 1}
     monkeypatch.setattr(mascotas, 'sortear_bonos', lambda sprite: {'atk': 40})
-    monkeypatch.setattr(mascotas, 'rangos_bonos_de', lambda sprite: {'atk': (40, 40)})
     assert mascotas.mejorar_mascota(pet, exito_seguro=True) == (True, 1)
-    assert pet['bonos']['atk'] == 60
+    assert pet['bonos'] == {'atk': 40}
     assert pet['estrellas'] == mascotas.calcular_estrellas_total(pet['bonos'])
 
 
-def test_feed_recalculates_label_and_keeps_existing_bonuses():
+def test_feed_keeps_green_bonuses_and_recalculates_label():
     pet = copy.deepcopy(BATTLEMAID)
     pet['mejoras'] = 9
     pet['estrellas'] = 79  # stale label from old code
     before = pet['bonos'].copy()
     assert mascotas.mejorar_mascota(pet, exito_seguro=True) == (True, 10)
-    assert all(pet['bonos'][k] > v for k, v in before.items())
+    assert pet['bonos'] == before
     assert pet['estrellas'] == mascotas.calcular_estrellas_total(pet['bonos'])
+
+
+def test_each_feed_adds_three_percent_to_every_stat():
+    """"el ipf mejore 3% los stats cada 1": +10 son un 30% sobre base + verde, en la ficha y en la vida."""
+    pet = {'sprite': 3200, 'hp': 1000, 'hp_max': 1000, 'mp_max': 500, 'atk': 200, 'dfs': 100,
+           'matk': 300, 'mdef': 100, 'rigor': 50, 'agilidad': 40, 'bonos': {'atk': 100, 'hp': 200}}
+    base = mascotas.totales(pet)
+    assert base['atk'] == 300 and base['hp'] == 1200
+    pet['mejoras'] = 1
+    assert mascotas.totales(pet)['atk'] == 309
+    pet['mejoras'] = 10
+    t = mascotas.totales(pet)
+    assert t == {k: v + round(v * 0.30) for k, v in base.items()}
+    assert mascotas.hp_max_eff(pet) == 1560
+    assert pet['bonos'] == {'atk': 100, 'hp': 200}
 
 
 def test_feed_at_or_above_the_cap_is_noop():

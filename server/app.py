@@ -12338,7 +12338,7 @@ class Servidor:
                                                 elem_tot = thnd_d + fire_d + ice_d + rot_d
                                                 suyo = _cb.dano_recibido(m.pegar(), def_targ, elem_atk=elem_tot, elem_def=0)
                                             elif f_pet and targ_eid == pet_eid:
-                                                b_st_def = _ms.bonos_de_ficha(f_pet)
+                                                b_st_def = _ms.bonos_efectivos(f_pet)
                                                 b_bf_def = _ms.bonos_buffs(f_pet)
                                                 def_targ = int(f_pet.get('dfs', 50)) + int(b_st_def.get('dfs', 0)) + int(b_bf_def.get('dfs', 0))
                                                 if int(f_pet.get('saciedad', 0)) > 100:
@@ -12816,7 +12816,7 @@ class Servidor:
                                 dy_p = pet_targ.tile_y - pet_y
                                 dist_pet = max(abs(dx_p), abs(dy_p))
                                 r_pet = 2
-                                b_star = _ms.bonos_de_ficha(f_pet)
+                                b_star = _ms.bonos_efectivos(f_pet)
                                 b_bf_atk = _ms.bonos_buffs(f_pet)
                                 sac_buff = int(f_pet.get('saciedad', 0)) > 100
                                 agi_total = int(f_pet.get('agilidad', 15)) + int(b_star.get('agilidad', 0)) + int(b_bf_atk.get('agilidad', 0))
@@ -17459,9 +17459,8 @@ class Servidor:
                         ficha = _pet_ficha(ses, r)
                         break
             if ficha:
-                r = ficha.get('ranura')
-                veces = (ses.personaje.mejoras.get(r) or {}).get('veces', 0) if getattr(ses.personaje, 'mejoras', None) and r is not None else 0
-                f_env = _ms.aplicar_mejoras(ficha, _mj.stats_de_mejora(ficha.get('item', 0), 'mascota', veces)) if veces > 0 else ficha
+                # El % de los Improved Pet Feed ya lo pone mascotas.armar (bonos_efectivos) con ficha['mejoras'].
+                f_env = ficha
                 pkgs_15e = [_ms.armar(f_env)]
                 pet_eid_15e = getattr(ses, 'pet_entity_id', None) or f_env.get('entidad')
                 if f_env.get('fuera') and pet_eid_15e:

@@ -262,12 +262,37 @@ def bonos_de_ficha(estado: dict) -> dict:
     return calc
 
 
+# Cada Improved Pet Feed que sale bien sube un 3% TODOS los stats de la mascota (base + verde), y se acumula con el
+# contador +N: a +10, un 30% ("el ipf mejore 3% los stats cada 1", 02/11/2026). Antes sumaba unos puntos verdes al
+# azar que casi no se notaban.
+PCT_POR_IPF = 3
+
+
+def bonos_efectivos(estado: dict) -> dict:
+    """Lo que se suma a cada stat base de la mascota: su bono verde mas el % de sus Improved Pet Feed.
+
+    Las estrellas se siguen calculando con bonos_de_ficha (solo el verde): el IPF no sube estrellas."""
+    b = dict(bonos_de_ficha(estado))
+    if not isinstance(estado, dict):
+        return b
+    pct = PCT_POR_IPF * max(0, int(estado.get('mejoras') or 0))
+    if pct <= 0:
+        return b
+    base = {'hp': estado.get('hp_max') or estado.get('hp'), 'mp': estado.get('mp_max') or estado.get('mp')}
+    for k in ('atk', 'dfs', 'matk', 'mdef', 'rigor', 'agilidad'):
+        base[k] = estado.get(k)
+    for k, v in base.items():
+        total = int(v or 0) + int(b.get(k, 0))
+        b[k] = int(b.get(k, 0)) + int(round(total * pct / 100.0))
+    return b
+
+
 def totales(estado: dict) -> dict:
     """Los ocho stats TOTALES de la mascota (base + bono verde), los del
     tooltip: "Maximum MP 2074 (1541 + 533)". Los usa el Pet Amplify."""
     if not isinstance(estado, dict):
         return {}
-    b = bonos_de_ficha(estado)
+    b = bonos_efectivos(estado)
     base = {'hp': estado.get('hp_max') or estado.get('hp'), 'mp': estado.get('mp_max') or estado.get('mp')}
     for k in ('atk', 'dfs', 'matk', 'mdef', 'rigor', 'agilidad'):
         base[k] = estado.get(k)
@@ -377,7 +402,7 @@ def hp_max_eff(estado: dict) -> int:
     """Devuelve el HP maximo efectivo de la mascota (incluyendo bono de estrella, Pet's Satiation > 100 y buffs activos)."""
     if not isinstance(estado, dict):
         return 127
-    b_star = bonos_de_ficha(estado)
+    b_star = bonos_efectivos(estado)
     hp_max = max(1, int(estado.get('hp_max') or estado.get('hp') or 127))
     val = hp_max + int(b_star.get('hp', 0))
     if int(estado.get('saciedad') or 0) > 100:
@@ -391,7 +416,7 @@ def hp_eff(estado: dict) -> int:
     """Devuelve el HP actual efectivo de la mascota (escalado con estrella, Pet's Satiation > 100 y buffs activos)."""
     if not isinstance(estado, dict):
         return 127
-    b_star = bonos_de_ficha(estado)
+    b_star = bonos_efectivos(estado)
     hp_max = max(1, int(estado.get('hp_max') or estado.get('hp') or 127))
     hp = max(1, int(estado.get('hp') or hp_max))
     val = hp + int(b_star.get('hp', 0))
@@ -409,8 +434,8 @@ def armar(estado: dict) -> bytes:
     b = bytearray(TAM)
     nv = max(1, int(estado.get('nivel') or 1))
     sp = int(estado.get('sprite') or 0)
-    b_star = bonos_de_ficha(estado)
-    st_lvl = max(1, int(estado.get('estrellas') or calcular_estrellas_total(b_star)))
+    b_star = bonos_efectivos(estado)
+    st_lvl = max(1, int(estado.get('estrellas') or calcular_estrellas_total(bonos_de_ficha(estado))))
     mej = max(0, int(estado.get('mejoras') or 0))
 
     hp_max = max(1, int(estado.get('hp_max') or estado.get('hp') or 127))
@@ -643,11 +668,10 @@ def subir_estrella(ficha: dict, cantidad: int = 1) -> int:
 def mejorar_mascota(ficha: dict, exito_seguro: bool = False, rng=None) -> tuple:
     """Aplica un Improved Pet Feed (寵物強化): sube el contador de intensificacion (+1..+10,
     que el cliente muestra como 'has been intensified ( N ) times' en e[83] y +N en defensas
-    elementales) y mejora los bonos verdes de los stats especificos de la mascota.
+    elementales). Cada uno sube un PCT_POR_IPF (3%) todos los stats, que se aplica en bonos_efectivos.
 
     Tiene el mismo tope y la misma probabilidad que el equipo (mejoras.MAX_MEJORA y mejoras.probabilidad); antes
-    salia siempre bien hasta +15. Un fallo gasta el pienso y no toca nada: no baja un punto como el equipo porque
-    los bonos que dio cada pienso son al azar y no se pueden deshacer."""
+    salia siempre bien hasta +15. Un fallo gasta el pienso y no toca nada: no baja un punto como el equipo."""
     import random
     import mejoras
     rng = rng or random
@@ -659,16 +683,11 @@ def mejorar_mascota(ficha: dict, exito_seguro: bool = False, rng=None) -> tuple:
         return False, mej
     mej += 1
     ficha['mejoras'] = mej
-    rangos = rangos_bonos_de(sp)
+    # Lo que da el pienso es el PCT_POR_IPF por mejora sobre todos los stats (bonos_efectivos), no verde: el verde
+    # solo se sortea si la mascota aun no tenia, para que tenga estrellas.
     bonos = dict(ficha.get('bonos') or {})
     if not bonos:
         bonos = sortear_bonos(sp)
-    # Generar los bonos que faltan no sustituye el efecto del primer pienso.
-    # Conservamos la politica de incrementos existente hasta verificar la
-    # formula oficial; no presentar estos coeficientes como datos del XML.
-    for k, (lo, hi) in rangos.items():
-        inc = max(1, random.randint(max(1, lo // 2), max(2, hi // 2)))
-        bonos[k] = int(bonos.get(k, 0)) + inc
     ficha['bonos'] = bonos
     ficha['estrellas'] = calcular_estrellas_total(bonos)
     return True, mej
@@ -686,8 +705,8 @@ def entrada(plantilla: bytes, estado: dict) -> bytes:
         e = (e + bytes(TAM_ENTRADA))[:TAM_ENTRADA]
     nv = max(1, int(estado.get('nivel') or 1))
     sp = int(estado.get('sprite') or 0)
-    b_star = bonos_de_ficha(estado)
-    st_lvl = max(1, int(estado.get('estrellas') or calcular_estrellas_total(b_star)))
+    b_star = bonos_efectivos(estado)
+    st_lvl = max(1, int(estado.get('estrellas') or calcular_estrellas_total(bonos_de_ficha(estado))))
     for campo, off in OFF_ENTRADA.items():
         v = estado.get(campo)
         if v is None:
