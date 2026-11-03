@@ -296,12 +296,35 @@ LINEA_XML_MONEDA_MONTURA = (
     '    <道具 編號="%d" 原型介面="30691" 基本名稱="Mount Coin" 物品類別="一般" 重量="1" log等級="60" '
     '說明定義="%s" 可堆疊="是" />') % (ITEM_MONEDA_MONTURA, _DESC_MONEDA_MONTURA)
 
+# LAS LUCKY BAGS DEL ITEM MALL por clase (Lv30-60), montura y craftsman (03/11/2026): items propios de item9.xml como
+# la caja de nivel 55, con su contenido en plantillas/lucky_bags_mall.json (tools/generar_lucky_bags.py), que tambien
+# lo pone en drops_bolsas.json con el mismo id para abrirlas.
+def _lucky_bags_mall():
+    try:
+        return json.loads((pathlib.Path(__file__).parent / 'plantillas' / 'lucky_bags_mall.json')
+                          .read_text(encoding='utf-8'))
+    except Exception:
+        return []
+
+
+LUCKY_BAGS_MALL = _lucky_bags_mall()
+ICONO_LUCKY_BAG = 8747                  # el de las Lv70 <Clase> Lucky Bag
+
+
+def _linea_xml_lucky_bag(bolsa):
+    return ('    <道具 編號="%d" 原型介面="%d" 基本名稱="%s" 物品類別="紅包" 物品等級="%d" 重量="10" '
+            '動態資料1="%d" log等級="80" 說明定義="%s" 可使用="是" />'
+            ) % (bolsa['id'], ICONO_LUCKY_BAG, bolsa['nombre'], bolsa['nivel'], bolsa.get('tabla', bolsa['id']),
+                 bolsa['descripcion'].replace('"', "'"))
+
+
 LINEAS_ITEM9_PROPIAS = ((83266, LINEA_XML_MEDALLA), (ITEM_CAJA_55, LINEA_XML_CAJA_55),
                         (ITEM_MONEDA_MONTURA, LINEA_XML_MONEDA_MONTURA)) + tuple(
     (iid, _linea_xml_maleta_pd(iid)) for iid in MALETAS_PD) + tuple(
     (aura[0], _linea_xml_aura(aura)) for aura in AURAS_LOW) + tuple(
     (pieza[0], _linea_xml_pd_invierno(pieza)) for pieza in PD_INVIERNO) + tuple(
-    (maleta[0], _linea_xml_maleta_invierno(maleta)) for maleta in MALETAS_INVIERNO)
+    (maleta[0], _linea_xml_maleta_invierno(maleta)) for maleta in MALETAS_INVIERNO) + tuple(
+    (bolsa['id'], _linea_xml_lucky_bag(bolsa)) for bolsa in LUCKY_BAGS_MALL)
 
 
 # DONDE ESTA EL CLIENTE.
@@ -729,6 +752,19 @@ def registrar_medalla_en_servidor():
                          '是', '是', '是', 'update26'))
                     con.commit()
                     log.info("Item %d (%s) registrado en corpus/content.db", iid, nombre)
+            for bolsa in LUCKY_BAGS_MALL:
+                fila = con.execute('SELECT "動態資料1", "說明定義" FROM item9 WHERE id = ?', (str(bolsa['id']),)).fetchone()
+                if fila and tuple(fila) != (str(bolsa.get('tabla', bolsa['id'])), bolsa['descripcion']):
+                    con.execute('DELETE FROM item9 WHERE id = ?', (str(bolsa['id']),))   # regenerada: va de nuevo
+                    fila = None
+                if not fila:
+                    con.execute(
+                        'INSERT INTO item9 (id, "原型介面", "基本名稱", "物品類別", "物品等級", weight, '
+                        '"動態資料1", "log等級", "說明定義", "可使用", _pak) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                        (str(bolsa['id']), str(ICONO_LUCKY_BAG), bolsa['nombre'], '紅包', str(bolsa['nivel']), '10',
+                         str(bolsa.get('tabla', bolsa['id'])), '80', bolsa['descripcion'], '是', 'update26'))
+                    con.commit()
+                    log.info("Item %d (%s) registrado en corpus/content.db", bolsa['id'], bolsa['nombre'])
             for iid, (nombre, _) in MALETAS_PD.items():
                 if not con.execute('SELECT id FROM item9 WHERE id = ?', (str(iid),)).fetchone():
                     con.execute(
@@ -755,6 +791,7 @@ def registrar_medalla_en_servidor():
             propios.update({str(pieza[0]): pieza[4] for pieza in PD_INVIERNO})
             propios.update({str(maleta[0]): maleta[2] for maleta in MALETAS_INVIERNO})
             propios[str(ITEM_MONEDA_MONTURA)] = 'Mount Coin'
+            propios.update({str(b['id']): b['nombre'] for b in LUCKY_BAGS_MALL})
             if isinstance(nombres, dict) and any(k not in nombres for k in propios):
                 for k, n in propios.items():
                     nombres.setdefault(k, n)

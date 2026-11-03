@@ -447,6 +447,24 @@ def _sorteo(tabla_id, excluir=()):
     return (it, ct)
 
 
+_CON_CANTIDADES = None
+
+
+def bolsas_con_cantidades() -> set:
+    """Las Lucky Bags de clase del Item Mall (plantillas/lucky_bags_mall.json, 'cantidades'): dan lo que dice su
+    plantilla -- 2 gemas, 10 piezas de mapa, 3 Triple Exp Card -- y no una unidad como las demas del Mall (03/11/2026)."""
+    global _CON_CANTIDADES
+    if _CON_CANTIDADES is None:
+        try:
+            import json
+            defs = json.loads((pathlib.Path(__file__).parent / 'plantillas' / 'lucky_bags_mall.json')
+                              .read_text(encoding='utf-8'))
+            _CON_CANTIDADES = {int(d['id']) for d in defs if d.get('cantidades')}
+        except Exception:
+            _CON_CANTIDADES = set()
+    return _CON_CANTIDADES
+
+
 def abrir(item_id: int):
     """Que sale de esa bolsa: (item, cuantos), o None si no se puede abrir."""
     iid = int(item_id or 0)
@@ -459,7 +477,7 @@ def abrir(item_id: int):
     if _sin_pociones_fuertes(iid):
         excluir |= {it for it, _c, _p in _opciones(valor) if pocion_fuerte(it)}
     sale = _sorteo_premio_al_1(valor, excluir) if iid in bolsas_premio_al_1() else _sorteo(valor, excluir)
-    if sale and iid in bolsas_del_mall():
+    if sale and iid in bolsas_del_mall() and iid not in bolsas_con_cantidades():
         # UNA UNIDAD de cada premio en las bolsas del Item Mall: daban 12 cartas de EXP, 7 scrolls, 2 pestles...
         # (pedido del usuario el 31/10/2026). El tooltip dice lo mismo (tools/parche_lucky_bags.py).
         sale = (SCROLLS_DEL_MALL.get(sale[0], sale[0]), 1)
@@ -486,8 +504,9 @@ def bolsas_premio_al_1():
     global _PREMIO_AL_1
     if _PREMIO_AL_1 is None:
         import item_mall
+        # Las de clase propias no: sus porcentajes son los de su plantilla (tools/generar_lucky_bags.py).
         _PREMIO_AL_1 = {int(r['item']) for r in item_mall.datos()['rows']
-                        if r['category'] in PESTANAS_PREMIO_AL_1}
+                        if r['category'] in PESTANAS_PREMIO_AL_1} - bolsas_con_cantidades()
     return _PREMIO_AL_1
 
 

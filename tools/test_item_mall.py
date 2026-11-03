@@ -245,7 +245,9 @@ def test_hot_vacia_y_el_premio_principal_de_las_bolsas_al_1():
     assert not [r for r in item_mall.datos()['rows'] if r['category'] == 28]
     random.seed(7)
     n = 20000
-    for bolsa, principal in ((9407, 1477), (9432, 9455)):          # Sword of Goddess Bag, Heavy Beastman Suit Bag
+    # Heavy Beastman y Light Ice Suit Bag (las de arma salieron del mall: su pestana es ahora la de las Lucky Bag por
+    # clase, tools/generar_lucky_bags.py, que van con sus propios porcentajes).
+    for bolsa, principal in ((9433, 9456), (9432, 9455)):
         salen = collections.Counter(bolsas.abrir(bolsa)[0] for _ in range(n))
         assert 0.006 < salen[principal] / n < 0.014, salen[principal]
         assert len(salen) == 10                                     # los otros nueve siguen saliendo
@@ -259,13 +261,13 @@ def test_el_tooltip_del_cliente_dice_1_por_ciento():
     sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
     import parche_lucky_bags as plb
     # El cliente pinta cada prob como prob / factor (no divide por la suma): con factor 100, 1 = 1% y 11 = 11%.
-    fila = ('<drop 編號="4336" adv_prob1="40" factor="100" item1="1477" count1="1" prob1="10" item2="8579" '
+    fila = ('<drop 編號="4361" adv_prob1="40" factor="100" item1="9455" count1="1" prob1="10" item2="8579" '
             'count2="1" prob2="10" item3="3377" count3="1" prob3="10" />')
     nueva = plb.ajustar_fila(fila)
     probs = {int(n): int(v) for n, v in re.findall(r'\sprob(\d+)="(\d+)"', nueva)}
     assert probs[1] == 1 and sum(probs.values()) == 100 and 'factor="100"' in nueva
     assert 'adv_prob1="40"' in plb.ajustar_fila(fila)
-    assert 4336 in plb.tablas()
+    assert 4361 in plb.tablas()                                         # Heavy Beastman Suit Bag
 
 
 def test_los_premios_de_las_bolsas_van_por_importancia():
@@ -292,8 +294,10 @@ def test_las_bolsas_del_mall_no_dan_scrolls_high_effect():
     import random
     import bolsas
     random.seed(5)
-    salen = {bolsas.abrir(9417)[0] for _ in range(3000)}                # Rose Sword Bag
-    assert not salen & set(bolsas.SCROLLS_DEL_MALL) and {3805, 3806} <= salen
+    for bolsa in bolsas.bolsas_del_mall():
+        que = bolsas._cargar().get(bolsa) or bolsas._cargar_extra().get(bolsa)
+        if que and {it for it, _c, _p in bolsas._opciones(que[1])} & set(bolsas.SCROLLS_DEL_MALL):
+            assert not {bolsas.abrir(bolsa)[0] for _ in range(500)} & set(bolsas.SCROLLS_DEL_MALL), bolsa
 
 
 def test_las_bolsas_del_mall_dan_una_unidad_de_cada_premio():
@@ -301,4 +305,25 @@ def test_las_bolsas_del_mall_dan_una_unidad_de_cada_premio():
     import random
     import bolsas
     random.seed(9)
-    assert {bolsas.abrir(9417)[1] for _ in range(1000)} == {1}          # Rose Sword Bag: antes 12 cartas, 7 scrolls...
+    assert {bolsas.abrir(9440)[1] for _ in range(1000)} == {1}          # Heavy Knight Suit Bag: trae premios x2
+    # Las de clase si dan sus cantidades (2 gemas, 10 piezas, 3 cartas): "agregales el mismo porcentaje" (03/11/2026).
+    assert {bolsas.abrir(89101)[1] for _ in range(1000)} > {1}
+
+
+def test_las_lucky_bag_de_clase_siguen_la_plantilla():
+    """Lv60 Axeman Lucky Bag con la plantilla de la captura del usuario sin Upgrade Coin (03/11/2026): Triple Exp Card
+    x3 ~14%, Super Broadcasting x2 ~8%, 10 Map Piece ~12%; y su fila en el drop.xml del parche para el tooltip."""
+    import collections
+    import pathlib
+    import random
+    import bolsas
+    import item_mall
+    random.seed(3)
+    n = 20000
+    salen = collections.Counter(bolsas.abrir(89101) for _ in range(n))
+    assert abs(salen[(19418, 3)] / n - 0.14) < 0.01 and abs(salen[(2003, 2)] / n - 0.081) < 0.01
+    assert abs(salen[(3085, 10)] / n - 0.116) < 0.01
+    filas = [r for r in item_mall.datos()['rows'] if r['item'] == 89101]
+    assert sorted((r['quantity'], r['price']) for r in filas) == [(1, 200), (10, 2000)]
+    drop = (pathlib.Path(__file__).resolve().parent.parent / 'parches' / 'extras' / 'setting' / 'eng' / 'drop.xml')
+    assert '<drop 編號="28901" 怪物名稱="Lv60 Axeman Lucky Bag"' in drop.read_bytes().decode('utf-8')
