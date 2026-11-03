@@ -3,7 +3,7 @@
   "id": 89100,
   "nombre": "Lv60 Swordsman Lucky Bag",
   "nivel": 60,
-  "pestana": 29,
+  "pestana": 28,
   "cantidades": true,
   "descripcion": "Open it to get one of the following (Lv55-60 Swordsman gear): rare weapon 5.8%, rare armor 5.8%, quality weapon 11.6%, quality armor 11.6%, gems x2 14.0%, map pieces x10 11.6%, Triple Exp Card x3 14.0%, Super Broadcasting x2 8.1%, Summon Book x2 8.1%, Fly Book x2 9.3%.",
   "contenido": [
@@ -159,7 +159,7 @@
   "id": 89101,
   "nombre": "Lv60 Axeman Lucky Bag",
   "nivel": 60,
-  "pestana": 29,
+  "pestana": 28,
   "cantidades": true,
   "descripcion": "Open it to get one of the following (Lv55-60 Axeman gear): rare weapon 5.8%, rare armor 5.8%, quality weapon 11.6%, quality armor 11.6%, gems x2 14.0%, map pieces x10 11.6%, Triple Exp Card x3 14.0%, Super Broadcasting x2 8.1%, Summon Book x2 8.1%, Fly Book x2 9.3%.",
   "contenido": [
@@ -315,7 +315,7 @@
   "id": 89102,
   "nombre": "Lv60 Lancer Lucky Bag",
   "nivel": 60,
-  "pestana": 29,
+  "pestana": 28,
   "cantidades": true,
   "descripcion": "Open it to get one of the following (Lv55-60 Lancer gear): rare weapon 5.8%, rare armor 5.8%, quality weapon 11.6%, quality armor 11.6%, gems x2 14.0%, map pieces x10 11.6%, Triple Exp Card x3 14.0%, Super Broadcasting x2 8.1%, Summon Book x2 8.1%, Fly Book x2 9.3%.",
   "contenido": [
@@ -471,7 +471,7 @@
   "id": 89103,
   "nombre": "Lv60 Archer Lucky Bag",
   "nivel": 60,
-  "pestana": 29,
+  "pestana": 28,
   "cantidades": true,
   "descripcion": "Open it to get one of the following (Lv55-60 Archer gear): rare weapon 5.8%, rare armor 5.8%, quality weapon 11.6%, quality armor 11.6%, gems x2 14.0%, map pieces x10 11.6%, Triple Exp Card x3 14.0%, Super Broadcasting x2 8.1%, Summon Book x2 8.1%, Fly Book x2 9.3%.",
   "contenido": [
@@ -627,7 +627,7 @@
   "id": 89104,
   "nombre": "Lv60 Mage Lucky Bag",
   "nivel": 60,
-  "pestana": 29,
+  "pestana": 28,
   "cantidades": true,
   "descripcion": "Open it to get one of the following (Lv55-60 Mage gear): rare weapon 5.8%, rare armor 5.8%, quality weapon 11.6%, quality armor 11.6%, gems x2 14.0%, map pieces x10 11.6%, Triple Exp Card x3 14.0%, Super Broadcasting x2 8.1%, Summon Book x2 8.1%, Fly Book x2 9.3%.",
   "contenido": [
@@ -783,7 +783,7 @@
   "id": 89105,
   "nombre": "Lv60 Assassin Lucky Bag",
   "nivel": 60,
-  "pestana": 29,
+  "pestana": 28,
   "cantidades": true,
   "descripcion": "Open it to get one of the following (Lv55-60 Assassin gear): rare weapon 5.8%, rare armor 5.8%, quality weapon 11.6%, quality armor 11.6%, gems x2 14.0%, map pieces x10 11.6%, Triple Exp Card x3 14.0%, Super Broadcasting x2 8.1%, Summon Book x2 8.1%, Fly Book x2 9.3%.",
   "contenido": [
@@ -939,7 +939,7 @@
   "id": 89106,
   "nombre": "Lv50 Swordsman Lucky Bag",
   "nivel": 50,
-  "pestana": 29,
+  "pestana": 28,
   "cantidades": true,
   "descripcion": "Open it to get one of the following (Lv50-59 Swordsman gear): rare weapon 5.8%, rare armor 5.8%, quality weapon 11.6%, quality armor 11.6%, gems x2 14.0%, map pieces x10 11.6%, Triple Exp Card x3 14.0%, Super Broadcasting x2 8.1%, Summon Book x2 8.1%, Fly Book x2 9.3%.",
   "contenido": [
@@ -1095,7 +1095,7 @@
   "id": 89107,
   "nombre": "Lv50 Axeman Lucky Bag",
   "nivel": 50,
-  "pestana": 29,
+  "pestana": 28,
   "cantidades": true,
   "descripcion": "Open it to get one of the following (Lv50-59 Axeman gear): rare weapon 5.8%, rare armor 5.8%, quality weapon 11.6%, quality armor 11.6%, gems x2 14.0%, map pieces x10 11.6%, Triple Exp Card x3 14.0%, Super Broadcasting x2 8.1%, Summon Book x2 8.1%, Fly Book x2 9.3%.",
   "contenido": [
@@ -1251,7 +1251,7 @@
   "id": 89108,
   "nombre": "Lv50 Lancer Lucky Bag",
   "nivel": 50,
-  "pestana": 29,
+  "pestana": 28,
   "cantidades": true,
   "descripcion": "Open it to get one of the following (Lv50-59 Lancer gear): rare weapon 5.8%, rare armor 5.8%, quality weapon 11.6%, quality armor 11.6%, gems x2 14.0%, map pieces x10 11.6%, Triple Exp Card x3 14.0%, Super Broadcasting x2 8.1%, Summon Book x2 8.1%, Fly Book x2 9.3%.",
   "contenido": [
@@ -1407,7 +1407,7 @@
   "id": 89109,
   "nombre": "Lv50 Archer Lucky Bag",
   "nivel": 50,
-  "pestana": 29,
+  "pestana": 28,
   "cantidades": true,
   "descripcion": "Open it to get one of the following (Lv50-59 Archer gear): rare weapon 5.8%, rare armor 5.8%, quality weapon 11.6%, quality armor 11.6%, gems x2 14.0%, map pieces x10 11.6%, Triple Exp Card x3 14.0%, Super Broadcasting x2 8.1%, Summon Book x2 8.1%, Fly Book x2 9.3%.",
   "contenido": [
@@ -1563,7 +1563,7 @@
   "id": 89110,
   "nombre": "Lv50 Mage Lucky Bag",
   "nivel": 50,
-  "pestana": 29,
+  "pestana": 28,
   "cantidades": true,
   "descripcion": "Open it to get one of the following (Lv50-59 Mage gear): rare weapon 5.8%, rare armor 5.8%, quality weapon 11.6%, quality armor 11.6%, gems x2 14.0%, map pieces x10 11.6%, Triple Exp Card x3 14.0%, Super Broadcasting x2 8.1%, Summon Book x2 8.1%, Fly Book x2 9.3%.",
   "contenido": [
@@ -1719,7 +1719,7 @@
   "id": 89111,
   "nombre": "Lv50 Assassin Lucky Bag",
   "nivel": 50,
-  "pestana": 29,
+  "pestana": 28,
   "cantidades": true,
   "descripcion": "Open it to get one of the following (Lv50-59 Assassin gear): rare weapon 5.8%, rare armor 5.8%, quality weapon 11.6%, quality armor 11.6%, gems x2 14.0%, map pieces x10 11.6%, Triple Exp Card x3 14.0%, Super Broadcasting x2 8.1%, Summon Book x2 8.1%, Fly Book x2 9.3%.",
   "contenido": [
@@ -1870,7 +1870,7 @@
   "id": 89112,
   "nombre": "Lv40 Swordsman Lucky Bag",
   "nivel": 40,
-  "pestana": 29,
+  "pestana": 28,
   "cantidades": true,
   "descripcion": "Open it to get one of the following (Lv40-49 Swordsman gear): rare weapon 5.8%, rare armor 5.8%, quality weapon 11.6%, quality armor 11.6%, gems x2 14.0%, map pieces x10 11.6%, Triple Exp Card x3 14.0%, Super Broadcasting x2 8.1%, Summon Book x2 8.1%, Fly Book x2 9.3%.",
   "contenido": [
@@ -2041,7 +2041,7 @@
   "id": 89113,
   "nombre": "Lv40 Axeman Lucky Bag",
   "nivel": 40,
-  "pestana": 29,
+  "pestana": 28,
   "cantidades": true,
   "descripcion": "Open it to get one of the following (Lv40-49 Axeman gear): rare weapon 5.8%, rare armor 5.8%, quality weapon 11.6%, quality armor 11.6%, gems x2 14.0%, map pieces x10 11.6%, Triple Exp Card x3 14.0%, Super Broadcasting x2 8.1%, Summon Book x2 8.1%, Fly Book x2 9.3%.",
   "contenido": [
@@ -2212,7 +2212,7 @@
   "id": 89114,
   "nombre": "Lv40 Lancer Lucky Bag",
   "nivel": 40,
-  "pestana": 29,
+  "pestana": 28,
   "cantidades": true,
   "descripcion": "Open it to get one of the following (Lv40-49 Lancer gear): rare weapon 5.8%, rare armor 5.8%, quality weapon 11.6%, quality armor 11.6%, gems x2 14.0%, map pieces x10 11.6%, Triple Exp Card x3 14.0%, Super Broadcasting x2 8.1%, Summon Book x2 8.1%, Fly Book x2 9.3%.",
   "contenido": [
@@ -2378,7 +2378,7 @@
   "id": 89115,
   "nombre": "Lv40 Archer Lucky Bag",
   "nivel": 40,
-  "pestana": 29,
+  "pestana": 28,
   "cantidades": true,
   "descripcion": "Open it to get one of the following (Lv40-49 Archer gear): rare weapon 5.8%, rare armor 5.8%, quality weapon 11.6%, quality armor 11.6%, gems x2 14.0%, map pieces x10 11.6%, Triple Exp Card x3 14.0%, Super Broadcasting x2 8.1%, Summon Book x2 8.1%, Fly Book x2 9.3%.",
   "contenido": [
@@ -2549,7 +2549,7 @@
   "id": 89116,
   "nombre": "Lv40 Mage Lucky Bag",
   "nivel": 40,
-  "pestana": 29,
+  "pestana": 28,
   "cantidades": true,
   "descripcion": "Open it to get one of the following (Lv40-49 Mage gear): rare weapon 5.8%, rare armor 5.8%, quality weapon 11.6%, quality armor 11.6%, gems x2 14.0%, map pieces x10 11.6%, Triple Exp Card x3 14.0%, Super Broadcasting x2 8.1%, Summon Book x2 8.1%, Fly Book x2 9.3%.",
   "contenido": [
@@ -2720,7 +2720,7 @@
   "id": 89117,
   "nombre": "Lv40 Assassin Lucky Bag",
   "nivel": 40,
-  "pestana": 29,
+  "pestana": 28,
   "cantidades": true,
   "descripcion": "Open it to get one of the following (Lv40-49 Assassin gear): rare weapon 5.8%, rare armor 5.8%, quality weapon 11.6%, quality armor 11.6%, gems x2 14.0%, map pieces x10 11.6%, Triple Exp Card x3 14.0%, Super Broadcasting x2 8.1%, Summon Book x2 8.1%, Fly Book x2 9.3%.",
   "contenido": [
@@ -2876,7 +2876,7 @@
   "id": 89118,
   "nombre": "Lv30 Swordsman Lucky Bag",
   "nivel": 30,
-  "pestana": 29,
+  "pestana": 28,
   "cantidades": true,
   "descripcion": "Open it to get one of the following (Lv30-39 Swordsman gear): rare weapon 5.8%, rare armor 5.8%, quality weapon 11.6%, quality armor 11.6%, gems x2 14.0%, map pieces x10 11.6%, Triple Exp Card x3 14.0%, Super Broadcasting x2 8.1%, Summon Book x2 8.1%, Fly Book x2 9.3%.",
   "contenido": [
@@ -3037,7 +3037,7 @@
   "id": 89119,
   "nombre": "Lv30 Axeman Lucky Bag",
   "nivel": 30,
-  "pestana": 29,
+  "pestana": 28,
   "cantidades": true,
   "descripcion": "Open it to get one of the following (Lv30-39 Axeman gear): rare weapon 5.8%, rare armor 5.8%, quality weapon 11.6%, quality armor 11.6%, gems x2 14.0%, map pieces x10 11.6%, Triple Exp Card x3 14.0%, Super Broadcasting x2 8.1%, Summon Book x2 8.1%, Fly Book x2 9.3%.",
   "contenido": [
@@ -3198,7 +3198,7 @@
   "id": 89120,
   "nombre": "Lv30 Lancer Lucky Bag",
   "nivel": 30,
-  "pestana": 29,
+  "pestana": 28,
   "cantidades": true,
   "descripcion": "Open it to get one of the following (Lv30-39 Lancer gear): rare weapon 5.8%, rare armor 5.8%, quality weapon 11.6%, quality armor 11.6%, gems x2 14.0%, map pieces x10 11.6%, Triple Exp Card x3 14.0%, Super Broadcasting x2 8.1%, Summon Book x2 8.1%, Fly Book x2 9.3%.",
   "contenido": [
@@ -3354,7 +3354,7 @@
   "id": 89121,
   "nombre": "Lv30 Archer Lucky Bag",
   "nivel": 30,
-  "pestana": 29,
+  "pestana": 28,
   "cantidades": true,
   "descripcion": "Open it to get one of the following (Lv30-39 Archer gear): rare weapon 5.8%, rare armor 5.8%, quality weapon 11.6%, quality armor 11.6%, gems x2 14.0%, map pieces x10 11.6%, Triple Exp Card x3 14.0%, Super Broadcasting x2 8.1%, Summon Book x2 8.1%, Fly Book x2 9.3%.",
   "contenido": [
@@ -3515,7 +3515,7 @@
   "id": 89122,
   "nombre": "Lv30 Mage Lucky Bag",
   "nivel": 30,
-  "pestana": 29,
+  "pestana": 28,
   "cantidades": true,
   "descripcion": "Open it to get one of the following (Lv30-39 Mage gear): rare weapon 5.8%, rare armor 5.8%, quality weapon 11.6%, quality armor 11.6%, gems x2 14.0%, map pieces x10 11.6%, Triple Exp Card x3 14.0%, Super Broadcasting x2 8.1%, Summon Book x2 8.1%, Fly Book x2 9.3%.",
   "contenido": [
@@ -3676,7 +3676,7 @@
   "id": 89123,
   "nombre": "Lv30 Assassin Lucky Bag",
   "nivel": 30,
-  "pestana": 29,
+  "pestana": 28,
   "cantidades": true,
   "descripcion": "Open it to get one of the following (Lv30-39 Assassin gear): rare weapon 5.8%, rare armor 5.8%, quality weapon 11.6%, quality armor 11.6%, gems x2 14.0%, map pieces x10 11.6%, Triple Exp Card x3 14.0%, Super Broadcasting x2 8.1%, Summon Book x2 8.1%, Fly Book x2 9.3%.",
   "contenido": [
@@ -4682,7 +4682,7 @@
   "id": 89127,
   "nombre": "Lv1-60 Craftsman Lucky Bag",
   "nivel": 1,
-  "pestana": 29,
+  "pestana": 28,
   "descripcion": "Open it to get one random craftsman recipe (weapons, armor, sewing, technics or cooking) or craftsman robot up to Lv60.",
   "contenido": [
    [

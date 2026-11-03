@@ -19,7 +19,7 @@ def test_catalog_is_original_mall_not_npc_shop():
     assert len(mall.datos()['rows'])>200 and mall.datos()['historical_rows']==475
     assert mall.datos()['historical'] and mall.datos()['purchases_enabled']
     assert mall.datos()['source'].endswith('mall.xml')
-    assert {r['category'] for r in mall.datos()['rows']} >= {11,13,16,19,24,25,29}
+    assert {r['category'] for r in mall.datos()['rows']} >= {11,13,16,19,24,25,28}
     assert not {r['category'] for r in mall.datos()['rows']} & {32,33,34,35}
 
 
@@ -243,7 +243,8 @@ def test_hot_vacia_y_el_premio_principal_de_las_bolsas_al_1():
     import random
     import bolsas
     import item_mall
-    assert not [r for r in item_mall.datos()['rows'] if r['category'] == 28]
+    # Hot (28) solo con las Lucky Bag por clase y la de Craftsman ("deben ir en hot", 03/11/2026).
+    assert {r['item'] for r in item_mall.datos()['rows'] if r['category'] == 28} == set(range(89100, 89124)) | {89127}
     random.seed(7)
     n = 20000
     # Heavy Beastman y Light Ice Suit Bag (las de arma salieron del mall: su pestana es ahora la de las Lucky Bag por
