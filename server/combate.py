@@ -3295,6 +3295,12 @@ def efecto_recuperacion_mp(atacante: int, objetivo: int, rec_mp: int, efecto: in
     return [struct.pack('<H', 0x0011) + bytes(b0), struct.pack('<H', 0x0011) + bytes(b1)]
 
 
+# Lo que dura el GCD en el cliente. Celestia manda 500, pero el GCD bloquea TODA la barra: una habilidad de SP dejaba
+# en espera las de MP y al reves ("los poderes de sp no le quitan cooldown a los de mp y viceversa", 02/11/2026). En 0
+# cada una se queda con su cooldown (後置時間) y entre dos del mismo tipo espera app (PAUSA_ENTRE_HABILIDADES).
+GCD_MS = 0
+
+
 def gcd_paquete() -> bytes:
     """Opcode 0x0149: el cooldown global (GCD).
 
@@ -3303,7 +3309,7 @@ def gcd_paquete() -> bytes:
     cada uso de habilidad, asi que un GCD mal formado es candidato a que el
     cliente no deje lanzar ninguna.
     """
-    return struct.pack('<HIIIIIIIIBBH', 0x0149, 1, 0, 500, 0, 0, 0, 0, 72, 5, 255, 255)
+    return struct.pack('<HIIIIIIIIBBH', 0x0149, 1, 0, GCD_MS, 0, 0, 0, 0, 72, 5, 255, 255)
 
 
 def efecto_magia_self_inicio(yo: int, ef: int, tipo: int, cast_time: int = 100,

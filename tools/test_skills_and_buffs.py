@@ -71,7 +71,8 @@ def test_visual_packets():
     gcd = cb.gcd_paquete()
     assert len(gcd) == 38, f"GCD packet len must be 38, got {len(gcd)}"
     assert gcd[:2] == struct.pack('<H', 0x0149), "GCD opcode must be 0x0149"
-    assert struct.unpack_from('<I', gcd, 10)[0] == 500, "GCD duration must be 500ms"
+    # 0, no los 500 de Celestia: el GCD bloquea toda la barra y una de SP dejaba en espera las de MP (02/11/2026).
+    assert struct.unpack_from('<I', gcd, 10)[0] == cb.GCD_MS == 0, "GCD duration must be GCD_MS"
     print("test_visual_packets passed!")
 
 def test_stats_with_buffs():

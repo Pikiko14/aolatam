@@ -13628,11 +13628,16 @@ class Servidor:
                 # otra: el Angel Baby lanzaba Fighting Shield y Ferocious Song con 3 ms de diferencia y salian
                 # las dos juntas ("usa los 2 poderes de axe a la vez"). La siguiente espera a que acabe el
                 # lanzamiento (前置時間) y como minimo combate.PAUSA_ENTRE_HABILIDADES.
-                if _ahora_atk < getattr(ses, '_lanzando_hasta', 0):
-                    log.info(f"[{addr}] HABILIDAD {tipo} RECHAZADA: aun se esta lanzando la anterior")
+                # Por TIPO: una de SP no hace esperar a una de MP ni al reves (02/11/2026).
+                _tipo_coste = 'sp' if mag.get('cost_sp') else 'mp'
+                _lanzando = getattr(ses, '_lanzando_hasta', None)
+                if not isinstance(_lanzando, dict):
+                    _lanzando = ses._lanzando_hasta = {}
+                if _ahora_atk < _lanzando.get(_tipo_coste, 0):
+                    log.info(f"[{addr}] HABILIDAD {tipo} RECHAZADA: aun se esta lanzando la anterior de {_tipo_coste}")
                     return
-                ses._lanzando_hasta = _ahora_atk + max(_cb.PAUSA_ENTRE_HABILIDADES,
-                                                       float(mag.get('cast_time', 0) or 0) / 1000.0)
+                _lanzando[_tipo_coste] = _ahora_atk + max(_cb.PAUSA_ENTRE_HABILIDADES,
+                                                         float(mag.get('cast_time', 0) or 0) / 1000.0)
                 _usos[tipo] = _ahora_atk
                 # Una habilidad ES el ataque de ese turno: el cliente manda el golpe basico justo detras y salia
                 # tambien la flecha normal ("si uso 1 turno de ataque... no debe lanzar la flecha basica"). Vale
