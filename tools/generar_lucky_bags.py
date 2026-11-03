@@ -59,18 +59,21 @@ ARMADURA = ('衣服', '頭飾', '手套', '鞋子')
 MONTURAS = ((60, 55, 60), (50, 45, 54), (35, 30, 39))
 RECETAS = ('26', '27', '28', '29', '31')   # armas, armaduras, costura, tecnica, cocina
 
-# LA PLANTILLA DE LAS BOLSAS DE CLASE, la de su Lv60 Axeman Lucky Bag (captura del usuario, 03/11/2026) con lo que hay
-# en este cliente y sin los Upgrade Coin (300 y 150, 6% y 8%: "quita esos de upgrade coin"); su 14% se reparte
-# entre los demas en proporcion. Devil (arma amarilla) 5, Sealed Top Armor Box 5 (aqui una pieza amarilla: las Top
-# Armor Box de nivel 35/45 no abren), Quality Golden Hammer (arma azul) 10, Sealed Fine Armor Box 10 (pieza azul),
-# Level 60 Gem Gacha x2 12, Robber Lord Map Piece x10 10, Triple Exp Card (30 Min) x3 12, Super Broadcasting x2 7,
-# Witch Summon Book x2 7, Witch Fly Book x2 8.
-FIJOS = ((12, 19418, 3), (7, 2003, 2), (7, 1333, 2), (8, 2987, 2))   # Triple Exp Card, Broadcasting, Summon/Fly Book
-TEXTOS = ('rare weapon', 'rare armor', 'quality weapon', 'quality armor', 'gems x2', 'map pieces x10',
-          'Triple Exp Card x3', 'Super Broadcasting x2', 'Summon Book x2', 'Fly Book x2')
-GEMAS = ('Ruby', 'Orange Gem', 'Yellow Gem', 'Emerald', 'Sapphire', 'Purple Gem')
-TALLA_GEMA = {30: 'Flawed ', 40: '', 50: 'Clean ', 60: 'Flawless '}
-PIEZA_MAPA = {30: 2, 40: 3, 50: 4, 60: 5}                          # Map Piece de ese nivel (su 動態資料1)
+# LA PLANTILLA DE LAS BOLSAS DE CLASE. Partio de la Lv60 Axeman Lucky Bag de su captura (sin los Upgrade Coin) y el
+# usuario la ajusto (03/11/2026): "que de toda la armadura rara 1%, el arma amarilla 1%, 5% las gemas que sean lvl 40,
+# los map pieces quitalos, las skill exp y exp card sean double no triple". Esas tres van exactas; lo demas (arma y
+# armadura azul 10, las dos cartas 6 y 6, Super Broadcasting 7, Summon Book 7, Fly Book 8) se reparte el 93% que queda
+# en proporcion. Si a una bolsa le falta un tipo de pieza, su parte se reparte entre las demas al sortear.
+_RESTO = 93.0 / 54
+PLANTILLA = (  # (texto, % de la bolsa, que)
+    ('rare weapon', 1.0, 'arma_rara'), ('rare armor', 1.0, 'ropa_rara'),
+    ('quality weapon', 10 * _RESTO, 'arma_azul'), ('quality armor', 10 * _RESTO, 'ropa_azul'),
+    ('gems x2', 5.0, 'gemas'),
+    ('Double Exp Card x3', 6 * _RESTO, (2017, 3)), ('Double Skill Exp Card x3', 6 * _RESTO, (2018, 3)),
+    ('Super Broadcasting x2', 7 * _RESTO, (2003, 2)), ('Summon Book x2', 7 * _RESTO, (1333, 2)),
+    ('Fly Book x2', 8 * _RESTO, (2987, 2)),
+)
+GEMAS = ('Ruby', 'Orange Gem', 'Yellow Gem', 'Emerald', 'Sapphire', 'Purple Gem')   # las de nivel 40, sin prefijo
 
 
 POR_HUECO = 7                      # piezas por hueco de equipo: 4 x 7 + 11 fijos caben en las 40 de una fila de drop.xml
@@ -82,15 +85,10 @@ def _mejores(filas):
     return [(int(f['id']), 1) for f in filas[:POR_HUECO]]
 
 
-def _gemas(items, nivel):
-    nombres = {TALLA_GEMA[nivel] + g for g in GEMAS}
+def _gemas(items):
+    nombres = set(GEMAS)
     return sorted({min(int(f['id']) for f in items.values() if f['物品類別'] == '寶石'
                        and (f['基本名稱'] or '').strip() == n) for n in nombres})
-
-
-def _pieza_mapa(items, nivel):
-    return min(int(f['id']) for f in items.values() if f['物品類別'] == '地圖碎片'
-               and (f['基本名稱'] or '').strip() == 'Map Piece' and str(f.get('動態資料1')) == str(PIEZA_MAPA[nivel]))
 
 
 def _n(x):
@@ -147,19 +145,16 @@ def bolsas():
                     arma[color].append(f)
                 elif (cat in ARMADURA and str(f['技能限制1']) == armadura) or (escudo and cat == '盾'):
                     ropa[color].append(f)
-            huecos = [  # (% de la plantilla, [(item, cuantos)])
-                (5, _mejores(arma['黃'])), (5, _mejores(ropa['黃'])),
-                (10, _mejores(arma['藍'])), (10, _mejores(ropa['藍'])),
-                (12, [(g, 2) for g in _gemas(items, nivel)]),
-                (10, [(_pieza_mapa(items, nivel), 10)]),
-            ] + [(pct, [(iid, cuantos)]) for pct, iid, cuantos in FIJOS]
+            opciones_de = {'arma_rara': _mejores(arma['黃']), 'ropa_rara': _mejores(ropa['黃']),
+                           'arma_azul': _mejores(arma['藍']), 'ropa_azul': _mejores(ropa['藍']),
+                           'gemas': [(g, 2) for g in _gemas(items)]}
+            huecos = [(txt, pct, opciones_de[que] if isinstance(que, str) else [que]) for txt, pct, que in PLANTILLA]
             contenido = []
-            for pct, opciones in huecos:
+            for _txt, pct, opciones in huecos:
                 for iid, cuantos in opciones:
-                    contenido.append([iid, cuantos, max(1, pct * 1000 // len(opciones))])
-            total = sum(pct for pct, opciones in huecos if opciones)
-            partes = ['%s %.1f%%' % (txt, 100.0 * pct / total) for (pct, opciones), txt in zip(huecos, TEXTOS)
-                      if opciones]
+                    contenido.append([iid, cuantos, max(1, int(round(pct * 1000 / len(opciones))))])
+            total = sum(pct for _txt, pct, opciones in huecos if opciones)
+            partes = ['%s %.1f%%' % (txt, 100.0 * pct / total) for txt, pct, opciones in huecos if opciones]
             salida.append({'id': siguiente, 'nombre': 'Lv%d %s Lucky Bag' % (nivel, clase), 'nivel': nivel,
                            'pestana': PESTANA_EQUIPO, 'cantidades': True,
                            'descripcion': 'Open it to get one of the following (Lv%d-%d %s gear): %s.'

@@ -313,8 +313,8 @@ def test_las_bolsas_del_mall_dan_una_unidad_de_cada_premio():
 
 
 def test_las_lucky_bag_de_clase_siguen_la_plantilla():
-    """Lv60 Axeman Lucky Bag con la plantilla de la captura del usuario sin Upgrade Coin (03/11/2026): Triple Exp Card
-    x3 ~14%, Super Broadcasting x2 ~8%, 10 Map Piece ~12%; y su fila en el drop.xml del parche para el tooltip."""
+    """La plantilla ajustada por el usuario (03/11/2026): arma y armadura raras 1% cada una, gemas de nivel 40 al 5%,
+    sin Map Piece, y Double Exp / Double Skill Exp Card en vez de la Triple; y su fila en el drop.xml del tooltip."""
     import collections
     import pathlib
     import random
@@ -323,8 +323,11 @@ def test_las_lucky_bag_de_clase_siguen_la_plantilla():
     random.seed(3)
     n = 20000
     salen = collections.Counter(bolsas.abrir(89107) for _ in range(n))           # Lv50 Axeman Lucky Bag
-    assert abs(salen[(19418, 3)] / n - 0.14) < 0.01 and abs(salen[(2003, 2)] / n - 0.081) < 0.01
-    assert abs(salen[(3084, 10)] / n - 0.116) < 0.01
+    assert abs(salen[(2017, 3)] / n - 0.103) < 0.01 and abs(salen[(2018, 3)] / n - 0.103) < 0.01
+    assert abs(salen[(2003, 2)] / n - 0.121) < 0.01 and not salen[(19418, 3)]
+    assert not [k for k in salen if k[1] == 10]                                    # sin piezas de mapa
+    gemas = sum(v for (it, ct), v in salen.items() if ct == 2 and it in (3093, 3098, 3103, 3108, 3113, 3118))
+    assert abs(gemas / n - 0.05) < 0.006
     filas = [r for r in item_mall.datos()['rows'] if r['item'] == 89107]
     assert not [r for r in item_mall.datos()['rows'] if r['item'] == 89101]       # la Lv60 ya no se vende
     assert sorted((r['quantity'], r['price']) for r in filas) == [(1, 50), (11, 500), (110, 5000)]
