@@ -32,8 +32,11 @@ local function pintar()
   end
 end
 
-function TorreAbrir(modos, pisos)
+-- en_curso: 0 nada; 1 dentro de la torre (el boton sale de ella); 2 fuera, con la subida de su party en marcha (el
+-- boton se une). piso: el de la subida. modo: el de la subida (para unirse en el mismo).
+function TorreAbrir(modos, pisos, en_curso, piso, modo)
   T.modos = modos
+  T.en_curso = en_curso or 0
   if window.isexist(WND_TORRE) then
     window.setforeground(WND_TORRE)
   else
@@ -50,7 +53,21 @@ function TorreAbrir(modos, pisos)
   window.settitle(hijo(59023), modos[2])
   window.settitle(hijo(59027), "Enter")
   T.invitacion = nil
+  if T.en_curso ~= 0 and modo then
+    T.modo = modo
+  end
   pintar()
+  T.aviso_curso = nil
+  if T.en_curso == 1 then
+    window.settitle(hijo(59027), "Leave")
+    T.aviso_curso = "Floor " .. tostring(piso) .. ". Leave: the others keep climbing."
+  elseif T.en_curso == 2 then
+    window.settitle(hijo(59027), "Join")
+    T.aviso_curso = "Your party is on floor " .. tostring(piso) .. ". Press Join."
+  end
+  if T.aviso_curso then
+    estado(T.aviso_curso)
+  end
 end
 
 -- filas: {{nombres, pisos, tiempo}, ...}, de la mejor a la peor.
@@ -74,6 +91,8 @@ function TorreRanking(modo, filas)
   pintar()
   if invitacion and modo == 1 then
     estado(corto(invitacion, 12) .. " invites you. Press the check.")
+  elseif T.aviso_curso then
+    estado(T.aviso_curso)                       -- el aviso de salir o de unirse que puso TorreAbrir
   elseif #filas == 0 then
     estado("No climbs yet. Be the first!")
   end
@@ -120,6 +139,10 @@ function OnTorreParty(dwID, dwCmdID, dwParam, pParam)
 end
 
 function OnTorreEntrar(dwID, dwCmdID, dwParam, pParam)
-  game.netcommand2(CMD_TORRE, 3, T.modo)
+  if (T.en_curso or 0) == 1 then
+    game.netcommand2(CMD_TORRE, 4, T.modo)      -- salir de la torre (solo este personaje)
+  else
+    game.netcommand2(CMD_TORRE, 3, T.modo)
+  end
   return 1
 end

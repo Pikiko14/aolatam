@@ -200,6 +200,31 @@ def test_quien_ya_estuvo_en_la_torre_comparte_la_sala_de_su_party(mundo, monkeyp
     assert eventos_mundo.estado_de(b) is sala and sala is not vieja_b
 
 
+def test_cada_uno_sale_cuando_quiere_y_puede_volver_mientras_dure_la_subida(mundo, monkeypatch):
+    """"Que de la opcion de salir de la corrida... puede salir cada 1 y no afecta a los demas y mientras la corrida
+    este pueden entrar" (03/11/2026)."""
+    a, b = mundo.nueva(1, 'Impacty'), mundo.nueva(2, 'Baco')
+    equipos._DE_QUIEN.update({1: 1, 2: 1})
+    equipos._GRUPOS.update({1: [a, b]})
+    assert tb.iniciar(a, '?', tb.PARTY) is None and tb.iniciar(b, '?', tb.PARTY) is None
+    c = tb.corrida(a)
+    c['piso'] = 4
+    textos = [x[2:-1].decode('latin1') for x in tb.abrir(b)[1:2]]
+    assert textos[0].startswith('TorreAbrir({"Solo","Party"},60,1,4,1)')          # dentro: el boton es Leave
+    sale = struct.pack('<BII', tb.CMD_TORRE, 4, tb.PARTY)
+    assert tb.procesar(b, sale) is True
+    assert mundo.sacados == ['Baco'] and tb.corrida(a) is c                          # Impacty sigue subiendo
+    textos = [x[2:-1].decode('latin1') for x in tb.abrir(b)[1:2]]
+    assert textos[0].startswith('TorreAbrir({"Solo","Party"},60,2,4,1)')          # fuera: Join, en Party
+    assert tb.iniciar(b, '?', tb.PARTY) is None and tb.corrida(b) is c              # vuelve a la misma subida
+    assert mundo.viajes[-1] == ('Baco', tb.STAGE)
+    tb.antes_de_viajar(b, 41)                                                        # sale otra vez: Impacty sigue
+    b.personaje.stage = 41
+    assert tb.corrida(a) is c
+    tb.antes_de_viajar(a, 41)                                                        # sale el ultimo: se acaba
+    assert tb.corrida(a) is None
+
+
 def test_el_lider_invita_tambien_si_la_subida_ya_estaba_empezada(mundo):
     a, b = mundo.nueva(1, 'Impacty'), mundo.nueva(2, 'Baco')
     b.canal_lua = 1

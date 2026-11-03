@@ -521,8 +521,27 @@ def _lua():
 
 
 def abrir(ses, modo=SOLO):
-    return [canal_lua.paquete(_lua()), canal_lua.llamar('TorreAbrir', list(MODOS), total_pisos()),
-            lista(modo)]
+    """La ventana. "Que de la opcion de salir de la corrida a los personajes, puede salir cada 1 y no afecta a los
+    demas, y mientras la corrida este pueden entrar" (03/11/2026): dentro, el boton saca (Leave); fuera, con la subida
+    de su party en marcha, se une (Join) en su modo y va al piso en curso."""
+    c = corrida(ses)
+    dentro = c is not None and getattr(getattr(ses, 'personaje', None), 'stage', None) == STAGE
+    if c is None:
+        llamada = canal_lua.llamar('TorreAbrir', list(MODOS), total_pisos())
+    else:
+        modo = c['modo']
+        llamada = canal_lua.llamar('TorreAbrir', list(MODOS), total_pisos(), 1 if dentro else 2, c['piso'], modo)
+    return [canal_lua.paquete(_lua()), llamada, lista(modo)]
+
+
+def salir(ses, addr='?'):
+    """Saca de la torre solo a `ses`. Los demas siguen; si era el ultimo dentro, la subida acaba (antes_de_viajar)."""
+    p = getattr(ses, 'personaje', None)
+    if not p or getattr(p, 'stage', None) != STAGE:
+        return 'You are not in the Tower of Babel.'
+    log.info('%s sale de la Torre de Babel (piso %s)', p.nombre, (corrida(ses) or {}).get('piso'))
+    _sacar(ses, addr)
+    return None
 
 
 def lista(modo):
@@ -546,4 +565,7 @@ def procesar(ses, cuerpo, addr='?') -> bool:
             ses.enviar(canal_lua.llamar('TorreAviso', motivo))
         else:
             ses.enviar(canal_lua.llamar('TorreCerrar'))
+    elif a == 4:
+        motivo = salir(ses, addr)
+        ses.enviar(canal_lua.llamar('TorreAviso', motivo) if motivo else canal_lua.llamar('TorreCerrar'))
     return True
