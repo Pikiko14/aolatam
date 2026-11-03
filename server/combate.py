@@ -2443,25 +2443,24 @@ def pct_del_arma(magic_id: int) -> int:
 
 def mult_fisico(magic_id: int) -> float:
     """Cuanto multiplica el ataque una habilidad fisica: su poder (平均傷害, o el ratio de su formula) / 200."""
+    # UN STANCE EN PORCENTAJE (HP定義 = 百分比: PK V y FS V al 100%, Web Trap) es ese % del ATAQUE del personaje
+    # (R.Atk con verdes y buffs) sumado como stance: (Atk + Atk x pct) x el peso de la habilidad, o sea el peso por
+    # (1 + pct). Leido como "pega el pct del ataque" PK V pegaba como un basico, menos que PK IV (03/11/2026).
+    pct = pct_del_arma(magic_id)
+    extra = 1.0 + pct / 100.0
     c = combo_de(magic_id)
     if c and c.get('golpes', 1) > 1:
-        return MULT_COMBO
-    pct = pct_del_arma(magic_id)
-    if pct:
-        # El % es del ATAQUE del personaje (R.Atk, con verdes y buffs), no del golpe basico: "debe ser el 80% del
-        # ataque del personaje incluyendo verde, buff y demas" (03/11/2026). Contra un monstruo, como cualquier golpe,
-        # luego le quita su defensa (Monstruo.recibir); en PvP ver pvp_liga.dano_pvp (peso).
-        return pct / 100.0
+        return MULT_COMBO * extra
     import skills
     if not skills.skill_de_magia(magic_id):
         # Las de objetos, trampas, altares y mascotas (sin rama): su 平均傷害 es un poder fijo de 500-1700, no un
         # multiplicador. Siguen como estaban.
-        return MULT_SIN_RAMA
+        return MULT_SIN_RAMA * extra
     d = datos_magia(magic_id) or {}
     base, denom = d.get('dano_base') or 0, d.get('base_denom') or DENOM_HECHIZO
     # Nunca por encima de lo que tenian: unas pocas (Holy Guard, Spirit's Blessing, Ember Brand) traen un 平均傷害 de
     # 900-4000 que es un poder fijo y daria 5x-20x.
-    return min(MULT_SIN_RAMA, base / float(denom)) if base > 0 else 1.0
+    return (min(MULT_SIN_RAMA, base / float(denom)) if base > 0 else 1.0) * extra
 
 
 def tiempo_buff_cliente(magic_id: int, dur_ms: int) -> int:

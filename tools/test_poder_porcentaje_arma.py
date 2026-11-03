@@ -17,18 +17,21 @@ FROZEN = (906, 918, 932, 946, 960)
 
 def test_tienen_su_stance_original():
     assert [combate.stance_de(m) for m in PANTHER] == [129, 166, 208, 257, 0]
-    assert [combate.stance_de(m) for m in FROZEN] == [120, 155, 196, 249, 350]
-    assert combate.pct_del_arma(754) == 100 and combate.mult_fisico(754) == 1.0     # PK V: el 100% del juego
+    assert [combate.stance_de(m) for m in FROZEN] == [120, 155, 196, 249, 0]
+    # PK V (el 100% del juego) y FS V ("aplicalo para pk5 y fs5", 03/11/2026): stance = 100% del ataque.
+    assert combate.pct_del_arma(754) == combate.pct_del_arma(960) == 100
 
 
-def test_un_porcentaje_es_del_ataque_del_personaje():
-    """Las filas en % (PK V) pegan ese % del ataque, con verdes y buffs, y luego la defensa: sin defensa, todo."""
+def test_un_stance_en_porcentaje_suma_ese_porcentaje_del_ataque():
+    """PK V: (Atk + 100% de Atk) x 1,35, y luego la defensa. Sin defensa, con 1000 de ataque: ~2700, mas que PK IV."""
     class Blanco(combate.Monstruo):
         defensa_efectiva = mdef_efectiva = 0
 
         def __init__(self):
             self.hp, self.debuffs, self.panico = 10 ** 9, {}, False
-    assert Blanco().recibir(1000, mult=combate.mult_fisico(754), var_pct=0) == 1000
+    pk5 = Blanco().recibir(1000, mult=combate.mult_fisico(754), var_pct=0)
+    pk4 = Blanco().recibir(1000 + combate.stance_de(743), mult=combate.mult_fisico(743), var_pct=0)
+    assert abs(pk5 - 2700) <= 20 and pk5 > pk4
 
 
 def test_tienen_dos_segundos_de_cooldown():

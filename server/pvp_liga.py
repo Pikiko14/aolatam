@@ -219,8 +219,7 @@ def atacar(ses, otro, tipo, mag, arma, en_area=False, golpes=None, separacion=No
         if not permitido(ses, otro):
             return
         es_crit = random.random() < crit
-        dano = dano_pvp(atk, dfs, mult * (1.5 if es_crit else 1.0), var_pct, magia=magia,
-                        peso=1.0 if (not magia and combate.pct_del_arma(tipo)) else None)
+        dano = dano_pvp(atk, dfs, mult * (1.5 if es_crit else 1.0), var_pct, magia=magia)
         dano = max(1, int(round(dano * mitigacion(otro, magia))))
         _aplicar(ses, otro, dano, es_crit, primero and not en_area, tipo, efecto, magia)
 
