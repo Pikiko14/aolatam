@@ -253,3 +253,11 @@ def test_al_matar_al_jefe_todos_suben_a_la_sala_siguiente(mundo):
     assert a.monstruos[c['jefe']].npc_type == tb.pisos()[1]['npc_type'] and len(
         [m for m in a.monstruos.values() if m.hp > 0]) == 2       # el jefe nuevo (el viejo no se quita en el test)
     assert any('Going up to floor 2' in t for t in mundo.carteles)
+
+
+def test_la_torre_va_sin_mapa_ni_minimapa():
+    """"Sigue saliendo el mapa / el minimapa igual" (02/11/2026): el 0x0014 de la torre lleva el bit 0x20, que el
+    servidor saca del stage.xml del parche (content.db es de antes y no lo tiene)."""
+    import struct as _st
+    import login
+    assert _st.unpack_from('<I', login.flags_de_mapa(133), 2)[0] & login.SIN_MAPA

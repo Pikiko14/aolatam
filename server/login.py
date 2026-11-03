@@ -158,6 +158,17 @@ def _mapas_sin_minimapa():
             con.close()
         except Exception:
             pass
+        # Y los que marca el stage.xml del parche: content.db es de antes de el. La Torre de Babel (133) sacaba el
+        # mapa y el minimapa de Dawn Harbor ("sigue saliendo el mapa", 02/11/2026) porque solo alli esta sin ellos.
+        try:
+            import re
+            xml = pathlib.Path(__file__).parent.parent / 'parches' / 'extras' / 'setting' / 'eng' / 'stage.xml'
+            for fila in re.findall(r'<場景 [^>]*>', xml.read_text(encoding='utf-8-sig')):
+                m = re.search(r'編號="(\d+)"', fila)
+                if m and '不顯示小地圖="是"' in fila:
+                    _SIN_MINIMAPA.add(int(m.group(1)))
+        except Exception:
+            pass
     return _SIN_MINIMAPA
 
 
