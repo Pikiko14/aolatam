@@ -318,14 +318,25 @@ def _linea_xml_lucky_bag(bolsa):
                  bolsa['descripcion'].replace('"', "'"))
 
 
-_IDS_LUCKY_BAGS = {b['id'] for b in LUCKY_BAGS_MALL}
+# EL SET DE RECOLECTOR (plantillas/set_recolector.json, tools/generar_lucky_bags.py): 12 piezas propias con carga.
+def _set_recolector():
+    try:
+        return json.loads((pathlib.Path(__file__).parent / 'plantillas' / 'set_recolector.json')
+                          .read_text(encoding='utf-8'))
+    except Exception:
+        return []
+
+
+SET_RECOLECTOR = _set_recolector()
+_IDS_LUCKY_BAGS = {b['id'] for b in LUCKY_BAGS_MALL} | {p['id'] for p in SET_RECOLECTOR}
 LINEAS_ITEM9_PROPIAS = ((83266, LINEA_XML_MEDALLA), (ITEM_CAJA_55, LINEA_XML_CAJA_55),
                         (ITEM_MONEDA_MONTURA, LINEA_XML_MONEDA_MONTURA)) + tuple(
     (iid, _linea_xml_maleta_pd(iid)) for iid in MALETAS_PD) + tuple(
     (aura[0], _linea_xml_aura(aura)) for aura in AURAS_LOW) + tuple(
     (pieza[0], _linea_xml_pd_invierno(pieza)) for pieza in PD_INVIERNO) + tuple(
     (maleta[0], _linea_xml_maleta_invierno(maleta)) for maleta in MALETAS_INVIERNO) + tuple(
-    (bolsa['id'], _linea_xml_lucky_bag(bolsa)) for bolsa in LUCKY_BAGS_MALL)
+    (bolsa['id'], _linea_xml_lucky_bag(bolsa)) for bolsa in LUCKY_BAGS_MALL) + tuple(
+    (pieza['id'], pieza['linea']) for pieza in SET_RECOLECTOR)
 
 
 # DONDE ESTA EL CLIENTE.
@@ -759,6 +770,18 @@ def registrar_medalla_en_servidor():
                          '是', '是', '是', 'update26'))
                     con.commit()
                     log.info("Item %d (%s) registrado en corpus/content.db", iid, nombre)
+            cols9 = {c[1] for c in con.execute('pragma table_info(item9)')}
+            for pieza in SET_RECOLECTOR:
+                fila = {k: v for k, v in pieza['fila'].items() if k in cols9}
+                viejo = con.execute('SELECT "基本名稱", "負重" FROM item9 WHERE id = ?', (str(pieza['id']),)).fetchone()
+                if viejo and tuple(viejo) != (fila.get('基本名稱'), fila.get('負重')):
+                    con.execute('DELETE FROM item9 WHERE id = ?', (str(pieza['id']),))
+                    viejo = None
+                if not viejo:
+                    con.execute('INSERT INTO item9 (%s) VALUES (%s)' % (', '.join('"%s"' % k for k in fila),
+                                                                       ', '.join('?' * len(fila))), tuple(fila.values()))
+                    con.commit()
+                    log.info("Item %d (%s) registrado en corpus/content.db", pieza['id'], pieza['nombre'])
             for bolsa in LUCKY_BAGS_MALL:
                 fila = con.execute('SELECT "動態資料1", "說明定義" FROM item9 WHERE id = ?', (str(bolsa['id']),)).fetchone()
                 if fila and tuple(fila) != (str(bolsa.get('tabla', bolsa['id'])), bolsa['descripcion']):
@@ -799,6 +822,7 @@ def registrar_medalla_en_servidor():
             propios.update({str(maleta[0]): maleta[2] for maleta in MALETAS_INVIERNO})
             propios[str(ITEM_MONEDA_MONTURA)] = 'Mount Coin'
             propios.update({str(b['id']): b['nombre'] for b in LUCKY_BAGS_MALL})
+            propios.update({str(p['id']): p['nombre'] for p in SET_RECOLECTOR})
             if isinstance(nombres, dict) and any(k not in nombres for k in propios):
                 for k, n in propios.items():
                     nombres.setdefault(k, n)

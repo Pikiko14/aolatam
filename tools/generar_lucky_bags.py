@@ -173,13 +173,18 @@ def bolsas():
                        'descripcion': 'Open it to get one random mount or robot for Lv%d-%d.' % (lo, min(hi, TOPE)),
                        'contenido': [[int(f['id']), 1, PESO.get(f['顏色'], 10)] for f in pool]})
         siguiente += 1
-    pool = _sin_repetir([f for f in items.values() if _vale(f) and _n(f['物品等級']) <= 60 and (
-        (f['物品類別'] == '配方' and str(f['技能限制1']) in RECETAS)
-        or (f['物品類別'] == '機甲' and str(f['技能限制1']) == '25'))])
+    # La de Craftsman (03/11/2026): "lo de robot lvl 40-50-60, den cartas de x2 recoleccion 1 o cartas de
+    # manufactura 1, set de recolector" (ver set_recolector). Ya no da recetas.
+    contenido = [[498, 1, 30000], [499, 1, 30000]]                     # Collecting / Facture Speedup Card (30 M.)
+    piezas = set_recolector()
+    contenido += [[p['id'], 1, 30000 // len(piezas)] for p in piezas]
+    for pct, robots in ((5000, (7344, 7345)), (3500, (6715, 6716, 3730, 3731)), (1500, (9100, 9101))):
+        contenido += [[r, 1, pct // len(robots)] for r in robots]
     salida.append({'id': siguiente, 'nombre': 'Lv1-60 Craftsman Lucky Bag', 'nivel': 1, 'pestana': PESTANA_EQUIPO,
-                   'descripcion': 'Open it to get one random craftsman recipe (weapons, armor, sewing, technics or '
-                                  'cooking) or craftsman robot up to Lv60.',
-                   'contenido': [[int(f['id']), 1, 10] for f in pool]})
+                   'descripcion': 'Open it to get one of the following: Collecting Speedup Card 30%, Facture Speedup '
+                                  "Card 30%, a Gatherer's set piece (Lv40/50/60, +Maximum Weight) 30%, a craftsman "
+                                  'robot Lv40 5%, Lv50 3.5%, Lv60 1.5%.',
+                   'contenido': contenido})
     return salida
 
 
@@ -219,6 +224,58 @@ def escribir_drop_xml(defs):
     DROP_XML.write_bytes(txt.encode('utf-8'))
 
 
+# EL SET DE RECOLECTOR (03/11/2026): "set de recolector, valida si hay algun set que suba la carga que sea de ese lvl,
+# sino crealo". No hay ninguno (solo los Gathering Gloves de nivel 1 y 5, sin carga), asi que se crea: cuatro piezas por
+# nivel clonadas de la armadura ligera sencilla de ese nivel (su icono, su apariencia y su ranura), sin restriccion de
+# clase, con la mitad de su defensa y la carga (負重) de CARGA_SET por pieza. Items propios de item9.xml como las bolsas.
+SET_RECOLECTOR = SALIDA.with_name('set_recolector.json')
+ID_SET = 89130
+XML_ITEMS = RAIZ / 'extracted_paks' / 'update26' / 'setting' / 'eng'
+PIEZAS_SET = (  # nivel, carga por pieza, (base, nombre) de gorro, ropa, guantes y botas
+    (40, 500, ((1666, 'Cap'), (1696, 'Vest'), (1630, 'Gloves'), (1650, 'Boots'))),
+    (50, 750, ((1667, 'Cap'), (1697, 'Vest'), (1631, 'Gloves'), (1651, 'Boots'))),
+    (60, 1000, ((1668, 'Cap'), (1698, 'Vest'), (1632, 'Gloves'), (1652, 'Boots'))),
+)
+
+
+def set_recolector():
+    import re
+    lineas = {}
+    for f in sorted(XML_ITEMS.glob('item*.xml')):
+        for m in re.finditer(r'<道具 編號="(\d+)"[^>]*/>', f.read_bytes().decode('utf-8', 'replace')):
+            lineas.setdefault(int(m.group(1)), m.group(0))
+    con = sqlite3.connect(DB)
+    con.row_factory = sqlite3.Row
+    salida, siguiente = [], ID_SET
+    for nivel, carga, piezas in PIEZAS_SET:
+        for base, pieza in piezas:
+            nombre = "Lv%d Gatherer's %s" % (nivel, pieza)
+            desc = "Gatherer's set: +%d Maximum Weight (+%d with the 4 pieces). Any class." % (carga, carga * 4)
+            tag = lineas[base]
+            tag = re.sub(r'編號="\d+"', '編號="%d"' % siguiente, tag, count=1)
+            tag = re.sub(r'基本名稱="[^"]*"', '基本名稱="%s"' % nombre.replace('"', "'"), tag, count=1)
+            tag = re.sub(r'物品等級="\d+"', '物品等級="%d"' % nivel, tag, count=1)
+            tag = re.sub(r' 技能限制1="[^"]*"| 技能等限="[^"]*"| 原型名稱="[^"]*"', '', tag)
+            for attr in ('防禦', '魔防'):
+                tag = re.sub(r'%s="(\d+)"' % attr, lambda m: '%s="%d"' % (attr, max(1, int(m.group(1)) // 2)), tag, 1)
+            tag = tag[:-2].rstrip() + ' 等級限制="%d" 負重="%d" 說明定義="%s" />' % (nivel, carga, desc)
+            fila = None
+            for t in ['item'] + ['item%d' % i for i in range(2, 10)]:
+                fila = con.execute('select * from %s where id=?' % t, (str(base),)).fetchone()
+                if fila:
+                    fila = dict(fila)
+                    break
+            fila.update({'id': str(siguiente), '基本名稱': nombre, '物品等級': str(nivel), '等級限制': str(nivel),
+                         '技能限制1': None, '技能等限': None, '原型名稱': None, '負重': str(carga), '說明定義': desc,
+                         'def': str(max(1, _n(fila.get('def')) // 2)), 'mdef': str(max(1, _n(fila.get('mdef')) // 2)),
+                         '_pak': 'update26'})
+            salida.append({'id': siguiente, 'nombre': nombre, 'nivel': nivel, 'linea': '    ' + tag.strip(),
+                           'fila': fila})
+            siguiente += 1
+    con.close()
+    return salida
+
+
 def main():
     defs = bolsas()
     vacias = [d['nombre'] for d in defs if not d['contenido']]
@@ -230,6 +287,7 @@ def main():
         drops.pop(str(d['id']), None)
         drops[str(d['tabla'])] = d['contenido']
     SALIDA.write_text(json.dumps(defs, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
+    SET_RECOLECTOR.write_text(json.dumps(set_recolector(), ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
     escribir_drop_xml(defs)
     DROPS.write_bytes(json.dumps(drops, ensure_ascii=False, indent=4).replace('\n', '\r\n').encode('utf-8'))
     mall = json.loads(MALL.read_text(encoding='utf-8'))
