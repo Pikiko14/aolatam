@@ -1,7 +1,8 @@
-"""Panther Killing y Frozen Snipe pegan un % del ataque: 50, 60, 70, 80 y 100 del I al V, con 2 s de cooldown.
+"""Panther Killing y Frozen Snipe con el Stance power ORIGINAL del juego y 2 s de cooldown.
 
-"El PK5 tiene 100 de stance power, quiere decir que pega el 100% del arma; ajusta los otros PK y sube el cooldown a
-2 seg de uso; lo mismo en FS5" (02/11/2026)."""
+Estuvieron en 50/60/70/80/100% del ataque (02/11/2026); "deja los stance power originales de fs y pk" (03/11/2026):
+PK 129/166/208/257 y PK V el 100% que trae el juego, FS 120/155/196/249/350. Un % del ataque sigue funcionando para
+las filas que lo traen asi (HP定義 = 百分比: PK V, Web Trap)."""
 import pathlib
 import sys
 
@@ -14,23 +15,20 @@ PANTHER = (710, 721, 732, 743, 754)
 FROZEN = (906, 918, 932, 946, 960)
 
 
-def test_del_i_al_v_pegan_50_60_70_80_y_100_por_ciento_del_ataque():
-    for fam in (PANTHER, FROZEN):
-        assert [combate.pct_del_arma(m) for m in fam] == [50, 60, 70, 80, 100]
-        for m, pct in zip(fam, (50, 60, 70, 80, 100)):
-            assert combate.mult_fisico(m) == pct / 100.0       # % del ataque del personaje
-            assert combate.stance_de(m) == 0      # el % no se suma ademas como ataque plano
+def test_tienen_su_stance_original():
+    assert [combate.stance_de(m) for m in PANTHER] == [129, 166, 208, 257, 0]
+    assert [combate.stance_de(m) for m in FROZEN] == [120, 155, 196, 249, 350]
+    assert combate.pct_del_arma(754) == 100 and combate.mult_fisico(754) == 1.0     # PK V: el 100% del juego
 
 
-def test_fs_iv_pega_el_80_por_ciento_del_ataque():
-    """"debe ser el 80% del ataque del personaje incluyendo verde, buff y demas": con 1000 de ataque y sin defensa,
-    800."""
+def test_un_porcentaje_es_del_ataque_del_personaje():
+    """Las filas en % (PK V) pegan ese % del ataque, con verdes y buffs, y luego la defensa: sin defensa, todo."""
     class Blanco(combate.Monstruo):
         defensa_efectiva = mdef_efectiva = 0
 
         def __init__(self):
             self.hp, self.debuffs, self.panico = 10 ** 9, {}, False
-    assert Blanco().recibir(1000, mult=combate.mult_fisico(946), var_pct=0) == 800
+    assert Blanco().recibir(1000, mult=combate.mult_fisico(754), var_pct=0) == 1000
 
 
 def test_tienen_dos_segundos_de_cooldown():
