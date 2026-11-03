@@ -1,0 +1,36 @@
+ANGELS ONLINE FOREVER - TERMS OF USE AND PRIVACY NOTICE
+
+Version 1.0 - Last updated: November 3, 2026
+
+By creating an account or playing on Angels Online Forever (the "Server"), you agree to these Terms. If you do not agree, choose [Disagree] and do not use the Server.
+
+1. ABOUT THE SERVER
+Angels Online Forever is a private, fan-run server for Angels Online. It is not affiliated with, endorsed by or connected to any official publisher or developer of Angels Online. The Server is offered free of charge, "as is", without warranties of any kind, and may change, pause or close at any time.
+
+2. YOUR ACCOUNT
+- You are responsible for keeping your account name and password secret. Never share them, not even with staff: the staff will never ask for your password.
+- One person may own several accounts, but each account is personal. Selling, buying or trading accounts for real money is not allowed.
+- We may suspend or remove accounts that break these Terms.
+
+3. RULES OF CONDUCT
+You agree NOT to:
+- use bots, macros, speed hacks, packet editors, modified clients or any third-party program that gives an unfair advantage;
+- exploit bugs or glitches. If you find one, report it to the staff;
+- harass, threaten, scam or impersonate other players or staff;
+- post hateful, sexual or illegal content, or share other people's personal information;
+- advertise other servers or sell in-game items, gold or accounts for real money.
+Breaking these rules may lead to a warning, item removal, temporary ban or permanent ban, at the staff's discretion.
+
+4. VIRTUAL ITEMS AND ANGEL GOLD
+All characters, items, gold, Angel Gold and other virtual goods belong to the Server and have no real-world value. They may be adjusted, rolled back or removed to fix bugs, balance the game or enforce these Terms. Nothing on the Server can be exchanged for real money.
+
+5. PRIVACY
+To run the game we store: your account name, your password (encrypted), the IP address you connect from, and in-game logs (logins, trades, chat reports, purchases with Angel Gold). We use this only to operate the Server, protect accounts and investigate rule violations. We do not sell your data. You may ask the staff to delete your account and its data at any time.
+
+6. CHANGES TO THESE TERMS
+We may update these Terms. When we do, this text will be updated with a new version and date, and you will be asked to accept it again.
+
+7. CONTACT
+For help, bug reports or account requests, contact the staff in game or through the official Angels Online Forever community channels.
+
+Thank you for playing. See you in Eden!
