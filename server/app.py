@@ -675,8 +675,7 @@ def _final_tutorial(ses, addr):
                              *clases.TILE_LYCEUM)
     # Y al Lyceum.
     _sincronizar_cambio_mapa(ses, clases.STAGE_LYCEUM, *clases.TILE_LYCEUM)
-    log.info(f"[{addr}] tutorial terminado: set completo, "
-             f"{len(clases.cajas_de(ids)) + 1} cajas y al Angel Lyceum")
+    log.info(f"[{addr}] tutorial terminado: set completo, sin cajas, y al Angel Lyceum")
 
 
 def _premio(srv, ses, addr, etapa):

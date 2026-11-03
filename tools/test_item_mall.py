@@ -323,8 +323,11 @@ def test_las_lucky_bag_de_clase_siguen_la_plantilla():
     random.seed(3)
     n = 20000
     salen = collections.Counter(bolsas.abrir(89107) for _ in range(n))           # Lv50 Axeman Lucky Bag
-    assert abs(salen[(2017, 3)] / n - 0.103) < 0.01 and abs(salen[(2018, 3)] / n - 0.103) < 0.01
-    assert abs(salen[(2003, 2)] / n - 0.121) < 0.01 and not salen[(19418, 3)]
+    assert abs(salen[(2017, 3)] / n - 0.12) < 0.01 and abs(salen[(2018, 3)] / n - 0.12) < 0.01
+    assert abs(salen[(2003, 2)] / n - 0.14) < 0.01 and not salen[(19418, 3)]
+    # "que el arma sea 55 o 50, la 55 1% la 50 5%": Crystal Axe y Death God (50), War Axe y Fish Axe (55).
+    assert abs((salen[(600, 1)] + salen[(608, 1)]) / n - 0.05) < 0.006
+    assert abs((salen[(345, 1)] + salen[(3044, 1)]) / n - 0.01) < 0.003
     assert not [k for k in salen if k[1] == 10]                                    # sin piezas de mapa
     gemas = sum(v for (it, ct), v in salen.items() if ct == 2 and it in (3093, 3098, 3103, 3108, 3113, 3118))
     assert abs(gemas / n - 0.05) < 0.006

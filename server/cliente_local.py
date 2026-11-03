@@ -318,6 +318,7 @@ def _linea_xml_lucky_bag(bolsa):
                  bolsa['descripcion'].replace('"', "'"))
 
 
+_IDS_LUCKY_BAGS = {b['id'] for b in LUCKY_BAGS_MALL}
 LINEAS_ITEM9_PROPIAS = ((83266, LINEA_XML_MEDALLA), (ITEM_CAJA_55, LINEA_XML_CAJA_55),
                         (ITEM_MONEDA_MONTURA, LINEA_XML_MONEDA_MONTURA)) + tuple(
     (iid, _linea_xml_maleta_pd(iid)) for iid in MALETAS_PD) + tuple(
@@ -511,6 +512,12 @@ def _parchear_item9_xml_bytes(xml_bytes: bytes) -> bytes:
     cambio = False
     for iid, linea in LINEAS_ITEM9_PROPIAS:
         if '\u7de8\u865f="%d"' % iid in txt:
+            # Las Lucky Bag del Mall se regeneran (tools/generar_lucky_bags.py): su fila se reescribe si cambio.
+            if iid in _IDS_LUCKY_BAGS:
+                vieja = re.search(r'[ \t]*<\u9053\u5177 \u7de8\u865f="%d"[^>]*/>' % iid, txt)
+                if vieja and vieja.group(0) != linea:
+                    txt = txt.replace(vieja.group(0), linea, 1)
+                    cambio = True
             continue
         objetivo = '    <\u9053\u5177 />'
         if objetivo in txt:

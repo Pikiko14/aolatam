@@ -60,14 +60,15 @@ MONTURAS = ((60, 55, 60), (50, 45, 54), (35, 30, 39))
 RECETAS = ('26', '27', '28', '29', '31')   # armas, armaduras, costura, tecnica, cocina
 
 # LA PLANTILLA DE LAS BOLSAS DE CLASE. Partio de la Lv60 Axeman Lucky Bag de su captura (sin los Upgrade Coin) y el
-# usuario la ajusto (03/11/2026): "que de toda la armadura rara 1%, el arma amarilla 1%, 5% las gemas que sean lvl 40,
-# los map pieces quitalos, las skill exp y exp card sean double no triple". Esas tres van exactas; lo demas (arma y
-# armadura azul 10, las dos cartas 6 y 6, Super Broadcasting 7, Summon Book 7, Fly Book 8) se reparte el 93% que queda
-# en proporcion. Si a una bolsa le falta un tipo de pieza, su parte se reparte entre las demas al sortear.
-_RESTO = 93.0 / 54
+# usuario la ajusto (03/11/2026): "que de toda la armadura rara 1%, 5% las gemas que sean lvl 40, los map pieces
+# quitalos, las skill exp y exp card sean double no triple", y "que el arma sea 55 o 50, la 55 1% la 50 5%": el arma
+# del nivel de la bolsa (N a N+4) al 5% y la de cinco niveles mas (N+5 a N+9) al 1%, azules y amarillas. Esas van
+# exactas; lo demas (armadura azul 10, las dos cartas 6 y 6, Super Broadcasting 7, Summon Book 7, Fly Book 8) se reparte
+# lo que queda en proporcion. Si a una bolsa le falta un tipo de pieza, su parte se reparte entre las demas al sortear.
+_RESTO = 88.0 / 44
 PLANTILLA = (  # (texto, % de la bolsa, que)
-    ('rare weapon', 1.0, 'arma_rara'), ('rare armor', 1.0, 'ropa_rara'),
-    ('quality weapon', 10 * _RESTO, 'arma_azul'), ('quality armor', 10 * _RESTO, 'ropa_azul'),
+    ('weapon (bag level)', 5.0, 'arma_baja'), ('weapon (+5 levels)', 1.0, 'arma_alta'),
+    ('rare armor', 1.0, 'ropa_rara'), ('quality armor', 10 * _RESTO, 'ropa_azul'),
     ('gems x2', 5.0, 'gemas'),
     ('Double Exp Card x3', 6 * _RESTO, (2017, 3)), ('Double Skill Exp Card x3', 6 * _RESTO, (2018, 3)),
     ('Super Broadcasting x2', 7 * _RESTO, (2003, 2)), ('Summon Book x2', 7 * _RESTO, (1333, 2)),
@@ -145,8 +146,11 @@ def bolsas():
                     arma[color].append(f)
                 elif (cat in ARMADURA and str(f['技能限制1']) == armadura) or (escudo and cat == '盾'):
                     ropa[color].append(f)
-            opciones_de = {'arma_rara': _mejores(arma['黃']), 'ropa_rara': _mejores(ropa['黃']),
-                           'arma_azul': _mejores(arma['藍']), 'ropa_azul': _mejores(ropa['藍']),
+            armas_todas = arma['黃'] + arma['藍']
+            corte = desde + 5
+            opciones_de = {'arma_baja': _mejores([f for f in armas_todas if _n(f['物品等級']) < corte]),
+                           'arma_alta': _mejores([f for f in armas_todas if _n(f['物品等級']) >= corte]),
+                           'ropa_rara': _mejores(ropa['黃']), 'ropa_azul': _mejores(ropa['藍']),
                            'gemas': [(g, 2) for g in _gemas(items)]}
             huecos = [(txt, pct, opciones_de[que] if isinstance(que, str) else [que]) for txt, pct, que in PLANTILLA]
             contenido = []
