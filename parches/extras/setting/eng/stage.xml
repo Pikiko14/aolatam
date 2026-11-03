@@ -155,7 +155,7 @@
     <場景 編號="130" 名稱="Flower Corridor" 地圖檔="map\map130.mpc" 筆刷檔="brush\brush.gic" 雷達圖="smap\130" 配樂檔1="music\15.ogg" 亮度="255" 天氣="0" PVP陣營對戰="是" />
     <場景 編號="131" 名稱="Sunshine Palace" 地圖檔="map\map131.mpc" 筆刷檔="brush\brush.gic" 雷達圖="smap\131" 配樂檔1="music\17.ogg" 亮度="255" 天氣="0" PVP陣營對戰="是" />
     <場景 編號="132" 名稱="Mystic Space" 地圖檔="map\map132.mpc" 筆刷檔="brush\brush.gic" 雷達圖="smap\004" 配樂檔1="music\43.ogg" 亮度="255" 天氣="0" 不可標記="是" 不顯示小地圖="是" />
-    <場景 編號="133" 名稱="Tower of Babel" 地圖檔="map\map133.mpc" 筆刷檔="brush\brush.gic" 雷達圖="smap\004" 配樂檔1="music\39.ogg" 亮度="255" 天氣="0" 人數="1000" 不懲罰="是" 不可標記="是" 不顯示小地圖="是" />
+    <場景 編號="133" 名稱="Tower of Babel" 地圖檔="map\map133.mpc" 筆刷檔="brush\brush.gic" 雷達圖="smap\004" 配樂檔1="music\39.ogg" 亮度="180" 天氣="0" 人數="1000" 不懲罰="是" 不可標記="是" 不顯示小地圖="是" />
     <場景 編號="134" 名稱="Training Area" 地圖檔="map\map134.mpc" 筆刷檔="brush\brush.gic" 雷達圖="smap\050" 配樂檔1="music\26.ogg" 亮度="255" 天氣="0" />
     <場景 編號="135" 名稱="Training Area" 地圖檔="map\map135.mpc" 筆刷檔="brush\brush.gic" 雷達圖="smap\050" 配樂檔1="music\26.ogg" 亮度="255" 天氣="0" />
     <場景 編號="136" 名稱="Training Area" 地圖檔="map\map136.mpc" 筆刷檔="brush\brush.gic" 雷達圖="smap\050" 配樂檔1="music\26.ogg" 亮度="255" 天氣="0" />

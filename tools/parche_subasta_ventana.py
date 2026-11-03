@@ -334,6 +334,7 @@ def main():
     m = re.search(r'<場景 編號="133" [^>]*/>', t2)
     tag = re.sub(r'雷達圖="[^"]*"', lambda _: r'雷達圖="smap\004"', m.group(0))
     tag = re.sub(r'配樂檔1="[^"]*"', lambda _: r'配樂檔1="music\39.ogg"', tag)
+    tag = re.sub(r'亮度="[^"]*"', lambda _: '亮度="180"', tag)      # la luz de la Limitless Tower (255 la aclaraba)
     if '不顯示小地圖' not in tag:
         tag = tag.replace(' />', ' 不顯示小地圖="是" />')
     t2 = t2[:m.start()] + tag + t2[m.end():]
