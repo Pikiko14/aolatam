@@ -403,7 +403,7 @@ def test_pending_combo_cannot_hit_new_holy_life(world, monkeypatch):
     a.personaje.tile_x,a.personaje.tile_y = 50,50
     b.personaje.tile_x,b.personaje.tile_y = 51,50
     data = bytearray(100)
-    struct.pack_into('<I',data,26,2000)
+    struct.pack_into('<I',data,26,9000)   # el primer golpe mata: el PvP fisico es 0,2426 x (Atk - Def/3,52) desde el 03/11/2026
     monkeypatch.setattr(app, '_stats_ses', lambda *a: bytes(data))
     monkeypatch.setattr(app, '_otorgar_skill_exp', lambda *a,**kw: [])
     monkeypatch.setattr(pvp_liga, '_multiplicador', lambda *a:(1,0))

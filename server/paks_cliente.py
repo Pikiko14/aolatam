@@ -112,7 +112,10 @@ def extraer_mapa(stage: int, ruta_cliente=None):
     que lo trae) y devuelve la ruta, o None. Sin esto el servidor no puede leer los objetos y TAGs de un mapa
     cuando extracted_paks solo tiene setting/ (instalacion limpia o VPS): p. ej. Holy Battlefield (mapa 112)
     fallaba al armar la escena y el cliente se quedaba en pantalla negra."""
-    destino = DESTINO / 'map' / ('map%03d.mpc' % int(stage))
+    # La granja de la liga (501) no es map501.mpc sino map/farm.mpc (UPDATE8.PAK): sin ella, entrar a la granja daba
+    # "Falta el TAG de entrada de farm.mpc" (mapa_del_cliente ya lee farm.mpc como el 501).
+    archivo = 'farm.mpc' if int(stage) == 501 else 'map%03d.mpc' % int(stage)
+    destino = DESTINO / 'map' / archivo
     if destino.exists():
         return destino
     try:
@@ -124,7 +127,7 @@ def extraer_mapa(stage: int, ruta_cliente=None):
     except Exception:
         log.exception('no se encontro el cliente')
         return None
-    buscado = ('map' + chr(92) + 'map%03d.mpc' % int(stage)).lower()
+    buscado = ('map' + chr(92) + archivo).lower()
     for pak in paks:
         fuente = pak.with_name(pak.name + '.bak')
         fuente = fuente if fuente.exists() else pak

@@ -229,8 +229,10 @@ def test_mercenary_tick_hits_enemy_and_never_ally(world,monkeypatch):
 @pytest.mark.parametrize('spell',[656,645,650,73,269,5515,15090,15612])
 def test_native_combat_router_can_hit_statue_or_cast_with_field_bonus(world,monkeypatch,spell):
     a,b=battle(world)
-    a.personaje.habilidades=[(9,410,0),(1,410,0),(3,410,0),(15,410,0),(32,410,0)]
+    a.personaje.habilidades=[(9,410,0),(1,410,0),(3,410,0),(15,410,0),(30,410,0)]   # 30 = ShadowBlade
     a.personaje.mp=100000;a.sp=10000;a.esfuerzo=1000;a.oro=a.personaje.oro=100000
+    # Las de arma la piden puesta (equip_req): Slicing Hit / Cross Chop espada, Deadly Combo ShadowBlade.
+    a.inventario[3]={645:1513,650:1513,5515:13485}.get(spell,a.inventario.get(3,0))
     a.volcar=lambda:None;a.enviar_sin_espejo=a.enviar
     statue=next(m for m in a.monstruos.values() if m.gvg_team==2)
     a.personaje.tile_x,a.personaje.tile_y=statue.tile_x,statue.tile_y
@@ -243,7 +245,8 @@ def test_native_combat_router_can_hit_statue_or_cast_with_field_bonus(world,monk
 
 def test_combo_completes_each_hit_without_periodic_battle_window_resets(world,monkeypatch):
     a,b=battle(world)
-    a.personaje.habilidades=[(32,410,0)];a.personaje.mp=100000;a.sp=10000
+    a.personaje.habilidades=[(30,410,0)];a.personaje.mp=100000;a.sp=10000   # 30 = ShadowBlade
+    a.inventario[3]=13485   # Deadly Combo pide ShadowBlade puesto
     a.volcar=lambda:None;a.enviar_sin_espejo=a.enviar
     statue=next(m for m in a.monstruos.values() if m.gvg_team==2)
     a.personaje.tile_x,a.personaje.tile_y=statue.tile_x,statue.tile_y

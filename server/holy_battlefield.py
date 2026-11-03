@@ -731,7 +731,9 @@ def llegada_segura(destination,team,number):
 
 def _cruzar_guardian(ses,destination,hasta,r,team,number,demora):
     import asyncio,competiciones as c
-    destination=llegada_segura(destination,team,number)
+    # En tupla: llegada_segura va con lru_cache y la casilla llega como lista (tags del json). Con la lista, cruzar
+    # una puerta propia reventaba con "unhashable type: 'list'" (03/11/2026).
+    destination=llegada_segura(tuple(destination),team,number)
     def jump():
         ses.objetivo_actual=None
         salto(ses,destination)

@@ -81,6 +81,10 @@ def usar(s,slot,target=None):
     city=int(magic.get('\u516c\u5f0f') or 0)==16
     maple=row.get('\u7269\u54c1\u985e\u5225')=='\u9b6f\u6613\u6d6e\u6a19'
     if not city and not maple and formula not in (2,7,8,9) and ident!=20566:return False
+    # El Regression Scroll (3734) lleva un hechizo de pergamino de ciudad (formula 16), pero va al territorio de la
+    # LIGA: lo resuelve app (caso 4.6). Cogido aqui, contestaba "The original revival destination is unavailable" y
+    # nunca llevaba al territorio ("me dice que no tengo liga", 03/11/2026).
+    if ident==3734:return False
     try:
         _ready(s)
         if not 20<=slot<=app._tope_bolsa(s.inventario):raise Rechazo('Use this item from your backpack.')
