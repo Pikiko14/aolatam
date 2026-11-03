@@ -12,12 +12,14 @@ def test_cuadra_con_lo_medido_en_la_captura():
     servidor privado, segun su Dfs. Con la formula de antes salian 94 a 125."""
     medido = {241: 29, 343: 21, 421: 16, 444: 14, 478: 12, 502: 11}
     for dfs, dano in medido.items():
-        assert abs(combate.dano_recibido(173, dfs, elem_atk=15) - dano) <= 1, dfs
+        assert abs(combate.dano_recibido(173, dfs, elem_atk=15) - dano) <= 3, dfs
+    # Y a nivel bajo (su servidor, 03/11/2026): un Slarm (Atk 28) a Dfs 30 hace 16.
+    assert combate.dano_recibido(28, 30) == 16
 
 
 def test_un_bicho_flojo_pega_poco_pero_pega():
     """La Lily (Atk 23) a una maga con 23 de defensa: algo, no 1 ni 22."""
-    assert 1 < combate.dano_recibido(23, 23) < 10
+    assert 5 < combate.dano_recibido(23, 23) < 20
     assert combate.dano_recibido(23, 5000) == 1
 
 

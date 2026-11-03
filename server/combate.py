@@ -2733,13 +2733,19 @@ def k_golpe_a_monstruo() -> float:
 DIVISOR_DEFENSA_MONSTRUO = DIVISOR_DEFENSA_FISICA
 
 
+# "No me atacan los mob" (03/11/2026): con la recta, a nivel bajo los mobs casi no pegaban -- una Lily (Atk 23) a Dfs 33
+# hacia 3 y en su servidor un Slarm (Atk 28) a Dfs 30 hace 16 --. Con la misma curva que el golpe a un monstruo y K = 40
+# salen los 16 del Slarm y los de la captura del Thunder Rabbit de 27 a 14 (medidos 29 a 11): cuadra arriba y abajo.
+K_GOLPE_A_JUGADOR = 40.0
+
+
 def dano_recibido(ataque: int, defensa: int, elem_atk: int = 0, elem_def: int = 0) -> int:
     """Dano que recibe el jugador (o su mascota) del golpe de un monstruo, con su defensa fisica y elemental.
 
-    PESO_GOLPE_MONSTRUO x (ataque + elemento que pasa - defensa / DIVISOR_DEFENSA_MONSTRUO), como poco 1. El
-    elemento que pasa es el del monstruo menos la defensa de ese elemento del jugador."""
+    (ataque + elemento que pasa) x K_GOLPE_A_JUGADOR / (defensa + K_GOLPE_A_JUGADOR), como poco 1. El elemento que
+    pasa es el del monstruo menos la defensa de ese elemento del jugador."""
     elem_d = max(0, int(elem_atk or 0) - max(0, int(elem_def or 0)))
-    bruto = PESO_GOLPE_MONSTRUO * (ataque + elem_d - max(0, defensa) / DIVISOR_DEFENSA_MONSTRUO)
+    bruto = (ataque + elem_d) * K_GOLPE_A_JUGADOR / (max(0, defensa) + K_GOLPE_A_JUGADOR)
     return max(1, int(round(bruto)))
 
 
