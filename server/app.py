@@ -19802,6 +19802,12 @@ class Servidor:
                     if getattr(ses, 'monstruo_encantado', None) and getattr(ses.monstruo_encantado, 'vivo', False):
                         ses.monstruo_encantado.charmed_objetivo = _m
                 ses.enviar(_cb0.atributo(ent, _m.porcentaje if getattr(_m, 'vivo', False) else 0))
+                # OBJETIVO FIJADO (03/11/2026): "presione con un guerrero [la habilidad], presione el mob y no va a
+                # atacarlo con el poder". La captura real contesta el clic con 0x000A [yo][mob][0x03060001] y sin
+                # el el cliente no manda el 0x0006 de la habilidad (01_HECHOS_VERIFICADOS, "Fijar el objetivo").
+                # Se habia quitado junto con un 0x0006 forzado, que era lo que hacia pegar doble.
+                if getattr(_m, 'vivo', False) and not getattr(_m, 'encantado', False):
+                    ses.enviar(_cb0.fijar_objetivo(ses.entity_id or ses.personaje.entity_id, ent))
                 # El cuadro de objetivo del cliente puede crearse DESPUES de
                 # que llegue esa vida y quedar vacio hasta el siguiente golpe
                 # ("a veces se llena"): se repite un instante despues.
