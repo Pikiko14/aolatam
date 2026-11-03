@@ -13398,6 +13398,10 @@ class Servidor:
             bichos = getattr(ses, 'monstruos', None) or {}
             m = bichos.get(objetivo)
             arma_puesta = ses.inventario.get(3, 0) if ses.inventario else 0
+            if tipo != _cb.ATAQUE_NORMAL:
+                # Diagnostico (03/11/2026, "no usa el poder"): toda habilidad que llega, se lance o no.
+                log.info(f"[{addr}] PIDE HABILIDAD {tipo} a {objetivo} ({'mob ' + m.nombre if m is not None else 'no es mob'}) "
+                         f"tile ({tx},{ty}) cuerpo {cuerpo.hex(' ')}")
 
             mag = _cb.datos_magia(tipo) if tipo != _cb.ATAQUE_NORMAL else {}
             # ANDANDO NO SE DA EL GOLPE BASICO: el cliente lo sigue pidiendo mientras el jugador corre, y el
@@ -19622,6 +19626,7 @@ class Servidor:
         if opcode == 0x0005 and ses.rol == 'mundo' and len(cuerpo) >= 4:
             import dialogos
             ent = struct.unpack_from('<I', cuerpo, 0)[0]
+            log.info(f"[{addr}] CLIC 0x0005 en {ent} (es mob: {ent in (getattr(ses, 'monstruos', None) or {})})")
             if ses.personaje and __import__('elementary').pulsar(ses,ent):
                 return
             if ses.personaje and __import__('eventos_propios').pulsar(ses, ent):
@@ -19808,6 +19813,9 @@ class Servidor:
                 # Se habia quitado junto con un 0x0006 forzado, que era lo que hacia pegar doble.
                 if getattr(_m, 'vivo', False) and not getattr(_m, 'encantado', False):
                     ses.enviar(_cb0.fijar_objetivo(ses.entity_id or ses.personaje.entity_id, ent))
+                # Diagnostico (03/11/2026, "sigue sin salir la vida roja").
+                log.info(f"[{addr}] CLIC EN MOB {ent} {_m.nombre}: vida {_m.porcentaje}% ({_m.hp}/{_m.hp_max}) "
+                         f"vivo={getattr(_m, 'vivo', False)} cuerpo {cuerpo.hex(' ')}")
                 # El cuadro de objetivo del cliente puede crearse DESPUES de
                 # que llegue esa vida y quedar vacio hasta el siguiente golpe
                 # ("a veces se llena"): se repite un instante despues.
