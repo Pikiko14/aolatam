@@ -2447,7 +2447,10 @@ def mult_fisico(magic_id: int) -> float:
         return MULT_COMBO
     pct = pct_del_arma(magic_id)
     if pct:
-        return pct / 100.0
+        # El % es del ATAQUE del personaje (R.Atk, con verdes y buffs), no del golpe basico: "debe ser el 80% del
+        # ataque del personaje incluyendo verde, buff y demas" (03/11/2026). El golpe fisico ya multiplica por
+        # PESO_GOLPE_FISICO, asi que aqui se le quita: FS IV = 0,80 x (Atk - Def/3,52).
+        return pct / 100.0 / PESO_GOLPE_FISICO
     import skills
     if not skills.skill_de_magia(magic_id):
         # Las de objetos, trampas, altares y mascotas (sin rama): su 平均傷害 es un poder fijo de 500-1700, no un
