@@ -293,6 +293,25 @@ def poner_jefe(ses, c):
     m.piso_torre = c['piso']
     c['jefe'] = eid
     ses.volcar()
+    # "Si estoy en pt no veo el mob jefe de la torre" (03/11/2026): la aparicion solo iba al que lo saca y al resto
+    # por el espejo de la sala, que no siempre llegaba. Se le manda tambien a cada uno de la copia, con su vida, y el
+    # jefe entra en sus bichos (si no comparten ya la sala) para que puedan pegarle.
+    try:
+        import combate
+        import login
+        aparece = login._npc_spawn(eid, int(datos['npc_type']), m.nombre, tuple(casilla_jefe(c['piso'])),
+                                   sprite=getattr(m, 'sprite', 0), klass=1)
+        for s in _en_la_copia(ses):
+            if s is ses or getattr(s, 'cerrada', False):
+                continue
+            if getattr(s, 'monstruos', None) is None:
+                s.monstruos = {}
+            s.monstruos.setdefault(eid, m)
+            (getattr(s, 'enviar_sin_espejo', None) or s.enviar)(aparece, combate.atributo(eid, m.porcentaje))
+            if hasattr(s, 'volcar'):
+                s.volcar()
+    except Exception:
+        log.exception('Torre de Babel: no se pudo mostrar el jefe a la party')
     return m
 
 
