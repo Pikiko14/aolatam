@@ -2679,19 +2679,27 @@ COOLDOWN_MINIMO_HABILIDAD = 1.0
 K_DEFENSA = 420.0
 
 
-def dano_recibido(ataque: int, defensa: int, elem_atk: int = 0, elem_def: int = 0) -> int:
-    """Dano que recibe el jugador, ya reducido por su defensa fisica y elemental.
+# EL GOLPE DE UN MONSTRUO A UN JUGADOR, MEDIDO (03/11/2026, "porque los mobs pegan tanto"). En la captura del
+# servidor privado (corpus/all.db, src privado) un jugador pelea con Thunder Rabbits (Atk 173 + Fuego 15) cambiando de
+# equipo, y la vida que pierde por golpe, segun su Dfs, cae en una RECTA:
+#
+#     Dfs   241  306  343  421  444  478  502
+#     dano   29   23   21   16   14   12   11        0,2426 x (188 - Dfs / 3,52) da 29 24 22 17 15 13 11
+#
+# La de antes (420/(Dfs+420) o la resta, la mayor) daba 125 a 94 en esos mismos casos: los monstruos pegaban de 4 a
+# 8 veces lo que en el juego.
+PESO_GOLPE_MONSTRUO = 0.2426
+DIVISOR_DEFENSA_MONSTRUO = 3.52
 
-    La misma defensa que la de los monstruos (Monstruo.recibir): la mitigacion 420/(def+420) o la resta, la que mas
-    pegue. Solo con la resta, un bicho con menos ataque que tu defensa pegaba 1: la Lily (ataque 23) a una maga con
-    23 de defensa ("la lily me baja 1 de dano", 31/10/2026). Ahora le quita ~22, y la defensa sigue pesando arriba.
-    """
-    def_eff = max(0, defensa)
-    d = max(1, int(round(max(ataque * K_DEFENSA / (def_eff + K_DEFENSA), ataque - def_eff))))
-    if elem_atk > 0:
-        elem_d = max(0, elem_atk - max(0, elem_def))
-        d += elem_d
-    return max(1, d)
+
+def dano_recibido(ataque: int, defensa: int, elem_atk: int = 0, elem_def: int = 0) -> int:
+    """Dano que recibe el jugador (o su mascota) del golpe de un monstruo, con su defensa fisica y elemental.
+
+    PESO_GOLPE_MONSTRUO x (ataque + elemento que pasa - defensa / DIVISOR_DEFENSA_MONSTRUO), como poco 1. El
+    elemento que pasa es el del monstruo menos la defensa de ese elemento del jugador."""
+    elem_d = max(0, int(elem_atk or 0) - max(0, int(elem_def or 0)))
+    bruto = PESO_GOLPE_MONSTRUO * (ataque + elem_d - max(0, defensa) / DIVISOR_DEFENSA_MONSTRUO)
+    return max(1, int(round(bruto)))
 
 
 # Cada cuanto pega un monstruo, en segundos. Medido en las capturas:

@@ -7,14 +7,18 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / 'server'
 import combate
 
 
-def test_un_bicho_con_menos_ataque_que_tu_defensa_no_pega_1():
-    """"la lily me baja 1 de dano a mi maguita": Lily tiene 23 de ataque."""
-    assert combate.dano_recibido(23, 23) == 22
-    assert 1 < combate.dano_recibido(23, 200) < 23
+def test_cuadra_con_lo_medido_en_la_captura():
+    """"porque los mobs pegan tanto": Thunder Rabbit (Atk 173 + Fuego 15) contra el jugador de la captura del
+    servidor privado, segun su Dfs. Con la formula de antes salian 94 a 125."""
+    medido = {241: 29, 343: 21, 421: 16, 444: 14, 478: 12, 502: 11}
+    for dfs, dano in medido.items():
+        assert abs(combate.dano_recibido(173, dfs, elem_atk=15) - dano) <= 1, dfs
 
 
-def test_la_defensa_resta_cuando_es_lo_que_mas_pega():
-    assert combate.dano_recibido(50000, 30000) == 20000
+def test_un_bicho_flojo_pega_poco_pero_pega():
+    """La Lily (Atk 23) a una maga con 23 de defensa: algo, no 1 ni 22."""
+    assert 1 < combate.dano_recibido(23, 23) < 10
+    assert combate.dano_recibido(23, 5000) == 1
 
 
 def test_mas_defensa_nunca_pega_mas():
@@ -23,8 +27,9 @@ def test_mas_defensa_nunca_pega_mas():
         assert golpes == sorted(golpes, reverse=True) and min(golpes) >= 1
 
 
-def test_el_elemental_se_suma():
-    assert combate.dano_recibido(23, 23, elem_atk=10, elem_def=4) == 28
+def test_el_elemental_que_pasa_suma_como_ataque():
+    assert combate.dano_recibido(23, 23, elem_atk=10, elem_def=4) > combate.dano_recibido(23, 23)
+    assert combate.dano_recibido(23, 23, elem_atk=10, elem_def=40) == combate.dano_recibido(23, 23)
 
 
 def test_las_fisicas_usan_su_poder_y_nunca_pasan_de_1_35():
@@ -34,6 +39,6 @@ def test_las_fisicas_usan_su_poder_y_nunca_pasan_de_1_35():
     assert combate.mult_fisico(15523) == combate.MULT_SIN_RAMA     # Holy Guard I: no 18x
 
 
-def test_el_fisico_va_al_70_por_ciento():
-    """"sigue pegando mucho el fisico, se puede reducir un 30%"."""
-    assert combate.FACTOR_DANO_FISICO == 0.7
+def test_el_fisico_sin_recorte():
+    """El -30% (\"sigue pegando mucho el fisico\") se quito: FACTOR_DANO_FISICO 1.0."""
+    assert combate.FACTOR_DANO_FISICO == 1.0
