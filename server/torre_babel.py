@@ -77,10 +77,41 @@ def subir(ses, c):
                 s, combate.efecto_magia_self_fin(presencia.entidad_de(s), EFECTO_SUBIR, MAGIA_SUBIR))
         except Exception:
             log.exception('Torre de Babel: no se pudo subir a %s', getattr(getattr(s, 'personaje', None), 'nombre', '?'))
+    # "No se ven los summon ni los pet" (03/11/2026): el salto mueve al jugador, pero su mascota y sus invocaciones
+    # se quedaban en las casillas del piso de antes y a los demas no se les volvian a presentar. Se llevan con su dueno
+    # y se presentan otra vez a cada companero.
+    for s in gente:
+        try:
+            _traer_acompanantes(s, destino, gente)
+        except Exception:
+            log.exception('Torre de Babel: no se pudo subir la mascota de %s',
+                          getattr(getattr(s, 'personaje', None), 'nombre', '?'))
     vivos = [s for s in gente if not getattr(s, 'muerto', False)] or [ses]
     if not _jefe_vivo(vivos[0], c):
         poner_jefe(vivos[0], c)
     _cartel(ses, 'Tower of Babel - Floor %d / %d: %s' % (c['piso'], total_pisos(), pisos()[c['piso'] - 1]['nombre']))
+
+
+def _traer_acompanantes(s, destino, gente):
+    """Pone la mascota y las invocaciones de `s` junto a `destino` y se las presenta a los demas de `gente`."""
+    import presencia
+    p = getattr(s, 'personaje', None)
+    if not p:
+        return
+    x, y = destino
+    f_pet = getattr(p, 'mascota', None)
+    if isinstance(f_pet, dict) and f_pet.get('fuera'):
+        f_pet['x'], f_pet['y'] = x + 1, y
+    for k in ('invocacion', 'invocacion2', 'avatar_clon'):
+        inv = getattr(s, k, None)
+        if isinstance(inv, dict):
+            inv['tile_x'], inv['tile_y'] = x - 1, y
+    pk = presencia.paquetes_invocaciones(s) + presencia.paquetes_mascota(s)
+    if not pk:
+        return
+    for o in gente:
+        if o is not s:
+            presencia._mandar(o, *pk)
 
 
 PISOS_JSON = pathlib.Path(__file__).parent / 'plantillas' / 'torre_babel.json'

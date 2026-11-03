@@ -162,6 +162,29 @@ def test_en_party_con_bichos_separados_hay_un_solo_jefe_y_todos_lo_ven(mundo, mo
     assert jefe.entity_id not in b.monstruos                                 # y se le quita al morir
 
 
+def test_al_subir_de_piso_la_mascota_va_con_su_dueno_y_los_demas_la_ven(mundo, monkeypatch):
+    """"No se ven los summon ni los pet" (03/11/2026): en cada salto la mascota se lleva al piso nuevo y se presenta
+    otra vez a los companeros."""
+    a, b = mundo.nueva(1, 'Impacty'), mundo.nueva(2, 'Baco')
+    b.personaje.mascota = {'fuera': True, 'x': 0, 'y': 0}
+    b.invocacion = {'entity_id': 77, 'tile_x': 0, 'tile_y': 0}
+    recibidos = []
+    monkeypatch.setattr(presencia, 'paquetes_mascota',
+                        lambda s: [('pet', s.personaje.nombre, s.personaje.mascota['x'])] if getattr(s.personaje, 'mascota', None) else [])
+    monkeypatch.setattr(presencia, 'paquetes_invocaciones',
+                        lambda s: [('inv', s.personaje.nombre)] if getattr(s, 'invocacion', None) else [])
+    monkeypatch.setattr(presencia, '_mandar', lambda o, *pk: recibidos.append((o.personaje.nombre,) + tuple(pk)))
+    equipos._DE_QUIEN.update({1: 1, 2: 1})
+    equipos._GRUPOS.update({1: [a, b]})
+    assert tb.iniciar(a, '?', tb.PARTY) is None and tb.iniciar(b, '?', tb.PARTY) is None
+    c = tb.corrida(a)
+    c['piso'] = 2
+    tb.subir(a, c)
+    x, y = tb.llegada(2)
+    assert b.personaje.mascota['x'] == x + 1 and (b.invocacion['tile_x'], b.invocacion['tile_y']) == (x - 1, y)
+    assert ('Impacty', ('inv', 'Baco'), ('pet', 'Baco', x + 1)) in recibidos
+
+
 def test_el_lider_invita_tambien_si_la_subida_ya_estaba_empezada(mundo):
     a, b = mundo.nueva(1, 'Impacty'), mundo.nueva(2, 'Baco')
     b.canal_lua = 1
