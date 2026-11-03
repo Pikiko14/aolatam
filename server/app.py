@@ -15134,7 +15134,7 @@ class Servidor:
                     if coef > 0:
                         mult_spell *= (coef / 100.0)
                 else:
-                    mult_spell = 1.0
+                    mult_spell = _cb.MULT_GOLPE_BASICO
                 mult_spell *= _cb.FACTOR_DANO_FISICO          # golpe basico y habilidades fisicas, -30%
                 var_pct = 0.03
 

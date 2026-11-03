@@ -95,6 +95,8 @@ def _multiplicador(ses, tipo, mag, magia):
         mult = combate.mult_fisico(tipo)
         if mag.get('dano_coef'):
             mult *= float(mag['dano_coef']) / 100.0
+    else:
+        mult = combate.MULT_GOLPE_BASICO               # el golpe basico, como contra monstruos
     if not magia:
         mult *= combate.FACTOR_DANO_FISICO             # golpe basico y habilidades fisicas, -30%
     mods = inventario.modificadores_porcentuales_equipo(getattr(ses, 'inventario', None) or {})
