@@ -13570,7 +13570,47 @@ class Servidor:
                              f"jugador ({ses.personaje.tile_x},"
                              f"{ses.personaje.tile_y}) bicho "
                              f"({m.tile_x},{m.tile_y})")
+                    # HABILIDAD CON EL BICHO LEJOS (03/11/2026): "si presiono una habilidad y doy click al
+                    # mob no va y la usa". Se tiraba sin avisar: el cuadro del objetivo quedaba sin vida y
+                    # la habilidad se perdia. Ahora se fija el objetivo, se manda su vida y la habilidad
+                    # queda guardada hasta que el jugador llegue a rango (8 s como mucho).
+                    if tipo != _cb.ATAQUE_NORMAL and getattr(m, 'vivo', False):
+                        ses.objetivo_actual = objetivo
+                        ses.enviar(_cb.atributo(objetivo, m.porcentaje))
+                        _marca = object()
+                        ses.habilidad_pendiente = _marca
+
+                        async def _lanzar_al_llegar(_ses=ses, _mob=m, _ent=objetivo, _cuerpo=cuerpo,
+                                                    _rango=_rango_arma, _marca=_marca, _addr=addr):
+                            _fin = time.time() + 8.0
+                            while time.time() < _fin:
+                                await asyncio.sleep(0.3)
+                                if (getattr(_ses, 'habilidad_pendiente', None) is not _marca
+                                        or getattr(_ses, 'desconectado', False) or getattr(_ses, 'muerto', False)
+                                        or not getattr(_mob, 'vivo', False) or not _ses.personaje
+                                        or getattr(_ses, 'objetivo_actual', None) != _ent):
+                                    return
+                                _dd = max(abs(_mob.tile_x - _ses.personaje.tile_x),
+                                          abs(_mob.tile_y - _ses.personaje.tile_y))
+                                if _dd <= _rango + 1:
+                                    # La posicion del servidor salta al destino del paso: se deja que el
+                                    # personaje llegue antes de lanzar.
+                                    await asyncio.sleep(0.4)
+                                    if getattr(_ses, 'habilidad_pendiente', None) is not _marca:
+                                        return
+                                    _ses.habilidad_pendiente = None
+                                    log.info(f"[{_addr}] habilidad pendiente: ya en rango ({_dd}), se lanza")
+                                    self.manejar(_ses, 0x0006, None, {}, _addr, _cuerpo)
+                                    return
+                            if getattr(_ses, 'habilidad_pendiente', None) is _marca:
+                                _ses.habilidad_pendiente = None
+                        try:
+                            asyncio.get_running_loop().create_task(_lanzar_al_llegar())
+                        except RuntimeError:
+                            pass
                     return
+                if tipo != _cb.ATAQUE_NORMAL:
+                    ses.habilidad_pendiente = None
 
             # Ya en rango: cadencia y cooldown
             if m is not None and not es_aoe:

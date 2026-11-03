@@ -3012,6 +3012,7 @@ GOLPE_POR_SKILL = {
     # Lanza: (2, 827) salio de una captura pero en este cliente no animaba. (2, 181)
     # lo eligio el usuario probando en el juego con /anim (30/10/2026).
     11: (2, 181),
+    10: (3, 1),      # hacha: "la animacion de axe es la 1" (03/11/2026)
     8: (2, 951),     # baston: medido con el Walking Stick del mago
     # Arco y honda (los dos son la rama 17). No hay captura con arco: sin entrada
     # caia en el tajo de espada, y con (0, 0) el cliente no dibujaba nada. (4, 1282)
@@ -3022,9 +3023,8 @@ GOLPE_POR_DEFECTO = (3, 1480)
 # Arma de una mano con escudo: "la animacion de ataque de 1 arma con escudo debe ser la anim 1" (02/11/2026), probado
 # por el usuario en el juego con /anim. Va con el tipo del tajo de una mano.
 GOLPE_CON_ESCUDO = (3, 1)
-# Solo con espada: con el hacha y escudo esa animacion sale super rapida ("la animacion de ataque basica del axe esta
-# super rapida", 03/11/2026), y va con el golpe normal de una mano.
-SKILLS_GOLPE_CON_ESCUDO = {9}
+# Espada y hacha: "la animacion de axe es la 1" (03/11/2026), con escudo o sin el (GOLPE_POR_SKILL[10]).
+SKILLS_GOLPE_CON_ESCUDO = {9, 10}
 ANIM_POR_SKILL = {}
 # -------------------------------------------------------------------------
 
@@ -3049,6 +3049,10 @@ def golpe_de_arma(item_id: int = 0, duales: bool = False, escudo: bool = False) 
         if (escudo and not duales and sid in SKILLS_GOLPE_CON_ESCUDO and item_id
                 and not _cl.es_dos_manos(item_id)):
             return GOLPE_CON_ESCUDO
+        # "Un warrior que tiene 2 hachas debe usar la animacion de sword" (03/11/2026): la animacion 1 del
+        # hacha es solo con una.
+        if duales and sid == 10:
+            return GOLPE_POR_SKILL[9]
         if sid in GOLPE_POR_SKILL:
             return GOLPE_POR_SKILL[sid]
     except Exception:
