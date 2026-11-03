@@ -58,6 +58,9 @@ PESTANAS = {
     )),
 }
 FUERA = (32, 33, 34, 35)    # Furniture: vacia
+# "Saca todos los lvl 60 del mall" (03/11/2026): los robots de nivel 60 y 70 de Fashion > Robots (con el tope en 60
+# los de 70 tampoco se pueden usar). La Lv60 Mount Lucky Bag la quita tools/generar_lucky_bags.py.
+QUITAR = {9301, 9302, 9303, 9304}   # Weighty cat Boots, Black Dog Rot, Repair Duck Robot, Pink crocodile Robot
 ID_MAX = 32767
 
 
@@ -76,7 +79,7 @@ def main():
     for r in filas:
         id_viejo.setdefault((r['item'], r['quantity']), int(r['id']))
     filas = [r for r in filas
-             if r['category'] not in FUERA
+             if r['category'] not in FUERA and r['item'] not in QUITAR
              and not (r['category'] in PESTANAS and PESTANAS[r['category']][0])      # pestana SOLO: se rehace entera
              and (r['category'], r['item']) not in tocados
              and not (r['item'] in movidos and r['category'] in (11, 13, 19, 27))]

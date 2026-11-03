@@ -54,7 +54,7 @@ CLASES = (                         # nombre, armas, armadura, escudo
 NIVELES_CLASE = (60, 50, 40, 30)
 # Las de clase Lv60 no se venden ("quita los lvl 60", 03/11/2026): siguen existiendo, para que las que ya se compraron
 # se abran, pero no tienen fila en el Item Mall.
-FUERA_DEL_MALL = {'Lv60 %s Lucky Bag' % c for c, *_ in CLASES}
+FUERA_DEL_MALL = {'Lv60 %s Lucky Bag' % c for c, *_ in CLASES} | {'Lv60 Mount Lucky Bag'}   # "saca todos los lvl 60"
 ARMADURA = ('衣服', '頭飾', '手套', '鞋子')
 MONTURAS = ((60, 55, 60), (50, 45, 54), (35, 30, 39))
 RECETAS = ('26', '27', '28', '29', '31')   # armas, armaduras, costura, tecnica, cocina
