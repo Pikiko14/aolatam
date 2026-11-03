@@ -218,18 +218,23 @@ def test_la_ventana_se_abre_cambia_de_modo_y_entra(mundo):
 
 
 def test_el_mapa_es_la_limitless_tower_y_cada_piso_una_sala():
-    import sys as _s
-    _s.path.insert(0, str(RAIZ / 'tools' / 'editor_mapas'))
-    import mpcio
+    import json as _json
+    import transitable
     lay = tb.mapa()
     datos = (RAIZ / 'parches' / 'extras' / 'map' / 'map133.mpc').read_bytes()
     assert datos == (RAIZ / 'tools' / 'originales' / 'map110.mpc').read_bytes()
-    m = mpcio.leer(datos)
-    pisa = lambda x, y: m['celdas'][(y * m['w'] + x) * 6 + 1] == 0
+    # "Aparezco donde no es": el suelo es el que valida el servidor, y con margen alrededor (nada de bordes).
+    pisa = lambda x, y: all(transitable.se_pisa(133, x + dx, y + dy) for dx in (-2, 0, 2) for dy in (-2, 0, 2))
     assert len(lay['pisos']) == 60 and lay['salas'] == 12
     assert all(pisa(*d['centro']) and pisa(*d['llegada']) and d['centro'] != d['llegada'] for d in lay['pisos'])
     assert [d['sala'] for d in lay['pisos'][:13]] == list(range(12)) + [0]      # una sala por piso, y vuelta a empezar
     assert tb.entrada() == tb.llegada(1)
+    # "Y los mob que salgan donde es": cada jefe sale en la sala donde la Limitless Tower tiene sus monstruos.
+    nativos = _json.loads((RAIZ / 'server' / 'plantillas' / 'limitless_tower.json').read_text(encoding='utf-8'))
+    bichos = [tuple(m['tile']) for m in nativos['spawns'] if m.get('monstruo') and m.get('zona')]
+    for d in lay['pisos'][:12]:
+        cx, cy = d['centro']
+        assert min((x - cx) ** 2 + (y - cy) ** 2 for x, y in bichos) <= 15 ** 2
 
 
 def test_al_matar_al_jefe_todos_suben_a_la_sala_siguiente(mundo):
