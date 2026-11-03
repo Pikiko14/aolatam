@@ -55,3 +55,22 @@ def test_el_golpe_del_jugador_a_un_mob_es_el_medido():
 def test_el_fisico_sin_recorte():
     """El -30% (\"sigue pegando mucho el fisico\") se quito: FACTOR_DANO_FISICO 1.0."""
     assert combate.FACTOR_DANO_FISICO == 1.0
+
+
+def test_a_nivel_bajo_la_defensa_del_mob_pesa_mas():
+    """"porque pegamos tanto": nivel 1 con R.Atk 45 contra un Slarm (Def 25) hace 26 en su servidor (03/11/2026)."""
+    from types import SimpleNamespace
+
+    class Slarm(combate.Monstruo):
+        defensa_efectiva = mdef_efectiva = 25
+
+        def __init__(self):
+            self.hp, self.debuffs, self.panico = 10 ** 9, {}, False
+    antes = combate.ATACANTE[0]
+    try:
+        combate.ATACANTE[0] = SimpleNamespace(personaje=SimpleNamespace(nivel=1, char_id=None))
+        assert abs(Slarm().recibir(45, var_pct=0) - 26) <= 1
+        combate.ATACANTE[0] = SimpleNamespace(personaje=SimpleNamespace(nivel=79, char_id=None))
+        assert combate.k_golpe_a_monstruo() == combate.K_TOPE
+    finally:
+        combate.ATACANTE[0] = antes

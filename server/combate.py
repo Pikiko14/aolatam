@@ -799,7 +799,8 @@ class Monstruo:
             # Rock Slarm (Def 635), y una invocacion de ATK 249 a un Condor (Def 329) 140-143. Las dos cuadran con
             # ataque x K / (Def + K), K = K_GOLPE_A_MONSTRUO (861 y 144). No es la recta de los golpes a jugadores
             # (dano_recibido), que aqui daria la mitad (03/11/2026).
-            base_dano = max(1.0, mult * ataque * K_GOLPE_A_MONSTRUO / (max(0, defensa_target) + K_GOLPE_A_MONSTRUO))
+            k = k_golpe_a_monstruo()
+            base_dano = max(1.0, mult * ataque * k / (max(0, defensa_target) + k))
         spread = 1.0 + random.uniform(-var_pct, var_pct)
         d = max(1, int(round(base_dano * spread)))
         if mit_pct != 0:
@@ -2716,6 +2717,19 @@ PESO_GOLPE_MONSTRUO = PESO_GOLPE_FISICO
 # K sale 424; la invocacion de Celestia daba 420. Todos quedan un ~6% por debajo, parejo: algo de ese personaje que no
 # sale en su R.Atk (rango, titulo, montura), no se mete para todos (Monstruo.recibir).
 K_GOLPE_A_MONSTRUO = 420.0
+# PERO K CRECE CON EL NIVEL DEL QUE PEGA ("porque pegamos tanto", 03/11/2026): en su servidor un Swordsman de nivel 1
+# con R.Atk 45 le hace 26 a un Slarm (Def 25) y uno de nivel 2 con 50 le hace 25-27; con K = 420 saldrian 42 y 47.
+# K = 33 + 5 x (nivel - 1) cuadra los de nivel 1-2 y los cinco de nivel 79 (K 423); el 33 de nivel 1 es el que ya se
+# habia despejado de otras medidas (ver K_DEFENSA). Sin jugador (combate.ATACANTE vacio) se usa K_GOLPE_A_MONSTRUO.
+K_NIVEL_1, K_POR_NIVEL, K_TOPE = 33, 5, 423
+
+
+def k_golpe_a_monstruo() -> float:
+    """La K del golpe fisico a un monstruo segun el nivel del jugador que esta pegando (o el dueno de la mascota)."""
+    nivel = getattr(getattr(ATACANTE[0], 'personaje', None), 'nivel', None)
+    if not isinstance(nivel, int) or nivel < 1:
+        return K_GOLPE_A_MONSTRUO
+    return float(min(K_TOPE, K_NIVEL_1 + K_POR_NIVEL * (nivel - 1)))
 DIVISOR_DEFENSA_MONSTRUO = DIVISOR_DEFENSA_FISICA
 
 
