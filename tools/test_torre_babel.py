@@ -221,8 +221,17 @@ def test_el_mapa_es_la_limitless_tower_y_cada_piso_una_sala():
     import json as _json
     import transitable
     lay = tb.mapa()
-    datos = (RAIZ / 'parches' / 'extras' / 'map' / 'map133.mpc').read_bytes()
-    assert datos == (RAIZ / 'tools' / 'originales' / 'map110.mpc').read_bytes()
+    import sys as _s
+    _s.path.insert(0, str(RAIZ / 'tools' / 'editor_mapas'))
+    import mpcio
+    import oscurecer_torre
+    torre = mpcio.leer((RAIZ / 'parches' / 'extras' / 'map' / 'map133.mpc').read_bytes())
+    limitless = mpcio.leer((RAIZ / 'tools' / 'originales' / 'map110.mpc').read_bytes())
+    # La misma Limitless Tower ("hazlo mas dark"): el suelo igual y cada objeto en su sitio, el decorado con su copia
+    # oscura.
+    assert torre['celdas'] == limitless['celdas']
+    assert [o[1:] for o in torre['objetos']] == [o[1:] for o in limitless['objetos']]
+    assert sum(o[0] >= oscurecer_torre.ID_BASE for o in torre['objetos']) > 1000
     # "Aparezco donde no es": el suelo es el que valida el servidor, y con margen alrededor (nada de bordes).
     pisa = lambda x, y: all(transitable.se_pisa(133, x + dx, y + dy) for dx in (-2, 0, 2) for dy in (-2, 0, 2))
     assert len(lay['pisos']) == 60 and lay['salas'] == 12

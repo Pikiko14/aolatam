@@ -7,10 +7,11 @@ muros de marmol, sus escaleras y sus nubes. Cada piso es una sala: al matar al j
 sala siguiente (torre_babel.subir, un salto dentro del mismo mapa) y alli sale el jefe nuevo. Las salas van de abajo
 arriba del mapa y, como son doce y los pisos 60, se repiten cinco veces.
 
-Escribe parches/extras/map/map133.mpc (va al parche de los jugadores) y server/plantillas/torre_babel_mapa.json, donde
-el servidor lee por piso su sala: donde se llega y donde sale el jefe.
+Escribe server/plantillas/torre_babel_mapa.json, donde el servidor lee por piso su sala: donde se llega y donde sale
+el jefe. El map133.mpc del parche lo escribe tools/oscurecer_torre.py (el 110 con sus objetos a oscuras).
 
     python tools/generar_mapa_torre.py
+    python tools/oscurecer_torre.py
 """
 import json
 import pathlib
@@ -103,10 +104,9 @@ def main():
     datos = ORIGEN.read_bytes()
     m = mpcio.leer(datos)
     lay = disposicion(m['w'], m['h'])
-    SALIDA_MPC.parent.mkdir(parents=True, exist_ok=True)
-    SALIDA_MPC.write_bytes(datos)
+    # El .mpc lo escribe tools/oscurecer_torre.py: el mismo mapa con los objetos a oscuras.
     SALIDA_JSON.write_text(json.dumps(lay, ensure_ascii=False) + '\n', encoding='utf-8')
-    print('escrito', SALIDA_MPC.relative_to(RAIZ), '(%dx%d, %d salas)' % (m['w'], m['h'], lay['salas']))
+    print('%dx%d, %d salas' % (m['w'], m['h'], lay['salas']))
     print('escrito', SALIDA_JSON.relative_to(RAIZ))
 
 
