@@ -14,7 +14,8 @@ content.db:
 
 Las amarillas (raras) salen con menos peso que las azules. Escribe server/plantillas/lucky_bags_mall.json (lo leen
 cliente_local, para el item9.xml del parche y content.db, y bolsas, para abrirlas: drops_bolsas.json) y cambia en
-server/plantillas/item_mall.json las pestanas de Lucky Bag Equipo (29) y Monturas (31): 1 por 200 AG, 10 por 2000.
+server/plantillas/item_mall.json las pestanas de Lucky Bag Hot (28) y Monturas (31): 1 por 50 AG, 11 por 500 y
+110 por 5000.
 
     python tools/generar_lucky_bags.py
     python tools/generar_parche.py
@@ -38,7 +39,7 @@ MAX_DROP_XML = 40                  # el cliente lee item1..item40 por fila: las 
 ICONO = 8747                       # el de las Lv70 <Clase> Lucky Bag
 FILA_MALL_BASE = 31000                # el cliente no pinta filas de id 32768 o mas (test_item_mall)
 PESTANA_EQUIPO, PESTANA_MONTURA = 28, 31      # Hot ("deben ir en hot", 03/11/2026) y Ride
-PRECIO_1, PRECIO_10 = 200, 2000
+PACKS = ((1, 50), (11, 500), (110, 5000))      # "debe tener opciones 1, 11 y 110 con precios 50, 500, 5000"
 PESO = {'藍': 10, '黃': 3}
 TOPE = 60                          # el nivel maximo del servidor: nada que pida mas
 
@@ -184,7 +185,7 @@ def filas_mall(defs, base):
     """Las filas del Item Mall: cada bolsa de 1 y de 10, en su pestana."""
     out, orden = [], {PESTANA_EQUIPO: 0, PESTANA_MONTURA: 0}
     for d in defs:
-        for cuantas, precio in ((1, PRECIO_1), (10, PRECIO_10)):
+        for cuantas, precio in PACKS:
             orden[d['pestana']] += 1
             fila = dict(base, id=FILA_MALL_BASE + len(out), item=d['id'], category=d['pestana'],
                         sort=orden[d['pestana']], quantity=cuantas, price=precio, special_price=0,
@@ -237,7 +238,7 @@ def main():
     MALL.write_bytes((json.dumps(mall, ensure_ascii=False, indent=4) + '\n').replace('\n', '\r\n').encode('utf-8'))
     for d in defs:
         print('%5d %-30s %3d objetos' % (d['id'], d['nombre'], len(d['contenido'])))
-    print('Item Mall: %d filas viejas fuera, %d nuevas' % (len(viejas), 2 * len(defs)))
+    print('Item Mall: %d filas viejas fuera, %d nuevas' % (len(viejas), len(PACKS) * len(defs)))
 
 
 if __name__ == '__main__':

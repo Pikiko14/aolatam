@@ -326,6 +326,6 @@ def test_las_lucky_bag_de_clase_siguen_la_plantilla():
     assert abs(salen[(19418, 3)] / n - 0.14) < 0.01 and abs(salen[(2003, 2)] / n - 0.081) < 0.01
     assert abs(salen[(3085, 10)] / n - 0.116) < 0.01
     filas = [r for r in item_mall.datos()['rows'] if r['item'] == 89101]
-    assert sorted((r['quantity'], r['price']) for r in filas) == [(1, 200), (10, 2000)]
+    assert sorted((r['quantity'], r['price']) for r in filas) == [(1, 50), (11, 500), (110, 5000)]
     drop = (pathlib.Path(__file__).resolve().parent.parent / 'parches' / 'extras' / 'setting' / 'eng' / 'drop.xml')
     assert '<drop 編號="28901" 怪物名稱="Lv60 Axeman Lucky Bag"' in drop.read_bytes().decode('utf-8')
