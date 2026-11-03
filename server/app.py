@@ -11952,7 +11952,7 @@ class Servidor:
                                                 dano_base = inv['atk']
                                                 es_mag = False
 
-                                            dano_inv = targ.recibir(dano_base, es_magico=es_mag, mult=mult_inv)
+                                            dano_inv = targ.recibir(dano_base, es_magico=es_mag, mult=mult_inv, golpe_medido=False)
                                             anim_inv = _cb.anim_de_monstruo(inv.get('nombre', '')) or 832
                                             tipo_dmg = _cb.TIPO_DANO_CRITICO if es_crit else _cb.TIPO_DANO
                                             if getattr(targ, 'en_combate_con', None) is None:

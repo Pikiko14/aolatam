@@ -753,7 +753,8 @@ class Monstruo:
                     self.debuffs.pop(bid, None)
         return max(0, d)
 
-    def recibir(self, ataque: int, es_magico: bool = False, mult: float = 1.0, var_pct: float = 0.05, es_pet: bool = False) -> int:
+    def recibir(self, ataque: int, es_magico: bool = False, mult: float = 1.0, var_pct: float = 0.05, es_pet: bool = False,
+                golpe_medido: bool = True) -> int:
         """Aplica el dano y devuelve cuanto pego de verdad."""
         now = time.time()
         mit_pct = 0
@@ -789,7 +790,15 @@ class Monstruo:
         else:
             factor_def = 1.0
         bruto = ataque * mult
-        base_dano = max(1.0, bruto * factor_def, bruto - defensa_target)
+        # Las invocaciones siguen con la de antes: la unica medida de una (Death Mummy 3, ATK 249, a un Condor de DEF
+        # 329: 140-143 en Celestia) es la que fijo el 420, y con la recta saldria 38.
+        if es_magico or not golpe_medido:
+            base_dano = max(1.0, bruto * factor_def, bruto - defensa_target)
+        else:
+            # EL GOLPE FISICO, el mismo que reciben los jugadores (dano_recibido), medido en la captura: el jugador
+            # le hacia 94 por golpe a un Thunder Rabbit (Def 228) con Slicing Hit IV y 360 de ataque, y esto da 92
+            # (con lo de antes, 219). 03/11/2026.
+            base_dano = max(1.0, PESO_GOLPE_FISICO * mult * (ataque - defensa_target / DIVISOR_DEFENSA_FISICA))
         spread = 1.0 + random.uniform(-var_pct, var_pct)
         d = max(1, int(round(base_dano * spread)))
         if mit_pct != 0:
@@ -1333,7 +1342,10 @@ def _palabra(clave: str, texto: str) -> bool:
 # formula y el numero ya lleva restada la defensa del bicho.
 RATIO_POR_FORMULA = {
     '40': 2.84,   # Strangle Strike IV: 274747
-    '15': 0.76,   # Thunder Sword III:   73866
+    # Thunder Sword III: 73866 = 0,76 del ataque en Celestia. Pero en la captura del servidor privado una habilidad
+    # de formula 15 pega lo MISMO por golpe que la formula fisica pura (Slicing Hit IV 94, y 0,2426 x (360 + 85 -
+    # 228/3,52) = 92), asi que su multiplicador es 1: "ajustala a lo correcto y balanceado" (03/11/2026).
+    '15': 1.0,
 }
 RATIO_FORMULA_DEFECTO = 1.0
 
@@ -2401,10 +2413,12 @@ def spl_atk_con_power(spl_atk: int, dano_base: int, denom: int) -> int:
 # nivel 60 pegaba 1.600 (2.500 con critico) con Slow Snipe ("eso esta roto", 31/10/2026). Lo medido es otra cosa:
 # Thunder Sword III (formula 15, la de Slow Snipe y Basic Shot) da 0,76 del ataque (RATIO_POR_FORMULA) y Advance
 # Chop V pego algo MENOS que un golpe basico (ver PESO_STANCE). Los combos de varios golpes siguen con MULT_COMBO.
-MULT_COMBO = 1.2
-# Lo que multiplica el ataque el golpe BASICO (sin habilidad): "cambia el golpe basico a .25" (02/11/2026). Antes
-# 1.0; FACTOR_DANO_FISICO se aplica ademas.
-MULT_GOLPE_BASICO = 0.25
+# En la captura los combos pegan cada golpe lo mismo que uno suelto (Basic Beating IV: 3 x 94 = 282). Antes 1.2.
+MULT_COMBO = 1.0
+# Lo que multiplica el ataque el golpe BASICO (sin habilidad). Estuvo en 0,25 ("cambia el golpe basico a .25",
+# 02/11/2026) con las habilidades a 0,76; con la formula fisica medida (PESO_GOLPE_FISICO) vuelve a 1, el mismo peso
+# que una habilidad sin su stance (03/11/2026). FACTOR_DANO_FISICO se aplica ademas.
+MULT_GOLPE_BASICO = 1.0
 # Todo el dano FISICO de los jugadores (golpe basico y habilidades, contra monstruos y en PvP) por este factor: "sigue
 # pegando mucho el fisico, se puede reducir un 30%" (01/11/2026).
 FACTOR_DANO_FISICO = 1.0
@@ -2688,8 +2702,13 @@ K_DEFENSA = 420.0
 #
 # La de antes (420/(Dfs+420) o la resta, la mayor) daba 125 a 94 en esos mismos casos: los monstruos pegaban de 4 a
 # 8 veces lo que en el juego.
-PESO_GOLPE_MONSTRUO = 0.2426
-DIVISOR_DEFENSA_MONSTRUO = 3.52
+#
+# Y la misma recta vale al reves: los golpes del jugador a esos Thunder Rabbits (Monstruo.recibir) y entre jugadores
+# (pvp_liga.dano_pvp) salen con ella.
+PESO_GOLPE_FISICO = 0.2426
+DIVISOR_DEFENSA_FISICA = 3.52
+PESO_GOLPE_MONSTRUO = PESO_GOLPE_FISICO
+DIVISOR_DEFENSA_MONSTRUO = DIVISOR_DEFENSA_FISICA
 
 
 def dano_recibido(ataque: int, defensa: int, elem_atk: int = 0, elem_def: int = 0) -> int:

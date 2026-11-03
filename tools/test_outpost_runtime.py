@@ -125,7 +125,8 @@ def test_summon_pvp_uses_own_attack_cadence_and_entity(monkeypatch):
     monkeypatch.setattr(pvp_liga, 'mitigacion', lambda *a: 0.5)
     monkeypatch.setattr(pvp_liga, '_aplicar', lambda *a, **kw: hits.append((a,kw)))
     assert invocaciones_pvp.tick(s, inv, 100)
-    assert 480 <= hits[0][0][2] <= 520
+    # Fisico: la formula medida (0,2426 x mult x ataque contra 0 de defensa), 03/11/2026.
+    assert 115 <= hits[0][0][2] <= 128
     assert hits[0][1]['origen_eid'] == 999
     invocaciones_pvp.tick(s, inv, 100.1)
     assert len(hits) == 1
@@ -134,5 +135,7 @@ def test_summon_pvp_uses_own_attack_cadence_and_entity(monkeypatch):
 
 
 def test_pvp_damage_defense_applied_before_multiplier():
-    assert pvp_liga.dano_pvp(1000, 100, 2, 0) == 1800
-    assert pvp_liga.dano_pvp(1000, 1100, 2, 0) == round(2000*420/1520)
+    assert pvp_liga.dano_pvp(1000, 100, 2, 0, magia=True) == 1800
+    assert pvp_liga.dano_pvp(1000, 1100, 2, 0, magia=True) == round(2000*420/1520)
+    # El fisico, con la formula medida: 0,2426 x 2 x (1000 - 100/3,52).
+    assert pvp_liga.dano_pvp(1000, 100, 2, 0) == round(0.2426 * 2 * (1000 - 100 / 3.52))

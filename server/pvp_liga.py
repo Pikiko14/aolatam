@@ -123,8 +123,10 @@ def _prob_critico(ses):
 FACTOR_PVP = 1.0
 
 
-def dano_pvp(atk, defensa, mult, var_pct):
-    """Formula de AO entre jugadores: (ATAQUE - DEFENSA) x multiplicador.
+def dano_pvp(atk, defensa, mult, var_pct, magia=False):
+    """Formula de AO entre jugadores. El golpe FISICO es el medido (combate.PESO_GOLPE_FISICO: 0,2426 x mult x
+    (ataque - defensa / 3,52)), el mismo que contra un monstruo y que el de un monstruo a un jugador (03/11/2026).
+    La MAGIA sigue con (ATAQUE - DEFENSA) x multiplicador:
 
     La defensa se resta ANTES de multiplicar por la habilidad. Con la de los
     monstruos (multiplicar y luego restar) una magia de x8 con Spl Atk
@@ -136,6 +138,10 @@ def dano_pvp(atk, defensa, mult, var_pct):
     defensa = max(0, int(defensa))
     atk = max(0, int(atk))
     mult = float(mult) * FACTOR_PVP
+    if not magia:
+        import combate
+        base = max(1.0, combate.PESO_GOLPE_FISICO * mult * (atk - defensa / combate.DIVISOR_DEFENSA_FISICA))
+        return max(1, int(round(base * (1.0 + random.uniform(-var_pct, var_pct)))))
     resta = (atk - defensa) * mult
     suave = atk * mult * (420.0 / (defensa + 420.0) if defensa > 0 else 1.0)
     base = max(1.0, resta, suave)
@@ -211,7 +217,7 @@ def atacar(ses, otro, tipo, mag, arma, en_area=False, golpes=None, separacion=No
         if not permitido(ses, otro):
             return
         es_crit = random.random() < crit
-        dano = dano_pvp(atk, dfs, mult * (1.5 if es_crit else 1.0), var_pct)
+        dano = dano_pvp(atk, dfs, mult * (1.5 if es_crit else 1.0), var_pct, magia=magia)
         dano = max(1, int(round(dano * mitigacion(otro, magia))))
         _aplicar(ses, otro, dano, es_crit, primero and not en_area, tipo, efecto, magia)
 

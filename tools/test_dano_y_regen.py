@@ -38,7 +38,7 @@ def test_nivel_bajo_sigue_igual():
     """
     random.seed(3)
     for _ in range(20):
-        d = _Blanco(329).recibir(249, es_magico=False, mult=1.0)
+        d = _Blanco(329).recibir(249, es_magico=False, mult=1.0, golpe_medido=False)   # una invocacion
         assert 125 <= d <= 155, d
 
 

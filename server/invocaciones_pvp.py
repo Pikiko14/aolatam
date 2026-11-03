@@ -73,7 +73,7 @@ def tick(ses, inv, ahora):
     critico = random.random()*100 < inv.get('crit_rate', 5)
     if critico:
         mult *= 1.5
-    dano = pvp_liga.dano_pvp(ataque, defensa, mult, 0.03)
+    dano = pvp_liga.dano_pvp(ataque, defensa, mult, 0.03, magia=magia)
     dano = max(1, int(dano*pvp_liga.mitigacion(otro, magia)))
     inv['ultimo_ataque'] = ahora
     pvp_liga._aplicar(ses, otro, dano, critico, True, tipo, efecto, magia,

@@ -307,7 +307,7 @@ class Edificio(combate.Monstruo):
     def aplicar_efecto(self, ef):
         return None  # No charm, sacrifice, healing or periodic poison on buildings.
 
-    def recibir(self, ataque, es_magico=False, mult=1.0, var_pct=0.05, es_pet=False):
+    def recibir(self, ataque, es_magico=False, mult=1.0, var_pct=0.05, es_pet=False, golpe_medido=True):
         import competiciones as c
         ses = combate.ATACANTE[0]
         r = c.ronda(112)
@@ -318,7 +318,7 @@ class Edificio(combate.Monstruo):
         if not r or r['id'] != self.hb_round or m['equipo']==self.hb_data['team'] or not self.vivo:
             return 0
         before = self.hp
-        damage = super().recibir(ataque, es_magico, mult, var_pct, es_pet)
+        damage = super().recibir(ataque, es_magico, mult, var_pct, es_pet, golpe_medido)
         new = copy.deepcopy(r)
         new['edificios'][str(self.entity_id)] = self.hp
         if not es_pet:
