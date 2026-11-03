@@ -9673,7 +9673,10 @@ def _eventos_al_pisar(ses, addr, tile, solo_chocar=False):
         _por_t = _portal_en(ses.personaje.stage, *tile)
         if _por_t is not None and _por_t.get('evento_cliente'):
             return      # lo resuelve _portal_por_evento: sin esto, dialogo doble
-        if _por_t:
+        # TORRE DE BABEL (03/11/2026, "la torre de babel me buguea aca"): el 133 es una copia de la Limitless Tower y
+        # trae sus saltos al pisar; uno mando a Baco de (52,128) a (80,114), fuera de las salas y sin poder moverse.
+        # Alli los pisos solo se recorren con el TP de la torre (torre_babel.subir).
+        if _por_t or ses.personaje.stage == __import__('torre_babel').STAGE:
             efectos = [e for e in efectos if e[0] not in ('viajar', 'ir_a_tag')]
         if efectos:
             _aplicar_efectos(ses, addr, efectos, ' al pisar %s' % (tuple(tile),))

@@ -88,7 +88,7 @@ DB_PATH = pathlib.Path(__file__).parent.parent / 'data' / 'torre_babel.db'
 CMD_TORRE = 169
 SOLO, PARTY = 0, 1
 MODOS = ('Solo', 'Party')
-PAUSA = 3.0                 # segundos entre la muerte de un jefe y la salida del siguiente
+PAUSA = 5.0                 # segundos entre la muerte de un jefe y el siguiente: "ponle tiempo de 5 seg" (03/11/2026)
 MULT_PARTY = 2.0            # en Party los jefes x2: "aumenta un x2 a los jefes en el modo party" (02/11/2026)
 # EL PREMIO CADA 10 PISOS: 5 de los vales que pide el canje de Event Overview > Exchange > Enhanced Pestle and Ride
 # Feed (Lucky Enhanced Pestle / Ride Feed / Piercing Hammer / Hammer Voucher, al azar entre los cuatro) y 5 Mount
