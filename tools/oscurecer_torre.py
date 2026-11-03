@@ -21,6 +21,7 @@ import sys
 
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(RAIZ / 'tools' / 'editor_mapas'))
+sys.path.insert(0, str(RAIZ / 'tools'))
 import mpcio
 
 ORIGEN = RAIZ / 'tools' / 'originales' / 'map110.mpc'
@@ -119,6 +120,55 @@ def oscurecer_spr(datos: bytes) -> bytes:
     return bytes(b)
 
 
+# "Agrega mas objetos para que no parezca la Limitless Tower" (02/11/2026): decorado oscuro que ya existe en el cliente,
+# sembrado por cada sala. En el borde (pegado al muro) estandartes de sombra, candelabros y velas; por el suelo,
+# calaveras. Los numeros de despues del id son los de un objeto igual puesto en un mapa del juego (map026, map237,
+# map193, map008...), que es de donde se copian.
+BORDE = [(9723, 0, 2, 192), (5776, 0, 0, 192), (9812, 0, 0, 192), (9812, 0, 0, 192)]
+SUELO = [(6047, 0, 0, 192), (6049, 0, 0, 192), (6051, 0, 0, 192), (6052, 0, 0, 192), (6053, 0, 0, 192),
+         (6054, 0, 0, 192), (6059, 0, 0, 192), (6061, 0, 0, 192), (6064, 0, 0, 192)]
+POR_SALA_BORDE = 14
+POR_SALA_SUELO = 12
+SEPARACION_DECORADO = 5     # casillas entre dos piezas sembradas
+LIBRE_ALREDEDOR = 6         # ni encima de donde se llega ni de donde sale el jefe
+EXTRA_VACIO = '00' * 50
+EXTRA_SUELO = '00000000' + '03000000' + '00' * 42     # las calaveras de los mapas del juego llevan un 3 ahi
+
+
+def decorar(m, semilla=133):
+    """Siembra el decorado oscuro en las salas del mapa; devuelve cuantas piezas puso."""
+    import json
+    import random
+    import generar_mapa_torre as gmt
+    rng = random.Random(semilla)
+    lay = json.loads(gmt.SALIDA_JSON.read_text(encoding='utf-8'))
+    reservadas = [tuple(p[k]) for p in lay['pisos'][:lay['salas']] for k in ('centro', 'llegada')]
+    pisa = lambda x, y: 0 <= x < m['w'] and 0 <= y < m['h'] and gmt.transitable.se_pisa(gmt.STAGE_ORIGEN, x, y)
+    puestas, total = [], 0
+
+    def lejos(c, otras, d):
+        return all((c[0] - a) ** 2 + (c[1] - b) ** 2 >= d * d for a, b in otras)
+
+    for sala in gmt._salas(pisa, m['w'], m['h']):
+        borde = [c for c in sala if any(not pisa(c[0] + dx, c[1] + dy) for dx in (-1, 0, 1) for dy in (-1, 0, 1))]
+        hondo = [c for c in sala if all(pisa(c[0] + dx, c[1] + dy) for dx in range(-2, 3) for dy in range(-2, 3))]
+        for celdas, piezas, cuantas, extra in ((borde, BORDE, POR_SALA_BORDE, EXTRA_VACIO),
+                                               (hondo, SUELO, POR_SALA_SUELO, EXTRA_SUELO)):
+            rng.shuffle(celdas)
+            n = 0
+            for c in celdas:
+                if n >= cuantas:
+                    break
+                if not lejos(c, reservadas, LIBRE_ALREDEDOR) or not lejos(c, puestas, SEPARACION_DECORADO):
+                    continue
+                sid, a, e, cc = rng.choice(piezas)
+                m['objetos'].append([sid, c[0] * 32 + 16, c[1] * 32 + 16, a, e, cc, extra])
+                puestas.append(c)
+                n += 1
+            total += n
+    return total
+
+
 def _bloques(texto):
     """{Sequence: texto del bloque [OBJECT]} de un .obd."""
     out = {}
@@ -180,7 +230,9 @@ def main():
 
     for o in m['objetos']:
         o[0] = nuevo_de.get(o[0], o[0])
+    puestos = decorar(m)
     SALIDA_MPC.write_bytes(mpcio.escribir(m))
+    print('%d objetos de decorado oscuro sembrados por las salas' % puestos)
     print('%d objetos oscurecidos (ids %d-%d), %d sprites, %d piezas del mapa cambiadas'
           % (len(nuevos), ID_BASE, ID_BASE + len(nuevos) - 1, len(archivos),
              sum(1 for o in m['objetos'] if o[0] >= ID_BASE and o[0] < ID_BASE + len(nuevos))))
