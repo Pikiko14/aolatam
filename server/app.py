@@ -598,10 +598,75 @@ def _precio_venta(item_id: int) -> int:
     """
     lista, venta = _cargar_precios().get(int(item_id or 0), (0, 0))
     if venta > 0:
-        return venta
-    if lista > 0:
-        return max(1, lista // 2)
-    return 1
+        base = venta
+    elif lista > 0:
+        base = max(1, lista // 2)
+    else:
+        base = 1
+    return max(base, _venta_por_nivel(item_id))
+
+
+# EL EQUIPO DE NIVEL 1 A 60 SE VENDE A LA TIENDA POR 1.000 A 6.000 DE ORO segun su nivel (pedido del usuario,
+# 04/11/2026): nivel 1 -> 1.000, nivel 60 -> 6.000, en linea recta. Solo sube el precio (monturas y robots, que ya
+# valen mas, quedan igual) y solo para equipo que NO se compra con oro ni con AG: lo que venden las tiendas NPC
+# (shop.xml: una Dagger de 35 de oro se venderia por 1.000, oro infinito) y lo del Item Mall (cada cuenta trae
+# 1.000.000 de AG) se queda con su precio de siempre. La municion y lo que no se equipa (comida, cajas) tampoco.
+VENTA_POR_NIVEL = ((1, 1000), (60, 6000))
+_SIN_VENTA_POR_NIVEL = None
+
+
+def _items_comprables():
+    """Los items que se compran en tiendas NPC (shop.xml) o en los Item Mall (item_mall.json, recent_mall.json)."""
+    global _SIN_VENTA_POR_NIVEL
+    if _SIN_VENTA_POR_NIVEL is not None:
+        return _SIN_VENTA_POR_NIVEL
+    import re
+    ids = set()
+    raiz = pathlib.Path(__file__).parent.parent
+    try:
+        texto = (raiz / 'extracted_paks' / 'update26' / 'setting' / 'shop.xml').read_text(encoding='utf-8-sig', errors='ignore')
+        ids.update(int(x) for x in re.findall(r'<item\d+>\s*(\d+)\s*</item\d+>', texto))
+    except OSError:
+        log.warning('venta por nivel: no se pudo leer shop.xml; no se aplica a nada')
+        _SIN_VENTA_POR_NIVEL = None
+        return None
+
+    def _recoger(nodo):
+        if isinstance(nodo, dict):
+            for k, v in nodo.items():
+                if k in ('item', 'item_id', 'id_item') and str(v).isdigit():
+                    ids.add(int(v))
+                else:
+                    _recoger(v)
+        elif isinstance(nodo, list):
+            for v in nodo:
+                _recoger(v)
+    for modulo in ('item_mall', 'recent_mall'):
+        try:
+            _recoger(__import__(modulo).datos())
+        except Exception:
+            log.exception('venta por nivel: catalogo de %s', modulo)
+    _SIN_VENTA_POR_NIVEL = ids
+    return ids
+
+
+def _venta_por_nivel(item_id) -> int:
+    """El minimo que paga la tienda por equipo de nivel 1..60 que no se compra (0 si no aplica)."""
+    import inventario as _iv_vn
+    try:
+        item_id = int(item_id or 0)
+        if not item_id or _iv_vn.ranura_equipo_de(item_id) is None or _iv_vn.es_municion(item_id):
+            return 0
+        nivel = int(_iv_vn._col_item(item_id, '等級限制') or 0)
+    except Exception:
+        return 0
+    (n0, p0), (n1, p1) = VENTA_POR_NIVEL
+    if not n0 <= nivel <= n1:
+        return 0
+    comprables = _items_comprables()
+    if comprables is None or item_id in comprables:
+        return 0
+    return int(round((p0 + (nivel - n0) * (p1 - p0) / (n1 - n0)) / 10.0)) * 10
 
 
 # Ultima casilla utilizable de la mochila base (pestaña Prop: 5x5 = 25 ranuras,
