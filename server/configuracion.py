@@ -20,6 +20,10 @@ STRAW_DROP_PROBABILIDAD = 0.15  # 15%: pedido del usuario el 31/10/2026 (antes 0
 DROPS_EVENTO = {
     82665: 0.05,    # Winter Holiday PD Voucher (Navidad): se canjea en Event Overview > Exchange > Winter Holiday PD
 }
+# LAS GEAR GACHA (tools/generar_lucky_bags.py, 04/11/2026): cada monstruo de nivel 10+ fuera de mapas privados suelta
+# con esta probabilidad UNA gacha de su franja de nivel (10-19 la Level 10, ... 60+ la Level 60), de un tipo al azar
+# (armas, capa, accesorio, gemas, armadura Light/Heavy/Robe). Aparte del botin normal y sin la tasa de drop.
+GACHA_DROP_PROBABILIDAD = 0.01
 
 
 # Nombre del servidor: el que pinta el cliente al entrar ("Impacty(AOF-1)", server.xml 名稱, que pone el launcher:

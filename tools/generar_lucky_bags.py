@@ -184,6 +184,8 @@ def bolsas():
                                   "Card 30%, a Gatherer's set piece (Lv40/50/60, +Maximum Weight) 30%, a craftsman "
                                   'robot Lv40 5%, Lv50 3.5%, Lv60 1.5%.',
                    'contenido': contenido})
+    for k, gacha in enumerate(gachas(items)):
+        salida.append(dict({'id': ID_GACHA + k}, **gacha))
     return salida
 
 
@@ -242,11 +244,101 @@ def bolsa_de_monturas(items, lo, hi):
     return contenido, texto
 
 
+# LAS GEAR GACHA HASTA NIVEL 60 (04/11/2026): "podemos implementar estos gachas hasta lvl 60 ... usa los mismos %"; "hay de
+# gemas, de equipos de armas, capa y accesorios; por las armaduras hay 1 gacha por cada uno de los 3 tipos". El modelo es
+# la Level 70 Gear Gacha (Light) oficial (captura del usuario): casco, armadura, punos y botas, y de cada uno la pieza
+# normal 22.8%, la Quality (azul) 2% y la mejor (amarilla) 0.2% -- por pieza 91.2% / 8% / 0.8% de su parte. Aqui igual:
+# cada hueco se lleva 100% / numero de huecos y lo reparte asi entre sus tres versiones. Lv10 a Lv60 de diez en diez;
+# solo las sueltan los monstruos de su nivel (configuracion.GACHA_DROP_PROBABILIDAD, lyceum_services.straw_drop), no
+# se venden en el Item Mall. Si a un hueco le falta una version, su parte se reparte entre las que hay.
+NIVELES_GACHA = (10, 20, 30, 40, 50, 60)
+ID_GACHA = 89150
+ICONO_GACHA = 5172                  # el de la Summer Wear Gachapon (63839)
+REPARTO_GACHA = ((None, 91.2), ('藍', 8.0), ('黃', 0.8))       # normal, Quality, la mejor
+ARMAS_GACHA = ('劍', '刀', '斧', '錘', '槍', '弓箭', '彈弓', '杖', '影刃')
+ARMADURAS_GACHA = (('Light', '32'), ('Heavy', '33'), ('Robe', '34'))
+POR_VERSION_UNICA = 3               # gachas de un solo hueco (capa, accesorio): hasta 3 piezas por version
+GEMAS_GACHA = ('Ruby', 'Orange Gem', 'Yellow Gem', 'Emerald', 'Sapphire', 'Purple Gem')
+# Gemas por nivel de la gacha: (normal, Quality, la mejor) = (prefijo, cuantas). Flawed es de nivel 20, la sin prefijo de
+# 40 y la Clean de 60; la Flawless (80) no se usa con el tope en 60, asi que en las altas la mejor es Clean x2.
+GEMAS_POR_NIVEL = {n: (('Flawed ', 1), ('', 1), ('Clean ', 1)) if n <= 30 else (('', 1), ('Clean ', 1), ('Clean ', 2))
+                   for n in NIVELES_GACHA}
+
+
+def _rango_gacha(nivel):
+    return (nivel, nivel + 9) if nivel + 9 <= TOPE else (TOPE - 5, TOPE)
+
+
+def _version(filas, color, cuantas):
+    """Las `cuantas` piezas de mas nivel de ese color (None = normal), sin repetir nombre."""
+    elegidas = [f for f in filas if f['顏色'] == color]
+    elegidas = sorted(_sin_repetir(elegidas), key=lambda f: (-_n(f['物品等級']), int(f['id'])))
+    return [int(f['id']) for f in elegidas[:cuantas]]
+
+
+def _contenido_gacha(huecos):
+    """huecos: [[(color, [(item, cantidad)...]) x3]] -> [[item, cantidad, peso]] (peso en milesimas de %)."""
+    huecos = [h for h in huecos if any(items for _c, items in h)]
+    contenido = []
+    for h in huecos:
+        parte = 100.0 / len(huecos)
+        reparto = {c: p for c, p in REPARTO_GACHA}
+        presentes = [(c, items) for c, items in h if items]
+        suma = sum(reparto[c] for c, _items in presentes)
+        for c, items in presentes:
+            pct = parte * reparto[c] / suma
+            for iid, cuantos in items:
+                contenido.append([iid, cuantos, max(1, int(round(pct * 1000 / len(items))))])
+    return contenido
+
+
+def gachas(items):
+    """Las 42 gachas: armas, capa, accesorio, gemas y armadura Light/Heavy/Robe, de nivel 10 a 60."""
+    gemas = {}
+    for f in items.values():
+        nombre = (f['基本名稱'] or '').strip()
+        if f['物品類別'] == '寶石' and _vale(f):
+            gemas[nombre] = min(gemas.get(nombre, 10 ** 9), int(f['id']))
+    salida = []
+    for nivel in NIVELES_GACHA:
+        lo, hi = _rango_gacha(nivel)
+        del_nivel = [f for f in items.values() if lo <= _n(f['物品等級']) <= hi and _vale(f)]
+        tipos = []
+        tipos.append(('Weapon Gacha', 'weapon', [[(c, [(i, 1) for i in _version([f for f in del_nivel if f['物品類別'] == cat], c, 1)])
+                                                  for c, _p in REPARTO_GACHA] for cat in ARMAS_GACHA]))
+        for nombre, cat, clave in (('Cape Gacha', '披風', 'cape'), ('Accessory Gacha', '飾品', 'accessory')):
+            filas = [f for f in del_nivel if f['物品類別'] == cat]
+            tipos.append((nombre, clave, [[(c, [(i, 1) for i in _version(filas, c, POR_VERSION_UNICA)]) for c, _p in REPARTO_GACHA]]))
+        for nombre, clase in ARMADURAS_GACHA:
+            huecos = []
+            for cat in ARMADURA:
+                filas = [f for f in del_nivel if f['物品類別'] == cat and str(f['技能限制1']) == clase]
+                huecos.append([(c, [(i, 1) for i in _version(filas, c, 1)]) for c, _p in REPARTO_GACHA])
+            tipos.append(('Gear Gacha (%s)' % nombre, 'armor_' + nombre.lower(), huecos))
+        huecos = []
+        for gema in GEMAS_GACHA:
+            huecos.append([(c, [(gemas[pref + gema], cuantas)] if pref + gema in gemas else [])
+                           for (c, _p), (pref, cuantas) in zip(REPARTO_GACHA, GEMAS_POR_NIVEL[nivel])])
+        tipos.append(('Gem Gacha', 'gem', huecos))
+        for nombre, clave, huecos in tipos:
+            contenido = _contenido_gacha(huecos)
+            if not contenido:
+                continue
+            total = sum(w for _i, _c, w in contenido)
+            salida.append({'nombre': 'Level %d %s' % (nivel, nombre), 'nivel': nivel, 'pestana': None,
+                           'cantidades': True, 'icono': ICONO_GACHA, 'gacha': {'nivel': nivel, 'tipo': clave},
+                           'descripcion': 'Dropped by Lv%d-%d monsters. Open it to get one random piece (Lv%d-%d): '
+                                          'normal %.1f%%, Quality %.1f%%, the best %.1f%% of each slot.'
+                                          % (nivel, nivel + 9, lo, hi, 91.2, 8.0, 0.8),
+                           'contenido': contenido})
+    return salida
+
+
 def filas_mall(defs, base):
     """Las filas del Item Mall: cada bolsa de 1 y de 10, en su pestana."""
     out, orden = [], {PESTANA_EQUIPO: 0, PESTANA_MONTURA: 0}
     for d in defs:
-        if d['nombre'] in FUERA_DEL_MALL:
+        if d['nombre'] in FUERA_DEL_MALL or d.get('pestana') is None:
             continue
         for cuantas, precio in PACKS:
             orden[d['pestana']] += 1
@@ -311,7 +403,7 @@ def set_recolector():
             tag = re.sub(r'物品等級="\d+"', '物品等級="%d"' % nivel, tag, count=1)
             tag = re.sub(r' 技能限制1="[^"]*"| 技能等限="[^"]*"| 原型名稱="[^"]*"', '', tag)
             for attr in ('防禦', '魔防'):
-                tag = re.sub(r'%s="(\d+)"' % attr, lambda m: '%s="%d"' % (attr, max(1, int(m.group(1)) // 2)), tag, 1)
+                tag = re.sub(r'%s="(\d+)"' % attr, lambda m: '%s="%d"' % (attr, max(1, int(m.group(1)) // 2)), tag, count=1)
             tag = tag[:-2].rstrip() + ' 等級限制="%d" 負重="%d" 說明定義="%s" />' % (nivel, carga, desc)
             fila = None
             for t in ['item'] + ['item%d' % i for i in range(2, 10)]:
@@ -354,7 +446,8 @@ def main():
     MALL.write_bytes((json.dumps(mall, ensure_ascii=False, indent=4) + '\n').replace('\n', '\r\n').encode('utf-8'))
     for d in defs:
         print('%5d %-30s %3d objetos' % (d['id'], d['nombre'], len(d['contenido'])))
-    print('Item Mall: %d filas viejas fuera, %d nuevas' % (len(viejas), len(PACKS) * sum(d['nombre'] not in FUERA_DEL_MALL for d in defs)))
+    print('Item Mall: %d filas viejas fuera, %d nuevas' % (len(viejas), len(PACKS) * sum(
+        d['nombre'] not in FUERA_DEL_MALL and d.get('pestana') is not None for d in defs)))
 
 
 if __name__ == '__main__':

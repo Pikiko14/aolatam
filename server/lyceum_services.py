@@ -323,13 +323,49 @@ def _mapa_de_evento(stage, nivel):
                 or r.get('分配類型') or r.get('平行空間'))
 
 
+_GACHAS = None
+
+
+def gachas_por_nivel():
+    """{nivel de la gacha: [ids]} de las Gear Gacha (plantillas/lucky_bags_mall.json, las que llevan 'gacha')."""
+    global _GACHAS
+    if _GACHAS is None:
+        import json
+        import pathlib
+        _GACHAS = {}
+        try:
+            for b in json.loads((pathlib.Path(__file__).parent / 'plantillas' / 'lucky_bags_mall.json').read_text(encoding='utf-8')):
+                if b.get('gacha'):
+                    _GACHAS.setdefault(int(b['gacha']['nivel']), []).append(int(b['id']))
+        except Exception:
+            _GACHAS = {}
+    return _GACHAS
+
+
+def gacha_drop(stage, nivel):
+    """Una Gear Gacha de la franja de nivel del monstruo (configuracion.GACHA_DROP_PROBABILIDAD), o []."""
+    import configuracion
+    nivel = int(nivel or 0)
+    r = xml_rows('stage.xml').get(int(stage))
+    if nivel < 10 or not r or r.get('動態空間') == '是' or r.get('分配類型') or r.get('平行空間'):
+        return []
+    if random.random() >= float(getattr(configuracion, 'GACHA_DROP_PROBABILIDAD', 0) or 0):
+        return []
+    franjas = gachas_por_nivel()
+    franja = min(60, nivel // 10 * 10)
+    ids = franjas.get(franja) or []
+    return [(random.choice(ids), 1)] if ids else []
+
+
 def straw_drop(stage, nivel):
     """Chance de evento aparte del loot normal; sin mapas privados ni nivel del jugador. Lleva tambien los objetos
-    de configuracion.DROPS_EVENTO (el Winter Holiday PD Voucher), cada uno con su probabilidad."""
+    de configuracion.DROPS_EVENTO (el Winter Holiday PD Voucher), cada uno con su probabilidad, y las Gear Gacha
+    (gacha_drop, desde nivel 10)."""
     import configuracion
     if not _mapa_de_evento(stage, nivel):
-        return []
+        return gacha_drop(stage, nivel)
     sale = [(STRAW, 1)] if random.random() < configuracion.STRAW_DROP_PROBABILIDAD else []
+    sale += gacha_drop(stage, nivel)
     for item, prob in (getattr(configuracion, 'DROPS_EVENTO', None) or {}).items():
         if random.random() < float(prob):
             sale.append((int(item), 1))

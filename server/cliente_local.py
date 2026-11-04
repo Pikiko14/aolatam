@@ -314,7 +314,7 @@ ICONO_LUCKY_BAG = 8747                  # el de las Lv70 <Clase> Lucky Bag
 def _linea_xml_lucky_bag(bolsa):
     return ('    <道具 編號="%d" 原型介面="%d" 基本名稱="%s" 物品類別="紅包" 物品等級="%d" 重量="10" '
             '動態資料1="%d" log等級="80" 說明定義="%s" 可使用="是" />'
-            ) % (bolsa['id'], ICONO_LUCKY_BAG, bolsa['nombre'], bolsa['nivel'], bolsa.get('tabla', bolsa['id']),
+            ) % (bolsa['id'], bolsa.get('icono', ICONO_LUCKY_BAG), bolsa['nombre'], bolsa['nivel'], bolsa.get('tabla', bolsa['id']),
                  bolsa['descripcion'].replace('"', "'"))
 
 
@@ -791,7 +791,7 @@ def registrar_medalla_en_servidor():
                     con.execute(
                         'INSERT INTO item9 (id, "原型介面", "基本名稱", "物品類別", "物品等級", weight, '
                         '"動態資料1", "log等級", "說明定義", "可使用", _pak) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                        (str(bolsa['id']), str(ICONO_LUCKY_BAG), bolsa['nombre'], '紅包', str(bolsa['nivel']), '10',
+                        (str(bolsa['id']), str(bolsa.get('icono', ICONO_LUCKY_BAG)), bolsa['nombre'], '紅包', str(bolsa['nivel']), '10',
                          str(bolsa.get('tabla', bolsa['id'])), '80', bolsa['descripcion'], '是', 'update26'))
                     con.commit()
                     log.info("Item %d (%s) registrado en corpus/content.db", bolsa['id'], bolsa['nombre'])
