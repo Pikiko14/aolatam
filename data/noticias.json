@@ -1,4 +1,10 @@
 [
-  {"fecha": "2026-10-21", "titulo": "Event Overview is open",
-   "texto": "Online Bonus, Login Bonus, Exchange shops and the Angel Pass (Winter's Hymn Treasures) now work.\nOpen the Event Overview window to claim your rewards."}
+  {"fecha": "2026-11-04", "titulo": "Gear Gacha Lv10-60",
+   "texto": "Monsters now drop Gear Gacha of their level: weapons, cape, accessory, gems and Light/Heavy/Robe armor, with the official odds (normal 22.8%, Quality 2%, the best 0.2%)."},
+  {"fecha": "2026-11-04", "titulo": "Shop, Item Mall and drops",
+   "texto": "Lv1-60 gear sells to NPC shops for 1,000-6,000 gold. Mount Lucky Bags now give Ride Feed and mounts (the strongest 0.1%). Mark Stone and Mark Portal Scroll left the Mall. Drop rate x1, weekends x1.1."},
+  {"fecha": "2026-11-04", "titulo": "New server and website",
+   "texto": "We moved to a new server in America. Visit aoforever.tech (English/Spanish) to create your account and use My account: characters, password and the events calendar."},
+  {"fecha": "2026-11-03", "titulo": "Fixes",
+   "texto": "Faction change at the Census Angel (Lyceum). Summons no longer walk through walls, Dense Forest portals no longer send you back and the minimap shows one dot per NPC."}
 ]
