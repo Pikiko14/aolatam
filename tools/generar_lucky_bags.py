@@ -166,12 +166,11 @@ def bolsas():
                            'contenido': contenido})
             siguiente += 1
     for nivel, lo, hi in MONTURAS:
-        pool = _sin_repetir([f for f in items.values()
-                             if f['物品類別'] in ('座騎', '機甲') and lo <= _n(f['等級限制']) <= min(hi, TOPE) and _vale(f)])
+        contenido, texto = bolsa_de_monturas(items, lo, min(hi, TOPE))
         salida.append({'id': siguiente, 'nombre': 'Lv%d Mount Lucky Bag' % nivel, 'nivel': nivel,
-                       'pestana': PESTANA_MONTURA,
-                       'descripcion': 'Open it to get one random mount or robot for Lv%d-%d.' % (lo, min(hi, TOPE)),
-                       'contenido': [[int(f['id']), 1, PESO.get(f['顏色'], 10)] for f in pool]})
+                       'pestana': PESTANA_MONTURA, 'cantidades': True,
+                       'descripcion': 'Open it to get one of the following: %s.' % texto,
+                       'contenido': contenido})
         siguiente += 1
     # La de Craftsman (03/11/2026): "lo de robot lvl 40-50-60, den cartas de x2 recoleccion 1 o cartas de
     # manufactura 1, set de recolector" (ver set_recolector). Ya no da recetas.
@@ -186,6 +185,61 @@ def bolsas():
                                   'robot Lv40 5%, Lv50 3.5%, Lv60 1.5%.',
                    'contenido': contenido})
     return salida
+
+
+# LAS MOUNT LUCKY BAG (04/11/2026): "con solo 22 bags me salieron cosas rotas"; "que salga por cada item 5% para abajo,
+# a los mas rotos 0.1%"; "en las monturas mete ride feed y monturas bajas, las lvl 50+ 5% para abajo"; sin subir el
+# precio. Antes cada bolsa daba SIEMPRE una montura de su nivel. Ahora (en % de la bolsa):
+#   las monturas de su nivel   MONTURAS_PROPIAS (10% la Lv35; 5% la Lv50 y la Lv60, que son de nivel 45+/55+), y dentro
+#                              las mas fuertes (el FUERTES de arriba por ataque+defensa+agilidad+velocidad) al 0.1% cada una
+#   monturas mas bajas         MONTURAS_BAJAS en total (niveles 10 hasta el de la bolsa - 1), 5% como mucho cada una
+#   Ride Feed x5               el resto
+# Las pesos van en milesimas de % (100000 = 100%) y la bolsa da las cantidades de su plantilla ('cantidades').
+RIDE_FEED, RIDE_FEED_CUANTOS = 4457, 5
+MONTURAS_PROPIAS = {35: 10.0, 50: 5.0, 60: 5.0}
+MONTURAS_BAJAS = 25.0
+FUERTES, PCT_FUERTE, TOPE_CADA = 0.15, 0.1, 5.0
+STATS_MONTURA = ('atk_avg', 'matk', 'def', 'mdef', 'accuracy', 'agility', 'move_speed')
+
+
+def _fuerza(f):
+    return sum(_n(f.get(c)) for c in STATS_MONTURA)
+
+
+def _monturas(items, lo, hi):
+    return _sin_repetir([f for f in items.values()
+                         if f['物品類別'] in ('座騎', '機甲') and lo <= _n(f['等級限制']) <= hi and _vale(f)])
+
+
+def bolsa_de_monturas(items, lo, hi):
+    """(contenido [[item, cantidad, peso]], texto del tooltip) de la Mount Lucky Bag de niveles lo..hi."""
+    nivel = next(n for n, a, b in MONTURAS if a == lo)
+    propias = sorted(_monturas(items, lo, hi), key=lambda f: (-_fuerza(f), int(f['id'])))
+    bajas = _monturas(items, 10, lo - 1)
+    n_fuertes = max(1, int(round(len(propias) * FUERTES))) if len(propias) > 1 else 0
+    fuertes, normales = propias[:n_fuertes], propias[n_fuertes:]
+    pct = {}
+    total_propias = MONTURAS_PROPIAS[nivel]
+    for f in fuertes:
+        pct[int(f['id'])] = PCT_FUERTE
+    if normales:
+        cada = min(TOPE_CADA, (total_propias - PCT_FUERTE * len(fuertes)) / len(normales))
+        for f in normales:
+            pct[int(f['id'])] = cada
+    if bajas:
+        cada = min(TOPE_CADA, MONTURAS_BAJAS / len(bajas))
+        for f in bajas:
+            pct.setdefault(int(f['id']), cada)
+    feed = 100.0 - sum(pct.values())
+    contenido = [[RIDE_FEED, RIDE_FEED_CUANTOS, int(round(feed * 1000))]]
+    contenido += [[iid, 1, max(1, int(round(p * 1000)))] for iid, p in pct.items()]
+    suma_propias = sum(pct[int(f['id'])] for f in propias)
+    suma_bajas = sum(pct[int(f['id'])] for f in bajas)
+    texto = ('Ride Feed x%d %.1f%%, a lower-level mount or robot (Lv10-%d) %.1f%% (%.2f%% each), a Lv%d-%d mount or '
+             'robot %.1f%% (the strongest %.1f%% each)') % (RIDE_FEED_CUANTOS, feed, lo - 1, suma_bajas,
+                                                            suma_bajas / max(1, len(bajas)), lo, hi, suma_propias,
+                                                            PCT_FUERTE)
+    return contenido, texto
 
 
 def filas_mall(defs, base):

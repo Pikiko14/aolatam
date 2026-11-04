@@ -13,8 +13,9 @@
    Antes se vendian los 10 sets sueltos (20 filas); se quitan.
 
 3. ON SALE (搶購區, categoria 23) lleva SOLO lo que pidio el usuario: los Maple (Mark y
-   Teleportation Scroll) y Mark Stone y Mark Portal Scroll, con los precios y cantidades de la
-   pestana de teletransporte (27). Todo lo demas se quita de ahi.
+   Teleportation Scroll), con los precios y cantidades de la pestana de teletransporte (27). Todo lo
+   demas se quita de ahi. Mark Stone y Mark Portal Scroll ya no se venden ("quita los mark scroll de
+   item mall", 04/11/2026): estan en `excluded`.
 
 Las filas ya publicadas no se tocan. Se puede volver a correr: no duplica nada.
 """
@@ -37,8 +38,8 @@ PRIMER_ID_PD = 32700
 PRIMER_ID_LOCAL = 32000
 PUBLICACION_PD = 'set PD (tools/habilitar_mall_completo.py)'
 CAT_ON_SALE, CAT_TELEPORTE = 23, 27
-# Maple Mark, Maple Teleportation Scroll, Mark Stone, Mark Portal Scroll.
-ON_SALE = (20565, 20566, 3693, 3694)
+# Maple Mark y Maple Teleportation Scroll. Mark Stone (3693) y Mark Portal Scroll (3694) fuera (04/11/2026).
+ON_SALE = (20565, 20566)
 PUBLICACION_ON_SALE = 'On Sale (tools/habilitar_mall_completo.py)'
 
 
@@ -143,7 +144,7 @@ QUITADAS_DE_PESTANA = {13: {16073: 'Blessed Fusion Potion', 12612: "Haven's Favo
                             4180: 'Pigeon Canister'}}
 # Pestanas que solo llevan estos objetos: Special > Teleport (27) con los Maple, los Mark normales
 # y Summon / Fly Book.
-SOLO_EN_PESTANA = {CAT_TELEPORTE: {20565, 20566, 3693, 3694, 1333, 2987},
+SOLO_EN_PESTANA = {CAT_TELEPORTE: {20565, 20566, 1333, 2987},
                    # Furniture (32-35): fuera todos los huevos de muebles; en la 32 solo los huevos PD.
                    32: {4978, 4979, 7471, 7472}, 33: set(), 34: set(), 35: set(),
                    # Lucky Bag > Hot (28): vacia (pedido del usuario, 31/10/2026).
