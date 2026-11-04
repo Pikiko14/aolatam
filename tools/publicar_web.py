@@ -23,7 +23,7 @@ LAUNCHER = RAIZ / 'parches' / 'launcher_propio' / 'AngelsLauncher.exe'
 VPS = os.environ.get('AO_VPS', 'root@179.66.132.19')
 DESTINO_WEB = '/var/www/angels-web'
 DESTINO_JUEGO = os.environ.get('AO_VPS_DIR', '/opt/angels')
-CODIGO = ['server/cuentas.py', 'server/web_registro.py', 'server/clave_cliente.py']
+CODIGO = ['server/cuentas.py', 'server/web_registro.py', 'server/clave_cliente.py', 'server/panel_web.py']
 
 
 def ssh(orden, entrada=None):

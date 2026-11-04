@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- Back office (server/panel_web.py). Bilingue como la portada: el espanol va en data-es / data-es-<atributo>. -->
+<title data-es="Mi cuenta — Angels Online Forever">My account — Angels Online Forever</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#fff7fb">
+<link rel="stylesheet" href="../styles.css?v=20261104c">
+<link rel="stylesheet" href="../cuenta.css?v=20261104c">
+<link rel="stylesheet" href="panel.css?v=20261104c">
+<script src="../i18n.js?v=20261104c" defer></script><script src="panel.js?v=20261104c" defer></script>
+</head>
+<body>
+<header class="cabecera">
+  <a class="marca" href="../"><span class="halo" aria-hidden="true"></span>Angels<b>Online</b><small>FOREVER</small></a>
+  <nav aria-label="Sections" data-es-aria-label="Secciones">
+    <a href="../" data-es="Inicio">Home</a>
+    <span id="quien" class="panel-quien" hidden></span>
+    <button id="salir" class="panel-salir" type="button" hidden data-es="Salir">Log out</button>
+    <span class="lang-flags"></span>
+  </nav>
+</header>
+
+<main class="panel">
+  <!-- Entrar -->
+  <section id="vista-login" class="seccion" aria-labelledby="titulo-login" hidden>
+    <div class="tarjeta cuenta">
+      <div class="cuenta-texto">
+        <span class="etiqueta" data-es="TU CUENTA">YOUR ACCOUNT</span>
+        <h1 id="titulo-login" data-es="Entra a tu &lt;em&gt;cuenta.&lt;/em&gt;">Log in to your <em>account.</em></h1>
+        <p data-es="Usa el mismo usuario y contraseña con los que entras al juego.">Use the same username and password you use to log in to the game.</p>
+        <p class="nota-suave" data-es="¿Aún no tienes cuenta? &lt;a href=&quot;../#crear-cuenta&quot;&gt;Créala aquí&lt;/a&gt;.">Don't have an account yet? <a href="../#crear-cuenta">Create one here</a>.</p>
+      </div>
+      <form id="form-login" class="account-form" novalidate>
+        <label for="login-usuario" data-es="Nombre de usuario">Username</label>
+        <input id="login-usuario" type="text" autocomplete="username" maxlength="16" required>
+        <label for="login-clave" data-es="Contraseña">Password</label>
+        <input id="login-clave" type="password" autocomplete="current-password" maxlength="16" required>
+        <button type="submit" data-es="Entrar">Log in</button>
+        <p id="login-estado" class="account-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- Dentro -->
+  <div id="vista-panel" hidden>
+    <nav class="panel-pestanas" aria-label="Account sections" data-es-aria-label="Secciones de la cuenta">
+      <button type="button" data-vista="personajes" data-es="Personajes">Characters</button>
+      <button type="button" data-vista="recargar" data-es="Recargar">Recharge</button>
+      <button type="button" data-vista="contrasena" data-es="Contraseña">Password</button>
+      <button type="button" data-vista="eventos" data-es="Eventos">Events</button>
+      <button type="button" data-vista="admin" class="solo-admin" hidden>Admin</button>
+    </nav>
+
+    <section id="vista-personajes" class="seccion panel-vista" aria-labelledby="titulo-personajes">
+      <div class="encabezado">
+        <span class="etiqueta" data-es="TUS HÉROES">YOUR HEROES</span>
+        <h2 id="titulo-personajes" data-es="Mis &lt;em&gt;personajes.&lt;/em&gt;">My <em>characters.</em></h2>
+      </div>
+      <div id="mis-personajes" class="panel-personajes"></div>
+    </section>
+
+    <section id="vista-recargar" class="seccion panel-vista" aria-labelledby="titulo-recargar" hidden>
+      <div class="encabezado">
+        <span class="etiqueta">ANGEL GOLD</span>
+        <h2 id="titulo-recargar" data-es="Recargar &lt;em&gt;AG.&lt;/em&gt;">Recharge <em>AG.</em></h2>
+      </div>
+      <div class="tarjeta panel-saldo">
+        <p data-es="Saldo de tu cuenta">Your account balance</p>
+        <strong><span id="mi-ag">—</span> AG</strong>
+        <p class="nota-suave" data-es="El Angel Gold se gasta en el Item Mall del juego y es de toda la cuenta.">Angel Gold is spent in the in-game Item Mall and is shared by the whole account.</p>
+      </div>
+      <div class="tarjeta panel-aviso">
+        <h3 data-es="Compra con tarjeta">Buy with card</h3>
+        <p data-es="Muy pronto podrás comprar AG con tarjeta de crédito o débito (Mercado Pago) desde aquí.">Soon you'll be able to buy AG with a credit or debit card (Mercado Pago) right here.</p>
+      </div>
+    </section>
+
+    <section id="vista-contrasena" class="seccion panel-vista" aria-labelledby="titulo-contrasena" hidden>
+      <div class="tarjeta cuenta">
+        <div class="cuenta-texto">
+          <span class="etiqueta" data-es="SEGURIDAD">SECURITY</span>
+          <h2 id="titulo-contrasena" data-es="Cambiar &lt;em&gt;contraseña.&lt;/em&gt;">Change <em>password.</em></h2>
+          <p data-es="Es la contraseña con la que entras al juego y a esta página.">It's the password you use for the game and for this page.</p>
+          <ul class="lista-check">
+            <li data-es="De 4 a 16 caracteres, sin espacios ni acentos.">4 to 16 characters, no spaces or accented letters.</li>
+          </ul>
+        </div>
+        <form id="form-contrasena" class="account-form" novalidate>
+          <label for="pw-actual" data-es="Contraseña actual">Current password</label>
+          <input id="pw-actual" type="password" autocomplete="current-password" maxlength="16" required>
+          <label for="pw-nueva" data-es="Contraseña nueva">New password</label>
+          <input id="pw-nueva" type="password" autocomplete="new-password" maxlength="16" required>
+          <label for="pw-confirmar" data-es="Repite la nueva">Repeat the new one</label>
+          <input id="pw-confirmar" type="password" autocomplete="new-password" maxlength="16" required>
+          <button type="submit" data-es="Cambiar contraseña">Change password</button>
+          <p id="pw-estado" class="account-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <section id="vista-eventos" class="seccion panel-vista" aria-labelledby="titulo-eventos" hidden>
+      <div class="encabezado">
+        <span class="etiqueta" data-es="CALENDARIO">CALENDAR</span>
+        <h2 id="titulo-eventos" data-es="Próximos &lt;em&gt;eventos.&lt;/em&gt;">Upcoming <em>events.</em></h2>
+        <p data-es="Horas en tu zona horaria.">Times shown in your time zone.</p>
+      </div>
+      <ol id="lista-eventos" class="panel-eventos"></ol>
+    </section>
+
+    <section id="vista-admin" class="seccion panel-vista solo-admin" aria-labelledby="titulo-admin" hidden>
+      <div class="encabezado">
+        <span class="etiqueta">BACK OFFICE</span>
+        <h2 id="titulo-admin" data-es="Administrar &lt;em&gt;cuentas.&lt;/em&gt;">Manage <em>accounts.</em></h2>
+        <p data-es="Busca por usuario o por nombre de personaje. Todo lo que hagas aquí queda registrado.">Search by username or character name. Everything you do here is logged.</p>
+      </div>
+      <form id="form-buscar" class="panel-buscar" novalidate>
+        <label for="buscar-q" class="sr" data-es="Usuario o personaje">Username or character</label>
+        <input id="buscar-q" type="search" maxlength="32" placeholder="Username or character" data-es-placeholder="Usuario o personaje" required>
+        <button type="submit" class="boton boton-principal" data-es="Buscar">Search</button>
+      </form>
+      <p id="buscar-estado" class="account-status" role="status" aria-live="polite"></p>
+      <div id="admin-cuenta" hidden>
+        <div class="tarjeta panel-saldo">
+          <p><span data-es="Cuenta">Account</span>: <b id="admin-usuario"></b></p>
+          <strong><span id="admin-ag">—</span> AG</strong>
+        </div>
+        <div id="admin-personajes" class="panel-personajes"></div>
+        <div class="panel-dos">
+          <form id="form-ag" class="account-form" novalidate>
+            <h3 data-es="Dar o quitar AG">Give or remove AG</h3>
+            <label for="ag-cantidad" data-es="Cantidad (negativa para quitar)">Amount (negative to remove)</label>
+            <input id="ag-cantidad" type="number" step="1" required>
+            <label for="ag-motivo" data-es="Motivo">Reason</label>
+            <input id="ag-motivo" type="text" maxlength="200" placeholder="e.g. event prize" data-es-placeholder="Ej. premio de evento">
+            <button type="submit" data-es="Aplicar">Apply</button>
+            <p id="ag-estado" class="account-status" role="status" aria-live="polite"></p>
+          </form>
+          <form id="form-reset" class="account-form" novalidate>
+            <h3 data-es="Contraseña nueva">New password</h3>
+            <label for="reset-clave" data-es="Contraseña nueva para esta cuenta">New password for this account</label>
+            <input id="reset-clave" type="text" autocomplete="off" maxlength="16" required>
+            <button type="submit" data-es="Cambiar contraseña">Change password</button>
+            <p id="reset-estado" class="account-status" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="pie">
+  <div class="marca"><span class="halo" aria-hidden="true"></span>Angels<b>Online</b><small>FOREVER</small></div>
+  <small data-es="Sitio de comunidad · No afiliado al editor del juego.">Community website · Not affiliated with the game's publisher.</small>
+</footer>
+</body>
+</html>

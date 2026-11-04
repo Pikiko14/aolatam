@@ -25,6 +25,7 @@ from urllib.parse import urlsplit, parse_qs
 
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 import cuentas
+import panel_web
 
 log = logging.getLogger('web_registro')
 
@@ -82,12 +83,18 @@ class Handler(BaseHTTPRequestHandler):
     def log_message(self, fmt, *args):
         log.info('%s - %s', self.address_string(), fmt % args)
 
-    def _json(self, codigo: int, cuerpo: dict):
+    def _json(self, codigo: int, cuerpo: dict, cabeceras: dict = None):
         datos = json.dumps(cuerpo, ensure_ascii=False).encode('utf-8')
         self.send_response(codigo)
         self.send_header('Content-Type', 'application/json; charset=utf-8')
         self.send_header('Content-Length', str(len(datos)))
-        self.send_header('Access-Control-Allow-Origin', '*')
+        if self.path.startswith('/api/panel/'):
+            # El back office (panel_web): con cookie de sesion, sin CORS abierto y sin cache.
+            self.send_header('Cache-Control', 'no-store')
+        else:
+            self.send_header('Access-Control-Allow-Origin', '*')
+        for k, v in (cabeceras or {}).items():
+            self.send_header(k, v)
         self.end_headers()
         self.wfile.write(datos)
 
@@ -100,6 +107,8 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         ruta = urlsplit(self.path)
+        if ruta.path.startswith('/api/panel/'):
+            return panel_web.atender(self, 'GET', ruta.path, parse_qs(ruta.query))
         if ruta.path != '/api/cuenta/disponible':
             return self._json(404, {'error': 'no encontrado'})
         consulta = parse_qs(ruta.query)
@@ -113,6 +122,8 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         ruta = urlsplit(self.path)
+        if ruta.path.startswith('/api/panel/'):
+            return panel_web.atender(self, 'POST', ruta.path, parse_qs(ruta.query))
         if ruta.path != '/api/cuenta/registrar':
             return self._json(404, {'error': 'no encontrado'})
         largo = int(self.headers.get('Content-Length') or 0)
