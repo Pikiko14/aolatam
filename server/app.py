@@ -303,6 +303,9 @@ def _dialogo_de_estatua(e):
     return struct.pack('<H', 0x0012) + bytes(b)
 
 
+GRACIA_PORTAL_AL_LLEGAR = 2.5     # segundos tras cargar un mapa en los que pisar un tornado no viaja
+
+
 def _portal_en(stage, tx, ty):
     """El tornado que se esta pisando, o None."""
     import competiciones
@@ -15874,7 +15877,11 @@ class Servidor:
                         else:
                             p.buffs.pop(b_id, None)
 
-            ses.portal_pisado = None
+            # La marca de "ya estas encima del tornado" se calcula con la casilla de llegada, no se borra: borrandola,
+            # quien llega dentro del radio del tornado de vuelta (Cryptic Moon Swamp -> Dense Forest cae en (242,38), a
+            # dos del de (244,36)) volvia al mapa anterior con el primer paso (03/11/2026).
+            _en_carga = _portal_en(p.stage, p.tile_x or 0, p.tile_y or 0)
+            ses.portal_pisado = tuple(_en_carga['tile']) if _en_carga else None
             ses.mapa_cambiado_en = time.time()
             try:
                 import presencia as _pres
@@ -21819,6 +21826,13 @@ class Servidor:
                         _por = _portal_en(ses.personaje.stage, dst_tx, dst_ty)
                 if getattr(ses, 'house_furnishing', False):
                     _por = None
+                # RECIEN LLEGADO NO SE VIAJA POR PISAR. Al clicar un tornado el viaje sale en el acto y el cliente sigue
+                # mandando los pasos que llevaba hacia el; llegaban 1-1,5 s despues de cargar el mapa nuevo y lo sacaban
+                # otra vez ("doy click y automaticamente me regresa al mapa anterior", Cryptic Moon Swamp <-> Dense
+                # Forest y Mushroom Forest <-> Dense Forest, 03/11/2026).
+                # Se da por pisado: queda marcado y, mientras no salga de su radio, tampoco viaja despues.
+                if _por is not None and time.time() - getattr(ses, 'mapa_cambiado_en', 0) < GRACIA_PORTAL_AL_LLEGAR:
+                    ses.portal_pisado = tuple(_por['tile'])
 
                 # LA MARCA DURA MIENTRAS SE SIGA ENCIMA. Antes se borraba a
                 # los 2 segundos de cambiar de mapa, y ahi estaba el rebote: si

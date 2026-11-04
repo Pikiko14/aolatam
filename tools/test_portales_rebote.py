@@ -56,6 +56,51 @@ def test_la_marca_antirebote_no_caduca():
         'volvio la caducidad por tiempo de portal_pisado'
 
 
+def _paso(monkeypatch, tile, hacia, mapa_cambiado_hace, pisado=None):
+    """Un 0x0004 de Dense Forest (23); devuelve los viajes que dispara."""
+    import time
+    from types import SimpleNamespace
+    viajes = []
+    monkeypatch.setattr(app, '_viajar_por_portal', lambda ses, addr, por, *a, **k: viajes.append(por['destino']))
+    monkeypatch.setattr(app, '_sincronizar_cambio_mapa', lambda *a, **k: viajes.append(a[1]))
+    import presencia
+    monkeypatch.setattr(presencia, 'mover', lambda *a, **k: None)
+    p = SimpleNamespace(entity_id=1, char_id=1, nombre='t', stage=23, tile_x=tile[0], tile_y=tile[1], buffs={},
+                        habilidades=[], hp=1, hp_max=1, mp=1, mp_max=1, nivel=10)
+    ses = SimpleNamespace(rol='mundo', entity_id=1, personaje=p, inventario={}, sentado=False,
+                          portal_pisado=pisado, mapa_cambiado_en=time.time() - mapa_cambiado_hace,
+                          enviar=lambda *a: None, enviar_inmediato=lambda *a: None)
+    srv = app.Servidor.__new__(app.Servidor)
+    d = {'cur_x': tile[0] * 32, 'cur_y': tile[1] * 32, 'path': [{'x': hacia[0] * 32, 'y': hacia[1] * 32}], 'n': 1}
+    srv.manejar(ses, 0x0004, None, d, ('t', 0), cuerpo=b'')
+    return viajes, ses
+
+
+def test_cryptic_a_dense_forest_no_rebota_nada_mas_llegar(monkeypatch):
+    """03/11/2026: Cryptic Moon Swamp -> Dense Forest deja en (242,38), a dos del tornado de vuelta (244,36). El paso
+    que el cliente tenia en vuelo al clicar el tornado llegaba al segundo y lo devolvia al mapa anterior."""
+    viajes, ses = _paso(monkeypatch, (242, 38), (243, 37), mapa_cambiado_hace=1.1)
+    assert viajes == [] and ses.portal_pisado == (244, 36)
+
+
+def test_la_marca_sigue_tras_la_gracia_mientras_no_salga(monkeypatch):
+    viajes, _ = _paso(monkeypatch, (242, 38), (243, 37), mapa_cambiado_hace=10, pisado=(244, 36))
+    assert viajes == []
+
+
+def test_pisar_el_tornado_viaja_pasada_la_gracia(monkeypatch):
+    viajes, _ = _paso(monkeypatch, (244, 36), (244, 36), mapa_cambiado_hace=10)
+    assert viajes == [30]
+
+
+def test_la_carga_del_mapa_no_borra_la_marca():
+    """El 0x0009 (mapa cargado) ponia portal_pisado = None y anulaba la marca de la llegada."""
+    fuente = (RAIZ / 'server' / 'app.py').read_text(encoding='utf-8')
+    i = fuente.find('ses.mapa_cambiado_en = time.time()\n            try:\n                import presencia as _pres\n                _pres.entrar(ses, p.stage)')
+    assert i > 0
+    assert 'ses.portal_pisado = None' not in fuente[i - 200:i]
+
+
 def test_ningun_portal_apunta_a_un_stage_que_no_existe():
     import sqlite3
     con = sqlite3.connect(RAIZ / 'corpus' / 'content.db')
