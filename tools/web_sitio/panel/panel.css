@@ -1,51 +1,52 @@
-/* Back office (panel/index.html). Usa las variables y componentes de styles.css y cuenta.css. */
+/* Back office (panel/index.html). Usa las variables y componentes de styles.css y cuenta.css (tema oscuro del cliente). */
 .panel{max-width:1100px;margin:0 auto;padding:24px 16px 60px}
 .panel .seccion{padding-top:24px}
 .panel h1{font-size:clamp(30px,4vw,44px);margin:6px 0 10px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.panel-quien{font-size:14px;color:var(--tinta);font-weight:600;padding:8px 6px;white-space:nowrap}
-.panel-salir{border:1px solid var(--borde);background:#fff;color:var(--tinta-suave);font:600 13px "Segoe UI",sans-serif;padding:7px 13px;border-radius:999px;cursor:pointer}
-.panel-salir:hover{background:var(--lila);color:var(--tinta)}
+.panel-quien{font-size:14px;color:var(--oro);font-weight:600;padding:8px 6px;white-space:nowrap}
+.panel-salir{border:1px solid var(--borde);background:rgba(255,255,255,.06);color:var(--tinta-suave);font:600 13px "Segoe UI",sans-serif;padding:7px 13px;border-radius:999px;cursor:pointer}
+.panel-salir:hover{background:rgba(255,255,255,.12);color:#fff}
 
 .panel-pestanas{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0 4px}
-.panel-pestanas button{border:1px solid var(--borde);background:#fff;color:var(--tinta-suave);font:600 14px "Segoe UI",sans-serif;padding:10px 18px;border-radius:999px;cursor:pointer;transition:background .2s,color .2s}
-.panel-pestanas button:hover{background:var(--lila);color:var(--tinta)}
-.panel-pestanas button[aria-current="true"]{background:linear-gradient(135deg,var(--rosa-fuerte),var(--lila-fuerte));color:#fff;border-color:transparent}
+.panel-pestanas button{border:1px solid var(--borde);background:rgba(255,255,255,.06);color:var(--tinta-suave);font:600 14px "Segoe UI",sans-serif;padding:10px 18px;border-radius:999px;cursor:pointer;transition:background .2s,color .2s}
+.panel-pestanas button:hover{background:rgba(255,255,255,.12);color:#fff}
+.panel-pestanas button[aria-current="true"]{background:var(--dorado);color:#2a1405;border-color:transparent;box-shadow:0 6px 18px rgba(232,128,44,.3)}
 
 .panel-personajes{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
-.panel-personaje{background:#fff;border:1px solid var(--borde);border-radius:20px;padding:18px 20px}
+.panel-personaje{background:var(--vidrio);border:1px solid var(--borde);border-radius:18px;padding:18px 20px;position:relative;overflow:hidden}
+.panel-personaje:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--oro),var(--rojo))}
 .panel-personaje h3{margin:0 0 4px;font-size:20px}
 .panel-personaje .pj-sub{margin:0 0 12px;color:var(--tinta-suave);font-size:14px}
 .panel-personaje dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;font-size:14px}
 .panel-personaje dt{color:var(--tinta-suave)}
-.panel-personaje dd{margin:0;font-weight:600;color:var(--tinta);text-align:right}
-.panel-vacio{color:var(--tinta-suave);text-align:center;padding:24px}
+.panel-personaje dd{margin:0;font-weight:600;color:#fff;text-align:right}
+.panel-vacio{grid-column:1/-1;color:var(--tinta-suave);text-align:center;padding:24px}
 
 .panel-saldo{padding:24px 28px;margin-bottom:18px;text-align:center}
 .panel-saldo p{margin:0 0 6px;color:var(--tinta-suave)}
-.panel-saldo strong{display:block;font-size:clamp(30px,5vw,42px);color:var(--tinta);font-variant-numeric:tabular-nums}
+.panel-saldo strong{display:block;font-size:clamp(30px,5vw,42px);font-variant-numeric:tabular-nums;background:var(--dorado);-webkit-background-clip:text;background-clip:text;color:transparent}
 .panel-saldo .nota-suave{margin-top:12px}
 .panel-aviso{padding:22px 28px}
 .panel-aviso h3{margin:0 0 6px}
 .panel-aviso p{margin:0;color:var(--tinta-suave)}
 
 .panel-eventos{list-style:none;margin:0;padding:0;display:grid;gap:12px}
-.panel-eventos li{display:flex;justify-content:space-between;align-items:center;gap:16px;background:#fff;border:1px solid var(--borde);border-radius:18px;padding:16px 20px}
-.panel-eventos .ev-nombre{font-weight:600;color:var(--tinta)}
+.panel-eventos li{display:flex;justify-content:space-between;align-items:center;gap:16px;background:var(--vidrio);border:1px solid var(--borde);border-radius:16px;padding:16px 20px}
+.panel-eventos .ev-nombre{font-weight:600;color:#fff}
 .panel-eventos .ev-cuando{color:var(--tinta-suave);font-size:14px;text-align:right;font-variant-numeric:tabular-nums}
-.panel-eventos .ev-ahora{display:inline-block;margin-left:8px;padding:2px 10px;border-radius:999px;background:var(--menta);color:#2f7a5e;font-size:12px;font-weight:700}
+.panel-eventos .ev-ahora{display:inline-block;margin-left:8px;padding:2px 10px;border-radius:999px;background:rgba(236,72,92,.25);color:#ffd2d8;border:1px solid rgba(236,72,92,.5);font-size:12px;font-weight:700}
 
 .panel-buscar{display:flex;gap:10px;max-width:560px;margin:0 auto 8px}
-.panel-buscar input{flex:1;background:#fff;border:2px solid var(--borde);color:var(--tinta);border-radius:999px;padding:12px 18px;font-size:16px}
-.panel-buscar input:focus-visible{outline:none;border-color:var(--lila-fuerte);box-shadow:0 0 0 4px var(--lila)}
+.panel-buscar input{flex:1;background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.14);color:#fff;border-radius:999px;padding:12px 18px;font-size:16px}
+.panel-buscar input:focus-visible{outline:none;border-color:var(--oro);box-shadow:0 0 0 4px rgba(255,205,96,.18)}
 #buscar-estado{text-align:center}
 #admin-cuenta{margin-top:18px}
 .panel-dos{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:18px}
 .panel-dos h3{margin:0 0 4px}
-.panel-dos select{background:var(--crema);border:2px solid var(--borde);color:var(--tinta);border-radius:14px;padding:12px 14px;font-size:16px}
-.panel-baneo{margin:12px 0 0;padding:10px 14px;border-radius:14px;background:#ffe3ec;color:#b03a63;font-weight:600}
-.account-form .panel-peligro{background:linear-gradient(135deg,#ff7a9c,#d4517f)}
-#boton-desbanear{border:0;border-radius:999px;padding:13px 20px;font:600 15px "Segoe UI",sans-serif;cursor:pointer;color:var(--tinta);background:var(--menta)}
+.panel-dos select option{background:#121c55;color:#fff}
+.panel-baneo{margin:12px 0 0;padding:10px 14px;border-radius:12px;background:rgba(236,72,92,.18);color:#ffc2cb;border:1px solid rgba(236,72,92,.45);font-weight:600}
+.account-form .panel-peligro{background:var(--forever);color:#fff;box-shadow:0 10px 24px rgba(236,72,92,.3)}
+#boton-desbanear{border:1px solid rgba(95,211,168,.5);border-radius:999px;padding:13px 20px;font:600 15px "Segoe UI",sans-serif;cursor:pointer;color:#c8f5e3;background:rgba(95,211,168,.15);box-shadow:none}
 
 @media(max-width:720px){
   .panel-dos{grid-template-columns:1fr}
