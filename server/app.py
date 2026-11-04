@@ -12018,12 +12018,14 @@ class Servidor:
                                             dist_t = max(abs(dx), abs(dy))
                                             r_inv = inv.get('atk_range', 1)
                                             pasos_dar = min(max(1, dist_t - r_inv), 3)
-                                            stx = (1 if dx > 0 else (-1 if dx < 0 else 0)) * pasos_dar
-                                            sty = (1 if dy > 0 else (-1 if dy < 0 else 0)) * pasos_dar
-                                            if inv.get('es_clon'):
-                                                _nx,_ny=__import__('transitable').avanzar(p.stage,
-                                                    (inv['tile_x'],inv['tile_y']),(targ.tile_x,targ.tile_y),pasos_dar,parar_a=r_inv)
-                                                stx,sty=_nx-inv['tile_x'],_ny-inv['tile_y']
+                                            # Por casillas transitables, como los clones: en linea recta las invocaciones
+                                            # cruzaban agua y paredes ("el summon pasa por las paredes", 04/11/2026).
+                                            _nx,_ny=__import__('transitable').avanzar(p.stage,
+                                                (inv['tile_x'],inv['tile_y']),(targ.tile_x,targ.tile_y),pasos_dar,parar_a=r_inv)
+                                            stx,sty=_nx-inv['tile_x'],_ny-inv['tile_y']
+                                            if not stx and not sty:
+                                                inv['proximo_paso'] = ahora + 0.5     # bloqueado: no mandar un paso vacio
+                                                continue
                                             cur_x, cur_y = inv['tile_x'] * 32, inv['tile_y'] * 32
                                             inv['tile_x'] += stx
                                             inv['tile_y'] += sty
@@ -12047,7 +12049,9 @@ class Servidor:
                                     p_dy = p.tile_y - inv['tile_y']
                                     p_dist = max(abs(p_dx), abs(p_dy))
                                     if p_dist > 15:
-                                        inv['tile_x'] = p.tile_x + _off_inv_x
+                                        # Al lado del dueno si esa casilla se pisa; si no (agua, pared), en la suya.
+                                        _lado_ok = __import__('transitable').se_pisa(p.stage, p.tile_x + _off_inv_x, p.tile_y)
+                                        inv['tile_x'] = p.tile_x + (_off_inv_x if _lado_ok else 0)
                                         inv['tile_y'] = p.tile_y
                                         cur_x, cur_y = inv['tile_x'] * 32, inv['tile_y'] * 32
                                         _mv_inv = MOVE.build(entity_id=inv['entity_id'],
@@ -12059,8 +12063,14 @@ class Servidor:
                                         _pr.notificar_invocacion_movimiento(ses, inv['entity_id'], _mv_inv)
                                     elif p_dist > 2 and ahora >= inv.get('proximo_paso', 0):
                                         pasos_dar = min(p_dist - 2, 3)
-                                        stx = (1 if p_dx > 0 else (-1 if p_dx < 0 else 0)) * pasos_dar
-                                        sty = (1 if p_dy > 0 else (-1 if p_dy < 0 else 0)) * pasos_dar
+                                        # Siguiendo al dueno, tambien por casillas transitables (no por el agua).
+                                        _nx, _ny = __import__('transitable').avanzar(
+                                            p.stage, (inv['tile_x'], inv['tile_y']),
+                                            (p.tile_x + _off_inv_x, p.tile_y), pasos_dar, parar_a=2)
+                                        stx, sty = _nx - inv['tile_x'], _ny - inv['tile_y']
+                                        if not stx and not sty:
+                                            inv['proximo_paso'] = ahora + 0.5
+                                            continue
                                         cur_x, cur_y = inv['tile_x'] * 32, inv['tile_y'] * 32
                                         inv['tile_x'] += stx
                                         inv['tile_y'] += sty
