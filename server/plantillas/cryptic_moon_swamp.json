@@ -38,8 +38,8 @@
    "klass": 199,
    "monstruo": false,
    "tile": [
-    218,
-    145
+    217,
+    146
    ],
    "direccion": 6,
    "visible": 1
@@ -52,8 +52,8 @@
    "klass": 199,
    "monstruo": false,
    "tile": [
-    229,
-    28
+    228,
+    29
    ],
    "direccion": 6,
    "visible": 1
@@ -81,7 +81,7 @@
    "monstruo": false,
    "tile": [
     186,
-    47
+    48
    ],
    "direccion": 6,
    "visible": 1
@@ -108,7 +108,7 @@
    "klass": 199,
    "monstruo": false,
    "tile": [
-    225,
+    224,
     8
    ],
    "direccion": 6,
@@ -122,8 +122,8 @@
    "klass": 199,
    "monstruo": false,
    "tile": [
-    221,
-    24
+    220,
+    25
    ],
    "direccion": 6,
    "visible": 1
@@ -136,7 +136,7 @@
    "klass": 199,
    "monstruo": false,
    "tile": [
-    59,
+    58,
     153
    ],
    "direccion": 6,
@@ -151,7 +151,7 @@
    "monstruo": false,
    "tile": [
     21,
-    154
+    155
    ],
    "direccion": 6,
    "visible": 1

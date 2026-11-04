@@ -24,8 +24,8 @@
    "klass": 199,
    "monstruo": false,
    "tile": [
-    226,
-    109
+    225,
+    110
    ],
    "direccion": 6,
    "visible": 1
@@ -38,7 +38,7 @@
    "klass": 199,
    "monstruo": false,
    "tile": [
-    129,
+    128,
     72
    ],
    "direccion": 6,
@@ -52,7 +52,7 @@
    "klass": 199,
    "monstruo": false,
    "tile": [
-    237,
+    236,
     47
    ],
    "direccion": 6,
@@ -81,7 +81,7 @@
    "monstruo": false,
    "tile": [
     211,
-    107
+    108
    ],
    "direccion": 6,
    "visible": 1

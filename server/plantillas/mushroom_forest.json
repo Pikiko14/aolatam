@@ -39,7 +39,7 @@
    "monstruo": false,
    "tile": [
     38,
-    206
+    207
    ],
    "direccion": 6,
    "visible": 1
@@ -53,7 +53,7 @@
    "monstruo": false,
    "tile": [
     37,
-    47
+    48
    ],
    "direccion": 6,
    "visible": 1
@@ -67,7 +67,7 @@
    "monstruo": false,
    "tile": [
     212,
-    22
+    23
    ],
    "direccion": 6,
    "visible": 1
@@ -94,7 +94,7 @@
    "klass": 199,
    "monstruo": false,
    "tile": [
-    207,
+    206,
     237
    ],
    "direccion": 6,
