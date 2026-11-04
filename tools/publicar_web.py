@@ -20,7 +20,7 @@ import tempfile
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
 WEB = RAIZ / 'tools' / 'web_sitio'
 LAUNCHER = RAIZ / 'parches' / 'launcher_propio' / 'AngelsLauncher.exe'
-VPS = os.environ.get('AO_VPS', 'root@77.42.52.122')
+VPS = os.environ.get('AO_VPS', 'root@179.66.132.19')
 DESTINO_WEB = '/var/www/angels-web'
 DESTINO_JUEGO = os.environ.get('AO_VPS_DIR', '/opt/angels')
 CODIGO = ['server/cuentas.py', 'server/web_registro.py', 'server/clave_cliente.py']

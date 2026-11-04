@@ -28,7 +28,7 @@ import xml.etree.ElementTree as ET
 
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
 PY = sys.executable
-VPS = os.environ.get('AO_VPS', 'root@77.42.52.122')
+VPS = os.environ.get('AO_VPS', 'root@179.66.132.19')
 VPS_DIR = os.environ.get('AO_VPS_DIR', '/opt/angels')
 EXTRAS = RAIZ / 'parches' / 'extras' / 'setting' / 'eng'
 sys.stdout.reconfigure(encoding='utf-8')

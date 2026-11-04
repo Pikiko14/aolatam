@@ -29,7 +29,7 @@ SALIDA = RAIZ / 'parches' / 'launcher_propio'
 EXE = 'AngelsLauncher.exe'
 FRAMEWORK = pathlib.Path(os.environ.get('WINDIR', r'C:\Windows')) / 'Microsoft.NET' / 'Framework64' / 'v4.0.30319'
 # Sube este numero al cambiar el launcher: los jugadores lo reciben solos (por el sha256, no por el numero).
-VERSION_LAUNCHER = '1.0.3'               # 1.0.3: tambien pone el angel.dat del servidor (02/11/2026)
+VERSION_LAUNCHER = '1.0.4'               # 1.0.4: pone en server.xml la IP del servidor (ip y fip) para mudar de VPS (04/11/2026)
 # El nombre del servidor que pinta el cliente (server.xml, 名稱): el launcher lo pone al lanzar el juego.
 NOMBRE_SERVIDOR = 'AOF'
 
@@ -98,6 +98,10 @@ def probar(exe):
         (juego / 'update28.pak').write_bytes(parche.armar_pak({'MAP\\MAP900.MPC': b'otro viejo'}))
         (juego / 'update29.pak').write_bytes(parche.armar_pak({'MAP\\MAP001.MPC': b'ajeno'}))
         (juego / 'reg.ini').write_bytes(b'[PROFILE]\r\nGameName = Angels Online\r\nVersion = 8.5.1.0\r\n')
+        # El server.xml del zip del cliente apunta al VPS viejo: el launcher pone su servidor (ip y fip) y el nombre.
+        (juego / 'server.xml').write_bytes(
+            ('﻿<?xml version="1.0" encoding="UTF-8"?>\r\n<root>\r\n\t<伺服器 名稱="Sofiel" 編號="16" '
+             'ip="77.42.52.122" port="16768" 分流="2" fip="77.42.52.122" fport="21238"/>\r\n</root>\r\n').encode('utf-8'))
         shutil.copy(exe, juego / EXE)
 
         class Manejador(http.server.SimpleHTTPRequestHandler):
@@ -128,6 +132,10 @@ def probar(exe):
             fallos.append('angel.dat no es el del servidor')
         if (juego / 'respaldo_launcher' / 'angel.dat.original').read_bytes() != b'MZ falso':
             fallos.append('no guardo el angel.dat original en respaldo_launcher')
+        xml = (juego / 'server.xml').read_text(encoding='utf-8-sig')
+        if (' ip="127.0.0.1"' not in xml or 'fip="127.0.0.1"' not in xml or '77.42.52.122' in xml
+                or '名稱="%s"' % NOMBRE_SERVIDOR not in xml or 'port="16768"' not in xml):
+            fallos.append('server.xml no apunta al servidor del launcher: %r' % xml)
         reg = (juego / 'reg.ini').read_bytes()
         if b'Version = 8.5.1.99' not in reg or b'\r' in reg:
             fallos.append('reg.ini sin la version nueva o con CRLF: %r' % reg)

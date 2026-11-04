@@ -20,7 +20,7 @@ import subprocess
 import sys
 
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
-VPS = os.environ.get('AO_VPS', 'root@77.42.52.122')
+VPS = os.environ.get('AO_VPS', 'root@179.66.132.19')
 VPS_DIR = os.environ.get('AO_VPS_DIR', '/opt/angels')
 # Lo que cambia en el VPS por su cuenta y no se pisa nunca.
 NUNCA = {'server/configuracion_local.py'}

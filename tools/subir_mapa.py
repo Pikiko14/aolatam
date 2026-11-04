@@ -34,7 +34,7 @@ import sys
 
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
 PY = sys.executable
-VPS = os.environ.get('AO_VPS', 'root@77.42.52.122')
+VPS = os.environ.get('AO_VPS', 'root@179.66.132.19')
 VPS_DIR = os.environ.get('AO_VPS_DIR', '/opt/angels')
 SALIDA = RAIZ / 'tools' / 'editor_mapas' / 'salida'
 PLANTILLAS = RAIZ / 'server' / 'plantillas'

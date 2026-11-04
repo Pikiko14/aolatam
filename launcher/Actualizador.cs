@@ -44,23 +44,28 @@ namespace AngelsLauncher
             get { return Path.GetDirectoryName(Application.ExecutablePath); }
         }
 
+        // launcher.ini (opcional, junto al exe) puede cambiar a donde mira: Servidor = ..., Puerto = ...
+        static string DelIni(string clave, string porDefecto)
+        {
+            string ini = Path.Combine(Carpeta, "launcher.ini");
+            if (!File.Exists(ini)) return porDefecto;
+            foreach (string linea in File.ReadAllLines(ini))
+            {
+                string[] kv = linea.Split(new[] { '=' }, 2);
+                if (kv.Length != 2) continue;
+                if (kv[0].Trim().ToLowerInvariant() == clave && kv[1].Trim().Length > 0) porDefecto = kv[1].Trim();
+            }
+            return porDefecto;
+        }
+
+        public static string Host()
+        {
+            return DelIni("servidor", Config.Servidor);
+        }
+
         public static string Url(string archivo)
         {
-            string host = Config.Servidor, puerto = Config.Puerto.ToString();
-            // launcher.ini (opcional, junto al exe) puede cambiar a donde mira: Servidor = ..., Puerto = ...
-            string ini = Path.Combine(Carpeta, "launcher.ini");
-            if (File.Exists(ini))
-            {
-                foreach (string linea in File.ReadAllLines(ini))
-                {
-                    string[] kv = linea.Split(new[] { '=' }, 2);
-                    if (kv.Length != 2) continue;
-                    string k = kv[0].Trim().ToLowerInvariant(), v = kv[1].Trim();
-                    if (k == "servidor" && v.Length > 0) host = v;
-                    if (k == "puerto" && v.Length > 0) puerto = v;
-                }
-            }
-            return "http://" + host + ":" + puerto + "/" + archivo;
+            return "http://" + Host() + ":" + DelIni("puerto", Config.Puerto.ToString()) + "/" + archivo;
         }
 
         public static bool HayJuego()
@@ -309,7 +314,9 @@ namespace AngelsLauncher
         }
 
         // El nombre del servidor que el cliente pinta al entrar ("Impacty(AOF-1)") sale del 名稱 de server.xml. El
-        // server.xml va en el zip del cliente con el nombre viejo: se cambia aqui, sin tocar ip ni puertos.
+        // server.xml va en el zip del cliente con el nombre viejo: se cambia aqui. Y tambien la IP del juego (ip) y la
+        // del FTP de parches (fip): son las del servidor del launcher, asi que al mudar el servidor de VPS (77.42.52.122
+        // -> 179.66.132.19, 04/11/2026) basta con que el launcher se actualice para que el juego entre en el nuevo.
         public static void PonerNombreServidor()
         {
             string xml = Path.Combine(Carpeta, "server.xml");
@@ -319,6 +326,11 @@ namespace AngelsLauncher
             string texto = new UTF8Encoding(false).GetString(crudo, bom ? 3 : 0, crudo.Length - (bom ? 3 : 0));
             string nuevo = System.Text.RegularExpressions.Regex.Replace(texto, "(<伺服器\\s[^>]*?名稱\\s*=\\s*\")[^\"]*(\")",
                 m => m.Groups[1].Value + Config.NombreServidor + m.Groups[2].Value);
+            string host = Host();
+            foreach (string attr in new[] { "ip", "fip" })
+                nuevo = System.Text.RegularExpressions.Regex.Replace(nuevo,
+                    "(<伺服器\\s[^>]*?\\s" + attr + "\\s*=\\s*\")[^\"]*(\")",
+                    m => m.Groups[1].Value + host + m.Groups[2].Value);
             if (nuevo == texto) return;
             File.WriteAllText(xml, nuevo, new UTF8Encoding(bom));
         }
@@ -355,6 +367,8 @@ namespace AngelsLauncher
                     salida.WriteLine("juego actualizado: " + Juego);
                 }
                 else salida.WriteLine("el juego ya esta al dia");
+                PonerNombreServidor();
+                salida.WriteLine("server.xml apunta a " + Host());
                 if (HaceFaltaJuego(m))
                 {
                     salida.WriteLine("verificado: NO (" + Juego + ")");
