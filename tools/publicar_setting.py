@@ -63,6 +63,8 @@ def main():
     ap.add_argument('archivos', nargs='+', help='nombres de setting/eng, p. ej. onlinegift.xml')
     ap.add_argument('--sin-vps', action='store_true')
     ap.add_argument('--sin-git', action='store_true')
+    ap.add_argument('--permitir-quitar', action='store_true',
+                    help='publicar aunque el parche nuevo no traiga archivos que tenia el anterior')
     ap.add_argument('--sin-copiar', action='store_true',
                     help='el archivo ya esta preparado en parches/extras (p. ej. tools/parche_lucky_bags.py): '
                          'solo va al parche de los jugadores')
@@ -93,9 +95,26 @@ def main():
     sys.path.insert(0, str(RAIZ / 'tools'))
     import parche
     import subir_mapa
+    respaldo = {f: f.read_bytes() for f in (RAIZ / 'parches' / 'update27.pak', RAIZ / 'parches' / 'version.json')
+                if f.is_file()}
+    try:
+        antes = set(json.loads(respaldo.get(RAIZ / 'parches' / 'version.json', b'{}').decode('utf-8')).get('archivos') or ())
+    except ValueError:
+        antes = set()
     e = parche.generar()
     version = e['version']
     print('  parche', version, e['bytes'], 'bytes')
+    # FRENO (04/11/2026): con C:\AO\Angels Online vacio, el parche 0.0.0.47 salio sin ITEM3-9.XML, las tiendas SP_*,
+    # BATTLEPASS, dos mapas y el logo, y los jugadores perdian los items propios. Si el nuevo pierde archivos del
+    # anterior, se deja el parche como estaba y no se sube nada (si es a proposito: --permitir-quitar).
+    faltan = sorted(antes - set(e.get('archivos') or ()))
+    if faltan and not a.permitir_quitar:
+        for f, datos in respaldo.items():
+            f.write_bytes(datos)
+        raise SystemExit('  PARADO: el parche nuevo no trae %d archivos que tenia el anterior (%s%s). Revisa que el '
+                         'cliente de desarrollo (configuracion.RUTA_CLIENTE) este completo y con sus .bak; si quitarlos '
+                         'es a proposito, usa --permitir-quitar. No se subio nada.'
+                         % (len(faltan), ', '.join(faltan[:8]), '...' if len(faltan) > 8 else ''))
     pak = subir_mapa.pak_para(version)
     correr([PY, '-I', 'tools/generar_paquetes_launcher.py'],
            env=dict(os.environ, AO_PARCHE_PAK_LAUNCHER=pak, AO_PARCHE_HOST=VPS.split('@')[-1]))
