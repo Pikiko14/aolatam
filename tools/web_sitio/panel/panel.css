@@ -40,8 +40,12 @@
 .panel-buscar input:focus-visible{outline:none;border-color:var(--lila-fuerte);box-shadow:0 0 0 4px var(--lila)}
 #buscar-estado{text-align:center}
 #admin-cuenta{margin-top:18px}
-.panel-dos{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+.panel-dos{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:18px}
 .panel-dos h3{margin:0 0 4px}
+.panel-dos select{background:var(--crema);border:2px solid var(--borde);color:var(--tinta);border-radius:14px;padding:12px 14px;font-size:16px}
+.panel-baneo{margin:12px 0 0;padding:10px 14px;border-radius:14px;background:#ffe3ec;color:#b03a63;font-weight:600}
+.account-form .panel-peligro{background:linear-gradient(135deg,#ff7a9c,#d4517f)}
+#boton-desbanear{border:0;border-radius:999px;padding:13px 20px;font:600 15px "Segoe UI",sans-serif;cursor:pointer;color:var(--tinta);background:var(--menta)}
 
 @media(max-width:720px){
   .panel-dos{grid-template-columns:1fr}

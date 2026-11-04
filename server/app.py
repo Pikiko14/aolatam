@@ -11469,7 +11469,8 @@ class Servidor:
                 self.freno_login.fallo(_ip_login, usuario)
                 log.warning(f"[{addr}] LOGIN RECHAZADO usuario='{usuario}': {motivo}")
                 codigo_error = (
-                    login_server.ERROR_PASSWORD_INCORRECTA
+                    login_server.ERROR_CUENTA_BLOQUEADA if motivo == 'cuenta baneada'
+                    else login_server.ERROR_PASSWORD_INCORRECTA
                     if 'contrasena incorrecta' in motivo
                     else login_server.ERROR_GENERICO
                 )
@@ -22045,6 +22046,33 @@ class Servidor:
             except Exception as e:
                 log.debug('cola GM: %s', e)
 
+    async def vigilar_baneos(self, cada=5.0):
+        """Saca del juego a quien banean desde el back office (panel_web, otro proceso) estando dentro: cada pocos
+        segundos mira la tabla baneos y cierra sus conexiones, con aviso. validar() ya no lo deja volver a entrar."""
+        import clases as _cl_ban
+        while True:
+            await asyncio.sleep(cada)
+            try:
+                dentro = [s for s in list(self.mundos) if getattr(s, 'usuario', None)
+                          and not getattr(s, 'desconectado', False)]
+                if not dentro:
+                    continue
+                vetados = cuentas.baneados()
+                for s in dentro:
+                    if s.usuario.casefold() not in vetados:
+                        continue
+                    log.warning('[%s] cuenta %s baneada: se le saca del juego', s.addr, s.usuario)
+                    try:
+                        s.enviar_inmediato(_cl_ban.aviso('This account has been locked.', tipo=0))
+                    except Exception:
+                        pass
+                    try:
+                        s.writer.close()
+                    except Exception:
+                        log.debug('no se pudo cerrar la conexion de %s', s.usuario, exc_info=True)
+            except Exception:
+                log.exception('vigilar_baneos')
+
     async def correr(self):
         import functools
         import grabador as _grabador
@@ -22071,6 +22099,7 @@ class Servidor:
         tareas.append(gm.consola(self))
         tareas.append(gm.cola(self))
         tareas.append(cuentas.tarea_backup_periodico())
+        tareas.append(self.vigilar_baneos())
         import totem_war as _tw_reloj
         tareas.append(_tw_reloj.reloj())
         import competiciones as _comp_reloj

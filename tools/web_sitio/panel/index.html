@@ -6,10 +6,10 @@
 <title data-es="Mi cuenta — Angels Online Forever">My account — Angels Online Forever</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#fff7fb">
-<link rel="stylesheet" href="../styles.css?v=20261104c">
-<link rel="stylesheet" href="../cuenta.css?v=20261104c">
-<link rel="stylesheet" href="panel.css?v=20261104c">
-<script src="../i18n.js?v=20261104c" defer></script><script src="panel.js?v=20261104c" defer></script>
+<link rel="stylesheet" href="../styles.css?v=20261104d">
+<link rel="stylesheet" href="../cuenta.css?v=20261104d">
+<link rel="stylesheet" href="panel.css?v=20261104d">
+<script src="../i18n.js?v=20261104d" defer></script><script src="panel.js?v=20261104d" defer></script>
 </head>
 <body>
 <header class="cabecera">
@@ -125,6 +125,7 @@
         <div class="tarjeta panel-saldo">
           <p><span data-es="Cuenta">Account</span>: <b id="admin-usuario"></b></p>
           <strong><span id="admin-ag">—</span> AG</strong>
+          <p id="admin-baneo" class="panel-baneo" hidden></p>
         </div>
         <div id="admin-personajes" class="panel-personajes"></div>
         <div class="panel-dos">
@@ -143,6 +144,22 @@
             <input id="reset-clave" type="text" autocomplete="off" maxlength="16" required>
             <button type="submit" data-es="Cambiar contraseña">Change password</button>
             <p id="reset-estado" class="account-status" role="status" aria-live="polite"></p>
+          </form>
+          <form id="form-ban" class="account-form" novalidate>
+            <h3 data-es="Banear">Ban</h3>
+            <label for="ban-dias" data-es="Duración">Duration</label>
+            <select id="ban-dias">
+              <option value="1" data-es="1 día">1 day</option>
+              <option value="3" data-es="3 días">3 days</option>
+              <option value="7" data-es="7 días">7 days</option>
+              <option value="30" data-es="30 días">30 days</option>
+              <option value="0" data-es="Permanente">Permanent</option>
+            </select>
+            <label for="ban-motivo" data-es="Motivo">Reason</label>
+            <input id="ban-motivo" type="text" maxlength="200" placeholder="e.g. cheating" data-es-placeholder="Ej. uso de trampas">
+            <button type="submit" class="panel-peligro" data-es="Banear cuenta">Ban account</button>
+            <button type="button" id="boton-desbanear" hidden data-es="Quitar baneo">Remove ban</button>
+            <p id="ban-estado" class="account-status" role="status" aria-live="polite"></p>
           </form>
         </div>
       </div>

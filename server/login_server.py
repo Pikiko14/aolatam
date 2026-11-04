@@ -76,6 +76,7 @@ def usuario_de_auth(cuerpo: bytes) -> str:
 ERROR_GENERICO = 152                 # Wrong account or password
 ERROR_PASSWORD_INCORRECTA = 152
 ERROR_CUENTA_CONECTADA = 161         # The account is logged in.
+ERROR_CUENTA_BLOQUEADA = 756         # This account has been locked. (baneada desde el back office)
 
 
 def respuesta_error(codigo: int = ERROR_GENERICO) -> bytes:

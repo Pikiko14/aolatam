@@ -149,3 +149,63 @@ def test_calendario_de_eventos(web):
     claves = {e['evento'] for e in r['eventos']}
     assert 'totem_war' in claves and 'holy' in claves
     assert all(e['inicio'] > r['ahora'] - 4 * 3600 for e in r['eventos'])
+
+
+def test_banear_y_desbanear(web):
+    import cuentas
+    gm = web.entrar('ElGM', 'clavegm')
+    jugador = web.entrar('Jugador1', 'clave1')
+    _, r, _ = web.llamar('POST', '/api/panel/admin/banear', {'usuario': 'jugador1', 'dias': 7, 'motivo': 'trampas'}, gm)
+    assert r['ok'] and r['baneo']['motivo'] == 'trampas' and r['baneo']['hasta']
+    # fuera del panel al instante, y no puede volver a entrar
+    codigo, _, _ = web.llamar('GET', '/api/panel/yo', cookie=jugador)
+    assert codigo == 401
+    _, r, _ = web.llamar('POST', '/api/panel/login', {'usuario': 'Jugador1', 'password': 'clave1'})
+    assert r['ok'] is False and 'banned until' in r['mensaje']
+    # ni al juego: validar() lo rechaza antes de mirar la contrasena
+    assert cuentas.validar('Jugador1', b'\x00' * 73) == (None, 'cuenta baneada')
+    _, r, _ = web.llamar('GET', '/api/panel/admin/cuenta?q=Jugador1', cookie=gm)
+    assert r['baneo'] and r['baneo']['por'] == 'ElGM'
+    _, r, _ = web.llamar('POST', '/api/panel/admin/desbanear', {'usuario': 'Jugador1'}, gm)
+    assert r['ok']
+    assert web.entrar('Jugador1', 'clave1')
+    con = cuentas._get_conn()
+    assert [a for (a,) in con.execute("SELECT accion FROM panel_auditoria ORDER BY id")] == ['banear', 'desbanear']
+
+
+def test_baneo_temporal_vence_y_validaciones(web, monkeypatch):
+    import cuentas
+    import time as _t
+    gm = web.entrar('ElGM', 'clavegm')
+    _, r, _ = web.llamar('POST', '/api/panel/admin/banear', {'usuario': 'ElGM', 'dias': 1}, gm)
+    assert r['ok'] is False                                   # a si mismo no
+    _, r, _ = web.llamar('POST', '/api/panel/admin/banear', {'usuario': 'Jugador1', 'dias': 5}, gm)
+    assert r['ok'] is False                                   # solo 0, 1, 3, 7 o 30 dias
+    cuentas.banear('Jugador1', _t.time() - 1, 'vencido', 'ElGM')
+    assert cuentas.baneo('Jugador1') is None and 'jugador1' not in cuentas.baneados()
+    _, r, _ = web.llamar('POST', '/api/panel/admin/banear', {'usuario': 'Jugador1', 'dias': 0}, gm)
+    assert r['ok'] and r['baneo']['hasta'] is None             # permanente
+    assert 'jugador1' in cuentas.baneados()
+
+
+def test_el_juego_saca_al_baneado_que_esta_dentro(web):
+    import asyncio
+    import cuentas
+    import app
+    from types import SimpleNamespace
+    cerradas, avisos = [], []
+    dentro = SimpleNamespace(usuario='Jugador1', addr=('x', 1), desconectado=False,
+                             enviar_inmediato=lambda *p: avisos.extend(p),
+                             writer=SimpleNamespace(close=lambda: cerradas.append('Jugador1')))
+    otro = SimpleNamespace(usuario='ElGM', addr=('y', 2), desconectado=False, enviar_inmediato=lambda *p: None,
+                           writer=SimpleNamespace(close=lambda: cerradas.append('ElGM')))
+    srv = app.Servidor.__new__(app.Servidor)
+    srv.mundos = [dentro, otro]
+    cuentas.banear('Jugador1', None, 'x', 'ElGM')
+
+    async def una_vuelta():
+        tarea = asyncio.create_task(srv.vigilar_baneos(cada=0.01))
+        await asyncio.sleep(0.05)
+        tarea.cancel()
+    asyncio.run(una_vuelta())
+    assert 'Jugador1' in cerradas and 'ElGM' not in cerradas and avisos

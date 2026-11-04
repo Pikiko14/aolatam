@@ -17,6 +17,11 @@ contrasena, una seccion de eventos"; "el admin pueda dar diamantes" (los diamant
     GET  /api/panel/admin/cuenta?q=usuario_o_personaje         (admin)
     POST /api/panel/admin/ag     {usuario, cantidad, motivo}    (admin; cantidad negativa quita)
     POST /api/panel/admin/contrasena {usuario, nueva}           (admin)
+    POST /api/panel/admin/banear {usuario, dias, motivo}        (admin; dias 0 = permanente; "banearlos tambien")
+    POST /api/panel/admin/desbanear {usuario}                   (admin)
+
+Una cuenta baneada no entra ni al juego (cuentas.validar, "This account has been locked") ni a este panel, y si estaba
+dentro del juego, app.vigilar_baneos la saca en unos segundos.
 
 Los mensajes salen en ingles o en espanol (lang=es en la consulta o en el cuerpo), como el registro.
 
@@ -70,7 +75,16 @@ MENSAJES = {
     'sin_saldo': ('The account does not have that much AG to remove.', 'La cuenta no tiene tanto AG para quitar.'),
     'ag_ok': ('Done: %s now has %s AG.', 'Hecho: %s tiene ahora %s AG.'),
     'reset_ok': ('Password of %s changed.', 'Contraseña de %s cambiada.'),
+    'baneada': ('This account is banned.', 'Esta cuenta está baneada.'),
+    'baneada_hasta': ('This account is banned until %s (UTC).', 'Esta cuenta está baneada hasta el %s (UTC).'),
+    'dias_mal': ('Choose a valid duration.', 'Elige una duración válida.'),
+    'ban_ok': ('%s is banned. If they were in the game, they will be kicked out in a few seconds.',
+               '%s está baneado. Si estaba en el juego, saldrá en unos segundos.'),
+    'ban_propio': ("You can't ban your own account.", 'No puedes banear tu propia cuenta.'),
+    'unban_ok': ('%s can play again.', '%s puede volver a jugar.'),
+    'no_baneada': ('That account is not banned.', 'Esa cuenta no está baneada.'),
 }
+DIAS_BANEO = (0, 1, 3, 7, 30)        # 0 = permanente
 
 
 def msg(clave, lang='en', *args):
@@ -121,6 +135,10 @@ def login(usuario, pw, ip, lang='en'):
         if real and guardado and not guardado.startswith(cuentas.PREFIJO_PW):
             return None, msg('formato_viejo', lang)
         return None, msg('credenciales', lang)
+    b = cuentas.baneo(real)
+    if b:
+        return None, (msg('baneada_hasta', lang, dt.datetime.fromtimestamp(b['hasta'], dt.timezone.utc).strftime('%Y-%m-%d %H:%M'))
+                      if b['hasta'] else msg('baneada', lang))
     token = secrets.token_urlsafe(32)
     with _CERROJO:
         _SESIONES[token] = {'usuario': real, 'exp': ahora + DURACION_SESION}
@@ -131,7 +149,7 @@ def login(usuario, pw, ip, lang='en'):
 
 
 def sesion(token):
-    """El usuario de esa sesion, o None."""
+    """El usuario de esa sesion, o None (tambien si la banearon despues de entrar)."""
     if not token:
         return None
     with _CERROJO:
@@ -139,7 +157,11 @@ def sesion(token):
         if not s or s['exp'] <= time.time():
             _SESIONES.pop(token, None)
             return None
-        return s['usuario']
+        usuario = s['usuario']
+    if cuentas.baneo(usuario):
+        logout(token)
+        return None
+    return usuario
 
 
 def logout(token):
@@ -205,7 +227,8 @@ def saldo_ag(usuario):
 
 
 def datos_de(usuario):
-    return {'usuario': usuario, 'admin': es_admin(usuario), 'ag': saldo_ag(usuario), 'personajes': personajes_de(usuario)}
+    return {'usuario': usuario, 'admin': es_admin(usuario), 'ag': saldo_ag(usuario), 'personajes': personajes_de(usuario),
+            'baneo': cuentas.baneo(usuario)}
 
 
 def cambiar_contrasena(usuario, actual, nueva, confirmar, lang='en'):
@@ -296,6 +319,38 @@ def reset_contrasena(admin, usuario, nueva, ip, lang='en'):
         return ok, texto
     _auditar(admin, 'contrasena', real, {}, ip)
     return True, msg('reset_ok', lang, real)
+
+
+def banear(admin, usuario, dias, motivo, ip, lang='en'):
+    """(ok, mensaje). dias 0 = permanente."""
+    real, _ = _usuario_real((usuario or '').strip())
+    if not real:
+        return False, msg('no_existe', lang)
+    if real.casefold() == (admin or '').casefold():
+        return False, msg('ban_propio', lang)
+    try:
+        dias = int(dias)
+    except (TypeError, ValueError):
+        return False, msg('dias_mal', lang)
+    if dias not in DIAS_BANEO:
+        return False, msg('dias_mal', lang)
+    hasta = time.time() + dias * 86400 if dias else None
+    cuentas.banear(real, hasta, motivo or '', admin)
+    _auditar(admin, 'banear', real, {'dias': dias, 'hasta': hasta, 'motivo': (motivo or '')[:200]}, ip)
+    with _CERROJO:                       # fuera tambien de este panel
+        for tok in [t for t, s in _SESIONES.items() if s['usuario'].casefold() == real.casefold()]:
+            _SESIONES.pop(tok, None)
+    return True, msg('ban_ok', lang, real)
+
+
+def desbanear(admin, usuario, ip, lang='en'):
+    real, _ = _usuario_real((usuario or '').strip())
+    if not real:
+        return False, msg('no_existe', lang)
+    if not cuentas.desbanear(real):
+        return False, msg('no_baneada', lang)
+    _auditar(admin, 'desbanear', real, {}, ip)
+    return True, msg('unban_ok', lang, real)
 
 
 # --------------------------------------------------------------------------- calendario
@@ -427,4 +482,10 @@ def atender(handler, metodo, ruta, consulta):
         if metodo == 'POST' and ruta == '/api/panel/admin/contrasena':
             ok, texto = reset_contrasena(usuario, cuerpo.get('usuario'), str(cuerpo.get('nueva', '')), ip, lang)
             return handler._json(200, {'ok': ok, 'mensaje': texto})
+        if metodo == 'POST' and ruta == '/api/panel/admin/banear':
+            ok, texto = banear(usuario, cuerpo.get('usuario'), cuerpo.get('dias'), cuerpo.get('motivo'), ip, lang)
+            return handler._json(200, {'ok': ok, 'mensaje': texto, 'baneo': cuentas.baneo(str(cuerpo.get('usuario') or ''))})
+        if metodo == 'POST' and ruta == '/api/panel/admin/desbanear':
+            ok, texto = desbanear(usuario, cuerpo.get('usuario'), ip, lang)
+            return handler._json(200, {'ok': ok, 'mensaje': texto, 'baneo': None})
     return handler._json(404, {'ok': False, 'mensaje': msg('invalida', lang)})

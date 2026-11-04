@@ -466,6 +466,76 @@ def _guardar(datos: dict):
     guardar_documento(datos)
 
 
+# BANEOS (back office, panel_web.py: "banearlos tambien", 04/11/2026). Una fila por cuenta baneada; hasta = NULL es
+# permanente. Un baneo vencido ya no cuenta (se borra al consultarlo). El juego lo mira en validar() y, para quien ya
+# estaba dentro, la tarea app.vigilar_baneos lo saca.
+def _tabla_baneos(con):
+    con.execute('CREATE TABLE IF NOT EXISTS baneos (usuario TEXT PRIMARY KEY COLLATE NOCASE, hasta REAL, motivo TEXT, '
+                'por TEXT, fecha REAL)')
+
+
+def _baneo_en(con, usuario: str):
+    _tabla_baneos(con)
+    fila = con.execute('SELECT usuario, hasta, motivo, por, fecha FROM baneos WHERE usuario = ?', (usuario,)).fetchone()
+    if not fila:
+        return None
+    if fila[1] is not None and fila[1] <= time.time():
+        con.execute('DELETE FROM baneos WHERE usuario = ?', (usuario,))
+        con.commit()
+        return None
+    return {'usuario': fila[0], 'hasta': fila[1], 'motivo': fila[2] or '', 'por': fila[3] or '', 'fecha': fila[4]}
+
+
+def baneo(usuario: str):
+    """El baneo vigente de la cuenta ({usuario, hasta (epoch o None = permanente), motivo, por, fecha}) o None."""
+    if not usuario:
+        return None
+    with _LOCK:
+        con = _get_conn()
+        try:
+            return _baneo_en(con, usuario)
+        finally:
+            con.close()
+
+
+def banear(usuario: str, hasta, motivo: str, por: str):
+    """Banea la cuenta hasta ese instante (epoch) o para siempre (hasta=None). Reemplaza un baneo anterior."""
+    with _LOCK:
+        con = _get_conn()
+        try:
+            _tabla_baneos(con)
+            con.execute('INSERT OR REPLACE INTO baneos (usuario, hasta, motivo, por, fecha) VALUES (?,?,?,?,?)',
+                        (usuario, hasta, (motivo or '')[:200], por, time.time()))
+            con.commit()
+        finally:
+            con.close()
+
+
+def desbanear(usuario: str) -> bool:
+    with _LOCK:
+        con = _get_conn()
+        try:
+            _tabla_baneos(con)
+            n = con.execute('DELETE FROM baneos WHERE usuario = ?', (usuario,)).rowcount
+            con.commit()
+            return n > 0
+        finally:
+            con.close()
+
+
+def baneados() -> set:
+    """Las cuentas con baneo vigente (en minusculas), para la tarea que saca a los que estan dentro."""
+    with _LOCK:
+        con = _get_conn()
+        try:
+            _tabla_baneos(con)
+            ahora = time.time()
+            return {u.casefold() for (u,) in con.execute(
+                'SELECT usuario FROM baneos WHERE hasta IS NULL OR hasta > ?', (ahora,))}
+        finally:
+            con.close()
+
+
 def usuario_disponible(usuario: str) -> bool:
     """Si ese nombre de cuenta esta libre (cuentas.usuario es NOCASE: 'Karma' ocupa 'karma')."""
     with _LOCK:
@@ -650,6 +720,9 @@ def validar(usuario: str, cuerpo_auth: bytes = b'') -> tuple:
             cur = con.cursor()
             cur.execute("SELECT password FROM cuentas WHERE usuario = ?", (usuario,))
             row = cur.fetchone()
+            # Baneada desde el back office: ni entra ni se mira la contrasena (app contesta "This account has been locked").
+            if row is not None and _baneo_en(con, usuario):
+                return None, "cuenta baneada"
             # LAS CUENTAS SE CREAN EN LA WEB (web_registro.py reserva el usuario). Antes el juego creaba la
             # cuenta al entrar con cualquier nombre; ahora solo si se enciende crear_cuenta_al_entrar.
             if row is None and not flag('crear_cuenta_al_entrar'):

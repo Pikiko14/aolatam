@@ -186,6 +186,18 @@ function pintarCuentaAdmin() {
   $('admin-usuario').textContent = cuentaAdmin.usuario;
   $('admin-ag').textContent = num(cuentaAdmin.ag);
   pintarPersonajes($('admin-personajes'), cuentaAdmin.personajes);
+  pintarBaneo();
+}
+
+function pintarBaneo() {
+  const b = cuentaAdmin && cuentaAdmin.baneo;
+  const caja = $('admin-baneo');
+  caja.hidden = !b;
+  $('boton-desbanear').hidden = !b;
+  if (!b) return;
+  const fmt = new Intl.DateTimeFormat(L() === 'es' ? 'es' : 'en', { dateStyle: 'medium', timeStyle: 'short' });
+  const hasta = b.hasta ? T('until ', 'hasta el ') + fmt.format(new Date(b.hasta * 1000)) : T('permanently', 'para siempre');
+  caja.textContent = T('Banned ', 'Baneada ') + hasta + (b.motivo ? ' · ' + b.motivo : '') + (b.por ? ' · ' + T('by ', 'por ') + b.por : '');
 }
 
 async function buscar(q) {
@@ -194,7 +206,7 @@ async function buscar(q) {
   if (!r.ok) { cuentaAdmin = null; pintarCuentaAdmin(); estado('buscar-estado', r.mensaje, 'error'); return; }
   cuentaAdmin = r;
   estado('buscar-estado', '');
-  ['ag-estado', 'reset-estado'].forEach(id => estado(id, ''));
+  ['ag-estado', 'reset-estado', 'ban-estado'].forEach(id => estado(id, ''));
   pintarCuentaAdmin();
 }
 
@@ -221,6 +233,25 @@ $('form-ag').addEventListener('submit', async ev => {
   }
 });
 
+$('form-ban').addEventListener('submit', async ev => {
+  ev.preventDefault();
+  if (!cuentaAdmin) return;
+  const sel = $('ban-dias');
+  if (!confirm(T('Ban ', 'Banear a ') + cuentaAdmin.usuario + ' (' + sel.options[sel.selectedIndex].text + ')?')) return;
+  const r = await api('POST', 'admin/banear', { usuario: cuentaAdmin.usuario, dias: parseInt(sel.value, 10),
+                                                motivo: $('ban-motivo').value });
+  estado('ban-estado', r.mensaje, r.ok ? 'ok' : 'error');
+  if (r.ok) { cuentaAdmin.baneo = r.baneo; $('ban-motivo').value = ''; pintarBaneo(); }
+});
+
+$('boton-desbanear').addEventListener('click', async () => {
+  if (!cuentaAdmin) return;
+  if (!confirm(T('Remove the ban of ', 'Quitar el baneo de ') + cuentaAdmin.usuario + '?')) return;
+  const r = await api('POST', 'admin/desbanear', { usuario: cuentaAdmin.usuario });
+  estado('ban-estado', r.mensaje, r.ok ? 'ok' : 'error');
+  if (r.ok) { cuentaAdmin.baneo = null; pintarBaneo(); }
+});
+
 $('form-reset').addEventListener('submit', async ev => {
   ev.preventDefault();
   if (!cuentaAdmin) return;
@@ -233,7 +264,7 @@ $('form-reset').addEventListener('submit', async ev => {
 // ---------------------------------------------------------------- idioma y arranque
 
 document.addEventListener('langchange', () => {
-  ['login-estado', 'pw-estado', 'buscar-estado', 'ag-estado', 'reset-estado'].forEach(id => estado(id, ''));
+  ['login-estado', 'pw-estado', 'buscar-estado', 'ag-estado', 'reset-estado', 'ban-estado'].forEach(id => estado(id, ''));
   pintarYo();
   pintarEventos();
   pintarCuentaAdmin();
