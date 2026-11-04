@@ -529,9 +529,9 @@ TASA_EXP_BASE = 1.5         # Multiplicador de EXP de personaje
 TASA_SKILL_EXP_BASE = 2     # Multiplicador de EXP de habilidades (stamina/skills)
 # DROP: cada item de la tabla oficial del monstruo (serv_drop.xml) tira con SU probabilidad por esta tasa
 # (1.0 = la oficial; 2.0 = el doble...). Ejemplos a 1.0 por monstruo muerto: Harp Sheep ~1,5% de soltar algo,
-# Green Wolf ~1,1%, Evil Fire Elf ~0,07%. El fin de semana x1,5 y las Lucky Card suman encima.
+# Green Wolf ~1,1%, Evil Fire Elf ~0,07%. El fin de semana x BONUS_EVENTO_DROP y las Lucky Card suman encima.
 # (Hasta el 31/10/2026 decidia si caia algo, a 0,9 x tasa, y el item salia al azar: entonces estaba en 0.04.)
-TASA_DROP_BASE = 1.5         # Multiplicador de la probabilidad de drop de cada item
+TASA_DROP_BASE = 1.0         # Multiplicador de la probabilidad de drop de cada item (x1 entre semana: pedido del usuario, 04/11/2026)
 # Monstruos SIN tabla oficial (sale una lista por nombre o por nivel): probabilidad de soltar un item, por la tasa.
 DROP_SIN_TABLA = 0.03
 TASA_ORO_BASE = 2.0           # Multiplicador de oro obtenido de monstruos
@@ -558,6 +558,7 @@ EVENTO_DOBLE_EXP_FORZADO = False
 # Multiplicador adicional que se aplica durante el evento
 BONUS_EVENTO_EXP = 2.0
 BONUS_EVENTO_SKILL = 2.0
+BONUS_EVENTO_DROP = 1.1       # drop x1.1 en fin de semana (antes x1.5; pedido del usuario, 04/11/2026)
 
 
 def es_fin_de_semana() -> bool:
@@ -645,7 +646,7 @@ def multiplicador_drop(buffs: dict = None) -> float:
     """Calcula el multiplicador total de drops."""
     m = TASA_DROP_BASE
     if es_fin_de_semana():
-        m *= 1.5
+        m *= BONUS_EVENTO_DROP
     m += pct_buffs(buffs, 'drop_extra_pct', '\u6389\u5bf6\u52a0\u500d') / 100
     return m
 
