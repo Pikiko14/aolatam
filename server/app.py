@@ -9209,16 +9209,29 @@ def _recorrer_dialogo_mapa(ses, addr, stage, nodo):
             nombres_por_mensaje[int(n['m'])] = [
                 s for num, parms in n.get('a', ()) if num == 2 and parms
                 for s in (str(parms[0]), p.nombre)]
-        if int(stage) == 41 and any(num in (29, 61) for num, _ in n.get('a', ())):
-            # Census: revisar el lote ANTES de TAKE_MONEY/CREATE_ITEM.
-            # SET_ALIGNMENT/GUILD_CHANGE_ALIGN todavia no tienen aplicador
-            # atomico; el dialogo informativo no debe cobrar por no cambiar nada.
+        _census = None
+        if int(stage) == 41 and any(num == 61 for num, _ in n.get('a', ())):
+            # Census: el cambio de faccion de la LIGA (GUILD_CHANGE_ALIGN) sigue
+            # sin aplicador; no se cobra por no cambiar nada.
             import clases as _cl_census_pending
             ses.dlg_mapa = None
             ses.enviar(_cl_census_pending.aviso(
-                'Faction transfer is not implemented yet. No gold or item has been consumed.', tipo=0))
+                'League faction transfer is not available yet. No gold has been consumed.', tipo=0))
             return True
+        if int(stage) == 41:
+            import cambio_faccion as _cf
+            if _cf.es_nodo_de_cambio(n.get('a', ())):
+                # Census Angel: cambio de faccion del personaje (cambio_faccion.py).
+                _no = _cf.rechazo(ses, n.get('a', ()))
+                if _no:
+                    mensajes[-1:] = [_no]
+                    break
+                _census = _cf
         for num, parms in n.get('a', ()):
+            if _census is not None and num in (_census.ACC_CREATE_ITEM, _census.ACC_SET_REBORN_POINT,
+                                               _census.ACC_SET_ALIGNMENT):
+                # La marca 3541 (24 h), el punto de revivir y la faccion los pone cambio_faccion.aplicar.
+                continue
             if int(stage)==41 and num==98 and k in __import__('recent_mall').datos()['nodes']:
                 ses._lyceum_exchange=int(parms[0])
                 ses.enviar(struct.pack('<HI',0x0151,int(parms[0])))
@@ -9237,6 +9250,8 @@ def _recorrer_dialogo_mapa(ses, addr, stage, nodo):
                           addr, stage, k, _ev_d.nombre_accion(num))
             elif ef[0] != 'parar':
                 efectos.append(ef)
+        if _census is not None and not _census.aplicar(ses, addr, n.get('a', ())):
+            efectos = [ef for ef in efectos if ef[0] != 'oro']    # sin cambio no se cobra
         if n.get('o'):
             opciones = [(int(o[0]), int(o[1])) for o in n['o']]
             break

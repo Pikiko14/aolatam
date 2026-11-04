@@ -141,7 +141,7 @@ def test_census_information_option_uses_original_xml(world):
     assert [o[0] for o in world.s.dlg_mapa['opciones']] == [6212, 6213]
 
 
-@pytest.mark.parametrize('action', [29, 61])
+@pytest.mark.parametrize('action', [61])   # 29 (personal) ya se aplica: tools/test_cambio_faccion.py
 def test_census_unsupported_transfer_cannot_charge_or_give_items(world, monkeypatch, action):
     tree = dialogos_mapa._arbol(41)
     node = next(k for k, n in tree.items()
