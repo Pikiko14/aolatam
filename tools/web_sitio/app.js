@@ -6,7 +6,7 @@ function prepararDescarga(botonId, estadoId, clave, nombre) {
   boton.addEventListener('click', () => {
     const valor = (window.SERVER_CONFIG?.[clave] || '').trim();
     if (!valor) {
-      estado.textContent = 'La descarga de ' + nombre + ' estará disponible próximamente.';
+      estado.textContent = 'The ' + nombre + ' download will be available soon.';
       return;
     }
     try {
@@ -23,14 +23,14 @@ function prepararDescarga(botonId, estadoId, clave, nombre) {
       document.body.appendChild(link);
       link.click();
       link.remove();
-      estado.textContent = 'Abriendo la descarga de ' + nombre + '…';
+      estado.textContent = 'Opening the ' + nombre + ' download…';
     } catch {
-      estado.textContent = 'La descarga no está disponible en este momento.';
+      estado.textContent = 'The download is not available right now.';
     }
   });
 }
-prepararDescarga('download-game', 'download-status', 'downloadUrl', 'el cliente');
-prepararDescarga('download-launcher', 'launcher-status', 'launcherUrl', 'el launcher');
+prepararDescarga('download-game', 'download-status', 'downloadUrl', 'client');
+prepararDescarga('download-launcher', 'launcher-status', 'launcherUrl', 'launcher');
 
 // Noticias. Renderizado seguro: los textos nunca se interpretan como HTML.
 const newsList = document.getElementById('news-list');
@@ -42,7 +42,7 @@ function newsElement(tag, className, text) {
   element.textContent = text;
   return element;
 }
-if (!entries.length) newsList.append(newsElement('p', 'news-empty', 'Aún no hay noticias publicadas. Vuelve pronto para descubrir las novedades.'));
+if (!entries.length) newsList.append(newsElement('p', 'news-empty', "No news yet. Check back soon to see what's new."));
 entries.forEach(entry => {
   const article = newsElement('article', 'news-entry', '');
   const meta = newsElement('div', 'news-meta', '');
@@ -50,13 +50,13 @@ entries.forEach(entry => {
   const date = new Date(`${entry.date}T12:00:00Z`);
   if (!Number.isNaN(date.getTime())) {
     time.dateTime = entry.date;
-    time.textContent = new Intl.DateTimeFormat('es', {day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC'}).format(date);
+    time.textContent = new Intl.DateTimeFormat('en', {day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC'}).format(date);
   }
-  meta.append(newsElement('span', 'news-category', entry.category || 'Noticias'), time);
+  meta.append(newsElement('span', 'news-category', entry.category || 'News'), time);
   article.append(meta, newsElement('h3', '', entry.title), newsElement('p', '', entry.summary));
   if (Array.isArray(entry.paragraphs) && entry.paragraphs.length) {
     const details = newsElement('details', 'news-details', '');
-    details.append(newsElement('summary', '', 'Leer noticia completa'));
+    details.append(newsElement('summary', '', 'Read full story'));
     entry.paragraphs.forEach(text => details.append(newsElement('p', '', text)));
     article.append(details);
   }

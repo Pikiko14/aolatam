@@ -37,19 +37,19 @@ CONTRASENA_VALIDA = re.compile(r'^[\x21-\x7e]{4,16}$')
 
 def _validar(usuario: str):
     if not usuario:
-        return 'Escribe un nombre de usuario.'
+        return 'Enter a username.'
     if not USUARIO_VALIDO.fullmatch(usuario):
-        return 'De 4 a 16 caracteres: empieza por una letra y usa solo letras, numeros y guion bajo.'
+        return '4 to 16 characters: start with a letter and use only letters, numbers and underscores.'
     return None
 
 
 def _validar_contrasena(pw: str, confirmar: str):
     if not pw:
-        return 'Escribe una contraseña.'
+        return 'Enter a password.'
     if not CONTRASENA_VALIDA.fullmatch(pw):
-        return 'La contraseña debe tener de 4 a 16 caracteres, sin espacios ni acentos.'
+        return 'The password must be 4 to 16 characters, with no spaces or accented letters.'
     if pw != confirmar:
-        return 'Las contraseñas no coinciden.'
+        return "The passwords don't match."
     return None
 
 
@@ -84,7 +84,7 @@ class Handler(BaseHTTPRequestHandler):
         if error:
             return self._json(200, {'disponible': False, 'motivo': error})
         libre = cuentas.usuario_disponible(usuario)
-        self._json(200, {'disponible': libre, 'motivo': '' if libre else 'Ese usuario ya existe.'})
+        self._json(200, {'disponible': libre, 'motivo': '' if libre else 'That username is already taken.'})
 
     def do_POST(self):
         ruta = urlsplit(self.path)
@@ -92,11 +92,11 @@ class Handler(BaseHTTPRequestHandler):
             return self._json(404, {'error': 'no encontrado'})
         largo = int(self.headers.get('Content-Length') or 0)
         if largo <= 0 or largo > 4096:
-            return self._json(400, {'ok': False, 'mensaje': 'Peticion invalida.'})
+            return self._json(400, {'ok': False, 'mensaje': 'Invalid request.'})
         try:
             cuerpo = json.loads(self.rfile.read(largo).decode('utf-8'))
         except (ValueError, UnicodeDecodeError):
-            return self._json(400, {'ok': False, 'mensaje': 'Peticion invalida.'})
+            return self._json(400, {'ok': False, 'mensaje': 'Invalid request.'})
         usuario = str(cuerpo.get('usuario', '')).strip()
         pw, confirmar = str(cuerpo.get('password', '')), str(cuerpo.get('confirmar', ''))
         error = _validar(usuario) or _validar_contrasena(pw, confirmar)
@@ -104,10 +104,10 @@ class Handler(BaseHTTPRequestHandler):
             return self._json(200, {'ok': False, 'mensaje': error})
         nuevo = cuentas.reservar_usuario(usuario, pw)
         if not nuevo:
-            return self._json(200, {'ok': False, 'mensaje': 'Ese usuario ya existe. Prueba con otro.'})
+            return self._json(200, {'ok': False, 'mensaje': 'That username is already taken. Try another one.'})
         log.info('cuenta creada desde la web: %s', usuario)
         self._json(200, {'ok': True, 'mensaje':
-                         '¡Cuenta "%s" creada! Descarga el juego y entra con tu usuario y tu contraseña.' % usuario})
+                         'Account "%s" created! Download the game and log in with your username and password.' % usuario})
 
 
 def main():

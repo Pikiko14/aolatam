@@ -25,7 +25,7 @@ def test_reservar_usuario_y_disponibilidad(tmp_path, monkeypatch):
 
 def test_validar_usuario_del_servidor_web():
     import web_registro
-    assert web_registro._validar('') == 'Escribe un nombre de usuario.'
+    assert web_registro._validar('') == 'Enter a username.'     # la web esta en ingles (04/11/2026)
     assert web_registro._validar('ab') is not None            # muy corto
     assert web_registro._validar('1abc') is not None           # no empieza por letra
     assert web_registro._validar('abc def') is not None        # espacio

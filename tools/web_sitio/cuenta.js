@@ -36,16 +36,16 @@ accountInput.addEventListener('input', () => {
       ponEstado(r.motivo, 'error');
     } else if (r.disponible) {
       accountInput.dataset.estado = 'libre';
-      ponEstado('Usuario libre.', 'ok');
+      ponEstado('Username available.', 'ok');
     }
   }, 400);
 });
 
 function problemaContrasena() {
   const pw = passInput.value, conf = confirmInput.value;
-  if (!pw) return 'Escribe una contraseña.';
-  if (!CONTRASENA_VALIDA.test(pw)) return 'La contraseña debe tener de 4 a 16 caracteres, sin espacios ni acentos.';
-  if (pw !== conf) return 'Las contraseñas no coinciden.';
+  if (!pw) return 'Enter a password.';
+  if (!CONTRASENA_VALIDA.test(pw)) return 'The password must be 4 to 16 characters, with no spaces or accented letters.';
+  if (pw !== conf) return "The passwords don't match.";
   return null;
 }
 
@@ -62,11 +62,11 @@ confirmInput.addEventListener('input', revisarConfirmacion);
 accountForm.addEventListener('submit', async (ev) => {
   ev.preventDefault();
   const usuario = accountInput.value.trim();
-  if (!usuario) { ponEstado('Escribe un nombre de usuario.', 'error'); return; }
+  if (!usuario) { ponEstado('Enter a username.', 'error'); return; }
   const problema = problemaContrasena();
   if (problema) { ponEstado(problema, 'error'); return; }
   accountButton.disabled = true;
-  ponEstado('Creando tu cuenta…');
+  ponEstado('Creating your account…');
   try {
     const resp = await fetch('/api/cuenta/registrar', {
       method: 'POST',
@@ -80,7 +80,7 @@ accountForm.addEventListener('submit', async (ev) => {
       [accountInput, passInput, confirmInput].forEach(i => delete i.dataset.estado);
     }
   } catch {
-    ponEstado('No se pudo conectar con el servidor. Intenta de nuevo en un momento.', 'error');
+    ponEstado('Could not connect to the server. Please try again in a moment.', 'error');
   } finally {
     accountButton.disabled = false;
   }
