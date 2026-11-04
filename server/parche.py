@@ -33,6 +33,8 @@ ESTADO = 'version.json'
 # encontrar una de otra base se vuelve a empezar por 1.
 VERSION_BASE = '0.0.0'
 VERSION_INICIAL = 0
+# Archivos que se quitan A PROPOSITO del parche (si no, generar() los arrastra del parche anterior): 'SETTING\ENG\X.XML'.
+QUITAR_DEL_PARCHE = frozenset()
 
 # Campos fijos de cada entrada del directorio, copiados de update26.pak.
 _FIRMA_ENTRADA = 0x0201444F      # 'OD\x01\x02'
@@ -257,9 +259,22 @@ def generar(ruta_cli: pathlib.Path = None, destino: pathlib.Path = DESTINO) -> d
     import cliente_local
     ruta_cli = ruta_cli or cliente_local.ruta_cliente()
     archivos = cambios_del_cliente(ruta_cli)
-    huella = _huella(archivos)
     previo = estado(destino)
     pak = destino / NOMBRE_PAK
+    # LO QUE YA SE REPARTIO NO SE PIERDE (04/11/2026). Con el cliente de desarrollo vacio o reinstalado (sin sus .bak),
+    # la 0.0.0.47 salio sin ITEM3-9.XML, las tiendas SP_*, BATTLEPASS, dos mapas y el logo: varios de esos archivos los
+    # pusieron herramientas a mano y solo viven en el parche publicado. Ahora el parche nuevo parte del anterior y encima
+    # van los cambios del cliente y parches/extras. Para quitar un archivo a proposito: QUITAR_DEL_PARCHE, o
+    # AO_PARCHE_SIN_ARRASTRE=1 para rehacerlo solo desde el cliente.
+    if pak.exists() and _de_esta_base(previo) and os.environ.get('AO_PARCHE_SIN_ARRASTRE') != '1':
+        try:
+            crudo = pak.read_bytes()
+            for nombre, entrada in _directorio(crudo).items():
+                if nombre not in archivos and nombre not in QUITAR_DEL_PARCHE:
+                    archivos[nombre] = _leer(crudo, entrada)
+        except Exception:
+            log.exception('no se pudo leer el parche anterior para arrastrar sus archivos')
+    huella = _huella(archivos)
     if previo.get('huella') == huella and pak.exists():
         _copiar_al_cliente(pak, ruta_cli)
         return previo
