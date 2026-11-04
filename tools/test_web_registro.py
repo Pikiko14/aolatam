@@ -87,3 +87,18 @@ def test_endpoint_registrar_pide_contrasena_y_que_coincida(tmp_path, monkeypatch
                   {'usuario': 'OtroHeroe', 'password': 'abc', 'confirmar': 'abc'}):
         r = _llamar(monkeypatch, tmp_path, 'POST', '/api/cuenta/registrar', json.dumps(datos).encode())
         assert r['ok'] is False and r['mensaje'], datos
+
+
+def test_la_api_contesta_en_el_idioma_de_la_web(tmp_path, monkeypatch):
+    """La web es bilingue (i18n.js): con lang=es los mensajes salen en espanol; sin lang, en ingles."""
+    import web_registro
+    assert web_registro._validar('', 'es') == 'Escribe un nombre de usuario.'
+    r = _llamar(monkeypatch, tmp_path, 'GET', '/api/cuenta/disponible?usuario=a&lang=es')
+    assert r['motivo'].startswith('De 4 a 16 caracteres')
+    cuerpo = json.dumps({'usuario': 'HeroeES', 'password': 'secreto1', 'confirmar': 'secreto1', 'lang': 'es'}).encode()
+    r = _llamar(monkeypatch, tmp_path, 'POST', '/api/cuenta/registrar', cuerpo)
+    assert r['ok'] is True and r['mensaje'].startswith('¡Cuenta "HeroeES" creada!')
+    r2 = _llamar(monkeypatch, tmp_path, 'POST', '/api/cuenta/registrar', cuerpo)
+    assert r2['mensaje'] == 'Ese usuario ya existe. Prueba con otro.'
+    r3 = _llamar(monkeypatch, tmp_path, 'POST', '/api/cuenta/registrar', b'[1]')
+    assert r3['ok'] is False

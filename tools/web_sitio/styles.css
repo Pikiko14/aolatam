@@ -48,6 +48,9 @@ code{background:var(--lila);border-radius:6px;padding:1px 6px;font-size:.9em}
 .cabecera nav a:hover{background:var(--lila);color:var(--tinta)}
 .cabecera nav .nav-cta{background:linear-gradient(135deg,var(--rosa-fuerte),var(--lila-fuerte));color:#fff;font-weight:600;box-shadow:0 6px 16px rgba(255,143,184,.35)}
 .cabecera nav .nav-cta:hover{color:#fff;filter:brightness(1.05)}
+.cabecera nav .lang-toggle{border:1px solid var(--borde);background:#fff;color:var(--tinta-suave);font:600 13px "Segoe UI",sans-serif;padding:7px 13px;border-radius:999px;cursor:pointer;white-space:nowrap;transition:background .2s,color .2s}
+.cabecera nav .lang-toggle:hover{background:var(--lila);color:var(--tinta)}
+.cabecera nav .lang-toggle:focus-visible{outline:2px solid var(--lila-fuerte);outline-offset:2px}
 
 /* ---- botones */
 .boton{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;border-radius:999px;padding:15px 28px;font:600 15px "Segoe UI",sans-serif;
@@ -153,6 +156,7 @@ code{background:var(--lila);border-radius:6px;padding:1px 6px;font-size:.9em}
   .cabecera{flex-direction:column;align-items:flex-start;padding:12px 16px}
   .cabecera nav{justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap;width:100%;padding-bottom:4px}
   .cabecera nav a{white-space:nowrap;padding:7px 11px;font-size:13px}
+  .cabecera nav .lang-toggle{order:-1}   /* en movil el menu se desliza: el idioma, el primero y a la vista */
   .portada{margin:14px 16px 0;min-height:560px;border-radius:26px}
   .portada-velo{background:linear-gradient(180deg,rgba(255,250,252,.96) 0%,rgba(255,247,251,.86) 55%,rgba(255,245,250,.25) 100%)}
   .portada-texto{padding:40px 24px}
