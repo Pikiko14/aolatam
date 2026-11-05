@@ -200,6 +200,12 @@ def atacar(ses, otro, tipo, mag, arma, en_area=False, golpes=None, separacion=No
         p.mp -= mp
         ses.sp = int(getattr(ses, 'sp', 0) or 0) - sp
         p.sp = ses.sp
+    if tipo != combate.ATAQUE_NORMAL and estado_de_control(tipo):
+        _aplicar_control(ses, otro, tipo, mag, estado_de_control(tipo))
+        if not en_area:
+            ses.enviar(combate.atributo(p.entity_id, p.mp, combate.KIND_MP),
+                       combate.atributo(p.entity_id, ses.sp, combate.KIND_SP))
+        return True
     magia = tipo != combate.ATAQUE_NORMAL and skills.skill_de_magia(tipo) in (1,2,3,4)
     atk = struct.unpack_from('<I', app._stats_ses(ses), 46 if magia else 26)[0]
     dfs = struct.unpack_from('<I', app._stats_ses(otro), 54 if magia else 38)[0]
@@ -237,6 +243,73 @@ def atacar(ses, otro, tipo, mag, arma, en_area=False, golpes=None, separacion=No
         if getattr(ses, 'usuario', None):
             cuentas.guardar_progreso(ses.usuario, p.char_id, p.nivel, p.exp, p.hp, p.mp, sp=ses.sp)
     return True
+
+
+# CONTROL EN PVP (05/11/2026: "Binding y Silence no funcionan"). Las dos son solo de jugadores (不能對NPC施放) y no
+# hacen dano: su efecto es el 魔法狀態. pvp_liga solo sabia hacer dano, asi que no hacian nada.
+#   捆綁 Binding: "Slows the speed of a target" -> un buff en el rival con move_speed_bonus negativo, que es lo que
+#                 app._velocidad_de suma al 0x0005 con el que se le devuelve cada paso.
+#   沉默 Silence: "cannot use spells" -> el 0x0006 del rival rechaza sus habilidades mientras dure (app.esta_silenciado).
+CONTROLES = {'捆綁': 'atado', '沉默': 'silenciado'}
+LENTITUD_BINDING = -50          # % de velocidad mientras dura
+
+
+def estado_de_control(tipo):
+    """'atado' / 'silenciado' si la habilidad es un control de jugadores sin dano, o None."""
+    import combate
+    d = combate._magic_xml().get(int(tipo or 0)) or {}
+    if d.get('平均傷害') or (d.get('HP') and d.get('HP') != '0'):
+        return None
+    return CONTROLES.get(str(d.get('魔法狀態') or ''))
+
+
+def _aplicar_control(ses, otro, tipo, mag, estado):
+    """Le pone el estado al rival: su icono (0x001D kind 4), el efecto para todos y la expiracion."""
+    import time
+    import asyncio
+    import combate, presencia
+    p, q = ses.personaje, otro.personaje
+    dur_ms = int(mag.get('dur_ms') or 0) or 5000
+    fin = time.time() + dur_ms / 1000.0
+    entrada = {'fin': fin, 'estado': estado, 'control_pvp': True,
+               'mag': {'nombre': mag.get('nombre', ''),
+                       'move_speed_bonus': LENTITUD_BINDING if estado == 'atado' else 0}}
+    if q.buffs is None:
+        q.buffs = {}
+    q.buffs[int(tipo)] = entrada
+    efecto = combate.efecto_de_ataque(tipo)
+    apub, bpub = presencia.entidad_de(ses), presencia.entidad_de(otro)
+    for visor in presencia._vivas(presencia.clave_de_mapa(ses, p.stage)):
+        a = p.entity_id if visor is ses else apub
+        b = q.entity_id if visor is otro else bpub
+        pkts = [combate.numero_de_dano(a, b, 0, tipo, efecto=efecto, cast_time=0, es_magia=False),
+                combate.cierre_de_dano(a, b, tipo, efecto=efecto, es_magia=False)]
+        if visor is otro:
+            pkts.append(struct.pack('<HIBBII', 0x001D, q.entity_id, 1, 4, int(tipo), dur_ms))
+        try:
+            (getattr(visor, 'enviar_sin_espejo', None) or visor.enviar)(*pkts)
+        except Exception:
+            pass
+    log.info('%s %s a %s con %s (%d ms)', p.nombre, estado, q.nombre, mag.get('nombre'), dur_ms)
+
+    def _expira():
+        if (q.buffs or {}).get(int(tipo)) is entrada:
+            q.buffs.pop(int(tipo), None)
+            try:
+                otro.enviar(struct.pack('<HIBBII', 0x001D, q.entity_id, 1, 4, int(tipo), 0))
+            except Exception:
+                pass
+    try:
+        asyncio.get_event_loop().call_later(dur_ms / 1000.0, _expira)
+    except RuntimeError:
+        pass
+
+
+def tiene_estado(ses, estado) -> bool:
+    import time
+    ahora = time.time()
+    return any(isinstance(b, dict) and b.get('estado') == estado and b.get('fin', 0) > ahora
+               for b in (getattr(getattr(ses, 'personaje', None), 'buffs', None) or {}).values())
 
 
 def _aplicar(ses, otro, dano, es_crit, con_efecto, tipo, efecto, magia, *, origen_eid=None):

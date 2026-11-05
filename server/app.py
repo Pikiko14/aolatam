@@ -13936,6 +13936,12 @@ class Servidor:
             if _en_sigilo and _ofensiva and not mag.get('asesino'):
                 _romper_sigilo(ses, addr, f"por atacar con {mag.get('nombre') or 'un golpe normal'}")
 
+            # SILENCIADO (Silence de otro jugador, pvp_liga): no lanza habilidades mientras dure; el golpe basico si.
+            if tipo != _cb.ATAQUE_NORMAL and __import__('pvp_liga').tiene_estado(ses, 'silenciado'):
+                ses.enviar(__import__('clases').aviso('You are silenced and cannot use skills.', tipo=0))
+                log.info(f"[{addr}] HABILIDAD {tipo} rechazada: silenciado")
+                return
+
             if tipo != _cb.ATAQUE_NORMAL:
                 _cd = max(_cb.COOLDOWN_MINIMO_HABILIDAD, mag.get('cd_ms', 0) / 1000.0)
                 _usos = getattr(ses, 'ultimo_uso', None)
