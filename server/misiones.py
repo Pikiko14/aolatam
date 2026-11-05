@@ -1019,8 +1019,13 @@ def abandonar_mision(ses, qid: int) -> bool:
         return False
 
     # Proteger tutorial del Guide Palace (101, 102) y etapas 1..9
+    # Son la cadena de inscripcion del Lyceum: nadie las vuelve a dar y sin ellas no se llega a elegir faccion. Se
+    # dice por que no se borra: sin aviso, el jugador pulsaba el check y no pasaba nada ("no me cancela una mision",
+    # 05/11/2026).
     if qid in (101, 102) or qid in range(1, 10):
-        log.warning(f"Intento de abandonar mision protegida {qid}")
+        log.info(f"[{getattr(ses, 'addr', '')}] {p.nombre}: la mision {qid} no se puede abandonar (tutorial)")
+        ses.enviar(_cl.aviso('This quest is part of the Angel Lyceum registration and cannot be abandoned. '
+                             'Finish it to choose your faction.', tipo=0, msg_id=_cl.MSG_TEXTO))
         return False
 
     tiene = False
