@@ -835,7 +835,7 @@
     <icon id="4056" dir="\emot\" normal="em065" focus="normal" down="normal" disable="normal" />
     <icon id="4057" dir="\emot\" normal="em066" focus="normal" down="normal" disable="normal" />
     <!-- 物品欄 -->
-    <window class="WND_CLASS_DLG_1" range="450,50,200,259" id="3031" title="Prop" fcolor="104" font="1" icon="3031">
+    <window class="WND_CLASS_DLG_1" range="450,50,200,449" id="3031" title="Prop" fcolor="104" font="1" icon="3031">
         <style wsVisible="" wsMoveable="" />
         <child>3101</child>
         <child>3102</child>
@@ -862,6 +862,31 @@
         <child>3123</child>
         <child>3124</child>
         <child>3125</child>
+        <child>3151</child>
+        <child>3152</child>
+        <child>3153</child>
+        <child>3154</child>
+        <child>3155</child>
+        <child>3156</child>
+        <child>3157</child>
+        <child>3158</child>
+        <child>3159</child>
+        <child>3160</child>
+        <child>3161</child>
+        <child>3162</child>
+        <child>3163</child>
+        <child>3164</child>
+        <child>3165</child>
+        <child>3166</child>
+        <child>3167</child>
+        <child>3168</child>
+        <child>3169</child>
+        <child>3170</child>
+        <child>3171</child>
+        <child>3172</child>
+        <child>3173</child>
+        <child>3174</child>
+        <child>3175</child>
         <child>3034</child>
         <child>3035</child>
         <child>3036</child>
@@ -904,54 +929,79 @@
     <window id="3123" range="78,154,36,36" derive="3101" />
     <window id="3124" range="116,154,36,36" derive="3101" />
     <window id="3125" range="154,154,36,36" derive="3101" />
+<window id="3151" range="2,192,36,36" derive="3101" />
+<window id="3152" range="40,192,36,36" derive="3101" />
+<window id="3153" range="78,192,36,36" derive="3101" />
+<window id="3154" range="116,192,36,36" derive="3101" />
+<window id="3155" range="154,192,36,36" derive="3101" />
+<window id="3156" range="2,230,36,36" derive="3101" />
+<window id="3157" range="40,230,36,36" derive="3101" />
+<window id="3158" range="78,230,36,36" derive="3101" />
+<window id="3159" range="116,230,36,36" derive="3101" />
+<window id="3160" range="154,230,36,36" derive="3101" />
+<window id="3161" range="2,268,36,36" derive="3101" />
+<window id="3162" range="40,268,36,36" derive="3101" />
+<window id="3163" range="78,268,36,36" derive="3101" />
+<window id="3164" range="116,268,36,36" derive="3101" />
+<window id="3165" range="154,268,36,36" derive="3101" />
+<window id="3166" range="2,306,36,36" derive="3101" />
+<window id="3167" range="40,306,36,36" derive="3101" />
+<window id="3168" range="78,306,36,36" derive="3101" />
+<window id="3169" range="116,306,36,36" derive="3101" />
+<window id="3170" range="154,306,36,36" derive="3101" />
+<window id="3171" range="2,344,36,36" derive="3101" />
+<window id="3172" range="40,344,36,36" derive="3101" />
+<window id="3173" range="78,344,36,36" derive="3101" />
+<window id="3174" range="116,344,36,36" derive="3101" />
+<window id="3175" range="154,344,36,36" derive="3101" />
     <!-- 金錢 -->
-    <window class="WND_CLASS_STATIC" range="25,195,62,14" id="3034" title="0" fcolor="105" font="1">
+    <window class="WND_CLASS_STATIC" range="25,385,62,14" id="3034" title="0" fcolor="105" font="1">
         <style wsVisible="" ssVCenter="" ssRight="" />
     </window>
     <!-- 負重 -->
-    <window class="WND_CLASS_PROGRESS" range="128,196,57,12" id="3035" picon="3035" font="1" fcolor="103" tooltip="10041">
+    <window class="WND_CLASS_PROGRESS" range="128,386,57,12" id="3035" picon="3035" font="1" fcolor="103" tooltip="10041">
         <style wsVisible="" psHorizontal="" psShowPos="" />
     </window>
     <icon id="3035" dir="\wnd01\" normal="w032_01" focus="normal" down="normal" disable="normal" />
     <!-- 金錢按鈕 -->
-    <window class="WND_CLASS_BUTTON" id="3036" range="6,195,17,17" icon="3036" tooltip="10040" tooltext="Keep it in warehouse">
+    <window class="WND_CLASS_BUTTON" id="3036" range="6,385,17,17" icon="3036" tooltip="10040" tooltext="Keep it in warehouse">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnShowSplitMoneyWnd</OnCommand>
     </window>
     <!-- 銷毀物品按鈕 -->
-    <window class="WND_CLASS_BUTTON" id="3037" range="6,214,26,18" icon="1157" tooltip="10040" tooltext="Drag the item here to delete">
+    <window class="WND_CLASS_BUTTON" id="3037" range="6,404,26,18" icon="1157" tooltip="10040" tooltext="Drag the item here to delete">
         <style wsVisible="" wsDrop="" wsTab="" />
         <OnDrop>OnDestroyItem</OnDrop>
     </window>
     <!-- 妝扮倉庫按鈕 -->
-    <window class="WND_CLASS_BUTTON" id="3049" range="36,214,26,18" icon="3049" tooltip="10040" tooltext="Fashion/Card/Furniture/Bubble Bag">
+    <window class="WND_CLASS_BUTTON" id="3049" range="36,404,26,18" icon="3049" tooltip="10040" tooltext="Fashion/Card/Furniture/Bubble Bag">
         <style wsTab="" />
         <OnCommand>OnOpenDollCardBagInterface</OnCommand>
     </window>
     <!-- 背包按鈕 -->
-    <window class="WND_CLASS_BUTTON" id="3060" range="67,214,26,18" icon="3060" tooltip="10040" tooltext="Backpack">
+    <window class="WND_CLASS_BUTTON" id="3060" range="67,404,26,18" icon="3060" tooltip="10040" tooltext="Backpack">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnOpenPackageInterface</OnCommand>
     </window>
     <!-- 裝備按鈕 -->
-    <window class="WND_CLASS_BUTTON" id="3038" range="98,214,26,18" icon="3038" tooltip="10040" tooltext="Gear[Alt+E]">
+    <window class="WND_CLASS_BUTTON" id="3038" range="98,404,26,18" icon="3038" tooltip="10040" tooltext="Gear[Alt+E]">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnOpenEquipInterface</OnCommand>
     </window>
     <!-- 交易按鈕 -->
-    <window class="WND_CLASS_BUTTON" id="3039" range="129,214,26,18" icon="3039" tooltip="10040" tooltext="Trade[Alt+T]">
+    <window class="WND_CLASS_BUTTON" id="3039" range="129,404,26,18" icon="3039" tooltip="10040" tooltext="Trade[Alt+T]">
         <style wsVisible="" wsTab="" />
         <!--<OnCommand>OnOpenTradeInterface</OnCommand>-->
         <OnCommand>OnTrade_Invite</OnCommand>
     </window>
     <!-- 擺攤按鈕 -->
-    <window class="WND_CLASS_BUTTON" id="3040" range="160,214,26,18" icon="3040" tooltip="10040" tooltext="Set a stall">
+    <window class="WND_CLASS_BUTTON" id="3040" range="160,404,26,18" icon="3040" tooltip="10040" tooltext="Set a stall">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnOpenSaleInterface</OnCommand>
     </window>
     <!-- 物品欄底圖 按鈕 -->
     <!-- 物品欄底圖 -->
-    <icon id="3031" dir="\wnd01\" normal="w011_1" focus="normal" down="normal" disable="normal">
+    <icon id="3031" dir="\wnd01\" normal="aolat_prop50" focus="normal" down="normal" disable="normal">
         <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />
     </icon>
     <!-- 物品格子 -->

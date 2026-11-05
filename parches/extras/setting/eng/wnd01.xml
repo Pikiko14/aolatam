@@ -208,7 +208,7 @@
 	<child>17100</child>
         <OnUpdate>OnAnimateCommand</OnUpdate>
     </window>
-    <icon id="116" dir="\wnd01\" normal="w007_01" focus="normal" down="normal" disable="normal">
+    <icon id="116" dir="\wnd01\" normal="aolat_barra" focus="normal" down="normal" disable="normal">
         <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />
     </icon>
     	<window class="WND_CLASS_BUTTON" range="121,-56,0,0" id="17100" icon="17100" tooltip="10043" tooltext="Pet Amplify[Ctrl+P]">
@@ -218,7 +218,7 @@
 	<icon id="17100" dir="\wnd01\" normal="btn247_n" focus="btn247_f,#12, btn247_n" down="btn247_d" disable="normal"/>
 	
 	<!--活動總覽-->
-	<window class="WND_CLASS_BUTTON" range="356,-139,40,68" id="16199" icon="16199" tooltip="10043" tooltext="活動總覽">
+	<window class="WND_CLASS_BUTTON" range="397,-139,40,68" id="16199" icon="16199" tooltip="10043" tooltext="活動總覽">
 		<style wsVisible="" wsTab=""/>
 		<child>16198</child>
 		<OnCommand>CreateActBoardWnd</OnCommand>
@@ -233,69 +233,69 @@
 		<style wsVisible="" wsTab=""/>
 		<OnCommand>OnCommandStarCard</OnCommand>
 	</window>
-	<window class="WND_CLASS_BUTTON" range="218,-127,40,56" id="59003" icon="59003" tooltip="10043" tooltext="Tower of Babel">
+	<window class="WND_CLASS_BUTTON" range="259,-127,40,56" id="59003" icon="59003" tooltip="10043" tooltext="Tower of Babel">
 	    <style wsVisible="" wsTab="" />
 	    <OnCommand>OnCommandTorre</OnCommand>
 	</window>
 	<icon id="59003" dir="\wnd01\" normal="aolat_tb_n" focus="aolat_tb_f" down="aolat_tb_n" disable="normal" />
-	<window class="WND_CLASS_BUTTON" range="264,-127,40,56" id="59002" icon="59002" tooltip="10043" tooltext="Damage meter">
+	<window class="WND_CLASS_BUTTON" range="305,-127,40,56" id="59002" icon="59002" tooltip="10043" tooltext="Damage meter">
 	    <style wsVisible="" wsTab="" />
 	    <OnCommand>OnCommandMedidor</OnCommand>
 	</window>
 	<icon id="59002" dir="\wnd01\" normal="aolat_dm_n" focus="aolat_dm_f" down="aolat_dm_n" disable="normal" />
-	<window class="WND_CLASS_BUTTON" range="310,-127,40,56" id="59001" icon="59001" tooltip="10043" tooltext="Auction House">
+	<window class="WND_CLASS_BUTTON" range="351,-127,40,56" id="59001" icon="59001" tooltip="10043" tooltext="Auction House">
 	    <style wsVisible="" wsTab="" />
 	    <OnCommand>OnCommandSubasta</OnCommand>
 	</window>
 	<icon id="59001" dir="\wnd01\" normal="aolat_ah_n" focus="aolat_ah_f" down="aolat_ah_n" disable="normal" />
 	<icon id="50001" dir="\wndstar\" normal="btn207_n" focus="btn207_f,#12, btn207_n" down="btn207_f" disable="normal"/>
 	
-	<window class="WND_CLASS_BUTTON" range="-18,-61,55,53" id="12600" icon="12600" tooltip="10043" tooltext="Item Mall[Alt+I]">
+	<window class="WND_CLASS_BUTTON" range="21,-61,55,53" id="12600" icon="12600" tooltip="10043" tooltext="Item Mall[Alt+I]">
 		<style wsVisible="" wsTab=""/>
         <OnCommand>OnCommandMall</OnCommand>
     </window>
     <icon id="12600" dir="\wnd01\" normal="w070_05" focus="w070_04,#12, w070_05" down="normal" disable="normal" />
-    <window class="WND_CLASS_BUTTON" range="42,-42,40,33" id="117" icon="117" tooltip="10043" tooltext="Prop[Alt+B]">
+    <window class="WND_CLASS_BUTTON" range="81,-42,40,33" id="117" icon="117" tooltip="10043" tooltext="Prop[Alt+B]">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnCommandItem</OnCommand>
     </window>
     <icon id="117" dir="\wnd01\" normal="btn017_n" focus="btn017_d,#12, btn017_n" down="btn017_f" disable="normal" />
-    <window class="WND_CLASS_BUTTON" range="82,-59,38,51" id="118" icon="118" tooltip="10043" tooltext="Skill[Alt+S]">
+    <window class="WND_CLASS_BUTTON" range="121,-59,38,51" id="118" icon="118" tooltip="10043" tooltext="Skill[Alt+S]">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnCommandEquip</OnCommand>
     </window>
     <icon id="118" dir="\wnd01\" normal="btn018_n" focus="btn018_d,#12, btn018_n" down="btn018_f" disable="normal" />
-    <window class="WND_CLASS_BUTTON" range="121,-56,41,48" id="119" icon="119" tooltip="10043" tooltext="Quest Log[Alt+Q]">
+    <window class="WND_CLASS_BUTTON" range="157,-56,41,48" id="119" icon="119" tooltip="10043" tooltext="Quest Log[Alt+Q]">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnCommandQuest</OnCommand>
     </window>
     <icon id="119" dir="\wnd01\" normal="btn019_n" focus="btn019_d,#12, btn019_n" down="btn019_f" disable="normal" />
-    <window class="WND_CLASS_BUTTON" range="165,-41,41,33" id="120" icon="120" tooltip="10043" tooltext="Friend[Alt+F]">
+    <window class="WND_CLASS_BUTTON" range="201,-41,41,33" id="120" icon="120" tooltip="10043" tooltext="Friend[Alt+F]">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnCommandFriend</OnCommand>
     </window>
     <icon id="120" dir="\wnd01\" normal="btn020_n" focus="btn020_d,#12, btn020_n" down="btn020_f" disable="normal" />
-    <window class="WND_CLASS_BUTTON" range="206,-54,39,45" id="122" icon="122" tooltip="10043" tooltext="Team[Alt+G]">
+    <window class="WND_CLASS_BUTTON" range="242,-54,39,45" id="122" icon="122" tooltip="10043" tooltext="Team[Alt+G]">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnCommandGroup</OnCommand>
     </window>
     <icon id="122" dir="\wnd01\" normal="btn022_n" focus="btn022_d,#12, btn022_n" down="btn022_f" disable="normal" />
-    <window class="WND_CLASS_BUTTON" range="247,-55,42,46" id="123" icon="123" tooltip="10043" tooltext="League[Alt+W]">
+    <window class="WND_CLASS_BUTTON" range="283,-55,42,46" id="123" icon="123" tooltip="10043" tooltext="League[Alt+W]">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnCommandGuild</OnCommand>
     </window>
     <icon id="123" dir="\wnd01\" normal="btn023_n" focus="btn023_d,#12, btn023_n" down="btn023_f" disable="normal" />
-    <window class="WND_CLASS_BUTTON" range="285,-62,36,54" id="124" icon="124" tooltip="10043" tooltext="Emotes[Alt+N]">
+    <window class="WND_CLASS_BUTTON" range="321,-62,36,54" id="124" icon="124" tooltip="10043" tooltext="Emotes[Alt+N]">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnCommandEmotion</OnCommand>
     </window>
     <icon id="124" dir="\wnd01\" normal="btn024_n" focus="btn024_d,#12, btn024_n" down="btn024_f" disable="normal" />
-    <window class="WND_CLASS_BUTTON" range="324,-56,40,48" id="125" icon="125" tooltip="10043" tooltext="Map[Alt+M]">
+    <window class="WND_CLASS_BUTTON" range="360,-56,40,48" id="125" icon="125" tooltip="10043" tooltext="Map[Alt+M]">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnCommandMap</OnCommand>
     </window>
     <icon id="125" dir="\wnd01\" normal="btn025_n" focus="btn025_d,#12, btn025_n" down="btn025_f" disable="normal" />
-    <window class="WND_CLASS_BUTTON" range="360,-43,41,34" id="126" icon="126" tooltip="10043" tooltext="System[Esc]">
+    <window class="WND_CLASS_BUTTON" range="396,-43,41,34" id="126" icon="126" tooltip="10043" tooltext="System[Esc]">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnCommandSystem</OnCommand>
     </window>

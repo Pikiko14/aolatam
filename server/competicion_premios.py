@@ -31,7 +31,7 @@ def informar_reclamacion(ses,stage):
                 c.aviso(ses,'Your reward is pending. Check free bag space and reconnect if your inventory is out of sync.')
                 import app
                 plan=json.loads(raw_plan) or {}
-                free=sum(s not in ses.inventario for s in range(20,app._tope_bolsa(ses.inventario)+1))
+                free=sum(s not in ses.inventario for s in app._ranuras_bolsa(ses.inventario))
                 if free<len(plan.get('items',[])):
                     __import__('competicion_dialogos').mostrar(ses,stage,7762)
             elif state=='caducado':
@@ -300,7 +300,7 @@ def entregar(ses, automatico=False, stage=None):
                     data['habilidades'] = skills
                     for item in plan['items']:
                         bag = data.setdefault('inventario',{})
-                        slot = next((s for s in range(20, app._tope_bolsa({int(k):v for k,v in bag.items()})+1)
+                        slot = next((s for s in app._ranuras_bolsa({int(k):v for k,v in bag.items()})
                                      if str(s) not in bag), None)
                         if slot is None:
                             raise ValueError('Full bag')

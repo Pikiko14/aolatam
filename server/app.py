@@ -669,17 +669,21 @@ def _venta_por_nivel(item_id) -> int:
     return int(round((p0 + (nivel - n0) * (p1 - p0) / (n1 - n0)) / 10.0)) * 10
 
 
-# Ultima casilla utilizable de la mochila base (pestaña Prop: 5x5 = 25 ranuras,
-# de la 20 a la 44 inclusive). Con mochila equipada en ranura 7/8 se habilitan
-# ademas las bolsas extra (hasta la 120).
+# La mochila del personaje (04/11/2026, "en la mochila principal tengamos 50 espacios, osea el alt b 50"):
+#   20-44   las 25 casillas de siempre del Prop (ventanas 3101-3125)
+#   45-94   la Backpack equipada en la ranura 7/8: tantas como su 動態資料1 de item.xml (ventanas 3801-3850)
+#   95-119  las 25 casillas nuevas del Prop (ventanas 3151-3175 de wnd03.xml; el angel.dat las conoce por
+#           tools/parche_prop50_exe.py)
+# El cliente no muestra las de la Backpack que pasan de su tamano: quedan fuera de _ranuras_bolsa.
 TOPE_SIN_MOCHILA = 44
 TOPE_CON_MOCHILA = 120
+PRIMERA_MOCHILA = 45
+MAX_MOCHILA = 50
+PROP_EXTRA = range(95, 120)
 
 
-def _tope_bolsa(bolsa) -> int:
-    """Hasta que casilla se puede guardar: las 25 de base mas las casillas de
-    la mochila puesta (columna 動態資料1 de item.xml, 背包). Con 15 de mochila
-    son 40 y el cliente bloquea el resto; antes se dejaba hasta la 120."""
+def _casillas_mochila(bolsa) -> int:
+    """Las casillas de la Backpack puesta (0 sin ella)."""
     b = bolsa or {}
     extra = 0
     for r in (7, 8):
@@ -692,14 +696,29 @@ def _tope_bolsa(bolsa) -> int:
             if fila.get('物品類別') == '背包':
                 extra += int(fila.get('動態資料1') or 0)
         except Exception:
-            extra = TOPE_CON_MOCHILA
-    return min(TOPE_CON_MOCHILA, TOPE_SIN_MOCHILA + extra)
+            extra = MAX_MOCHILA
+    return max(0, min(MAX_MOCHILA, extra))
+
+
+def _ranuras_bolsa(bolsa) -> list:
+    """Las casillas donde se puede guardar, en el orden en que se llenan."""
+    return (list(range(20, TOPE_SIN_MOCHILA + 1)) + list(PROP_EXTRA)
+            + list(range(PRIMERA_MOCHILA, PRIMERA_MOCHILA + _casillas_mochila(bolsa))))
+
+
+def _tope_bolsa(bolsa) -> int:
+    """La ultima casilla de la mochila (la 119 del Prop). Las comprobaciones 20 <= s <= tope solo miran si un objeto
+    que ya esta en la bolsa es de la mochila; para buscar o contar huecos se usa _ranuras_bolsa."""
+    return PROP_EXTRA[-1]
 
 
 def _ranura_libre(bolsa, desde=20, hasta=None):
     """Primera casilla vacia de la mochila o rango, o None si esta llena."""
-    limite = hasta if hasta is not None else _tope_bolsa(bolsa)
-    for r in range(desde, limite + 1):
+    if hasta is not None:
+        candidatas = range(desde, hasta + 1)
+    else:
+        candidatas = [r for r in _ranuras_bolsa(bolsa) if r >= desde]
+    for r in candidatas:
         if r not in bolsa:
             return r
     return None
@@ -912,7 +931,7 @@ def _meter(ses, item_id: int, n: int = 1, pet_metadata: dict = None) -> int:
     es_deed = _cs_m.es_deed_item(item_id) or inv.categoria_item(item_id) == '房屋'
     es_mueble = bool(not es_deed and (_cs_m.item_a_mueble(item_id) is not None or inv.categoria_item(item_id) in ('傢俱', '家具')))
     if es_mueble:
-        if sum(r not in bolsa for r in range(20,_tope_bolsa(bolsa)+1))<n:
+        if sum(r not in bolsa for r in _ranuras_bolsa(bolsa))<n:
             return None
         primera_ranura = None
         for _ in range(n):
@@ -1024,7 +1043,7 @@ def _contribuir_liga(ses, cuerpo, mundos):
     cambios = []
     for item, cantidad in requeridos.items():
         restante = cantidad
-        for ranura in range(20, _tope_bolsa(bolsa) + 1):
+        for ranura in _ranuras_bolsa(bolsa):
             if int(bolsa.get(ranura, 0)) != item:
                 continue
             hay = int(cantidades.get(ranura, 1))
@@ -1068,7 +1087,7 @@ def _consumir_item_total(ses, item_id: int, n: int) -> list:
     max_r = _tope_bolsa(bolsa)
     tocadas = []
     restante = int(n)
-    for r in range(20, max_r + 1):
+    for r in _ranuras_bolsa(bolsa):
         if int(bolsa.get(r, 0)) == int(item_id):
             hay = _cant_de(ses, r)
             quitar = min(hay, restante)
@@ -1284,7 +1303,7 @@ def _intercambio_ejecutar(ses, otro):
                 return ('item', dueno)
             lista.append((r, item_id, _cant_de(dueno, r)))
         # sitio del que recibe: huecos libres, mas los que libera lo que ofrece el
-        libres = sum(1 for r in range(20, _tope_bolsa(receptor.inventario) + 1) if r not in receptor.inventario)
+        libres = sum(1 for r in _ranuras_bolsa(receptor.inventario) if r not in receptor.inventario)
         libres += len(tt_receptor['ofertas'])
         necesita = 0
         for r, item_id, n in lista:
@@ -3880,7 +3899,7 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
                     if 20 <= s_r <= max_ranura and it_id == item_drop:
                         apila = s_r
                         break
-            if apila is None and not any(r not in bolsa for r in range(20, max_ranura + 1)):
+            if apila is None and not any(r not in bolsa for r in _ranuras_bolsa(bolsa)):
                 log.info(f"[{addr}] inventario lleno (limite={max_ranura}), drop {item_drop} ignorado silenciosamente")
                 continue
 
@@ -8053,7 +8072,7 @@ def _bonos_reclamar(ses, addr, accion, fid):
         _bonos_enviar(ses)
         return
     items = filas[int(fid)][1]
-    libres = sum(1 for r in range(20, _tope_bolsa(ses.inventario) + 1) if r not in ses.inventario)
+    libres = sum(1 for r in _ranuras_bolsa(ses.inventario) if r not in ses.inventario)
     if libres < len(items):
         ses.enviar(_cl_b.aviso('Your bag is full.'))
         return
@@ -8533,7 +8552,7 @@ def _pase_accion(ses, addr, que):
     t = pase.temporada()
     if que == pase.ACC_RECLAMAR:
         items = pase.premios_pendientes(est)
-        libres = sum(1 for r in range(20, _tope_bolsa(ses.inventario) + 1) if r not in ses.inventario)
+        libres = sum(1 for r in _ranuras_bolsa(ses.inventario) if r not in ses.inventario)
         if libres < len(items):
             ses.enviar(_cl_p.aviso('Your bag is full.'))
             return
@@ -19549,7 +19568,7 @@ class Servidor:
             if _bol.es_bolsa(item_id):
                 # Sin hueco no se abre ni se toca nada ("estando la bag llena aun me dejaba spammear las bags"):
                 # antes se sacaba la bolsa, el premio no cabia y se devolvia sin refrescar la bolsa del cliente.
-                _libres_b = sum(1 for r in range(20, _tope_bolsa(bolsa) + 1) if r not in bolsa)
+                _libres_b = sum(1 for r in _ranuras_bolsa(bolsa) if r not in bolsa)
                 if _libres_b + (1 if _cant_de(ses, ranura) == 1 else 0) < 1:
                     ses.enviar(_c.aviso('Inventory is full.', tipo=7, msg_id=_c.MSG_TEXTO),
                                *_refrescar(ses, [ranura]))
@@ -19595,7 +19614,7 @@ class Servidor:
                 modo, premios, huecos = descrito
                 if modo == 'uno':
                     premios = [random.choice(premios)]
-                libres = sum(1 for r in range(20, _tope_bolsa(bolsa) + 1) if r not in bolsa)
+                libres = sum(1 for r in _ranuras_bolsa(bolsa) if r not in bolsa)
                 if libres + (1 if _cant_de(ses, ranura) == 1 else 0) < huecos:
                     ses.enviar(_c.aviso('You need %d free slots to open this.' % huecos,
                                         tipo=7, msg_id=_c.MSG_TEXTO))
