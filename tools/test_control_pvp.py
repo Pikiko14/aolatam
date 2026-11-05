@@ -65,3 +65,24 @@ def test_silence_no_deja_lanzar_habilidades(monkeypatch):
     assert b.personaje.mp == mp                                     # Charming Blessing no salio
     reloj[0] += 5                                                   # Silence I dura 4 s
     assert not pvp_liga.tiene_estado(b, 'silenciado')
+
+
+def test_la_mascota_va_a_por_el_jugador_que_ataca_el_dueno(monkeypatch):
+    """"los pets no reaccionan al atacar a los jugadores, solo a los mobs"."""
+    reloj = [1000.0]
+    a, b = _par(monkeypatch, reloj)
+    a.pet_entity_id = 1069500
+    f_pet = {'fuera': True, 'x': 100, 'y': 101, 'atk': 800, 'agilidad': 15, 'saciedad': 50, 'nombre': 'Ape'}
+    a.personaje.mascota = f_pet
+    assert not app._pet_contra_rival(a, f_pet, a.pet_entity_id, reloj[0])      # aun no hay rival
+    pvp_liga.atacar(a, b, cb.ATAQUE_NORMAL, {}, 0)
+    vida = b.personaje.hp
+    reloj[0] += 2
+    assert app._pet_contra_rival(a, f_pet, a.pet_entity_id, reloj[0])
+    assert b.personaje.hp < vida                                                 # le pego la mascota
+    # lejos: primero se acerca
+    f_pet.update({'x': 106, 'y': 106, 'proximo_paso': 0})
+    reloj[0] += 2
+    vida = b.personaje.hp
+    assert app._pet_contra_rival(a, f_pet, a.pet_entity_id, reloj[0])
+    assert b.personaje.hp == vida and (f_pet['x'], f_pet['y']) != (106, 106)

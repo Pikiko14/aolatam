@@ -4105,6 +4105,70 @@ def _cadencia_pet(agilidad, saciada) -> float:
     return max(suelo, min(CADENCIA_PET_BASE, CADENCIA_PET_BASE - int(agilidad) * 0.002))
 
 
+# LA MASCOTA EN PVP (05/11/2026: "los pets no reaccionan al atacar a los jugadores, solo a los mobs"). Su IA solo
+# buscaba en ses.monstruos. El jugador al que ataca el dueno (pvp_liga.atacar apunta ses.pet_rival) pasa a ser su
+# objetivo cuando no tiene un monstruo: se acerca y le pega su golpe basico, con el dano de pvp_liga y sus paquetes
+# (cada cliente ve las entidades que le tocan).
+RANGO_PET_RIVAL = 10      # casillas del dueno a las que la mascota aun va a por el rival
+
+
+def _rival_de_la_mascota(ses):
+    import pvp_liga
+    rival = getattr(ses, 'pet_rival', None)
+    p = getattr(ses, 'personaje', None)
+    q = getattr(rival, 'personaje', None)
+    if (rival is None or p is None or q is None or getattr(rival, 'muerto', False) or int(q.hp or 0) <= 0
+            or q.stage != p.stage or getattr(rival, 'cerrada', False)
+            or max(abs(q.tile_x - p.tile_x), abs(q.tile_y - p.tile_y)) > RANGO_PET_RIVAL
+            or not pvp_liga.permitido(ses, rival)):
+        ses.pet_rival = None
+        return None
+    return rival
+
+
+def _pet_contra_rival(ses, f_pet, pet_eid, ahora) -> bool:
+    """Un tic de la mascota contra el rival del dueno. False si no tiene rival (sigue su IA normal)."""
+    import combate as _cb
+    import mascotas as _ms
+    import presencia as _pr
+    import pvp_liga
+    rival = _rival_de_la_mascota(ses)
+    if rival is None:
+        return False
+    q = rival.personaje
+    px, py = int(f_pet.get('x', 0)), int(f_pet.get('y', 0))
+    dist = max(abs(q.tile_x - px), abs(q.tile_y - py))
+    if dist <= 2:
+        b_star, b_bf = _ms.bonos_efectivos(f_pet), _ms.bonos_buffs(f_pet)
+        saciada = int(f_pet.get('saciedad', 0)) > 100
+        agi = int(f_pet.get('agilidad', 15)) + int(b_star.get('agilidad', 0)) + int(b_bf.get('agilidad', 0))
+        if ahora - f_pet.get('ultimo_ataque', 0) < _cadencia_pet(agi, saciada):
+            return True
+        f_pet['ultimo_ataque'] = ahora
+        atk = int(f_pet.get('atk', 100)) + int(b_star.get('atk', 0)) + int(b_bf.get('atk', 0))
+        dfs = struct.unpack_from('<I', _stats_ses(rival), 38)[0]
+        dano = pvp_liga.dano_pvp(atk, dfs, _cb.MULT_DANO_MASCOTA, 0.03)
+        dano = max(1, int(round(dano * pvp_liga.mitigacion(rival, False))))
+        pvp_liga._aplicar(ses, rival, dano, False, True, _cb.ATAQUE_NORMAL, 0, False, origen_eid=int(pet_eid))
+        return True
+    if ahora < f_pet.get('proximo_paso', 0):
+        return True
+    spd = _velocidad_pet(f_pet)
+    (nx, ny), _ok = _transitable.tramo(int(ses.personaje.stage or 0), (px, py), (q.tile_x, q.tile_y),
+                                       min(max(1, dist - 1), 4), parar_a=1)
+    if (nx, ny) == (px, py):
+        f_pet['proximo_paso'] = ahora + 0.5
+        return True
+    f_pet['x'], f_pet['y'] = nx, ny
+    ses.pet_tile = [nx, ny]
+    f_pet['proximo_paso'] = ahora + _cb.segundos_de_tramo(max(1, max(abs(nx - px), abs(ny - py))), spd)
+    mv = Msg.registry[(0x0005, 's2c', '*')].build(entity_id=pet_eid, cur_x=px * 32, cur_y=py * 32,
+                                                   dst_x=nx * 32, dst_y=ny * 32, speed=spd)
+    ses.enviar(mv)
+    _pr.notificar_mascota_movimiento(ses, pet_eid, mv)
+    return True
+
+
 def _velocidad_seguir_pet(ses, propia, distancia) -> int:
     """La mascota va al paso del dueño (a pie o montado) y, si se ha quedado
     atras, un 25% mas rapido para alcanzarlo. Antes iba a 105 fijos y con
@@ -13090,7 +13154,9 @@ class Servidor:
                                             log.info(f"[{addr}] mascota {f_pet.get('nombre')} lanzo curacion {sk_p_id} ({sk_p_mag.get('nombre')}, +{cura_p} HP)")
                                             break
 
-                            if pet_targ and modo_pet != 2:
+                            if not pet_targ and modo_pet != 2 and _pet_contra_rival(ses, f_pet, pet_eid, ahora):
+                                pass                    # contra el jugador al que ataca el dueno (PvP)
+                            elif pet_targ and modo_pet != 2:
                                 dx_p = pet_targ.tile_x - pet_x
                                 dy_p = pet_targ.tile_y - pet_y
                                 dist_pet = max(abs(dx_p), abs(dy_p))

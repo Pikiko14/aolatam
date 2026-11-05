@@ -183,6 +183,7 @@ def atacar(ses, otro, tipo, mag, arma, en_area=False, golpes=None, separacion=No
     import app, combate, skills, transitable
     if not permitido(ses, otro):
         return False
+    ses.pet_rival = otro          # la mascota del que ataca va a por el (app._pet_contra_rival)
     p, q = ses.personaje, otro.personaje
     if tipo != combate.ATAQUE_NORMAL and not mag.get('es_ataque') and not en_area:
         return False
