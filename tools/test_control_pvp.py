@@ -130,6 +130,8 @@ def test_las_mascotas_se_pegan_entre_si(monkeypatch):
     reloj[0] += 2
     app._pet_contra_rival(a, fa, 1069500, reloj[0])
     assert not fb['fuera'] and b.pet_entity_id is None          # cae y se guarda
+    muere = struct.pack('<HIII', 0x000A, 1069501, 1069500, 7)
+    assert muere in b.recibido and muere in a.recibido          # todos la ven morir (antes desaparecia sin mas)
 
 
 def test_el_silence_de_mago_silencia_sin_dano(monkeypatch):

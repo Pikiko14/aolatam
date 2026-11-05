@@ -4233,6 +4233,59 @@ def _poder_de_mascota(f_pet, ahora, rng=random):
     return sk, int(d.get('efecto') or 101), bool(d.get('es_magia_visual'))
 
 
+RETRASO_GUARDAR_PET = 2.5      # segundos tumbada antes de guardarse
+
+
+def _mascota_muere(dueno, f_pet, eid, matador):
+    """La mascota de `dueno` llega a 0: todos la ven MORIR (0x000A tipo 7, como un monstruo) y a los RETRASO_GUARDAR_PET
+    segundos se guarda (intimidad -10 sin bajar de 40, vida llena para la proxima). Antes desaparecia en el acto,
+    guardada, sin verse caer ("los pet no estan muriendo: llegan a 0 y desaparecen", 05/11/2026). `matador(visor)` da
+    la entidad del que la mato tal como la ve cada cliente."""
+    import combate as _cb
+    import mascotas as _ms
+    import clases as _cl_pv
+    import presencia as _pr
+    p = dueno.personaje
+    f_pet['intimidad'] = max(40, int(f_pet.get('intimidad', 60)) - 10)
+    f_pet['fuera'] = False
+    f_pet['entidad'] = 0
+    f_pet['hp'] = max(1, int(f_pet.get('hp_max') or 100))
+    dueno.pet_entity_id = None
+    dueno.pet_objetivo = None
+    for visor in _pr._vivas(_pr.clave_de_mapa(dueno, p.stage)) or [dueno]:
+        try:
+            (getattr(visor, 'enviar_sin_espejo', None) or visor.enviar)(
+                _cb.atributo(eid, 0, _cb.KIND_HP), _cb.muerte_monstruo(eid, int(matador(visor) or 0)))
+        except Exception:
+            pass
+    if dueno not in (_pr._vivas(_pr.clave_de_mapa(dueno, p.stage)) or []):
+        try:
+            dueno.enviar(_cb.atributo(eid, 0, _cb.KIND_HP), _cb.muerte_monstruo(eid, int(matador(dueno) or 0)))
+        except Exception:
+            pass
+
+    def _guardar():
+        salida = [_ms.quitar(eid), _ms.enlazar(p.entity_id, 0), _ms.armar(f_pet),
+                  _cl_pv.aviso('10', tipo=7, msg_id=965)]
+        _r = f_pet.get('ranura')
+        if _r is not None:
+            if getattr(p, 'mascotas', None) is not None:
+                p.mascotas[str(_r)] = f_pet
+            salida.extend(_refrescar(dueno, [_r]))
+        try:
+            dueno.enviar_inmediato(*salida)
+        except Exception:
+            pass
+        _pr.notificar_mascota_despawn(dueno, eid)
+        if getattr(dueno, 'usuario', None):
+            cuentas.guardar_mascota(dueno.usuario, p.char_id, f_pet, getattr(p, 'mascotas', None))
+    try:
+        asyncio.get_event_loop().call_later(RETRASO_GUARDAR_PET, _guardar)
+    except RuntimeError:
+        _guardar()
+    log.info('muere la mascota %s de %s', f_pet.get('nombre'), p.nombre)
+
+
 def _danar_mascota_rival(ses, pet_eid, rival, f_rival, eid_rival, dano, sk, ef, magia, anim):
     """La mascota de `ses` (o el propio `ses` con pet_eid None) le pega a la de `rival`, que todos ven; si cae, se
     guarda como al morir contra un monstruo (intimidad -10 sin bajar de 40, vida llena para la proxima)."""
@@ -4262,26 +4315,8 @@ def _danar_mascota_rival(ses, pet_eid, rival, f_rival, eid_rival, dano, sk, ef, 
     if f_rival['hp'] > 0:
         return
     q = rival.personaje
-    f_rival['intimidad'] = max(40, int(f_rival.get('intimidad', 60)) - 10)
-    f_rival['fuera'] = False
-    f_rival['entidad'] = 0
-    f_rival['hp'] = max(1, int(f_rival.get('hp_max') or 100))
-    rival.pet_entity_id = None
-    rival.pet_objetivo = None
-    salida = [_ms.quitar(eid_rival), _ms.enlazar(q.entity_id, 0), _ms.armar(f_rival),
-              _cl_pv.aviso('10', tipo=7, msg_id=965)]
-    _r = f_rival.get('ranura')
-    if _r is not None:
-        if getattr(q, 'mascotas', None) is not None:
-            q.mascotas[str(_r)] = f_rival
-        salida.extend(_refrescar(rival, [_r]))
-    try:
-        rival.enviar_inmediato(*salida)
-    except Exception:
-        pass
-    _pr.notificar_mascota_despawn(rival, eid_rival)
-    if getattr(rival, 'usuario', None):
-        cuentas.guardar_mascota(rival.usuario, q.char_id, f_rival, getattr(q, 'mascotas', None))
+    _mascota_muere(rival, f_rival, int(eid_rival),
+                   lambda v: int(pet_eid) if pet_eid else (ses.personaje.entity_id if v is ses else _pr.entidad_de(ses)))
     log.info('la mascota de %s derribo a la de %s', ses.personaje.nombre, q.nombre)
 
 
@@ -12932,36 +12967,13 @@ class Servidor:
                                                     dano_base = max(1, int(round(suyo / 3.5))) if int(f_pet.get('saciedad', 0)) > 100 else suyo
                                                     f_pet['hp'] = max(0, int(f_pet.get('hp', 100)) - dano_base)
                                                     if f_pet['hp'] <= 0:
-                                                        # Si muere la mascota, baja su intimidad (-10 puntos, pero nunca menos de 40 para que no escape) y se guarda
-                                                        import clases as _cl_pm
-                                                        f_pet['intimidad'] = max(40, int(f_pet.get('intimidad', 60)) - 10)
-                                                        f_pet['fuera'] = False
-                                                        f_pet['entidad'] = 0
-                                                        f_pet['hp'] = max(1, int(f_pet.get('hp_max') or 100))
-                                                        ses.pet_entity_id = None
+                                                        # Muere: su animacion y se guarda a los pocos segundos (_mascota_muere).
                                                         ses.pet_objetivo = None
                                                         m.en_combate_con = yo
-                                                        _r_p = f_pet.get('ranura')
-                                                        pkgs_pet_muerte = [
+                                                        ses.enviar_inmediato(
                                                             _cb.numero_de_dano(m.entity_id, pet_eid, suyo, ataque=656, efecto=ef_atk),
-                                                            _cb.numero_flotante(pet_eid, suyo),
-                                                            _ms.quitar(pet_eid),
-                                                            _ms.enlazar(yo, 0),
-                                                            _ms.armar(f_pet),
-                                                            _cl_pm.aviso('10', tipo=7, msg_id=965),
-                                                        ]
-                                                        if _r_p is not None:
-                                                            if getattr(ses.personaje, 'mascotas', None) is not None:
-                                                                ses.personaje.mascotas[str(_r_p)] = f_pet
-                                                            pkgs_pet_muerte.extend(_refrescar(ses, [_r_p]))
-                                                        ses.enviar_inmediato(*pkgs_pet_muerte)
-                                                        # Los paquetes de quitar/desenlazar no contienen
-                                                        # la entidad del monstruo y por eso no pasan por
-                                                        # _espejar. Avisar expresamente a los otros clientes.
-                                                        import presencia as _pr_pet_dead
-                                                        _pr_pet_dead.notificar_mascota_despawn(ses, pet_eid)
-                                                        if getattr(ses, 'usuario', None) and ses.personaje:
-                                                            cuentas.guardar_mascota(ses.usuario, ses.personaje.char_id, f_pet, getattr(ses.personaje, 'mascotas', None))
+                                                            _cb.numero_flotante(pet_eid, suyo))
+                                                        _mascota_muere(ses, f_pet, int(pet_eid), lambda _v, _m=m: _m.entity_id)
                                                     else:
                                                         ses.enviar_inmediato(
                                                             _cb.numero_de_dano(m.entity_id, pet_eid, suyo, ataque=656, efecto=ef_atk),
