@@ -307,7 +307,11 @@ def completar(d):
     ids = {r['id'] for r in rows} | {r['id'] for r in nuevas}
     pd = []
     sig = PRIMER_ID_PD
+    # Las maletas ya no se venden ("quitas esto", 04/11/2026): las que se compraron se siguen abriendo.
+    fuera = {int(e['item']) for e in d.get('excluded', [])}
     for iid, cat in ((cl.ITEM_MALETA_PD_M, CAT_HOMBRE), (cl.ITEM_MALETA_PD_F, CAT_MUJER)):
+        if iid in fuera:
+            continue
         while sig in ids:
             sig += 1
         ids.add(sig)

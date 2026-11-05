@@ -380,6 +380,16 @@
             "item": 3694,
             "name": "Mark Portal Scroll",
             "reason": "Removed from the Mall by user (04/11/2026)"
+        },
+        {
+            "item": 89056,
+            "name": "Random Exotic Costume Suitcase (M)",
+            "reason": "Removed from the Mall by user (04/11/2026)"
+        },
+        {
+            "item": 89057,
+            "name": "Random Exotic Costume Suitcase (F)",
+            "reason": "Removed from the Mall by user (04/11/2026)"
         }
     ],
     "rows": [
@@ -1935,42 +1945,6 @@
             "gift_quantity": 0,
             "price_source": "local: pack de 110 a precio fijo",
             "publication": "pedido del usuario (tools/habilitar_mall_completo.py)"
-        },
-        {
-            "id": 32700,
-            "item": 89056,
-            "flags": 1,
-            "sort": 0,
-            "category": 24,
-            "quantity": 1,
-            "price": 599,
-            "special_price": 0,
-            "duration": 0,
-            "start": "",
-            "end": "",
-            "limit": 0,
-            "gift": 0,
-            "gift_quantity": 0,
-            "price_source": "local: Random Exotic Costume Suitcase (M), 1 de 10 sets PD al azar",
-            "publication": "set PD (tools/habilitar_mall_completo.py)"
-        },
-        {
-            "id": 32701,
-            "item": 89057,
-            "flags": 1,
-            "sort": 0,
-            "category": 25,
-            "quantity": 1,
-            "price": 599,
-            "special_price": 0,
-            "duration": 0,
-            "start": "",
-            "end": "",
-            "limit": 0,
-            "gift": 0,
-            "gift_quantity": 0,
-            "price_source": "local: Random Exotic Costume Suitcase (F), 1 de 10 sets PD al azar",
-            "publication": "set PD (tools/habilitar_mall_completo.py)"
         },
         {
             "id": 824,
