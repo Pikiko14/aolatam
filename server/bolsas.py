@@ -465,9 +465,26 @@ def bolsas_con_cantidades() -> set:
     return _CON_CANTIDADES
 
 
+# BOLSAS CON TABLA PROPIA: {bolsa: [(item, cuantos, peso)]}, en vez de la de su 動態資料1.
+# Christmas Box (3861), la que da Santa Clausula a cada jugador que le pega: los vales que se cambian en Event Overview
+# > Exchange por pestles y ride feed (20 tickets el nivel 3) y por monturas (30 Mount Coins las de nivel 50), en vez
+# del pan y la sopa de la tabla 3806, que comparte con el 8300 (05/11/2026: "que de los items de scroll para cambiar
+# por ride, pestles y mount").
+TICKET_PESTLE, TICKET_RIDE, MOUNT_COIN = 20228, 20229, 89073
+TABLAS_PROPIAS = {
+    3861: [(TICKET_PESTLE, 5, 3000), (TICKET_RIDE, 5, 3000), (MOUNT_COIN, 3, 2000),
+           (4175, 1, 400), (4176, 1, 400), (4177, 1, 400), (4178, 1, 400),     # fuegos artificiales
+           (8197, 1, 100), (8198, 1, 100), (8199, 1, 100), (8200, 1, 100)],    # ropa de Navidad
+}
+
+
 def abrir(item_id: int):
     """Que sale de esa bolsa: (item, cuantos), o None si no se puede abrir."""
     iid = int(item_id or 0)
+    if iid in TABLAS_PROPIAS:
+        clave = 'propia:%d' % iid
+        _TABLA_CACHE[clave] = list(TABLAS_PROPIAS[iid])
+        return _sorteo(clave)
     que = _cargar().get(iid) or _cargar_extra().get(iid)
     if not que:
         return None
