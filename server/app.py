@@ -4112,6 +4112,30 @@ def _cadencia_pet(agilidad, saciada) -> float:
 RANGO_PET_RIVAL = 10      # casillas del dueno a las que la mascota aun va a por el rival
 
 
+def _crianza_tick(ses, ahora):
+    """Cada mascotas.CADA_ESCENA con la mascota fuera (y que aun evolucione), una escena de crianza: el cliente abre
+    el cuadro y la respuesta llega por el 0x003E con 4, 5 o 6 (ver mascotas.paquete_escena)."""
+    import mascotas as _ms_cr
+    p = getattr(ses, 'personaje', None)
+    f = getattr(p, 'mascota', None) if p else None
+    if (not isinstance(f, dict) or not f.get('fuera') or not getattr(ses, 'pet_entity_id', None)
+            or getattr(ses, 'muerto', False) or not _ms_cr.puede_criarse(f)):
+        ses._proxima_crianza = None
+        return
+    prox = getattr(ses, '_proxima_crianza', None)
+    if prox is None:
+        ses._proxima_crianza = ahora + _ms_cr.CADA_ESCENA
+        return
+    if ahora < prox:
+        return
+    ses._proxima_crianza = ahora + _ms_cr.CADA_ESCENA
+    escena = _ms_cr.escena_para(f)
+    if escena:
+        ses.crianza_escena = escena
+        ses.enviar(_ms_cr.paquete_escena(p.entity_id, escena))
+        log.info('crianza: escena %d a %s (%s)', escena, p.nombre, f.get('nombre'))
+
+
 def _rival_de_la_mascota(ses):
     import pvp_liga
     rival = getattr(ses, 'pet_rival', None)
@@ -10836,6 +10860,10 @@ class Servidor:
                 except Exception:
                     log.exception('bonos: error al contar tiempo conectado')
                 _logros_tick(ses)
+                try:
+                    _crianza_tick(ses, time.time())
+                except Exception:
+                    log.exception('crianza de la mascota')
                 yo = p.entity_id
                 sentado = getattr(ses, 'sentado', False)
                 ahora = time.time()
@@ -18059,10 +18087,12 @@ class Servidor:
                 f = getattr(ses.personaje, 'mascota', None)
                 if not f:
                     return
-                # No se sabe QUE escena salio -- el cliente la elige y no la
-                # manda -- asi que se apunta la respuesta y se suma cero.
-                # Para cuadrar el valor habria que ver la escena.
-                _suma, _total = _ms.responder_crianza(f, None, modo)
+                # La escena la eligio el servidor (mascotas.escena_para, en el tic de _crianza_tick): se suma el
+                # 反應值 de la opcion elegida. Sin escena pendiente (un cuadro viejo) suma cero.
+                _esc_id = getattr(ses, 'crianza_escena', None)
+                ses.crianza_escena = None
+                _escena = _ms.situaciones().get(str(_esc_id)) if _esc_id else None
+                _suma, _total = _ms.responder_crianza(f, _escena, modo)
                 ent = f.get('entidad') or ses.personaje.entity_id
                 ses.enviar(_ms.efecto(ses.personaje.entity_id, ent))
                 ses.enviar(_ms.armar(f))

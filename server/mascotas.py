@@ -1627,6 +1627,45 @@ def es_respuesta_crianza(valor: int) -> bool:
     return PRIMERA_OPCION_CRIANZA <= int(valor) <= PRIMERA_OPCION_CRIANZA + 2
 
 
+# QUIEN ABRE EL CUADRO (05/11/2026: "no esta la crianza de mascota, validalo"). No salia nunca: lo pide el SERVIDOR con
+# un 0x001D del jugador, codigo 17 (la entrada 0x4518 de la tabla de 005fbdd0 -> 006080b0), subtipo 12 y el numero de
+# la escena; el cliente la busca en su petaspect.xml (0x58a1c0) y llama a CreateAskAspectWnd con el texto y las tres
+# opciones (petinfo.lua). Cada mascota tiene su tabla de reacciones (反應類別表 de pet.xml, del 1 al 12) y solo le
+# salen las escenas de ese 類型.
+CODIGO_CRIANZA, SUBTIPO_ESCENA = 17, 12
+CADA_ESCENA = 10 * 60          # segundos entre escenas con la mascota fuera
+REACCION = pathlib.Path(__file__).parent / 'plantillas' / 'reaccion_mascota.json'
+_REACCION = {}
+
+
+def tipo_de_reaccion(sprite) -> int:
+    if not _REACCION:
+        try:
+            _REACCION.update({int(k): int(v) for k, v in json.loads(REACCION.read_text(encoding='utf-8')).items()})
+        except Exception:
+            pass
+    return int(_REACCION.get(int(sprite or 0), 0))
+
+
+def puede_criarse(ficha) -> bool:
+    """Solo las que aun evolucionan: a las de ultima etapa la crianza ya no les cambia nada."""
+    d = ficha_de_sprite((ficha or {}).get('sprite'))
+    return bool(d.get('rama1') or d.get('rama2')) and bool(tipo_de_reaccion((ficha or {}).get('sprite')))
+
+
+def escena_para(ficha, rng=None):
+    """Una escena (su numero) del tipo de la mascota, o None."""
+    import random as _r
+    tipo = tipo_de_reaccion((ficha or {}).get('sprite'))
+    escenas = [int(k) for k, v in situaciones().items() if int(v.get('tipo') or 0) == tipo]
+    return (rng or _r).choice(escenas) if escenas else None
+
+
+def paquete_escena(entidad_jugador, escena) -> bytes:
+    return struct.pack('<HIBBII', 0x001D, int(entidad_jugador) & 0xFFFFFFFF, 1, CODIGO_CRIANZA,
+                       SUBTIPO_ESCENA, int(escena))
+
+
 def opcion_de(valor: int) -> int:
     """De 4, 5 o 6 al indice 0, 1 o 2 de la escena."""
     return int(valor) - PRIMERA_OPCION_CRIANZA
