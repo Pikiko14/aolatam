@@ -10341,8 +10341,22 @@ def _ejecutar_proc_subhechizo(ses, yo, m, sub_id: int, addr=None) -> list:
     ef_sec = _cb.efecto_secundario(int(sub_id))
     dur_debuff = int(smag.get('dur_ms') or 0)
 
+    # DANO EN EL TIEMPO (Goring de Spine Shell: HP=-45 cada 作用間隔=2 s durante 10 s). Es un sangrado sobre el que
+    # pego, no un golpe del jugador: mandarlo como 0x000A hacia que el personaje animara un ataque con el efecto que
+    # le tocara (el 148 de Tendon Chop) sin haberlo pedido ("final boss usa tendon chop sin mandarlo", 05/11/2026).
+    _hp_dot = int(float(d_sub.get('HP') or 0))
+    _cada_dot = int(float(d_sub.get('作用間隔') or 0))
+    es_dot = (es_ofensivo and dur_debuff > 0 and _cada_dot > 0 and _hp_dot < 0
+              and str(d_sub.get('HP定義') or '') == '數值' and not int(float(d_sub.get('平均傷害') or 0)))
+
     for bm in blancos_proc:
         if not getattr(bm, 'vivo', False):
+            continue
+        if es_dot:
+            if bm.aplicar_efecto({'magia': int(sub_id), 'dur_ms': dur_debuff, 'hp_tick': _hp_dot,
+                                  'intervalo': _cada_dot, 'nombre': smag.get('nombre', ''),
+                                  'tipo_cuerpo': d_sub.get('體質型') == '是'}):
+                pkgs.append(struct.pack('<HIBBII', 0x001D, bm.entity_id, 1, 4, int(sub_id), dur_debuff))
             continue
         if es_ofensivo:
             dano_p = bm.recibir(atk_pow, es_magico=es_mag_p, mult=mult_p, var_pct=var_p)
