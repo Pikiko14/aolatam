@@ -9538,6 +9538,39 @@ def _receptores_de_buff(ses, magic_id, objetivo, area):
     return [], True
 
 
+# Recastear un buff que el objetivo aun tiene (04/11/2026, "cuando pones aqui las skills las spamea, no toma el
+# cd"): la asistencia automatica del cliente (Auto-use assistant spell) volvia a lanzar Charming Blessing, Fighting
+# Shield o Ferocious Song cada pocos segundos aunque duran 5-10 minutos; su enfriamiento es de 2 s y no lo frenaba.
+# Con mas de esto por delante no se vuelve a lanzar (ni se cobra) y se le recuerda al cliente lo que le queda.
+BUFF_RECAST_MARGEN_S = 30.0
+
+
+def _buff_vigente(ses, magic_id, objetivo, yo):
+    """(entidad, segundos que le quedan) si el objetivo del buff ya lo lleva, o None."""
+    import presencia as _pr_bv
+    ahora = time.time()
+    p = ses.personaje
+    fp = getattr(p, 'mascota', None)
+    peid = getattr(ses, 'pet_entity_id', None) or (fp.get('entidad') if isinstance(fp, dict) else None)
+    if isinstance(fp, dict) and fp.get('fuera') and peid and objetivo and int(objetivo) == int(peid):
+        ent, buffs = int(peid), fp.get('buffs') or {}
+    elif not objetivo or int(objetivo) == int(yo):
+        ent, buffs = yo, getattr(p, 'buffs', None) or {}
+    else:
+        clave = getattr(ses, '_mapa_presencia', None)
+        otro = next((s for s in (_pr_bv._vivas(clave) if clave is not None else [])
+                     if s is not ses and getattr(s, 'personaje', None)
+                     and _pr_bv.entidad_de(s) == int(objetivo)), None)
+        if otro is None:
+            return None
+        ent, buffs = int(objetivo), getattr(otro.personaje, 'buffs', None) or {}
+    b = buffs.get(int(magic_id)) or buffs.get(str(magic_id))
+    if not isinstance(b, dict):
+        return None
+    queda = float(b.get('fin') or 0) - ahora
+    return (ent, queda) if queda > 0 else None
+
+
 _MAPEO_BUFF = (('matk_pct', 'matk_pct'), ('mdef_pct', 'mdef_pct'), ('atk_pct', 'atk_pct'),
                ('def_pct', 'def_pct'), ('hp_pct', 'hp_pct'), ('mp_pct', 'mp_pct'),
                ('mp_to_hp_pct', 'mp_to_hp_pct'), ('move_speed_bonus', 'move_speed_bonus'),
@@ -14350,6 +14383,14 @@ class Servidor:
                         ses.sentado = False
                         ses.enviar(struct.pack('<HIII', 0x000A, yo, 0, 0))
 
+                    if (mag.get('es_buff') and not mag.get('es_transformacion')
+                            and int(mag.get('dur_ms') or 0) > 0 and tipo == tipo_solicitado):
+                        _vig = _buff_vigente(ses, tipo, objetivo, yo)
+                        if _vig and _vig[1] > BUFF_RECAST_MARGEN_S:
+                            log.debug(f"[{addr}] buff {tipo} ({mag.get('nombre')}) NO se recastea: al objetivo "
+                                      f"{_vig[0]} le quedan {_vig[1]:.0f}s")
+                            ses.enviar(struct.pack('<HIBBII', 0x001D, _vig[0], 1, 4, tipo, int(_vig[1] * 1000)))
+                            return
                     if not _puede_pagar(ses, mag, addr):
                         return
                     cost_sp = mag.get('cost_sp', 0)
