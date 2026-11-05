@@ -145,3 +145,16 @@ def test_silencing_chop_hace_dano_y_puede_silenciar(monkeypatch):
                         lambda: 0.0)
     assert pvp_liga.atacar(a, b, 5501, cb.datos_magia(5501), 0)
     assert b.personaje.hp < 5000 and pvp_liga.tiene_estado(b, 'silenciado')
+
+
+def test_el_jugador_puede_pegarle_a_la_mascota_rival(monkeypatch):
+    """"en pvp no puedo darle target a un pet del enemigo"."""
+    reloj = [1000.0]
+    a, b = _par(monkeypatch, reloj)
+    monkeypatch.setattr(app, '_refrescar', lambda *x: [])
+    fb = _con_mascota(b, 1069501, 101, [])
+    assert pvp_liga.mascota_objetivo(a, 1069501) == (b, fb)
+    srv = app.Servidor.__new__(app.Servidor)
+    srv.manejar(a, 0x0005, None, None, 't', struct.pack('<IH', 1069501, 0))
+    assert a.objetivo_actual == 1069501
+    assert fb['hp'] < 3000                                       # el clic ya pega, como con un jugador

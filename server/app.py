@@ -4211,8 +4211,8 @@ def _poder_de_mascota(f_pet, ahora, rng=random):
 
 
 def _danar_mascota_rival(ses, pet_eid, rival, f_rival, eid_rival, dano, sk, ef, magia, anim):
-    """La mascota de `ses` le pega a la de `rival`, que todos ven; si cae, se guarda como al morir contra un
-    monstruo (intimidad -10 sin bajar de 40, vida llena para la proxima)."""
+    """La mascota de `ses` (o el propio `ses` con pet_eid None) le pega a la de `rival`, que todos ven; si cae, se
+    guarda como al morir contra un monstruo (intimidad -10 sin bajar de 40, vida llena para la proxima)."""
     import combate as _cb
     import mascotas as _ms
     import clases as _cl_pv
@@ -4220,14 +4220,18 @@ def _danar_mascota_rival(ses, pet_eid, rival, f_rival, eid_rival, dano, sk, ef, 
     if int(f_rival.get('saciedad', 0)) > 100:
         dano = max(1, int(round(dano / 3.5)))
     f_rival['hp'] = max(0, int(f_rival.get('hp', f_rival.get('hp_max', 100)) or 0) - dano)
-    pkts = [_cb.ataque(int(pet_eid), eid_rival, anim)]
-    if sk:
-        pkts += [_cb.numero_de_dano(int(pet_eid), eid_rival, dano, ataque=sk, efecto=ef, es_magia=magia),
-                 _cb.cierre_de_dano(int(pet_eid), eid_rival, ataque=sk, efecto=ef, es_magia=magia)]
-    pkts.append(_cb.numero_flotante(eid_rival, dano))
-    if f_rival['hp'] > 0:
-        pkts.append(_cb.atributo(eid_rival, _ms.hp_eff(f_rival), _cb.KIND_HP))
     for visor in _pr._vivas(_pr.clave_de_mapa(ses, ses.personaje.stage)):
+        # El que pega: la mascota (su entidad es la misma para todos) o el jugador (la suya para el, la publica
+        # para los demas).
+        a = (int(pet_eid) if pet_eid else
+             (ses.personaje.entity_id if visor is ses else _pr.entidad_de(ses)))
+        pkts = [_cb.ataque(a, eid_rival, anim)]
+        if sk:
+            pkts += [_cb.numero_de_dano(a, eid_rival, dano, ataque=sk, efecto=ef, es_magia=magia),
+                     _cb.cierre_de_dano(a, eid_rival, ataque=sk, efecto=ef, es_magia=magia)]
+        pkts.append(_cb.numero_flotante(eid_rival, dano))
+        if f_rival['hp'] > 0:
+            pkts.append(_cb.atributo(eid_rival, _ms.hp_eff(f_rival), _cb.KIND_HP))
         try:
             (getattr(visor, 'enviar_sin_espejo', None) or visor.enviar)(*pkts)
         except Exception:
@@ -14224,6 +14228,10 @@ class Servidor:
             if _rival is not None and (tipo == _cb.ATAQUE_NORMAL or mag.get('es_ataque')):
                 _pvp.atacar(ses, _rival, tipo, mag, arma_puesta)
                 return
+            _pet_rival_obj = _pvp.mascota_objetivo(ses, objetivo) if objetivo else None
+            if _pet_rival_obj is not None and (tipo == _cb.ATAQUE_NORMAL or mag.get('es_ataque')):
+                _pvp.atacar_mascota(ses, _pet_rival_obj[0], _pet_rival_obj[1], objetivo, tipo, mag, arma_puesta)
+                return
             if es_invocacion:
                 if mag.get('es_clon'):
                     __import__('avatar_clones').lanzar(ses,tipo,mag)
@@ -20314,6 +20322,16 @@ class Servidor:
                     ses.objetivo_actual = ent
                     ses.enviar(_cb0.atributo(ent, _rival.personaje.hp, _cb0.KIND_HP))
                     if pvp_liga.permitido(ses, _rival):
+                        self.manejar(ses, 0x0006, m, d, addr,
+                                     struct.pack('<HI', _cb0.ATAQUE_NORMAL, ent))
+                    return
+                # La mascota de un rival: se fija con su vida, igual que un jugador.
+                _pet_click = pvp_liga.mascota_objetivo(ses, ent)
+                if _pet_click is not None:
+                    import mascotas as _ms_click
+                    ses.objetivo_actual = ent
+                    ses.enviar(_cb0.atributo(ent, _ms_click.hp_eff(_pet_click[1]), _cb0.KIND_HP))
+                    if pvp_liga.permitido(ses, _pet_click[0]):
                         self.manejar(ses, 0x0006, m, d, addr,
                                      struct.pack('<HI', _cb0.ATAQUE_NORMAL, ent))
                     return

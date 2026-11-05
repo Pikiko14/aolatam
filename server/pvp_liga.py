@@ -17,6 +17,61 @@ def objetivo(ses, eid):
     return None
 
 
+def mascota_objetivo(ses, eid):
+    """(dueno, ficha) de la mascota fuera de otro jugador del mapa con esa entidad, o None. Para poder fijarla y
+    pegarle en PvP ("en pvp no puedo darle target a un pet del enemigo", 05/11/2026)."""
+    import presencia
+    p = getattr(ses, 'personaje', None)
+    if not p:
+        return None
+    for otro in presencia._vivas(presencia.clave_de_mapa(ses, p.stage)):
+        if otro is ses or getattr(otro, 'pet_entity_id', None) != int(eid):
+            continue
+        f = getattr(getattr(otro, 'personaje', None), 'mascota', None)
+        if isinstance(f, dict) and f.get('fuera'):
+            return otro, f
+    return None
+
+
+def atacar_mascota(ses, dueno, f_pet, eid, tipo, mag, arma):
+    """El jugador le pega a la mascota del rival (golpe basico o habilidad de ataque). True si pego."""
+    import app, combate, skills, transitable, random, mascotas
+    if not permitido(ses, dueno):
+        return False
+    if tipo != combate.ATAQUE_NORMAL and (not mag.get('es_ataque') or estado_de_control(tipo)):
+        return False
+    p = ses.personaje
+    px, py = int(f_pet.get('x', 0)), int(f_pet.get('y', 0))
+    alcance = combate.alcance_arma(arma) if tipo == combate.ATAQUE_NORMAL else max(1, mag.get('rango', 1))
+    if max(abs(p.tile_x - px), abs(p.tile_y - py)) > alcance + 1:
+        return False
+    if not transitable.linea_libre(p.stage, (p.tile_x, p.tile_y), (px, py)):
+        return False
+    mp, sp = int(mag.get('mp') or 0), int(mag.get('cost_sp') or 0)
+    if p.mp < mp or int(getattr(ses, 'sp', 0) or 0) < sp:
+        return False
+    p.mp -= mp
+    ses.sp = int(getattr(ses, 'sp', 0) or 0) - sp
+    p.sp = ses.sp
+    ses.pet_rival = dueno
+    magia = tipo != combate.ATAQUE_NORMAL and skills.skill_de_magia(tipo) in (1, 2, 3, 4)
+    atk = struct.unpack_from('<I', app._stats_ses(ses), 46 if magia else 26)[0]
+    if not magia and tipo != combate.ATAQUE_NORMAL:
+        atk += int(round(combate.stance_de(tipo) * combate.PESO_STANCE))
+    clave = 'mdef' if magia else 'dfs'
+    dfs = int(f_pet.get(clave, 50) or 0) + int(mascotas.bonos_efectivos(f_pet).get(clave, 0))
+    mult, var_pct = _multiplicador(ses, tipo, mag, magia)
+    if random.random() < _prob_critico(ses):
+        mult *= 1.5
+    dano = max(1, int(dano_pvp(atk, dfs, mult, var_pct, magia=magia)))
+    efecto = combate.efecto_de_ataque(tipo) if tipo != combate.ATAQUE_NORMAL else 0
+    app._danar_mascota_rival(ses, None, dueno, f_pet, int(eid), dano,
+                             tipo if tipo != combate.ATAQUE_NORMAL else 0, efecto, magia, 0)
+    ses.enviar(combate.atributo(p.entity_id, p.mp, combate.KIND_MP),
+               combate.atributo(p.entity_id, ses.sp, combate.KIND_SP))
+    return True
+
+
 def permitido(ses, otro):
     motivo = _por_que_no(ses, otro)
     if motivo:
