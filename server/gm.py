@@ -878,6 +878,12 @@ def sesion_mundo(serv):
 
 
 def ejecutar_linea(serv, linea: str) -> str:
+    # data/gm.txt lo leen dos colas (esta y app._cola_gm) y gana la que llega primero: el aviso de reinicio tiene
+    # que funcionar en las dos, y sin nadie dentro (ver aviso_reinicio.py).
+    partes = linea.strip().lstrip('﻿').lstrip('/').split()
+    if partes and partes[0].lower() in ('reinicio', 'restart'):
+        import aviso_reinicio
+        return 'GM ' + aviso_reinicio.comando(partes)
     parsed = parsear(linea)
     if parsed is None:
         t = linea.strip().lstrip('\ufeff')

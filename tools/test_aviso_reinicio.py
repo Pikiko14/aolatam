@@ -47,3 +47,10 @@ def test_el_comando_gm_se_reconoce_sin_jugador():
     assert app._gm_parsear('reinicio 5') == ('aviso_reinicio', ['reinicio', '5'])
     assert app._gm_parsear('/aviso Hola a todos')[0] == 'notice'      # el de siempre, no se pisa
     assert ar.comando(['reinicio', '999']).startswith('los minutos')
+
+
+def test_la_otra_cola_de_gm_txt_tambien_lo_entiende(monkeypatch):
+    import gm
+    monkeypatch.setattr(ar, 'difundir', lambda t: 0)
+    assert gm.ejecutar_linea(None, 'reinicio cancelar') in ('GM no habia cuenta atras', 'GM cuenta atras cancelada')
+    assert gm.ejecutar_linea(None, '/reinicio 999').startswith('GM los minutos')
