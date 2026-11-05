@@ -3468,6 +3468,26 @@ def emote_de_tarjeta(item_id: int) -> int | None:
 
 EMOTES_BASICOS = frozenset(range(12))  # 0..11 son los emotes basicos de fabrica
 
+# El cliente no usa el numero del emote sino su POSICION en la ventana (emotion.lua: OnUseEmo manda AppData, que es
+# la posicion; las compradas se pintan con game.getemotbyindex). Esta es la tabla posicion -> numero de angel.dat
+# (en 0x91b900, la lee getemotbyindex en 0x649750, que tambien usa el 0x0019). Las tarjetas (表情卡) traen el numero
+# en 動態資料1: Laugh es el 11 y va en la posicion 8; Cheer, el 12, en la 9. MaxEmotionIcon = 34: la ventana
+# ensena hasta la posicion 33.
+EMOTE_POR_POSICION = (0, 1, 2, 3, 4, 5, 6, 7, 11, 12, 20, 22, 8, 9, 10, 13, 14, 15, 16, 17, 18, 19, 21, 23, 24,
+                      25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36)
+POSICIONES_EN_VENTANA = 34
+
+
+def posicion_de_emote(numero):
+    """La posicion (lo que manda y entiende el cliente) del emote con ese numero, o None si la ventana no lo tiene."""
+    if numero is None:
+        return None
+    try:
+        pos = EMOTE_POR_POSICION.index(int(numero))
+    except ValueError:
+        return None
+    return pos if pos < POSICIONES_EN_VENTANA else None
+
 
 def puede_usar_emocion(personaje, emote_id: int) -> bool:
     """True si el personaje tiene acceso a este emote (es basico o fue adquirido mediante item)."""

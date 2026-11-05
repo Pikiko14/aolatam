@@ -19236,14 +19236,18 @@ class Servidor:
             # Items como 3262 (Wait), 3263 (Follow), 3274 (Cry), 3280 (Love), etc.
             # Categoria '表情卡', con el id de emote en '動態資料1'.
             if inv.es_tarjeta_emocion(item_id):
-                emo_id = inv.emote_de_tarjeta(item_id)
+                # La tarjeta trae el NUMERO del emote y el cliente trabaja con su POSICION en la ventana (ver
+                # inventario.EMOTE_POR_POSICION): se guardaba el numero y la ventana no la mostraba o mostraba
+                # otra ("revisa los emojis, algunos no estan funcionando", 05/11/2026).
+                emo_id = inv.posicion_de_emote(inv.emote_de_tarjeta(item_id))
                 if emo_id is None:
-                    emo_id = 0
+                    ses.enviar(_c.aviso("This expression is not available.", tipo=7, msg_id=_c.MSG_TEXTO))
+                    return
                 emotes_actuales = getattr(ses.personaje, 'emotes', None)
                 if emotes_actuales is None:
                     emotes_actuales = set()
                     ses.personaje.emotes = emotes_actuales
-                if emo_id in emotes_actuales:
+                if emo_id in emotes_actuales or emo_id in inv.EMOTES_BASICOS:
                     ses.enviar(_c.aviso("You have already learned this expression.", tipo=7, msg_id=_c.MSG_TEXTO))
                     return
                 _sacar(ses, ranura, 1)
