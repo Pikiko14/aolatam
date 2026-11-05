@@ -119,3 +119,27 @@ def test_el_segundo_buff_sale_al_acabar_la_animacion_del_primero(monkeypatch):
     r.avanzar(a['cast_time'] / 1000.0 + 1.0)
     assert p.mp == 5000 - a['mp'] - b['mp']             # salio sola al acabar la del primero
     assert 203 in p.buffs and 202 in p.buffs
+
+
+def test_bloody_storm_no_queda_en_la_barra_de_buffs(monkeypatch):
+    """"el blody strom aparece como un buff en la barra no deberia salir ya que se usa sube el sp y ya" (05/11/2026)."""
+    r = Reloj()
+    monkeypatch.setattr(app.asyncio, 'get_event_loop', lambda: r)
+    monkeypatch.setattr(app.time, 'time', lambda: r.now)
+    monkeypatch.setattr(app, '_otorgar_skill_exp', lambda *a, **kw: [])
+    dado = []
+    monkeypatch.setattr(app, '_dar_sp', lambda ses, yo, mag, addr='': dado.append(mag['sp_gana']))
+    monkeypatch.setattr(app, '_stats_ses', lambda *a: b'')
+    monkeypatch.setattr(app, '_receptores_de_buff', lambda *a: ([], True))
+    p = login.Personaje(hp=5000, hp_max=5000, mp=5000, mp_max=5000)
+    s = SimpleNamespace(personaje=p, rol='mundo', entity_id=p.entity_id, inventario={}, monstruos={},
+                        usuario=None, muerto=False, enviar=lambda *a: None, enviar_inmediato=lambda *a: None)
+    import skills
+    p.habilidades = [[r, 30] for r in skills.ramas_de_magia(611)]     # lleva la rama (Sword...)
+    srv = app.Servidor.__new__(app.Servidor)
+    assert cb.solo_da_sp(cb.datos_magia(611)) and cb.solo_da_sp(cb.datos_magia(15296))
+    assert not cb.solo_da_sp(cb.datos_magia(202))
+    srv.manejar(s, 0x0006, None, None, 't', struct.pack('<HI', 611, p.entity_id))
+    r.avanzar(3)
+    assert dado == [1000]                               # el SP si se da
+    assert 611 not in (p.buffs or {})                   # pero no se queda como buff

@@ -14842,7 +14842,7 @@ class Servidor:
                                 buff_entry['res_corrosion'] = mag.get('res_poison')
                             if es_target_pet and isinstance(f_pet_cast, dict):
                                 f_pet_cast.setdefault('buffs', {})[tipo] = dict(buff_entry)
-                            elif _a_mi_b:
+                            elif _a_mi_b and not _cb.solo_da_sp(mag):     # Bloody Storm: sube el SP y ya
                                 ses.personaje.buffs[tipo] = buff_entry
                             for _s_b in _otros_b:
                                 try:

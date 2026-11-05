@@ -1024,6 +1024,12 @@ def _cargar_drops_plantilla() -> dict:
 _JEFES = None
 
 
+def solo_da_sp(mag) -> bool:
+    """Bloody Storm / Hot Blooded: dan SP al momento y nada mas (sin 持續時間). No son un buff que se quede en la
+    barra: se guardaban 300 s en personaje.buffs y su icono salia con las stats (05/11/2026)."""
+    return bool(mag) and int(mag.get('sp_gana') or 0) > 0 and int(mag.get('dur_ms') or 0) <= 0
+
+
 def es_jefe(npc_type: int) -> bool:
     """Si ese monstruo es un jefe, segun la columna 王 de content.db.
 
