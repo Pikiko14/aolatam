@@ -1,64 +1,39 @@
-"""La asistencia automatica no recastea un buff que el objetivo aun lleva (04/11/2026)."""
+"""Los buffs solo los frena su propio enfriamiento (05/11/2026): "porque cada 10 seg si dice 2 sec de cooldown".
+
+Hubo un freno extra (no recastear un buff activo durante 10 s) que dejaba a la asistencia automatica reintentando
+sin parar; se quito. Charming Blessing (202) tiene 2 s de enfriamiento: a los 2 s se puede volver a lanzar.
+"""
+import heapq
 import pathlib
+import struct
 import sys
-import time
 from types import SimpleNamespace
 
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(RAIZ / 'server'))
 
 import app  # noqa: E402
-
-YO = 1001
-
-
-def _ses(buffs=None, mascota=None, pet=None):
-    p = SimpleNamespace(buffs=buffs or {}, mascota=mascota)
-    return SimpleNamespace(personaje=p, pet_entity_id=pet)
+import combate as cb  # noqa: E402
+import login  # noqa: E402
 
 
-def test_buff_propio_vigente():
-    s = _ses({202: {'fin': time.time() + 200}})
-    ent, queda = app._buff_vigente(s, 202, YO, YO)
-    assert ent == YO and queda > app.BUFF_RECAST_MARGEN_S
-    assert app._buff_vigente(s, 203, YO, YO) is None
-    assert app._buff_vigente(s, 202, 0, YO)[0] == YO
+class Reloj:
+    def __init__(self):
+        self.now, self.pend, self.n = 1000.0, [], 0
+
+    def call_later(self, demora, fn):
+        self.n += 1
+        heapq.heappush(self.pend, (self.now + demora, self.n, fn))
+
+    def avanzar(self, s):
+        fin = self.now + s
+        while self.pend and self.pend[0][0] <= fin:
+            self.now, _, fn = heapq.heappop(self.pend)
+            fn()
+        self.now = fin
 
 
-def test_buff_a_punto_de_acabar_o_acabado():
-    s = _ses({'702': {'fin': time.time() + 10}, 703: {'fin': time.time() - 5}})
-    assert app._buff_vigente(s, 702, YO, YO)[1] < app.BUFF_RECAST_MARGEN_S
-    assert app._buff_vigente(s, 703, YO, YO) is None
-
-
-def test_buff_de_la_mascota():
-    fp = {'fuera': True, 'entidad': 5000, 'buffs': {703: {'fin': time.time() + 300}}}
-    s = _ses({}, mascota=fp, pet=5000)
-    assert app._buff_vigente(s, 703, 5000, YO)[0] == 5000
-    assert app._buff_vigente(s, 703, YO, YO) is None
-
-
-def test_a_mano_se_refresca_pero_no_en_rafaga(monkeypatch):
-    import heapq
-    import struct
-    import combate as cb
-    import login
-
-    class Reloj:
-        def __init__(self):
-            self.now, self.pend, self.n = 1000.0, [], 0
-
-        def call_later(self, demora, fn):
-            self.n += 1
-            heapq.heappush(self.pend, (self.now + demora, self.n, fn))
-
-        def avanzar(self, s):
-            fin = self.now + s
-            while self.pend and self.pend[0][0] <= fin:
-                self.now, _, fn = heapq.heappop(self.pend)
-                fn()
-            self.now = fin
-
+def test_el_buff_se_relanza_al_acabar_su_enfriamiento(monkeypatch):
     r = Reloj()
     monkeypatch.setattr(app.asyncio, 'get_event_loop', lambda: r)
     monkeypatch.setattr(app.time, 'time', lambda: r.now)
@@ -70,16 +45,17 @@ def test_a_mano_se_refresca_pero_no_en_rafaga(monkeypatch):
     s = SimpleNamespace(personaje=p, rol='mundo', entity_id=p.entity_id, inventario={}, monstruos={},
                         usuario=None, muerto=False, enviar=lambda *a: None, enviar_inmediato=lambda *a: None)
     srv = app.Servidor.__new__(app.Servidor)
-    coste = cb.datos_magia(202)['mp']
+    mag = cb.datos_magia(202)
+    coste, cd = mag['mp'], mag['cd_ms'] / 1000.0
+    assert cd == 2.0
 
-    def lanzar():
+    def lanzar(espera):
         srv.manejar(s, 0x0006, None, None, 't', struct.pack('<HI', 202, p.entity_id))
-        r.avanzar(3)
+        r.avanzar(espera)
 
-    lanzar()
+    lanzar(0.5)
     assert p.mp == 5000 - coste
-    lanzar()                                   # 3 s despues: rafaga, no se cobra
+    lanzar(cd)                       # a los 0,5 s: aun en enfriamiento, no sale
     assert p.mp == 5000 - coste
-    r.avanzar(12)
-    lanzar()                                   # 15 s despues: a mano se refresca
+    lanzar(0.5)                      # pasados los 2 s: sale aunque el buff siga activo
     assert p.mp == 5000 - 2 * coste
