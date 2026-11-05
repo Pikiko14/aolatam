@@ -11830,6 +11830,19 @@ class Servidor:
             ses.inventario = p.inventario
             ses.cantidades = p.cantidades
             ses.oro = p.oro
+            # Los arqueros que recibieron la municion 15000 (no existe) al elegir clase: se cambia por la Feshman
+            # Bullet de verdad (ver clases.regalo).
+            try:
+                import clases as _cl_mun
+                _malas_mun = [r for r, it in list((p.inventario or {}).items()) if int(it or 0) == _cl_mun.MUNICION_VIEJA]
+                for _r_mun in _malas_mun:
+                    p.inventario[_r_mun] = _cl_mun.MUNICION_HONDA
+                    p.cantidades[_r_mun] = _cl_mun.MUNICION_INICIAL
+                if _malas_mun:
+                    _guardar_bolsa(ses, p.char_id)
+                    log.info(f"[{addr}] municion 15000 cambiada por {_cl_mun.MUNICION_INICIAL} Feshman Bullet en {_malas_mun}")
+            except Exception:
+                log.exception('cambio de la municion 15000')
             ses.monstruos = _monstruos_de(p.stage)
             try:
                 _entrar_en_sala(ses, addr)
@@ -17254,6 +17267,9 @@ class Servidor:
             if regalo and getattr(ses, 'inventario', None) is not None:
                 for ranura, item_id in regalo:
                     ses.inventario[int(ranura)] = int(item_id)
+                    if int(item_id) == clases.MUNICION_HONDA:
+                        _cantidades(ses)[int(ranura)] = clases.MUNICION_INICIAL
+                _guardar_bolsa(ses, cid)
                 items_vistos = set()
                 for ranura, item_id in regalo:
                     if item_id not in items_vistos:

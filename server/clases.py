@@ -551,6 +551,11 @@ ETAPA_PIDE_CLASE = 1
 CLASE_POR_SKILL = {9: 7}
 
 
+MUNICION_HONDA = 145            # Feshman Bullet
+MUNICION_INICIAL = 1000
+MUNICION_VIEJA = 15000          # la que no existe; se cambia al entrar (app)
+
+
 def regalo(ids):
     """[(ranura, item_id)] que se entregan al elegir clase.
 
@@ -581,7 +586,10 @@ def regalo(ids):
         # de ARCO y encima nivel 10 pedido con nivel 1) dejaba la mano
         # izquierda incompatible con la derecha desde el minuto uno, y el
         # primer equipo que tocara esas ranuras expulsaba una de las dos.
-        salida.append((4, 15000))  # 小鋼珠 (sling bullet), sin nivel pedido
+        # El 15000 que se daba aqui NO existe en item.xml: el cliente no lo pintaba y el arquero salia sin
+        # municion ("no me dieron los balines para la resortera", 05/11/2026). La de nivel 1 es la Feshman
+        # Bullet (145, 彈藥, sin nivel pedido), y se dan MUNICION_INICIAL (se gastan: FLECHAS_INFINITAS=False).
+        salida.append((4, MUNICION_HONDA))
 
     # Clases de productor: reciben el Freshman Cask, el ride robot basico (ranura montura 10)
     CLASES_PROD = {10, 11, 12, 13, 14, 15, 19, 20}
