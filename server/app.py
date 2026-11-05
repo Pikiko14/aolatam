@@ -1438,8 +1438,8 @@ def _intercambio(ses, addr, opcode, cuerpo):
     import presencia as _pres
     import house_services as _hs_t
     p = ses.personaje
-    if getattr(ses, 'muerto', False):
-        return
+    # Muerto SI puede comerciar: se ignoraban todos sus paquetes y no podia ni aceptar ("cuando estoy muerto no me deja
+    # sentar ni aceptar trade", 05/11/2026). El intercambio no toca ni la vida ni el mapa.
     if opcode == 0x002B and len(cuerpo) >= 4:
         eid = struct.unpack_from('<I', cuerpo, 0)[0]
         otro = _pres.sesion_por_entidad(ses, eid)
@@ -21872,10 +21872,12 @@ class Servidor:
             if accion == 4 and ses.personaje:
                 if getattr(ses, 'puesto', None):
                     return
-                if getattr(ses, 'muerto', False):
+                if getattr(ses, 'muerto', False) and not getattr(ses, 'fantasma', False):
                     # Muerto no se sienta: la respuesta "de pie" (0x000A tipo 0) es la que el cliente usa para
                     # revivir y cierra la ventana de muerte (CloseDeadWnd, 0x005ed1f9). Quedaba con 0 de vida, de
                     # pie y sin opciones al pulsar Escape (01/11/2026).
+                    # Como ALMA si: la ventana ya se cerro al elegir quedarse ("cuando estoy muerto no me deja
+                    # sentar ni aceptar trade", 05/11/2026). No regenera: el tic de vida salta a los muertos.
                     return
                 yo = ses.personaje.entity_id
                 ses.sentado = not getattr(ses, 'sentado', False)
