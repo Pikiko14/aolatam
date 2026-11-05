@@ -486,6 +486,15 @@ def entrar(ses, stage):
     ses._forma_publica = int(ts_yo or 0)
     # El subastador (subastas.py), si es su mapa
     _mandar(ses, *__import__('subastas').presentacion(stage))
+    # RECIEN REVIVIDO: el spawn no basta, el cliente de los demas guarda la muerte de esa entidad y le seguia viendo
+    # tirado en el suelo con la vida llena ("sale disque muerto pero sale vivo", 05/11/2026). Hace falta el estado
+    # sin alma y el 0x000A "de pie", igual que el suyo propio al revivir (y que app._alma_a_los_demas, sin el alma).
+    levantar = ()
+    if getattr(ses, '_revivido', False) and getattr(ses, 'personaje', None) and not getattr(ses, 'muerto', False):
+        ses._revivido = False
+        _pub = entidad_de(ses)
+        levantar = (_cb.atributo(_pub, __import__('supremo').estado(ses.personaje, base=0), _cb.KIND_ESTADO),
+                    struct.pack('<HIII', 0x000A, _pub, 0, 0))
 
     for s in otros:
         if s is ses:
@@ -495,7 +504,7 @@ def entrar(ses, stage):
             _presentar(s, ses)
             continue
         # Presentar a 'ses' ante 's'
-        _mandar(s, yo_spawn, *_vestir(ses), *paquetes_puesto(ses), _vida_publica(ses))
+        _mandar(s, yo_spawn, *_vestir(ses), *paquetes_puesto(ses), _vida_publica(ses), *levantar)
         if ts_yo:
             _mandar(s, _cb.atributo(entidad_de(ses), ts_yo, _cb.KIND_TRANSFORM))
 

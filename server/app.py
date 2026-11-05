@@ -6373,6 +6373,7 @@ def _aplicar_efectos(ses, addr, efectos, motivo=''):
                 p.hp, p.mp = _vida_max(p), _mana_max(p)
                 ses.muerto = False
                 ses.fantasma = False
+                ses._revivido = True             # presencia.entrar: que los demas lo vean levantarse
                 ses.enviar(__import__('supremo').paquete_estado(p),
                            _cb_rb.atributo(p.entity_id, p.hp, _cb_rb.KIND_HP),
                            _cb_rb.atributo(p.entity_id, p.mp, _cb_rb.KIND_MP),
@@ -7990,6 +7991,7 @@ def _usar_pergamino_revivir(ses, addr, ranura, pct):
     p.mp = max(0, _mana_max(p) * pct // 100)
     ses.muerto = False
     ses.fantasma = False
+    ses._revivido = True                 # presencia.entrar: que los demas lo vean levantarse
     _sacar(ses, ranura, 1)
     ses.enviar(*_refrescar(ses, [ranura]),
                __import__('supremo').paquete_estado(p),
@@ -21771,6 +21773,7 @@ class Servidor:
                 p2.stage = getattr(p2, 'checkpoint_stage', 0) or 41
                 p2.tile_x, p2.tile_y = rev_x, rev_y
                 ses.muerto = False
+                ses._revivido = True             # presencia.entrar (al cargar el mapa): que los demas lo vean de pie
                 if getattr(ses, 'fantasma', False):
                     import combate as _cb_fx
                     ses.fantasma = False
