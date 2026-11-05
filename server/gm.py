@@ -472,7 +472,7 @@ def _pet(ses, args) -> tuple:
         return 'no pet in the bag', []
     ramas = {'1': 'mean', 'mean': 'mean', '2': 'nice', 'nice': 'nice'}
     if sub in ('crianza', 'aspect', 'escena'):
-        # /pet crianza: un cuadro de crianza YA, para probarlo (app._crianza_tick lo manda solo cada 5 min).
+        # /pet crianza: un cuadro de crianza YA, para probarlo (sale solo al subir de nivel la mascota).
         p = ses.personaje
         if not (isinstance(getattr(p, 'mascota', None), dict) and p.mascota.get('fuera')):
             return 'take your pet out first', []

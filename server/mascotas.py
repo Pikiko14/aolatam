@@ -1555,6 +1555,10 @@ def dar_exp(ficha: dict, cantidad: int, ahora=None, nivel_dueno: int = None) -> 
     ficha['exp_max'] = exp_para_subir(ficha.get('nivel', 1), sp)
     if subidos:
         nv = ficha['nivel']
+        # Un cuadro de crianza por cada subida (05/11/2026: "cada que sube 1 lvl pide seleccionar 1 de esto y
+        # dependiendo de la crianza sale x pet"): lo manda app._crianza_tick con la mascota fuera.
+        if puede_criarse(ficha):
+            ficha['escenas_pendientes'] = int(ficha.get('escenas_pendientes', 0) or 0) + subidos
         # Comprobar evolucion en nivel 15 SOLO para huevos (原型 -> 初階)
         if evoluciona(ficha.get('sprite')):
             etapa = ficha_de_sprite(ficha.get('sprite')).get('etapa')
@@ -1633,8 +1637,7 @@ def es_respuesta_crianza(valor: int) -> bool:
 # opciones (petinfo.lua). Cada mascota tiene su tabla de reacciones (反應類別表 de pet.xml, del 1 al 12) y solo le
 # salen las escenas de ese 類型.
 CODIGO_CRIANZA, SUBTIPO_ESCENA = 17, 12
-CADA_ESCENA = 5 * 60           # segundos entre escenas con la mascota fuera
-PRIMERA_ESCENA = 60            # la primera, al minuto de sacarla (con 10 min no llegaba a verse: "sigue sin funcionar")
+MAX_ESCENAS_PENDIENTES = 3     # si sube varios niveles de golpe, no mas de tres cuadros seguidos
 REACCION = pathlib.Path(__file__).parent / 'plantillas' / 'reaccion_mascota.json'
 _REACCION = {}
 

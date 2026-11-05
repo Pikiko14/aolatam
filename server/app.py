@@ -4113,27 +4113,26 @@ RANGO_PET_RIVAL = 10      # casillas del dueno a las que la mascota aun va a por
 
 
 def _crianza_tick(ses, ahora):
-    """Cada mascotas.CADA_ESCENA con la mascota fuera (y que aun evolucione), una escena de crianza: el cliente abre
-    el cuadro y la respuesta llega por el 0x003E con 4, 5 o 6 (ver mascotas.paquete_escena)."""
+    """Un cuadro de crianza por cada nivel que sube la mascota (mascotas.dar_exp apunta 'escenas_pendientes'): el
+    cliente lo abre y la respuesta llega por el 0x003E con 4, 5 o 6 (ver mascotas.paquete_escena). Uno cada vez, y
+    el siguiente cuando se haya contestado el anterior."""
     import mascotas as _ms_cr
     p = getattr(ses, 'personaje', None)
     f = getattr(p, 'mascota', None) if p else None
     if (not isinstance(f, dict) or not f.get('fuera') or not getattr(ses, 'pet_entity_id', None)
-            or getattr(ses, 'muerto', False) or not _ms_cr.puede_criarse(f)):
-        ses._proxima_crianza = None
+            or getattr(ses, 'muerto', False)):
         return
-    prox = getattr(ses, '_proxima_crianza', None)
-    if prox is None:
-        ses._proxima_crianza = ahora + _ms_cr.PRIMERA_ESCENA
-        return
-    if ahora < prox:
-        return
-    ses._proxima_crianza = ahora + _ms_cr.CADA_ESCENA
+    pend = min(_ms_cr.MAX_ESCENAS_PENDIENTES, int(f.get('escenas_pendientes', 0) or 0))
+    if pend <= 0 or (getattr(ses, 'crianza_escena', None) and ahora - getattr(ses, '_crianza_en', 0) < 120):
+        return                 # (un cuadro sin contestar en 2 min, cerrado con la X, no bloquea los siguientes)
+    f['escenas_pendientes'] = pend - 1
     escena = _ms_cr.escena_para(f)
     if escena:
         ses.crianza_escena = escena
+        ses._crianza_en = ahora
         ses.enviar(_ms_cr.paquete_escena(p.entity_id, escena))
-        log.info('crianza: escena %d a %s (%s)', escena, p.nombre, f.get('nombre'))
+        log.info('crianza: escena %d a %s (%s, nivel %s, crianza %d)', escena, p.nombre, f.get('nombre'),
+                 f.get('nivel'), int(f.get('crianza', 0)))
 
 
 def _rival_de_la_mascota(ses):

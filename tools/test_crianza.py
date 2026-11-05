@@ -33,16 +33,22 @@ def test_las_escenas_son_del_tipo_de_la_mascota():
     assert ms.situaciones()[str(esc)]['tipo'] == tipo
 
 
-def test_sale_el_cuadro_y_la_respuesta_suma_su_valor():
+def test_al_subir_de_nivel_sale_el_cuadro_y_la_respuesta_suma_su_valor():
+    """"cada que se sube 1 lvl pide seleccionar 1 de esto y dependiendo de la crianza sale x pet"."""
     s, f = _ses()
-    app._crianza_tick(s, 1000.0)                                  # arranca el reloj
-    assert not s.recibido
-    app._crianza_tick(s, 1000.0 + ms.PRIMERA_ESCENA)
+    f.update({'nivel': 3, 'exp': 0})
+    app._crianza_tick(s, 1000.0)
+    assert not s.recibido                                          # sin subir de nivel, nada
+    assert ms.dar_exp(f, ms.exp_para_subir(3, HUEVO_ELFO)) == 1
+    app._crianza_tick(s, 1001.0)
     esc = s.crianza_escena
     assert [x for x in s.recibido if x == struct.pack('<HIBBII', 0x001D, s.personaje.entity_id, 1, 17, 12, esc)]
     valor = ms.situaciones()[str(esc)]['opciones'][0]['valor']
     app.Servidor.__new__(app.Servidor).manejar(s, 0x003E, None, None, 't', bytes([4]))
     assert f['crianza'] == valor and s.crianza_escena is None
+    s.recibido.clear()
+    app._crianza_tick(s, 1002.0)
+    assert not s.recibido                                          # uno por nivel
 
 
 def test_comando_gm_pide_una_escena_ya():
