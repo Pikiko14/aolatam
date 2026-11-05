@@ -712,6 +712,20 @@ def _tope_bolsa(bolsa) -> int:
     return PROP_EXTRA[-1]
 
 
+def _falta_requisito(ses, item_id, ranura):
+    """Nivel y rama que pide item.xml para equipar (inventario.falta_requisito), o None. La mascota (558) no: su
+    等級限制 es otra cosa."""
+    p = getattr(ses, 'personaje', None)
+    if p is None or int(ranura) == 558:
+        return None
+    try:
+        import inventario as _inv_rq
+        return _inv_rq.falta_requisito(item_id, getattr(p, 'nivel', 1), getattr(p, 'habilidades', None))
+    except Exception:
+        log.exception('requisitos del item %s', item_id)
+        return None
+
+
 def _ranura_libre(bolsa, desde=20, hasta=None):
     """Primera casilla vacia de la mochila o rango, o None si esta llena."""
     if hasta is not None:
@@ -17398,6 +17412,11 @@ class Servidor:
                     import clases as _clf
                     ses.enviar(_clf.aviso("Unable to equip the equipment.", tipo=0), *_refrescar(ses, [org]))
                     return
+                _falta = _falta_requisito(ses, it_org, dst)
+                if _falta:
+                    import clases as _clf
+                    ses.enviar(_clf.aviso(_falta, tipo=0), *_refrescar(ses, [org]))
+                    return
             # Si equipa un arma/municion en la 3 o 4 incompatible con la otra mano
             # (ej. Staff/Spear con escudo, o Arco con escudo en vez de flechas, o Honda con flechas en vez de bolitas),
             # desequipar la otra mano a la mochila conservando su cantidad.
@@ -17441,6 +17460,11 @@ class Servidor:
                     if not inv.puede_equipar(it_dst, cid, estado_dst):
                         import clases as _clf
                         ses.enviar(_clf.aviso("Unable to equip the equipment.", tipo=0), *_refrescar(ses, [org, dst]))
+                        return
+                    _falta = _falta_requisito(ses, it_dst, org)
+                    if _falta:
+                        import clases as _clf
+                        ses.enviar(_clf.aviso(_falta, tipo=0), *_refrescar(ses, [org, dst]))
                         return
                 # Intercambio (swap) entre ranuras ocupadas
                 bolsa[org] = it_dst
@@ -19047,6 +19071,11 @@ class Servidor:
                 if not inv.puede_equipar(item_id, cid, estado_org):
                     import clases as _clf_e
                     ses.enviar(_clf_e.aviso("Unable to equip the equipment.", tipo=0))
+                    return
+                _falta = _falta_requisito(ses, item_id, eq_slot)
+                if _falta:
+                    import clases as _clf_e
+                    ses.enviar(_clf_e.aviso(_falta, tipo=0), *_refrescar(ses, [ranura]))
                     return
                 _tiene_finesse = any((h[0] if isinstance(h, (list, tuple)) else h) == 16 for h in (getattr(ses.personaje, 'habilidades', None) or []))
                 # Si es un arma dual de fashion y 169 ya esta ocupado pero 170 esta libre:

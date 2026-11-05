@@ -1436,6 +1436,41 @@ def puede_equipar(item_id: int, char_id: int, estado: dict = None) -> bool:
     return restantes > 0
 
 
+def falta_requisito(item_id, nivel, habilidades):
+    """Por que el personaje no puede ponerse la prenda, o None si cumple (04/11/2026: "podia equiparme el escudo sin
+    tener la skill SHIELD y sin tener el nivel requerido"). Lo dice item.xml:
+      等級限制           nivel del personaje
+      技能限制1..5      ramas que valen (basta una) ...
+      技能等限           ... con al menos ese nivel de rama
+    `habilidades` como Personaje.habilidades: (rama, nivel, xp) o solo la rama."""
+    import house_services
+    fila = house_services.xml_rows('item.xml').get(int(item_id)) or {}
+
+    def entero(col):
+        try:
+            return int(fila.get(col) or 0)
+        except ValueError:
+            return 0
+
+    req_nivel = entero('等級限制')
+    if req_nivel and int(nivel or 0) < req_nivel:
+        return 'You need to be level %d to equip this item.' % req_nivel
+    ramas = {entero('技能限制%d' % i) for i in range(1, 6)} - {0}
+    if ramas:
+        req_rama = entero('技能等限')
+        tengo = 0
+        for h in habilidades or ():
+            sid = h[0] if isinstance(h, (list, tuple)) else h
+            nv = int(h[1]) if isinstance(h, (list, tuple)) and len(h) > 1 else 1
+            if int(sid) in ramas:
+                tengo = max(tengo, nv)
+        if tengo == 0:
+            return "You don't have the skill required to equip this item."
+        if tengo < req_rama:
+            return 'Your skill level must be %d to equip this item.' % req_rama
+    return None
+
+
 def puede_transferir(item_id, estado=None) -> bool:
     """Si el objeto puede cambiar de dueno (intercambio, puesto o subasta): ni intransferible (不可交易) ni con sus
     "residual times" (綁定次數) gastados. Cada dueno nuevo que se lo equipa gasta una (vincular_equipo); con 0 queda
