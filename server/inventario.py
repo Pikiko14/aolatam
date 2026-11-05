@@ -1277,6 +1277,32 @@ _SLOT_CACHE = None
 _PET_SPRITE_CACHE = {}
 _PET_DATOS = {}
 
+_INDICES_LISTOS = False
+
+
+def asegurar_indices(con) -> bool:
+    """Un indice por id en cada tabla de items de content.db (05/11/2026). No tenian ninguno y cada busqueda
+    recorria hasta 120.000 filas: al cargar las misiones (676 items) el servidor se quedaba congelado 7-9 s y a quien
+    entraba en ese momento se le quedaba la pantalla negra ("cuando me logueo se queda la pantalla negra mucho rato,
+    a veces voy a atacar y se queda pegado"). Se crean una vez; si la base no se puede escribir, se sigue sin ellos."""
+    global _INDICES_LISTOS
+    if _INDICES_LISTOS:
+        return True
+    try:
+        for tabla in TABLAS_ITEM:
+            try:
+                con.execute('create index if not exists "idx_%s_id" on "%s"(id)' % (tabla, tabla))
+            except Exception as e:
+                if 'no such table' not in str(e):
+                    raise
+        con.commit()
+        _INDICES_LISTOS = True
+    except Exception:
+        log.warning('no se pudieron crear los indices de content.db (las busquedas de items iran lentas)', exc_info=True)
+        _INDICES_LISTOS = True          # no reintentarlo en cada busqueda
+    return _INDICES_LISTOS
+
+
 def fila_item(con, columnas: str, item_id: int):
     """Busca un item en TODAS las tablas de items, no solo en la primera.
 
@@ -1284,6 +1310,8 @@ def fila_item(con, columnas: str, item_id: int):
     Consultando solo `item`, cualquier cosa de un update posterior quedaba
     como si no existiera: sin ranura, sin peso y sin bonos.
     """
+    if not _INDICES_LISTOS:
+        asegurar_indices(con)
     for tabla in TABLAS_ITEM:
         try:
             fila = con.execute(

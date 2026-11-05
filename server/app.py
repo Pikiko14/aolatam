@@ -752,6 +752,30 @@ def _avisar_enfriamiento(ses, yo, magic_id, segundos, ahora):
         log.debug('aviso de enfriamiento', exc_info=True)
 
 
+def _precalentar():
+    """Lo que se cargaba la primera vez que alguien lo usaba se carga ahora al arrancar, antes de abrir los puertos
+    (05/11/2026): las misiones tardaban 7-9 s y congelaban el servidor entero al primero que entraba despues de un
+    reinicio (pantalla negra, ataques pegados). Si algo falla aqui se cargara luego, como antes."""
+    t0 = time.time()
+    hecho = []
+    for nombre, f in (
+            ('indices de items', lambda: __import__('inventario').fila_item(
+                __import__('sqlite3').connect(pathlib.Path(__file__).parent.parent / 'corpus' / 'content.db'),
+                'id', 1)),
+            ('misiones', lambda: __import__('misiones')._cargar_db()),
+            ('item.xml', lambda: __import__('house_services').xml_rows('item.xml')),
+            ('monster.xml', lambda: __import__('house_services').xml_rows('monster.xml')),
+            ('magias', lambda: __import__('combate').datos_magia(1)),
+            # Lyceum, las ciudades y Palm Base: sacar sus monstruos la primera vez costaba ~0,5 s cada uno.
+            ('mapas de entrada', lambda: [_monstruos_de(st) for st in (41, 3, 26, 29, 38, 87, 88)])):
+        try:
+            f()
+            hecho.append(nombre)
+        except Exception:
+            log.warning('precalentar %s', nombre, exc_info=True)
+    log.info('precargado al arrancar en %.1fs: %s', time.time() - t0, ', '.join(hecho))
+
+
 def _ranura_libre(bolsa, desde=20, hasta=None):
     """Primera casilla vacia de la mochila o rango, o None si esta llena."""
     if hasta is not None:
@@ -22315,6 +22339,7 @@ class Servidor:
             log.info(f"grabaciones antiguas borradas: {_n_purga} archivos")
         if not _grabador.ACTIVO:
             log.info("grabacion de sesiones apagada (AO_GRABAR=0)")
+        _precalentar()
         srv = await asyncio.start_server(
             functools.partial(self.cliente, rol='login'), self.host, self.port)
         log.info(f"servidor de LOGIN en {self.host}:{self.port}")
