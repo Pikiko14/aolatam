@@ -17802,6 +17802,19 @@ class Servidor:
                 bolsa.pop(dst, None)
             if dst in bolsa and bolsa[dst]:
                 it_dst = bolsa[dst]
+                # JUNTAR: el mismo objeto apilable encima de su monton se suma, no se intercambia ("los items deja
+                # separarlos pero no juntarlos", 05/11/2026: 57 'swap' del mismo objeto en el log del VPS).
+                if (org != dst and int(it_dst) == int(it_org) and inv.es_apilable(it_org)
+                        and not inv.es_equipo(org) and not inv.es_equipo(dst)):
+                    _junto = _cant_de(ses, org)
+                    _cantidades(ses)[dst] = _cant_de(ses, dst) + _junto
+                    _sacar(ses, org, _junto)
+                    ses.enviar(*_refrescar(ses, [org, dst]))
+                    if ses.personaje:
+                        _guardar_bolsa(ses, ses.personaje.char_id)
+                    log.info(f"[{addr}] juntadas {_junto} de {it_org}: casilla {org} -> {dst} "
+                             f"({_cant_de(ses, dst)})")
+                    return
                 if not inv.es_ranura_valida(it_dst, org):
                     log.warning(f"[{addr}] swap {org} <-> {dst}: ranura {org} no valida para item {it_dst}")
                     ses.enviar(*_refrescar(ses, [org, dst]))
