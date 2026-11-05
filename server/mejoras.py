@@ -647,8 +647,23 @@ def tirar_verde(rangos, todos: bool = False, rng=None):
     return out
 
 
+# RIESGO DE PERDER LA PIEZA (05/11/2026): "cuando falla un ride feed normal, no un lucky, o un pestle normal, no un
+# lucky, luego de +3 si falla hay chance de que se pierda el item, el chance sea 30". Solo los que se llaman asi a
+# secas: los Lucky y los de bendicion (祝福) siguen sin romper nada.
+NOMBRES_NORMALES = ('Pestle', 'Ride Feed')
+PROB_PERDER = 0.30
+NIVEL_RIESGO = 3              # se arriesga al fallar el paso de +3 a +4 y los siguientes
+PERDIDA = 'la pieza se perdio'
+
+
+def es_normal(item_id) -> bool:
+    f = _fila(item_id)
+    return bool(f) and str(f[0] or '').strip() in NOMBRES_NORMALES
+
+
 def aplicar(estado: dict, ranura, item_id, nivel_equipo: int, tipo: str,
-            exito_seguro: bool = False, rng=None, bono_cuarta_mejora: float = 0.0):
+            exito_seguro: bool = False, rng=None, bono_cuarta_mejora: float = 0.0,
+            prob_perder: float = 0.0):
     """Usa un objeto de mejora sobre la pieza de esa ranura.
 
     `estado` es el diccionario de mejoras del personaje, {ranura: {...}}. Se
@@ -685,6 +700,8 @@ def aplicar(estado: dict, ranura, item_id, nivel_equipo: int, tipo: str,
         #     exito -> +7
         #     FALLO
         # Si el fallo no restara, el segundo exito habria dado +7.
+        if prob_perder and st['veces'] >= NIVEL_RIESGO and rng.random() < prob_perder:
+            return False, PERDIDA
         st['veces'] = max(0, st['veces'] - 1)
         return False, 'la mejora fallo y bajo a +%d' % st['veces']
     st['veces'] += 1

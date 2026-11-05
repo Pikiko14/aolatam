@@ -2972,7 +2972,8 @@ def _usar_mejora(ses, addr, ranura, objetivo) -> bool:
     else:
         ok, msg = _mj.aplicar(p.mejoras, objetivo, item, nivel_pieza, tipo,
                               exito_seguro=seguro,
-                              bono_cuarta_mejora=blessing.get('enhance_fourth_pct', 0) / 100.0)
+                              bono_cuarta_mejora=blessing.get('enhance_fourth_pct', 0) / 100.0,
+                              prob_perder=_mj.PROB_PERDER if _mj.es_normal(item) else 0.0)
         _logros_contar(ses, 'mejora_ok' if ok else 'mejora_fallo', addr=addr)
 
     nombre = _nombre_item(pieza)
@@ -3017,6 +3018,19 @@ def _usar_mejora(ses, addr, ranura, objetivo) -> bool:
     else:
         ses.inventario.pop(ranura, None)
         ses.cantidades.pop(ranura, None)
+
+    # La pieza se perdio (Pestle o Ride Feed normal que falla desde +3, ver mejoras.PROB_PERDER).
+    if not ok and msg == _mj.PERDIDA:
+        ses.inventario.pop(objetivo, None)
+        ses.cantidades.pop(objetivo, None)
+        (p.mejoras or {}).pop(objetivo, None)
+        cartel = _cl.aviso('%s failed to intensify and was destroyed.' % nombre, tipo=7, msg_id=_cl.MSG_TEXTO)
+        if _iv.es_equipo(objetivo):
+            try:
+                import presencia as _pr_mj
+                _pr_mj.notificar_equipo(ses)
+            except Exception:
+                log.debug('notificar equipo tras perder pieza', exc_info=True)
 
     salida = list(_refrescar(ses, [objetivo]))
     salida.append(cartel)
