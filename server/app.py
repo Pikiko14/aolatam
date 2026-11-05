@@ -4136,8 +4136,17 @@ def _pet_contra_rival(ses, f_pet, pet_eid, ahora) -> bool:
     if rival is None:
         return False
     q = rival.personaje
+    # MASCOTA CONTRA MASCOTA: si el rival lleva la suya fuera y cerca, va a por ella ("no atacan entre si en pvp
+    # si hay 2 pet", 05/11/2026).
+    f_rival = getattr(q, 'mascota', None)
+    eid_rival = getattr(rival, 'pet_entity_id', None)
+    contra_pet = (isinstance(f_rival, dict) and f_rival.get('fuera') and eid_rival
+                  and max(abs(int(f_rival.get('x', q.tile_x)) - q.tile_x),
+                          abs(int(f_rival.get('y', q.tile_y)) - q.tile_y)) <= RANGO_PET_RIVAL)
+    tx, ty = ((int(f_rival.get('x', q.tile_x)), int(f_rival.get('y', q.tile_y))) if contra_pet
+              else (q.tile_x, q.tile_y))
     px, py = int(f_pet.get('x', 0)), int(f_pet.get('y', 0))
-    dist = max(abs(q.tile_x - px), abs(q.tile_y - py))
+    dist = max(abs(tx - px), abs(ty - py))
     if dist <= 2:
         b_star, b_bf = _ms.bonos_efectivos(f_pet), _ms.bonos_buffs(f_pet)
         saciada = int(f_pet.get('saciedad', 0)) > 100
@@ -4146,10 +4155,22 @@ def _pet_contra_rival(ses, f_pet, pet_eid, ahora) -> bool:
             return True
         f_pet['ultimo_ataque'] = ahora
         atk = int(f_pet.get('atk', 100)) + int(b_star.get('atk', 0)) + int(b_bf.get('atk', 0))
-        dfs = struct.unpack_from('<I', _stats_ses(rival), 38)[0]
-        dano = pvp_liga.dano_pvp(atk, dfs, _cb.MULT_DANO_MASCOTA, 0.03)
-        dano = max(1, int(round(dano * pvp_liga.mitigacion(rival, False))))
-        pvp_liga._aplicar(ses, rival, dano, False, True, _cb.ATAQUE_NORMAL, 0, False, origen_eid=int(pet_eid))
+        matk = int(f_pet.get('matk', 100)) + int(b_star.get('matk', 0)) + int(b_bf.get('matk', 0))
+        # SUS PODERES, como contra los monstruos: el 65% de las veces uno de ataque que no este en enfriamiento
+        # ("los pet no lanzan poderes", 05/11/2026). Antes contra jugadores solo daba el golpe basico.
+        sk, ef, magia = _poder_de_mascota(f_pet, ahora)
+        poder = matk if magia else atk
+        if contra_pet:
+            r_star = _ms.bonos_efectivos(f_rival)
+            dfs = int(f_rival.get('mdef' if magia else 'dfs', 50)) + int(r_star.get('mdef' if magia else 'dfs', 0))
+            dano = pvp_liga.dano_pvp(poder, dfs, _cb.MULT_DANO_MASCOTA, 0.03, magia=magia)
+            _danar_mascota_rival(ses, pet_eid, rival, f_rival, int(eid_rival), max(1, int(dano)), sk, ef, magia,
+                                 _cb.anim_de_monstruo(f_pet.get('nombre', '')))
+            return True
+        dfs = struct.unpack_from('<I', _stats_ses(rival), 54 if magia else 38)[0]
+        dano = pvp_liga.dano_pvp(poder, dfs, _cb.MULT_DANO_MASCOTA, 0.03, magia=magia)
+        dano = max(1, int(round(dano * pvp_liga.mitigacion(rival, magia))))
+        pvp_liga._aplicar(ses, rival, dano, False, True, sk or _cb.ATAQUE_NORMAL, ef, magia, origen_eid=int(pet_eid))
         return True
     if ahora < f_pet.get('proximo_paso', 0):
         return True
@@ -4167,6 +4188,74 @@ def _pet_contra_rival(ses, f_pet, pet_eid, ahora) -> bool:
     ses.enviar(mv)
     _pr.notificar_mascota_movimiento(ses, pet_eid, mv)
     return True
+
+
+PROB_PODER_PET = 0.65      # la misma que contra monstruos
+
+
+def _poder_de_mascota(f_pet, ahora, rng=random):
+    """(magic_id, efecto, es_magia) del poder que lanza ahora la mascota, o (0, 0, False) para el golpe basico.
+    Apunta el enfriamiento del poder en f_pet['cd_skills']."""
+    import combate as _cb
+    import mascotas as _ms
+    sks = f_pet.get('skills') or list(_ms.skills_de(f_pet.get('sprite', 3001), int(f_pet.get('nivel', 1))))
+    cd = f_pet.setdefault('cd_skills', {})
+    cands = [int(s) for s in sks if s and int(s) > 0 and ahora >= cd.get(int(s), 0)
+             and _cb.datos_magia(int(s)).get('es_ataque')]
+    if not cands or rng.random() >= PROB_PODER_PET:
+        return 0, 0, False
+    sk = rng.choice(cands)
+    d = _cb.datos_magia(sk)
+    cd[sk] = ahora + max(1000, int(d.get('cd_ms') or 2000)) / 1000.0
+    return sk, int(d.get('efecto') or 101), bool(d.get('es_magia_visual'))
+
+
+def _danar_mascota_rival(ses, pet_eid, rival, f_rival, eid_rival, dano, sk, ef, magia, anim):
+    """La mascota de `ses` le pega a la de `rival`, que todos ven; si cae, se guarda como al morir contra un
+    monstruo (intimidad -10 sin bajar de 40, vida llena para la proxima)."""
+    import combate as _cb
+    import mascotas as _ms
+    import clases as _cl_pv
+    import presencia as _pr
+    if int(f_rival.get('saciedad', 0)) > 100:
+        dano = max(1, int(round(dano / 3.5)))
+    f_rival['hp'] = max(0, int(f_rival.get('hp', f_rival.get('hp_max', 100)) or 0) - dano)
+    pkts = [_cb.ataque(int(pet_eid), eid_rival, anim)]
+    if sk:
+        pkts += [_cb.numero_de_dano(int(pet_eid), eid_rival, dano, ataque=sk, efecto=ef, es_magia=magia),
+                 _cb.cierre_de_dano(int(pet_eid), eid_rival, ataque=sk, efecto=ef, es_magia=magia)]
+    pkts.append(_cb.numero_flotante(eid_rival, dano))
+    if f_rival['hp'] > 0:
+        pkts.append(_cb.atributo(eid_rival, _ms.hp_eff(f_rival), _cb.KIND_HP))
+    for visor in _pr._vivas(_pr.clave_de_mapa(ses, ses.personaje.stage)):
+        try:
+            (getattr(visor, 'enviar_sin_espejo', None) or visor.enviar)(*pkts)
+        except Exception:
+            pass
+    if f_rival['hp'] > 0:
+        return
+    q = rival.personaje
+    f_rival['intimidad'] = max(40, int(f_rival.get('intimidad', 60)) - 10)
+    f_rival['fuera'] = False
+    f_rival['entidad'] = 0
+    f_rival['hp'] = max(1, int(f_rival.get('hp_max') or 100))
+    rival.pet_entity_id = None
+    rival.pet_objetivo = None
+    salida = [_ms.quitar(eid_rival), _ms.enlazar(q.entity_id, 0), _ms.armar(f_rival),
+              _cl_pv.aviso('10', tipo=7, msg_id=965)]
+    _r = f_rival.get('ranura')
+    if _r is not None:
+        if getattr(q, 'mascotas', None) is not None:
+            q.mascotas[str(_r)] = f_rival
+        salida.extend(_refrescar(rival, [_r]))
+    try:
+        rival.enviar_inmediato(*salida)
+    except Exception:
+        pass
+    _pr.notificar_mascota_despawn(rival, eid_rival)
+    if getattr(rival, 'usuario', None):
+        cuentas.guardar_mascota(rival.usuario, q.char_id, f_rival, getattr(q, 'mascotas', None))
+    log.info('la mascota de %s derribo a la de %s', ses.personaje.nombre, q.nombre)
 
 
 def _velocidad_seguir_pet(ses, propia, distancia) -> int:

@@ -86,3 +86,45 @@ def test_la_mascota_va_a_por_el_jugador_que_ataca_el_dueno(monkeypatch):
     vida = b.personaje.hp
     assert app._pet_contra_rival(a, f_pet, a.pet_entity_id, reloj[0])
     assert b.personaje.hp == vida and (f_pet['x'], f_pet['y']) != (106, 106)
+
+
+def _con_mascota(s, eid, x, skills):
+    f = {'fuera': True, 'x': x, 'y': 101, 'atk': 800, 'matk': 800, 'dfs': 50, 'mdef': 50, 'agilidad': 15,
+         'saciedad': 50, 'nombre': 'Ape', 'hp': 3000, 'hp_max': 3000, 'skills': skills, 'ranura': 30}
+    s.pet_entity_id = eid
+    s.personaje.mascota = f
+    s.personaje.mascotas = {'30': f}
+    return f
+
+
+def test_la_mascota_usa_sus_poderes_contra_jugadores(monkeypatch):
+    """"los pet no lanzan poderes"."""
+    reloj = [1000.0]
+    a, b = _par(monkeypatch, reloj)
+    f = _con_mascota(a, 1069500, 100, [601])                    # Slicing Hit I
+    monkeypatch.setattr(app.random, 'random', lambda: 0.0)
+    pvp_liga.atacar(a, b, cb.ATAQUE_NORMAL, {}, 0)
+    a.recibido.clear()
+    reloj[0] += 2
+    app._pet_contra_rival(a, f, 1069500, reloj[0])
+    golpes = [x for x in a.recibido if x[:2] == struct.pack('<H', 0x000B)]
+    assert any(struct.unpack_from('<H', x, 10)[0] == 601 for x in golpes) or 601 in f['cd_skills']
+
+
+def test_las_mascotas_se_pegan_entre_si(monkeypatch):
+    """"no atacan entre si en pvp si hay 2 pet"."""
+    reloj = [1000.0]
+    a, b = _par(monkeypatch, reloj)
+    monkeypatch.setattr(app, '_refrescar', lambda *x: [])
+    monkeypatch.setattr(app.random, 'random', lambda: 0.99)    # golpe basico
+    fa = _con_mascota(a, 1069500, 100, [])
+    fb = _con_mascota(b, 1069501, 101, [])
+    pvp_liga.atacar(a, b, cb.ATAQUE_NORMAL, {}, 0)
+    vida_b = b.personaje.hp
+    reloj[0] += 2
+    app._pet_contra_rival(a, fa, 1069500, reloj[0])
+    assert fb['hp'] < 3000 and b.personaje.hp == vida_b       # le pego a la mascota, no al dueno
+    fb['hp'] = 1
+    reloj[0] += 2
+    app._pet_contra_rival(a, fa, 1069500, reloj[0])
+    assert not fb['fuera'] and b.pet_entity_id is None          # cae y se guarda
