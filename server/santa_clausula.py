@@ -3,7 +3,7 @@
 Un monstruo nuevo: el Wham Ogre del juego (sprite 110668) recoloreado con piel de troll, taparrabos de Santa, garrote
 de baston de caramelo, el gorro de Navidad del juego y barba blanca (los .spr salen de tools/santa_clausula_datos.py).
 
-  monster 23901, sprite 119001 (npc.obd: carpeta \\mon\\M9001\\)
+  monster 23901, sprite 111648 (npc.obd: carpeta \\mon\\M9001\\)
   nivel 60, vida 500.000, ataque 450 / defensa 880, ataque magico 600 / defensa magica 450, critico 20 %
   habilidades: Cross Chop I (605, a uno) y Revolving Swords I (5706, en area); el dano sale de sus stats
   inmune a aturdir, congelar, inmovilizar, ralentizar y encantar
@@ -17,7 +17,8 @@ import sqlite3
 log = logging.getLogger('santa_clausula')
 
 NPC_TYPE = 23901
-SPRITE = 119001
+SPRITE = 111648          # libre en todos los .obd; el 119001 era de char3.obd (equipo) y crasheaba al cliente
+SPRITE_VIEJO = 119001
 CARPETA = 'M9001'
 NOMBRE = 'Santa Clausula'
 

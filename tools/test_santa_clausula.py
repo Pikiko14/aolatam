@@ -97,3 +97,22 @@ def test_aparece_se_va_y_reparte(monkeypatch):
 def test_comando_gm():
     assert app._gm_parsear('santa estado')[0] == 'santa'
     assert 'santa' in app.PALABRAS_GM
+
+
+def test_sprite_no_choca_con_otro_obd():
+    """El 119001 era una pieza de equipo de char3.obd y el cliente crasheaba al ver a Santa: su Sequence no puede
+    estar en ningun otro .obd del cliente, ni suelto ni dentro de un rango 'Sequence = base, desde, hasta'."""
+    import re
+    ocupado = []
+    for f in (RAIZ / 'extracted_paks').glob('*/setting/*.obd'):
+        for bloque in f.read_bytes().split(b'[OBJECT]'):
+            if ('\\mon\\%s\\' % sc.CARPETA).encode() in bloque:
+                continue                                              # el propio de Santa
+            m = re.search(rb'^Sequence = ([\d, ]+)', bloque, re.M)
+            if not m:
+                continue
+            nums = [int(x) for x in m.group(1).split(b',') if x.strip()]
+            if sc.SPRITE in nums or (len(nums) == 3 and nums[1] <= sc.SPRITE <= nums[2]):
+                ocupado.append(f.name)
+    assert ocupado == []
+    assert sc.SPRITE != sc.SPRITE_VIEJO

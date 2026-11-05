@@ -3,9 +3,9 @@
     python tools/santa_clausula_datos.py
 
 Deja en parches/extras, de donde sale el parche de los jugadores:
-  setting/eng/monster.xml   con su fila <npc 編號="23901" ...> (nombre, stats, sprite 119001)
-  setting/npc.obd           con su [OBJECT] Sequence = 119001 (carpeta \\mon\\M9001\\ y sus 5 animaciones)
-  shape/mon/m9001/119001_{wait,run,att,hurt,dead}.spr
+  setting/eng/monster.xml   con su fila <npc 編號="23901" ...> (nombre, stats, sprite 111648)
+  setting/npc.obd           con su [OBJECT] Sequence = 111648 (carpeta \\mon\\M9001\\ y sus 5 animaciones)
+  shape/mon/m9001/111648_{wait,run,att,hurt,dead}.spr
 y la misma fila en extracted_paks/update26/setting/eng/monster.xml, que es la que lee el servidor.
 
 Los .spr son los de docs/santa_clausula/sprites (el Wham Ogre recoloreado, ver tools/spr_ewsp.py). Se puede correr
@@ -50,22 +50,27 @@ def npc_obd():
     origen = EXTRAS / 'setting' / 'npc.obd'
     if not origen.is_file():
         origen = EXTRACTED / 'npc.obd'
-    datos = origen.read_bytes()
-    if ('Sequence = %d' % sc.SPRITE).encode() in datos:
-        print('npc.obd: ya lleva el', sc.SPRITE)
-    else:
-        if not datos.endswith(b'\r\n'):
-            datos += b'\r\n'
-        datos += b'\r\n' + sc.bloque_npc_obd().encode('ascii')
-        print('npc.obd: anadido el', sc.SPRITE)
-    destino = EXTRAS / 'setting' / 'npc.obd'
-    destino.parent.mkdir(parents=True, exist_ok=True)
-    destino.write_bytes(datos)
+    datos = sin_santa(origen.read_bytes()) + b'\r\n' + sc.bloque_npc_obd().encode('ascii')
+    print('npc.obd: Santa con el', sc.SPRITE)
+    for destino in (EXTRAS / 'setting' / 'npc.obd', EXTRACTED / 'npc.obd'):
+        destino.parent.mkdir(parents=True, exist_ok=True)
+        destino.write_bytes(datos)
+
+
+def sin_santa(datos: bytes) -> bytes:
+    """El npc.obd sin el [OBJECT] de Santa (la carpeta \\mon\\M9001\\ es solo suya): asi no queda el del numero viejo,
+    el 119001, que en char3.obd es una pieza de equipo y hacia crashear al cliente."""
+    marca = ('Directory = \\mon\\%s\\' % sc.CARPETA).encode()
+    partes = datos.split(b'[OBJECT]')
+    texto = b'[OBJECT]'.join([partes[0]] + [p for p in partes[1:] if marca not in p])
+    return texto.rstrip(b'\r\n') + b'\r\n'
 
 
 def sprites():
     carpeta = EXTRAS / 'shape' / 'mon' / sc.CARPETA.lower()
     carpeta.mkdir(parents=True, exist_ok=True)
+    for viejo in carpeta.glob('%d_*.spr' % sc.SPRITE_VIEJO):
+        viejo.unlink()
     for a in ANIMS:
         shutil.copyfile(SPRITES / ('santa_%s.spr' % a), carpeta / ('%d_%s.spr' % (sc.SPRITE, a)))
     print('sprites en', carpeta.relative_to(RAIZ))

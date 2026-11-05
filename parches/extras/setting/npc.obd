@@ -110370,10 +110370,9 @@ SpriteFile = Cast, 43031_Att.spr
 SpriteFile = Hurt, 43031_Hurt.spr
 SpriteFile = Dead, 43031_Dead.spr
 
-
 [OBJECT]
 Name = M9001 - Santa Clausula
-Sequence = 119001
+Sequence = 111648
 Space = 25, 80, 0
 Flags = SP_ATTRIB_DISTURB, SP_ATTRIB_HITTEST, SP_ATTRIB_SHADOW
 Process = SERV_CLASS_NPCOBJ
@@ -110384,10 +110383,10 @@ Sprite = Att, a013*, #6, !SoundAttack, a023*, a033*, a043*, !WeaponShoot, a043*,
 Sprite = Cast, a013*, #6, a023*, a033*, a043*, a043*
 Sprite = Hurt, h013*, #4, h023*, h023*, @SP_EVENT_ACT_WAIT, SCROVER
 Sprite = Dead, d013*, #6, !SoundDie, d023*, d033*, d043*, d053*, d063*, SCROVER
-SpriteFile = Wait, 119001_Wait.spr
-SpriteFile = Run, 119001_Run.spr
-SpriteFile = Att, 119001_Att.spr
-SpriteFile = Cast, 119001_Att.spr
-SpriteFile = Hurt, 119001_Hurt.spr
-SpriteFile = Dead, 119001_Dead.spr
+SpriteFile = Wait, 111648_Wait.spr
+SpriteFile = Run, 111648_Run.spr
+SpriteFile = Att, 111648_Att.spr
+SpriteFile = Cast, 111648_Att.spr
+SpriteFile = Hurt, 111648_Hurt.spr
+SpriteFile = Dead, 111648_Dead.spr
 
