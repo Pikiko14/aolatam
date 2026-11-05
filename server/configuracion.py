@@ -808,7 +808,7 @@ LOGROS_ACTIVOS = False
 #   - 'halloween' : Angel Lyceum de Halloween (041halloween.mpc)
 #   - 'sakura'    : Angel Lyceum de cerezos en flor (041sakura.mpc)
 #   - 'verano'    : Angel Lyceum de festival de verano / Matsuri (041matsuri.mpc)
-MODO_ESTACION = 'halloween'
+MODO_ESTACION = 'navidad'
 
 # Ruta local del cliente para sincronizar el modo estacional y el launcher START.EXE
 # Donde esta el cliente. Es solo una PISTA: si no esta ahi, el servidor lo
