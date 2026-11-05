@@ -128,3 +128,20 @@ def test_las_mascotas_se_pegan_entre_si(monkeypatch):
     reloj[0] += 2
     app._pet_contra_rival(a, fa, 1069500, reloj[0])
     assert not fb['fuera'] and b.pet_entity_id is None          # cae y se guarda
+
+
+def test_el_silence_de_mago_silencia_sin_dano(monkeypatch):
+    """"silence de magos no silencia pero baja dano": Action Sealed (封招) es un silencio."""
+    reloj = [1000.0]
+    a, b = _par(monkeypatch, reloj)
+    assert pvp_liga.atacar(a, b, 401, cb.datos_magia(401), 0)
+    assert b.personaje.hp == 5000 and pvp_liga.tiene_estado(b, 'silenciado')
+
+
+def test_silencing_chop_hace_dano_y_puede_silenciar(monkeypatch):
+    reloj = [1000.0]
+    a, b = _par(monkeypatch, reloj)
+    monkeypatch.setattr(pvp_liga.random if hasattr(pvp_liga, 'random') else __import__('random'), 'random',
+                        lambda: 0.0)
+    assert pvp_liga.atacar(a, b, 5501, cb.datos_magia(5501), 0)
+    assert b.personaje.hp < 5000 and pvp_liga.tiene_estado(b, 'silenciado')

@@ -231,6 +231,14 @@ def atacar(ses, otro, tipo, mag, arma, en_area=False, golpes=None, separacion=No
         _aplicar(ses, otro, dano, es_crit, primero and not en_area, tipo, efecto, magia)
 
     _golpe(primero=True)
+    # El control que la habilidad encadena (轉嫁法術) con su probabilidad: Silencing Chop, Silent Blow, Boneshave...
+    # Contra monstruos ya lo aplicaba app; contra jugadores no.
+    if tipo != combate.ATAQUE_NORMAL and q.hp > 0:
+        sec = combate.efecto_secundario(tipo) or {}
+        est = ESTADO_ENCADENADO.get(sec.get('estado'))
+        if est and random.random() * 100 < float(sec.get('prob') or 100):
+            _aplicar_control(ses, otro, int(sec.get('magia') or tipo),
+                             {'nombre': mag.get('nombre', ''), 'dur_ms': int(sec.get('dur_ms') or 3000)}, est)
     if n > 1:
         try:
             bucle = asyncio.get_event_loop()
@@ -251,7 +259,11 @@ def atacar(ses, otro, tipo, mag, arma, en_area=False, golpes=None, separacion=No
 #   捆綁 Binding: "Slows the speed of a target" -> un buff en el rival con move_speed_bonus negativo, que es lo que
 #                 app._velocidad_de suma al 0x0005 con el que se le devuelve cada paso.
 #   沉默 Silence: "cannot use spells" -> el 0x0006 del rival rechaza sus habilidades mientras dure (app.esta_silenciado).
-CONTROLES = {'捆綁': 'atado', '沉默': 'silenciado'}
+CONTROLES = {'捆綁': 'atado', '沉默': 'silenciado',
+             # 封招 = "unable to use the spell": el Silence de los magos (Action Sealed, rama Life) y el de Silencing
+             # Chop. Hacia dano en vez de silenciar ("silence de magos no silencia pero baja dano", 05/11/2026).
+             '封招': 'silenciado'}
+ESTADO_ENCADENADO = {'silenciado': 'silenciado', 'sellado': 'silenciado', 'atado': 'atado'}
 LENTITUD_BINDING = -50          # % de velocidad mientras dura
 
 
