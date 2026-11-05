@@ -11835,6 +11835,17 @@ class Servidor:
             if not self.accesos.login(ses, usuario):
                 log.warning('[%s] LOGIN RECHAZADO: cuenta ya conectada', addr)
                 ses.enviar_crudo(login_server.respuesta_error(login_server.ERROR_CUENTA_CONECTADA))
+                # La contrasena es buena: la sesion vieja (un cliente colgado o cortado sin cerrar el socket) se
+                # cierra ya, y el siguiente intento entra sin esperar los 15 min sin datos (05/11/2026: "que no
+                # desconecte al 1 min"; con 60 s se echaba a los que estaban quietos).
+                _vieja = self.accesos.owners.get((usuario or '').casefold())
+                if _vieja is not None and _vieja is not ses and getattr(_vieja, 'writer', None) is not None:
+                    log.warning('[%s] se cierra la sesion anterior de %s (%s)', addr, usuario,
+                                getattr(_vieja, 'addr', '?'))
+                    try:
+                        _vieja.writer.close()
+                    except Exception:
+                        log.debug('cerrar la sesion anterior', exc_info=True)
                 return
             ses.usuario = usuario
             log.info(f"[{addr}] LOGIN usuario='{usuario}' aceptado ({motivo})")
