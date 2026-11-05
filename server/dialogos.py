@@ -688,7 +688,9 @@ def propio(nombre: str, faccion: str = "Heaven", jugador: str = "",
     # dialogo. Medido con el BreezeWood Angel de Breeze Woods: msg 55803,
     # retrato 112, cuatro opciones 20003, 20004, 20018 y 20005. La tercera es
     # "Send me back to the Angel Lyceum".
-    if stage in ANGEL_DE_CIUDAD and nombre in ANGELES_FACCION:
+    # En las plantillas de las cuatro ciudades ese Angel se llama 'BattlefieldAngel': caia en la regla generica de mas
+    # abajo y saludaba sin opciones ("sigue sin funcionar el battlefield angel", 05/11/2026).
+    if stage in ANGEL_DE_CIUDAD and (nombre in ANGELES_FACCION or 'BattlefieldAngel' in (nombre or '')):
         _cfg = ANGEL_DE_CIUDAD[stage]
         _clave = 'registrado' if registrado else 'sin_registrar'
         _msg, _ops, _acc = _cfg[_clave]
