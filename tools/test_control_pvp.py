@@ -158,3 +158,23 @@ def test_el_jugador_puede_pegarle_a_la_mascota_rival(monkeypatch):
     srv.manejar(a, 0x0005, None, None, 't', struct.pack('<IH', 1069501, 0))
     assert a.objetivo_actual == 1069501
     assert fb['hp'] < 3000                                       # el clic ya pega, como con un jugador
+
+
+def test_pk5_pega_el_100_por_ciento_del_ataque(monkeypatch):
+    """"FinalBoss tiene 1.4k de ataque y nos pega 900, deberia pegar el 100%"."""
+    import random as _r
+    reloj = [1000.0]
+    a, b = _par(monkeypatch, reloj)
+    stats = bytearray(120)
+    struct.pack_into('<I', stats, 26, 1400)          # ataque fisico
+    struct.pack_into('<I', stats, 38, 500)           # defensa fisica
+    monkeypatch.setattr(app, '_stats_ses', lambda s: bytes(stats))
+    monkeypatch.setattr(pvp_liga, '_prob_critico', lambda s: 0.0)
+    monkeypatch.setattr(_r, 'uniform', lambda x, y: 0.0)
+    monkeypatch.setattr(pvp_liga.transitable if hasattr(pvp_liga, 'transitable') else __import__('transitable'),
+                        'linea_libre', lambda *x: True)
+    a.personaje.tile_x, b.personaje.tile_x = 100, 105
+    vida = b.personaje.hp = b.personaje.hp_max = 50000
+    assert pvp_liga.atacar(a, b, 754, cb.datos_magia(754), 0)
+    dano = vida - b.personaje.hp
+    assert 1200 <= dano <= 1300, dano                # 1400 - 500/3,52

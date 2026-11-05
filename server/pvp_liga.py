@@ -268,6 +268,16 @@ def atacar(ses, otro, tipo, mag, arma, en_area=False, golpes=None, separacion=No
     if not magia and tipo != combate.ATAQUE_NORMAL:
         atk += int(round(combate.stance_de(tipo) * combate.PESO_STANCE))
     mult, var_pct = _multiplicador(ses, tipo, mag, magia)
+    # LAS DE % DEL ATAQUE (HP定義 = 百分比: Panther Killing V, Frozen Snipe V al 100%) pegan ese % del ataque, con
+    # peso 1 (dano_pvp ya lo preveia y no se usaba). Con el peso medido de los basicos (0,2426) y su 2,69 de
+    # multiplicador, PK V pegaba ~0,65 del ataque: "FinalBoss tiene 1.4k de ataque y nos pega 800-900, deberia
+    # pegar el 100%" (05/11/2026). Se conservan los % de equipo y buffs que trae `mult`.
+    peso = None
+    pct = combate.pct_del_arma(tipo) if (tipo != combate.ATAQUE_NORMAL and not magia) else 0
+    if pct:
+        base_m = combate.mult_fisico(tipo) * combate.FACTOR_DANO_FISICO
+        mult = (pct / 100.0) * (mult / base_m if base_m else 1.0)
+        peso = 1.0
     crit = _prob_critico(ses)
     combo = combate.combo_de(tipo) if tipo != combate.ATAQUE_NORMAL else None
     n = max(1, int(golpes)) if golpes is not None else (combo['golpes'] if combo else 1)
@@ -281,7 +291,7 @@ def atacar(ses, otro, tipo, mag, arma, en_area=False, golpes=None, separacion=No
         if not permitido(ses, otro):
             return
         es_crit = random.random() < crit
-        dano = dano_pvp(atk, dfs, mult * (1.5 if es_crit else 1.0), var_pct, magia=magia)
+        dano = dano_pvp(atk, dfs, mult * (1.5 if es_crit else 1.0), var_pct, magia=magia, peso=peso)
         dano = max(1, int(round(dano * mitigacion(otro, magia))))
         _aplicar(ses, otro, dano, es_crit, primero and not en_area, tipo, efecto, magia)
 
