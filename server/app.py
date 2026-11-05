@@ -1699,6 +1699,7 @@ PALABRAS_GM = frozenset((
     'daily', 'dailystart', 'dailystop', 'quiz', 'gvg',
     'recipes', 'recetas',
     'notice', 'aviso', 'anuncio', 'gmsg', 'twtotem',
+    'reinicio', 'restart',
 )) | gm.PALABRAS
 
 
@@ -1772,6 +1773,8 @@ def _gm_parsear(texto: str):
     if not partes:
         return None
     cmd = partes[0].lower()
+    if cmd in ('reinicio', 'restart'):
+        return ('aviso_reinicio', partes)
     if cmd in ('recipes','recetas'):return ('recipes',partes[1:])
     if cmd=='quiz':return ('quiz',partes[1:])
     if cmd=='gvg':return ('gvg',partes[1:])
@@ -1943,6 +1946,11 @@ def _probar_gm(ses, cuerpo, addr) -> bool:
     leido = _gm_parsear(texto)
     if leido is None:
         return False
+    if leido[0] == 'aviso_reinicio':
+        _resp_ar = __import__('aviso_reinicio').comando(leido[1])
+        ses.enviar(_cl.aviso('GM: ' + _resp_ar, tipo=0, msg_id=_cl.MSG_TEXTO))
+        log.info('[%s] GM %s -> %s', addr, leido[1], _resp_ar)
+        return True
     if leido[0]=='recipes' and ses.personaje:
         __import__('production_sites').gm(ses,leido[1])
         return True
@@ -22211,6 +22219,9 @@ class Servidor:
             return 'GM: item <id> [cant]'
         if leido[0] == 'err':
             return 'GM %s' % leido[1]
+        if leido[0] == 'aviso_reinicio':
+            # No hace falta nadie dentro: es a todos (ver aviso_reinicio.py).
+            return 'GM ' + __import__('aviso_reinicio').comando(leido[1])
         ses = self._sesion_mundo()
         if ses is None:
             return 'GM: no hay personaje en el mundo todavia'

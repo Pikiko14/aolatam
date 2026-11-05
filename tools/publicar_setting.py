@@ -4,6 +4,7 @@
     python tools/publicar_setting.py logingift.xml onlinegift.xml      # varios a la vez
     python tools/publicar_setting.py onlinegift.xml --sin-vps          # todo menos subir al VPS
     python tools/publicar_setting.py onlinegift.xml --sin-git          # sin commit
+    python tools/publicar_setting.py onlinegift.xml --avisar 5         # avisa y espera 5 min antes de reiniciar
 
 Se edita el archivo en extracted_paks/update26/setting/eng/ (el que lee el servidor). Pasos:
 
@@ -63,6 +64,8 @@ def main():
     ap.add_argument('archivos', nargs='+', help='nombres de setting/eng, p. ej. onlinegift.xml')
     ap.add_argument('--sin-vps', action='store_true')
     ap.add_argument('--sin-git', action='store_true')
+    ap.add_argument('--avisar', type=float, default=0, metavar='MIN',
+                    help='avisa a los jugadores (tools/avisar_reinicio.py) y espera esos minutos antes de reiniciar')
     ap.add_argument('--permitir-quitar', action='store_true',
                     help='publicar aunque el parche nuevo no traiga archivos que tenia el anterior')
     ap.add_argument('--sin-copiar', action='store_true',
@@ -142,6 +145,9 @@ def main():
         correr(['scp', '-q', '-o', 'BatchMode=yes', tgz.name, '%s:/tmp/publicar_setting.tgz' % VPS])
     finally:
         tgz.unlink(missing_ok=True)
+    if a.avisar:
+        import avisar_reinicio
+        avisar_reinicio.avisar(a.avisar)
     print(ssh('set -e; cd %s && rm -rf parches/launcher.anterior && mv parches/launcher parches/launcher.anterior && '
               'tar xzf /tmp/publicar_setting.tgz && chown -R angels:angels parches %s && rm -f /tmp/publicar_setting.tgz && '
               'systemctl restart angels.service && sleep 10 && systemctl is-active angels.service angels-web-registro.service'

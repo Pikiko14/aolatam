@@ -4,6 +4,7 @@
     python tools/subir_servidor.py server/app.py server/plantillas/item_mall.json   # solo esos
     python tools/subir_servidor.py --ver                   # solo dice que difiere, sin subir nada
     python tools/subir_servidor.py -y                      # sin preguntar
+    python tools/subir_servidor.py -y --avisar 5           # avisa a los jugadores y espera 5 min antes de reiniciar
 
 Compara por hash cada archivo de server/ que este en git (codigo .py y plantillas .json/.bin) con el del VPS, sube los distintos,
 les pone de dueno a angels, reinicia angels.service (la API de la web va con el), espera a que arranque y vuelve
@@ -59,6 +60,8 @@ def main():
     ap.add_argument('archivos', nargs='*', help='rutas relativas al repo (por defecto: todo server/ que difiera)')
     ap.add_argument('--ver', action='store_true', help='solo mostrar lo que difiere')
     ap.add_argument('-y', action='store_true', help='no preguntar')
+    ap.add_argument('--avisar', type=float, default=0, metavar='MIN',
+                    help='avisa a los jugadores (tools/avisar_reinicio.py) y espera esos minutos antes de reiniciar')
     a = ap.parse_args()
 
     lista = [pathlib.Path(x).as_posix() for x in a.archivos] or candidatos()
@@ -90,6 +93,10 @@ def main():
                        cwd=RAIZ, check=True)
     finally:
         tgz.unlink(missing_ok=True)
+    if a.avisar:
+        sys.path.insert(0, str(RAIZ / 'tools'))
+        import avisar_reinicio
+        avisar_reinicio.avisar(a.avisar)
     print(ssh('set -e; cd %s && tar xzf /tmp/subir_servidor.tgz && chown angels:angels %s && rm -f /tmp/subir_servidor.tgz && '
               'systemctl restart angels.service && sleep 10 && systemctl is-active angels.service angels-web-registro.service'
               % (VPS_DIR, ' '.join(shlex.quote(f) for f in distintos))).strip())
