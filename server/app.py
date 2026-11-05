@@ -759,6 +759,8 @@ def _precalentar():
     t0 = time.time()
     hecho = []
     for nombre, f in (
+            # Santa Clausula (evento de Navidad): su fila de monster tiene que estar antes de que combate la lea.
+            ('Santa Clausula', lambda: __import__('santa_clausula').asegurar_en_db()),
             ('indices de items', lambda: __import__('inventario').fila_item(
                 __import__('sqlite3').connect(pathlib.Path(__file__).parent.parent / 'corpus' / 'content.db'),
                 'id', 1)),
@@ -1746,7 +1748,7 @@ PALABRAS_GM = frozenset((
     'daily', 'dailystart', 'dailystop', 'quiz', 'gvg',
     'recipes', 'recetas',
     'notice', 'aviso', 'anuncio', 'gmsg', 'twtotem',
-    'reinicio', 'restart',
+    'reinicio', 'restart', 'santa',
 )) | gm.PALABRAS
 
 
@@ -1822,6 +1824,8 @@ def _gm_parsear(texto: str):
     cmd = partes[0].lower()
     if cmd in ('reinicio', 'restart'):
         return ('aviso_reinicio', partes)
+    if cmd == 'santa':
+        return ('santa', partes)
     if cmd in ('recipes','recetas'):return ('recipes',partes[1:])
     if cmd=='quiz':return ('quiz',partes[1:])
     if cmd=='gvg':return ('gvg',partes[1:])
@@ -1993,6 +1997,10 @@ def _probar_gm(ses, cuerpo, addr) -> bool:
     leido = _gm_parsear(texto)
     if leido is None:
         return False
+    if leido[0] == 'santa':
+        _resp_sc = __import__('santa_clausula').comando(leido[1])
+        ses.enviar(_cl.aviso('GM: ' + _resp_sc, tipo=0, msg_id=_cl.MSG_TEXTO))
+        return True
     if leido[0] == 'aviso_reinicio':
         _resp_ar = __import__('aviso_reinicio').comando(leido[1])
         ses.enviar(_cl.aviso('GM: ' + _resp_ar, tipo=0, msg_id=_cl.MSG_TEXTO))
@@ -3545,6 +3553,12 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
     yo_muerte = yo
     if __import__('league_war').monster_dead(ses,m):
         return
+    # Santa Clausula (evento de Navidad): botin a todos los que le pegaron, antes de que se reparta y se vacie dano_por.
+    if getattr(m, 'npc_type', 0) == 23901:
+        try:
+            __import__('santa_clausula').al_morir(ses, m)
+        except Exception:
+            log.exception('Santa Clausula al morir')
 
     if getattr(m, 'sello', None):
         __import__('instancia_oscura').al_morir(ses, m)
@@ -12607,6 +12621,17 @@ class Servidor:
                                                 if b_bf_mit > 0:
                                                     suyo = max(1, int(round(suyo * (1.0 - b_bf_mit / 100.0))))
                                             ef_atk = m.proj_ef if m.proj_ef > 0 else 148
+                                            # Santa Clausula usa sus dos habilidades de Sword (ver santa_clausula.py).
+                                            atk_id = 656
+                                            if targ_eid == yo and m.npc_type == 23901:
+                                                import santa_clausula as _sc_h
+                                                _hab_sc = _sc_h.elegir_habilidad()
+                                                if _hab_sc:
+                                                    atk_id = _hab_sc
+                                                    suyo = _sc_h.dano_habilidad(_hab_sc, m, def_targ)
+                                                    ef_atk = _cb.efecto_de_ataque(_hab_sc) or ef_atk
+                                                    if _hab_sc == _sc_h.HAB_AREA:
+                                                        _sc_h.area_a_otros(ses, m, _hab_sc, ef_atk)
 
                                             # Con el objetivo = yo, el cliente (0x5ed03b -> 0x649c70) selecciona
                                             # solo al atacante y mi personaje empieza a pegarle sin que yo lo
@@ -12614,7 +12639,7 @@ class Servidor:
                                             ses.enviar(_cb.ataque(m.entity_id, 0 if targ_eid == yo else targ_eid,
                                                                   _cb.anim_de_monstruo(m.nombre)))
 
-                                            def _impacto(m=m, suyo=suyo, ef_atk=ef_atk, teid=targ_eid):
+                                            def _impacto(m=m, suyo=suyo, ef_atk=ef_atk, teid=targ_eid, atk_id=atk_id):
                                                 if not getattr(m, 'vivo', False):
                                                     return
                                                 if getattr(m, 'en_combate_con', None) != teid:
@@ -12660,7 +12685,7 @@ class Servidor:
                                                     suyo = __import__('avatar_clones').absorber(ses,suyo)
                                                     pj.hp = max(0, pj.hp - suyo)
                                                     pkgs_imp_yo = [
-                                                        _cb.numero_de_dano(m.entity_id, yo, suyo, ataque=656, efecto=ef_atk),
+                                                        _cb.numero_de_dano(m.entity_id, yo, suyo, ataque=atk_id, efecto=ef_atk),
                                                         _cb.numero_flotante(yo, suyo),
                                                         _cb.atributo(yo, pj.hp, _cb.KIND_HP),
                                                     ]
@@ -15057,6 +15082,9 @@ class Servidor:
                 return
 
             # Hechizo de encanto (Shining Charm I..V de Earth)
+            if tipo != _cb.ATAQUE_NORMAL and mag.get('es_encanto') and getattr(m, 'npc_type', 0) == 23901:
+                ses.enviar(__import__('clases').aviso('Santa Clausula cannot be charmed.', tipo=0))
+                return
             if tipo != _cb.ATAQUE_NORMAL and mag.get('es_encanto'):
                 mp_coste = mag.get('mp', 0)
                 if ses.personaje and mp_coste > 0:
@@ -22259,6 +22287,8 @@ class Servidor:
         if leido[0] == 'aviso_reinicio':
             # No hace falta nadie dentro: es a todos (ver aviso_reinicio.py).
             return 'GM ' + __import__('aviso_reinicio').comando(leido[1])
+        if leido[0] == 'santa':
+            return 'GM ' + __import__('santa_clausula').comando(leido[1])
         ses = self._sesion_mundo()
         if ses is None:
             return 'GM: no hay personaje en el mundo todavia'
@@ -22371,6 +22401,7 @@ class Servidor:
         log.info("GM: /item <id> [qty]  /level <n>  /levelall <n>  (also console or data/gm.txt)")
         tareas.append(gm.consola(self))
         tareas.append(gm.cola(self))
+        tareas.append(__import__('santa_clausula').vigilar())
         tareas.append(cuentas.tarea_backup_periodico())
         tareas.append(self.vigilar_baneos())
         import totem_war as _tw_reloj

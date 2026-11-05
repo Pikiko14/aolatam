@@ -679,6 +679,11 @@ class Monstruo:
         """Aplica el 轉嫁法術 de un ataque: stun, sangrado, veneno o ralentizacion."""
         if not ef or not ef.get('dur_ms'):
             return None
+        # Santa Clausula (jefe de Navidad): no le afecta el control, para que no se le pueda bloquear en grupo.
+        if int(getattr(self, 'npc_type', 0) or 0) == 23901 and (
+                ef.get('estado') in ('aturdido', 'congelado', 'inmovilizado', 'paralizado', 'atado', 'lento')
+                or ef.get('vel_mov', 0) < 0):
+            return None
         # Resistencia del objetivo segun el tipo de debuff (體質型 vs res_body, 心靈型 vs res_mind):
         if ef.get('tipo_mente') or ef.get('estado') in ('panico', 'confuso', 'silencio'):
             res_val = getattr(self, 'res_mind', 0)

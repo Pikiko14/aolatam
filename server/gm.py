@@ -884,6 +884,9 @@ def ejecutar_linea(serv, linea: str) -> str:
     if partes and partes[0].lower() in ('reinicio', 'restart'):
         import aviso_reinicio
         return 'GM ' + aviso_reinicio.comando(partes)
+    if partes and partes[0].lower() == 'santa':
+        import santa_clausula
+        return 'GM ' + santa_clausula.comando(partes)
     parsed = parsear(linea)
     if parsed is None:
         t = linea.strip().lstrip('\ufeff')
