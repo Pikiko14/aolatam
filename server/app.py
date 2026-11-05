@@ -16087,6 +16087,15 @@ class Servidor:
             f_pet = getattr(p, 'mascota', None)
             if isinstance(f_pet, dict) and f_pet.get('fuera'):
                 import mascotas as _pet
+                # La de antes, fuera del mapa VIEJO (aqui la presencia aun apunta a el): presencia.salir solo sabe de
+                # la entidad nueva y la vieja se quedaba sola en el sitio ("esos pet que?? no hay nadie y esta ahi",
+                # 05/11/2026). La nueva la presenta presencia.entrar en el mapa nuevo.
+                _pet_viejo = getattr(ses, 'pet_entity_id', None) or f_pet.get('entidad')
+                if _pet_viejo:
+                    try:
+                        __import__('presencia').notificar_mascota_despawn(ses, int(_pet_viejo))
+                    except Exception:
+                        log.debug('mascota vieja al cambiar de mapa', exc_info=True)
                 f_pet['entidad'] = _pet_siguiente_entidad(ses)
                 _r_p = int(f_pet.get('ranura') if f_pet.get('ranura') is not None else 20)
                 f_pet['instancia'] = 1000 + _r_p
@@ -16115,8 +16124,8 @@ class Servidor:
                 if f_pet.get('saciedad', 0) > 100:
                     _pkgs_pet.append(struct.pack('<HIBBII', 0x001D, f_pet['entidad'], 1, 4, 3796, 3436877059))
                 ses.enviar(*_pkgs_pet)
-                import presencia as _pr
-                _pr.notificar_mascota_spawn(ses)
+                # Sin notificar_mascota_spawn: la presencia aun es la del mapa viejo y alli la pintaba sin dueno.
+                # presencia.entrar (abajo) la presenta a los del mapa nuevo.
 
             # Restauracion de buffs activos tras cambio de mapa
             now_t = time.time()
