@@ -910,6 +910,22 @@ def notificar_companero_accion(ses, *paquetes):
             _mandar(s, *limpios)
 
 
+ACCION_SENTADO_AJENO = 7      # lo que el servidor real pone en el byte 61 del spawn de un jugador sentado
+
+
+def notificar_sentado(ses):
+    """A los demas del mapa, que `ses` se sento o se levanto: 0x000A con su entidad publica y el 7 (sentado) o el 0.
+    El 8 del propio personaje, en otro, es la pose tumbada y le veian muerto."""
+    stage = getattr(ses, '_mapa_presencia', None)
+    if stage is None:
+        return
+    pkt = struct.pack('<HIII', 0x000A, entidad_de(ses), 0,
+                      ACCION_SENTADO_AJENO if getattr(ses, 'sentado', False) else 0)
+    for s in _vivas(stage):
+        if s is not ses:
+            _mandar(s, pkt)
+
+
 def notificar_mascota_despawn(ses, pet_eid):
     """Avisa a todos los demas jugadores del mapa que se guardo la mascota."""
     stage = getattr(ses, '_mapa_presencia', None)

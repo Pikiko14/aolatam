@@ -21882,7 +21882,14 @@ class Servidor:
                 yo = ses.personaje.entity_id
                 ses.sentado = not getattr(ses, 'sentado', False)
                 act_code = 8 if ses.sentado else 0
-                ses.enviar(struct.pack('<HIII', 0x000A, yo, 0, act_code))
+                # SIN espejo: el 8 es "sentado" solo para el propio personaje. En otro jugador el 8 es la pose de
+                # descanso tumbada (005e97f0 -> FUN_004b4c10(1)) y lo veian muerto ("porque baco sale muerto si esta
+                # sentado??", 05/11/2026); a ellos va el 7, el mismo del byte 61 del spawn (presencia._spawn).
+                (getattr(ses, 'enviar_sin_espejo', None) or ses.enviar)(struct.pack('<HIII', 0x000A, yo, 0, act_code))
+                try:
+                    __import__('presencia').notificar_sentado(ses)
+                except Exception:
+                    log.debug('sentarse a los demas', exc_info=True)
                 log.info(f"[{addr}] personaje {'se sento' if ses.sentado else 'se levanto'} (accion={act_code})")
                 return
             if accion == 8 and ses.personaje:
