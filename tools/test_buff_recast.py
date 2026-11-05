@@ -90,3 +90,32 @@ def test_al_rechazar_se_le_dice_al_cliente_cuanto_falta(monkeypatch):
     assert len(cd3) == 1                                   # uno solo, no uno por peticion
     assert 0 < struct.unpack_from('<HIBBII', cd3[0])[5] <= 2000
     assert p.mp == 5000 - cb.datos_magia(202)['mp']        # y no se lanzo de nuevo
+
+
+def test_el_segundo_buff_sale_al_acabar_la_animacion_del_primero(monkeypatch):
+    r = Reloj()
+    monkeypatch.setattr(app.asyncio, 'get_event_loop', lambda: r)
+    monkeypatch.setattr(app.time, 'time', lambda: r.now)
+    monkeypatch.setattr(app, '_otorgar_skill_exp', lambda *a, **kw: [])
+    monkeypatch.setattr(app, '_dar_sp', lambda *a, **kw: None)
+    monkeypatch.setattr(app, '_stats_ses', lambda *a: b'')
+    monkeypatch.setattr(app, '_receptores_de_buff', lambda *a: ([], True))
+    p = login.Personaje(hp=5000, hp_max=5000, mp=5000, mp_max=5000)
+    pk = []
+    s = SimpleNamespace(personaje=p, rol='mundo', entity_id=p.entity_id, inventario={}, monstruos={},
+                        usuario=None, muerto=False, enviar=lambda *a: pk.extend(a), enviar_inmediato=lambda *a: pk.extend(a))
+    srv = app.Servidor.__new__(app.Servidor)
+    a, b = cb.datos_magia(202), cb.datos_magia(203)
+    assert a['cast_time'] >= 1000 and not a.get('cost_sp') and not b.get('cost_sp')
+
+    srv.manejar(s, 0x0006, None, None, 't', struct.pack('<HI', 202, p.entity_id))
+    r.avanzar(0.2)
+    srv.manejar(s, 0x0006, None, None, 't', struct.pack('<HI', 203, p.entity_id))   # en plena animacion
+    r.avanzar(0.1)
+    assert p.mp == 5000 - a['mp']                       # todavia no ha salido
+    sin_lanzar = [x for x in pk if isinstance(x, (bytes, bytearray)) and len(x) == 16
+                  and struct.unpack_from('<HIBBII', x)[:5] == (0x001D, p.entity_id, 1, 3, 203)]
+    assert not sin_lanzar                               # y no se le puso enfriamiento sin lanzarlo
+    r.avanzar(a['cast_time'] / 1000.0 + 1.0)
+    assert p.mp == 5000 - a['mp'] - b['mp']             # salio sola al acabar la del primero
+    assert 203 in p.buffs and 202 in p.buffs

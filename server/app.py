@@ -13877,8 +13877,32 @@ class Servidor:
                 if not isinstance(_lanzando, dict):
                     _lanzando = ses._lanzando_hasta = {}
                 if _ahora_atk < _lanzando.get(_tipo_coste, 0):
-                    log.debug(f"[{addr}] HABILIDAD {tipo} RECHAZADA: aun se esta lanzando la anterior de {_tipo_coste}")
-                    _avisar_enfriamiento(ses, yo, tipo, _lanzando[_tipo_coste] - _ahora_atk, _ahora_atk)
+                    # SE ENCOLA: sale sola en cuanto acaba de lanzarse la anterior. Rechazandola y mandando su
+                    # enfriamiento quedaba en gris sin haber salido ("si uso un buff y no ha terminado la animacion
+                    # y uso el otro, me quita cooldown pero no lo lanza", 05/11/2026). Una por tipo de coste: la
+                    # ultima que se pida reemplaza a la anterior en cola.
+                    _cola_h = getattr(ses, '_cola_habilidad', None)
+                    if not isinstance(_cola_h, dict):
+                        _cola_h = ses._cola_habilidad = {}
+                    _prev_h = _cola_h.get(_tipo_coste)
+                    if _prev_h is not None:
+                        try:
+                            _prev_h.cancel()
+                        except Exception:
+                            pass
+                    _cuerpo_h = bytes(cuerpo)
+
+                    def _relanzar(_c=_cuerpo_h, _k=_tipo_coste):
+                        _cola_h.pop(_k, None)
+                        if getattr(ses, 'personaje', None) and not getattr(ses, 'muerto', False):
+                            self.manejar(ses, 0x0006, None, None, addr, _c)
+
+                    try:
+                        _cola_h[_tipo_coste] = asyncio.get_event_loop().call_later(
+                            max(0.0, _lanzando[_tipo_coste] - _ahora_atk) + 0.02, _relanzar)
+                    except RuntimeError:
+                        pass                    # sin bucle (pruebas): no se encola
+                    log.debug(f"[{addr}] HABILIDAD {tipo} en cola: aun se esta lanzando la anterior de {_tipo_coste}")
                     return
                 _lanzando[_tipo_coste] = _ahora_atk + max(_cb.PAUSA_ENTRE_HABILIDADES,
                                                          float(mag.get('cast_time', 0) or 0) / 1000.0)
