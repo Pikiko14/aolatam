@@ -53,3 +53,13 @@ def test_con_ropa_del_sexo_contrario_puesta_no_cambia(monkeypatch):
 
 def test_masters_love_no_es_pocion():
     assert app.ITEM_MASTERS_LOVE == 3382
+
+
+def test_si_llega_el_id_del_objeto_busca_su_casilla(monkeypatch):
+    monkeypatch.setattr(app, '_refrescar', lambda ses, r, **k: [])
+    import presencia
+    monkeypatch.setattr(presencia, 'notificar_equipo', lambda ses: None)
+    s, pk = _ses([0, 3, 1, 8, 8], {25: 3376, 33: 7032})
+    assert cambio_sexo.procesar(s, 7032)
+    assert s.personaje.apariencia[:2] == [1, 0]
+    assert 33 not in s.inventario and 25 in s.inventario

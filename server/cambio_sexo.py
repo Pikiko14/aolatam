@@ -50,7 +50,16 @@ def procesar(ses, casilla) -> bool:
     def aviso(texto):
         ses.enviar(clases.aviso(texto, tipo=0))
 
+    # El parametro puede ser la casilla o el id del objeto (con el Gender Bolus llega el 7032, 04/11/2026): si no
+    # es una casilla con el objeto, se busca la primera que lo tenga.
     item = ses.inventario.get(casilla)
+    if item is None or int(item) not in ITEMS:
+        quiere = int(casilla) if int(casilla) in ITEMS else None
+        casilla = next((s for s in app._ranuras_bolsa(ses.inventario)
+                        if s in ses.inventario and int(ses.inventario[s]) in ITEMS
+                        and (quiere is None or int(ses.inventario[s]) == quiere)), None)
+        item = ses.inventario.get(casilla) if casilla is not None else None
+    log.info('[%s] Gender Bolus: parametro -> casilla %s (item %s)', getattr(ses, 'addr', '?'), casilla, item)
     if item is None or int(item) not in ITEMS or not 20 <= int(casilla) <= app._tope_bolsa(ses.inventario):
         aviso('Failed to change your gender without the right props.')
         return False

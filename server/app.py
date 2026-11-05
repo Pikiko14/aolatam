@@ -9546,6 +9546,9 @@ def _receptores_de_buff(ses, magic_id, objetivo, area):
 # Shield o Ferocious Song cada pocos segundos aunque duran 5-10 minutos; su enfriamiento es de 2 s y no lo frenaba.
 # Con mas de esto por delante no se vuelve a lanzar (ni se cobra) y se le recuerda al cliente lo que le queda.
 BUFF_RECAST_MARGEN_S = 30.0
+# ... pero solo si se lanzo hace menos de esto: a mano se puede refrescar un buff activo ("no me deja usarlo si ya
+# lo tengo en uso", 04/11/2026); la asistencia lo repetia cada 2-5 s.
+BUFF_RECAST_VENTANA_S = 10.0
 
 
 def _buff_vigente(ses, magic_id, objetivo, yo):
@@ -14389,11 +14392,17 @@ class Servidor:
                     if (mag.get('es_buff') and not mag.get('es_transformacion')
                             and int(mag.get('dur_ms') or 0) > 0 and tipo == tipo_solicitado):
                         _vig = _buff_vigente(ses, tipo, objetivo, yo)
-                        if _vig and _vig[1] > BUFF_RECAST_MARGEN_S:
-                            log.debug(f"[{addr}] buff {tipo} ({mag.get('nombre')}) NO se recastea: al objetivo "
-                                      f"{_vig[0]} le quedan {_vig[1]:.0f}s")
+                        _ult_b = getattr(ses, '_ultimo_buff', None)
+                        if not isinstance(_ult_b, dict):
+                            _ult_b = ses._ultimo_buff = {}
+                        _ahora_b = time.time()
+                        if (_vig and _vig[1] > BUFF_RECAST_MARGEN_S
+                                and _ahora_b - _ult_b.get((tipo, _vig[0]), 0) < BUFF_RECAST_VENTANA_S):
+                            log.debug(f"[{addr}] buff {tipo} ({mag.get('nombre')}) NO se recastea: se lanzo hace "
+                                      f"{_ahora_b - _ult_b.get((tipo, _vig[0]), 0):.1f}s y le quedan {_vig[1]:.0f}s")
                             ses.enviar(struct.pack('<HIBBII', 0x001D, _vig[0], 1, 4, tipo, int(_vig[1] * 1000)))
                             return
+                        _ult_b[(tipo, _vig[0] if _vig else (objetivo or yo))] = _ahora_b
                     if not _puede_pagar(ses, mag, addr):
                         return
                     cost_sp = mag.get('cost_sp', 0)
