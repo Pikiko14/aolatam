@@ -18642,11 +18642,9 @@ class Servidor:
                 else:
                     ses.inventario.pop(ranura, None)
                     ses.cantidades.pop(ranura, None)
-                # El fuego de las habilidades que dan SP (Hot Blooded, Bloody Storm: 特效編號 145) y el numero:
-                # "como un efecto de fuego y sale el numero 2000" (02/11/2026). La magia 1871 del SP Power
-                # Scroll no trae efecto propio en magic.xml.
-                ses.enviar(*_cbsp.efecto_magia_self(yo, EFECTO_SP_ITEM, inv.magia_de_item(item_id) or 0),
-                           _cbsp.numero_flotante(yo, _ganado, _cbsp.TIPO_CURA_SP))
+                # Solo el numero del SP ganado. Llevaba el fuego de Hot Blooded / Bloody Storm (特效編號 145), pedido el
+                # 02/11/2026, y se quito el 05/11/2026: "el sp scroll que no haga la animacion del bloody".
+                ses.enviar(_cbsp.numero_flotante(yo, _ganado, _cbsp.TIPO_CURA_SP))
                 ses.enviar(*_refrescar(ses, [ranura]))
                 _guardar_bolsa(ses, cid)
                 if getattr(ses, 'usuario', None):
