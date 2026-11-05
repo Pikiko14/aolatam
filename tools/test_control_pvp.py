@@ -4,6 +4,8 @@ Las dos son solo de jugadores y no hacen dano: Binding (捆綁) ralentiza y Sile
 pvp_liga solo hacia dano y no aplicaba nada.
 """
 import pathlib
+
+import pytest
 import struct
 import sys
 from types import SimpleNamespace as NS
@@ -160,7 +162,8 @@ def test_el_jugador_puede_pegarle_a_la_mascota_rival(monkeypatch):
     assert fb['hp'] < 3000                                       # el clic ya pega, como con un jugador
 
 
-def test_pk5_pega_el_100_por_ciento_del_ataque(monkeypatch):
+@pytest.mark.parametrize('skill', [754, 960])           # Panther Killing V, Frozen Snipe V ("el fs5 debe comportarse igual")
+def test_pk5_pega_el_100_por_ciento_del_ataque(monkeypatch, skill):
     """"FinalBoss tiene 1.4k de ataque y nos pega 900, deberia pegar el 100%"."""
     import random as _r
     reloj = [1000.0]
@@ -175,6 +178,6 @@ def test_pk5_pega_el_100_por_ciento_del_ataque(monkeypatch):
                         'linea_libre', lambda *x: True)
     a.personaje.tile_x, b.personaje.tile_x = 100, 105
     vida = b.personaje.hp = b.personaje.hp_max = 50000
-    assert pvp_liga.atacar(a, b, 754, cb.datos_magia(754), 0)
+    assert pvp_liga.atacar(a, b, skill, cb.datos_magia(skill), 0)
     dano = vida - b.personaje.hp
     assert 1200 <= dano <= 1300, dano                # 1400 - 500/3,52
