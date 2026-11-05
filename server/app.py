@@ -726,6 +726,9 @@ def _falta_requisito(ses, item_id, ranura):
         return None
 
 
+ITEM_MASTERS_LOVE = 3382
+
+
 def _ranura_libre(bolsa, desde=20, hasta=None):
     """Primera casilla vacia de la mochila o rango, o None si esta llena."""
     if hasta is not None:
@@ -18701,6 +18704,44 @@ class Servidor:
                 _casa_usar_token(ses, ranura)
                 return
 
+            # MASTER'S LOVE (3382, 使用目標="道具", 動態資料1=100): "Click the icon of pet's item after using. It
+            # restores pet intimacy degree to 100. It can be used even if a pet is dead." Caia en las pociones y
+            # curaba 1129 HP sin tocar la mascota (04/11/2026, "no funciona el master Love"). Va a la mascota de la
+            # casilla pinchada, o a la que esta afuera.
+            if item_id == ITEM_MASTERS_LOVE and ses.personaje:
+                import clases as _clml
+                import mascotas as _msml
+                _fm = getattr(ses.personaje, 'mascota', None)
+                _rp = objetivo if (objetivo is not None and objetivo in bolsa and inv.es_mascota(bolsa[objetivo])) else None
+                if _rp is None and isinstance(_fm, dict) and _fm.get('fuera'):
+                    _rp = _fm.get('ranura')
+                if _rp is None or _rp not in bolsa:
+                    ses.enviar(_clml.aviso("Use Master's Love and then click your pet.", tipo=0))
+                    return
+                _fml = _fm if (isinstance(_fm, dict) and _fm.get('ranura') == _rp) else _pet_ficha(ses, _rp)
+                if not _fml:
+                    ses.enviar(_clml.aviso("Use Master's Love and then click your pet.", tipo=0))
+                    return
+                _tope_ml = int((__import__('house_services').xml_rows('item.xml').get(int(item_id)) or {}).get('動態資料1') or 100)
+                _ant_ml = int(_fml.get('intimidad', 60))
+                if _ant_ml >= _tope_ml:
+                    ses.enviar(_clml.aviso('Your pet intimacy is already %d.' % _ant_ml, tipo=0))
+                    return
+                _fml['intimidad'] = _tope_ml
+                if getattr(ses.personaje, 'mascotas', None) is not None:
+                    ses.personaje.mascotas[str(_rp)] = _fml
+                _sacar(ses, ranura, 1)
+                _sal_ml = list(_refrescar(ses, [ranura, _rp]))
+                _sal_ml.append(_clml.aviso(str(_tope_ml - _ant_ml), tipo=7, msg_id=966))
+                _sal_ml.append(_msml.armar(_fml))
+                ses.enviar(*_sal_ml)
+                _guardar_bolsa(ses, cid)
+                if getattr(ses, 'usuario', None):
+                    cuentas.guardar_mascota(ses.usuario, cid, _fml, getattr(ses.personaje, 'mascotas', None))
+                log.info("[%s] Master's Love a %s (casilla %s): intimidad %d -> %d",
+                         addr, _fml.get('nombre'), _rp, _ant_ml, _tope_ml)
+                return
+
             # Caso 0: CONSUMIBLE DE MASCOTA (使用目標="目標寵物").
             #
             # El propio item dice que va a la mascota, asi que no hay lista
@@ -21515,6 +21556,10 @@ class Servidor:
             parametro = struct.unpack_from('<I', cuerpo, 1)[0]
             if accion==70 and ses.personaje:
                 __import__('star_blessing').accion(ses,parametro)
+                return
+            if accion == 0x24 and ses.personaje:
+                # Gender Bolus: lo que manda la confirmacion del cliente (ver cambio_sexo.py).
+                __import__('cambio_sexo').procesar(ses, parametro)
                 return
             if accion==7 and ses.personaje:
                 # Native updatechfilter ->650e00->614da0(7, tab<<16|mask).
