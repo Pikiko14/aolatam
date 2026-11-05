@@ -101,6 +101,8 @@ def skills_arma_ses(ses):
 # los que piden a partir de 0.92, que son los que se veian en el log
 # (1.03, 1.05, 1.10). Lo que llegue antes de eso sigue fuera.
 MARGEN_CADENCIA = 0.20
+# Golpes basicos que se aceptan tras una habilidad de ataque, hasta el siguiente clic al mob (05/11/2026).
+BASICOS_TRAS_HABILIDAD = 1
 
 
 def lleva_duales_ses(ses):
@@ -13970,6 +13972,8 @@ class Servidor:
                 _lanzando[_tipo_coste] = _ahora_atk + max(_cb.PAUSA_ENTRE_HABILIDADES,
                                                          float(mag.get('cast_time', 0) or 0) / 1000.0)
                 _usos[tipo] = _ahora_atk
+                if mag.get('es_ataque'):
+                    ses._basicos_tras_skill = BASICOS_TRAS_HABILIDAD     # ver el 0x0016 accion 0x0C
                 # Una habilidad ES el ataque de ese turno: el cliente manda el golpe basico justo detras y salia
                 # tambien la flecha normal ("si uso 1 turno de ataque... no debe lanzar la flecha basica"). Vale
                 # para TODAS, tambien las de stance o buff, y cuenta desde que termina de lanzarse: con el arco
@@ -20123,6 +20127,7 @@ class Servidor:
             if _m is not None:
                 if _intentar_captura_monstruo(ses, ent, addr):
                     return
+                ses._basicos_tras_skill = None        # clic al mob: golpes basicos sin limite (ver accion 0x0C)
                 # El clic sobre un monstruo ES el ataque basico: el cliente no
                 # manda ningun 0x0006 para pegar sin habilidad. Medido en
                 # mundo_154337_948959, t=3.08:
@@ -21701,6 +21706,17 @@ class Servidor:
                 # habilidad ni espera a que se le conteste un clic: manda este
                 # 0x0016 y lo repite solo cada ~1,5 s mientras dure el combate.
                 # Medido en Celestia, mundo_201655_173169 t=40.4.
+                # TRAS UNA HABILIDAD, UN SOLO BASICO (05/11/2026): el cliente seguia pidiendolos despues de una
+                # habilidad de ataque (hasta 10 seguidos en las grabaciones, sin clic de por medio) y el personaje
+                # se quedaba pegando basicos: "los basicos solo se deben lanzar si le doy click al mob sin tener
+                # una habilidad marcada, o si uso 1 skill solo debe pegar 1 basico". El clic al mob lo vuelve a
+                # dejar libre (None).
+                _quedan_b = getattr(ses, '_basicos_tras_skill', None)
+                if _quedan_b is not None:
+                    if _quedan_b <= 0:
+                        log.debug(f"[{addr}] basico ignorado: ya dio el suyo tras la habilidad")
+                        return
+                    ses._basicos_tras_skill = _quedan_b - 1
                 import combate as _cb5
                 self.manejar(ses, 0x0006, m, d, addr,
                              struct.pack('<HI', _cb5.ATAQUE_NORMAL, parametro))
