@@ -54,12 +54,20 @@ def test_habilidades():
 
 def test_botin():
     assert sc.botin_para(True, Dados()) == [sc.CAJA]
-    todo_h = sc.botin_para(True, Dados(*[0.0] * 13))
-    assert todo_h == [sc.CAJA, *sc.TRAJE_H, sc.GACHAS_40[0], 3868, 3869, *sc.CAJAS_60]
-    todo_m = sc.botin_para(False, Dados(*[0.0] * 12))
-    assert todo_m == [sc.CAJA, *sc.TRAJE_M, sc.GACHAS_40[0], 3868, 3869, *sc.CAJAS_60]
-    # cada caja tiene su 1%: con 0.009 sale, con 0.011 no
-    assert sc.botin_para(False, Dados(0.5, 0.5, 0.5, 0.5, 0.5, 0.009, 0.011, 0.011, 0.011, 0.011, 0.011, 0.011)) == [sc.CAJA, 89200]
+    todo_h = sc.botin_para(True, Dados(*[0.0] * 7))
+    assert todo_h == [sc.CAJA, *sc.TRAJE_H, sc.GACHAS_40[0], 3868, 3869, sc.CAJAS_60[0]]
+    todo_m = sc.botin_para(False, Dados(*[0.0] * 6))
+    assert todo_m == [sc.CAJA, *sc.TRAJE_M, sc.GACHAS_40[0], 3868, 3869, sc.CAJAS_60[0]]
+    # una caja Lv60 (de las 7) con un 20%: con 0.19 sale, con 0.21 no
+    assert sc.botin_para(False, Dados(0.5, 0.5, 0.5, 0.5, 0.5, 0.19)) == [sc.CAJA, sc.CAJAS_60[0]]
+    assert sc.botin_para(False, Dados(0.5, 0.5, 0.5, 0.5, 0.5, 0.21)) == [sc.CAJA]
+
+
+def test_botin_una_caja_60_de_cada_cinco():
+    import random
+    rng = random.Random(3)
+    n = sum(1 for _ in range(5000) for it in sc.botin_para(True, rng) if it in sc.CAJAS_60)
+    assert 900 < n < 1100
 
 
 def test_proxima_hora():

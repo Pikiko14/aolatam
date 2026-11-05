@@ -197,7 +197,7 @@ CAMPANAS = ((3868, 0.05), (3869, 0.01))       # Gold / Platinum Christmas Bell
 # Las cajas Lv60 (05/11/2026): una por clase, una de armas y una de monturas, al 1% CADA UNA (tools/generar_lucky_bags.py,
 # cajas_santa): 89200 Swordsman, 89201 Axeman, 89202 Lancer, 89203 Archer, 89204 Mage, 89205 armas, 89206 monturas.
 CAJAS_60 = tuple(range(89200, 89207))
-PROB_CAJA_60 = 0.01
+PROB_CAJA_60 = 0.20          # una de las 7 al azar (05/11/2026: "que santa tenga 20 % de que de las box lvl 60"; antes 1 % cada una)
 
 
 def _cartel(texto):
@@ -246,9 +246,8 @@ def botin_para(hombre: bool, rng=None):
     for it, p in CAMPANAS:
         if rng.random() < p:
             sale.append(it)
-    for it in CAJAS_60:
-        if rng.random() < PROB_CAJA_60:
-            sale.append(it)
+    if rng.random() < PROB_CAJA_60:
+        sale.append(rng.choice(CAJAS_60))
     return sale
 
 
