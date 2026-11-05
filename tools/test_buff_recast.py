@@ -59,3 +59,34 @@ def test_el_buff_se_relanza_al_acabar_su_enfriamiento(monkeypatch):
     assert p.mp == 5000 - coste
     lanzar(0.5)                      # pasados los 2 s: sale aunque el buff siga activo
     assert p.mp == 5000 - 2 * coste
+
+
+def test_al_rechazar_se_le_dice_al_cliente_cuanto_falta(monkeypatch):
+    """Sin respuesta el cliente reintentaba cada ~50 ms y el personaje se quedaba pegado."""
+    r = Reloj()
+    monkeypatch.setattr(app.asyncio, 'get_event_loop', lambda: r)
+    monkeypatch.setattr(app.time, 'time', lambda: r.now)
+    monkeypatch.setattr(app, '_otorgar_skill_exp', lambda *a, **kw: [])
+    monkeypatch.setattr(app, '_dar_sp', lambda *a, **kw: None)
+    monkeypatch.setattr(app, '_stats_ses', lambda *a: b'')
+    monkeypatch.setattr(app, '_receptores_de_buff', lambda *a: ([], True))
+    p = login.Personaje(hp=5000, hp_max=5000, mp=5000, mp_max=5000)
+    pk = []
+    s = SimpleNamespace(personaje=p, rol='mundo', entity_id=p.entity_id, inventario={}, monstruos={},
+                        usuario=None, muerto=False, enviar=lambda *a: pk.extend(a), enviar_inmediato=lambda *a: pk.extend(a))
+    srv = app.Servidor.__new__(app.Servidor)
+
+    def pedir():
+        srv.manejar(s, 0x0006, None, None, 't', struct.pack('<HI', 202, p.entity_id))
+
+    pedir()
+    r.avanzar(0.3)
+    pk.clear()
+    for _ in range(6):                 # la rafaga de la asistencia: 6 en 0,3 s
+        pedir()
+        r.avanzar(0.05)
+    cd3 = [x for x in pk if isinstance(x, (bytes, bytearray)) and len(x) == 16
+           and struct.unpack_from('<HIBBII', x)[:5] == (0x001D, p.entity_id, 1, 3, 202)]
+    assert len(cd3) == 1                                   # uno solo, no uno por peticion
+    assert 0 < struct.unpack_from('<HIBBII', cd3[0])[5] <= 2000
+    assert p.mp == 5000 - cb.datos_magia(202)['mp']        # y no se lanzo de nuevo

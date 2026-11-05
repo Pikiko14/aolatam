@@ -729,6 +729,29 @@ def _falta_requisito(ses, item_id, ranura):
 ITEM_MASTERS_LOVE = 3382
 
 
+def _avisar_enfriamiento(ses, yo, magic_id, segundos, ahora):
+    """Al rechazar una habilidad (enfriamiento o la anterior aun lanzandose) se le dice al cliente cuanto le falta,
+    con el mismo 0x001D de kind 3 que manda cuando sale. Sin respuesta el cliente la daba por lista y la asistencia
+    automatica la volvia a pedir cada ~50 ms: 7.000 peticiones en minutos y el personaje pegado o a tirones
+    ("porque a veces se me queda pegado?? o me da tirones", 05/11/2026). Como mucho uno cada medio segundo por
+    habilidad, para no contestar la rafaga con otra."""
+    ms = int(max(0.0, segundos) * 1000)
+    if ms <= 0:
+        return
+    avisos = getattr(ses, '_avisos_enfriamiento', None)
+    if not isinstance(avisos, dict):
+        avisos = ses._avisos_enfriamiento = {}
+    if ahora - avisos.get(magic_id, 0) < 0.5:
+        return
+    avisos[magic_id] = ahora
+    try:
+        ses.enviar(struct.pack('<HIBBII', 0x001D, yo, 1, 3, int(magic_id), ms))
+        asyncio.get_event_loop().call_later(
+            ms / 1000.0, lambda: ses.enviar_inmediato(struct.pack('<HIBBII', 0x001D, yo, 1, 3, int(magic_id), 0)))
+    except Exception:
+        log.debug('aviso de enfriamiento', exc_info=True)
+
+
 def _ranura_libre(bolsa, desde=20, hasta=None):
     """Primera casilla vacia de la mochila o rango, o None si esta llena."""
     if hasta is not None:
@@ -13840,8 +13863,9 @@ class Servidor:
                     ses.ultimo_uso = _usos
                 _espera = _ahora_atk - _usos.get(tipo, 0)
                 if _espera < _cd:
-                    log.info(f"[{addr}] HABILIDAD {tipo} RECHAZADA: pidio a "
-                             f"los {_espera:.3f}s y su cooldown es {_cd:.3f}s")
+                    log.debug(f"[{addr}] HABILIDAD {tipo} RECHAZADA: pidio a "
+                              f"los {_espera:.3f}s y su cooldown es {_cd:.3f}s")
+                    _avisar_enfriamiento(ses, yo, tipo, _cd - _espera, _ahora_atk)
                     return
                 # UNA HABILIDAD A LA VEZ. Cada una tiene su cooldown (後置時間), pero no habia nada entre una y
                 # otra: el Angel Baby lanzaba Fighting Shield y Ferocious Song con 3 ms de diferencia y salian
@@ -13853,7 +13877,8 @@ class Servidor:
                 if not isinstance(_lanzando, dict):
                     _lanzando = ses._lanzando_hasta = {}
                 if _ahora_atk < _lanzando.get(_tipo_coste, 0):
-                    log.info(f"[{addr}] HABILIDAD {tipo} RECHAZADA: aun se esta lanzando la anterior de {_tipo_coste}")
+                    log.debug(f"[{addr}] HABILIDAD {tipo} RECHAZADA: aun se esta lanzando la anterior de {_tipo_coste}")
+                    _avisar_enfriamiento(ses, yo, tipo, _lanzando[_tipo_coste] - _ahora_atk, _ahora_atk)
                     return
                 _lanzando[_tipo_coste] = _ahora_atk + max(_cb.PAUSA_ENTRE_HABILIDADES,
                                                          float(mag.get('cast_time', 0) or 0) / 1000.0)
