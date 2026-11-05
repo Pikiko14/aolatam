@@ -919,6 +919,18 @@ def entidad_mundo(plantilla: bytes, estado: dict) -> bytes:
         struct.pack_into('<I', b, 71, int(estado['entidad']) & 0xFFFFFFFF)
     if estado.get('dueno') is not None:
         struct.pack_into('<I', b, 75, int(estado['dueno']) & 0xFFFFFFFF)
+    # Offset 38 (a2+0x28 -> v5+0x2e8 en sub_607C90): la FACCION, el mismo campo que el byte 60 del spawn del jugador
+    # (0x5e9853). Iba a 0 y en PvP (Outpost, Totem War) la mascota de un enemigo salia con el anillo verde de aliado
+    # ("porque al pet en pvp le sale esa faction verde??", 05/11/2026). Va la del dueno.
+    faccion = estado.get('faccion')
+    if faccion is None and estado.get('dueno') is not None:
+        try:
+            import presencia as _pr_fac
+            faccion = _pr_fac.faccion_de_entidad(int(estado['dueno']))
+        except Exception:
+            faccion = None
+    if faccion is not None:
+        b[38] = int(faccion) & 0xFF
     # Offset 53 (a2+55 -> v5+996 en sub_607C90): nivel de estrellas sobre la cabeza al pasar el raton
     b_star_m = bonos_de_ficha(estado)
     st_lvl_m = max(1, int(estado.get('estrellas') or calcular_estrellas_total(b_star_m)))

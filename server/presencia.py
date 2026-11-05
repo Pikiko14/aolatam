@@ -126,6 +126,22 @@ def entidad_de(ses) -> int:
     return e
 
 
+def faccion_de_entidad(eid):
+    """El codigo de faccion (login.CODIGO_FACCION) del jugador con esa entidad, publica o propia; None si no esta.
+    Lo usa mascotas.entidad_mundo para que la mascota lleve la faccion de su dueno."""
+    import login as _lg
+    eid = int(eid)
+    sesiones = [s for lista in list(_POR_MAPA.values()) for s in list(lista)]
+    for propia in (False, True):
+        for s in sesiones:
+            p = getattr(s, 'personaje', None)
+            if p is None:
+                continue
+            if (getattr(p, 'entity_id', None) if propia else getattr(s, '_entidad_publica', None)) == eid:
+                return _lg.CODIGO_FACCION.get(getattr(p, 'faction', ''), 5)
+    return None
+
+
 def liberar_entidad(ses):
     e = getattr(ses, '_entidad_publica', None)
     if e and e in _ENTIDADES_ASIGNADAS:
