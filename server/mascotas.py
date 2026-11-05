@@ -1633,7 +1633,8 @@ def es_respuesta_crianza(valor: int) -> bool:
 # opciones (petinfo.lua). Cada mascota tiene su tabla de reacciones (反應類別表 de pet.xml, del 1 al 12) y solo le
 # salen las escenas de ese 類型.
 CODIGO_CRIANZA, SUBTIPO_ESCENA = 17, 12
-CADA_ESCENA = 10 * 60          # segundos entre escenas con la mascota fuera
+CADA_ESCENA = 5 * 60           # segundos entre escenas con la mascota fuera
+PRIMERA_ESCENA = 60            # la primera, al minuto de sacarla (con 10 min no llegaba a verse: "sigue sin funcionar")
 REACCION = pathlib.Path(__file__).parent / 'plantillas' / 'reaccion_mascota.json'
 _REACCION = {}
 

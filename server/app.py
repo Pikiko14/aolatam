@@ -4124,7 +4124,7 @@ def _crianza_tick(ses, ahora):
         return
     prox = getattr(ses, '_proxima_crianza', None)
     if prox is None:
-        ses._proxima_crianza = ahora + _ms_cr.CADA_ESCENA
+        ses._proxima_crianza = ahora + _ms_cr.PRIMERA_ESCENA
         return
     if ahora < prox:
         return

@@ -37,9 +37,19 @@ def test_sale_el_cuadro_y_la_respuesta_suma_su_valor():
     s, f = _ses()
     app._crianza_tick(s, 1000.0)                                  # arranca el reloj
     assert not s.recibido
-    app._crianza_tick(s, 1000.0 + ms.CADA_ESCENA)
+    app._crianza_tick(s, 1000.0 + ms.PRIMERA_ESCENA)
     esc = s.crianza_escena
     assert [x for x in s.recibido if x == struct.pack('<HIBBII', 0x001D, s.personaje.entity_id, 1, 17, 12, esc)]
     valor = ms.situaciones()[str(esc)]['opciones'][0]['valor']
     app.Servidor.__new__(app.Servidor).manejar(s, 0x003E, None, None, 't', bytes([4]))
     assert f['crianza'] == valor and s.crianza_escena is None
+
+
+def test_comando_gm_pide_una_escena_ya():
+    import gm
+    s, f = _ses()
+    s.inventario = {30: 1}
+    s.personaje.mascotas = {'30': f}
+    f['ranura'] = 30
+    msg, pk = gm._pet(s, ['crianza'])
+    assert pk and s.crianza_escena and 'scene' in msg

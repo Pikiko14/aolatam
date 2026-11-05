@@ -463,7 +463,7 @@ def _ficha_pet(ses):
 def _pet(ses, args) -> tuple:
     """/pet level <n> [exp] | /pet exp <n> | /pet path 1|2 | /pet evolve 1|2."""
     import mascotas as _ms
-    uso = 'usage: /pet level <n> [exp] | /pet exp <n> | /pet path 1|2 | /pet evolve 1|2'
+    uso = "usage: /pet level <n> [exp] | /pet exp <n> | /pet path 1|2 | /pet evolve 1|2 | /pet crianza"
     if not args:
         return uso, []
     sub = str(args[0]).lower()
@@ -471,6 +471,17 @@ def _pet(ses, args) -> tuple:
     if not f:
         return 'no pet in the bag', []
     ramas = {'1': 'mean', 'mean': 'mean', '2': 'nice', 'nice': 'nice'}
+    if sub in ('crianza', 'aspect', 'escena'):
+        # /pet crianza: un cuadro de crianza YA, para probarlo (app._crianza_tick lo manda solo cada 5 min).
+        p = ses.personaje
+        if not (isinstance(getattr(p, 'mascota', None), dict) and p.mascota.get('fuera')):
+            return 'take your pet out first', []
+        escena = _ms.escena_para(p.mascota)
+        if not escena:
+            return 'this pet has no growth scenes (it does not evolve any more)', []
+        ses.crianza_escena = escena
+        return (f"pet growth scene {escena} (crianza {int(p.mascota.get('crianza', 0))})",
+                [_ms.paquete_escena(p.entity_id, escena)])
     if sub in ('level', 'nivel', 'lv', 'lvl'):
         if len(args) < 2:
             return 'usage: /pet level <n> [exp]', []
