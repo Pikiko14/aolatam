@@ -4,7 +4,7 @@ Un monstruo nuevo: el Wham Ogre del juego (sprite 110668) recoloreado con piel d
 de baston de caramelo, el gorro de Navidad del juego y barba blanca (los .spr salen de tools/santa_clausula_datos.py).
 
   monster 23901, sprite 119001 (npc.obd: carpeta \\mon\\M9001\\)
-  nivel 45, vida 500.000, ataque 450 / defensa 880, ataque magico 600 / defensa magica 450, critico 20 %
+  nivel 60, vida 500.000, ataque 450 / defensa 880, ataque magico 600 / defensa magica 450, critico 20 %
   habilidades: Cross Chop I (605, a uno) y Revolving Swords I (5706, en area); el dano sale de sus stats
   inmune a aturdir, congelar, inmovilizar, ralentizar y encantar
   evento: cada 24 h en un mapa al azar junto a las ciudades, con cartel arriba; se va a los 60 minutos
@@ -23,7 +23,7 @@ NOMBRE = 'Santa Clausula'
 
 # Las columnas de content.db (tabla monster) y su equivalente en monster.xml del cliente.
 STATS = {
-    'name': NOMBRE, 'sprite_id': str(SPRITE), 'level': '45', 'element': '人型', 'faction': '怪物陣營',
+    'name': NOMBRE, 'sprite_id': str(SPRITE), 'level': '60', 'element': '人型', 'faction': '怪物陣營',
     'hp': '500000', 'atk_avg': '450', 'atk_var': '45', 'def': '880', 'matk': '600', 'mdef': '450',
     'accuracy': '420', 'agility': '260', 'res_body': '50', 'res_mind': '50',
     'move_speed': '80', 'move_range': '8', 'atk_speed': '70', 'atk_range': '1', 'crit_rate': '20',
@@ -193,6 +193,10 @@ PROB_TRAJE = 0.10
 GACHAS_40 = tuple(range(89171, 89178))        # Level 40 Gear Gacha: arma, capa, accesorio, ligera, pesada, tunica, gema
 PROB_GACHA = 0.15
 CAMPANAS = ((3868, 0.05), (3869, 0.01))       # Gold / Platinum Christmas Bell
+# Las cajas Lv60 (05/11/2026): una por clase, una de armas y una de monturas, al 1% CADA UNA (tools/generar_lucky_bags.py,
+# cajas_santa): 89200 Swordsman, 89201 Axeman, 89202 Lancer, 89203 Archer, 89204 Mage, 89205 armas, 89206 monturas.
+CAJAS_60 = tuple(range(89200, 89207))
+PROB_CAJA_60 = 0.01
 
 
 def _cartel(texto):
@@ -240,6 +244,9 @@ def botin_para(hombre: bool, rng=None):
         sale.append(rng.choice(GACHAS_40))
     for it, p in CAMPANAS:
         if rng.random() < p:
+            sale.append(it)
+    for it in CAJAS_60:
+        if rng.random() < PROB_CAJA_60:
             sale.append(it)
     return sale
 

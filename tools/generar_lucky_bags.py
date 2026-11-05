@@ -186,6 +186,52 @@ def bolsas():
                    'contenido': contenido})
     for k, gacha in enumerate(gachas(items)):
         salida.append(dict({'id': ID_GACHA + k}, **gacha))
+    salida.extend(cajas_santa(items))
+    return salida
+
+
+# LAS CAJAS DE SANTA CLAUSULA (05/11/2026): solo las suelta el jefe de Navidad (server/santa_clausula.py), al 1% cada
+# una para cada jugador que le pego: "una box lvl 60 de cada clase, una box lvl 60 de armas y una box lvl 60 de rides".
+# No hay armadura clase S de nivel 60, asi que la de clase lleva su arma S, su escudo S (si usa), las capas y accesorios
+# S y la armadura Good (azul) de su tipo de nivel 55-60. Cada caja da UN objeto al azar.
+ID_SANTA = 89200
+CLASES_SANTA = ('Swordsman', 'Axeman', 'Lancer', 'Archer', 'Mage')
+REPARTO_CLASE = (('arma', 20.0), ('escudo', 10.0), ('extra', 20.0), ('ropa', 50.0))
+
+
+def _reparte(grupos):
+    """[[id, 1, peso]] repartiendo el % de cada grupo entre sus piezas (los grupos vacios se reparten entre el resto)."""
+    llenos = [(pct, ids) for pct, ids in grupos if ids]
+    total = sum(pct for pct, _ids in llenos) or 1
+    return [[i, 1, max(1, int(round(pct * 100000 / total / len(ids))))] for pct, ids in llenos for i in ids]
+
+
+def cajas_santa(items):
+    def de(cats, color, lo, hi, tipo=None):
+        return [int(f['id']) for f in _sin_repetir([f for f in items.values() if f['物品類別'] in cats
+                and f['顏色'] == color and lo <= _n(f['物品等級']) <= hi and _vale(f)
+                and (tipo is None or str(f['技能限制1']) == tipo)])]
+    extra = de(('飾品', '披風'), '黃', 60, 60)
+    salida = []
+    for k, (clase, armas, armadura, escudo) in enumerate(c for c in CLASES if c[0] in CLASES_SANTA):
+        grupos = {'arma': de(armas, '黃', 60, 60), 'escudo': de(('盾',), '黃', 60, 60) if escudo else [],
+                  'extra': extra, 'ropa': de(ARMADURA, '藍', 55, 60, armadura)}
+        contenido = _reparte([(pct, grupos[que]) for que, pct in REPARTO_CLASE])
+        salida.append({'id': ID_SANTA + k, 'nombre': 'Santa Lv60 %s Box' % clase, 'nivel': 60, 'pestana': None,
+                       'cantidades': True,
+                       'descripcion': "Santa Clausula's stolen gift. Open it to get one Lv60 %s item: a class S "
+                                      'weapon, shield, cape or accessory, or a piece of Quality armor.' % clase,
+                       'contenido': contenido})
+    armas = sorted({i for c in CLASES if c[0] in CLASES_SANTA for i in de(c[1], '黃', 60, 60)})
+    salida.append({'id': ID_SANTA + 5, 'nombre': 'Santa Lv60 Weapon Box', 'nivel': 60, 'pestana': None,
+                   'cantidades': True,
+                   'descripcion': "Santa Clausula's stolen gift. Open it to get one class S Lv60 weapon.",
+                   'contenido': _reparte([(100.0, armas)])})
+    monturas = de(('座騎',), '黃', 60, 60)
+    salida.append({'id': ID_SANTA + 6, 'nombre': 'Santa Lv60 Mount Box', 'nivel': 60, 'pestana': None,
+                   'cantidades': True,
+                   'descripcion': "Santa Clausula's stolen gift. Open it to get one class S Lv60 mount.",
+                   'contenido': _reparte([(100.0, monturas)])})
     return salida
 
 

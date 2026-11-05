@@ -53,11 +53,13 @@ def test_habilidades():
 
 
 def test_botin():
-    assert sc.botin_para(True, Dados(0.99, 0.99, 0.99, 0.99, 0.99, 0.99)) == [sc.CAJA]
-    todo_h = sc.botin_para(True, Dados(0.0, 0.0, 0.0, 0.0, 0.0, 0.0))
-    assert todo_h == [sc.CAJA, *sc.TRAJE_H, sc.GACHAS_40[0], 3868, 3869]
-    todo_m = sc.botin_para(False, Dados(0.0, 0.0, 0.0, 0.0, 0.0))
-    assert todo_m == [sc.CAJA, *sc.TRAJE_M, sc.GACHAS_40[0], 3868, 3869]
+    assert sc.botin_para(True, Dados()) == [sc.CAJA]
+    todo_h = sc.botin_para(True, Dados(*[0.0] * 13))
+    assert todo_h == [sc.CAJA, *sc.TRAJE_H, sc.GACHAS_40[0], 3868, 3869, *sc.CAJAS_60]
+    todo_m = sc.botin_para(False, Dados(*[0.0] * 12))
+    assert todo_m == [sc.CAJA, *sc.TRAJE_M, sc.GACHAS_40[0], 3868, 3869, *sc.CAJAS_60]
+    # cada caja tiene su 1%: con 0.009 sale, con 0.011 no
+    assert sc.botin_para(False, Dados(0.5, 0.5, 0.5, 0.5, 0.5, 0.009, 0.011, 0.011, 0.011, 0.011, 0.011, 0.011)) == [sc.CAJA, 89200]
 
 
 def test_proxima_hora():
