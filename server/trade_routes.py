@@ -615,8 +615,19 @@ def al_entrar_mapa(ses):
                 if e.get('suelo') and e['suelo']['stage'] == int(p.stage)]
     if paquetes:
         ses.enviar(*paquetes)
-    if any(e.get('portador') for e in _ENCARGOS.values()):
+    # Tambien con la carga EN EL SUELO: sigue en disputa y, al volver al mapa el que murio, el otro tiene que poder
+    # apuntarle ("la mercancia esta abajo, yo puedo atacarlo pero el no a mi", 06/11/2026). Solo se refrescaba si
+    # alguien la llevaba encima.
+    disputa = any(e.get('portador') or e.get('suelo') for e in _ENCARGOS.values())
+    if disputa:
         refrescar_marcas(ses)
+        try:
+            import asyncio
+            # Y otra vez cuando el cliente acaba de cargar el mapa, que la presentacion puede pisar el modo arena.
+            asyncio.get_event_loop().call_later(RETRASO_PD, lambda: refrescar_marcas(ses)
+                                                if getattr(ses, 'personaje', None) else None)
+        except RuntimeError:
+            pass
     # LA PD DEL JOB OTRA VEZ, un momento despues: al cargar el mapa el cliente recibe el inventario y vuelve a pintar
     # la fashion de verdad ("se pierde el traje de trader al pasar de mapa", 06/11/2026).
     # Ya al entrar (antes solo a 1 s y se veia el salto: "hace como 1 salto de 2 seg y luego le sale el traje",

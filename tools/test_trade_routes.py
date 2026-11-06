@@ -450,3 +450,16 @@ def test_con_la_carga_en_el_suelo_sigue_la_pelea(mundo, entorno):
     assert tr.puede_atacar(ladron, t) and tr.puede_atacar(t, ladron)
     h.personaje.stage = 30                                    # en otro mapa no hay disputa
     assert not tr.puede_atacar(ladron, h)
+
+
+def test_al_volver_al_mapa_con_la_carga_en_el_suelo_se_refrescan_las_marcas(mundo, monkeypatch):
+    """"la mercancia esta abajo, yo puedo atacarlo pero el no a mi" (06/11/2026): el que murio vuelve al mapa y el
+    Thief tiene que recibir otra vez el modo arena; solo se refrescaba si alguien llevaba la carga encima."""
+    t = _cargado(mundo)
+    t.personaje.tile_x, t.personaje.tile_y = 50, 50
+    tr.soltar(t, ahora=200)
+    refrescos = []
+    monkeypatch.setattr(tr, 'refrescar_marcas', lambda ses: refrescos.append(ses))
+    monkeypatch.setattr(app, '_trade_routes_vestir', lambda ses: None)
+    tr.al_entrar_mapa(t)
+    assert refrescos == [t]
