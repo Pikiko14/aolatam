@@ -8354,7 +8354,28 @@ def _usar_pergamino_revivir(ses, addr, ranura, pct):
 INTERVALO_LOGROS = 3.0
 
 
-CLAVE_TESORO = 'tesoro_piezas'      # mascara de bits (1..10) de los fragmentos anotados en el album
+CLAVE_TESORO = 'tesoro_piezas'      # mascara de bits (1..10) de los fragmentos anotados: lo de antes, se convierte
+CLAVE_TESORO_N = 'tesoro_hallados'  # cuantos fragmentos lleva el album (0..10), de CUALQUIER nivel
+TESORO_TOTAL = 10
+
+
+def tesoro_hallados(personaje) -> int:
+    """Los fragmentos anotados. El numero del Map Piece (1..10) es su NIVEL, no un hueco del mapa: diez de nivel 1
+    completan el album igual ("los mapas se pueden usar de cualquier nivel, no pide la secuencia, puede usar 10 lvl 1",
+    06/11/2026). Las fichas de antes guardaban una mascara: cuenta sus bits."""
+    lc = getattr(personaje, 'logros_cont', None) or {}
+    if CLAVE_TESORO_N in lc:
+        return max(0, min(TESORO_TOTAL, int(lc[CLAVE_TESORO_N] or 0)))
+    return bin(int(lc.get(CLAVE_TESORO, 0) or 0)).count('1')
+
+
+def anotar_fragmento(personaje):
+    """(ok, hallados) al anotar un fragmento: False si el album ya esta completo."""
+    n = tesoro_hallados(personaje)
+    if n >= TESORO_TOTAL:
+        return False, n
+    personaje.logros_cont[CLAVE_TESORO_N] = n + 1
+    return True, n + 1
 
 
 def _tesoro_paquete(ses):
@@ -8366,8 +8387,7 @@ def _tesoro_paquete(ses):
     "Found: n/10". Con mapa 0 es el mapa sin terminar.
     """
     _logros_datos(ses)
-    mascara = int(ses.personaje.logros_cont.get(CLAVE_TESORO, 0))
-    return struct.pack('<HIIIIIB', 0x012A, 0, 0, 0, bin(mascara).count('1'), 0, 0xF5)
+    return struct.pack('<HIIIIIB', 0x012A, 0, 0, 0, tesoro_hallados(ses.personaje), 0, 0xF5)
 
 
 def _logros_datos(ses):
@@ -18988,23 +19008,21 @@ class Servidor:
                 _logros_datos(ses)
                 _n_pieza = int(inv._col_item(item_id, '動態資料') or 0) if hasattr(inv, '_col_item') else 0
                 _n_pieza = _n_pieza or (int(item_id) - 3080)
-                _mask = int(ses.personaje.logros_cont.get(CLAVE_TESORO, 0))
                 if not 1 <= _n_pieza <= 10:
                     return
-                if _mask & (1 << (_n_pieza - 1)):
-                    # Que diga CUAL y cuantos lleva: con dos iguales parecia que no dejaba usar ninguno ("no me deja
-                    # usar 1 mapa, y apenas tengo 1 en el tesoro", 06/11/2026: eran dos Map Piece 1).
-                    _faltan = [str(i) for i in range(1, 11) if not _mask & (1 << (i - 1))]
-                    ses.enviar(_cl_tm.aviso('Map Piece %d is already recorded (%d/10). Missing: %s.'
-                                            % (_n_pieza, 10 - len(_faltan), ', '.join(_faltan)), tipo=0))
+                # Cualquier nivel cuenta, y se pueden repetir: diez Map Piece 1 completan el album.
+                _ok_tm, _hallados = anotar_fragmento(ses.personaje)
+                if not _ok_tm:
+                    ses.enviar(_cl_tm.aviso('Your treasure map is already complete (%d/%d).'
+                                            % (_hallados, TESORO_TOTAL), tipo=0))
                     return
-                ses.personaje.logros_cont[CLAVE_TESORO] = _mask | (1 << (_n_pieza - 1))
                 _sacar(ses, ranura, 1)
-                ses.enviar(*_refrescar(ses, [ranura]), _tesoro_paquete(ses))
+                ses.enviar(*_refrescar(ses, [ranura]), _tesoro_paquete(ses),
+                           _cl_tm.aviso('Map piece recorded (%d/%d).' % (_hallados, TESORO_TOTAL), tipo=0))
                 _guardar_bolsa(ses, cid)
                 _logros_guardar(ses)
-                log.info('[%s] fragmento %d del mapa del tesoro anotado (%d/10)', addr, _n_pieza,
-                         bin(ses.personaje.logros_cont[CLAVE_TESORO]).count('1'))
+                log.info('[%s] fragmento de nivel %d del mapa del tesoro anotado (%d/%d)', addr, _n_pieza,
+                         _hallados, TESORO_TOTAL)
                 return
 
             # Caso 0: objeto que da CREDITOS DE RANGO.
