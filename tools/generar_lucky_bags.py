@@ -70,7 +70,7 @@ PLANTILLA = (  # (texto, % de la bolsa, que)
     ('weapon (bag level)', 5.0, 'arma_baja'), ('weapon (+5 levels)', 1.0, 'arma_alta'),
     ('rare armor', 1.0, 'ropa_rara'), ('quality armor', 10 * _RESTO, 'ropa_azul'),
     ('gems x2', 5.0, 'gemas'),
-    ('Double Exp Card x3', 6 * _RESTO, (2017, 3)), ('Double Skill Exp Card x3', 6 * _RESTO, (2018, 3)),
+    ('Double Exp Card', 6 * _RESTO, (2017, 1)), ('Double Skill Exp Card', 6 * _RESTO, (2018, 1)),
     ('Super Broadcasting x2', 7 * _RESTO, (2003, 2)), ('Summon Book x2', 7 * _RESTO, (1333, 2)),
     ('Fly Book x2', 8 * _RESTO, (2987, 2)),
 )
@@ -242,8 +242,10 @@ def cajas_santa(items):
 #                              las mas fuertes (el FUERTES de arriba por ataque+defensa+agilidad+velocidad) al 0.1% cada una
 #   monturas mas bajas         MONTURAS_BAJAS en total (niveles 10 hasta el de la bolsa - 1), 5% como mucho cada una
 #   Ride Feed x5               el resto
+# Las cartas de EXP, el Ride Feed y los hammers salen de 1 en 1 (05/11/2026: "toda double skill exp, double skill,
+# ride feed y hammer ... que den las bag deben ser x1 unidad").
 # Las pesos van en milesimas de % (100000 = 100%) y la bolsa da las cantidades de su plantilla ('cantidades').
-RIDE_FEED, RIDE_FEED_CUANTOS = 4457, 5
+RIDE_FEED, RIDE_FEED_CUANTOS = 4457, 1     # x1 (05/11/2026), como las cartas de EXP
 MONTURAS_PROPIAS = {35: 10.0, 50: 5.0, 60: 5.0}
 MONTURAS_BAJAS = 25.0
 FUERTES, PCT_FUERTE, TOPE_CADA = 0.15, 0.1, 5.0
@@ -283,8 +285,9 @@ def bolsa_de_monturas(items, lo, hi):
     contenido += [[iid, 1, max(1, int(round(p * 1000)))] for iid, p in pct.items()]
     suma_propias = sum(pct[int(f['id'])] for f in propias)
     suma_bajas = sum(pct[int(f['id'])] for f in bajas)
-    texto = ('Ride Feed x%d %.1f%%, a lower-level mount or robot (Lv10-%d) %.1f%% (%.2f%% each), a Lv%d-%d mount or '
-             'robot %.1f%% (the strongest %.1f%% each)') % (RIDE_FEED_CUANTOS, feed, lo - 1, suma_bajas,
+    feed_txt = 'Ride Feed' if RIDE_FEED_CUANTOS == 1 else 'Ride Feed x%d' % RIDE_FEED_CUANTOS
+    texto = ('%s %.1f%%, a lower-level mount or robot (Lv10-%d) %.1f%% (%.2f%% each), a Lv%d-%d mount or '
+             'robot %.1f%% (the strongest %.1f%% each)') % (feed_txt, feed, lo - 1, suma_bajas,
                                                             suma_bajas / max(1, len(bajas)), lo, hi, suma_propias,
                                                             PCT_FUERTE)
     return contenido, texto

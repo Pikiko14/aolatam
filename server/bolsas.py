@@ -484,7 +484,8 @@ def abrir(item_id: int):
     if iid in TABLAS_PROPIAS:
         clave = 'propia:%d' % iid
         _TABLA_CACHE[clave] = list(TABLAS_PROPIAS[iid])
-        return _sorteo(clave)
+        sale = _sorteo(clave)
+        return (sale[0], 1) if sale and sale[1] > 1 and es_premio_unitario(sale[0]) else sale
     que = _cargar().get(iid) or _cargar_extra().get(iid)
     if not que:
         return None
@@ -498,7 +499,21 @@ def abrir(item_id: int):
         # UNA UNIDAD de cada premio en las bolsas del Item Mall: daban 12 cartas de EXP, 7 scrolls, 2 pestles...
         # (pedido del usuario el 31/10/2026). El tooltip dice lo mismo (tools/parche_lucky_bags.py).
         sale = (SCROLLS_DEL_MALL.get(sale[0], sale[0]), 1)
+    if sale and sale[1] > 1 and es_premio_unitario(sale[0]):
+        sale = (sale[0], 1)
     return sale
+
+
+# Las cartas de EXP (normales y de skill), el Ride Feed y los hammers salen de 1 en 1 de cualquier bolsa (05/11/2026:
+# "toda double skill exp, double skill, ride feed y hammer para intensificar que den las bag deben ser x1 unidad").
+PREMIOS_UNITARIOS = ('exp card', 'ride feed', 'hammer')
+
+
+def es_premio_unitario(item_id) -> bool:
+    nombre = _nombre_premio(item_id).lower()
+    if 'voucher' in nombre or 'ticket' in nombre:       # los vales de canje (Christmas Box) van con su cantidad
+        return False
+    return any(k in nombre for k in PREMIOS_UNITARIOS)
 
 
 # Con el nivel tope en 60, las bolsas del Item Mall no dan los scrolls High-effect (+350 ataque/defensa, +280 los

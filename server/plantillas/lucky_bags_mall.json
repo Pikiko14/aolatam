@@ -5,7 +5,7 @@
   "nivel": 60,
   "pestana": 28,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following (Lv55-60 Swordsman gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card x3 12.0%, Double Skill Exp Card x3 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
+  "descripcion": "Open it to get one of the following (Lv55-60 Swordsman gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card 12.0%, Double Skill Exp Card 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
   "contenido": [
    [
     340,
@@ -129,12 +129,12 @@
    ],
    [
     2017,
-    3,
+    1,
     12000
    ],
    [
     2018,
-    3,
+    1,
     12000
    ],
    [
@@ -161,7 +161,7 @@
   "nivel": 60,
   "pestana": 28,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following (Lv55-60 Axeman gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card x3 12.0%, Double Skill Exp Card x3 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
+  "descripcion": "Open it to get one of the following (Lv55-60 Axeman gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card 12.0%, Double Skill Exp Card 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
   "contenido": [
    [
     345,
@@ -285,12 +285,12 @@
    ],
    [
     2017,
-    3,
+    1,
     12000
    ],
    [
     2018,
-    3,
+    1,
     12000
    ],
    [
@@ -317,7 +317,7 @@
   "nivel": 60,
   "pestana": 28,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following (Lv55-60 Lancer gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card x3 12.0%, Double Skill Exp Card x3 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
+  "descripcion": "Open it to get one of the following (Lv55-60 Lancer gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card 12.0%, Double Skill Exp Card 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
   "contenido": [
    [
     350,
@@ -441,12 +441,12 @@
    ],
    [
     2017,
-    3,
+    1,
     12000
    ],
    [
     2018,
-    3,
+    1,
     12000
    ],
    [
@@ -473,7 +473,7 @@
   "nivel": 60,
   "pestana": 28,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following (Lv55-60 Archer gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card x3 12.0%, Double Skill Exp Card x3 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
+  "descripcion": "Open it to get one of the following (Lv55-60 Archer gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card 12.0%, Double Skill Exp Card 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
   "contenido": [
    [
     355,
@@ -597,12 +597,12 @@
    ],
    [
     2017,
-    3,
+    1,
     12000
    ],
    [
     2018,
-    3,
+    1,
     12000
    ],
    [
@@ -629,7 +629,7 @@
   "nivel": 60,
   "pestana": 28,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following (Lv55-60 Mage gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card x3 12.0%, Double Skill Exp Card x3 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
+  "descripcion": "Open it to get one of the following (Lv55-60 Mage gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card 12.0%, Double Skill Exp Card 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
   "contenido": [
    [
     360,
@@ -753,12 +753,12 @@
    ],
    [
     2017,
-    3,
+    1,
     12000
    ],
    [
     2018,
-    3,
+    1,
     12000
    ],
    [
@@ -785,7 +785,7 @@
   "nivel": 60,
   "pestana": 28,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following (Lv55-60 Assassin gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card x3 12.0%, Double Skill Exp Card x3 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
+  "descripcion": "Open it to get one of the following (Lv55-60 Assassin gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card 12.0%, Double Skill Exp Card 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
   "contenido": [
    [
     13502,
@@ -909,12 +909,12 @@
    ],
    [
     2017,
-    3,
+    1,
     12000
    ],
    [
     2018,
-    3,
+    1,
     12000
    ],
    [
@@ -941,7 +941,7 @@
   "nivel": 50,
   "pestana": 28,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following (Lv50-59 Swordsman gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card x3 12.0%, Double Skill Exp Card x3 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
+  "descripcion": "Open it to get one of the following (Lv50-59 Swordsman gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card 12.0%, Double Skill Exp Card 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
   "contenido": [
    [
     599,
@@ -1065,12 +1065,12 @@
    ],
    [
     2017,
-    3,
+    1,
     12000
    ],
    [
     2018,
-    3,
+    1,
     12000
    ],
    [
@@ -1097,7 +1097,7 @@
   "nivel": 50,
   "pestana": 28,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following (Lv50-59 Axeman gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card x3 12.0%, Double Skill Exp Card x3 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
+  "descripcion": "Open it to get one of the following (Lv50-59 Axeman gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card 12.0%, Double Skill Exp Card 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
   "contenido": [
    [
     600,
@@ -1221,12 +1221,12 @@
    ],
    [
     2017,
-    3,
+    1,
     12000
    ],
    [
     2018,
-    3,
+    1,
     12000
    ],
    [
@@ -1253,7 +1253,7 @@
   "nivel": 50,
   "pestana": 28,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following (Lv50-59 Lancer gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card x3 12.0%, Double Skill Exp Card x3 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
+  "descripcion": "Open it to get one of the following (Lv50-59 Lancer gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card 12.0%, Double Skill Exp Card 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
   "contenido": [
    [
     601,
@@ -1377,12 +1377,12 @@
    ],
    [
     2017,
-    3,
+    1,
     12000
    ],
    [
     2018,
-    3,
+    1,
     12000
    ],
    [
@@ -1409,7 +1409,7 @@
   "nivel": 50,
   "pestana": 28,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following (Lv50-59 Archer gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card x3 12.0%, Double Skill Exp Card x3 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
+  "descripcion": "Open it to get one of the following (Lv50-59 Archer gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card 12.0%, Double Skill Exp Card 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
   "contenido": [
    [
     588,
@@ -1533,12 +1533,12 @@
    ],
    [
     2017,
-    3,
+    1,
     12000
    ],
    [
     2018,
-    3,
+    1,
     12000
    ],
    [
@@ -1565,7 +1565,7 @@
   "nivel": 50,
   "pestana": 28,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following (Lv50-59 Mage gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card x3 12.0%, Double Skill Exp Card x3 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
+  "descripcion": "Open it to get one of the following (Lv50-59 Mage gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card 12.0%, Double Skill Exp Card 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
   "contenido": [
    [
     606,
@@ -1689,12 +1689,12 @@
    ],
    [
     2017,
-    3,
+    1,
     12000
    ],
    [
     2018,
-    3,
+    1,
     12000
    ],
    [
@@ -1721,7 +1721,7 @@
   "nivel": 50,
   "pestana": 28,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following (Lv50-59 Assassin gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card x3 12.0%, Double Skill Exp Card x3 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
+  "descripcion": "Open it to get one of the following (Lv50-59 Assassin gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card 12.0%, Double Skill Exp Card 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
   "contenido": [
    [
     13501,
@@ -1845,12 +1845,12 @@
    ],
    [
     2017,
-    3,
+    1,
     12000
    ],
    [
     2018,
-    3,
+    1,
     12000
    ],
    [
@@ -1877,7 +1877,7 @@
   "nivel": 40,
   "pestana": 28,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following (Lv40-49 Swordsman gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card x3 12.0%, Double Skill Exp Card x3 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
+  "descripcion": "Open it to get one of the following (Lv40-49 Swordsman gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card 12.0%, Double Skill Exp Card 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
   "contenido": [
    [
     585,
@@ -2016,12 +2016,12 @@
    ],
    [
     2017,
-    3,
+    1,
     12000
    ],
    [
     2018,
-    3,
+    1,
     12000
    ],
    [
@@ -2048,7 +2048,7 @@
   "nivel": 40,
   "pestana": 28,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following (Lv40-49 Axeman gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card x3 12.0%, Double Skill Exp Card x3 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
+  "descripcion": "Open it to get one of the following (Lv40-49 Axeman gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card 12.0%, Double Skill Exp Card 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
   "contenido": [
    [
     586,
@@ -2187,12 +2187,12 @@
    ],
    [
     2017,
-    3,
+    1,
     12000
    ],
    [
     2018,
-    3,
+    1,
     12000
    ],
    [
@@ -2219,7 +2219,7 @@
   "nivel": 40,
   "pestana": 28,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following (Lv40-49 Lancer gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card x3 12.0%, Double Skill Exp Card x3 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
+  "descripcion": "Open it to get one of the following (Lv40-49 Lancer gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card 12.0%, Double Skill Exp Card 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
   "contenido": [
    [
     587,
@@ -2353,12 +2353,12 @@
    ],
    [
     2017,
-    3,
+    1,
     12000
    ],
    [
     2018,
-    3,
+    1,
     12000
    ],
    [
@@ -2385,7 +2385,7 @@
   "nivel": 40,
   "pestana": 28,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following (Lv40-49 Archer gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card x3 12.0%, Double Skill Exp Card x3 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
+  "descripcion": "Open it to get one of the following (Lv40-49 Archer gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card 12.0%, Double Skill Exp Card 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
   "contenido": [
    [
     456,
@@ -2524,12 +2524,12 @@
    ],
    [
     2017,
-    3,
+    1,
     12000
    ],
    [
     2018,
-    3,
+    1,
     12000
    ],
    [
@@ -2556,7 +2556,7 @@
   "nivel": 40,
   "pestana": 28,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following (Lv40-49 Mage gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card x3 12.0%, Double Skill Exp Card x3 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
+  "descripcion": "Open it to get one of the following (Lv40-49 Mage gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card 12.0%, Double Skill Exp Card 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
   "contenido": [
    [
     592,
@@ -2695,12 +2695,12 @@
    ],
    [
     2017,
-    3,
+    1,
     12000
    ],
    [
     2018,
-    3,
+    1,
     12000
    ],
    [
@@ -2727,7 +2727,7 @@
   "nivel": 40,
   "pestana": 28,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following (Lv40-49 Assassin gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card x3 12.0%, Double Skill Exp Card x3 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
+  "descripcion": "Open it to get one of the following (Lv40-49 Assassin gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card 12.0%, Double Skill Exp Card 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
   "contenido": [
    [
     13498,
@@ -2851,12 +2851,12 @@
    ],
    [
     2017,
-    3,
+    1,
     12000
    ],
    [
     2018,
-    3,
+    1,
     12000
    ],
    [
@@ -2883,7 +2883,7 @@
   "nivel": 30,
   "pestana": 28,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following (Lv30-39 Swordsman gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card x3 12.0%, Double Skill Exp Card x3 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
+  "descripcion": "Open it to get one of the following (Lv30-39 Swordsman gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card 12.0%, Double Skill Exp Card 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
   "contenido": [
    [
     163,
@@ -3012,12 +3012,12 @@
    ],
    [
     2017,
-    3,
+    1,
     12000
    ],
    [
     2018,
-    3,
+    1,
     12000
    ],
    [
@@ -3044,7 +3044,7 @@
   "nivel": 30,
   "pestana": 28,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following (Lv30-39 Axeman gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card x3 12.0%, Double Skill Exp Card x3 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
+  "descripcion": "Open it to get one of the following (Lv30-39 Axeman gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card 12.0%, Double Skill Exp Card 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
   "contenido": [
    [
     164,
@@ -3173,12 +3173,12 @@
    ],
    [
     2017,
-    3,
+    1,
     12000
    ],
    [
     2018,
-    3,
+    1,
     12000
    ],
    [
@@ -3205,7 +3205,7 @@
   "nivel": 30,
   "pestana": 28,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following (Lv30-39 Lancer gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card x3 12.0%, Double Skill Exp Card x3 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
+  "descripcion": "Open it to get one of the following (Lv30-39 Lancer gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card 12.0%, Double Skill Exp Card 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
   "contenido": [
    [
     165,
@@ -3334,12 +3334,12 @@
    ],
    [
     2017,
-    3,
+    1,
     12000
    ],
    [
     2018,
-    3,
+    1,
     12000
    ],
    [
@@ -3366,7 +3366,7 @@
   "nivel": 30,
   "pestana": 28,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following (Lv30-39 Archer gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card x3 12.0%, Double Skill Exp Card x3 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
+  "descripcion": "Open it to get one of the following (Lv30-39 Archer gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card 12.0%, Double Skill Exp Card 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
   "contenido": [
    [
     233,
@@ -3495,12 +3495,12 @@
    ],
    [
     2017,
-    3,
+    1,
     12000
    ],
    [
     2018,
-    3,
+    1,
     12000
    ],
    [
@@ -3527,7 +3527,7 @@
   "nivel": 30,
   "pestana": 28,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following (Lv30-39 Mage gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card x3 12.0%, Double Skill Exp Card x3 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
+  "descripcion": "Open it to get one of the following (Lv30-39 Mage gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card 12.0%, Double Skill Exp Card 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
   "contenido": [
    [
     243,
@@ -3656,12 +3656,12 @@
    ],
    [
     2017,
-    3,
+    1,
     12000
    ],
    [
     2018,
-    3,
+    1,
     12000
    ],
    [
@@ -3688,7 +3688,7 @@
   "nivel": 30,
   "pestana": 28,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following (Lv30-39 Assassin gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card x3 12.0%, Double Skill Exp Card x3 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
+  "descripcion": "Open it to get one of the following (Lv30-39 Assassin gear): weapon (bag level) 5.0%, weapon (+5 levels) 1.0%, rare armor 1.0%, quality armor 20.0%, gems x2 5.0%, Double Exp Card 12.0%, Double Skill Exp Card 12.0%, Super Broadcasting x2 14.0%, Summon Book x2 14.0%, Fly Book x2 16.0%.",
   "contenido": [
    [
     13495,
@@ -3807,12 +3807,12 @@
    ],
    [
     2017,
-    3,
+    1,
     12000
    ],
    [
     2018,
-    3,
+    1,
     12000
    ],
    [
@@ -3839,11 +3839,11 @@
   "nivel": 60,
   "pestana": 31,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following: Ride Feed x5 70.0%, a lower-level mount or robot (Lv10-54) 25.0% (0.26% each), a Lv55-60 mount or robot 5.0% (the strongest 0.1% each).",
+  "descripcion": "Open it to get one of the following: Ride Feed 70.0%, a lower-level mount or robot (Lv10-54) 25.0% (0.26% each), a Lv55-60 mount or robot 5.0% (the strongest 0.1% each).",
   "contenido": [
    [
     4457,
-    5,
+    1,
     70000
    ],
    [
@@ -4650,11 +4650,11 @@
   "nivel": 50,
   "pestana": 31,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following: Ride Feed x5 70.0%, a lower-level mount or robot (Lv10-44) 25.0% (0.33% each), a Lv45-54 mount or robot 5.0% (the strongest 0.1% each).",
+  "descripcion": "Open it to get one of the following: Ride Feed 70.0%, a lower-level mount or robot (Lv10-44) 25.0% (0.33% each), a Lv45-54 mount or robot 5.0% (the strongest 0.1% each).",
   "contenido": [
    [
     4457,
-    5,
+    1,
     70000
    ],
    [
@@ -5306,11 +5306,11 @@
   "nivel": 35,
   "pestana": 31,
   "cantidades": true,
-  "descripcion": "Open it to get one of the following: Ride Feed x5 65.0%, a lower-level mount or robot (Lv10-29) 25.0% (1.92% each), a Lv30-39 mount or robot 10.0% (the strongest 0.1% each).",
+  "descripcion": "Open it to get one of the following: Ride Feed 65.0%, a lower-level mount or robot (Lv10-29) 25.0% (1.92% each), a Lv30-39 mount or robot 10.0% (the strongest 0.1% each).",
   "contenido": [
    [
     4457,
-    5,
+    1,
     65000
    ],
    [
