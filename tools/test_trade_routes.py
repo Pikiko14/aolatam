@@ -1,6 +1,6 @@
 """Trade Routes, fase 1 (05/11/2026): jobs con espera de 7 dias y PD, encargo comprado con oro, entrega en la ciudad de
 destino con ganancia al azar, premio repartido entre los Hunters, un vale para cada uno, IP repetida en el grupo,
-50% mas lento con carga y sin teletransportes."""
+30% mas lento con carga y sin teletransportes."""
 import pathlib
 import random
 import sys
@@ -139,7 +139,7 @@ def test_con_carga_mas_lento_y_sin_teletransporte(monkeypatch):
     s = _trader()
     assert tr.factor_velocidad(s) == 1.0 and tr.bloquea_teleport(s) is None
     tr.aceptar(s, tr.GRAIN, ahora=100)
-    assert tr.factor_velocidad(s) == 0.5
+    assert tr.factor_velocidad(s) == 0.7
     assert tr.bloquea_teleport(s) == 'You cannot teleport while carrying cargo.'
     import travel_items
     with pytest.raises(travel_items.Rechazo):
@@ -233,7 +233,7 @@ def test_fence_no_en_el_mapa_del_robo(mundo):
     assert not ok and 'another Fence' in msgs[0]
     ladron.personaje.stage = 30                                # Cryptic Moon Swamp
     ok, msgs = tr.entregar_fence(ladron, ahora=300, rng=random.Random(4))
-    assert ok and ladron.oro == 10_000_000 + 500_000 and not tr.lleva_carga(ladron)
+    assert ok and ladron.oro == 10_000_000 + 2_000_000 and not tr.lleva_carga(ladron)
     assert any(it in tr.VALES for it in ladron.inventario.values())
     assert not tr._ENCARGOS
 
@@ -487,3 +487,32 @@ def test_el_aro_es_de_su_bando_y_no_los_hace_companeros(mundo, monkeypatch):
     assert equipo(tr.marcas_para(ladron, t), 1) == [tr.EQUIPO_CARAVANA]
     assert equipo(tr.marcas_para(t, ladron), 9) == [tr.EQUIPO_THIEF]
     assert tr.EQUIPO_CARAVANA != tr.EQUIPO_THIEF
+
+
+def test_cargas_pequenas_el_trader_cobra_el_doble(mundo):
+    """"desde 50k, 100k, 200k, 300k, 400k y ganan el doble de lo que inviertes los trader" (06/11/2026)."""
+    assert [tr.CARGAS[k]['precio'] for k in tr.ORDEN_CARGAS][:5] == [50_000, 100_000, 200_000, 300_000, 400_000]
+    t = _con_job('Baco', 1, '1.1.1.1', tr.TRADER, oro=1_000_000)
+    mundo.append(t)
+    assert tr.aceptar(t, tr.WINE, ahora=100, rng=random.Random(1))[0]
+    e = tr.encargo_de(t)
+    t.personaje.stage = e['destino']
+    antes = t.personaje.oro
+    assert tr.entregar(t, ahora=200, rng=random.Random(1))[0]
+    assert t.personaje.oro - antes == 600_000
+    assert all(c['thief'] == c['precio'] for c in tr.CARGAS.values())
+    assert tr.CARGAS[tr.WINE]['thief'] == 300_000 and tr.CARGAS[tr.WINE]['hunters'] == 300_000
+    # el Guild Clerk las ofrece todas, de la mas barata a la mas cara
+    lineas, _ = tr.opcion(t, tr.OP_ENCARGO)
+    assert lineas is not None
+
+
+def test_comprar_una_carga_se_anuncia_sin_decir_cual(mundo, monkeypatch):
+    """"un broadcast cada que alguien compre una mercancia, solo que la compro" (06/11/2026)."""
+    t = _con_job('Baco', 1, '1.1.1.1', tr.TRADER)
+    otro = _ses('Zorro', 9, '9.9.9.9')
+    mundo.extend([t, otro])
+    monkeypatch.setattr(tr, '_sesiones', lambda: [t, otro])
+    tr.aceptar(t, tr.HERB, ahora=100, rng=random.Random(1))
+    assert 'Baco bought a cargo!' in otro.avisos
+    assert not any('Herb' in a or 'to ' in a for a in otro.avisos)

@@ -5,7 +5,7 @@ Diseño pactado con el usuario (resumen; el texto completo esta en la conversaci
   * JOBS. El Guild Clerk de las cuatro ciudades da el job. Se cambia cada 7 dias (/job del GM salta la espera). Con el
     job activo se lleva su PD (paper doll) y no se cambia hasta dejar el job.
   * ENCARGO (Trader). Montado, sin otro encargo y con una casilla libre, compra la carga con su oro y recibe el objeto
-    de carga. El destino es otra de las cuatro ciudades, al azar. Mientras lleva carga va un 50% mas lento (montado o
+    de carga. El destino es otra de las cuatro ciudades, al azar. Mientras lleva carga va un 30% mas lento (montado o
     no) y no puede teletransportarse: tiene que ir por los mapas (portales a pie).
   * ENTREGA. En el Guild Clerk de la ciudad de destino, dentro del tiempo. El Trader recupera lo invertido y gana un
     extra al azar (1M como mucho, en la Gem); los Hunters de su grupo que esten en el mismo mapa se reparten su premio;
@@ -56,19 +56,31 @@ EQUIPO_CARAVANA = 1             # Trader y Hunter
 EQUIPO_THIEF = 2
 
 RANURA_MONTURA = 10
-FACTOR_CON_CARGA = 0.5          # 50% mas lento con carga, montado o a pie
+FACTOR_CON_CARGA = 0.7          # 30% mas lento con carga, montado o a pie ("un 30% no un 50%", 06/11/2026)
 
 # Las cargas: objeto propio (item9, cliente_local), precio, minutos, ganancia del Trader al azar, bolsa de los Hunters
 # (se reparte entre ellos) y lo que gana el Thief que la entrega en el Fence.
 GRAIN, SILK, GEM = 1, 2, 3
+HERB, WOOL, SPICE, WINE, TEA = 4, 5, 6, 7, 8
 CARGAS = {
     GRAIN: dict(nombre='Grain Cargo', item=89074, icono=5146, suelo=62329, precio=500_000, minutos=20,
-                ganancia=(100_000, 300_000), hunters=500_000, thief=250_000),
+                ganancia=(100_000, 300_000), hunters=500_000, thief=500_000),
     SILK: dict(nombre='Silk Cargo', item=89075, icono=5729, suelo=62330, precio=2_000_000, minutos=25,
-               ganancia=(300_000, 600_000), hunters=1_000_000, thief=500_000),
+               ganancia=(300_000, 600_000), hunters=1_000_000, thief=2_000_000),
     GEM: dict(nombre='Gem Cargo', item=89076, icono=8731, suelo=60092, precio=5_000_000, minutos=30,
-              ganancia=(600_000, 1_000_000), hunters=2_000_000, thief=1_000_000),
+              ganancia=(600_000, 1_000_000), hunters=2_000_000, thief=5_000_000),
 }
+# LAS PEQUENAS (06/11/2026: "agreguemos desde 50k, 100k, 200k, 300k, 400k y ganan el doble de lo que inviertes los
+# trader nada mas; el % de ganancia queda igual para los demas"): el Trader cobra el doble de lo invertido (ganancia =
+# precio) y los Hunters en la misma proporcion que la Grain (100% del precio).
+# EL THIEF COBRA LO QUE SE INVIRTIO, en todas ("el thief gana lo que se invirtio", 06/11/2026).
+for _k, _nombre, _precio in ((HERB, 'Herb Cargo', 50_000), (WOOL, 'Wool Cargo', 100_000),
+                             (SPICE, 'Spice Cargo', 200_000), (WINE, 'Wine Cargo', 300_000),
+                             (TEA, 'Tea Cargo', 400_000)):
+    CARGAS[_k] = dict(nombre=_nombre, item=89073 + _k, icono=5146, suelo=62329, precio=_precio, minutos=15,
+                      ganancia=(_precio, _precio), hunters=_precio, thief=_precio)
+# El orden del dialogo del Guild Clerk: de la mas barata a la mas cara.
+ORDEN_CARGAS = sorted(CARGAS, key=lambda k: CARGAS[k]['precio'])
 ITEMS_CARGA = {c['item']: k for k, c in CARGAS.items()}
 
 # Un vale de canje al azar para cada uno al entregar: Mount Coin (monturas) y los tickets de Event Overview > Exchange.
@@ -90,6 +102,7 @@ M_SALUDO, M_JOB_ACTUAL, M_CARGAS, M_ENCARGO, M_FENCE, M_EN_CAMINO = 300001, 3000
 OP_TRADER, OP_HUNTER, OP_THIEF, OP_DEJAR = 300010, 300011, 300012, 300013
 OP_ENCARGO, OP_ENTREGAR, OP_FENCE, OP_SALIR = 300014, 300015, 300016, 300019
 OP_GRAIN, OP_SILK, OP_GEM = 300020, 300021, 300022
+OP_HERB, OP_WOOL, OP_SPICE, OP_WINE, OP_TEA = 300023, 300024, 300025, 300026, 300027
 TEXTOS = {
     M_SALUDO: 'Choose your job. You can change it again in 7 days.',
     M_JOB_ACTUAL: 'You are a %1. What do you want to do?',
@@ -102,11 +115,16 @@ TEXTOS = {
     OP_DEJAR: 'Quit my job', OP_ENCARGO: 'Take a cargo order', OP_ENTREGAR: 'Deliver my cargo', OP_SALIR: 'Leave',
     OP_GRAIN: 'Grain Cargo (500,000 gold, 20 min)', OP_SILK: 'Silk Cargo (2,000,000 gold, 25 min)',
     OP_GEM: 'Gem Cargo (5,000,000 gold, 30 min)',
+    OP_HERB: 'Herb Cargo (50,000 gold, 15 min)', OP_WOOL: 'Wool Cargo (100,000 gold, 15 min)',
+    OP_SPICE: 'Spice Cargo (200,000 gold, 15 min)', OP_WINE: 'Wine Cargo (300,000 gold, 15 min)',
+    OP_TEA: 'Tea Cargo (400,000 gold, 15 min)',
 }
 OPCIONES = frozenset((OP_TRADER, OP_HUNTER, OP_THIEF, OP_DEJAR, OP_ENCARGO, OP_ENTREGAR, OP_FENCE, OP_SALIR,
-                      OP_GRAIN, OP_SILK, OP_GEM))
+                      OP_GRAIN, OP_SILK, OP_GEM, OP_HERB, OP_WOOL, OP_SPICE, OP_WINE, OP_TEA))
 OP_A_JOB = {OP_TRADER: TRADER, OP_HUNTER: HUNTER, OP_THIEF: THIEF}
-OP_A_CARGA = {OP_GRAIN: GRAIN, OP_SILK: SILK, OP_GEM: GEM}
+OP_A_CARGA = {OP_GRAIN: GRAIN, OP_SILK: SILK, OP_GEM: GEM, OP_HERB: HERB, OP_WOOL: WOOL, OP_SPICE: SPICE,
+              OP_WINE: WINE, OP_TEA: TEA}
+CARGA_A_OP = {k: op for op, k in OP_A_CARGA.items()}
 RETRATO = 2
 
 # Los encargos activos, por char_id del Trader que la compro. SE GUARDAN EN DISCO (data/trade_routes.json): cada
@@ -230,6 +248,14 @@ def anunciar_job(ses):
     if not job:
         return
     texto = '%s is now a %s!' % (ses.personaje.nombre, NOMBRE_JOB[job])
+    for s in _sesiones() or [ses]:
+        aviso(s, texto)
+
+
+def anunciar_compra(ses):
+    """A todos los conectados: que alguien compro una carga, NADA MAS (ni cual ni a donde): "puede salir una
+    notificacion, un broadcast cada que alguien compre una mercancia, solo que la compro" (06/11/2026)."""
+    texto = '%s bought a cargo!' % ses.personaje.nombre
     for s in _sesiones() or [ses]:
         aviso(s, texto)
 
@@ -366,6 +392,7 @@ def aceptar(ses, tipo: int, ahora=None, rng=None):
                                 portador=p.char_id, suelo=None, robada_en=None)
     guardar()
     refrescar_marcas(ses)
+    anunciar_compra(ses)
     log.info('%s compra %s por %d: de %s a %s', p.nombre, c['nombre'], c['precio'],
              CIUDADES[int(p.stage)], CIUDADES[destino])
     return True, 'Deliver the %s to %s within %d minutes.' % (c['nombre'], CIUDADES[destino], c['minutos'])
@@ -954,7 +981,7 @@ def opcion(ses, op: int, ahora=None, rng=None):
         ok, msg = poner_job(ses, OP_A_JOB.get(op, 0), ahora)
         return None, [msg]
     if op == OP_ENCARGO:
-        return _linea(M_CARGAS, [OP_GRAIN, OP_SILK, OP_GEM, OP_SALIR]), []
+        return _linea(M_CARGAS, [CARGA_A_OP[k] for k in ORDEN_CARGAS] + [OP_SALIR]), []
     if op in OP_A_CARGA:
         ok, msg = aceptar(ses, OP_A_CARGA[op], ahora, rng)
         return None, [msg]
