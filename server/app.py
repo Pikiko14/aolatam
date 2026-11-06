@@ -13369,17 +13369,25 @@ class Servidor:
                                             dano_pet = pet_targ.recibir(_poder_pet, es_magico=_pet_skill_magic,
                                                                         mult=_cb.MULT_DANO_MASCOTA, var_pct=0.03,
                                                                         es_pet=True)
+                                            # COMO UN HECHIZO DEL JUGADOR: primero el lanzamiento (0x0011 fase 0 con su cast time) y
+                                            # el cierre, la vida y el numero cuando acaba de lanzarse. Mandado todo junto, el cliente
+                                            # recibia la vida antes de terminar el hechizo y el monstruo no perdia vida ("los poderes
+                                            # del pet no le quitan hp", 05/11/2026).
+                                            _cast_pet = max(100, int(sk_datos.get('cast_time') or 100))
                                             _pkgs_pet_hit = (
                                                 _cb.ataque(pet_eid, pet_targ.entity_id,
                                                            _cb.anim_de_monstruo(f_pet.get('nombre', ''))),
                                                 _cb.numero_de_dano(pet_eid, pet_targ.entity_id, dano_pet,
                                                                    ataque=sk_usada, efecto=ef_pet,
+                                                                   cast_time=_cast_pet,
                                                                    es_magia=_pet_skill_magic),
+                                            )
+                                            _pkgs_pet_fin = (
                                                 _cb.cierre_de_dano(pet_eid, pet_targ.entity_id,
                                                                    ataque=sk_usada, efecto=ef_pet,
                                                                    es_magia=_pet_skill_magic),
+                                                _cb.atributo(pet_targ.entity_id, pet_targ.porcentaje if pet_targ.hp > 0 else 0),
                                                 _cb.numero_flotante(pet_targ.entity_id, dano_pet),
-                                                _cb.atributo(pet_targ.entity_id, pet_targ.porcentaje if pet_targ.hp > 0 else 0)
                                             )
                                             # Sin espejo: notificar_companero_accion ya se lo manda a los demas; con los dos lo veian doble
                                             # ("los pet pegan doble, usan el poder 2 veces", 31/10/2026).
@@ -13388,6 +13396,18 @@ class Servidor:
                                             import presencia as _pr_pet_hit
                                             _pr_pet_hit.notificar_companero_accion(
                                                 ses, *_pkgs_pet_hit)
+                                            _retraso_pet = _cast_pet / 1000.0
+
+                                            def _fin_poder_pet(_p=_pkgs_pet_fin, _s=ses):
+                                                try:
+                                                    (getattr(_s, 'enviar_inmediato', None) or _s.enviar)(*_p)
+                                                    __import__('presencia').notificar_companero_accion(_s, *_p)
+                                                except Exception:
+                                                    log.debug('fin del poder de la mascota', exc_info=True)
+                                            try:
+                                                asyncio.get_event_loop().call_later(_retraso_pet, _fin_poder_pet)
+                                            except RuntimeError:
+                                                _fin_poder_pet()
                                             _combo_p = _cb.combo_de(sk_usada)
                                             if _combo_p and _combo_p.get('golpes', 1) > 1:
                                                 import pet_combos as _pet_combos
@@ -13420,7 +13440,9 @@ class Servidor:
                                         if pet_targ.hp <= 0:
                                             pet_targ.hp = 0
                                             ses.pet_objetivo = None
-                                            _procesar_muerte_monstruo(ses, pet_targ, yo, addr, espera=0.1)
+                                            _procesar_muerte_monstruo(
+                                                ses, pet_targ, yo, addr,
+                                                espera=0.1 + (_retraso_pet if sk_usada else 0.0))
                                 else:
                                     if ahora >= f_pet.get('proximo_paso', 0):
                                         spd_p = _velocidad_pet(f_pet)

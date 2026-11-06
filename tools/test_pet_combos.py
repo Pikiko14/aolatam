@@ -34,14 +34,15 @@ def app_tree():
 
 def original_first_hit_packets(pet, target, damage):
     # Exercise the actual tuple used by the IA, without starting a server.
-    node = next(n for n in ast.walk(app_tree()) if isinstance(n, ast.Assign)
-                and any(isinstance(t, ast.Name) and t.id == '_pkgs_pet_hit'
-                        for t in n.targets))
+    # El lanzamiento (_pkgs_pet_hit) y lo que sale al acabar de lanzarse (_pkgs_pet_fin: cierre, vida y numero).
+    nodes = [next(n for n in ast.walk(app_tree()) if isinstance(n, ast.Assign)
+                  and any(isinstance(t, ast.Name) and t.id == name for t in n.targets))
+             for name in ('_pkgs_pet_hit', '_pkgs_pet_fin')]
     scope = {'_cb': combate, 'pet_eid': 777, 'pet_targ': target,
              'dano_pet': damage, 'f_pet': pet, 'sk_usada': 6588,
-             'ef_pet': 288, '_pet_skill_magic': False}
-    exec(compile(ast.Module(body=[node], type_ignores=[]), '<pet first hit>', 'exec'), scope)
-    return scope['_pkgs_pet_hit']
+             'ef_pet': 288, '_pet_skill_magic': False, '_cast_pet': 100}
+    exec(compile(ast.Module(body=nodes, type_ignores=[]), '<pet first hit>', 'exec'), scope)
+    return scope['_pkgs_pet_hit'] + scope['_pkgs_pet_fin']
 
 
 @pytest.fixture
@@ -188,3 +189,18 @@ def test_ia_waits_for_combo_to_finish_before_another_attack():
     assert not eval(condition, scope)
     scope['ahora'] = 100.3
     assert eval(condition, scope)
+
+
+def test_power_damage_arrives_after_the_cast(battle):
+    """Los poderes del pet no le quitan hp (05/11/2026): la vida y el numero van al acabar el lanzamiento, como
+    en un hechizo del jugador, no en el mismo envio que el 0x0011 de inicio."""
+    nodes = {name: next(n for n in ast.walk(app_tree()) if isinstance(n, ast.Assign)
+                        and any(isinstance(t, ast.Name) and t.id == name for t in n.targets))
+             for name in ('_pkgs_pet_hit', '_pkgs_pet_fin')}
+    scope = {'_cb': combate, 'pet_eid': 777, 'pet_targ': battle.target, 'dano_pet': 100, 'f_pet': battle.pet,
+             'sk_usada': 2524, 'ef_pet': 48, '_pet_skill_magic': True, '_cast_pet': 500}
+    exec(compile(ast.Module(body=list(nodes.values()), type_ignores=[]), '<pet power>', 'exec'), scope)
+    start = [struct.unpack_from('<H', p)[0] for p in scope['_pkgs_pet_hit']]
+    end = [struct.unpack_from('<H', p)[0] for p in scope['_pkgs_pet_fin']]
+    assert start.count(0x0011) == 1 and 0x0013 not in start
+    assert end.count(0x0011) == 1 and 0x0013 in end
