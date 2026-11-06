@@ -2567,6 +2567,10 @@ def _pet_alternar(ses, addr, ranura):
         ses.enviar(_cl_peq.aviso('Please un-equip this pet before summoning it.', tipo=0))
         return
     f = _pet_ficha(ses, ranura)
+    if not f.get('fuera') and _ms.esta_muerta(f):
+        import clases as _cl_muerta
+        ses.enviar(_cl_muerta.aviso('This pet is dead. Revive it with the Pet Expert.', tipo=0))
+        return
     f['fuera'] = not f.get('fuera')
     p = ses.personaje
     if not f['fuera']:
@@ -4249,7 +4253,10 @@ def _mascota_muere(dueno, f_pet, eid, matador):
     f_pet['intimidad'] = max(40, int(f_pet.get('intimidad', 60)) - 10)
     f_pet['fuera'] = False
     f_pet['entidad'] = 0
-    f_pet['hp'] = max(1, int(f_pet.get('hp_max') or 100))
+    # Queda MUERTA (vida 0) hasta revivirla en el Pet Expert; antes se guardaba con la vida llena ("llega a 0 ... sigue
+    # vivo, debe estar death para revivirlo en el pet expert", 05/11/2026).
+    f_pet['hp'] = 0
+    f_pet['muerta'] = True
     dueno.pet_entity_id = None
     dueno.pet_objetivo = None
     for visor in _pr._vivas(_pr.clave_de_mapa(dueno, p.stage)) or [dueno]:
@@ -4284,6 +4291,43 @@ def _mascota_muere(dueno, f_pet, eid, matador):
     except RuntimeError:
         _guardar()
     log.info('muere la mascota %s de %s', f_pet.get('nombre'), p.nombre)
+
+
+def _revivir_mascotas(ses, addr, cuerpo):
+    """0x004A de la ventana "Pet revival" (Pet Expert): `[u8 n][u16 ranura]*n`. Revive gratis las mascotas muertas de
+    esas casillas (vida y mana llenos) y les reenvia la ficha 0x0065 y la casilla."""
+    import mascotas as _ms
+    import clases as _cl_rv
+    n = cuerpo[0]
+    ranuras = []
+    for i in range(n):
+        o = 1 + 2 * i
+        if o + 2 > len(cuerpo):
+            break
+        r = struct.unpack_from('<H', cuerpo, o)[0]
+        if r not in ranuras:
+            ranuras.append(r)
+    p = ses.personaje
+    salida, hechas = [], []
+    for r in ranuras:
+        if not ses.inventario.get(r):
+            continue
+        f = (getattr(p, 'mascotas', None) or {}).get(str(r))
+        if not _ms.revivir(f):
+            continue
+        hechas.append(r)
+        salida.append(_ms.armar(f))
+    if not hechas:
+        ses.enviar(_cl_rv.aviso('There is no dead pet to revive.', tipo=0))
+        return
+    salida.extend(_refrescar(ses, hechas))
+    for r in hechas:
+        _nom = ((getattr(p, 'mascotas', None) or {}).get(str(r)) or {}).get('nombre') or 'pet'
+        salida.append(_cl_rv.aviso('Your pet %s has revived.' % _nom, tipo=0))
+    ses.enviar(*salida)
+    if getattr(ses, 'usuario', None):
+        cuentas.guardar_mascota(ses.usuario, p.char_id, None, p.mascotas)
+    log.info('[%s] revividas %d mascotas en el Pet Expert: %s', addr, len(hechas), hechas)
 
 
 def _danar_mascota_rival(ses, pet_eid, rival, f_rival, eid_rival, dano, sk, ef, magia, anim):
@@ -13603,6 +13647,11 @@ class Servidor:
 
         if opcode == 0x004B and ses.rol == 'mundo' and cuerpo:
             _contribuir_liga(ses, cuerpo, self.mundos)
+            return
+
+        # Ventana "Pet revival" del Pet Expert: 0x004A [u8 n][u16 ranura]*n (Angel.exe 0x621820, botones 2968/2969).
+        if opcode == 0x004A and ses.rol == 'mundo' and ses.personaje and cuerpo:
+            _revivir_mascotas(ses, addr, cuerpo)
             return
 
         # FUSION (ventana WND_FUSE): ver fusion.py.

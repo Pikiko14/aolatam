@@ -429,6 +429,22 @@ def hp_eff(estado: dict) -> int:
     return max(1, min(hp_max_eff(estado), val))
 
 
+def esta_muerta(estado) -> bool:
+    """La mascota murio y no se ha revivido en el Pet Expert: no se puede sacar."""
+    return isinstance(estado, dict) and bool(estado.get('muerta'))
+
+
+def revivir(estado: dict) -> bool:
+    """La revive con la vida y el mana llenos. Devuelve False si no estaba muerta."""
+    if not esta_muerta(estado):
+        return False
+    estado['muerta'] = False
+    estado['hp'] = max(1, int(estado.get('hp_max') or 100))
+    if estado.get('mp_max') is not None:
+        estado['mp'] = int(estado['mp_max'])
+    return True
+
+
 def armar(estado: dict) -> bytes:
     """El 0x0065 con el estado de una mascota (sub_60ADC0 en Angel.exe)."""
     b = bytearray(TAM)
@@ -503,6 +519,11 @@ def armar(estado: dict) -> bytes:
     # Nivel y experiencia en 64 bits (+35 exp, +43 flag=1, +51 exp_max)
     struct.pack_into('<I', b, 31, nv)
     struct.pack_into('<QQQ', b, 35, exp, 1, exp_max)
+
+    # Muerta (llego a 0): vida actual 0. Con eso el cliente la pinta muerta y la lista en la ventana "Pet revival" del
+    # Pet Expert (0x664e30: categoria 0x17 y vida < 1), que pide revivirla con el 0x004A.
+    if esta_muerta(estado):
+        h_eff = 0
 
     # Vida y mana actuales + base + maximos (+59..+83)
     struct.pack_into('<IIIIII', b, 59, h_eff, m_eff, hp_max, h_max_eff, mp_max, m_max_eff)
@@ -730,6 +751,8 @@ def entrada(plantilla: bytes, estado: dict) -> bytes:
             val_eff = int(v) + int(b_star.get('hp' if campo == 'hp' else 'mp', 0))
             if int(estado.get('saciedad') or 0) > 100:
                 val_eff = int(round(val_eff * 3.5))
+            if campo == 'hp' and esta_muerta(estado):
+                val_eff = 0
             struct.pack_into('<I', e, off, int(val_eff) & 0xFFFFFFFF)
         else:
             struct.pack_into('<I', e, off, int(v) & 0xFFFFFFFF)
