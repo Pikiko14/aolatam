@@ -18992,7 +18992,11 @@ class Servidor:
                 if not 1 <= _n_pieza <= 10:
                     return
                 if _mask & (1 << (_n_pieza - 1)):
-                    ses.enviar(_cl_tm.aviso('You have already recorded this map piece.', tipo=0))
+                    # Que diga CUAL y cuantos lleva: con dos iguales parecia que no dejaba usar ninguno ("no me deja
+                    # usar 1 mapa, y apenas tengo 1 en el tesoro", 06/11/2026: eran dos Map Piece 1).
+                    _faltan = [str(i) for i in range(1, 11) if not _mask & (1 << (i - 1))]
+                    ses.enviar(_cl_tm.aviso('Map Piece %d is already recorded (%d/10). Missing: %s.'
+                                            % (_n_pieza, 10 - len(_faltan), ', '.join(_faltan)), tipo=0))
                     return
                 ses.personaje.logros_cont[CLAVE_TESORO] = _mask | (1 << (_n_pieza - 1))
                 _sacar(ses, ranura, 1)
