@@ -261,9 +261,14 @@ def _spawn(ses):
     # insignia, y los demas jugadores salian con el cuerpo por defecto.
     bolsa = getattr(ses, 'inventario', None) or {}
 
+    # Con job de Trade Routes manda la PD del job (trade_routes.PD) sobre la fashion.
+    try:
+        _pd_job = __import__('trade_routes').pd_de(ses)
+    except Exception:
+        _pd_job = {}
     for idx, (r_fash, r_eq) in enumerate(((167, 1), (168, 2), (169, 3), (170, 4),
                                           (171, 5), (172, 6), (173, 7), (174, 10))):
-        it = int(bolsa.get(r_fash) or bolsa.get(r_eq) or 0)
+        it = int(_pd_job.get(r_fash) or bolsa.get(r_fash) or bolsa.get(r_eq) or 0)
         struct.pack_into('<I', b, 64 + idx * 4, it)
     struct.pack_into('<I', b, 96, int(bolsa.get(3) or 0))
     struct.pack_into('<I', b, 100, int(bolsa.get(175) or 0))

@@ -294,6 +294,28 @@ def _parchear_cast_rapido_xml_bytes(xml_bytes: bytes) -> bytes:
     return txt.encode('utf-8') if cambio[0] else xml_bytes
 
 
+def _parchear_msg_propios_xml_bytes(xml_bytes: bytes, textos=None) -> bytes:
+    """Los textos propios de msg.xml (trade_routes.TEXTOS: el Guild Clerk). Anade los que falten y corrige los que
+    cambiaron."""
+    if textos is None:
+        import trade_routes
+        textos = trade_routes.TEXTOS
+    txt = xml_bytes.decode('utf-8', errors='ignore')
+    nuevas = []
+    for mid, texto in sorted(textos.items()):
+        fila = '<字串 編號="%d" 文字="%s" />' % (mid, html.escape(texto, quote=True))
+        vieja = re.search(r'<字串 編號="%d" [^>]*/>' % mid, txt)
+        if vieja:
+            if vieja.group(0) != fila:
+                txt = txt[:vieja.start()] + fila + txt[vieja.end():]
+        else:
+            nuevas.append('    ' + fila + chr(13) + chr(10))
+    if nuevas:
+        txt = txt.replace('</root>', ''.join(nuevas) + '</root>', 1)
+    out = txt.encode('utf-8')
+    return out if out != xml_bytes.decode('utf-8', errors='ignore').encode('utf-8') else xml_bytes
+
+
 def _parchear_magias_propias_xml_bytes(xml_bytes: bytes) -> bytes:
     """Anade a magic.xml las filas de MAGIAS_PROPIAS que falten."""
     txt = xml_bytes.decode('utf-8', errors='ignore')
@@ -346,9 +368,23 @@ def _set_recolector():
 
 
 SET_RECOLECTOR = _set_recolector()
+
+
+# TRADE ROUTES (trade_routes.py): las tres cargas, intransferibles. Solo se llevan; se entregan en el Guild Clerk.
+def _linea_xml_carga(c):
+    desc = ('Trade Routes cargo. Deliver it at the Guild Clerk of its destination city before time runs out. '
+            'It cannot be traded, sold, dropped or stored.')
+    return ('    <道具 編號="%d" 原型介面="%d" 基本名稱="%s" 物品類別="一般" 重量="1" log等級="60" 說明定義="%s" '
+            '不可交易="是" />') % (c['item'], c['icono'], c['nombre'], desc)
+
+
+def _cargas_trade_routes():
+    import trade_routes
+    return [trade_routes.CARGAS[k] for k in sorted(trade_routes.CARGAS)]
 _IDS_LUCKY_BAGS = {b['id'] for b in LUCKY_BAGS_MALL} | {p['id'] for p in SET_RECOLECTOR}
 LINEAS_ITEM9_PROPIAS = ((83266, LINEA_XML_MEDALLA), (ITEM_CAJA_55, LINEA_XML_CAJA_55),
                         (ITEM_MONEDA_MONTURA, LINEA_XML_MONEDA_MONTURA)) + tuple(
+    (c['item'], _linea_xml_carga(c)) for c in _cargas_trade_routes()) + tuple(
     (iid, _linea_xml_maleta_pd(iid)) for iid in MALETAS_PD) + tuple(
     (aura[0], _linea_xml_aura(aura)) for aura in AURAS_LOW) + tuple(
     (pieza[0], _linea_xml_pd_invierno(pieza)) for pieza in PD_INVIERNO) + tuple(
@@ -796,6 +832,14 @@ def registrar_medalla_en_servidor():
                      'update26'))
                 con.commit()
                 log.info("Item %d (Mount Coin) registrado en corpus/content.db", ITEM_MONEDA_MONTURA)
+            for _c_tr in _cargas_trade_routes():
+                if not con.execute('SELECT id FROM item9 WHERE id = ?', (str(_c_tr['item']),)).fetchone():
+                    con.execute(
+                        'INSERT INTO item9 (id, "原型介面", "基本名稱", "物品類別", weight, "log等級", "不可交易", _pak) '
+                        'VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                        (str(_c_tr['item']), str(_c_tr['icono']), _c_tr['nombre'], '一般', '1', '60', '是', 'update26'))
+                    con.commit()
+                    log.info("Item %d (%s, Trade Routes) registrado en corpus/content.db", _c_tr['item'], _c_tr['nombre'])
             for iid, _, nombre, _ in MALETAS_INVIERNO:
                 if not con.execute('SELECT id FROM item9 WHERE id = ?', (str(iid),)).fetchone():
                     con.execute(
@@ -868,6 +912,7 @@ def registrar_medalla_en_servidor():
             propios.update({str(pieza[0]): pieza[4] for pieza in PD_INVIERNO})
             propios.update({str(maleta[0]): maleta[2] for maleta in MALETAS_INVIERNO})
             propios[str(ITEM_MONEDA_MONTURA)] = 'Mount Coin'
+            propios.update({str(c['item']): c['nombre'] for c in _cargas_trade_routes()})
             propios.update({str(b['id']): b['nombre'] for b in LUCKY_BAGS_MALL})
             propios.update({str(p['id']): p['nombre'] for p in SET_RECOLECTOR})
             if isinstance(nombres, dict) and any(k not in nombres for k in propios):
@@ -1222,6 +1267,18 @@ def aplicar_modo_estacion(modo: str = None) -> str:
                 reemplazos[ruta_pak] = raw_mag
             else:
                 otros_paks.setdefault(pak_mag, {})[ruta_pak] = raw_mag
+
+    # Textos propios de msg.xml (los menus del Guild Clerk de Trade Routes). Siempre desde el original (.bak).
+    ruta_pak = r'SETTING\ENG\MSG.XML'
+    pak_msg = indice.get(ruta_pak, pak26)
+    bak_msg = pak_msg.with_name(pak_msg.name + '.bak')
+    raw_msg = _extraer_archivo_pak(bak_msg if bak_msg.exists() else pak_msg, ruta_pak)
+    if raw_msg:
+        raw_msg = _parchear_msg_propios_xml_bytes(raw_msg)
+        if pak_msg == pak26:
+            reemplazos[ruta_pak] = raw_msg
+        else:
+            otros_paks.setdefault(pak_msg, {})[ruta_pak] = raw_msg
 
     # NPCs de eventos que el cliente pinta solo desde sus sp*.xml: se quitan
     # los de NPCS_OCULTOS partiendo SIEMPRE del original (.bak), asi que al

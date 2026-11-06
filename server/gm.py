@@ -51,11 +51,14 @@ _CMDS_ANIM = ('anim', 'golpe')
 # rango I (valor 1). Sirve para averiguar si un valor (p.ej. 0) le quita al cliente un
 # hechizo, que es lo que haria falta para que el rango II tape al I sin reloguear.
 _CMDS_HECHIZO = ('hechizo', 'spellpkt')
+# Trade Routes (trade_routes.py): /job <nombre> <trader|hunter|thief|none>, /caravana info | cancelar <nombre>, y /aro <n>
+# para probar en el juego que color sale con cada valor del aro de equipo (el evento quiere uno morado).
+_CMDS_TRADE = ('job', 'caravana', 'aro')
 _CMDS = frozenset(('help',) + _CMDS_ITEM + _CMDS_LEVEL + _CMDS_SETLEVEL + _CMDS_GOLD
                   + _CMDS_LEVELALL + _CMDS_SKILLS + _CMDS_SKILLSALL + _CMDS_SKILLS5
                   + _CMDS_CLEARSKILLS + _CMDS_PET + _CMDS_QUEST + _CMDS_BALL
                   + _CMDS_GUILDLEVEL + _CMDS_GUILDREP + _CMDS_GUILD
-                  + _CMDS_TW + _CMDS_FARM + _CMDS_SETMAP + _CMDS_ANIM + _CMDS_HECHIZO)
+                  + _CMDS_TW + _CMDS_FARM + _CMDS_SETMAP + _CMDS_ANIM + _CMDS_HECHIZO + _CMDS_TRADE)
 # _CMDS se quedaba sin 'gold' y 'setlevel' (se anadieron arriba, al vuelo: no se tocan las
 # tuplas que ya tenia cada quien para no reordenar nada). No cambia nada vivo: _CMDS solo lo
 # usa texto_de(), y nada del servidor llama a texto_de() hoy (ver mas abajo, PALABRAS).
@@ -566,6 +569,8 @@ def parsear(texto: str):
     cmd = parts[0].lower()
     if cmd == 'help':
         return ('help',)
+    if cmd in _CMDS_TRADE:
+        return ('trade', cmd, parts[1:])
     if cmd in _CMDS_ITEM:
         if len(parts) < 2:
             return ('err', 'usage: /item <id> [qty]')
@@ -718,6 +723,50 @@ def poner_quest(ses, qid: int, paso: int) -> str:
     return msg
 
 
+def _trade(ses, cmd, args) -> str:
+    import struct
+    import trade_routes as tr
+    a = _app()
+    if cmd == 'aro':
+        try:
+            n = int(args[0]) if args else 1
+        except ValueError:
+            return 'usage: /aro <n>'
+        p = ses.personaje
+        import holy_battlefield as hb
+        ses.enviar(hb.equipo(p.entity_id, n), struct.pack('<HIBBII', 0x001D, p.entity_id, 1, 42, p.entity_id, 1 if n else 0))
+        return 'aro %d puesto (0 lo quita)' % n
+    if cmd == 'caravana':
+        if not args or args[0].lower() == 'info':
+            return tr.info()
+        if args[0].lower() in ('cancelar', 'cancel') and len(args) > 1:
+            quien = ' '.join(args[1:]).lower()
+            for s in a._tw_sesiones():
+                p = getattr(s, 'personaje', None)
+                if p and p.nombre.lower() == quien:
+                    tr.expirar(s)
+                    return 'cargo of %s cancelled' % p.nombre
+            return 'player not online'
+        return 'usage: /caravana info | /caravana cancelar <name>'
+    if len(args) < 2:
+        return 'usage: /job <name> <trader|hunter|thief|none>'
+    jobs = {'trader': tr.TRADER, 'hunter': tr.HUNTER, 'thief': tr.THIEF, 'none': 0, 'ninguno': 0}
+    job = jobs.get(args[-1].lower())
+    if job is None:
+        return 'job must be trader, hunter, thief or none'
+    quien = ' '.join(args[:-1]).lower()
+    for s in a._tw_sesiones():
+        p = getattr(s, 'personaje', None)
+        if p and p.nombre.lower() == quien:
+            ok, msg = tr.poner_job(s, job, forzar=True)
+            if ok:
+                a._logros_guardar(s)
+                a._trade_routes_vestir(s)
+                tr.aviso(s, msg)
+            return '%s: %s' % (p.nombre, msg)
+    return 'player not online'
+
+
 def _avisar(ses, msg: str):
     import clases as _cl
     try:
@@ -738,6 +787,10 @@ def aplicar(ses, parsed) -> str:
         msg = dar_item(ses, parsed[1], parsed[2])
         if not msg.startswith('gave '):
             _avisar(ses, msg)
+        return msg
+    if kind == 'trade':
+        msg = _trade(ses, parsed[1], parsed[2])
+        _avisar(ses, msg)
         return msg
     if kind == 'gold':
         msg = dar_oro(ses, parsed[1], parsed[2])

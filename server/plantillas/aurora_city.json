@@ -1129,6 +1129,21 @@
    ],
    "direccion": 6,
    "visible": 1
+  },
+  {
+   "entity_id": 143350,
+   "nombre": "Guild Clerk",
+   "npc_type": 1734,
+   "sprite": 40056,
+   "klass": 199,
+   "monstruo": false,
+   "tile": [
+    192,
+    183
+   ],
+   "direccion": 6,
+   "visible": 1,
+   "puesto_por": "trade_routes (05/11/2026)"
   }
  ],
  "recursos": [

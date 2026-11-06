@@ -35,6 +35,8 @@ def _point(stage,x,y):
 def _ready(s):
     if not getattr(s,'personaje',None) or getattr(s,'muerto',False) or getattr(s,'mapa_cargando',False):raise Rechazo('Wait until your character is ready.')
     if _event(s.personaje.stage):raise Rechazo('Teleport items cannot be used in this event or private room.')
+    _carga=__import__('trade_routes').bloquea_teleport(s)
+    if _carga:raise Rechazo(_carga)
 
 
 def _move(s,point):

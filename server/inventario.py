@@ -1505,6 +1505,8 @@ def puede_transferir(item_id, estado=None) -> bool:
     ligado al ultimo: "se debe validar si es un item que se puede tradear y que tenga rest time disponible, sino no se
     puede trade ni vender" (02/11/2026)."""
     import house_services
+    if int(item_id or 0) in __import__('trade_routes').ITEMS_CARGA:      # la carga de Trade Routes, nunca
+        return False
     fila = house_services.xml_rows('item.xml').get(int(item_id)) or {}
     if fila.get('不可交易') == '是':
         return False

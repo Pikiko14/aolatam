@@ -1,0 +1,165 @@
+"""Trade Routes, fase 1 (05/11/2026): jobs con espera de 7 dias y PD, encargo comprado con oro, entrega en la ciudad de
+destino con ganancia al azar, premio repartido entre los Hunters, un vale para cada uno, IP repetida en el grupo,
+50% mas lento con carga y sin teletransportes."""
+import pathlib
+import random
+import sys
+from types import SimpleNamespace as NS
+
+import pytest
+
+RAIZ = pathlib.Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(RAIZ / 'server'))
+import app  # noqa: E402
+import cliente_local  # noqa: E402
+import equipos  # noqa: E402
+import trade_routes as tr  # noqa: E402
+
+HOMBRE, MUJER = [1, 0, 0, 0, 0], [0, 0, 0, 0, 0]
+
+
+def _ses(nombre, cid, ip, stage=3, oro=10_000_000, montado=True, apariencia=HOMBRE):
+    p = NS(nombre=nombre, char_id=cid, entity_id=cid, stage=stage, oro=oro, logros_cont={}, apariencia=apariencia)
+    inv = {10: 3001} if montado else {}
+    avisos = []
+    return NS(personaje=p, addr=(ip, 5000 + cid), oro=oro, inventario=inv, cantidades={}, usuario=None,
+              avisos=avisos, enviar=lambda *pk: None)
+
+
+@pytest.fixture(autouse=True)
+def entorno(monkeypatch):
+    tr._ENCARGOS.clear()
+    grupos = {}
+
+    def dar(ses, item_id, n=1):
+        libre = next(r for r in range(20, 120) if r not in ses.inventario)
+        ses.inventario[libre] = int(item_id)
+        return 'dado %dx x (%d) en la casilla %d' % (n, item_id, libre)
+    monkeypatch.setattr(app, '_gm_dar_item', dar)
+    monkeypatch.setattr(app, '_refrescar', lambda *a, **k: [])
+    monkeypatch.setattr(app, '_guardar_bolsa', lambda *a, **k: None)
+    monkeypatch.setattr(tr, 'aviso', lambda s, t: s.avisos.append(t))
+    monkeypatch.setattr(equipos, 'grupo_de', lambda s: grupos.get(id(s), []))
+    return grupos
+
+
+def _grupo(grupos, *miembros):
+    for m in miembros:
+        grupos[id(m)] = list(miembros)
+
+
+def test_job_y_espera_de_7_dias():
+    s = _ses('Baco', 1, '1.1.1.1')
+    assert tr.poner_job(s, tr.TRADER, ahora=1000)[0]
+    ok, msg = tr.poner_job(s, tr.THIEF, ahora=1000 + 86400)
+    assert not ok and msg.startswith('You can change your job again in 6 days')
+    assert tr.poner_job(s, tr.THIEF, ahora=1000 + 7 * 86400)[0]
+    assert tr.poner_job(s, tr.HUNTER, ahora=1000 + 7 * 86400, forzar=True)[0]     # /job del GM
+
+
+def test_pd_por_job_y_sexo():
+    s = _ses('Baco', 1, '1.1.1.1')
+    assert tr.pd_de(s) == {}
+    tr.poner_job(s, tr.THIEF, ahora=1)
+    assert tr.pd_de(s)[168] == 70525                       # Holy Thief's Suit (M)
+    s.personaje.apariencia = MUJER
+    assert tr.pd_de(s)[168] == 70521                       # Holy Thief's Dress (F)
+    assert tr.fashion_bloqueada(s, 168) and not tr.fashion_bloqueada(s, 30)
+
+
+def _trader(**kw):
+    s = _ses('Baco', 1, '1.1.1.1', **kw)
+    tr.poner_job(s, tr.TRADER, ahora=1)
+    return s
+
+
+def test_comprar_carga_cobra_y_da_el_objeto():
+    s = _trader()
+    ok, msg = tr.aceptar(s, tr.SILK, ahora=100, rng=random.Random(1))
+    assert ok and msg.startswith('Deliver the Silk Cargo to ') and 'within 25 minutes' in msg
+    assert s.oro == 8_000_000 and tr.lleva_carga(s)
+    assert tr.encargo_de(s)['destino'] != 3
+    assert not tr.aceptar(s, tr.GRAIN, ahora=100)[0]        # ya tiene uno
+
+
+@pytest.mark.parametrize('cambio, texto', [
+    (dict(montado=False), 'You must be riding a mount'),
+    (dict(oro=100), 'You need 5,000,000 gold'),
+    (dict(stage=16), 'taken in the cities'),
+])
+def test_requisitos_del_encargo(cambio, texto):
+    s = _trader(**cambio)
+    ok, msg = tr.aceptar(s, tr.GEM, ahora=100)
+    assert not ok and texto in msg and not tr.lleva_carga(s)
+
+
+def test_misma_ip_en_el_grupo(entorno):
+    s, h = _trader(), _ses('Pipe', 2, '1.1.1.1')
+    tr.poner_job(h, tr.HUNTER, ahora=1)
+    _grupo(entorno, s, h)
+    ok, msg = tr.aceptar(s, tr.GRAIN, ahora=100)
+    assert not ok and 'same IP' in msg
+
+
+def test_entrega_con_ganancia_hunters_y_vales(entorno):
+    s = _trader()
+    h1, h2, lejos = _ses('Pipe', 2, '2.2.2.2'), _ses('Lolo', 3, '3.3.3.3'), _ses('Lejos', 4, '4.4.4.4')
+    for h in (h1, h2, lejos):
+        tr.poner_job(h, tr.HUNTER, ahora=1)
+    _grupo(entorno, s, h1, h2, lejos)
+    tr.aceptar(s, tr.GEM, ahora=100, rng=random.Random(2))
+    destino = tr.encargo_de(s)['destino']
+    assert not tr.entregar(s, ahora=200)[0]                  # aun en la ciudad de salida
+    for x in (s, h1, h2):
+        x.personaje.stage = destino
+    lejos.personaje.stage = 16                               # no esta en el mapa: no cobra
+    ok, msgs = tr.entregar(s, ahora=300, rng=random.Random(3))
+    assert ok and not tr.lleva_carga(s) and not tr.encargo_de(s)
+    ganancia = s.oro - 10_000_000                           # 10M - 5M invertidos + 5M devueltos + ganancia
+    assert 600_000 <= ganancia <= 1_000_000
+    assert h1.oro == h2.oro == 10_000_000 + 1_000_000 and lejos.oro == 10_000_000
+    for x in (s, h1, h2):
+        assert any(it in tr.VALES for it in x.inventario.values())
+    assert not any(it in tr.VALES for it in lejos.inventario.values())
+
+
+def test_se_acaba_el_tiempo():
+    s = _trader()
+    tr.aceptar(s, tr.GRAIN, ahora=100)
+    tr.tick(s, ahora=100 + 20 * 60 + 1)
+    assert not tr.lleva_carga(s) and not tr.encargo_de(s)
+    assert 'Time is up. The cargo was lost.' in s.avisos
+    assert s.oro == 9_500_000                               # la inversion se pierde
+
+
+def test_con_carga_mas_lento_y_sin_teletransporte(monkeypatch):
+    s = _trader()
+    assert tr.factor_velocidad(s) == 1.0 and tr.bloquea_teleport(s) is None
+    tr.aceptar(s, tr.GRAIN, ahora=100)
+    assert tr.factor_velocidad(s) == 0.5
+    assert tr.bloquea_teleport(s) == 'You cannot teleport while carrying cargo.'
+    import travel_items
+    with pytest.raises(travel_items.Rechazo):
+        travel_items._ready(NS(personaje=NS(stage=3), muerto=False, mapa_cargando=False, inventario=s.inventario))
+
+
+def test_la_carga_no_se_transfiere():
+    import inventario
+    assert not inventario.puede_transferir(tr.CARGAS[tr.GEM]['item'])
+
+
+def test_los_textos_van_al_msg_xml():
+    x = '<root>\n    <字串 編號="5001" 文字="hola" />\n</root>'.encode('utf-8')
+    out = cliente_local._parchear_msg_propios_xml_bytes(x).decode('utf-8')
+    assert '<字串 編號="300001" 文字="Choose your job. You can change it again in 7 days." />' in out
+    assert '編號="300022"' in out and '編號="5001"' in out
+
+
+def test_saludo_segun_el_job():
+    import struct
+    s = _ses('Baco', 1, '1.1.1.1')
+    linea = tr.saludo(s)
+    assert struct.unpack_from('<I', linea, 2)[0] == tr.M_SALUDO
+    tr.poner_job(s, tr.TRADER, ahora=1)
+    linea = tr.saludo(s)
+    assert struct.unpack_from('<I', linea, 2)[0] == tr.M_JOB_ACTUAL and b'Trader' in linea

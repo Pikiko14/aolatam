@@ -4365,7 +4365,16 @@ def posicion_actual(ses, ahora=None):
 
 
 def _velocidad_de(ses) -> int:
-    """Velocidad del 0x0005, con monturas y buffs activos de movimiento."""
+    """Velocidad del 0x0005, con monturas y buffs activos de movimiento. Con carga de Trade Routes, la mitad."""
+    v = _velocidad_sin_carga(ses)
+    try:
+        f = __import__('trade_routes').factor_velocidad(ses)
+    except Exception:
+        f = 1.0
+    return v if f == 1.0 else max(1, int(round(v * f)))
+
+
+def _velocidad_sin_carga(ses) -> int:
     base = VELOCIDAD_JUGADOR
     carrier=(getattr(getattr(ses,'personaje',None),'buffs',None) or {}).get(3141,{})
     if carrier.get('hb_crystal') and carrier.get('fin',0)>time.time():
@@ -4585,8 +4594,10 @@ def _apariencia(ses):
     # solo las ocupadas, al quitarse una pieza nadie le decia al cliente que
     # esa ranura habia quedado vacia, y la seguia pintando encima del
     # personaje y en su casilla de la ventana (salia repetida).
+    # Con job de Trade Routes, la PD del job (la fashion queda bloqueada hasta dejarlo).
+    pd = __import__('trade_routes').pd_de(ses)
     for r in range(167, 175):
-        out.append(_cb.equipar_visual(ent, r, int(bolsa.get(r, 0) or 0)))
+        out.append(_cb.equipar_visual(ent, r, int(pd.get(r) or bolsa.get(r, 0) or 0)))
     return out
 
 
@@ -4680,6 +4691,11 @@ def _sincronizar_cambio_mapa(ses, stage_id: int, x: int = None, y: int = None):
     if not p:
         return
     if _rechazar_mapa_apagado(ses, stage_id):
+        return
+    # TRADE ROUTES: con carga solo se cambia de mapa a pie, por un portal (ses._paso_a_pie lo marcan los tornados).
+    _no_tp = None if getattr(ses, '_paso_a_pie', False) else __import__('trade_routes').bloquea_teleport(ses)
+    if _no_tp and int(stage_id) != int(getattr(p, 'stage', 0) or 0):
+        __import__('trade_routes').aviso(ses, _no_tp)
         return
     if __import__('configuracion').mapa_apagado(stage_id):
         # Revivir en un checkpoint de una expansion apagada: p.stage ya apunta
@@ -5031,7 +5047,20 @@ def _paquete_banco_personal(ses):
     return _inv.almacen(p.char_id, _guardado, p.entity_id, mejoras=p.mejoras)
 
 
+def _a_pie(ses, fn, *args, **kw):
+    """Un portal que se pisa o se clica: con carga de Trade Routes deja cambiar de mapa (ver _sincronizar_cambio_mapa)."""
+    ses._paso_a_pie = True
+    try:
+        return fn(*args, **kw)
+    finally:
+        ses._paso_a_pie = False
+
+
 def _portal_por_evento(ses, addr, por):
+    return _a_pie(ses, _portal_por_evento_sin_marca, ses, addr, por)
+
+
+def _portal_por_evento_sin_marca(ses, addr, por):
     """Portal que el CLIENTE condiciona ('evento_cliente' en portales.json).
 
     En Cloud-top Land, Leviathan's Bedroom, Botti Palace o la Dinosaur Arena
@@ -5166,7 +5195,7 @@ def _armar_portal_al_llegar(ses, addr, destino_tile, casillas):
                         ses.dlg_portal = p_act
                         ses.enviar(sub)
                     else:
-                        _viajar_por_portal(ses, addr, p_act, '(al terminar el paso)')
+                        _a_pie(ses, _viajar_por_portal, ses, addr, p_act, '(al terminar el paso)')
         except Exception:
             log.exception('fallo el portal armado')
 
@@ -8550,6 +8579,39 @@ def _aliua_mostrar(ses, ent, g):
     ses.enviar(_dl_al.linea_de(g, 0, ses.personaje.nombre))
 
 
+def _trade_routes_hablar(ses, ent):
+    """Clic en el Guild Clerk (trade_routes.py)."""
+    import trade_routes as _tr
+    ses.dlg_ent, ses.dlg_guion, ses.dlg_paso = ent, None, 0
+    ses.dlg_quest_ofrecida = None
+    ses.enviar(_tr.saludo(ses))
+
+
+def _trade_routes_opcion(ses, ent, op):
+    import dialogos as _dl_tr
+    import trade_routes as _tr
+    antes = _tr.job_de(ses.personaje)
+    linea, avisos = _tr.opcion(ses, op)
+    ses.enviar(linea if linea is not None else struct.pack('<H', 0x0012) + _dl_tr.FIN)
+    for a in avisos:
+        _tr.aviso(ses, a)
+    if _tr.job_de(ses.personaje) != antes:
+        _logros_guardar(ses)
+        _trade_routes_vestir(ses)
+
+
+def _trade_routes_vestir(ses):
+    """La PD del job (o la fashion de verdad al dejarlo), en el cliente propio y en el de los demas."""
+    import combate as _cb_tr
+    import presencia as _pr_tr
+    import trade_routes as _tr
+    ses.enviar(*_apariencia(ses))
+    try:
+        _pr_tr.notificar_equipo(ses)
+    except Exception:
+        log.debug('PD del job a los demas', exc_info=True)
+
+
 def _aliua_hablar(ses, addr, ent):
     import supremo as _su
     _aliua_mostrar(ses, ent, _su.saludo())
@@ -10903,6 +10965,10 @@ class Servidor:
                     _crianza_tick(ses, time.time())
                 except Exception:
                     log.exception('crianza de la mascota')
+                try:
+                    __import__('trade_routes').tick(ses)
+                except Exception:
+                    log.exception('trade routes')
                 yo = p.entity_id
                 sentado = getattr(ses, 'sentado', False)
                 ahora = time.time()
@@ -17742,6 +17808,11 @@ class Servidor:
                 log.warning(f"[{addr}] mover {org} -> {dst}: la ranura {org} esta vacia")
                 return
             it_org = bolsa[org]
+            import trade_routes as _tr_mv
+            if _tr_mv.fashion_bloqueada(ses, org) or _tr_mv.fashion_bloqueada(ses, dst):
+                _tr_mv.aviso(ses, 'You wear your job outfit until you quit the job.')
+                ses.enviar(*_refrescar(ses, [org, dst]))
+                return
             import furniture_items as _furn_move
             if (_furn_move.protegido(ses,org) and not 377<=dst<=476
                     or _furn_move.protegido(ses,dst) and not 377<=org<=476):
@@ -20378,7 +20449,7 @@ class Servidor:
                         log.info(f"[{addr}] clic en tornado {ent}: abriendo menu de portal")
                         return
                     else:
-                        _viajar_por_portal(ses, addr, portal_match, f"(clic en tornado {ent})")
+                        _a_pie(ses, _viajar_por_portal, ses, addr, portal_match, f"(clic en tornado {ent})")
                         return
             # Si ya se cumplio lo que pedia el tramo actual, se avanza ANTES
             # de hablar: en el juego, en cuanto llevas el examen encima
@@ -20593,6 +20664,9 @@ class Servidor:
 
                 if ses.personaje and _nom_ent == 'Aliua':
                     _aliua_hablar(ses, addr, ent)
+                    return
+                if ses.personaje and _nom_ent == __import__('trade_routes').NPC_CLERK:
+                    _trade_routes_hablar(ses, ent)
                     return
 
                 # Raiz del MPC por NPC, no por retrato compartido con otro angel.
@@ -21167,6 +21241,10 @@ class Servidor:
 
                 # Aliua: el Supreme Power (supremo.py).
                 import supremo as _su_op
+                import trade_routes as _tr_op
+                if _el in _tr_op.OPCIONES and ses.personaje:
+                    _trade_routes_opcion(ses, ent, _el)
+                    return
                 if _el in _su_op.OPCIONES and ses.personaje:
                     _aliua_opcion(ses, addr, ent, _el)
                     return
@@ -22507,7 +22585,7 @@ class Servidor:
                     if _por.get('evento_cliente'):
                         _portal_por_evento(ses, addr, _por)
                     else:
-                        _viajar_por_portal(ses, addr, _por)
+                        _a_pie(ses, _viajar_por_portal, ses, addr, _por)
                     return
                 if _por is not None:
                     if ses.personaje.stage == 500 and _por.get('entity') == 701:
