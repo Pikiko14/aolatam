@@ -80,12 +80,17 @@ def cambios_del_cliente(ruta_cli: pathlib.Path) -> dict:
             continue
         actual_raw = pak.read_bytes()
         actual = _directorio(actual_raw)
-        original = _directorio(bak.read_bytes())
+        bak_raw = bak.read_bytes()
+        original = _directorio(bak_raw)
         for nombre, entrada in actual.items():
             if indice.get(nombre) != pak:
                 continue
             previo = original.get(nombre)
-            if previo and previo[0] == entrada[0] and previo[2] == entrada[2]:
+            # Mismo CRC y tamano NO basta: cliente_local reescribe el pak sin recalcular el CRC, y un cambio del mismo
+            # largo (前置時間 2000 -> 1000, 收購價格 1238 -> 3000) no salia en el parche (05/11/2026). Se comparan
+            # tambien los bytes comprimidos.
+            if (previo and previo[0] == entrada[0] and previo[2] == entrada[2]
+                    and bak_raw[previo[3]: previo[3] + previo[1]] == actual_raw[entrada[3]: entrada[3] + entrada[1]]):
                 continue
             out[nombre] = _leer(actual_raw, entrada)
     # El pack del editor y parches/extras pueden traer el MISMO mapa. Gana el mas reciente: antes el del editor
