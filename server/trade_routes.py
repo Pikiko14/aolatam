@@ -18,7 +18,10 @@ Diseño pactado con el usuario (resumen; el texto completo esta en la conversaci
     Traders / Hunters contra el Thief que lleva carga robada. El cliente lo sabe por la marca hostil (42) que se le
     pone a cada uno solo para quien puede atacarle; quien lleva carga lleva ademas el aro (AURA_CARGA).
 """
+import json
 import logging
+import os
+import pathlib
 import random
 import time
 
@@ -101,8 +104,47 @@ OP_A_JOB = {OP_TRADER: TRADER, OP_HUNTER: HUNTER, OP_THIEF: THIEF}
 OP_A_CARGA = {OP_GRAIN: GRAIN, OP_SILK: SILK, OP_GEM: GEM}
 RETRATO = 2
 
-# Los encargos activos, por char_id del Trader que la compro.
+# Los encargos activos, por char_id del Trader que la compro. SE GUARDAN EN DISCO (data/trade_routes.json): cada
+# subida reinicia el servidor y, solo en memoria, la carga se borraba de la mochila y el Trader perdia lo invertido
+# (hasta 5M). Al arrancar se restauran sumando a sus relojes el tiempo que el servidor estuvo apagado.
 _ENCARGOS = {}
+_ARCHIVO = pathlib.Path(__file__).resolve().parent.parent / 'data' / 'trade_routes.json'
+GUARDAR_CADA = 10                 # segundos: para saber cuanto estuvo apagado
+_ULTIMO_GUARDADO = [0.0]
+
+
+def guardar(ahora=None):
+    ahora = ahora or time.time()
+    _ULTIMO_GUARDADO[0] = ahora
+    try:
+        _ARCHIVO.parent.mkdir(parents=True, exist_ok=True)
+        tmp = _ARCHIVO.with_suffix('.tmp')
+        tmp.write_text(json.dumps({'guardado_en': ahora, 'encargos': list(_ENCARGOS.values())}), encoding='utf-8')
+        os.replace(tmp, _ARCHIVO)
+    except Exception:
+        log.exception('trade routes: no se pudo guardar %s', _ARCHIVO)
+
+
+def cargar(ahora=None):
+    """Restaura los encargos del disco, con el tiempo apagado sumado a sus relojes."""
+    ahora = ahora or time.time()
+    _ENCARGOS.clear()
+    try:
+        d = json.loads(_ARCHIVO.read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        return 0
+    apagado = max(0.0, ahora - float(d.get('guardado_en') or ahora))
+    for e in d.get('encargos') or []:
+        e['fin'] = float(e['fin']) + apagado
+        s = e.get('suelo')
+        if s:
+            s['hasta'] = float(s['hasta']) + apagado
+            if s.get('libre_para_el'):
+                s['libre_para_el'] = float(s['libre_para_el']) + apagado
+        _ENCARGOS[int(e['trader'])] = e
+    if _ENCARGOS:
+        log.info('trade routes: %d encargos restaurados (%.0f s apagado)', len(_ENCARGOS), apagado)
+    return len(_ENCARGOS)
 
 
 # --------------------------------------------------------------------------------------------------- jobs
@@ -315,6 +357,7 @@ def aceptar(ses, tipo: int, ahora=None, rng=None):
     _ENCARGOS[p.char_id] = dict(tipo=int(tipo), trader=p.char_id, nombre=p.nombre, salida=int(p.stage),
                                 destino=destino, fin=ahora + c['minutos'] * 60, ip=ip_de(ses),
                                 portador=p.char_id, suelo=None, robada_en=None)
+    guardar()
     refrescar_marcas(ses)
     log.info('%s compra %s por %d: de %s a %s', p.nombre, c['nombre'], c['precio'],
              CIUDADES[int(p.stage)], CIUDADES[destino])
@@ -351,6 +394,7 @@ def entregar(ses, ahora=None, rng=None):
         return False, ['Two characters with a job from the same IP cannot be in the same party.']
     _quitar_carga(ses, ranura)
     _ENCARGOS.pop(e['trader'], None)
+    guardar()
     refrescar_marcas(ses)
     trader = ses if p.char_id == e['trader'] else _sesion(e['trader'])
     ganancia = rng.randint(*c['ganancia'])
@@ -402,6 +446,7 @@ def entregar_fence(ses, ahora=None, rng=None):
     c = CARGAS[e['tipo']]
     _quitar_carga(ses, ranura)
     _ENCARGOS.pop(e['trader'], None)
+    guardar()
     refrescar_marcas(ses)
     _cambiar_oro(ses, c['thief'])
     _dar_vale(ses, rng)
@@ -456,6 +501,7 @@ def soltar(ses, ahora=None):
     # el primer paso la recogia otra vez y parecia que no habia caido ("me sali del juego y no se cayo", 06/11/2026).
     e['suelo'] = dict(stage=int(p.stage), tile=[int(p.tile_x), int(p.tile_y)], hasta=ahora + SUELO_SEGUNDOS,
                       solto=p.char_id, libre_para_el=ahora + BLOQUEO_RECOGER)
+    guardar()
     _a_todos(p.stage, _paquete_suelo(e))
     refrescar_marcas(ses)
     log.info('cae la %s de %s en %s %s', CARGAS[e['tipo']]['nombre'], e['nombre'], p.stage, e['suelo']['tile'])
@@ -541,6 +587,7 @@ def _recoger(ses, e):
     _a_todos(p.stage, _quitar_suelo_paquete(e))
     e['suelo'] = None
     e['portador'] = p.char_id
+    guardar()
     nombre = CARGAS[e['tipo']]['nombre']
     if job_de(p) == THIEF:
         e['robada_en'] = int(p.stage)
@@ -598,6 +645,7 @@ def expirar(ses, e=None):
 
 def _perder(e, avisar=True, conocida=None):
     _ENCARGOS.pop(e['trader'], None)
+    guardar()
     cid = getattr(getattr(conocida, 'personaje', None), 'char_id', None)
     _buscar = lambda c: conocida if (c is not None and c == cid) else _sesion(c)
     if e.get('suelo'):
@@ -620,6 +668,8 @@ def tick(ses, ahora=None):
     """Cada segundo, por jugador: los encargos caducados o en el suelo mas de 5 minutos se pierden; y una carga que ya
     no tiene encargo (reinicio del servidor) desaparece."""
     ahora = ahora or time.time()
+    if _ENCARGOS and ahora - _ULTIMO_GUARDADO[0] >= GUARDAR_CADA:
+        guardar(ahora)
     for e in list(_ENCARGOS.values()):
         if ahora > e['fin'] or (e.get('suelo') and ahora > e['suelo']['hasta']):
             _perder(e, conocida=ses)
@@ -837,4 +887,9 @@ def info():
 
 
 def cancelar(char_id):
-    return _ENCARGOS.pop(int(char_id), None) is not None
+    hubo = _ENCARGOS.pop(int(char_id), None) is not None
+    guardar()
+    return hubo
+
+
+cargar()

@@ -13639,6 +13639,16 @@ class Servidor:
                 asyncio.get_event_loop().call_later(3.0, _saludo_lua)
             except Exception:
                 log.debug('saludo del canal Lua', exc_info=True)
+            # LA VERSION DEL PARCHE al entrar: el cliente no manda la suya y el servidor no puede exigirla. Quien juega
+            # con un parche viejo (el START.EXE de IGG no instala mas alla de update31, o no reabrio el launcher)
+            # ve los menus nuevos vacios (06/11/2026).
+            try:
+                import clases as _cl_ver
+                import parche as _par_ver
+                ses.enviar(_cl_ver.aviso('Game patch %s. If some menus look empty, close the game and open '
+                                         'AngelsLauncher to update.' % _par_ver.version(), tipo=0))
+            except Exception:
+                log.debug('aviso de la version del parche', exc_info=True)
             log.info(f"[{addr}] entro al mundo: '{p.nombre}' entidad={p.entity_id} "
                      f"char_id={p.char_id} tile=({p.tile_x},{p.tile_y})")
             log.info(f"[{addr}] (credenciales NO validadas: formato aun sin descifrar)")

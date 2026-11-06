@@ -27,8 +27,9 @@ def _ses(nombre, cid, ip, stage=3, oro=10_000_000, montado=True, apariencia=HOMB
 
 
 @pytest.fixture(autouse=True)
-def entorno(monkeypatch):
+def entorno(monkeypatch, tmp_path):
     tr._ENCARGOS.clear()
+    monkeypatch.setattr(tr, '_ARCHIVO', tmp_path / 'trade_routes.json')     # nunca el data/ de verdad
     grupos = {}
 
     def dar(ses, item_id, n=1):
@@ -386,3 +387,17 @@ def test_clic_en_la_carga_la_recoge_o_dice_por_que(mundo):
     ladron.personaje.tile_x = 52
     assert tr.pulsar(ladron, entidad) and tr.lleva_carga(ladron)
     assert not tr.pulsar(ladron, 12345)                        # no es una carga
+
+
+def test_los_encargos_sobreviven_a_un_reinicio():
+    """Cada subida reinicia el servidor: en memoria se perdia la carga y lo invertido."""
+    s = _trader()
+    tr.aceptar(s, tr.GEM, ahora=1000, rng=random.Random(1))
+    tr.guardar(ahora=1100)
+    fin = tr._ENCARGOS[1]['fin']
+    tr._ENCARGOS.clear()
+    assert tr.cargar(ahora=1100 + 600) == 1                  # 10 minutos apagado
+    e = tr._ENCARGOS[1]
+    assert e['fin'] == fin + 600 and e['portador'] == 1
+    tr.tick(s, ahora=1700)
+    assert tr.lleva_carga(s)                                   # sigue llevandola
