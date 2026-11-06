@@ -696,8 +696,16 @@ def motivo_pvp(ses, otro):
 
 
 def puede_atacar(ses, otro) -> bool:
+    """SIMETRICA: si el evento deja que uno ataque al otro, el otro tambien puede defenderse ("si soy trader o thief y
+    llevo la mercancia deberia poder atacar a los enemigos", 06/11/2026)."""
     _listo(ses)
     _listo(otro)
+    return _regla(ses, otro) or _regla(otro, ses)
+
+
+def _regla(ses, otro) -> bool:
+    """El sentido original: el Thief contra quien lleva la carga y su escolta; Trader / Hunter contra el Thief que la
+    lleva robada."""
     a, b = job_de(ses.personaje), job_de(otro.personaje)
     if a == THIEF:
         if encargo_que_lleva(otro) and b in (TRADER, HUNTER):

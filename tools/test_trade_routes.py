@@ -197,7 +197,7 @@ def test_al_morir_la_carga_cae_y_el_thief_la_roba(mundo):
     t = _cargado(mundo)
     ladron = _con_job('Zorro', 9, '9.9.9.9', tr.THIEF, stage=16)
     mundo.append(ladron)
-    assert tr.puede_atacar(ladron, t) and not tr.puede_atacar(t, ladron)
+    assert tr.puede_atacar(ladron, t) and tr.puede_atacar(t, ladron)      # el que lleva la carga se defiende
     assert tr.soltar(t, ahora=200) and not tr.lleva_carga(t)
     e = tr._ENCARGOS[1]
     assert e['suelo']['stage'] == 16 and e['suelo']['hasta'] == 200 + 300
@@ -421,3 +421,18 @@ def test_el_thief_ve_al_portador_atacable_y_entra_en_modo_arena(mundo, monkeypat
     assert struct.pack('<HIBBII', 0x001D, ladron.personaje.entity_id, 1, 36, 1, 0) in recibido   # y el propio
     # la 42 con la cabecera del jugador LOCAL del receptor y el objetivo aparte (presencia.para_receptor)
     assert struct.pack('<HIBBII', 0x001D, ladron.personaje.entity_id, 1, 42, eid, 1) in recibido
+
+
+def test_el_que_lleva_la_carga_puede_atacar_a_sus_enemigos(mundo, entorno):
+    """"si soy trader o thief y llevo la mercancia deberia poder atacar a los enemigos" (06/11/2026)."""
+    t = _cargado(mundo)
+    h = _con_job('Pipe', 2, '2.2.2.2', tr.HUNTER, stage=16)
+    ladron = _con_job('Zorro', 9, '9.9.9.9', tr.THIEF, stage=16)
+    otro_trader = _con_job('Nadie', 7, '7.7.7.7', tr.TRADER, stage=16)
+    mundo.extend([h, ladron, otro_trader])
+    _grupo(entorno, t, h)
+    assert tr.puede_atacar(t, ladron) and tr.puede_atacar(h, ladron)      # el portador y su escolta se defienden
+    assert not tr.puede_atacar(t, otro_trader)                            # a otro Trader, no
+    tr.soltar(t, ahora=200)
+    tr.contacto(ladron)                                                   # el Thief la roba
+    assert tr.puede_atacar(ladron, t) and tr.puede_atacar(ladron, otro_trader)   # y el Thief con carga se defiende
