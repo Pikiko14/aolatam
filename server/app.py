@@ -2927,6 +2927,13 @@ def _usar_mejora(ses, addr, ranura, objetivo) -> bool:
                                bono_primer_hueco=blessing.get('pierce_first_pct', 0) / 100.0)
     elif clase in ('gema', 'gema_mascota'):
         ok, msg = _mj.engarzar(p.mejoras, objetivo, item, nivel_pieza, tipo)
+    elif clase == 'quitar_gema':
+        ok, msg = _mj.quitar_gema(p.mejoras, objetivo)
+        if not ok:
+            # Sin gema no se gasta el Gem Gauge: se dice y ya.
+            ses.enviar(_cl.aviso('%s has no gem to remove.' % _nombre_item(pieza), tipo=0))
+            log.info('[%s] mejora: %s sobre %s -> %s', addr, _nombre_item(item), _nombre_item(pieza), msg)
+            return True
     else:
         ok, msg = _mj.aplicar(p.mejoras, objetivo, item, nivel_pieza, tipo,
                               exito_seguro=seguro,
@@ -2946,6 +2953,8 @@ def _usar_mejora(ses, addr, ranura, objetivo) -> bool:
         else:
             msg_id = _mj.MSG_HUECO_FALLO
         cartel = _cl.aviso(nombre, tipo=7, msg_id=msg_id)
+    elif clase == 'quitar_gema':
+        cartel = _cl.aviso('The gem was removed from %s.' % nombre, tipo=0)
     elif ok and _iv.es_mascota(pieza):
         _v_pet = locals().get('veces_pet', 0)
         cartel = _cl.aviso('%s+%d' % (nombre, _v_pet) if _v_pet > 0 else nombre,

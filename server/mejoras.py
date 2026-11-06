@@ -88,6 +88,9 @@ CAT_GEMA_MASCOTA = '寵物寶石'
 # nuevos. Su descripcion lo dice: "Apply it to gear, rides or robots below
 # level N to replace their additional attributes bonus with new attributes".
 CAT_VERDE = '幸運骰'
+# El Gem Gauge (29359): "Removes the gem from the last hole. *The removed gem will be forfeited." Saca la gema del
+# ultimo hueco y la pierde; el hueco queda libre (06/11/2026: "el gem gauge no funciona").
+CAT_QUITAR_GEMA = '挖寶石道具'
 
 CLASES = {
     CAT_MORTERO: 'mortero',
@@ -97,6 +100,7 @@ CLASES = {
     CAT_GEMA: 'gema',
     CAT_GEMA_MASCOTA: 'gema_mascota',
     CAT_VERDE: 'verde',
+    CAT_QUITAR_GEMA: 'quitar_gema',
 }
 
 # Como se llama cada stat en las descripciones, y con que nombre se guarda.
@@ -358,6 +362,16 @@ def engarzar(estado: dict, ranura, gema_id, nivel_equipo: int, tipo: str):
         return False, motivo
     st['gemas'].append(int(gema_id))
     return True, 'gema engarzada'
+
+
+def quitar_gema(estado: dict, ranura):
+    """Saca (y pierde) la gema del ultimo hueco ocupado; el hueco queda libre. (ok, mensaje)."""
+    st = estado.get(int(ranura)) or {}
+    gemas = st.get('gemas') or []
+    if not gemas:
+        return False, 'no hay ninguna gema que quitar'
+    perdida = gemas.pop()
+    return True, 'gema %d quitada' % perdida
 
 
 def puede_mejorar(item_id, nivel_equipo: int, tipo: str, veces: int):
