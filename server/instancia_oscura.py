@@ -52,9 +52,10 @@ def filtrar(bichos, spawns):
 VIDA_MOBS = 2.0
 
 
-# Y UN 30% MAS DE ATAQUE para todos, jefe incluido (05/11/2026: "aumenta un 30% el ataque de los mob y jefe"). Va
-# despues del atk_mult de la plantilla.
-ATAQUE_MOBS = 1.3
+# Y EL DOBLE DE ATAQUE para todos, jefe incluido. Primero fue +30% ("aumenta un 30% el ataque de los mob y jefe",
+# 05/11/2026), pero con la defensa de un Lv60 pasaban de unos 16 a 20 de dano y "siguen pegando poco": x2. Va despues
+# del atk_mult de la plantilla.
+ATAQUE_MOBS = 2.0
 
 
 def subir_ataque(bichos):

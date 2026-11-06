@@ -40,10 +40,10 @@ def test_aoe_de_mago_en_1_segundo():
     assert '前置時間="1000"' in cliente_local._parchear_cast_rapido_xml_bytes(x).decode('utf-8')
 
 
-def test_dark_cavern_30_por_ciento_mas_de_ataque():
+def test_dark_cavern_doble_de_ataque():
     b = NS(atk=100, matk=50)
     instancia_oscura.subir_ataque({1: b})
-    assert (b.atk, b.matk) == (130, 65)
+    assert (b.atk, b.matk) == (200, 100)
 
 
 def test_dark_cavern_minimapa_negro():
