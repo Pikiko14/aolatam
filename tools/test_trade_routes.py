@@ -463,3 +463,10 @@ def test_al_volver_al_mapa_con_la_carga_en_el_suelo_se_refrescan_las_marcas(mund
     monkeypatch.setattr(app, '_trade_routes_vestir', lambda ses: None)
     tr.al_entrar_mapa(t)
     assert refrescos == [t]
+
+
+def test_los_comandos_gm_del_evento_llegan_desde_el_chat():
+    """"/job Baco thief" no hacia nada: app._gm_parsear no se los pasaba a gm.py (06/11/2026)."""
+    assert app._gm_parsear('/job Baco thief') == ('trade', 'job', ['Baco', 'thief'])
+    assert app._gm_parsear('caravana info') == ('trade', 'caravana', ['info'])
+    assert 'trade' in __import__('gm').RESULTADOS_DELEGADOS
