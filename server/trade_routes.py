@@ -770,7 +770,10 @@ def refrescar_marcas(ses):
                 base = (hb.equipo(eid, 0),) + _hostil(eid, False)
                 marcas = marcas_para(visor, sujeto)
                 ataca = ataca or any(m[6:8] == bytes((1, 36)) for m in marcas)
-                visor.enviar(*base, *marcas)
+                # Por presencia._mandar: la 42 tiene que llevar de cabecera el jugador LOCAL de quien la recibe
+                # (para_receptor). Mandada tal cual, el cliente la tiraba y no dejaba seleccionar al objetivo;
+                # solo funcionaba tras volver a entrar, porque la presentacion si pasa por _mandar (06/11/2026).
+                presencia._mandar(visor, *base, *marcas)
             except Exception:
                 log.debug('marcas de trade routes', exc_info=True)
         # Y el propio cliente del que puede atacar, en modo arena: sin el no apunta a jugadores.

@@ -419,3 +419,5 @@ def test_el_thief_ve_al_portador_atacable_y_entra_en_modo_arena(mundo, monkeypat
     eid = presencia.entidad_de(t)
     assert struct.pack('<HIBBII', 0x001D, eid, 1, 36, 1, 0) in recibido             # el objetivo, en modo arena
     assert struct.pack('<HIBBII', 0x001D, ladron.personaje.entity_id, 1, 36, 1, 0) in recibido   # y el propio
+    # la 42 con la cabecera del jugador LOCAL del receptor y el objetivo aparte (presencia.para_receptor)
+    assert struct.pack('<HIBBII', 0x001D, ladron.personaje.entity_id, 1, 42, eid, 1) in recibido
