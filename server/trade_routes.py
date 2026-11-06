@@ -109,6 +109,7 @@ RETRATO = 2
 # (hasta 5M). Al arrancar se restauran sumando a sus relojes el tiempo que el servidor estuvo apagado.
 _ENCARGOS = {}
 _ARCHIVO = pathlib.Path(__file__).resolve().parent.parent / 'data' / 'trade_routes.json'
+MAX_APAGADO = 6 * 3600          # segundos de apagado que se suman como mucho a los relojes
 GUARDAR_CADA = 10                 # segundos: para saber cuanto estuvo apagado
 _ULTIMO_GUARDADO = [0.0]
 
@@ -133,7 +134,8 @@ def cargar(ahora=None):
         d = json.loads(_ARCHIVO.read_text(encoding='utf-8'))
     except (OSError, ValueError):
         return 0
-    apagado = max(0.0, ahora - float(d.get('guardado_en') or ahora))
+    # Como mucho MAX_APAGADO: con un reloj raro (o un archivo viejo) los encargos quedarian eternos.
+    apagado = min(MAX_APAGADO, max(0.0, ahora - float(d.get('guardado_en') or ahora)))
     for e in d.get('encargos') or []:
         e['fin'] = float(e['fin']) + apagado
         s = e.get('suelo')

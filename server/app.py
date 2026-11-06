@@ -724,6 +724,7 @@ def _precalentar():
             ('precios', lambda: (_cargar_precios(), __import__('venta_nivel').items_comprables())),
             ('transferibles', lambda: __import__('inventario').puede_transferir(163)),
             ('combos', lambda: __import__('combate').combo_de(6588)),
+            ('tipos de pieza', lambda: __import__('mejoras').tipo_de_ranura(3, 163)),   # 0,37 s, piezas con +N
             ('bolsas', lambda: (__import__('bolsas')._cargar(), __import__('bolsas')._cargar_buffs())),
             # Lyceum, las ciudades y Palm Base: sacar sus monstruos la primera vez costaba ~0,5 s cada uno.
             ('mapas de entrada', lambda: [_monstruos_de(st) for st in (41, 3, 26, 29, 38, 87, 88)])):
