@@ -688,7 +688,11 @@ def motivo_pvp(ses, otro):
     if (not p or not q or int(p.stage) in ZONAS_SEGURAS or getattr(ses, 'muerto', False)
             or getattr(otro, 'muerto', False)):
         return None
-    return '' if puede_atacar(ses, otro) else None
+    deja = puede_atacar(ses, otro)
+    if job_de(p) and job_de(q):
+        log.info('PvP del evento %s (%s) -> %s (%s) en %s: %s', p.nombre, NOMBRE_JOB[job_de(p)], q.nombre,
+                 NOMBRE_JOB[job_de(q)], p.stage, 'SI' if deja else 'no (sin carga de por medio)')
+    return '' if deja else None
 
 
 def puede_atacar(ses, otro) -> bool:

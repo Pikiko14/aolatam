@@ -18229,6 +18229,13 @@ class Servidor:
             if ranura is None:
                 log.info(f"[{addr}] Angels GO! sin Superwing en la mochila")
                 return
+            # Con carga de Trade Routes tampoco: el salto en el mismo mapa no pasa por _sincronizar_cambio_mapa y
+            # un Thief con la carga robada se fue con el Superwing (06/11/2026).
+            _no_tp_go = __import__('trade_routes').bloquea_teleport(ses)
+            if _no_tp_go:
+                __import__('trade_routes').aviso(ses, _no_tp_go)
+                log.info(f"[{addr}] Angels GO! rechazado: lleva carga")
+                return
             _cancelar_portal_armado(ses)
             _sacar(ses, ranura, 1)
             yo = ses.personaje.entity_id
