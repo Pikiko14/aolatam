@@ -8611,6 +8611,7 @@ def _trade_routes_opcion(ses, ent, op):
     if _tr.job_de(ses.personaje) != antes:
         _logros_guardar(ses)
         _trade_routes_vestir(ses)
+        _tr.anunciar_job(ses)
 
 
 def _trade_routes_vestir(ses):

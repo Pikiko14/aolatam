@@ -351,3 +351,22 @@ def test_la_pd_se_viste_al_entrar_al_mapa_sin_esperar(monkeypatch):
     monkeypatch.setattr(tr, 'refrescar_marcas', lambda ses: None)
     tr.al_entrar_mapa(s)
     assert vestido == [s]
+
+
+def test_volver_al_mismo_job_sin_esperar():
+    """"me quite el job y no me deja volver a serlo; no me lo cambie, solo me quite el traje" (06/11/2026)."""
+    s = _ses('Baco', 1, '1.1.1.1')
+    tr.poner_job(s, tr.TRADER, ahora=1000)
+    tr.poner_job(s, 0, ahora=2000)
+    assert tr.poner_job(s, tr.TRADER, ahora=3000)[0]                  # el mismo: sin espera
+    tr.poner_job(s, 0, ahora=4000)
+    ok, msg = tr.poner_job(s, tr.THIEF, ahora=5000)                   # otro distinto: 7 dias
+    assert not ok and 'change your job again' in msg
+
+
+def test_aviso_a_todos_al_tomar_un_job(monkeypatch):
+    s, otro = _ses('Baco', 1, '1.1.1.1'), _ses('Pipe', 2, '2.2.2.2')
+    monkeypatch.setattr(app, '_tw_sesiones', lambda: [s, otro])
+    tr.poner_job(s, tr.THIEF, ahora=1)
+    tr.anunciar_job(s)
+    assert 'Baco is now a Thief!' in otro.avisos and 'Baco is now a Thief!' in s.avisos

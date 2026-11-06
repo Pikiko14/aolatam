@@ -26,7 +26,7 @@ log = logging.getLogger('trade_routes')
 
 TRADER, HUNTER, THIEF = 1, 2, 3
 NOMBRE_JOB = {TRADER: 'Trader', HUNTER: 'Hunter', THIEF: 'Thief'}
-CLAVE_JOB, CLAVE_DESDE = 'trade_job', 'trade_job_desde'      # en personaje.logros_cont (se guarda con los logros)
+CLAVE_JOB, CLAVE_DESDE, CLAVE_ULTIMO = 'trade_job', 'trade_job_desde', 'trade_job_ultimo'      # en personaje.logros_cont (se guarda con los logros)
 DIAS_CAMBIO = 7
 SEGUNDOS_CAMBIO = DIAS_CAMBIO * 86400
 
@@ -154,15 +154,35 @@ def poner_job(ses, job: int, ahora=None, forzar=False):
         return False, 'You cannot change your job while carrying cargo.'
     if job == job_de(p):
         return False, 'You are already a %s.' % NOMBRE_JOB.get(job, 'nobody') if job else 'You have no job.'
-    falta = 0 if (forzar or not job) else espera_cambio(p, ahora)
+    # Volver al MISMO job que se dejo no espera: los 7 dias son para cambiar a otro distinto ("me quite el job y no me
+    # deja volver a serlo; no me lo cambie, solo me quite el traje", 06/11/2026).
+    # (Quien lo dejo antes de guardar el ultimo job no tiene CLAVE_ULTIMO: se le deja elegir sin esperar.)
+    _c = _cont(p)
+    mismo = bool(job) and (job == int(_c.get(CLAVE_ULTIMO) or 0)
+                           or (CLAVE_ULTIMO not in _c and CLAVE_DESDE in _c and not job_de(p)))
+    falta = 0 if (forzar or not job or mismo) else espera_cambio(p, ahora)
     if falta:
         return False, texto_espera(falta)
     c = _cont(p)
     if job:
-        c[CLAVE_JOB], c[CLAVE_DESDE] = int(job), int(ahora)
+        if not mismo or CLAVE_DESDE not in c:
+            c[CLAVE_DESDE] = int(ahora)
+        c[CLAVE_JOB] = c[CLAVE_ULTIMO] = int(job)
         return True, 'You are now a %s.' % NOMBRE_JOB[job]
+    c[CLAVE_ULTIMO] = job_de(p)
     c.pop(CLAVE_JOB, None)
     return True, 'You quit your job.'
+
+
+def anunciar_job(ses):
+    """A todos los conectados: quien acaba de tomar un job ("que de un aviso cuando una persona se una a un job",
+    06/11/2026)."""
+    job = job_de(ses.personaje)
+    if not job:
+        return
+    texto = '%s is now a %s!' % (ses.personaje.nombre, NOMBRE_JOB[job])
+    for s in _sesiones() or [ses]:
+        aviso(s, texto)
 
 
 def pd_de(ses) -> dict:
