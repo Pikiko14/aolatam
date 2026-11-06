@@ -8118,6 +8118,10 @@ def _quitar_buffs_al_morir(ses):
     cliente no hacia la animacion de muerte: se quedaba de pie con 0 de vida, sin la ventana de revivir, y los demas
     le veian vivo (01/11/2026). Va a la victima ANTES del 0x000A de muerte."""
     import combate as _cb_bm
+    try:
+        __import__('trade_routes').soltar(ses)          # la carga de Trade Routes cae al suelo
+    except Exception:
+        log.exception('trade routes: soltar al morir')
     p = getattr(ses, 'personaje', None)
     if p is None or not getattr(p, 'buffs', None):
         return
@@ -8579,12 +8583,12 @@ def _aliua_mostrar(ses, ent, g):
     ses.enviar(_dl_al.linea_de(g, 0, ses.personaje.nombre))
 
 
-def _trade_routes_hablar(ses, ent):
-    """Clic en el Guild Clerk (trade_routes.py)."""
+def _trade_routes_hablar(ses, ent, fence=False):
+    """Clic en el Guild Clerk o en el Fence (trade_routes.py)."""
     import trade_routes as _tr
     ses.dlg_ent, ses.dlg_guion, ses.dlg_paso = ent, None, 0
     ses.dlg_quest_ofrecida = None
-    ses.enviar(_tr.saludo(ses))
+    ses.enviar(_tr.saludo_fence(ses) if fence else _tr.saludo(ses))
 
 
 def _trade_routes_opcion(ses, ent, op):
@@ -9469,6 +9473,10 @@ def _tw_al_entrar(ses):
     import totem_war as _tw_e
     import outpost_pvp as _outpost_e
     _outpost_e.al_salir(ses)
+    try:
+        __import__('trade_routes').al_entrar_mapa(ses)
+    except Exception:
+        log.exception('trade routes: al entrar al mapa')
     p = ses.personaje
     if _tw_e.es_totem_decorativo(getattr(p, 'stage', 0)):
         # Campo de entrenamiento: su totem, siempre a la vista y sin guerra.
@@ -10105,6 +10113,7 @@ def _choques_al_llegar(ses, addr, st, llegada, token, vistos):
     if st==112:
         ses._holy_camino=None
         __import__('holy_battlefield').contacto_cristal(ses)
+    __import__('trade_routes').contacto(ses)       # la carga de Trade Routes en el suelo
     import eventos as _ev_ch
     objs = (_ev_ch.del_stage(st) or {}).get('objetos') or {}
     # UNA VEZ AL LLEGAR. Lo que el jugador ya estaba tocando al acabar el paso
@@ -11265,6 +11274,11 @@ class Servidor:
                 _evm_x._olvidar_corridas_de_grupos_deshechos()
             except Exception:
                 pass
+            try:
+                if getattr(ses, 'personaje', None):
+                    __import__('trade_routes').soltar(ses)     # desconexion: la carga cae al suelo
+            except Exception:
+                log.exception('trade routes: soltar al desconectar')
             if getattr(ses, 'patrulla_task', None):
                 ses.patrulla_task.cancel()
             if getattr(ses, 'regen_task', None):
@@ -20665,8 +20679,9 @@ class Servidor:
                 if ses.personaje and _nom_ent == 'Aliua':
                     _aliua_hablar(ses, addr, ent)
                     return
-                if ses.personaje and _nom_ent == __import__('trade_routes').NPC_CLERK:
-                    _trade_routes_hablar(ses, ent)
+                if ses.personaje and _nom_ent in (__import__('trade_routes').NPC_CLERK,
+                                                  __import__('trade_routes').NPC_FENCE):
+                    _trade_routes_hablar(ses, ent, fence=_nom_ent == __import__('trade_routes').NPC_FENCE)
                     return
 
                 # Raiz del MPC por NPC, no por retrato compartido con otro angel.

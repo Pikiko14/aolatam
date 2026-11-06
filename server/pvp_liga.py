@@ -97,6 +97,8 @@ def _por_que_no(ses, otro):
     if daily_reason is not None:return daily_reason
     gvg_reason=__import__('league_war').motivo_pvp(ses,otro)
     if gvg_reason is not None:return gvg_reason
+    trade_reason=__import__('trade_routes').motivo_pvp(ses,otro)      # Trade Routes: thieves contra la carga
+    if trade_reason is not None:return trade_reason
     import outpost_pvp
     if not outpost_pvp.es_mapa(p.stage) and (not totem_war.activa() or not totem_war.es_mapa_tw(p.stage)):
         return 'sin Totem War o fuera de la arena'

@@ -1853,6 +1853,21 @@
    "direccion": 6,
    "visible": 1,
    "puesto_por": "npcs_del_cliente"
+  },
+  {
+   "entity_id": 143363,
+   "nombre": "Fence",
+   "npc_type": 1829,
+   "sprite": 40019,
+   "klass": 199,
+   "monstruo": false,
+   "tile": [
+    49,
+    153
+   ],
+   "direccion": 6,
+   "visible": 1,
+   "puesto_por": "trade_routes (05/11/2026)"
   }
  ],
  "recursos": [

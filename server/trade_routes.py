@@ -11,8 +11,12 @@ Diseño pactado con el usuario (resumen; el texto completo esta en la conversaci
     extra al azar (1M como mucho, en la Gem); los Hunters de su grupo que esten en el mismo mapa se reparten su premio;
     cada uno (Trader y Hunters) recibe un vale de canje al azar del Event Overview.
   * ANTI-ABUSO. En el grupo no puede haber dos personajes con job de la misma IP.
-  * Pendiente (fase 3): la carga cae al morir o desconectarse, los Thieves la roban y la llevan al Fence (4 mapas;
-    robada en uno de ellos no se entrega en ese mismo), PvP del evento y aro morado.
+  * ROBO (fase 3). Al morir o desconectarse, la carga cae al suelo (objeto de mapa) 5 minutos. La recoge, acercandose
+    y montado, un Thief (de otra IP que el Trader) o el Trader / un Hunter de su grupo ("The cargo was recovered!"). El
+    Thief la lleva al Fence de uno de sus 4 mapas, menos el del mapa donde la robo, y cobra lo suyo y un vale.
+  * PVP DEL EVENTO fuera de ciudades y zonas seguras: el Thief contra quien lleva la carga y los Hunters de su grupo, y
+    Traders / Hunters contra el Thief que lleva carga robada. El cliente lo sabe por la marca hostil (42) que se le
+    pone a cada uno solo para quien puede atacarle; quien lleva carga lleva ademas el aro (AURA_CARGA).
 """
 import logging
 import random
@@ -29,6 +33,10 @@ SEGUNDOS_CAMBIO = DIAS_CAMBIO * 86400
 CIUDADES = {3: 'Aurora City', 26: 'Dark City', 29: 'Breeze Woods', 38: 'Iron Castle'}
 FENCES = {8: 'Crashing Hillock', 30: 'Cryptic Moon Swamp', 25: 'Fungus Forest North', 39: 'Cactus Plain'}
 NPC_CLERK, NPC_FENCE = 'Guild Clerk', 'Fence'
+ZONAS_SEGURAS = frozenset(CIUDADES) | {41, 500}         # ciudades, el Lyceum y las casas: sin PvP del evento
+SUELO_SEGUNDOS = 5 * 60
+ENTIDAD_SUELO = 97_100_000                                # + char_id del Trader: el objeto de mapa de la carga
+AURA_CARGA = 1                                            # valor del aro (hb.equipo) de quien lleva carga; /aro <n>
 
 RANURA_MONTURA = 10
 FACTOR_CON_CARGA = 0.5          # 50% mas lento con carga, montado o a pie
@@ -37,11 +45,11 @@ FACTOR_CON_CARGA = 0.5          # 50% mas lento con carga, montado o a pie
 # (se reparte entre ellos) y lo que gana el Thief que la entrega en el Fence.
 GRAIN, SILK, GEM = 1, 2, 3
 CARGAS = {
-    GRAIN: dict(nombre='Grain Cargo', item=89074, icono=5146, precio=500_000, minutos=20,
+    GRAIN: dict(nombre='Grain Cargo', item=89074, icono=5146, suelo=8399, precio=500_000, minutos=20,
                 ganancia=(100_000, 300_000), hunters=500_000, thief=250_000),
-    SILK: dict(nombre='Silk Cargo', item=89075, icono=5729, precio=2_000_000, minutos=25,
+    SILK: dict(nombre='Silk Cargo', item=89075, icono=5729, suelo=7550, precio=2_000_000, minutos=25,
                ganancia=(300_000, 600_000), hunters=1_000_000, thief=500_000),
-    GEM: dict(nombre='Gem Cargo', item=89076, icono=8731, precio=5_000_000, minutos=30,
+    GEM: dict(nombre='Gem Cargo', item=89076, icono=8731, suelo=12431, precio=5_000_000, minutos=30,
               ganancia=(600_000, 1_000_000), hunters=2_000_000, thief=1_000_000),
 }
 ITEMS_CARGA = {c['item']: k for k, c in CARGAS.items()}
@@ -61,21 +69,23 @@ PD = {
 CASILLAS_FASHION = range(167, 175)
 
 # TEXTOS PROPIOS de msg.xml (cliente_local los mete en el parche). Rango libre: 160609..500000.
-M_SALUDO, M_JOB_ACTUAL, M_CARGAS, M_ENCARGO = 300001, 300002, 300003, 300004
+M_SALUDO, M_JOB_ACTUAL, M_CARGAS, M_ENCARGO, M_FENCE = 300001, 300002, 300003, 300004, 300005
 OP_TRADER, OP_HUNTER, OP_THIEF, OP_DEJAR = 300010, 300011, 300012, 300013
-OP_ENCARGO, OP_ENTREGAR, OP_SALIR = 300014, 300015, 300019
+OP_ENCARGO, OP_ENTREGAR, OP_FENCE, OP_SALIR = 300014, 300015, 300016, 300019
 OP_GRAIN, OP_SILK, OP_GEM = 300020, 300021, 300022
 TEXTOS = {
     M_SALUDO: 'Choose your job. You can change it again in 7 days.',
     M_JOB_ACTUAL: 'You are a %1. What do you want to do?',
     M_CARGAS: 'Choose a cargo. You pay for it now and get your gold back with a profit when you deliver it.',
     M_ENCARGO: 'Deliver the %1 to %2 within %3 minutes.',
+    M_FENCE: 'Got something that is not yours? I pay well for stolen cargo, and nobody asks questions.',
+    OP_FENCE: 'Sell the stolen cargo',
     OP_TRADER: 'Become a Trader', OP_HUNTER: 'Become a Hunter', OP_THIEF: 'Become a Thief',
     OP_DEJAR: 'Quit my job', OP_ENCARGO: 'Take a cargo order', OP_ENTREGAR: 'Deliver my cargo', OP_SALIR: 'Leave',
     OP_GRAIN: 'Grain Cargo (500,000 gold, 20 min)', OP_SILK: 'Silk Cargo (2,000,000 gold, 25 min)',
     OP_GEM: 'Gem Cargo (5,000,000 gold, 30 min)',
 }
-OPCIONES = frozenset((OP_TRADER, OP_HUNTER, OP_THIEF, OP_DEJAR, OP_ENCARGO, OP_ENTREGAR, OP_SALIR,
+OPCIONES = frozenset((OP_TRADER, OP_HUNTER, OP_THIEF, OP_DEJAR, OP_ENCARGO, OP_ENTREGAR, OP_FENCE, OP_SALIR,
                       OP_GRAIN, OP_SILK, OP_GEM))
 OP_A_JOB = {OP_TRADER: TRADER, OP_HUNTER: HUNTER, OP_THIEF: THIEF}
 OP_A_CARGA = {OP_GRAIN: GRAIN, OP_SILK: SILK, OP_GEM: GEM}
@@ -181,6 +191,26 @@ def encargo_de(ses):
     return _ENCARGOS.get(getattr(p, 'char_id', None)) if p else None
 
 
+def encargo_que_lleva(ses):
+    """El encargo cuya carga lleva ahora este jugador (Trader, Hunter que la recupero o Thief que la robo)."""
+    p = getattr(ses, 'personaje', None)
+    if not p:
+        return None
+    return next((e for e in _ENCARGOS.values() if e.get('portador') == p.char_id), None)
+
+
+def _sesiones():
+    try:
+        import app
+        return [s for s in app._tw_sesiones() if getattr(s, 'personaje', None)]
+    except Exception:
+        return []
+
+
+def _sesion(char_id):
+    return next((s for s in _sesiones() if s.personaje.char_id == char_id), None)
+
+
 def item_carga_en(ses):
     """(ranura, item) del objeto de carga que lleva, o (None, None)."""
     for r, it in (getattr(ses, 'inventario', None) or {}).items():
@@ -237,22 +267,34 @@ def aceptar(ses, tipo: int, ahora=None, rng=None):
     _cambiar_oro(ses, -c['precio'])
     destino = destino_para(p.stage, rng)
     _ENCARGOS[p.char_id] = dict(tipo=int(tipo), trader=p.char_id, nombre=p.nombre, salida=int(p.stage),
-                                destino=destino, fin=ahora + c['minutos'] * 60, ip=ip_de(ses))
+                                destino=destino, fin=ahora + c['minutos'] * 60, ip=ip_de(ses),
+                                portador=p.char_id, suelo=None, robada_en=None)
+    refrescar_marcas(ses)
     log.info('%s compra %s por %d: de %s a %s', p.nombre, c['nombre'], c['precio'],
              CIUDADES[int(p.stage)], CIUDADES[destino])
     return True, 'Deliver the %s to %s within %d minutes.' % (c['nombre'], CIUDADES[destino], c['minutos'])
 
 
+def _de_su_grupo(ses, e):
+    """Si `ses` es el Trader del encargo o esta en su grupo."""
+    p = ses.personaje
+    if p.char_id == e['trader']:
+        return True
+    return any(getattr(s, 'personaje', None) and s.personaje.char_id == e['trader'] for s in _grupo(ses))
+
+
 def entregar(ses, ahora=None, rng=None):
-    """(ok, mensajes) al entregar la carga en el Guild Clerk de la ciudad de destino."""
-    import app
+    """(ok, mensajes) al entregar la carga en el Guild Clerk de la ciudad de destino (el Trader o un Hunter de su
+    grupo que la recupero). Cobra el Trader (lo invertido y la ganancia) y los Hunters del grupo en el mapa."""
     rng = rng or random
     p = ses.personaje
     ahora = ahora or time.time()
-    e = encargo_de(ses)
+    e = encargo_que_lleva(ses)
     ranura, item = item_carga_en(ses)
     if not e or ranura is None:
         return False, ['You have no cargo to deliver.']
+    if job_de(p) == THIEF or not _de_su_grupo(ses, e):
+        return False, ['This cargo is not yours. The Fence buys stolen cargo.']
     c = CARGAS[e['tipo']]
     if ahora > e['fin']:
         expirar(ses, e)
@@ -263,46 +305,282 @@ def entregar(ses, ahora=None, rng=None):
         return False, ['Two characters with a job from the same IP cannot be in the same party.']
     _quitar_carga(ses, ranura)
     _ENCARGOS.pop(e['trader'], None)
+    refrescar_marcas(ses)
+    trader = ses if p.char_id == e['trader'] else _sesion(e['trader'])
     ganancia = rng.randint(*c['ganancia'])
     pago = c['precio'] + ganancia
-    _cambiar_oro(ses, pago)
-    msgs = ['Cargo delivered! You received %s gold.' % format(pago, ',')]
-    _dar_vale(ses, rng)
+    msgs = []
+    if trader is not None:
+        _cambiar_oro(trader, pago)
+        _dar_vale(trader, rng)
+        texto = 'Cargo delivered! You received %s gold.' % format(pago, ',')
+        if trader is ses:
+            msgs.append(texto)
+        else:
+            aviso(trader, texto)
     hunters = [s for s in _grupo(ses)
-               if s is not ses and job_de(getattr(s, 'personaje', None)) == HUNTER
+               if s is not trader and job_de(getattr(s, 'personaje', None)) == HUNTER
                and getattr(getattr(s, 'personaje', None), 'stage', None) == p.stage
-               and ip_de(s) != ip_de(ses)]
+               and ip_de(s) != e['ip']]
     if hunters:
         parte = c['hunters'] // len(hunters)
         for h in hunters:
             _cambiar_oro(h, parte)
             _dar_vale(h, rng)
-            aviso(h, 'Cargo delivered! You received %s gold.' % format(parte, ','))
+            texto = 'Cargo delivered! You received %s gold.' % format(parte, ',')
+            if h is ses:
+                msgs.append(texto)
+            else:
+                aviso(h, texto)
     log.info('%s entrega %s en %s: %d al trader, %d hunters', p.nombre, c['nombre'], CIUDADES[p.stage], pago,
              len(hunters))
-    return True, msgs
+    return True, msgs or ['Cargo delivered!']
+
+
+def entregar_fence(ses, ahora=None, rng=None):
+    """(ok, mensajes) del Thief que vende la carga robada al Fence. No en el mapa donde la robo."""
+    rng = rng or random
+    p = ses.personaje
+    ahora = ahora or time.time()
+    e = encargo_que_lleva(ses)
+    ranura, _ = item_carga_en(ses)
+    if not e or ranura is None or job_de(p) != THIEF:
+        return False, ['You have no stolen cargo.']
+    if ahora > e['fin']:
+        expirar(ses, e)
+        return False, ['Time is up. The cargo was lost.']
+    if int(p.stage) not in FENCES:
+        return False, ['There is no Fence here.']
+    if int(p.stage) == e.get('robada_en'):
+        return False, ['Too hot to sell here. Take it to another Fence.']
+    c = CARGAS[e['tipo']]
+    _quitar_carga(ses, ranura)
+    _ENCARGOS.pop(e['trader'], None)
+    refrescar_marcas(ses)
+    _cambiar_oro(ses, c['thief'])
+    _dar_vale(ses, rng)
+    trader = _sesion(e['trader'])
+    if trader is not None:
+        aviso(trader, 'The cargo was stolen!')
+    log.info('%s vende al Fence la %s de %s en %s', p.nombre, c['nombre'], e['nombre'], FENCES[int(p.stage)])
+    return True, ['The Fence paid you %s gold.' % format(c['thief'], ',')]
+
+
+# ----------------------------------------------------------------------------------------------- la carga en el suelo
+def _paquete_suelo(e):
+    import login
+    return login._map_object_spawn(ENTIDAD_SUELO + e['trader'], CARGAS[e['tipo']]['suelo'], tuple(e['suelo']['tile']))
+
+
+def _quitar_suelo_paquete(e):
+    import struct
+    return struct.pack('<HIB', 0x0007, (ENTIDAD_SUELO + e['trader']) & 0xFFFFFFFF, 1)
+
+
+def _en_mapa(stage):
+    try:
+        import presencia
+        return [s for lista in list(presencia._POR_MAPA.values()) for s in list(lista)
+                if getattr(getattr(s, 'personaje', None), 'stage', None) == int(stage)]
+    except Exception:
+        return []
+
+
+def _a_todos(stage, *paquetes):
+    for s in _en_mapa(stage):
+        try:
+            s.enviar(*paquetes)
+        except Exception:
+            log.debug('envio al mapa', exc_info=True)
+
+
+def soltar(ses, ahora=None):
+    """Muerte o desconexion: la carga cae donde estaba el portador, 5 minutos."""
+    ahora = ahora or time.time()
+    ranura, _ = item_carga_en(ses)
+    e = encargo_que_lleva(ses)
+    if ranura is None:
+        return False
+    _quitar_carga(ses, ranura)
+    if not e:
+        return False
+    p = ses.personaje
+    e['portador'] = None
+    e['suelo'] = dict(stage=int(p.stage), tile=[int(p.tile_x), int(p.tile_y)], hasta=ahora + SUELO_SEGUNDOS)
+    _a_todos(p.stage, _paquete_suelo(e))
+    refrescar_marcas(ses)
+    log.info('cae la %s de %s en %s %s', CARGAS[e['tipo']]['nombre'], e['nombre'], p.stage, e['suelo']['tile'])
+    return True
+
+
+def contacto(ses, ahora=None):
+    """Al acabar un paso: si hay una carga en el suelo a 1 casilla y puede llevarla, la recoge."""
+    p = getattr(ses, 'personaje', None)
+    if not p or getattr(ses, 'muerto', False) or lleva_carga(ses):
+        return False
+    for e in list(_ENCARGOS.values()):
+        s = e.get('suelo')
+        if not s or s['stage'] != int(p.stage):
+            continue
+        if max(abs(p.tile_x - s['tile'][0]), abs(p.tile_y - s['tile'][1])) > 1:
+            continue
+        job = job_de(p)
+        ladron = job == THIEF
+        if ladron and ip_de(ses) == e['ip']:
+            continue
+        if not ladron and not (job in (TRADER, HUNTER) and _de_su_grupo(ses, e)):
+            continue
+        if not montado(ses):
+            aviso(ses, 'You must be riding a mount to carry cargo.')
+            return False
+        import app
+        res = app._gm_dar_item(ses, CARGAS[e['tipo']]['item'], 1)
+        if not res.startswith('dado'):
+            aviso(ses, 'You need a free slot in your bag.')
+            return False
+        _a_todos(p.stage, _quitar_suelo_paquete(e))
+        e['suelo'] = None
+        e['portador'] = p.char_id
+        nombre = CARGAS[e['tipo']]['nombre']
+        if ladron:
+            e['robada_en'] = int(p.stage)
+            aviso(ses, 'You picked up the %s. Bring it to the Fence.' % nombre)
+            trader = _sesion(e['trader'])
+            if trader is not None and trader is not ses:
+                aviso(trader, 'The cargo was stolen!')
+        else:
+            aviso(ses, 'The cargo was recovered!')
+        refrescar_marcas(ses)
+        log.info('%s recoge la %s de %s', p.nombre, nombre, e['nombre'])
+        return True
+    return False
+
+
+def al_entrar_mapa(ses):
+    """Al llegar a un mapa: las cargas que hay en su suelo y las marcas del evento."""
+    p = getattr(ses, 'personaje', None)
+    if not p:
+        return
+    paquetes = [_paquete_suelo(e) for e in _ENCARGOS.values()
+                if e.get('suelo') and e['suelo']['stage'] == int(p.stage)]
+    if paquetes:
+        ses.enviar(*paquetes)
+    if any(e.get('portador') for e in _ENCARGOS.values()):
+        refrescar_marcas(ses)
 
 
 def expirar(ses, e=None):
-    """Se acabo el tiempo: la carga desaparece y nadie cobra."""
-    e = e or encargo_de(ses)
+    """Se acabo el tiempo (o el GM la cancela): la carga desaparece, este donde este, y nadie cobra."""
+    e = e or encargo_que_lleva(ses) or encargo_de(ses)
     if e:
-        _ENCARGOS.pop(e['trader'], None)
+        _perder(e, avisar=False)
     ranura, _ = item_carga_en(ses)
     if ranura is not None:
         _quitar_carga(ses, ranura)
+        refrescar_marcas(ses)
+
+
+def _perder(e, avisar=True, conocida=None):
+    _ENCARGOS.pop(e['trader'], None)
+    cid = getattr(getattr(conocida, 'personaje', None), 'char_id', None)
+    _buscar = lambda c: conocida if (c is not None and c == cid) else _sesion(c)
+    if e.get('suelo'):
+        _a_todos(e['suelo']['stage'], _quitar_suelo_paquete(e))
+        e['suelo'] = None
+    portador = _buscar(e['portador']) if e.get('portador') else None
+    if portador is not None:
+        ranura, _ = item_carga_en(portador)
+        if ranura is not None:
+            _quitar_carga(portador, ranura)
+            refrescar_marcas(portador)
+        if avisar:
+            aviso(portador, 'Time is up. The cargo was lost.')
+    trader = _buscar(e['trader'])
+    if avisar and trader is not None and trader is not portador:
+        aviso(trader, 'Time is up. The cargo was lost.')
 
 
 def tick(ses, ahora=None):
-    """Cada segundo: si su encargo caduco, se pierde. Una carga sin encargo (reinicio del servidor) tambien."""
+    """Cada segundo, por jugador: los encargos caducados o en el suelo mas de 5 minutos se pierden; y una carga que ya
+    no tiene encargo (reinicio del servidor) desaparece."""
     ahora = ahora or time.time()
-    e = encargo_de(ses)
-    if (e and ahora > e['fin']) or (not e and lleva_carga(ses)):
-        expirar(ses, e)
-        try:
-            aviso(ses, 'Time is up. The cargo was lost.')
-        except Exception:
-            log.debug('aviso de carga perdida', exc_info=True)
+    for e in list(_ENCARGOS.values()):
+        if ahora > e['fin'] or (e.get('suelo') and ahora > e['suelo']['hasta']):
+            _perder(e, conocida=ses)
+    if lleva_carga(ses) and not encargo_que_lleva(ses):
+        ranura, _ = item_carga_en(ses)
+        _quitar_carga(ses, ranura)
+        refrescar_marcas(ses)
+        aviso(ses, 'Time is up. The cargo was lost.')
+
+
+# ----------------------------------------------------------------------------------------------- PvP del evento
+def motivo_pvp(ses, otro):
+    """'' si el evento deja que `ses` le pegue a `otro`; None si el evento no dice nada (siguen las otras reglas)."""
+    p, q = getattr(ses, 'personaje', None), getattr(otro, 'personaje', None)
+    if (not p or not q or int(p.stage) in ZONAS_SEGURAS or getattr(ses, 'muerto', False)
+            or getattr(otro, 'muerto', False)):
+        return None
+    return '' if puede_atacar(ses, otro) else None
+
+
+def puede_atacar(ses, otro) -> bool:
+    a, b = job_de(ses.personaje), job_de(otro.personaje)
+    if a == THIEF:
+        if encargo_que_lleva(otro) and b in (TRADER, HUNTER):
+            return True
+        # Los Hunters del grupo del que lleva la carga, en el mismo mapa
+        if b == HUNTER:
+            return any(encargo_que_lleva(s) and job_de(s.personaje) in (TRADER, HUNTER)
+                       and s.personaje.stage == otro.personaje.stage for s in _grupo(otro) if s is not otro)
+        return False
+    if a in (TRADER, HUNTER) and b == THIEF:
+        return encargo_que_lleva(otro) is not None
+    return False
+
+
+def marcas_para(visor, sujeto):
+    """Lo que `visor` tiene que saber de `sujeto`: el aro si lleva carga y la marca hostil si puede atacarle."""
+    import struct
+    import holy_battlefield as hb
+    import presencia
+    if visor is sujeto or int(getattr(sujeto.personaje, 'stage', 0) or 0) in ZONAS_SEGURAS:
+        return ()
+    eid = presencia.entidad_de(sujeto)
+    out = []
+    if lleva_carga(sujeto):
+        out.append(hb.equipo(eid, AURA_CARGA))
+    if puede_atacar(visor, sujeto):
+        out.append(struct.pack('<HIBBII', 0x001D, eid, 1, 42, eid, 1))
+    return tuple(out)
+
+
+def refrescar_marcas(ses):
+    """Tras coger, soltar o entregar la carga: a todos los del mapa, las marcas de todos (son pocos jugadores)."""
+    import struct
+    import holy_battlefield as hb
+    import presencia
+    p = getattr(ses, 'personaje', None)
+    if not p:
+        return
+    gente = _en_mapa(p.stage)
+    if ses not in gente:
+        gente.append(ses)
+    seguro = int(p.stage) in ZONAS_SEGURAS
+    for visor in gente:
+        for sujeto in gente:
+            if sujeto is visor:
+                continue
+            try:
+                eid = presencia.entidad_de(sujeto)
+                base = (hb.equipo(eid, 0), struct.pack('<HIBBII', 0x001D, eid, 1, 42, eid, 0))
+                visor.enviar(*base, *marcas_para(visor, sujeto))
+            except Exception:
+                log.debug('marcas de trade routes', exc_info=True)
+    try:
+        ses.enviar(hb.equipo(p.entity_id, AURA_CARGA if (lleva_carga(ses) and not seguro) else 0))
+    except Exception:
+        log.debug('aro propio', exc_info=True)
 
 
 # ----------------------------------------------------------------------------------------------- oro y objetos
@@ -364,6 +642,10 @@ def saludo(ses):
     return _linea(M_JOB_ACTUAL, opts, ['1', NOMBRE_JOB[job]])
 
 
+def saludo_fence(ses):
+    return _linea(M_FENCE, [OP_FENCE, OP_SALIR])
+
+
 def opcion(ses, op: int, ahora=None, rng=None):
     """(paquetes 0x0012 o None para cerrar, avisos) de una opcion del Guild Clerk."""
     if op == OP_SALIR:
@@ -376,6 +658,9 @@ def opcion(ses, op: int, ahora=None, rng=None):
     if op in OP_A_CARGA:
         ok, msg = aceptar(ses, OP_A_CARGA[op], ahora, rng)
         return None, [msg]
+    if op == OP_FENCE:
+        ok, msgs = entregar_fence(ses, ahora, rng)
+        return None, msgs
     if op == OP_ENTREGAR:
         ok, msgs = entregar(ses, ahora, rng)
         return None, msgs

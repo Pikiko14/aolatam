@@ -94,7 +94,7 @@ def _solo_visible(func):
     return enviar
 
 
-def marcas_limpias(ses):
+def marcas_limpias(ses, visor=None):
     """Aura de Arena (36), marca hostil (42) y equipo de Holy (38) APAGADOS para el id publico de `ses`, fuera de los
     mapas de competicion. entidad_de reutiliza los numeros y el cliente guarda esas marcas pegadas al id: el que lo
     heredaba de alguien que estuvo en Totem War / Holy salia con el aro de color al cambiar de mapa, y se le quitaba al
@@ -107,9 +107,16 @@ def marcas_limpias(ses):
             or st in __import__('league_war').STAGES):
         return ()
     eid = entidad_de(ses)
-    return (__import__('competiciones').modo_arena(eid, False),
-            struct.pack('<HIBBII', 0x001D, eid, 1, 42, eid, 0),
-            __import__('holy_battlefield').equipo(eid, 0))
+    limpias = (__import__('competiciones').modo_arena(eid, False),
+               struct.pack('<HIBBII', 0x001D, eid, 1, 42, eid, 0),
+               __import__('holy_battlefield').equipo(eid, 0))
+    # Y encima las de Trade Routes que le tocan a ese visor (aro de la carga, marca hostil del evento).
+    if visor is not None:
+        try:
+            limpias += tuple(__import__('trade_routes').marcas_para(visor, ses))
+        except Exception:
+            log.debug('marcas de trade routes', exc_info=True)
+    return limpias
 
 
 def _presentar(owner, viewer):
@@ -118,7 +125,7 @@ def _presentar(owner, viewer):
         return
     import combate
     import login
-    _mandar(viewer, _spawn(owner), *_vestir(owner), *paquetes_puesto(owner), *marcas_limpias(owner))
+    _mandar(viewer, _spawn(owner), *_vestir(owner), *paquetes_puesto(owner), *marcas_limpias(owner, viewer))
     _mandar(viewer,*__import__('daily_events').marcas(owner,True))
     _mandar(viewer,*__import__('league_war').marks(owner,True))
     forma = transform_sprite_de(owner)
@@ -544,7 +551,7 @@ def entrar(ses, stage):
             continue
         # Presentar a 'ses' ante 's'
         _mandar(s, yo_spawn, *_vestir(ses), *paquetes_puesto(ses), _vida_publica(ses), *levantar,
-                *marcas_limpias(ses))
+                *marcas_limpias(ses, s))
         if ts_yo:
             _mandar(s, _cb.atributo(entidad_de(ses), ts_yo, _cb.KIND_TRANSFORM))
 
@@ -564,7 +571,7 @@ def entrar(ses, stage):
 
         # Presentar a 's' ante 'ses'
         s_spawn = _spawn(s)
-        _mandar(ses, s_spawn, *_vestir(s), *paquetes_puesto(s), _vida_publica(s), *marcas_limpias(s))
+        _mandar(ses, s_spawn, *_vestir(s), *paquetes_puesto(s), _vida_publica(s), *marcas_limpias(s, ses))
         ts_s = transform_sprite_de(s)
         if ts_s:
             _mandar(ses, _cb.atributo(entidad_de(s), ts_s, _cb.KIND_TRANSFORM))

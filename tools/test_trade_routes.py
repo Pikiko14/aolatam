@@ -163,3 +163,107 @@ def test_saludo_segun_el_job():
     tr.poner_job(s, tr.TRADER, ahora=1)
     linea = tr.saludo(s)
     assert struct.unpack_from('<I', linea, 2)[0] == tr.M_JOB_ACTUAL and b'Trader' in linea
+
+
+# ------------------------------------------------------------------------------------------- fase 3: robo y Fence
+@pytest.fixture
+def mundo(monkeypatch, entorno):
+    gente = []
+    monkeypatch.setattr(app, '_tw_sesiones', lambda: list(gente))
+    monkeypatch.setattr(tr, '_en_mapa', lambda stage: [s for s in gente if s.personaje.stage == int(stage)])
+    monkeypatch.setattr(tr, 'refrescar_marcas', lambda ses: None)
+    return gente
+
+
+def _con_job(nombre, cid, ip, job, **kw):
+    s = _ses(nombre, cid, ip, **kw)
+    s.personaje.tile_x, s.personaje.tile_y = 50, 50
+    tr.poner_job(s, job, ahora=1)
+    return s
+
+
+def _cargado(mundo, stage=16):
+    t = _con_job('Baco', 1, '1.1.1.1', tr.TRADER)
+    mundo.append(t)
+    tr.aceptar(t, tr.SILK, ahora=100, rng=random.Random(1))
+    t.personaje.stage = stage
+    return t
+
+
+def test_al_morir_la_carga_cae_y_el_thief_la_roba(mundo):
+    t = _cargado(mundo)
+    ladron = _con_job('Zorro', 9, '9.9.9.9', tr.THIEF, stage=16)
+    mundo.append(ladron)
+    assert tr.puede_atacar(ladron, t) and not tr.puede_atacar(t, ladron)
+    assert tr.soltar(t, ahora=200) and not tr.lleva_carga(t)
+    e = tr._ENCARGOS[1]
+    assert e['suelo']['stage'] == 16 and e['suelo']['hasta'] == 200 + 300
+    assert tr.contacto(ladron) and tr.lleva_carga(ladron)
+    assert e['robada_en'] == 16 and e['portador'] == 9
+    assert 'The cargo was stolen!' in t.avisos
+    assert tr.puede_atacar(t, ladron)                       # ahora el Trader puede pegarle al Thief
+
+
+def test_el_thief_de_la_misma_ip_no_la_recoge(mundo):
+    t = _cargado(mundo)
+    ladron = _con_job('Zorro', 9, '1.1.1.1', tr.THIEF, stage=16)
+    mundo.append(ladron)
+    tr.soltar(t, ahora=200)
+    assert not tr.contacto(ladron) and not tr.lleva_carga(ladron)
+
+
+def test_el_thief_tiene_que_ir_montado(mundo):
+    t = _cargado(mundo)
+    ladron = _con_job('Zorro', 9, '9.9.9.9', tr.THIEF, stage=16, montado=False)
+    mundo.append(ladron)
+    tr.soltar(t, ahora=200)
+    assert not tr.contacto(ladron) and 'You must be riding a mount to carry cargo.' in ladron.avisos
+
+
+def test_fence_no_en_el_mapa_del_robo(mundo):
+    t = _cargado(mundo, stage=8)                               # robada en Crashing Hillock (tiene Fence)
+    ladron = _con_job('Zorro', 9, '9.9.9.9', tr.THIEF, stage=8)
+    mundo.append(ladron)
+    tr.soltar(t, ahora=200)
+    tr.contacto(ladron)
+    ok, msgs = tr.entregar_fence(ladron, ahora=300)
+    assert not ok and 'another Fence' in msgs[0]
+    ladron.personaje.stage = 30                                # Cryptic Moon Swamp
+    ok, msgs = tr.entregar_fence(ladron, ahora=300, rng=random.Random(4))
+    assert ok and ladron.oro == 10_000_000 + 500_000 and not tr.lleva_carga(ladron)
+    assert any(it in tr.VALES for it in ladron.inventario.values())
+    assert not tr._ENCARGOS
+
+
+def test_el_hunter_la_recupera_y_la_entrega(mundo, entorno):
+    t = _cargado(mundo)
+    h = _con_job('Pipe', 2, '2.2.2.2', tr.HUNTER, stage=16)
+    mundo.append(h)
+    _grupo(entorno, t, h)
+    tr.soltar(t, ahora=200)
+    assert tr.contacto(h) and 'The cargo was recovered!' in h.avisos
+    destino = tr._ENCARGOS[1]['destino']
+    h.personaje.stage = destino
+    t.personaje.stage = 16                                     # el Trader esta lejos: cobra igual
+    ok, msgs = tr.entregar(h, ahora=300, rng=random.Random(5))
+    assert ok and 2_300_000 <= t.oro - 8_000_000 <= 2_600_000
+    assert h.oro == 10_000_000 + 1_000_000
+
+
+def test_cinco_minutos_en_el_suelo_y_se_pierde(mundo):
+    t = _cargado(mundo)
+    tr.soltar(t, ahora=200)
+    tr.tick(t, ahora=200 + 299)
+    assert tr._ENCARGOS
+    tr.tick(t, ahora=200 + 301)
+    assert not tr._ENCARGOS
+
+
+def test_pvp_solo_fuera_de_ciudades(mundo):
+    t = _cargado(mundo, stage=3)
+    ladron = _con_job('Zorro', 9, '9.9.9.9', tr.THIEF, stage=3)
+    assert tr.motivo_pvp(ladron, t) is None                   # en la ciudad, el evento no deja
+    t.personaje.stage = ladron.personaje.stage = 16
+    assert tr.motivo_pvp(ladron, t) == ''
+    otro = _con_job('Nadie', 7, '7.7.7.7', tr.TRADER, stage=16)
+    assert tr.motivo_pvp(ladron, otro) is None                # un Trader sin carga no

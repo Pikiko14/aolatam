@@ -1991,6 +1991,21 @@
    "direccion": 0,
    "visible": 0,
    "nivel": 39
+  },
+  {
+   "entity_id": 143361,
+   "nombre": "Fence",
+   "npc_type": 1829,
+   "sprite": 40019,
+   "klass": 199,
+   "monstruo": false,
+   "tile": [
+    275,
+    69
+   ],
+   "direccion": 6,
+   "visible": 1,
+   "puesto_por": "trade_routes (05/11/2026)"
   }
  ],
  "recursos": [
