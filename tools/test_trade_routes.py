@@ -284,3 +284,14 @@ def test_la_opcion_elegida_se_traduce_con_la_linea_guardada(monkeypatch):
     monkeypatch.setattr(app, '_trade_routes_vestir', lambda ses: None)
     app._trade_routes_opcion(s, 143350, ops[dialogos.indice_opcion(11)])
     assert tr.job_de(s.personaje) == tr.HUNTER and 'You are now a Hunter.' in s.avisos
+
+
+def test_dejar_el_job_siempre_pero_sin_saltarse_la_espera():
+    """"no me deja quitar el job" (06/11/2026)."""
+    s = _ses('Baco', 1, '1.1.1.1')
+    tr.poner_job(s, tr.TRADER, ahora=1000)
+    ok, msg = tr.poner_job(s, 0, ahora=1000 + 3600)
+    assert ok and msg == 'You quit your job.' and not tr.job_de(s.personaje)
+    ok, msg = tr.poner_job(s, tr.HUNTER, ahora=1000 + 7200)           # dejar y volver a elegir no salta la espera
+    assert not ok and 'change your job again' in msg
+    assert tr.poner_job(s, tr.HUNTER, ahora=1000 + 7 * 86400)[0]

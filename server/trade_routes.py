@@ -109,10 +109,12 @@ def job_de(p) -> int:
 
 
 def espera_cambio(p, ahora=None) -> int:
-    """Segundos que faltan para poder cambiar de job (0 si ya puede o no tiene)."""
-    if not job_de(p):
-        return 0
+    """Segundos que faltan para poder ELEGIR otro job: 7 dias desde que eligio el ultimo (0 si nunca tuvo). Dejarlo
+    se puede siempre ("no me deja quitar el job", 06/11/2026), pero no reinicia la cuenta: dejar y volver a elegir
+    no se salta la espera."""
     desde = float(_cont(p).get(CLAVE_DESDE) or 0)
+    if not desde:
+        return 0
     return max(0, int(desde + SEGUNDOS_CAMBIO - (ahora or time.time())))
 
 
@@ -128,8 +130,8 @@ def poner_job(ses, job: int, ahora=None, forzar=False):
     if encargo_de(ses) or lleva_carga(ses):
         return False, 'You cannot change your job while carrying cargo.'
     if job == job_de(p):
-        return False, 'You are already a %s.' % NOMBRE_JOB.get(job, 'nobody')
-    falta = 0 if forzar else espera_cambio(p, ahora)
+        return False, 'You are already a %s.' % NOMBRE_JOB.get(job, 'nobody') if job else 'You have no job.'
+    falta = 0 if (forzar or not job) else espera_cambio(p, ahora)
     if falta:
         return False, texto_espera(falta)
     c = _cont(p)
@@ -137,7 +139,6 @@ def poner_job(ses, job: int, ahora=None, forzar=False):
         c[CLAVE_JOB], c[CLAVE_DESDE] = int(job), int(ahora)
         return True, 'You are now a %s.' % NOMBRE_JOB[job]
     c.pop(CLAVE_JOB, None)
-    c[CLAVE_DESDE] = int(ahora)
     return True, 'You quit your job.'
 
 
