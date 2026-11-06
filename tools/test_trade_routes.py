@@ -15,6 +15,8 @@ import cliente_local  # noqa: E402
 import equipos  # noqa: E402
 import trade_routes as tr  # noqa: E402
 
+_REFRESCAR_REAL = tr.refrescar_marcas
+
 HOMBRE, MUJER = [1, 0, 0, 0, 0], [0, 0, 0, 0, 0]
 
 
@@ -401,3 +403,19 @@ def test_los_encargos_sobreviven_a_un_reinicio():
     assert e['fin'] == fin + 600 and e['portador'] == 1
     tr.tick(s, ahora=1700)
     assert tr.lleva_carga(s)                                   # sigue llevandola
+
+
+def test_el_thief_ve_al_portador_atacable_y_entra_en_modo_arena(mundo, monkeypatch):
+    """"siguen sin poder targetearme" (06/11/2026): con la marca 42 sola el cliente no deja apuntar a un jugador."""
+    import struct
+    monkeypatch.setattr(tr, 'refrescar_marcas', _REFRESCAR_REAL)      # el de verdad, no el falso del fixture
+    t = _cargado(mundo)
+    ladron = _con_job('Zorro', 9, '9.9.9.9', tr.THIEF, stage=16)
+    recibido = []
+    ladron.enviar = lambda *pk: recibido.extend(pk)
+    mundo.append(ladron)
+    tr.refrescar_marcas(t)
+    import presencia
+    eid = presencia.entidad_de(t)
+    assert struct.pack('<HIBBII', 0x001D, eid, 1, 36, 1, 0) in recibido             # el objetivo, en modo arena
+    assert struct.pack('<HIBBII', 0x001D, ladron.personaje.entity_id, 1, 36, 1, 0) in recibido   # y el propio

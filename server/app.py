@@ -714,6 +714,17 @@ def _precalentar():
             ('item.xml', lambda: __import__('house_services').xml_rows('item.xml')),
             ('monster.xml', lambda: __import__('house_services').xml_rows('monster.xml')),
             ('magias', lambda: __import__('combate').datos_magia(1)),
+            # Los bonos de todos los objetos (inventario._bonus): la primera lista de personajes tras un reinicio
+            # tardaba 1,1-1,5 s y congelaba a todos (06/11/2026, visto con el vigia del bucle).
+            ('bonos de items', lambda: __import__('inventario')._bonus(1)),
+            # Mas cargas de la primera vez medidas el 06/11/2026 (cada una congelaba a todos al primer uso):
+            ('npcs', lambda: __import__('dialogos')._cargar_npcs()),                    # 0,8 s, primer clic en NPC
+            ('textos de dialogo', lambda: __import__('dialogos')._cargar_msg_dict()),
+            ('monstruos', lambda: __import__('combate').Monstruo(1, 6011, 'x', [1, 1], stage=6)),   # 0,5 s
+            ('precios', lambda: (_cargar_precios(), __import__('venta_nivel').items_comprables())),
+            ('transferibles', lambda: __import__('inventario').puede_transferir(163)),
+            ('combos', lambda: __import__('combate').combo_de(6588)),
+            ('bolsas', lambda: (__import__('bolsas')._cargar(), __import__('bolsas')._cargar_buffs())),
             # Lyceum, las ciudades y Palm Base: sacar sus monstruos la primera vez costaba ~0,5 s cada uno.
             ('mapas de entrada', lambda: [_monstruos_de(st) for st in (41, 3, 26, 29, 38, 87, 88)])):
         try:
@@ -19702,7 +19713,13 @@ class Servidor:
                 if emotes_actuales is None:
                     emotes_actuales = set()
                     ses.personaje.emotes = emotes_actuales
-                if emo_id in emotes_actuales or emo_id in inv.EMOTES_BASICOS:
+                if emo_id in inv.EMOTES_BASICOS:
+                    # Las 12 primeras posiciones las pinta siempre la ventana (emotion.lua, CreateEmotionWnd): la
+                    # tarjeta no aporta nada ("las emotes no me deja aprenderlas", 06/11/2026: era Train, la 7).
+                    ses.enviar(_c.aviso("%s is a basic expression: it is already in your Emotes window."
+                                        % _nombre_item(item_id), tipo=7, msg_id=_c.MSG_TEXTO))
+                    return
+                if emo_id in emotes_actuales:
                     ses.enviar(_c.aviso("You have already learned this expression.", tipo=7, msg_id=_c.MSG_TEXTO))
                     return
                 _sacar(ses, ranura, 1)

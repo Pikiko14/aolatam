@@ -712,19 +712,37 @@ def puede_atacar(ses, otro) -> bool:
     return False
 
 
-def marcas_para(visor, sujeto):
-    """Lo que `visor` tiene que saber de `sujeto`: el aro si lleva carga y la marca hostil si puede atacarle."""
+def _hostil(eid, activo):
+    """Lo que hace atacable a un jugador en el cliente, como en Arena (competiciones.marcas_actor, daily_events.marcas):
+    el modo arena (36) y la marca hostil (42). Con la 42 sola el cliente no dejaba ni seleccionarlo ("siguen sin poder
+    targetearme", 06/11/2026)."""
     import struct
+    import competiciones
+    return (competiciones.modo_arena(eid, activo), struct.pack('<HIBBII', 0x001D, eid, 1, 42, eid, int(bool(activo))))
+
+
+def _mapa_de_competicion(stage):
+    try:
+        st = int(stage or 0)
+        return (st in __import__('competiciones').MAPAS or st in __import__('daily_events').STAGES
+                or st in __import__('league_war').STAGES)
+    except Exception:
+        return False
+
+
+def marcas_para(visor, sujeto):
+    """Lo que `visor` tiene que saber de `sujeto`: el aro si lleva carga y que es atacable si puede atacarle."""
     import holy_battlefield as hb
     import presencia
-    if visor is sujeto or int(getattr(sujeto.personaje, 'stage', 0) or 0) in ZONAS_SEGURAS:
+    if (visor is sujeto or int(getattr(sujeto.personaje, 'stage', 0) or 0) in ZONAS_SEGURAS
+            or _mapa_de_competicion(sujeto.personaje.stage)):
         return ()
     eid = presencia.entidad_de(sujeto)
     out = []
     if lleva_carga(sujeto):
         out.append(hb.equipo(eid, AURA_CARGA))
     if puede_atacar(visor, sujeto):
-        out.append(struct.pack('<HIBBII', 0x001D, eid, 1, 42, eid, 1))
+        out.extend(_hostil(eid, True))
     return tuple(out)
 
 
@@ -736,20 +754,31 @@ def refrescar_marcas(ses):
     p = getattr(ses, 'personaje', None)
     if not p:
         return
+    if _mapa_de_competicion(p.stage):
+        return                      # alli mandan las marcas de la competicion
     gente = _en_mapa(p.stage)
     if ses not in gente:
         gente.append(ses)
     seguro = int(p.stage) in ZONAS_SEGURAS
     for visor in gente:
+        ataca = False
         for sujeto in gente:
             if sujeto is visor:
                 continue
             try:
                 eid = presencia.entidad_de(sujeto)
-                base = (hb.equipo(eid, 0), struct.pack('<HIBBII', 0x001D, eid, 1, 42, eid, 0))
-                visor.enviar(*base, *marcas_para(visor, sujeto))
+                base = (hb.equipo(eid, 0),) + _hostil(eid, False)
+                marcas = marcas_para(visor, sujeto)
+                ataca = ataca or any(m[6:8] == bytes((1, 36)) for m in marcas)
+                visor.enviar(*base, *marcas)
             except Exception:
                 log.debug('marcas de trade routes', exc_info=True)
+        # Y el propio cliente del que puede atacar, en modo arena: sin el no apunta a jugadores.
+        try:
+            yo = visor.personaje.entity_id
+            visor.enviar(*_hostil(yo, ataca and not seguro))
+        except Exception:
+            log.debug('modo arena propio', exc_info=True)
     try:
         ses.enviar(hb.equipo(p.entity_id, AURA_CARGA if (lleva_carga(ses) and not seguro) else 0), icono(ses))
     except Exception:
