@@ -809,6 +809,30 @@ def _mapa_de_competicion(stage):
         return False
 
 
+def con_aro(ses) -> bool:
+    """Lleva el aro de su bando: quien lleva carga y los Hunters del grupo de un Trader con un encargo en marcha ("que a
+    los hunter que esten en el team del trader tambien les salga el circulo abajo", 06/11/2026)."""
+    if lleva_carga(ses):
+        return True
+    if job_de(getattr(ses, 'personaje', None)) != HUNTER:
+        return False
+    return any(_de_su_grupo(ses, e) for e in _ENCARGOS.values())
+
+
+def al_cambiar_grupo(*sesiones):
+    """Alguien entra o sale de un grupo: si hay encargos en marcha, las marcas otra vez en los mapas de esos jugadores
+    (un mapa una vez), para que el aro del Hunter aparezca o se vaya."""
+    if not _ENCARGOS:
+        return
+    vistos = set()
+    for s in sesiones:
+        st = getattr(getattr(s, 'personaje', None), 'stage', None)
+        if st is None or st in vistos:
+            continue
+        vistos.add(st)
+        refrescar_marcas(s)
+
+
 def marcas_para(visor, sujeto):
     """Lo que `visor` tiene que saber de `sujeto`: el aro si lleva carga y que es atacable si puede atacarle."""
     import holy_battlefield as hb
@@ -819,7 +843,7 @@ def marcas_para(visor, sujeto):
     eid = presencia.entidad_de(sujeto)
     out = []
     ataca = puede_atacar(visor, sujeto)
-    if ataca or lleva_carga(sujeto):
+    if ataca or con_aro(sujeto):
         out.append(hb.equipo(eid, equipo_de(sujeto)))
     if ataca:
         out.extend(_hostil(eid, True))
@@ -859,7 +883,7 @@ def refrescar_marcas(ses):
         # Y el propio cliente del que puede atacar, en modo arena (sin el no apunta a jugadores) y con el aro de su bando.
         try:
             yo = visor.personaje.entity_id
-            metido = (ataca or lleva_carga(visor)) and not seguro
+            metido = (ataca or con_aro(visor)) and not seguro
             visor.enviar(*_hostil(yo, ataca and not seguro), hb.equipo(yo, equipo_de(visor) if metido else 0))
         except Exception:
             log.debug('modo arena propio', exc_info=True)

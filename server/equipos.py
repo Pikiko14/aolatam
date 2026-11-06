@@ -322,7 +322,17 @@ def aceptar(ses):
     _DE_QUIEN[yo] = lider
     _avisar(lider)
     log.info('%s entra al grupo de %s', _nombre(ses), lider)
+    _trade_routes(ses)
     return True
+
+
+def _trade_routes(*sesiones):
+    """Al entrar o salir alguien del grupo, el aro de Trade Routes (los Hunters del grupo de un Trader lo llevan)."""
+    try:
+        import trade_routes
+        trade_routes.al_cambiar_grupo(*sesiones)
+    except Exception:
+        log.debug('trade routes al cambiar el grupo', exc_info=True)
 
 
 EVENTO = 0x0025           # s2c, un miembro entra o se va
@@ -381,11 +391,13 @@ def salir(ses):
         avisos = [aviso_de_salida(s) for s in todos]
         _mandar_a(todos, *avisos)
         log.info('el grupo de %s se deshace', lider)
+        _trade_routes(*todos)
     else:
         _GRUPOS[lider] = miembros
         _mandar_a(miembros + [ses], salida_mia)
         _avisar(lider)
         log.info('%s deja el grupo de %s', _nombre(ses), lider)
+    _trade_routes(ses, *miembros)
     return True
 
 

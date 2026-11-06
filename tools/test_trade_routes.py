@@ -516,3 +516,19 @@ def test_comprar_una_carga_se_anuncia_sin_decir_cual(mundo, monkeypatch):
     tr.aceptar(t, tr.HERB, ahora=100, rng=random.Random(1))
     assert 'Baco bought a cargo!' in otro.avisos
     assert not any('Herb' in a or 'to ' in a for a in otro.avisos)
+
+
+def test_los_hunters_del_grupo_del_trader_llevan_el_aro(mundo, entorno, monkeypatch):
+    """"que a los hunter que esten en el team del trader tambien les salga el circulo abajo" (06/11/2026)."""
+    import presencia
+    import struct
+    monkeypatch.setattr(presencia, 'entidad_de', lambda s: s.personaje.entity_id)
+    t = _cargado(mundo)
+    h = _con_job('Lobo', 5, '5.5.5.5', tr.HUNTER, stage=16)
+    suelto = _con_job('Oso', 6, '6.6.6.6', tr.HUNTER, stage=16)
+    otro = _ses('Mirón', 7, '7.7.7.7', stage=16)
+    mundo.extend([h, suelto, otro])
+    _grupo(entorno, t, h)
+    assert tr.con_aro(h) and not tr.con_aro(suelto)
+    aro = struct.pack('<HIBB', 0x001D, 5, 1, 38)
+    assert any(m[:8] == aro and m[-4:] == struct.pack('<I', tr.EQUIPO_CARAVANA) for m in tr.marcas_para(otro, h))
