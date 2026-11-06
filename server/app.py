@@ -19707,6 +19707,8 @@ class Servidor:
                 # inventario.EMOTE_POR_POSICION): se guardaba el numero y la ventana no la mostraba o mostraba
                 # otra ("revisa los emojis, algunos no estan funcionando", 05/11/2026).
                 emo_id = inv.posicion_de_emote(inv.emote_de_tarjeta(item_id))
+                log.info("[%s] tarjeta de expresion %s: emote %s, posicion %s", addr, item_id,
+                         inv.emote_de_tarjeta(item_id), emo_id)
                 if emo_id is None:
                     ses.enviar(_c.aviso("This expression is not available.", tipo=7, msg_id=_c.MSG_TEXTO))
                     return
