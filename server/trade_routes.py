@@ -650,6 +650,15 @@ def al_entrar_mapa(ses):
     # apuntarle ("la mercancia esta abajo, yo puedo atacarlo pero el no a mi", 06/11/2026). Solo se refrescaba si
     # alguien la llevaba encima.
     disputa = any(e.get('portador') or e.get('suelo') for e in _ENCARGOS.values())
+    if not disputa and not _mapa_de_competicion(p.stage):
+        # Sin encargos, el propio cliente LIMPIO: el aro de la carga se quedaba pegado al personaje tras entregar y
+        # cambiar de mapa ("me sale el aro azul, no lo tenia", 06/11/2026, de Breeze Woods al Lyceum).
+        try:
+            import holy_battlefield as hb
+            yo = p.entity_id
+            ses.enviar(hb.equipo(yo, 0), *_hostil(yo, False))
+        except Exception:
+            log.debug('limpiar el aro propio', exc_info=True)
     if disputa:
         refrescar_marcas(ses)
         try:

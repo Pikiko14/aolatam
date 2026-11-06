@@ -532,3 +532,13 @@ def test_los_hunters_del_grupo_del_trader_llevan_el_aro(mundo, entorno, monkeypa
     assert tr.con_aro(h) and not tr.con_aro(suelto)
     aro = struct.pack('<HIBB', 0x001D, 5, 1, 38)
     assert any(m[:8] == aro and m[-4:] == struct.pack('<I', tr.EQUIPO_CARAVANA) for m in tr.marcas_para(otro, h))
+
+
+def test_sin_encargos_al_entrar_al_mapa_se_limpia_el_aro_propio(monkeypatch):
+    """"me sale el aro azul, no lo tenia" (06/11/2026): tras entregar, el aro se quedaba al cambiar de mapa."""
+    import struct
+    s = _ses('Baco', 1, '1.1.1.1', stage=41)
+    enviados = []
+    s.enviar = lambda *pk: enviados.extend(pk)
+    tr.al_entrar_mapa(s)
+    assert struct.pack('<HIBBII', 0x001D, 1, 1, 38, 1, 0) in enviados

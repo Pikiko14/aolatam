@@ -21906,9 +21906,19 @@ class Servidor:
                             log.info(f"[{addr}] {_pj.nombre} completo mision de nivel {_q_niv}")
                 elif (_el in _dlg_mod.CIUDAD_POR_OPCION
                       and _el % 10000 == 18 and ses.personaje):
-                    # Angel de Ciudad: Volver al Angel Lyceum (Opcion 18)
-                    ses.viaje_pendiente = (41, (152, 74), 'Angel Lyceum')
-                    log.info(f"[{addr}] {ses.personaje.nombre} pidio volver al Angel Lyceum desde su ciudad")
+                    # Angel de Ciudad: Volver al Angel Lyceum (Opcion 18). SOLO el Angel de SU ciudad: "si no soy de esa
+                    # faccion el npc no me deberia dejar transportarme" (06/11/2026, de Breeze Woods sin ser de alli).
+                    _ciudad_ang = _dlg_mod.CIUDAD_POR_OPCION[_el]
+                    _suya = (CIUDAD_POR_FACCION.get(getattr(ses.personaje, 'faction', '')) or (None,))[0]
+                    if _suya is not None and _suya != _ciudad_ang:      # sin faccion aun (Heaven...) puede volver
+                        import clases as _cl
+                        ses.enviar(_cl.aviso("I only send citizens of this city to the Angel Lyceum.", tipo=0,
+                                             msg_id=_cl.MSG_TEXTO))
+                        log.info(f"[{addr}] {ses.personaje.nombre} ({getattr(ses.personaje, 'faction', '')}) no puede "
+                                 f"volver al Angel Lyceum desde la ciudad {_ciudad_ang}")
+                    else:
+                        ses.viaje_pendiente = (41, (152, 74), 'Angel Lyceum')
+                        log.info(f"[{addr}] {ses.personaje.nombre} pidio volver al Angel Lyceum desde su ciudad")
                 elif _el == 14303 and ses.personaje:
                     import misiones as _mis
                     import clases as _cl
