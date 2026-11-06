@@ -727,7 +727,23 @@ def _precalentar():
             ('tipos de pieza', lambda: __import__('mejoras').tipo_de_ranura(3, 163)),   # 0,37 s, piezas con +N
             ('bolsas', lambda: (__import__('bolsas')._cargar(), __import__('bolsas')._cargar_buffs())),
             # Lyceum, las ciudades y Palm Base: sacar sus monstruos la primera vez costaba ~0,5 s cada uno.
-            ('mapas de entrada', lambda: [_monstruos_de(st) for st in (41, 3, 26, 29, 38, 87, 88)])):
+            ('mapas de entrada', lambda: [_monstruos_de(st) for st in (41, 3, 26, 29, 38, 87, 88)]),
+            # Lo que el vigia del bucle vio parado 0,4-0,5 s en las primeras cargas del 06/11/2026 (79 avisos en 6 h,
+            # casi todos justo despues de cada reinicio): cada XML de xml_rows se lee una vez por nombre, las
+            # misiones por NPC, los creditos de inversion, las reglas de eventos propios, el parche...
+            ('xml del cliente', lambda: [__import__('house_services').xml_rows(n) for n in (
+                'item2.xml', 'item3.xml', 'item4.xml', 'item5.xml', 'item6.xml', 'item7.xml', 'item8.xml',
+                'item9.xml', 'doll.xml', 'magic.xml', 'material.xml', 'exchange.xml', 'exchangegroup.xml',
+                'serv_drop.xml', 'order.xml', 'make.xml')] + [__import__('production_sites').plans()]),
+            ('npc por mapa', lambda: __import__('misiones').stage_de_entidad(0)),
+            ('creditos de inversion', lambda: __import__('inventario').creditos_de(1)),
+            ('skills de items', lambda: __import__('clases').skill_de_item(1)),
+            ('tablas de items', lambda: (__import__('inventario')._tabla(), __import__('inventario').categoria_de(1),
+                                         __import__('inventario').ranura_equipo_de(1),
+                                         __import__('inventario').es_municion(1), __import__('mejoras')._fila(163))),
+            ('drops', lambda: __import__('combate')._cargar_drops_plantilla()),
+            ('eventos propios', lambda: __import__('eventos_propios').reglas()),
+            ('parche', lambda: __import__('parche').entradas())):
         try:
             f()
             hecho.append(nombre)
