@@ -7954,6 +7954,29 @@ def _espejar(ses, submsgs):
 # TOTEM WAR (ver totem_war.py): lo que necesita las sesiones y las salas.
 # --------------------------------------------------------------------------
 
+# EL VIGIA DEL BUCLE (06/11/2026: "el vps va muy lag, esta pegando tirones"). El servidor atiende a todos en un solo
+# bucle de asyncio: si algo tarda, nadie recibe nada mientras tanto y en el juego se ve como un tiron. Cada
+# PASO_VIGIA s mira cuanto se retraso; si pasa de UMBRAL_VIGIA lo anota con el ultimo mensaje que entro (opcode y
+# jugador), para saber que lo provoca.
+PASO_VIGIA, UMBRAL_VIGIA = 0.1, 0.25
+_ULTIMO_MENSAJE = [None]
+
+
+async def _vigia_del_bucle():
+    reloj = time.perf_counter
+    while True:
+        t0 = reloj()
+        await asyncio.sleep(PASO_VIGIA)
+        retraso = reloj() - t0 - PASO_VIGIA
+        if retraso > UMBRAL_VIGIA:
+            ult = _ULTIMO_MENSAJE[0]
+            if ult:
+                log.warning('BUCLE BLOQUEADO %.2f s; ultimo mensaje: opcode 0x%04X de %s hace %.2f s',
+                            retraso, ult[0], ult[1], time.time() - ult[2])
+            else:
+                log.warning('BUCLE BLOQUEADO %.2f s', retraso)
+
+
 def _tw_sesiones():
     """Todas las sesiones del mundo con personaje."""
     import presencia as _pr_tw
@@ -11799,6 +11822,7 @@ class Servidor:
 
     def manejar(self, ses, opcode, m, d, addr, cuerpo=b''):
         """Login: responde MOTD + personajes + redirect. Mundo: entra al juego."""
+        _ULTIMO_MENSAJE[0] = (opcode, getattr(getattr(ses, 'personaje', None), 'nombre', None), time.time())
         if (getattr(ses, 'mapa_cargando', False)
                 and opcode in (0x0004, 0x0005, 0x0006, 0x0007, 0x0016, 0x002E, 0x0151)):
             return
@@ -22839,7 +22863,7 @@ class Servidor:
         wsrv = await asyncio.start_server(
             functools.partial(self.cliente, rol='mundo'), self.host, self.wport)
         log.info(f"servidor de MUNDO en {self.host}:{self.wport}")
-        tareas = [srv.serve_forever(), wsrv.serve_forever()]
+        tareas = [srv.serve_forever(), wsrv.serve_forever(), _vigia_del_bucle()]
         try:
             fsrv = await asyncio.start_server(self.archivos, self.host, self.fport)
             log.info(f"servidor de archivos en {self.host}:{self.fport}")
