@@ -267,3 +267,20 @@ def test_pvp_solo_fuera_de_ciudades(mundo):
     assert tr.motivo_pvp(ladron, t) == ''
     otro = _con_job('Nadie', 7, '7.7.7.7', tr.TRADER, stage=16)
     assert tr.motivo_pvp(ladron, otro) is None                # un Trader sin carga no
+
+
+def test_la_opcion_elegida_se_traduce_con_la_linea_guardada(monkeypatch):
+    """"no me asigna el job": el cliente manda el numero de opcion (10, 11...) y el servidor lo traduce con la linea
+    guardada en dlg_guion; el Guild Clerk no la guardaba."""
+    import dialogos
+    s = _ses('Baco', 1, '1.1.1.1')
+    enviados = []
+    s.enviar = lambda *pk: enviados.extend(pk)
+    app._trade_routes_hablar(s, 143350)
+    ops = dialogos.opciones_de(s.dlg_guion[0])
+    assert ops[dialogos.indice_opcion(10)] == tr.OP_TRADER
+    assert ops[dialogos.indice_opcion(11)] == tr.OP_HUNTER
+    monkeypatch.setattr(app, '_logros_guardar', lambda ses: None)
+    monkeypatch.setattr(app, '_trade_routes_vestir', lambda ses: None)
+    app._trade_routes_opcion(s, 143350, ops[dialogos.indice_opcion(11)])
+    assert tr.job_de(s.personaje) == tr.HUNTER and 'You are now a Hunter.' in s.avisos

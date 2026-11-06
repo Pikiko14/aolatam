@@ -8586,9 +8586,13 @@ def _aliua_mostrar(ses, ent, g):
 def _trade_routes_hablar(ses, ent, fence=False):
     """Clic en el Guild Clerk o en el Fence (trade_routes.py)."""
     import trade_routes as _tr
-    ses.dlg_ent, ses.dlg_guion, ses.dlg_paso = ent, None, 0
+    linea = _tr.saludo_fence(ses) if fence else _tr.saludo(ses)
+    # El cliente contesta con el NUMERO de opcion (10, 11...): se traduce con la linea guardada en dlg_guion, sin
+    # la cabecera 0x0012 (como linea_de). Sin guardarla no se podia elegir nada ("no me asigna el job", 05/11/2026).
+    ses.dlg_ent, ses.dlg_guion, ses.dlg_paso = ent, [linea[2:]], 1
     ses.dlg_quest_ofrecida = None
-    ses.enviar(_tr.saludo_fence(ses) if fence else _tr.saludo(ses))
+    ses.dlg_val = _tr.RETRATO
+    ses.enviar(linea)
 
 
 def _trade_routes_opcion(ses, ent, op):
@@ -8596,7 +8600,12 @@ def _trade_routes_opcion(ses, ent, op):
     import trade_routes as _tr
     antes = _tr.job_de(ses.personaje)
     linea, avisos = _tr.opcion(ses, op)
-    ses.enviar(linea if linea is not None else struct.pack('<H', 0x0012) + _dl_tr.FIN)
+    if linea is not None:
+        ses.dlg_ent, ses.dlg_guion, ses.dlg_paso = ent, [linea[2:]], 1
+        ses.enviar(linea)
+    else:
+        ses.dlg_ent, ses.dlg_guion, ses.dlg_paso = None, None, 0
+        ses.enviar(struct.pack('<H', 0x0012) + _dl_tr.FIN)
     for a in avisos:
         _tr.aviso(ses, a)
     if _tr.job_de(ses.personaje) != antes:

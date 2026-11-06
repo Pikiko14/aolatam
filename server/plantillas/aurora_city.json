@@ -1138,8 +1138,8 @@
    "klass": 199,
    "monstruo": false,
    "tile": [
-    192,
-    183
+    242,
+    199
    ],
    "direccion": 6,
    "visible": 1,
