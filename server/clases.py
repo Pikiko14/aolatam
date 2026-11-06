@@ -900,6 +900,9 @@ def skills_que_suben(accion: str, skills_arma=()):
 # producir entrenaba ShadowBlade.
 RAMAS_DE_ARMA = {9, 10, 11, 17, 30}
 
+# Life, Wraith, Chaos y Earth: solo suben con un hechizo de esa misma rama (app._otorgar_skill_exp).
+RAMAS_ELEMENTALES = {1, 2, 3, 4}
+
 
 EXP_POR_NIVEL_SKILL = [3, 6, 8, 12, 16, 30, 40, 55, 70, 85]
 

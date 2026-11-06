@@ -10394,6 +10394,11 @@ def _otorgar_skill_exp(ses, p, yo, arma_puesta=0, magic_id=0, accion=None, skill
         candidatas = _cl.skills_que_suben(accion, skills_arma)
         if mag_branch:
             candidatas.add(mag_branch)
+    # Las cuatro ramas elementales del mago solo suben con un hechizo SUYO ("los poderes de mago solo suben de nivel si
+    # se usa un spell de su tipo; ahorita Life esta subiendo usando poderes Chaos", 05/11/2026): la accion 'magia'
+    # entrenaba Life, Wraith, Chaos y Earth a la vez con cualquier hechizo o golpe de baston.
+    if skills_forzadas is None:
+        candidatas -= (_cl.RAMAS_ELEMENTALES - {mag_branch})
     prob = _cb.PROB_SKILL_EXP if prob_override is None else float(prob_override)
     for h in p.habilidades:
         sid, slv, sexp = h[0], h[1], h[2]
