@@ -7962,11 +7962,41 @@ PASO_VIGIA, UMBRAL_VIGIA = 0.1, 0.25
 _ULTIMO_MENSAJE = [None]
 
 
+# Y UN HILO que, si el bucle lleva mas de UMBRAL_PILA s sin latir, anota la pila del hilo principal: el mensaje del
+# vigia solo dice el ultimo que entro, y el atasco suele venir de una tarea de fondo (IA, regeneracion, guardados).
+UMBRAL_PILA = 0.4
+_LATIDO = [time.perf_counter()]
+
+
+def _hilo_de_pilas(hilo_principal):
+    import sys
+    import threading
+    import traceback
+    anotado = None
+    while True:
+        time.sleep(0.05)
+        parado = time.perf_counter() - _LATIDO[0]
+        if parado < UMBRAL_PILA:
+            anotado = None
+            continue
+        if anotado == _LATIDO[0]:
+            continue
+        anotado = _LATIDO[0]
+        marco = sys._current_frames().get(hilo_principal)
+        if marco is not None:
+            pila = ''.join(traceback.format_stack(marco)[-12:])
+            log.warning('BUCLE PARADO %.2f s, esta en:' + chr(10) + '%s', parado, pila)
+
+
 async def _vigia_del_bucle():
+    import threading
+    threading.Thread(target=_hilo_de_pilas, args=(threading.get_ident(),), daemon=True,
+                     name='vigia-pilas').start()
     reloj = time.perf_counter
     while True:
-        t0 = reloj()
+        _LATIDO[0] = t0 = reloj()
         await asyncio.sleep(PASO_VIGIA)
+        _LATIDO[0] = reloj()
         retraso = reloj() - t0 - PASO_VIGIA
         if retraso > UMBRAL_VIGIA:
             ult = _ULTIMO_MENSAJE[0]
