@@ -502,10 +502,16 @@ def al_entrar_mapa(ses):
         refrescar_marcas(ses)
     # LA PD DEL JOB OTRA VEZ, un momento despues: al cargar el mapa el cliente recibe el inventario y vuelve a pintar
     # la fashion de verdad ("se pierde el traje de trader al pasar de mapa", 06/11/2026).
+    # Ya al entrar (antes solo a 1 s y se veia el salto: "hace como 1 salto de 2 seg y luego le sale el traje",
+    # 06/11/2026), y otra vez a RETRASO_PD por si el cliente la tapa al acabar de cargar.
     if job_de(p):
+        import app
+        try:
+            app._trade_routes_vestir(ses)
+        except Exception:
+            log.debug('vestir la PD al entrar', exc_info=True)
         try:
             import asyncio
-            import app
             asyncio.get_event_loop().call_later(RETRASO_PD, lambda: app._trade_routes_vestir(ses)
                                                 if getattr(ses, 'personaje', None) else None)
         except RuntimeError:

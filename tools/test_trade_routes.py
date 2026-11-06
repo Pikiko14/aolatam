@@ -340,3 +340,14 @@ def test_el_job_se_ve_al_volver_a_entrar(monkeypatch):
     monkeypatch.setattr(app, '_logros_datos', cargar)
     assert tr.pd_de(s)[168] == 26701                          # Romantic Gentleman Coat
     assert tr.job_de(s.personaje) == tr.TRADER
+
+
+def test_la_pd_se_viste_al_entrar_al_mapa_sin_esperar(monkeypatch):
+    """"hace como 1 salto de 2 seg y luego le sale el traje" (06/11/2026)."""
+    s = _ses('Baco', 1, '1.1.1.1')
+    tr.poner_job(s, tr.TRADER, ahora=1)
+    vestido = []
+    monkeypatch.setattr(app, '_trade_routes_vestir', lambda ses: vestido.append(ses))
+    monkeypatch.setattr(tr, 'refrescar_marcas', lambda ses: None)
+    tr.al_entrar_mapa(s)
+    assert vestido == [s]
