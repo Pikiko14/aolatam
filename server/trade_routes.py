@@ -462,6 +462,54 @@ def soltar(ses, ahora=None):
     return True
 
 
+RANGO_CLIC = 3                    # casillas desde las que un clic en la carga del suelo la recoge
+
+
+def por_que_no(ses, e, ahora=None):
+    """El motivo por el que `ses` no puede recoger la carga del suelo de `e`, o '' si puede."""
+    ahora = ahora or time.time()
+    p = ses.personaje
+    s = e.get('suelo') or {}
+    if getattr(ses, 'muerto', False):
+        return 'You cannot pick it up while dead.'
+    if lleva_carga(ses):
+        return 'You already carry cargo.'
+    if s.get('solto') == p.char_id and ahora < s.get('libre_para_el', 0):
+        return 'You dropped this cargo. You can pick it up again in %d s.' % (s['libre_para_el'] - ahora + 1)
+    job = job_de(p)
+    if not job:
+        return 'Only Traders, Hunters and Thieves can pick up cargo.'
+    if job == THIEF:
+        if ip_de(ses) == e['ip']:
+            return 'You cannot steal cargo from a Trader of your own IP.'
+    elif not _de_su_grupo(ses, e):
+        return 'This cargo belongs to another Trader. Only a Thief can take it.'
+    if not montado(ses):
+        return 'You must be riding a mount to carry cargo.'
+    return ''
+
+
+def pulsar(ses, entidad, ahora=None):
+    """Clic en la carga del suelo (objeto ENTIDAD_SUELO + trader): la recoge si esta cerca y puede; si no, dice por
+    que ("ahora lo veo pero no lo puedo recoger", 06/11/2026). False si la entidad no es una carga."""
+    e = _ENCARGOS.get(int(entidad) - ENTIDAD_SUELO)
+    if not e or not e.get('suelo'):
+        return False
+    p = ses.personaje
+    s = e['suelo']
+    if s['stage'] != int(p.stage):
+        return False
+    if max(abs(p.tile_x - s['tile'][0]), abs(p.tile_y - s['tile'][1])) > RANGO_CLIC:
+        aviso(ses, 'Get closer to pick up the cargo.')
+        return True
+    motivo = por_que_no(ses, e, ahora)
+    if motivo:
+        aviso(ses, motivo)
+        return True
+    _recoger(ses, e)
+    return True
+
+
 def contacto(ses, ahora=None):
     """Al acabar un paso: si hay una carga en el suelo a 1 casilla y puede llevarla, la recoge."""
     ahora = ahora or time.time()
@@ -474,38 +522,37 @@ def contacto(ses, ahora=None):
             continue
         if max(abs(p.tile_x - s['tile'][0]), abs(p.tile_y - s['tile'][1])) > 1:
             continue
-        if s.get('solto') == p.char_id and ahora < s.get('libre_para_el', 0):
+        motivo = por_que_no(ses, e, ahora)
+        if motivo:
+            if 'mount' in motivo:
+                aviso(ses, motivo)
             continue
-        job = job_de(p)
-        ladron = job == THIEF
-        if ladron and ip_de(ses) == e['ip']:
-            continue
-        if not ladron and not (job in (TRADER, HUNTER) and _de_su_grupo(ses, e)):
-            continue
-        if not montado(ses):
-            aviso(ses, 'You must be riding a mount to carry cargo.')
-            return False
-        import app
-        res = app._gm_dar_item(ses, CARGAS[e['tipo']]['item'], 1)
-        if not res.startswith('dado'):
-            aviso(ses, 'You need a free slot in your bag.')
-            return False
-        _a_todos(p.stage, _quitar_suelo_paquete(e))
-        e['suelo'] = None
-        e['portador'] = p.char_id
-        nombre = CARGAS[e['tipo']]['nombre']
-        if ladron:
-            e['robada_en'] = int(p.stage)
-            aviso(ses, 'You picked up the %s. Bring it to the Fence.' % nombre)
-            trader = _sesion(e['trader'])
-            if trader is not None and trader is not ses:
-                aviso(trader, 'The cargo was stolen!')
-        else:
-            aviso(ses, 'The cargo was recovered!')
-        refrescar_marcas(ses)
-        log.info('%s recoge la %s de %s', p.nombre, nombre, e['nombre'])
-        return True
+        return _recoger(ses, e)
     return False
+
+
+def _recoger(ses, e):
+    p = ses.personaje
+    import app
+    res = app._gm_dar_item(ses, CARGAS[e['tipo']]['item'], 1)
+    if not res.startswith('dado'):
+        aviso(ses, 'You need a free slot in your bag.')
+        return False
+    _a_todos(p.stage, _quitar_suelo_paquete(e))
+    e['suelo'] = None
+    e['portador'] = p.char_id
+    nombre = CARGAS[e['tipo']]['nombre']
+    if job_de(p) == THIEF:
+        e['robada_en'] = int(p.stage)
+        aviso(ses, 'You picked up the %s. Bring it to the Fence.' % nombre)
+        trader = _sesion(e['trader'])
+        if trader is not None and trader is not ses:
+            aviso(trader, 'The cargo was stolen!')
+    else:
+        aviso(ses, 'The cargo was recovered!')
+    refrescar_marcas(ses)
+    log.info('%s recoge la %s de %s', p.nombre, nombre, e['nombre'])
+    return True
 
 
 def al_entrar_mapa(ses):

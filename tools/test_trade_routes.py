@@ -370,3 +370,19 @@ def test_aviso_a_todos_al_tomar_un_job(monkeypatch):
     tr.poner_job(s, tr.THIEF, ahora=1)
     tr.anunciar_job(s)
     assert 'Baco is now a Thief!' in otro.avisos and 'Baco is now a Thief!' in s.avisos
+
+
+def test_clic_en_la_carga_la_recoge_o_dice_por_que(mundo):
+    """"ahora lo veo pero no lo puedo recoger" (06/11/2026)."""
+    t = _cargado(mundo)
+    ladron = _con_job('Zorro', 9, '9.9.9.9', tr.THIEF, stage=16)
+    mundo.append(ladron)
+    tr.soltar(t, ahora=200)
+    entidad = tr.ENTIDAD_SUELO + 1
+    assert tr.pulsar(t, entidad, ahora=210) and not tr.lleva_carga(t)
+    assert any('You dropped this cargo' in a for a in t.avisos)
+    ladron.personaje.tile_x = 60                                # a 10 casillas
+    assert tr.pulsar(ladron, entidad) and 'Get closer to pick up the cargo.' in ladron.avisos
+    ladron.personaje.tile_x = 52
+    assert tr.pulsar(ladron, entidad) and tr.lleva_carga(ladron)
+    assert not tr.pulsar(ladron, 12345)                        # no es una carga
