@@ -52,6 +52,19 @@ def filtrar(bichos, spawns):
 VIDA_MOBS = 2.0
 
 
+# Y UN 30% MAS DE ATAQUE para todos, jefe incluido (05/11/2026: "aumenta un 30% el ataque de los mob y jefe"). Va
+# despues del atk_mult de la plantilla.
+ATAQUE_MOBS = 1.3
+
+
+def subir_ataque(bichos):
+    """Multiplica por ATAQUE_MOBS el ataque fisico y magico de todos los monstruos de la instancia."""
+    for b in bichos.values():
+        b.atk = int(round(int(getattr(b, 'atk', 0) or 0) * ATAQUE_MOBS))
+        b.matk = int(round(int(getattr(b, 'matk', 0) or 0) * ATAQUE_MOBS))
+    return bichos
+
+
 def doblar_vida(bichos, spawns):
     """Multiplica por VIDA_MOBS la vida de los monstruos que no son el jefe."""
     jefes = {e['entity_id'] for e in spawns if e.get('jefe')}

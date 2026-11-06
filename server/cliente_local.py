@@ -276,6 +276,24 @@ MAGIAS_PROPIAS = {
 }
 
 
+def _parchear_cast_rapido_xml_bytes(xml_bytes: bytes) -> bytes:
+    """前置時間 de los AOE de mago de combate.CAST_RAPIDO, para que la barra de lanzamiento del cliente dure lo mismo."""
+    import combate
+    txt = xml_bytes.decode('utf-8', errors='ignore')
+    cambio = [False]
+
+    def _fila(m):
+        tag = m.group(0)
+        id_m = re.search(r'編號="(\d+)"', tag)
+        if not id_m or int(id_m.group(1)) not in combate.CAST_RAPIDO:
+            return tag
+        nuevo = re.sub(r'前置時間="\d+"', '前置時間="%d"' % combate.CAST_RAPIDO_MS, tag)
+        cambio[0] = cambio[0] or nuevo != tag
+        return nuevo
+    txt = re.sub(r'<法術\s[^>]*?/>', _fila, txt)
+    return txt.encode('utf-8') if cambio[0] else xml_bytes
+
+
 def _parchear_magias_propias_xml_bytes(xml_bytes: bytes) -> bytes:
     """Anade a magic.xml las filas de MAGIAS_PROPIAS que falten."""
     txt = xml_bytes.decode('utf-8', errors='ignore')
@@ -571,6 +589,35 @@ def _parchear_equipo_ligado_vendible_xml_bytes(xml_bytes: bytes) -> bytes:
 
     txt = re.sub(r'<道具\b[^>]*?/>', _parchear, txt)
     return txt.encode('utf-8')
+
+
+def _parchear_venta_por_nivel_xml_bytes(xml_bytes: bytes) -> bytes:
+    """El 收購價格 (lo que el cliente enseña que paga la tienda) del equipo de nivel 1..60 que se vende por nivel
+    (venta_nivel.py: 100 a 6.000). Sin el, la tienda seguia enseñando el precio viejo aunque el servidor pagara el
+    nuevo ("no funciona lo de vender gear de lvl 1 a 60 en 100 a 6k gold", 05/11/2026). Solo sube, nunca baja."""
+    import venta_nivel
+    txt = xml_bytes.decode('utf-8', errors='ignore')
+    cambio = [False]
+
+    def _parchear(m):
+        tag = m.group(0)
+        id_m = re.search(r'編號="(\d+)"', tag)
+        if not id_m:
+            return tag
+        nuevo = venta_nivel.precio(int(id_m.group(1)))
+        if nuevo <= 0:
+            return tag
+        actual = re.search(r'收購價格="(\d+)"', tag)
+        if actual:
+            if int(actual.group(1)) >= nuevo:
+                return tag
+            cambio[0] = True
+            return tag[:actual.start(1)] + str(nuevo) + tag[actual.end(1):]
+        cambio[0] = True
+        return tag[:-2].rstrip() + f' 收購價格="{nuevo}" />'
+
+    txt = re.sub(r'<道具\b[^>]*?/>', _parchear, txt)
+    return txt.encode('utf-8') if cambio[0] else xml_bytes
 
 
 def apilables_del_mall() -> set:
@@ -1151,6 +1198,7 @@ def aplicar_modo_estacion(modo: str = None) -> str:
         if numero == 9:
             raw_item = _parchear_item9_xml_bytes(raw_item)
         raw_item = _parchear_equipo_ligado_vendible_xml_bytes(raw_item)
+        raw_item = _parchear_venta_por_nivel_xml_bytes(raw_item)
         raw_item = _parchear_descripciones_xml_bytes(raw_item)
         raw_item = _parchear_apilables_xml_bytes(raw_item, apilables)
         if pak_item == pak26:
@@ -1159,7 +1207,7 @@ def aplicar_modo_estacion(modo: str = None) -> str:
             otros_paks.setdefault(pak_item, {})[ruta_pak] = raw_item
 
     # El texto del icono de los buffs sale del 說明 de magic.xml.
-    if getattr(_cf, 'DESCRIPCIONES_MAGIAS', None):
+    if True:            # siempre: magias propias y cast rapido; las descripciones solo si hay
         ruta_pak = r'SETTING\ENG\MAGIC.XML'
         pak_mag = indice.get(ruta_pak, pak26)
         bak_mag = pak_mag.with_name(pak_mag.name + '.bak')
@@ -1168,6 +1216,7 @@ def aplicar_modo_estacion(modo: str = None) -> str:
                    else _extraer_archivo_pak(bak_mag if bak_mag.exists() else pak_mag, ruta_pak))
         if raw_mag:
             raw_mag = _parchear_magias_propias_xml_bytes(raw_mag)
+            raw_mag = _parchear_cast_rapido_xml_bytes(raw_mag)
             raw_mag = _parchear_descripciones_xml_bytes(raw_mag, '法術', '說明', 'DESCRIPCIONES_MAGIAS')
             if pak_mag == pak26:
                 reemplazos[ruta_pak] = raw_mag

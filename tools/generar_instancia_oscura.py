@@ -295,9 +295,9 @@ def registrar_stage(extras):
     raw = (RAIZ / 'parches' / 'update27.pak').read_bytes()
     base = {n: parche._leer(raw, e) for n, e in parche._directorio(raw).items()}['SETTING' + bs + 'ENG' + bs + 'STAGE.XML'].decode('utf-8')
     if '編號="%d"' % STAGE not in base:
-        # la minimapa (雷達圖) se queda con la del Training Cave: no hay imagen smap para el mapa nuevo
+        # la minimapa (雷達圖) es la del Training Cave en negro: smap\900, de tools/minimapa_negro.py (05/11/2026)
         fila = ('    <場景 編號="%d" 名稱="%s" 地圖檔="map' + bs + 'map%03d.mpc" 筆刷檔="brush' + bs + 'brush.gic" '
-                '雷達圖="smap' + bs + '046" 配樂檔1="music' + bs + '11.ogg" 亮度="160" 天氣="0" 不懲罰="是" />\r\n'
+                '雷達圖="smap' + bs + '900" 配樂檔1="music' + bs + '11.ogg" 亮度="160" 天氣="0" 不懲罰="是" />\r\n'
                 ) % (STAGE, NOMBRE_STAGE, STAGE)
         fin = base.rindex('<DEFINE')
         base = base[:fin].rstrip(' ') + fila + '    ' + base[fin:]

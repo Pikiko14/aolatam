@@ -1388,6 +1388,17 @@ def encontrar_sub_combate(mid: int, d: dict, tabla: dict):
     return None
 
 
+# LOS AOE DE MAGO DE NIVEL 32 Y 60 SE LANZAN EN 1 s (05/11/2026: "los aoe lvl 32 y 60 de las 4 clases de mago baja el
+# cast time a 1 seg"); venian con 前置時間 2000. Los cinco rangos de cada uno: Angel's Light y Aurora Trap (Life), Strong
+# Acid Rain y Hell Flame (Wraith), Thunder Scope y Fire Trap (Chaos), Lull Thorn y Canker Moss (Earth). El cliente lo ve
+# en su magic.xml (cliente_local._parchear_cast_rapido_xml_bytes).
+CAST_RAPIDO_MS = 1000
+CAST_RAPIDO = frozenset((14, 30, 48, 66, 84, 17, 36, 54, 72, 90,            # Angel's Light, Aurora Trap
+                         116, 128, 145, 162, 179, 118, 135, 152, 169, 186,  # Strong Acid Rain, Hell Flame
+                         214, 228, 245, 262, 279, 217, 234, 251, 268, 285,  # Thunder Scope, Fire Trap
+                         314, 330, 348, 366, 384, 317, 336, 354, 372, 390)) # Lull Thorn, Canker Moss
+
+
 def datos_magia(magic_id: int) -> dict:
     """Informacion del hechizo/skill desde magic.xml."""
     global _MAGIC_CACHE
@@ -1468,6 +1479,8 @@ def datos_magia(magic_id: int) -> dict:
             dur_val = _num(d.get('持續時間'), 0)
             res['dur_ms'] = dur_val * 1000 if dur_val > 0 else 0
             res['cast_time'] = _num(d.get('前置時間'), 100)
+            if magic_id in CAST_RAPIDO:
+                res['cast_time'] = CAST_RAPIDO_MS
             res['rango'] = _num(d.get('射程'), 1)
             # ARMA QUE PIDE LA HABILIDAD: 裝備限制1/2 de magic.xml (斧+錘, 劍+刀, 弓箭+彈弓, 槍, 盾, 杖, 影刃). Coinciden con la
             # 物品類別 de los items equipados.
