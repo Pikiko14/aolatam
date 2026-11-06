@@ -4104,9 +4104,17 @@ CADENCIA_PET_BASE = 1.15
 CADENCIA_PET_SUELO, CADENCIA_PET_SUELO_SACIADA = 0.75, 0.65
 
 
+# Con el Pet Feed (saciedad > 100) pega un 25% mas rapido. Antes solo bajaba el suelo, al que con poca agilidad no se
+# llegaba nunca: "el pet feed no mejora ... velocidad del pet ataque" (05/11/2026).
+RITMO_SACIADA = 0.75
+
+
 def _cadencia_pet(agilidad, saciada) -> float:
     suelo = CADENCIA_PET_SUELO_SACIADA if saciada else CADENCIA_PET_SUELO
-    return max(suelo, min(CADENCIA_PET_BASE, CADENCIA_PET_BASE - int(agilidad) * 0.002))
+    c = min(CADENCIA_PET_BASE, CADENCIA_PET_BASE - int(agilidad) * 0.002)
+    if saciada:
+        c *= RITMO_SACIADA
+    return max(suelo, c)
 
 
 # LA MASCOTA EN PVP (05/11/2026: "los pets no reaccionan al atacar a los jugadores, solo a los mobs"). Su IA solo
@@ -4178,11 +4186,15 @@ def _pet_contra_rival(ses, f_pet, pet_eid, ahora) -> bool:
         b_star, b_bf = _ms.bonos_efectivos(f_pet), _ms.bonos_buffs(f_pet)
         saciada = int(f_pet.get('saciedad', 0)) > 100
         agi = int(f_pet.get('agilidad', 15)) + int(b_star.get('agilidad', 0)) + int(b_bf.get('agilidad', 0))
+        if saciada:
+            agi = int(round(agi * 1.2))
         if ahora - f_pet.get('ultimo_ataque', 0) < _cadencia_pet(agi, saciada):
             return True
         f_pet['ultimo_ataque'] = ahora
         atk = int(f_pet.get('atk', 100)) + int(b_star.get('atk', 0)) + int(b_bf.get('atk', 0))
         matk = int(f_pet.get('matk', 100)) + int(b_star.get('matk', 0)) + int(b_bf.get('matk', 0))
+        if saciada:                     # como contra monstruos: el Pet Feed tambien cuenta en PvP
+            atk, matk = int(round(atk * 1.4)), int(round(matk * 1.4))
         # SUS PODERES, como contra los monstruos: el 65% de las veces uno de ataque que no este en enfriamiento
         # ("los pet no lanzan poderes", 05/11/2026). Antes contra jugadores solo daba el golpe basico.
         sk, ef, magia = _poder_de_mascota(f_pet, ahora)

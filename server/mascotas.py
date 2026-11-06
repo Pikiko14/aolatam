@@ -768,8 +768,16 @@ def entrada(plantilla: bytes, estado: dict) -> bytes:
         struct.pack_into('<II', e, 140, int(d_exp.get('exp') or 0), int(d_exp['tope']))
         struct.pack_into('<H', e, 220, int(d_exp.get('pct') or 0))
     # Offsets 148..180: bonos verdes de cada stat (0 si la mascota no tiene bono en ese stat)
+    # Con saciedad > 100 se suma lo que gana con el Pet Feed (x1.4 / x1.2, como en armar), para que el tooltip de la
+    # mochila lo enseñe tambien ("el pet feed no mejora las estadisticas", 05/11/2026).
+    satiado = int(estado.get('saciedad') or 0) > 100
     for stat_k, off_b in OFF_BONUS_ENTRADA.items():
-        bono_val = int(b_star.get(stat_k, 0)) & 0xFFFFFFFF
+        bono_val = int(b_star.get(stat_k, 0))
+        if satiado and stat_k in DOBLES:
+            base_v = int(estado.get(stat_k) or 0)
+            mult = 1.2 if stat_k in ('rigor', 'agilidad') else 1.4
+            bono_val = int(round((base_v + bono_val) * mult)) - base_v
+        bono_val &= 0xFFFFFFFF
         struct.pack_into('<I', e, off_b, bono_val)
     # Offset 222: nivel de estrellas general (1 = 0.1 estrellas)
     struct.pack_into('<I', e, 222, st_lvl & 0xFFFFFFFF)
