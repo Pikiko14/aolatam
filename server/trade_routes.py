@@ -705,10 +705,31 @@ def puede_atacar(ses, otro) -> bool:
     return _regla(ses, otro) or _regla(otro, ses)
 
 
+def _en_disputa_aqui(miembro):
+    """Si hay en el mapa de `miembro` una carga de su grupo en disputa: la lleva alguien de su grupo o esta en el
+    suelo. Muerto el portador, la pelea sigue ("si me bajan la mercancia, es decir muero, deberiamos igual poder
+    targetear a los enemigos", 06/11/2026)."""
+    st = int(getattr(miembro.personaje, 'stage', 0) or 0)
+    for e in _ENCARGOS.values():
+        if not _de_su_grupo(miembro, e):
+            continue
+        s = e.get('suelo')
+        if s and int(s['stage']) == st:
+            return True
+        portador = _sesion(e['portador']) if e.get('portador') else None
+        if portador is None and e.get('portador') == miembro.personaje.char_id:
+            portador = miembro
+        if portador is not None and int(getattr(portador.personaje, 'stage', 0) or 0) == st:
+            return True
+    return False
+
+
 def _regla(ses, otro) -> bool:
     """El sentido original: el Thief contra quien lleva la carga y su escolta; Trader / Hunter contra el Thief que la
-    lleva robada."""
+    lleva robada. Y el Thief contra el Trader y los Hunters de un grupo cuya carga esta en disputa en ese mapa."""
     a, b = job_de(ses.personaje), job_de(otro.personaje)
+    if a == THIEF and b in (TRADER, HUNTER) and _en_disputa_aqui(otro):
+        return True
     if a == THIEF:
         if encargo_que_lleva(otro) and b in (TRADER, HUNTER):
             return True

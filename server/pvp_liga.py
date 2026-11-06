@@ -435,6 +435,13 @@ def _aplicar(ses, otro, dano, es_crit, con_efecto, tipo, efecto, magia, *, orige
         except Exception:
             pass
     if not q.hp:
+        # Y a los demas, lo mismo que cuando mata un monstruo (app._avisar_muerte_a_los_demas): la muerte y DESPUES la
+        # vida en 0. Aqui la vida iba antes de la muerte y le seguian viendo de pie ("matamos a elias y sigue
+        # saliendo vivo", 06/11/2026).
+        try:
+            __import__('app')._avisar_muerte_a_los_demas(otro, apub)
+        except Exception:
+            log.debug('aviso de muerte PvP a los demas', exc_info=True)
         otro.muerto = True
         otro.objetivo_actual = None
         import competiciones

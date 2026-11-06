@@ -183,3 +183,18 @@ def test_pk5_pega_el_100_por_ciento_del_ataque(monkeypatch, skill):
     assert pvp_liga.atacar(a, b, skill, cb.datos_magia(skill), 0)
     dano = vida - b.personaje.hp
     assert 1200 <= dano <= 1300, dano                # 1400 - 500/3,52
+
+
+def test_los_demas_ven_morir_al_jugador_en_pvp(monkeypatch):
+    """"matamos a elias y sigue saliendo vivo" (06/11/2026): como con un monstruo, la muerte y despues la vida en 0."""
+    reloj = [1000.0]
+    a, b = _par(monkeypatch, reloj)
+    for s in (a, b):
+        s.enviar_sin_espejo = s.enviar
+        s.volcar = lambda: None
+    b.personaje.hp = 10
+    pvp_liga._aplicar(a, b, 50, False, True, cb.ATAQUE_NORMAL, 0, False)
+    pub = presencia.entidad_de(b)
+    muere = [i for i, x in enumerate(a.recibido) if x[:2] == struct.pack('<H', 0x000A) and struct.unpack_from('<I', x, 2)[0] == pub]
+    vida0 = [i for i, x in enumerate(a.recibido) if x == cb.atributo(pub, 0, cb.KIND_HP)]
+    assert muere and vida0 and max(vida0) > max(muere)

@@ -436,3 +436,17 @@ def test_el_que_lleva_la_carga_puede_atacar_a_sus_enemigos(mundo, entorno):
     tr.soltar(t, ahora=200)
     tr.contacto(ladron)                                                   # el Thief la roba
     assert tr.puede_atacar(ladron, t) and tr.puede_atacar(ladron, otro_trader)   # y el Thief con carga se defiende
+
+
+def test_con_la_carga_en_el_suelo_sigue_la_pelea(mundo, entorno):
+    """"si me bajan la mercancia, es decir muero, deberiamos igual poder targetear a los enemigos" (06/11/2026)."""
+    t = _cargado(mundo)
+    h = _con_job('Pipe', 2, '2.2.2.2', tr.HUNTER, stage=16)
+    ladron = _con_job('Zorro', 9, '9.9.9.9', tr.THIEF, stage=16)
+    mundo.extend([h, ladron])
+    _grupo(entorno, t, h)
+    tr.soltar(t, ahora=200)                                   # muere el Trader: la carga al suelo
+    assert tr.puede_atacar(ladron, h) and tr.puede_atacar(h, ladron)
+    assert tr.puede_atacar(ladron, t) and tr.puede_atacar(t, ladron)
+    h.personaje.stage = 30                                    # en otro mapa no hay disputa
+    assert not tr.puede_atacar(ladron, h)
