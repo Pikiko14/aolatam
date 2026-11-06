@@ -326,3 +326,17 @@ def test_magia_del_reloj_en_el_cliente():
     import cliente_local
     out = cliente_local._parchear_magias_propias_xml_bytes('<root>\n</root>'.encode('utf-8')).decode('utf-8')
     assert '編號="23410"' in out and 'Carrying Cargo' in out
+
+
+def test_el_job_se_ve_al_volver_a_entrar(monkeypatch):
+    """"si me salgo debo mantener el job activo" (06/11/2026): los logros_cont se cargan tarde de la ficha."""
+    s = _ses('Baco', 1, '1.1.1.1')
+    s.usuario = 'baco'
+    s.personaje.logros_cont = {}
+
+    def cargar(ses):
+        ses.personaje._logros_cargado = True
+        ses.personaje.logros_cont = {'trade_job': tr.TRADER, 'trade_job_desde': 1}
+    monkeypatch.setattr(app, '_logros_datos', cargar)
+    assert tr.pd_de(s)[168] == 26701                          # Romantic Gentleman Coat
+    assert tr.job_de(s.personaje) == tr.TRADER

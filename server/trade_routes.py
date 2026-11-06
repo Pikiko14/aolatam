@@ -36,6 +36,8 @@ NPC_CLERK, NPC_FENCE = 'Guild Clerk', 'Fence'
 ZONAS_SEGURAS = frozenset(CIUDADES) | {41, 500}         # ciudades, el Lyceum y las casas: sin PvP del evento
 SUELO_SEGUNDOS = 5 * 60
 BLOQUEO_RECOGER = 2 * 60                                  # quien la solto no la recoge en 2 min
+# El objeto del suelo es de SETTING/SERVER.OBD (los que se crean con el 0x000E, serie 60000+): 62329 / 62330 montones de
+# sacos, 60092 cofre azul. Los de mapobj.obd (8399, 7550, 12431) son decoracion del .mpc y no se veian (06/11/2026).
 ENTIDAD_SUELO = 97_100_000                                # + char_id del Trader: el objeto de mapa de la carga
 # EL RELOJ DE LA CARGA: un icono de buff propio (magic.xml 23410, cliente_local.MAGIAS_PROPIAS) con el tiempo que
 # queda, en quien la lleva; y avisos en el chat a los 10, 5 y 1 minutos ("donde veo el tiempo que tengo para
@@ -52,11 +54,11 @@ FACTOR_CON_CARGA = 0.5          # 50% mas lento con carga, montado o a pie
 # (se reparte entre ellos) y lo que gana el Thief que la entrega en el Fence.
 GRAIN, SILK, GEM = 1, 2, 3
 CARGAS = {
-    GRAIN: dict(nombre='Grain Cargo', item=89074, icono=5146, suelo=8399, precio=500_000, minutos=20,
+    GRAIN: dict(nombre='Grain Cargo', item=89074, icono=5146, suelo=62329, precio=500_000, minutos=20,
                 ganancia=(100_000, 300_000), hunters=500_000, thief=250_000),
-    SILK: dict(nombre='Silk Cargo', item=89075, icono=5729, suelo=7550, precio=2_000_000, minutos=25,
+    SILK: dict(nombre='Silk Cargo', item=89075, icono=5729, suelo=62330, precio=2_000_000, minutos=25,
                ganancia=(300_000, 600_000), hunters=1_000_000, thief=500_000),
-    GEM: dict(nombre='Gem Cargo', item=89076, icono=8731, suelo=12431, precio=5_000_000, minutos=30,
+    GEM: dict(nombre='Gem Cargo', item=89076, icono=8731, suelo=60092, precio=5_000_000, minutos=30,
               ganancia=(600_000, 1_000_000), hunters=2_000_000, thief=1_000_000),
 }
 ITEMS_CARGA = {c['item']: k for k, c in CARGAS.items()}
@@ -112,6 +114,18 @@ def _cont(p):
     return c
 
 
+def _listo(ses):
+    """Los logros_cont (donde va el job) se cargan de la ficha la primera vez que se piden (app._logros_datos). Al
+    volver a entrar se miraba el job antes de cargarlos y parecia perdido ("si me salgo debo mantener el job", 06/11)."""
+    p = getattr(ses, 'personaje', None)
+    if p is not None and not getattr(p, '_logros_cargado', False) and getattr(ses, 'usuario', None):
+        try:
+            import app
+            app._logros_datos(ses)
+        except Exception:
+            log.debug('cargar logros', exc_info=True)
+
+
 def job_de(p) -> int:
     return int(_cont(p).get(CLAVE_JOB) or 0) if p else 0
 
@@ -133,6 +147,7 @@ def texto_espera(segundos: int) -> str:
 
 def poner_job(ses, job: int, ahora=None, forzar=False):
     """(ok, mensaje). job 0 deja el job. Con encargo activo no se cambia."""
+    _listo(ses)
     p = ses.personaje
     ahora = ahora or time.time()
     if encargo_de(ses) or lleva_carga(ses):
@@ -152,6 +167,7 @@ def poner_job(ses, job: int, ahora=None, forzar=False):
 
 def pd_de(ses) -> dict:
     """{casilla de fashion: item} de la PD de su job, o {} sin job."""
+    _listo(ses)
     p = getattr(ses, 'personaje', None)
     job = job_de(p)
     if not job:
@@ -252,6 +268,7 @@ def destino_para(stage_salida, rng=None):
 
 def aceptar(ses, tipo: int, ahora=None, rng=None):
     """(ok, mensaje) del Trader que compra una carga en el Guild Clerk de su ciudad."""
+    _listo(ses)
     import app
     p = ses.personaje
     ahora = ahora or time.time()
@@ -473,6 +490,7 @@ def contacto(ses, ahora=None):
 
 def al_entrar_mapa(ses):
     """Al llegar a un mapa: las cargas que hay en su suelo y las marcas del evento."""
+    _listo(ses)
     p = getattr(ses, 'personaje', None)
     if not p:
         return
@@ -551,6 +569,8 @@ def motivo_pvp(ses, otro):
 
 
 def puede_atacar(ses, otro) -> bool:
+    _listo(ses)
+    _listo(otro)
     a, b = job_de(ses.personaje), job_de(otro.personaje)
     if a == THIEF:
         if encargo_que_lleva(otro) and b in (TRADER, HUNTER):
@@ -689,6 +709,7 @@ def _linea(mid, opts=None, cadenas=None):
 
 def saludo(ses):
     """El 0x0012 del Guild Clerk segun el job del jugador."""
+    _listo(ses)
     p = ses.personaje
     job = job_de(p)
     if not job:
@@ -707,11 +728,13 @@ def saludo(ses):
 
 
 def saludo_fence(ses):
+    _listo(ses)
     return _linea(M_FENCE, [OP_FENCE, OP_SALIR])
 
 
 def opcion(ses, op: int, ahora=None, rng=None):
     """(paquetes 0x0012 o None para cerrar, avisos) de una opcion del Guild Clerk."""
+    _listo(ses)
     if op == OP_SALIR:
         return None, []
     if op in OP_A_JOB or op == OP_DEJAR:
