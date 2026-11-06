@@ -35,7 +35,14 @@ FENCES = {8: 'Crashing Hillock', 30: 'Cryptic Moon Swamp', 25: 'Fungus Forest No
 NPC_CLERK, NPC_FENCE = 'Guild Clerk', 'Fence'
 ZONAS_SEGURAS = frozenset(CIUDADES) | {41, 500}         # ciudades, el Lyceum y las casas: sin PvP del evento
 SUELO_SEGUNDOS = 5 * 60
+BLOQUEO_RECOGER = 2 * 60                                  # quien la solto no la recoge en 2 min
 ENTIDAD_SUELO = 97_100_000                                # + char_id del Trader: el objeto de mapa de la carga
+# EL RELOJ DE LA CARGA: un icono de buff propio (magic.xml 23410, cliente_local.MAGIAS_PROPIAS) con el tiempo que
+# queda, en quien la lleva; y avisos en el chat a los 10, 5 y 1 minutos ("donde veo el tiempo que tengo para
+# entregar??", 06/11/2026).
+MAGIA_CARGA = 23410
+AVISOS_MINUTOS = (10, 5, 1)
+RETRASO_PD = 1.0                                          # segundos tras entrar al mapa para volver a vestir la PD
 AURA_CARGA = 1                                            # valor del aro (hb.equipo) de quien lleva carga; /aro <n>
 
 RANURA_MONTURA = 10
@@ -69,7 +76,7 @@ PD = {
 CASILLAS_FASHION = range(167, 175)
 
 # TEXTOS PROPIOS de msg.xml (cliente_local los mete en el parche). Rango libre: 160609..500000.
-M_SALUDO, M_JOB_ACTUAL, M_CARGAS, M_ENCARGO, M_FENCE = 300001, 300002, 300003, 300004, 300005
+M_SALUDO, M_JOB_ACTUAL, M_CARGAS, M_ENCARGO, M_FENCE, M_EN_CAMINO = 300001, 300002, 300003, 300004, 300005, 300006
 OP_TRADER, OP_HUNTER, OP_THIEF, OP_DEJAR = 300010, 300011, 300012, 300013
 OP_ENCARGO, OP_ENTREGAR, OP_FENCE, OP_SALIR = 300014, 300015, 300016, 300019
 OP_GRAIN, OP_SILK, OP_GEM = 300020, 300021, 300022
@@ -78,6 +85,7 @@ TEXTOS = {
     M_JOB_ACTUAL: 'You are a %1. What do you want to do?',
     M_CARGAS: 'Choose a cargo. You pay for it now and get your gold back with a profit when you deliver it.',
     M_ENCARGO: 'Deliver the %1 to %2 within %3 minutes.',
+    M_EN_CAMINO: 'Your %1 goes to %2. Time left: %3.',
     M_FENCE: 'Got something that is not yours? I pay well for stolen cargo, and nobody asks questions.',
     OP_FENCE: 'Sell the stolen cargo',
     OP_TRADER: 'Become a Trader', OP_HUNTER: 'Become a Hunter', OP_THIEF: 'Become a Thief',
@@ -407,7 +415,10 @@ def soltar(ses, ahora=None):
         return False
     p = ses.personaje
     e['portador'] = None
-    e['suelo'] = dict(stage=int(p.stage), tile=[int(p.tile_x), int(p.tile_y)], hasta=ahora + SUELO_SEGUNDOS)
+    # Quien la suelta no la vuelve a coger en BLOQUEO_RECOGER: al desconectarse y volver a entrar en el mismo sitio,
+    # el primer paso la recogia otra vez y parecia que no habia caido ("me sali del juego y no se cayo", 06/11/2026).
+    e['suelo'] = dict(stage=int(p.stage), tile=[int(p.tile_x), int(p.tile_y)], hasta=ahora + SUELO_SEGUNDOS,
+                      solto=p.char_id, libre_para_el=ahora + BLOQUEO_RECOGER)
     _a_todos(p.stage, _paquete_suelo(e))
     refrescar_marcas(ses)
     log.info('cae la %s de %s en %s %s', CARGAS[e['tipo']]['nombre'], e['nombre'], p.stage, e['suelo']['tile'])
@@ -416,6 +427,7 @@ def soltar(ses, ahora=None):
 
 def contacto(ses, ahora=None):
     """Al acabar un paso: si hay una carga en el suelo a 1 casilla y puede llevarla, la recoge."""
+    ahora = ahora or time.time()
     p = getattr(ses, 'personaje', None)
     if not p or getattr(ses, 'muerto', False) or lleva_carga(ses):
         return False
@@ -424,6 +436,8 @@ def contacto(ses, ahora=None):
         if not s or s['stage'] != int(p.stage):
             continue
         if max(abs(p.tile_x - s['tile'][0]), abs(p.tile_y - s['tile'][1])) > 1:
+            continue
+        if s.get('solto') == p.char_id and ahora < s.get('libre_para_el', 0):
             continue
         job = job_de(p)
         ladron = job == THIEF
@@ -468,6 +482,16 @@ def al_entrar_mapa(ses):
         ses.enviar(*paquetes)
     if any(e.get('portador') for e in _ENCARGOS.values()):
         refrescar_marcas(ses)
+    # LA PD DEL JOB OTRA VEZ, un momento despues: al cargar el mapa el cliente recibe el inventario y vuelve a pintar
+    # la fashion de verdad ("se pierde el traje de trader al pasar de mapa", 06/11/2026).
+    if job_de(p):
+        try:
+            import asyncio
+            import app
+            asyncio.get_event_loop().call_later(RETRASO_PD, lambda: app._trade_routes_vestir(ses)
+                                                if getattr(ses, 'personaje', None) else None)
+        except RuntimeError:
+            pass
 
 
 def expirar(ses, e=None):
@@ -508,6 +532,7 @@ def tick(ses, ahora=None):
     for e in list(_ENCARGOS.values()):
         if ahora > e['fin'] or (e.get('suelo') and ahora > e['suelo']['hasta']):
             _perder(e, conocida=ses)
+    recordatorios(ses, ahora)
     if lleva_carga(ses) and not encargo_que_lleva(ses):
         ranura, _ = item_carga_en(ses)
         _quitar_carga(ses, ranura)
@@ -579,9 +604,42 @@ def refrescar_marcas(ses):
             except Exception:
                 log.debug('marcas de trade routes', exc_info=True)
     try:
-        ses.enviar(hb.equipo(p.entity_id, AURA_CARGA if (lleva_carga(ses) and not seguro) else 0))
+        ses.enviar(hb.equipo(p.entity_id, AURA_CARGA if (lleva_carga(ses) and not seguro) else 0), icono(ses))
     except Exception:
         log.debug('aro propio', exc_info=True)
+
+
+def restante(e, ahora=None) -> int:
+    return max(0, int(e['fin'] - (ahora or time.time())))
+
+
+def texto_restante(segundos: int) -> str:
+    m, s = divmod(int(segundos), 60)
+    return '%d min %02d s' % (m, s)
+
+
+def icono(ses, ahora=None):
+    """El 0x001D del icono de la carga con su cuenta atras (0 lo quita)."""
+    import struct
+    e = encargo_que_lleva(ses) if lleva_carga(ses) else None
+    ms = restante(e, ahora) * 1000 if e else 0
+    return struct.pack('<HIBBII', 0x001D, ses.personaje.entity_id, 1, 4, MAGIA_CARGA, ms)
+
+
+def recordatorios(ses, ahora=None):
+    """Los avisos de 10, 5 y 1 minuto al que lleva la carga (cada uno una vez)."""
+    e = encargo_que_lleva(ses)
+    if not e or not lleva_carga(ses):
+        return
+    queda = restante(e, ahora)
+    hechos = e.setdefault('avisos', [])
+    for m in AVISOS_MINUTOS:
+        if queda <= m * 60 and m not in hechos:
+            hechos.extend(x for x in AVISOS_MINUTOS if x >= m and x not in hechos)
+            destino = (FENCES if job_de(ses.personaje) == THIEF else CIUDADES)
+            sitio = 'a Fence' if destino is FENCES else CIUDADES[e['destino']]
+            aviso(ses, '%s: %d minute%s left to reach %s.' % (CARGAS[e['tipo']]['nombre'], m, '' if m == 1 else 's', sitio))
+            break
 
 
 # ----------------------------------------------------------------------------------------------- oro y objetos
@@ -635,6 +693,11 @@ def saludo(ses):
     job = job_de(p)
     if not job:
         return _linea(M_SALUDO, [OP_TRADER, OP_HUNTER, OP_THIEF, OP_SALIR])
+    e = encargo_que_lleva(ses) if lleva_carga(ses) else None
+    if e and job in (TRADER, HUNTER):
+        return _linea(M_EN_CAMINO, [OP_ENTREGAR, OP_SALIR],
+                      ['1', CARGAS[e['tipo']]['nombre'], '2', CIUDADES[e['destino']], '3',
+                       texto_restante(restante(e))])
     opts = []
     if job == TRADER:
         opts.append(OP_ENTREGAR if (encargo_de(ses) or lleva_carga(ses)) else OP_ENCARGO)

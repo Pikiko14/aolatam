@@ -295,3 +295,34 @@ def test_dejar_el_job_siempre_pero_sin_saltarse_la_espera():
     ok, msg = tr.poner_job(s, tr.HUNTER, ahora=1000 + 7200)           # dejar y volver a elegir no salta la espera
     assert not ok and 'change your job again' in msg
     assert tr.poner_job(s, tr.HUNTER, ahora=1000 + 7 * 86400)[0]
+
+
+def test_reloj_avisos_y_clerk_con_el_tiempo():
+    """"donde veo el tiempo que tengo para entregar??" (06/11/2026)."""
+    import struct
+    s = _trader()
+    tr.aceptar(s, tr.SILK, ahora=1000, rng=random.Random(1))
+    paquete = tr.icono(s, ahora=1000 + 60)
+    assert struct.unpack_from('<IBBII', paquete, 2)[2:] == (4, tr.MAGIA_CARGA, 24 * 60 * 1000)
+    tr.recordatorios(s, ahora=1000 + 15 * 60 + 1)              # quedan menos de 10 min
+    tr.recordatorios(s, ahora=1000 + 15 * 60 + 5)              # no se repite
+    assert [a for a in s.avisos if 'minutes left' in a] == [
+        'Silk Cargo: 10 minutes left to reach %s.' % tr.CIUDADES[tr.encargo_de(s)['destino']]]
+    linea = tr.saludo(s)
+    assert struct.unpack_from('<I', linea, 2)[0] == tr.M_EN_CAMINO and b'Silk Cargo' in linea
+    tr.expirar(s)
+    assert struct.unpack_from('<IBBII', tr.icono(s), 2)[4] == 0  # sin carga, el icono se quita
+
+
+def test_quien_la_suelta_no_la_recoge_en_2_minutos(mundo):
+    """"me sali del juego y no se cayo": al volver a entrar la recogia en el primer paso (06/11/2026)."""
+    t = _cargado(mundo)
+    tr.soltar(t, ahora=200)
+    assert not tr.contacto(t, ahora=200 + 60)
+    assert tr.contacto(t, ahora=200 + 121) and tr.lleva_carga(t)
+
+
+def test_magia_del_reloj_en_el_cliente():
+    import cliente_local
+    out = cliente_local._parchear_magias_propias_xml_bytes('<root>\n</root>'.encode('utf-8')).decode('utf-8')
+    assert '編號="23410"' in out and 'Carrying Cargo' in out

@@ -276,6 +276,13 @@ MAGIAS_PROPIAS = {
 }
 
 
+# El icono de la carga de Trade Routes (trade_routes.MAGIA_CARGA): solo para enseñar el tiempo que queda.
+MAGIAS_PROPIAS[23410] = {'編號': '23410', '介面圖號': '10827', '名稱': 'Carrying Cargo', '對象': '自己',
+                         '高權位': '23410', '低權位': '1', '後置時間': '500', '持續時間': '1800', '公式': '2',
+                         '說明': 'You carry Trade Routes cargo. Deliver it before the time runs out (%1).',
+                         '同類無法使用': '是'}
+
+
 def _parchear_cast_rapido_xml_bytes(xml_bytes: bytes) -> bytes:
     """前置時間 de los AOE de mago de combate.CAST_RAPIDO, para que la barra de lanzamiento del cliente dure lo mismo."""
     import combate
