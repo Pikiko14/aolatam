@@ -16,7 +16,7 @@ Diseño pactado con el usuario (resumen; el texto completo esta en la conversaci
     Thief la lleva al Fence de uno de sus 4 mapas, menos el del mapa donde la robo, y cobra lo suyo y un vale.
   * PVP DEL EVENTO fuera de ciudades y zonas seguras: el Thief contra quien lleva la carga y los Hunters de su grupo, y
     Traders / Hunters contra el Thief que lleva carga robada. El cliente lo sabe por la marca hostil (42) que se le
-    pone a cada uno solo para quien puede atacarle; quien lleva carga lleva ademas el aro (AURA_CARGA).
+    pone a cada uno solo para quien puede atacarle; quien lleva carga lleva ademas el aro de su bando (equipo_de).
 """
 import json
 import logging
@@ -48,8 +48,12 @@ ENTIDAD_SUELO = 97_100_000                                # + char_id del Trader
 MAGIA_CARGA = 23410
 AVISOS_MINUTOS = (10, 5, 1)
 RETRASO_PD = 1.0                                          # segundos tras entrar al mapa para volver a vestir la PD
-AURA_CARGA = 0          # SIN aro de equipo: es la marca de EQUIPO de Holy (38) y dos portadores quedaban en el mismo
-                        # equipo, y el cliente no deja apuntar a un companero ("elias sigue sin poder target", 06/11)
+# EL ARO DEL PVP DEL EVENTO: la marca de EQUIPO de Holy (38), UN EQUIPO POR BANDO. Con un solo equipo para todos, dos
+# portadores quedaban de companeros y el cliente no dejaba apuntarse ("elias sigue sin poder target"); sin aro no se
+# veia nada ("no me salen las marcas del pvp de job", 06/11/2026). El cliente no deja apuntar al de SU equipo, y
+# Thief contra Thief o Trader contra Trader no pelean en el evento.
+EQUIPO_CARAVANA = 1             # Trader y Hunter
+EQUIPO_THIEF = 2
 
 RANURA_MONTURA = 10
 FACTOR_CON_CARGA = 0.5          # 50% mas lento con carga, montado o a pie
@@ -755,6 +759,11 @@ def _regla(ses, otro) -> bool:
     return False
 
 
+def equipo_de(ses):
+    """El equipo (marca 38) de su bando en el evento."""
+    return EQUIPO_THIEF if job_de(ses.personaje) == THIEF else EQUIPO_CARAVANA
+
+
 def _hostil(eid, activo):
     """Lo que hace atacable a un jugador en el cliente, como en Arena (competiciones.marcas_actor, daily_events.marcas):
     el modo arena (36) y la marca hostil (42). Con la 42 sola el cliente no dejaba ni seleccionarlo ("siguen sin poder
@@ -782,9 +791,10 @@ def marcas_para(visor, sujeto):
         return ()
     eid = presencia.entidad_de(sujeto)
     out = []
-    if lleva_carga(sujeto):
-        out.append(hb.equipo(eid, AURA_CARGA))
-    if puede_atacar(visor, sujeto):
+    ataca = puede_atacar(visor, sujeto)
+    if ataca or lleva_carga(sujeto):
+        out.append(hb.equipo(eid, equipo_de(sujeto)))
+    if ataca:
         out.extend(_hostil(eid, True))
     return tuple(out)
 
@@ -819,14 +829,15 @@ def refrescar_marcas(ses):
                 presencia._mandar(visor, *base, *marcas)
             except Exception:
                 log.debug('marcas de trade routes', exc_info=True)
-        # Y el propio cliente del que puede atacar, en modo arena: sin el no apunta a jugadores.
+        # Y el propio cliente del que puede atacar, en modo arena (sin el no apunta a jugadores) y con el aro de su bando.
         try:
             yo = visor.personaje.entity_id
-            visor.enviar(*_hostil(yo, ataca and not seguro))
+            metido = (ataca or lleva_carga(visor)) and not seguro
+            visor.enviar(*_hostil(yo, ataca and not seguro), hb.equipo(yo, equipo_de(visor) if metido else 0))
         except Exception:
             log.debug('modo arena propio', exc_info=True)
     try:
-        ses.enviar(hb.equipo(p.entity_id, AURA_CARGA if (lleva_carga(ses) and not seguro) else 0), icono(ses))
+        ses.enviar(icono(ses))
     except Exception:
         log.debug('aro propio', exc_info=True)
 

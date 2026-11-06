@@ -470,3 +470,20 @@ def test_los_comandos_gm_del_evento_llegan_desde_el_chat():
     assert app._gm_parsear('/job Baco thief') == ('trade', 'job', ['Baco', 'thief'])
     assert app._gm_parsear('caravana info') == ('trade', 'caravana', ['info'])
     assert 'trade' in __import__('gm').RESULTADOS_DELEGADOS
+
+
+def test_el_aro_es_de_su_bando_y_no_los_hace_companeros(mundo, monkeypatch):
+    """"no me salen las marcas del pvp de job" (06/11/2026): vuelve el aro, pero Thief y caravana en equipos distintos
+    (el cliente no deja apuntar a uno de su mismo equipo)."""
+    import presencia
+    import struct
+    monkeypatch.setattr(presencia, 'entidad_de', lambda s: s.personaje.entity_id)
+    t = _cargado(mundo)
+    ladron = _con_job('Zorro', 9, '9.9.9.9', tr.THIEF, stage=16)
+    mundo.append(ladron)
+
+    def equipo(marcas, eid):
+        return [struct.unpack('<I', m[-4:])[0] for m in marcas if m[:8] == struct.pack('<HIBB', 0x001D, eid, 1, 38)]
+    assert equipo(tr.marcas_para(ladron, t), 1) == [tr.EQUIPO_CARAVANA]
+    assert equipo(tr.marcas_para(t, ladron), 9) == [tr.EQUIPO_THIEF]
+    assert tr.EQUIPO_CARAVANA != tr.EQUIPO_THIEF
