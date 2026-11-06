@@ -48,7 +48,8 @@ ENTIDAD_SUELO = 97_100_000                                # + char_id del Trader
 MAGIA_CARGA = 23410
 AVISOS_MINUTOS = (10, 5, 1)
 RETRASO_PD = 1.0                                          # segundos tras entrar al mapa para volver a vestir la PD
-AURA_CARGA = 1                                            # valor del aro (hb.equipo) de quien lleva carga; /aro <n>
+AURA_CARGA = 0          # SIN aro de equipo: es la marca de EQUIPO de Holy (38) y dos portadores quedaban en el mismo
+                        # equipo, y el cliente no deja apuntar a un companero ("elias sigue sin poder target", 06/11)
 
 RANURA_MONTURA = 10
 FACTOR_CON_CARGA = 0.5          # 50% mas lento con carga, montado o a pie
