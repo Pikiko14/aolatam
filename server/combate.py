@@ -146,6 +146,8 @@ def rango_de_creditos(creditos: int) -> int:
 
 COSTE_GOLPE = 4
 SEGUNDOS_REAPARICION = 20
+# Los jefes (columna 王) tardan mas: "los jefes salen muy rapido, que salgan cada 20 min" (06/11/2026).
+SEGUNDOS_REAPARICION_JEFE = 20 * 60
 _MON = None
 
 
@@ -840,7 +842,7 @@ class Monstruo:
 
     def toca_reaparecer(self) -> bool:
         return (not self.vivo and self.muerto_en
-                and time.time() - self.muerto_en >= getattr(self,'daily_respawn',SEGUNDOS_REAPARICION))
+                and time.time() - self.muerto_en >= segundos_reaparicion(self))
 
     def revivir(self):
         """Vuelve a la vida cerca de su sitio, no clavado en el mismo punto."""
@@ -1028,6 +1030,14 @@ def solo_da_sp(mag) -> bool:
     """Bloody Storm / Hot Blooded: dan SP al momento y nada mas (sin 持續時間). No son un buff que se quede en la
     barra: se guardaban 300 s en personaje.buffs y su icono salia con las stats (05/11/2026)."""
     return bool(mag) and int(mag.get('sp_gana') or 0) > 0 and int(mag.get('dur_ms') or 0) <= 0
+
+
+def segundos_reaparicion(m) -> float:
+    """Lo que tarda en volver ese bicho: lo que diga su evento (daily_respawn), 20 min si es jefe, si no 20 s."""
+    propio = getattr(m, 'daily_respawn', None)
+    if propio is not None:
+        return propio
+    return SEGUNDOS_REAPARICION_JEFE if es_jefe(getattr(m, 'npc_type', 0) or 0) else SEGUNDOS_REAPARICION
 
 
 def es_jefe(npc_type: int) -> bool:

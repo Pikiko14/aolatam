@@ -3707,7 +3707,7 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
             log.info(f"[{addr}] monstruo {m.nombre} (entidad {objetivo}) reaparecio en ({m.tile_x}, {m.tile_y})")
 
     try:
-        asyncio.get_event_loop().call_later(getattr(m,'daily_respawn',_cb.SEGUNDOS_REAPARICION), _respawn)
+        asyncio.get_event_loop().call_later(_cb.segundos_reaparicion(m), _respawn)
     except Exception:
         pass
 
