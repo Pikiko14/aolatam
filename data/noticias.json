@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-07",
+    "titulo": "Map help and stronger monsters",
+    "texto": "NPCs that have a quest for you now show [!] before their name. Each hunting zone now has a sign with the name and level of the monsters there. All monsters now hit 50% harder."
+  },
+  {
+    "fecha": "2026-11-07",
     "titulo": "Monster spells",
     "texto": "Monsters now use their own spells and skills in combat, like the Phoenix Fire of the Evil Fire Elf, also against your pets and summons. Watch out!"
   },
