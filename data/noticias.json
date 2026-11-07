@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-07",
+    "titulo": "Sneak",
+    "texto": "Sneak now really hides the Assassin: while it lasts you become almost transparent, without name or health bar, and other players cannot select you. Attacking with anything other than an assassination technique, or the end of the effect, makes you visible again."
+  },
+  {
+    "fecha": "2026-11-07",
     "titulo": "Skills, armor and Totem War souls",
     "texto": "In Totem War, a soul can now click the totem of its own faction to revive there. Mage skills (Life, Wraith, Chaos, Earth) can only be used with their skill equipped. When you change a skill at the Skill Angel (for example Mantle to Vestment or Garment), the gear the new skill does not allow goes back to your bag; if your bag has no room, the change is cancelled."
   },
