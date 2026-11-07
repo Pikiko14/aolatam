@@ -88,3 +88,7 @@ def test_matar_un_totem_de_nivel_alto_lo_baja_uno_sin_dar_el_territorio(monkeypa
 def test_efecto_por_nivel_y_tope_5():
     assert [tw.efecto_de_nivel(n) for n in range(1, 7)] == [None, 7, 8, 9, 10, None]    # probados en el juego
     assert tw.NIVEL_MAX_TOTEM == 5
+
+
+def test_al_bajar_no_usa_los_de_subir():
+    assert tw.efecto_de_nivel(3, baja=True) is None and tw.efecto_de_nivel(3) == 8

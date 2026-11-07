@@ -264,9 +264,16 @@ NIVEL_TOTEM_MIN_EFECTO = 2
 NIVEL_TOTEM_CON_EFECTO = 5
 
 
-def efecto_de_nivel(nivel):
-    """El numero de efecto del 0x0020 que pinta "Level N" sobre el totem, o None si no hay para ese nivel."""
+# Los de BAJAR de nivel son otros: {nivel al que baja: efecto}. Pendiente de que el usuario los pruebe con /efecto
+# ("solo cuando se sube de nivel esos efectos, ya te digo los de cuando se bajan", 07/11/2026).
+EFECTOS_TOTEM_BAJA = {}
+
+
+def efecto_de_nivel(nivel, baja=False):
+    """El numero de efecto del 0x0020 sobre el totem al subir (o bajar) a ese nivel, o None si no hay."""
     n = int(nivel or 0)
+    if baja:
+        return EFECTOS_TOTEM_BAJA.get(n)
     return EFECTO_TOTEM_BASE + n if NIVEL_TOTEM_MIN_EFECTO <= n <= NIVEL_TOTEM_CON_EFECTO else None
 MULT_PRIMERA_MUERTE = 5
 MULT_YA_MUERTO = 2

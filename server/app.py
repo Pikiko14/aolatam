@@ -8096,8 +8096,8 @@ def _tw_efecto_nivel(stage, baja=False):
     if sala is None:
         return
     _eid_fx = _tw_ef.eid_totem(stage)
-    # El efecto pinta el nivel que tiene AHORA (sube o baja): efecto = 5 + nivel.
-    _n_fx = _tw_ef.efecto_de_nivel(_tw_ef.nivel_totem(stage)[0])
+    # El efecto pinta el nivel que tiene AHORA: al subir efecto = 5 + nivel; al bajar, los de EFECTOS_TOTEM_BAJA.
+    _n_fx = _tw_ef.efecto_de_nivel(_tw_ef.nivel_totem(stage)[0], baja=baja)
     if _n_fx is None:
         return
     pk = struct.pack('<HIHI', 0x0020, _eid_fx, _n_fx, _eid_fx)
