@@ -258,16 +258,16 @@ CREDITOS_POR_BAJA = 10          # sin victima conocida
 # en el script de efectos del cliente llaman a TotemLevelUp / TotemLevelDown; el numero se deduce del orden del script
 # y SE PRUEBA en el juego con /efecto N.
 # Cada efecto pinta un nivel fijo: el 7 "Level 2" y el 10 "Level 5" (probado por el usuario con /efecto, 07/11/2026),
-# o sea efecto = 5 + nivel. Por el orden del script de efectos del cliente, los de nivel parecen llegar al effect017
-# (nivel 12): por encima no se manda ninguno hasta comprobarlo.
+# o sea efecto = 5 + nivel: 7 nivel 2, 8 nivel 3, 9 nivel 4 y 10 nivel 5. El 6 NO es el nivel 1: el nivel 1 no tiene.
 EFECTO_TOTEM_BASE = 5
-NIVEL_TOTEM_CON_EFECTO = 12
+NIVEL_TOTEM_MIN_EFECTO = 2
+NIVEL_TOTEM_CON_EFECTO = 5
 
 
 def efecto_de_nivel(nivel):
     """El numero de efecto del 0x0020 que pinta "Level N" sobre el totem, o None si no hay para ese nivel."""
     n = int(nivel or 0)
-    return EFECTO_TOTEM_BASE + n if 1 <= n <= NIVEL_TOTEM_CON_EFECTO else None
+    return EFECTO_TOTEM_BASE + n if NIVEL_TOTEM_MIN_EFECTO <= n <= NIVEL_TOTEM_CON_EFECTO else None
 MULT_PRIMERA_MUERTE = 5
 MULT_YA_MUERTO = 2
 _MUERTOS = set()                # char_id de los que ya murieron en esta guerra
@@ -658,9 +658,9 @@ def spawn_totem_campo(m) -> bytes:
 # La ventana del totem (s2c 0x012F, REA 0060c6c0). Solo la abre el cliente si
 # la faccion del paquete (+4) es la suya. +8 liga[17], +25/+29 Fortification
 # actual/maxima, +33 nivel-1 ("1/08"), +37 "Upgrade need", +41 0 = crearla.
-# Tope de nivel del totem: "haz que el totem suba maximo a lvl 50" (07/11/2026; antes 8). monster.xml solo trae
-# "Totem Lv 1".."Totem Lv 8" (21397..21404): de ahi para arriba el tipo se queda en el 8 y el numero va en el cartel.
-NIVEL_MAX_TOTEM = 50
+# Tope de nivel del totem: 5, el ultimo que tiene efecto de "Level N" ("que en totem war se suba max a lvl 5",
+# 07/11/2026; era 8). monster.xml trae "Totem Lv 1".."Totem Lv 8" (21397..21404).
+NIVEL_MAX_TOTEM = 5
 TIPOS_TOTEM = 8
 PUNTOS_POR_NIVEL = 100
 
