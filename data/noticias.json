@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-07",
+    "titulo": "Santa Clausula",
+    "texto": "Santa Clausula hits harder now: +500 attack and +500 magic attack."
+  },
+  {
+    "fecha": "2026-11-07",
     "titulo": "Power Shield",
     "texto": "Power Shield now works: while it lasts, the damage you take is paid with MP instead of HP, up to its limit (1350 to 3000 damage depending on the level). Silence cannot be used on you while it is active."
   },
