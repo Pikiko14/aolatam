@@ -1,0 +1,44 @@
+"""Totem War: el cartel y la vida siguen al nivel, y la mascota no ataca al totem propio (07/11/2026)."""
+import pathlib
+import struct
+import sys
+from types import SimpleNamespace as NS
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / 'server'))
+import app  # noqa: E402
+import totem_war as tw  # noqa: E402
+
+
+def _campo():
+    return next(iter(tw.TOTEM_CAMPO))
+
+
+def test_cartel_con_el_tipo_del_nivel_actual(monkeypatch):
+    st = _campo()
+    monkeypatch.setattr(tw, 'nivel_totem', lambda s: (8, 0))
+    m = NS(entity_id=5, tile_x=1, tile_y=2, stage=st, npc_type=tw.TOTEM_TIPO_CAMPO, porcentaje=100)
+    pk = tw.spawn_totem_campo(m)
+    assert struct.unpack_from('<H', pk, 2 + 45)[0] == tw.TOTEM_TIPO_CAMPO + 7
+    assert struct.unpack_from('<I', pk, 2 + 40)[0] == 7
+
+
+def test_mascota_no_ataca_al_totem_que_su_dueno_no_puede_romper(monkeypatch):
+    monkeypatch.setattr(__import__('holy_battlefield'), 'puede_atacar', lambda s, m: True)
+    totem = NS(es_totem_tw=True, stage=_campo())
+    monkeypatch.setattr(tw, 'puede_pegar', lambda s, m: False)
+    assert not app._pet_puede_atacar(NS(), totem)
+    monkeypatch.setattr(tw, 'puede_pegar', lambda s, m: True)
+    assert app._pet_puede_atacar(NS(), totem)
+    assert app._pet_puede_atacar(NS(), NS())                     # un bicho normal, si
+
+
+def test_repintar_sube_la_vida_con_el_nivel(monkeypatch):
+    st = _campo()
+    monkeypatch.setattr(tw, 'nivel_totem', lambda s: (1, 0))
+    m = tw.crear_totem(st)
+    m.__dict__['_hp'] = m.hp_max // 2                          # a la mitad
+    sala = NS(monstruos={m.entity_id: m}, sesiones=[])
+    monkeypatch.setitem(app._SALAS_DEL_MUNDO, st, sala)
+    monkeypatch.setattr(tw, 'nivel_totem', lambda s: (4, 0))
+    app._tw_repintar_totem(st)
+    assert m.hp_max == tw.VIDA_POR_NIVEL * 4 and m.hp == m.hp_max // 2

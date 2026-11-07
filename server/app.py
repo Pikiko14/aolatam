@@ -8088,6 +8088,47 @@ def _cb_mod():
     return _cb_x
 
 
+def _pet_puede_atacar(ses, m) -> bool:
+    """Si la mascota de `ses` puede atacar a ese bicho: lo de Holy y, en Totem War, solo los totems y fuertes que su
+    dueno podria romper ("y mi pet lo ataca", 07/11/2026: le pegaba al totem de su propia liga)."""
+    if not __import__('holy_battlefield').puede_atacar(ses, m):
+        return False
+    if getattr(m, 'es_totem_tw', False) or getattr(m, 'decorativo', False):
+        return __import__('totem_war').puede_pegar(ses, m)
+    if getattr(m, 'es_fuerte_tw', False):
+        return __import__('totem_war').puede_pegar_fuerte(ses, m)
+    return True
+
+
+def _tw_repintar_totem(stage):
+    """Vuelve a mandar el cartel del totem (nivel y vida actuales) a todos los del mapa, sin cambiarle el id."""
+    import totem_war as _tw_p
+    sala = _SALAS_DEL_MUNDO.get(int(stage))
+    if sala is None or not sala.monstruos:
+        return
+    m = sala.monstruos.get(_tw_p.eid_totem(stage))
+    if m is None or not getattr(m, 'vivo', True):
+        return
+    # Y la VIDA del nivel nuevo, con el mismo porcentaje: se quedaba la de cuando se creo y un nivel 8 caia como un
+    # nivel 1 ("tampoco respeta los niveles si lo mato", 07/11/2026). Directo al _hp: el setter del totem no deja
+    # cambiarla fuera de un golpe.
+    if int(stage) in _tw_p.TOTEM_CAMPO and not getattr(m, 'decorativo', False):
+        _nv = max(1, min(_tw_p.NIVEL_MAX_TOTEM, _tw_p.nivel_totem(stage)[0]))
+        _max_nuevo = _tw_p.VIDA_POR_NIVEL * _nv
+        if int(getattr(m, 'hp_max', 0) or 0) != _max_nuevo and _max_nuevo > 0:
+            _frac = (m.hp / m.hp_max) if m.hp_max else 1.0
+            m.hp_max = _max_nuevo
+            m.__dict__['_hp'] = max(1, int(round(_max_nuevo * _frac)))
+            log.info('totem de %s: nivel %d, vida %d/%d', stage, _nv, m.hp, m.hp_max)
+    pkts = (_cb_mod().despawn_monstruo(m.entity_id), _tw_p.spawn_totem(m), _cb_mod().atributo(m.entity_id, m.porcentaje))
+    for s in list(sala.sesiones):
+        if getattr(getattr(s, 'personaje', None), 'stage', None) == int(stage):
+            try:
+                (getattr(s, 'enviar_sin_espejo', None) or s.enviar)(*pkts)
+            except Exception:
+                log.debug('repintar totem', exc_info=True)
+
+
 def _tw_relevantar(stage):
     """Vuelve a levantar el totem de la arena, con el nombre de su duena."""
     import totem_war as _tw_r
@@ -9594,6 +9635,10 @@ def _ofrenda_al_totem(ses, addr, cuerpo):
     if nivel > antes:
         if not _tw_o.activa():
             _tw_relevantar(p.stage)
+        else:
+            # En guerra no se levanta de nuevo (se curaria entero): se le repinta el cartel con el nivel nuevo a todos los
+            # del mapa, con su vida de ahora. Antes solo lo veia actualizado quien entraba despues (07/11/2026).
+            _tw_repintar_totem(p.stage)
         # Solo a la liga duena, por su chat (no un cartel a todo el servidor).
         try:
             import gremios as _grm_of
@@ -13502,7 +13547,7 @@ class Servidor:
                             if pet_targ and (not getattr(pet_targ, 'vivo', False)
                                              or pet_targ.hp <= 0
                                              or getattr(pet_targ, 'encantado', False)
-                                             or not __import__('holy_battlefield').puede_atacar(ses,pet_targ)):
+                                             or not _pet_puede_atacar(ses, pet_targ)):
                                 pet_targ = None
                                 ses.pet_objetivo = None
 
@@ -13514,7 +13559,7 @@ class Servidor:
                                     cands = []
                                     m_list = list(ses.monstruos.values()) if isinstance(ses.monstruos, dict) else (ses.monstruos or [])
                                     for m_cand in m_list:
-                                        if getattr(m_cand, 'vivo', True) and getattr(m_cand, 'hp', 0) > 0 and not getattr(m_cand, 'encantado', False) and __import__('holy_battlefield').puede_atacar(ses,m_cand):
+                                        if getattr(m_cand, 'vivo', True) and getattr(m_cand, 'hp', 0) > 0 and not getattr(m_cand, 'encantado', False) and _pet_puede_atacar(ses, m_cand):
                                             d_pm = max(abs(m_cand.tile_x - p.tile_x), abs(m_cand.tile_y - p.tile_y))
                                             if getattr(m_cand, 'en_combate_con', None) in (yo, pet_eid):
                                                 cands.append((d_pm, m_cand))
@@ -13527,7 +13572,7 @@ class Servidor:
                                     cands = []
                                     m_list = list(ses.monstruos.values()) if isinstance(ses.monstruos, dict) else (ses.monstruos or [])
                                     for m_cand in m_list:
-                                        if getattr(m_cand, 'vivo', True) and getattr(m_cand, 'hp', 0) > 0 and not getattr(m_cand, 'encantado', False) and __import__('holy_battlefield').puede_atacar(ses,m_cand):
+                                        if getattr(m_cand, 'vivo', True) and getattr(m_cand, 'hp', 0) > 0 and not getattr(m_cand, 'encantado', False) and _pet_puede_atacar(ses, m_cand):
                                             d_pm = max(abs(m_cand.tile_x - p.tile_x), abs(m_cand.tile_y - p.tile_y))
                                             if d_pm <= 10:
                                                 cands.append((d_pm, m_cand))
@@ -14467,8 +14512,9 @@ class Servidor:
                         log.info('[%s] no se ataca al %s: esta encantado y es '
                                  'aliado' % (addr, getattr(m, 'nombre', '?')))
                     return
-                # La invocacion y el aliado encantado fijan el objetivo de inmediato si no es un aliado
-                if not getattr(m, 'encantado', False):
+                # La invocacion y el aliado encantado fijan el objetivo de inmediato si no es un aliado (ni un totem o fuerte
+                # de Totem War que su dueno no puede romper: le pegaban al de su propia liga).
+                if not getattr(m, 'encantado', False) and _pet_puede_atacar(ses, m):
                     __import__('avatar_clones').ordenar(ses,m)
                     if getattr(ses, 'invocacion', None):
                         ses.invocacion['objetivo'] = m

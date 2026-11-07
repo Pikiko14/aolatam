@@ -598,7 +598,13 @@ def spawn_totem_campo(m) -> bytes:
     # 60 del 0x0001 de un jugador (0x005e9866). Con un 0 en los totems con duena el cliente no los dejaba atacar
     # ("sigue sin dejarme atacar los totem de otras ligas", 01/11/2026). Neutro: 8, como en la captura de Celestia.
     b[38] = faccion_duena(m.stage) or 8
-    struct.pack_into('<H', b, 45, int(getattr(m, 'npc_type', TOTEM_TIPO_CAMPO)))
+    # El tipo es "Totem Lv N" (21397 + nivel - 1) del nivel de AHORA, no del de cuando se creo el totem: con el viejo cada
+    # jugador veia un nivel distinto ("el totem me dice lvl 8, yo lo veo lvl 5 y Baco lvl 1", 07/11/2026).
+    _tipo = int(getattr(m, 'npc_type', TOTEM_TIPO_CAMPO))
+    if int(m.stage) in TOTEM_CAMPO and not getattr(m, 'decorativo', False):
+        _tipo = TOTEM_TIPO_CAMPO + max(1, min(NIVEL_MAX_TOTEM, nivel_totem(m.stage)[0])) - 1
+        m.npc_type = _tipo
+    struct.pack_into('<H', b, 45, _tipo)
     # El cartel es la ventana 0x2fda (REA 0064ab90):
     #   +40 nivel (+0x24c); el cartel pinta nivel + 1, por eso va nivel - 1.
     #   barra roja 0x2fdd: vida +63 de un maximo +67 (en %, como el 0x0013).
