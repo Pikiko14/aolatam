@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-07",
+    "titulo": "Skills and basic attacks",
+    "texto": "Using a skill no longer plays a basic attack too, for every class: the skill is your attack for that turn. After a skill, basic attacks only start again when you click the monster."
+  },
+  {
+    "fecha": "2026-11-07",
     "titulo": "Fixes",
     "texto": "Assassins no longer receive the production robot when choosing their class, their basic attack uses the right animation, and their skills no longer play a basic attack too. Cupid now saves your revival point correctly. Choosing a name that is already taken now tells you so."
   },
