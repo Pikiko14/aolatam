@@ -73,6 +73,15 @@ def defensa_jugador(ses) -> int:
         return 0
 
 
+def _fx_golpe_mob(atacante, objetivo, dano, atk_id, ef):
+    """El efecto del golpe de un monstruo; si es un hechizo (no el 656 normal), con su fase 0x80 para que se vea."""
+    import combate as _c
+    pk = [_c.numero_de_dano(atacante, objetivo, dano, ataque=atk_id, efecto=ef)]
+    if atk_id != 656:
+        pk.append(_c.cierre_de_dano(atacante, objetivo, atk_id, efecto=ef))
+    return pk
+
+
 def defensa_magica_jugador(ses) -> int:
     """La defensa magica (S.Def) del personaje, leida de su hoja de stats (offset 52 del 0x0042)."""
     try:
@@ -13100,13 +13109,23 @@ class Servidor:
                                                     ef_atk = _cb.efecto_de_ataque(_hab_sc) or ef_atk
                                                     if _hab_sc == _sc_h.HAB_AREA:
                                                         _sc_h.area_a_otros(ses, m, _hab_sc, ef_atk)
-                                            elif targ_eid == yo and suyo:
-                                                # Los demas usan sus 攻擊法術 (ver hechizos_mob.py).
+                                            elif suyo:
+                                                # Los demas usan sus 攻擊法術 (ver hechizos_mob.py), tambien contra la
+                                                # mascota y las invocaciones ("a los pet y summon igual", 06/11/2026).
                                                 import hechizos_mob as _hm
                                                 _hech_m = _hm.elegir(m)
                                                 if _hech_m:
+                                                    if targ_eid == yo:
+                                                        _mdef_t = defensa_magica_jugador(ses)
+                                                    elif f_pet and targ_eid == pet_eid:
+                                                        _mdef_t = int(f_pet.get('mdef', 0)) + int(_ms.bonos_efectivos(f_pet).get('mdef', 0))
+                                                    else:
+                                                        _inv_t = next((i for i in (getattr(ses, 'invocacion', None),
+                                                                                   getattr(ses, 'invocacion2', None))
+                                                                       if i and i.get('entity_id') == targ_eid), None) or {}
+                                                        _mdef_t = int(_inv_t.get('mdef', def_targ) or 0)
                                                     atk_id = _hech_m[0]
-                                                    suyo = _hm.dano(_hech_m, m, def_targ, defensa_magica_jugador(ses))
+                                                    suyo = _hm.dano(_hech_m, m, def_targ, _mdef_t)
                                                     ef_atk = _cb.efecto_de_ataque(atk_id) or ef_atk
 
                                             # Con el objetivo = yo, el cliente (0x5ed03b -> 0x649c70) selecciona
@@ -13205,19 +13224,19 @@ class Servidor:
                                                         ses.pet_objetivo = None
                                                         m.en_combate_con = yo
                                                         ses.enviar_inmediato(
-                                                            _cb.numero_de_dano(m.entity_id, pet_eid, suyo, ataque=656, efecto=ef_atk),
+                                                            *_fx_golpe_mob(m.entity_id, pet_eid, suyo, atk_id, ef_atk),
                                                             _cb.numero_flotante(pet_eid, suyo))
                                                         _mascota_muere(ses, f_pet, int(pet_eid), lambda _v, _m=m: _m.entity_id)
                                                     else:
                                                         ses.enviar_inmediato(
-                                                            _cb.numero_de_dano(m.entity_id, pet_eid, suyo, ataque=656, efecto=ef_atk),
+                                                            *_fx_golpe_mob(m.entity_id, pet_eid, suyo, atk_id, ef_atk),
                                                             _cb.numero_flotante(pet_eid, suyo),
                                                             _cb.atributo(pet_eid, _ms.hp_eff(f_pet), _cb.KIND_HP),
                                                             _ms.armar(f_pet))
                                                 elif getattr(ses, 'invocacion', None) and teid == ses.invocacion.get('entity_id'):
                                                     ses.invocacion['hp'] = max(0, ses.invocacion.get('hp', 1) - suyo)
                                                     ses.enviar_inmediato(
-                                                        _cb.numero_de_dano(m.entity_id, teid, suyo, ataque=656, efecto=ef_atk),
+                                                        *_fx_golpe_mob(m.entity_id, teid, suyo, atk_id, ef_atk),
                                                         _cb.numero_flotante(teid, suyo),
                                                         _cb.atributo(teid, int(100 * ses.invocacion['hp'] / max(1, ses.invocacion['hp_max'])), _cb.KIND_HP)
                                                     )
@@ -13230,7 +13249,7 @@ class Servidor:
                                                 elif getattr(ses, 'invocacion2', None) and teid == ses.invocacion2.get('entity_id'):
                                                     ses.invocacion2['hp'] = max(0, ses.invocacion2.get('hp', 1) - suyo)
                                                     ses.enviar_inmediato(
-                                                        _cb.numero_de_dano(m.entity_id, teid, suyo, ataque=656, efecto=ef_atk),
+                                                        *_fx_golpe_mob(m.entity_id, teid, suyo, atk_id, ef_atk),
                                                         _cb.numero_flotante(teid, suyo),
                                                         _cb.atributo(teid, int(100 * ses.invocacion2['hp'] / max(1, ses.invocacion2['hp_max'])), _cb.KIND_HP)
                                                     )
