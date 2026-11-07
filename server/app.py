@@ -9708,10 +9708,12 @@ def _tw_al_entrar(ses):
         if _m_dec is not None:
             ses.enviar(_tw_e.spawn_totem(_m_dec), _cb_mod().atributo(_m_dec.entity_id, 100))
     if not _tw_e.es_mapa_tw(getattr(p, 'stage', 0)):
-        if getattr(ses, 'tw_modo_pvp', False):
-            # Salio de la arena: fuera el modo PvP (aura, marcador, musica).
-            ses.tw_modo_pvp = False
-            ses.enviar(_tw_e.modo_pvp(p.entity_id, False))
+        # Fuera de la guerra: fuera el modo PvP (aura, aro de bando, marcador, musica). SIEMPRE, no solo si se habia
+        # apuntado tw_modo_pvp: el cliente lo recibe tambien al relevantar el totem o tras un reinicio estando dentro y
+        # se quedaba con el aro azul ya fuera de Totem War (07/11/2026). Va antes de competiciones/outpost, que ponen
+        # el suyo si les toca.
+        ses.tw_modo_pvp = False
+        ses.enviar(_tw_e.modo_pvp(p.entity_id, False))
         __import__('competiciones').al_entrar(ses)
         _outpost_e.al_entrar(ses)
         return
