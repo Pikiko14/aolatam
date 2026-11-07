@@ -10387,10 +10387,14 @@ async def _vigilar_eventos_propios(cada=10.0):
             log.exception('fallo una regla de horario de eventos propios')
 
 
-def _ejecutar_regla_propia(ses, regla, premios, addr, monstruo=None):
+def _ejecutar_regla_propia(ses, regla, premios, addr, monstruo=None, _profundidad=0):
     """Hace lo que pide una regla cumplida. `ses` es quien la cumplio; en las de horario es None y los premios
     personales van a todos los que esten en el mapa de la regla."""
+    if _profundidad > 5:
+        log.warning('regla %s: demasiadas reglas encadenadas con "activar", se corta', regla.get('id'))
+        return
     import eventos_propios as _evp
+    import combate as _cb
     import clases as _cl
     import presencia as _pr
     p = getattr(ses, 'personaje', None) if ses is not None else None
@@ -10459,6 +10463,72 @@ def _ejecutar_regla_propia(ses, regla, premios, addr, monstruo=None):
             asyncio.get_event_loop().call_later(max(5, int(pr.get('segundos', 120))) + 1, _cerrar)
         except Exception:
             pass
+    # PUZLES: barreras, dano, cuenta atras, encadenar y reiniciar.
+    _afectados = _evp.destinatarios(stage, sala) if stage else []
+    if ses is not None and ses not in _afectados:
+        _afectados.append(ses)
+    _pk_bar = []
+    for _bid in extras['abrir']:
+        _b = _evp._poner_barrera(_bid, stage, sala, True)
+        if _b is not None:
+            _pk_bar += _evp.paquetes_barrera(_b, False)
+            log.info('[%s] regla %s: barrera %s abierta' % (addr, regla['id'], _bid))
+    for _bid in extras['cerrar']:
+        _b = _evp._poner_barrera(_bid, stage, sala, False)
+        if _b is not None:
+            _pk_bar += _evp.paquetes_barrera(_b, True)
+            log.info('[%s] regla %s: barrera %s cerrada' % (addr, regla['id'], _bid))
+    if extras['reiniciar'] and stage:
+        _pk_bar += _evp.reiniciar(stage, sala)
+    if _pk_bar:
+        for s in _afectados:
+            try:
+                s.enviar_inmediato(*_pk_bar)
+            except Exception:
+                pass
+    for pr in extras['dano']:
+        for s in receptores:
+            _pj = getattr(s, 'personaje', None)
+            if not _pj or getattr(s, 'muerto', False):
+                continue
+            _dn = int(pr.get('cantidad') or 0) + int(_vida_max(_pj, s.inventario) * int(pr.get('pct') or 0) / 100)
+            _dn = max(1, min(_dn, max(0, _pj.hp - 1)))          # una trampa avisa, no mata
+            if _pj.hp > 1:
+                _pj.hp -= _dn
+                s.enviar(_cb.numero_flotante(_pj.entity_id, _dn), _cb.atributo(_pj.entity_id, _pj.hp, _cb.KIND_HP))
+    for pr in extras['relojes']:
+        _llave = (str(pr['regla']), stage, sala)
+        _viejo = _evp._relojes.pop(_llave, None)
+        if _viejo is not None:
+            _viejo.cancel()
+        _seg = int(pr['segundos'])
+
+        def _fin_reloj(_rid=str(pr['regla']), _st=stage, _sala=sala, _llave=_llave):
+            _evp._relojes.pop(_llave, None)
+            _r = _evp.regla(_rid)
+            if _r is None:
+                return
+            _quienes = [x for x in _evp.destinatarios(_st, _sala) if getattr(x, 'personaje', None)]
+            if not _quienes:
+                return
+            for _q in _quienes:
+                _ejecutar_regla_propia(_q, _r, list(_r['premios']), getattr(_q, 'addr', '?'))
+        try:
+            _evp._relojes[_llave] = asyncio.get_event_loop().call_later(_seg, _fin_reloj)
+        except RuntimeError:
+            pass
+        for s in _afectados:
+            s.enviar(_cl.aviso(str(pr.get('texto') or 'You have %d seconds!' % _seg), tipo=0))
+    for _rid in extras['parar']:
+        _h = _evp._relojes.pop((_rid, stage, sala), None)
+        if _h is not None:
+            _h.cancel()
+            for s in _afectados:
+                s.enviar(_cl.aviso('Countdown stopped!', tipo=0))
+    for _rid in extras['activar']:
+        _r2 = _evp.regla(_rid)
+        if _r2 is not None and _r2 is not regla:
+            _ejecutar_regla_propia(ses, _r2, list(_r2['premios']), addr, monstruo=monstruo, _profundidad=_profundidad + 1)
     if extras['llevar']:
         pr = extras['llevar']
         for s in receptores:
@@ -22653,6 +22723,12 @@ class Servidor:
                     ses.enviar(ACK.build(), MOVE.build(entity_id=ses.personaje.entity_id,
                         cur_x=_px_hb,cur_y=_py_hb,dst_x=_px_hb,dst_y=_py_hb,speed=_velocidad_de(ses)))
                     return
+            if ses.personaje and __import__('eventos_propios').bloquear_paso(
+                    ses, (ses.personaje.tile_x, ses.personaje.tile_y), (dst['x']//32, dst['y']//32)):
+                _px_ep, _py_ep = ses.personaje.tile_x*32, ses.personaje.tile_y*32
+                ses.enviar(ACK.build(), MOVE.build(entity_id=ses.personaje.entity_id,
+                    cur_x=_px_ep, cur_y=_py_ep, dst_x=_px_ep, dst_y=_py_ep, speed=_velocidad_de(ses)))
+                return
             if ses.personaje and ses.personaje.stage == 900 and __import__('instancia_oscura').bloquear_paso(
                     ses, (ses.personaje.tile_x, ses.personaje.tile_y), (dst['x']//32, dst['y']//32)):
                 _px_io, _py_io = ses.personaje.tile_x*32, ses.personaje.tile_y*32
@@ -22729,6 +22805,14 @@ class Servidor:
                     ses, addr, (ses.personaje.tile_x, ses.personaje.tile_y),
                     max(abs(ses.personaje.tile_x - _ox),
                         abs(ses.personaje.tile_y - _oy)))
+                # Reglas "al pisar una zona" del editor (trampas, teletransportes ocultos...).
+                try:
+                    import eventos_propios as _evp_pisar
+                    for _r_p, _pr_p in _evp_pisar.al_pisar(ses, [(_ox, _oy)] + list(_casillas_del_tramo(
+                            (_ox, _oy), (ses.personaje.tile_x, ses.personaje.tile_y)))):
+                        _ejecutar_regla_propia(ses, _r_p, _pr_p, addr)
+                except Exception:
+                    log.exception('reglas al pisar')
                 # Y el evento del mapa de esa casilla, si lo hay. Va DESPUES
                 # del portal y no en su lugar: los portales siguen saliendo
                 # de portales.json, que esta medido uno a uno.

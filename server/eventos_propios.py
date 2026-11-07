@@ -33,8 +33,22 @@ Eventos, "Reglas del servidor"). Se releen solos cuando cambia el archivo.
              "donde": "monstruo",            # "monstruo", "jugador" o [x, y]
              "segundos": 0},                 # 0 = se queda hasta que lo maten
             {"tipo": "llevar", "destino": 3, "llegada": [100, 100]},       # mueve al jugador
-            {"tipo": "aviso_global", "texto": "..."}                       # cartel para todo el servidor
-        ]}]}
+            {"tipo": "aviso_global", "texto": "..."},                      # cartel para todo el servidor
+            {"tipo": "abrir", "barrera": "puerta1"}, {"tipo": "cerrar", "barrera": "puerta1"},
+            {"tipo": "dano", "cantidad": 300, "pct": 0},                    # quita vida (fija o % de la maxima)
+            {"tipo": "cuenta_atras", "segundos": 300, "regla": "fuera"},  # al acabar, ejecuta esa regla
+            {"tipo": "activar", "regla": "otra"},                           # ejecuta otra regla ya
+            {"tipo": "reiniciar"}                                           # cierra barreras y pone a cero el puzle
+        ]}],
+     "objetos": [{"id": "palanca1", "stage": 900, "tile": [50, 60], "sprite": 60306, "nombre": "Lever"}],
+     "barreras": [{"id": "puerta1", "stage": 900, "zona": [40, 60, 42, 64], "sprite": 60402, "abierta": false}]}
+
+PUZLES (07/11/2026): "cuando" tambien puede ser
+    "pulsar":  {"objetos": ["palanca1", "palanca2"], "en_orden": true}   clic en objetos del mapa (en orden o no);
+                                                                          con uno solo es un clic simple
+    "pisar":   {"zona": [x1, y1, x2, y2], "repetir": true, "enfriamiento_s": 5}   entrar en esa zona (trampas)
+Las barreras cerradas no dejan pasar: el que lo intenta vuelve a su casilla. Su estado y el de los puzles va por
+mapa (o por copia de la instancia) y vuelve al de partida con "reiniciar" o al reiniciar el servidor.
 
 Los premios van al que hace la baja que completa la cuenta (o al que entra). En
 las reglas de horario no hay un jugador: los premios personales van a todos los
@@ -55,12 +69,23 @@ PRIMER_PORTAL = 112_600_000
 PRIMER_MONSTRUO = 112_700_000
 SPRITE_PORTAL = 60001
 RADIO_PORTAL = 3
-TIPOS_PREMIO = ('dar', 'soltar', 'oro', 'ag', 'exp', 'portal', 'monstruo', 'llevar', 'aviso_global')
-DISPARADORES = ('matar', 'entrar', 'horario')
+TIPOS_PREMIO = ('dar', 'soltar', 'oro', 'ag', 'exp', 'portal', 'monstruo', 'llevar', 'aviso_global',
+                'abrir', 'cerrar', 'dano', 'cuenta_atras', 'parar_cuenta', 'activar', 'reiniciar')
+DISPARADORES = ('matar', 'entrar', 'horario', 'pulsar', 'pisar', 'manual')     # manual: solo con activar o cuenta atras
+PRIMER_OBJETO = 112_800_000
+RADIO_PULSAR = 3
+# Objetos de mapa (0x000E) que ya usa el servidor y el cliente pinta sin problemas. Un sprite que no exista
+# tumba al cliente (06/11/2026, con el 40442), asi que el editor solo deja elegir de aqui.
+SPRITES_OBJETO = {60306: 'caja fuerte', 60402: 'cortina de luz', 60001: 'remolino', 60051: 'totem 1', 60052: 'totem 2',
+                  60053: 'totem 3', 60054: 'totem 4', 60155: 'maquina (huevo)', 62358: 'buzon', 62329: 'carga en el suelo'}
 # Premios que necesitan un sitio: en una regla de horario no hay monstruo ni jugador del que tomarlo.
 CON_SITIO = ('portal', 'monstruo')
 
-_cache = {'mtime': None, 'reglas': []}
+_cache = {'mtime': None, 'reglas': [], 'objetos': [], 'barreras': []}
+_abiertas = {}         # (stage, sala) -> ids de barreras con el estado cambiado respecto al de partida
+_secuencias = {}       # (id_regla, stage, sala) -> objetos ya pulsados en orden
+_pisadas = {}          # (id_regla, char_id) -> time.time() de la ultima vez que la piso
+_relojes = {}          # (id_regla_destino, stage, sala) -> asyncio.TimerHandle
 _cuentas = {}          # (id_regla, clave) -> bajas
 _hechas = set()        # (id_regla, clave) de las que no se repiten
 _ultima = {}           # (id_regla, clave) -> time.time() de la ultima vez (enfriamiento y horario)
@@ -78,12 +103,59 @@ def reglas():
     if mt != _cache['mtime']:
         try:
             datos = json.loads(ARCHIVO.read_text(encoding='utf-8'))
+            _cache['objetos'] = [o for o in datos.get('objetos', []) if validar_objeto(o) == []]
+            _cache['barreras'] = [b for b in datos.get('barreras', []) if validar_barrera(b) == []]
             _cache['reglas'] = [r for r in datos.get('reglas', []) if validar(r) == []]
         except Exception:
             log.exception('eventos_propios.json no se pudo leer')
-            _cache['reglas'] = []
+            _cache.update(reglas=[], objetos=[], barreras=[])
         _cache['mtime'] = mt
     return _cache['reglas']
+
+
+def objetos():
+    reglas()
+    return _cache['objetos']
+
+
+def barreras():
+    reglas()
+    return _cache['barreras']
+
+
+def _zona_ok(z):
+    return isinstance(z, (list, tuple)) and len(z) == 4 and all(isinstance(v, (int, float)) for v in z)
+
+
+def _en_zona(z, x, y):
+    x1, y1, x2, y2 = (int(v) for v in z)
+    return min(x1, x2) <= x <= max(x1, x2) and min(y1, y2) <= y <= max(y1, y2)
+
+
+def validar_objeto(o):
+    mal = []
+    if not str(o.get('id') or '').strip():
+        mal.append('objeto sin id')
+    if not int(o.get('stage') or 0):
+        mal.append('objeto %s sin mapa' % o.get('id'))
+    if len(o.get('tile') or []) != 2:
+        mal.append('objeto %s sin casilla' % o.get('id'))
+    if int(o.get('sprite') or 0) not in SPRITES_OBJETO:
+        mal.append('objeto %s: dibujo no permitido' % o.get('id'))
+    return mal
+
+
+def validar_barrera(b):
+    mal = []
+    if not str(b.get('id') or '').strip():
+        mal.append('barrera sin id')
+    if not int(b.get('stage') or 0):
+        mal.append('barrera %s sin mapa' % b.get('id'))
+    if not _zona_ok(b.get('zona')):
+        mal.append('barrera %s sin zona' % b.get('id'))
+    if int(b.get('sprite') or 0) and int(b['sprite']) not in SPRITES_OBJETO:
+        mal.append('barrera %s: dibujo no permitido' % b.get('id'))
+    return mal
 
 
 def cuando(r):
@@ -114,6 +186,13 @@ def validar(r):
             mal.append('alcance debe ser "jugador" o "mapa"')
     if c == 'entrar' and not int(r.get('stage') or 0):
         mal.append('"al entrar al mapa" necesita un mapa')
+    if c == 'pulsar' and not (r.get('pulsar') or {}).get('objetos'):
+        mal.append('"al pulsar" necesita al menos un objeto')
+    if c == 'pisar':
+        if not _zona_ok((r.get('pisar') or {}).get('zona')):
+            mal.append('"al pisar" necesita una zona (x1, y1, x2, y2)')
+        if not int(r.get('stage') or 0):
+            mal.append('"al pisar" necesita un mapa')
     if c == 'horario':
         h = r.get('horario') or {}
         horas = h.get('horas') or []
@@ -146,11 +225,19 @@ def validar(r):
             mal.append('"monstruo" sin elegir cual')
         elif t == 'aviso_global' and not str(p.get('texto') or '').strip():
             mal.append('"aviso para todos" sin texto')
+        elif t in ('abrir', 'cerrar') and not str(p.get('barrera') or '').strip():
+            mal.append('"%s" sin barrera' % t)
+        elif t == 'dano' and int(p.get('cantidad') or 0) <= 0 and int(p.get('pct') or 0) <= 0:
+            mal.append('"dano" sin cantidad ni %')
+        elif t == 'cuenta_atras' and (int(p.get('segundos') or 0) < 5 or not str(p.get('regla') or '').strip()):
+            mal.append('"cuenta atras" necesita 5 segundos o mas y la regla que salta al acabar')
+        elif t in ('activar', 'parar_cuenta') and not str(p.get('regla') or '').strip():
+            mal.append('"%s" sin regla' % t)
         if t in CON_SITIO:
             donde = p.get('donde', 'monstruo')
             if c == 'horario' and not isinstance(donde, (list, tuple)):
                 mal.append('en una regla de horario "%s" necesita una casilla fija' % t)
-            elif c == 'entrar' and donde == 'monstruo':
+            elif c in ('entrar', 'pulsar', 'pisar', 'manual') and donde == 'monstruo':
                 mal.append('al entrar no hay monstruo: "%s" debe salir junto al jugador o en una casilla' % t)
             if c == 'horario' and not int(r.get('stage') or 0):
                 mal.append('en una regla de horario "%s" necesita un mapa' % t)
@@ -238,7 +325,8 @@ def horario_pendientes(ahora=None):
 
 def extras_de(premios):
     """Los premios nuevos que no son efectos del interprete: exp, monstruos, llevar y avisos para todos."""
-    out = {'exp': 0, 'monstruos': [], 'llevar': None, 'avisos': []}
+    out = {'exp': 0, 'monstruos': [], 'llevar': None, 'avisos': [], 'abrir': [], 'cerrar': [], 'dano': [],
+           'relojes': [], 'parar': [], 'activar': [], 'reiniciar': False}
     for pr in premios:
         t = pr.get('tipo')
         if t == 'exp':
@@ -249,6 +337,18 @@ def extras_de(premios):
             out['llevar'] = pr
         elif t == 'aviso_global':
             out['avisos'].append(str(pr['texto']))
+        elif t in ('abrir', 'cerrar'):
+            out[t].append(str(pr['barrera']))
+        elif t == 'dano':
+            out['dano'].append(pr)
+        elif t == 'cuenta_atras':
+            out['relojes'].append(pr)
+        elif t == 'activar':
+            out['activar'].append(str(pr['regla']))
+        elif t == 'parar_cuenta':
+            out['parar'].append(str(pr['regla']))
+        elif t == 'reiniciar':
+            out['reiniciar'] = True
     return out
 
 
@@ -471,7 +571,8 @@ def poblar(stage):
     """Los portales abiertos del mapa, para quien entra despues (login.monstruos/npc del mapa). Los de una
     copia de instancia no van aqui (no se sabe quien entra): los manda de_sala al engancharse a su sala."""
     _limpiar()
-    return [paquete_portal(e) for e, d in _portales.items() if d['stage'] == int(stage) and d.get('sala') is None]
+    return ([paquete_portal(e) for e, d in _portales.items() if d['stage'] == int(stage) and d.get('sala') is None]
+            + paquetes_puzle(stage, None))
 
 
 def de_sala(stage, sala):
@@ -479,7 +580,8 @@ def de_sala(stage, sala):
     _limpiar()
     if sala is None:
         return []
-    return [paquete_portal(e) for e, d in _portales.items() if d['stage'] == int(stage) and d.get('sala') == sala]
+    return ([paquete_portal(e) for e, d in _portales.items() if d['stage'] == int(stage) and d.get('sala') == sala]
+            + paquetes_puzle(stage, sala))
 
 
 def portal(eid):
@@ -488,7 +590,9 @@ def portal(eid):
 
 
 def pulsar(ses, eid):
-    """Clic en un portal temporal: lleva a su destino si esta cerca. True si era uno."""
+    """Clic en un portal temporal (lleva a su destino) o en un objeto de puzle. True si era uno de los dos."""
+    if pulsar_objeto(ses, eid):
+        return True
     d = portal(eid)
     p = getattr(ses, 'personaje', None)
     if not d or not p or int(p.stage) != d['stage']:
@@ -503,3 +607,207 @@ def pulsar(ses, eid):
     app._viajar_por_portal(ses, getattr(ses, 'addr', '?'), {'destino': d['destino'], 'llegada': d['llegada']},
                            motivo='por un portal de evento')
     return True
+
+
+# ------------------------------------------------------------------ puzles: objetos, barreras y zonas
+def _eid_objeto(o):
+    lista = objetos()
+    return PRIMER_OBJETO + lista.index(o) if o in lista else None
+
+
+def _eid_barrera(b, i):
+    return PRIMER_OBJETO + 50_000 + barreras().index(b) * 100 + i
+
+
+def objeto_por_eid(eid):
+    eid = int(eid or 0)
+    return next((o for o in objetos() if _eid_objeto(o) == eid), None)
+
+
+def barrera_abierta(b, stage, sala):
+    """Abierta o cerrada ahora: la de partida ("abierta") con lo que hayan cambiado las reglas."""
+    cambiada = b['id'] in _abiertas.get((int(stage), sala), set())
+    return bool(b.get('abierta')) != cambiada
+
+
+def _poner_barrera(bid, stage, sala, abrir):
+    b = next((x for x in barreras() if x['id'] == bid and int(x['stage']) == int(stage)), None)
+    if b is None or barrera_abierta(b, stage, sala) == abrir:
+        return None
+    _abiertas.setdefault((int(stage), sala), set()).symmetric_difference_update({b['id']})
+    return b
+
+
+def casillas_dibujo(b):
+    """Donde se pinta la barrera: toda la zona si es pequena, si no su linea central (como mucho 20 objetos)."""
+    x1, y1, x2, y2 = (int(v) for v in b['zona'])
+    x1, x2, y1, y2 = min(x1, x2), max(x1, x2), min(y1, y2), max(y1, y2)
+    todas = [(x, y) for y in range(y1, y2 + 1) for x in range(x1, x2 + 1)]
+    if len(todas) <= 20:
+        return todas
+    if x2 - x1 >= y2 - y1:
+        cy = (y1 + y2) // 2
+        return [(x, cy) for x in range(x1, x2 + 1)][:20]
+    cx = (x1 + x2) // 2
+    return [(cx, y) for y in range(y1, y2 + 1)][:20]
+
+
+def paquetes_barrera(b, cerrada):
+    import combate
+    import login
+    if not int(b.get('sprite') or 0):
+        return []
+    if cerrada:
+        return [login._map_object_spawn(_eid_barrera(b, i), int(b['sprite']), t) for i, t in enumerate(casillas_dibujo(b))]
+    return [combate.despawn_monstruo(_eid_barrera(b, i)) for i in range(len(casillas_dibujo(b)))]
+
+
+def paquetes_puzle(stage, sala):
+    """Los objetos de puzle del mapa y el dibujo de sus barreras cerradas, para quien entra."""
+    import login
+    out = [login._map_object_spawn(_eid_objeto(o), int(o['sprite']), tuple(o['tile']))
+           for o in objetos() if int(o['stage']) == int(stage)]
+    for b in barreras():
+        if int(b['stage']) == int(stage) and not barrera_abierta(b, stage, sala):
+            out += paquetes_barrera(b, True)
+    return out
+
+
+def bloquear_paso(ses, desde, hasta):
+    """True si el tramo cruza una barrera cerrada: el jugador vuelve a su casilla."""
+    p = getattr(ses, 'personaje', None)
+    if not p:
+        return False
+    cerradas = [b for b in barreras() if int(b['stage']) == int(p.stage) and not barrera_abierta(b, p.stage, sala_de(ses))]
+    if not cerradas:
+        return False
+    import app
+    casillas = list(app._casillas_del_tramo(desde, hasta))
+    for b in cerradas:
+        if any(_en_zona(b['zona'], x, y) for x, y in casillas):
+            ahora = time.time()
+            if ahora - getattr(ses, '_aviso_barrera', 0.0) > 3:
+                ses._aviso_barrera = ahora
+                try:
+                    import clases
+                    ses.enviar(clases.aviso(str(b.get('aviso') or 'The way is closed.'), tipo=0))
+                except Exception:
+                    pass
+            return True
+    return False
+
+
+def al_pisar(ses, casillas, ahora=None):
+    """Reglas "al pisar una zona" que el tramo acaba de cruzar: [(regla, [premios])]."""
+    p = getattr(ses, 'personaje', None)
+    if not p:
+        return []
+    ahora = ahora or time.time()
+    out = []
+    for r in reglas():
+        if r.get('activa', True) is False or cuando(r) != 'pisar' or int(r.get('stage') or 0) != int(p.stage):
+            continue
+        z = (r.get('pisar') or {})
+        if not any(_en_zona(z['zona'], x, y) for x, y in casillas):
+            continue
+        llave = (r['id'], p.char_id)
+        if llave in _hechas:
+            continue
+        if ahora - _pisadas.get(llave, 0) < float(z.get('enfriamiento_s', 5) or 0):
+            continue
+        if not cumple_si(r, p, ahora):
+            continue
+        _pisadas[llave] = ahora
+        if z.get('repetir', True) is False:
+            _hechas.add(llave)
+        out.append((r, list(r['premios'])))
+    return out
+
+
+def pulsar_objeto(ses, eid):
+    """Clic en un objeto de puzle: comprueba la distancia y ejecuta las reglas que lo esperan. True si era uno."""
+    o = objeto_por_eid(eid)
+    p = getattr(ses, 'personaje', None)
+    if o is None or not p or int(p.stage) != int(o['stage']):
+        return False
+    import clases
+    if max(abs(p.tile_x - o['tile'][0]), abs(p.tile_y - o['tile'][1])) > RADIO_PULSAR:
+        ses.enviar(clases.aviso('Move closer.', tipo=0))
+        return True
+    import app
+    for r, premios in al_pulsar(ses, o['id']):
+        app._ejecutar_regla_propia(ses, r, premios, getattr(ses, 'addr', '?'))
+    return True
+
+
+def al_pulsar(ses, oid, ahora=None):
+    """Reglas que se cumplen al pulsar ese objeto: [(regla, [premios])]. Las de varios objetos llevan la cuenta por
+    mapa (o copia de instancia); con "en_orden" un objeto equivocado la pone a cero."""
+    p = ses.personaje
+    sala = sala_de(ses)
+    out = []
+    for r in reglas():
+        if r.get('activa', True) is False or cuando(r) != 'pulsar':
+            continue
+        if int(r.get('stage') or 0) and int(r['stage']) != int(p.stage):
+            continue
+        k = r.get('pulsar') or {}
+        lista = [str(x) for x in k.get('objetos') or []]
+        if oid not in lista:
+            continue
+        clave = (r['id'], int(p.stage), sala)
+        if clave in _hechas:
+            continue
+        hechos = _secuencias.setdefault(clave, [])
+        if k.get('en_orden'):
+            if lista[len(hechos)] != oid:
+                if hechos:
+                    try:
+                        import clases
+                        ses.enviar(clases.aviso(str(k.get('aviso_error') or 'Wrong order... everything resets.'), tipo=0))
+                    except Exception:
+                        pass
+                hechos.clear()
+                if lista[0] != oid:
+                    continue
+            hechos.append(oid)
+        elif oid not in hechos:
+            hechos.append(oid)
+        if len(lista) > 1 and len(set(hechos)) < len(lista):
+            try:
+                import clases
+                ses.enviar(clases.aviso('%d / %d' % (len(set(hechos)), len(lista)), tipo=0))
+            except Exception:
+                pass
+            continue
+        hechos.clear()
+        if not cumple_si(r, p, ahora):
+            continue
+        if k.get('repetir', True) is False:
+            _hechas.add(clave)
+        log.info('[eventos_propios] %s resuelve "%s"', p.nombre, r.get('nombre') or r['id'])
+        out.append((r, list(r['premios'])))
+    return out
+
+
+def regla(rid):
+    return next((r for r in reglas() if r['id'] == rid), None)
+
+
+def reiniciar(stage, sala):
+    """Barreras a su estado de partida, secuencias y cuentas del mapa a cero; devuelve los paquetes de las barreras."""
+    cambiadas = _abiertas.pop((int(stage), sala), set())
+    for k in [k for k in _secuencias if k[1] == int(stage) and k[2] == sala]:
+        _secuencias.pop(k, None)
+    for k in [k for k in _cuentas if k[1][:1] == ('mapa',) and k[1][1] == int(stage) and k[1][2] == sala]:
+        _cuentas.pop(k, None)
+    for k in [k for k in _relojes if k[1] == int(stage) and k[2] == sala]:
+        try:
+            _relojes.pop(k).cancel()
+        except Exception:
+            pass
+    pk = []
+    for b in barreras():
+        if b['id'] in cambiadas and int(b['stage']) == int(stage):
+            pk += paquetes_barrera(b, not b.get('abierta'))
+    return pk

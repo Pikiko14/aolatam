@@ -189,3 +189,73 @@ def test_sitio():
     assert evp.sitio([3, 4]) == (3, 4)
     assert evp.sitio('jugador', _mob(), NS(tile_x=1, tile_y=2)) == (1, 2)
     assert evp.sitio('monstruo', _mob(), NS(tile_x=1, tile_y=2)) == (5, 6)
+
+
+# ------------------------------------------------------------------ puzles (07/11/2026)
+def _puzle(tmp_path, monkeypatch, reglas, objetos=(), barreras=()):
+    f = tmp_path / 'eventos_propios.json'
+    f.write_text(json.dumps({'reglas': list(reglas), 'objetos': list(objetos), 'barreras': list(barreras)}), encoding='utf-8')
+    monkeypatch.setattr(evp, 'ARCHIVO', f)
+    monkeypatch.setattr(evp, '_cache', {'mtime': None, 'reglas': [], 'objetos': [], 'barreras': []})
+    for k in ('_cuentas', '_abiertas', '_secuencias', '_pisadas', '_relojes', '_ultima'):
+        monkeypatch.setattr(evp, k, {})
+    monkeypatch.setattr(evp, '_hechas', set())
+    monkeypatch.setattr(evp, 'sala_de', lambda ses: None)
+
+
+OBJ = [dict(id=n, stage=900, tile=[10 + i, 10], sprite=60306) for i, n in enumerate(('a', 'b', 'c'))]
+PUERTA = dict(id='p1', stage=900, zona=[20, 5, 21, 8], sprite=60402)
+
+
+def test_palancas_en_orden_abren_la_puerta(tmp_path, monkeypatch):
+    r = dict(id='orden', cuando='pulsar', stage=900, pulsar=dict(objetos=['a', 'b', 'c'], en_orden=True),
+             premios=[dict(tipo='abrir', barrera='p1')])
+    _puzle(tmp_path, monkeypatch, [r], OBJ, [PUERTA])
+    ses = _ses(1)
+    ses.enviar = lambda *a: None
+    assert evp.al_pulsar(ses, 'a') == [] and evp.al_pulsar(ses, 'c') == []        # mal orden: vuelve a empezar
+    assert evp.al_pulsar(ses, 'a') == [] and evp.al_pulsar(ses, 'b') == []
+    assert evp.al_pulsar(ses, 'c')[0][0]['id'] == 'orden'
+    assert evp.extras_de(r['premios'])['abrir'] == ['p1']
+
+
+def test_barrera_cerrada_bloquea_y_abierta_deja_pasar(tmp_path, monkeypatch):
+    _puzle(tmp_path, monkeypatch, [], OBJ, [PUERTA])
+    ses = _ses(1)
+    ses.enviar = lambda *a: None
+    import app  # noqa: F401  (bloquear_paso usa app._casillas_del_tramo)
+    assert evp.bloquear_paso(ses, (18, 6), (23, 6))
+    assert not evp.bloquear_paso(ses, (18, 12), (23, 12))
+    assert evp._poner_barrera('p1', 900, None, True) is not None
+    assert not evp.bloquear_paso(ses, (18, 6), (23, 6))
+    evp.reiniciar(900, None)
+    assert evp.bloquear_paso(ses, (18, 6), (23, 6))
+
+
+def test_trampa_al_pisar_con_enfriamiento(tmp_path, monkeypatch):
+    r = dict(id='lava', cuando='pisar', stage=900, pisar=dict(zona=[30, 30, 32, 32], enfriamiento_s=5),
+             premios=[dict(tipo='dano', pct=10)])
+    _puzle(tmp_path, monkeypatch, [r])
+    ses = _ses(1)
+    assert evp.al_pisar(ses, [(29, 31), (30, 31)], ahora=100)
+    assert not evp.al_pisar(ses, [(31, 31)], ahora=102)
+    assert evp.al_pisar(ses, [(31, 31)], ahora=106)
+    assert not evp.al_pisar(ses, [(40, 40)], ahora=200)
+
+
+def test_objetos_y_paquetes(tmp_path, monkeypatch):
+    _puzle(tmp_path, monkeypatch, [], OBJ, [PUERTA])
+    pk = evp.paquetes_puzle(900, None)
+    assert len(pk) == 3 + len(evp.casillas_dibujo(PUERTA))
+    assert evp.objeto_por_eid(evp._eid_objeto(evp.objetos()[1]))['id'] == 'b'
+    assert evp.validar_objeto(dict(id='x', stage=900, tile=[1, 1], sprite=40442))     # dibujo que tumba al cliente
+
+
+def test_validar_puzles():
+    assert evp.validar(dict(id='a', cuando='pulsar', stage=900, pulsar=dict(objetos=[]), premios=[dict(tipo='oro', cantidad=1)]))
+    assert evp.validar(dict(id='a', cuando='pisar', stage=900, pisar=dict(), premios=[dict(tipo='oro', cantidad=1)]))
+    assert evp.validar(dict(id='a', cuando='pisar', stage=900, pisar=dict(zona=[1, 1, 2, 2]),
+                            premios=[dict(tipo='cuenta_atras', segundos=2, regla='x')]))
+    assert evp.validar(dict(id='a', cuando='pisar', stage=900, pisar=dict(zona=[1, 1, 2, 2]),
+                            premios=[dict(tipo='dano', pct=10), dict(tipo='cuenta_atras', segundos=60, regla='x'),
+                                     dict(tipo='abrir', barrera='p1'), dict(tipo='reiniciar'), dict(tipo='activar', regla='z')])) == []

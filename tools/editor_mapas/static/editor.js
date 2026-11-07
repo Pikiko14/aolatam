@@ -439,8 +439,28 @@ function dibujarPrevCamp() { if (!cur.sobre) return; const z = cam.z * devicePix
 
 let cur = { x: 0, y: 0, cx: 0, cy: 0, sobre: false };
 let drag = null;
+// Pestana Eventos: barreras (rojo cerrada / verde abierta), zonas que se pisan (naranja) y objetos de puzle (amarillo).
+function dibujarPuzle() {
+  if (S.tab !== 'eventos' || typeof EVR === 'undefined' || !EVR.datos || !M) return;
+  const z = cam.z * devicePixelRatio, st = +(M.aoStageManual || M.aoStage || 0); if (!st) return;
+  const rect = (zn, color, txt) => {
+    const x1 = Math.min(zn[0], zn[2]), x2 = Math.max(zn[0], zn[2]), y1 = Math.min(zn[1], zn[3]), y2 = Math.max(zn[1], zn[3]);
+    const cy1 = M.h - 1 - y2, cy2 = M.h - 1 - y1;
+    ctx.fillStyle = color + '44'; ctx.strokeStyle = color; ctx.lineWidth = 2 / z;
+    ctx.fillRect(x1 * CELL, cy1 * CELL, (x2 - x1 + 1) * CELL, (cy2 - cy1 + 1) * CELL); ctx.strokeRect(x1 * CELL, cy1 * CELL, (x2 - x1 + 1) * CELL, (cy2 - cy1 + 1) * CELL);
+    ctx.fillStyle = '#fff'; ctx.font = (12 / z) + 'px sans-serif'; ctx.fillText(txt, x1 * CELL, cy1 * CELL - 3 / z);
+  };
+  for (const b of EVR.datos.barreras || []) if (+b.stage === st && b.zona) rect(b.zona, b.abierta ? '#3ddc84' : '#ff4d4d', '🚧 ' + b.id);
+  for (const r of EVR.datos.reglas || []) if ((r.cuando === 'pisar') && +r.stage === st && r.pisar && r.pisar.zona) rect(r.pisar.zona, '#ff9f1a', '👣 ' + (r.nombre || r.id));
+  for (const o of EVR.datos.objetos || []) if (+o.stage === st && o.tile) {
+    const cx = o.tile[0], cy = M.h - 1 - o.tile[1];
+    ctx.fillStyle = '#ffd400'; ctx.fillRect((cx + .2) * CELL, (cy + .2) * CELL, CELL * .6, CELL * .6);
+    ctx.fillStyle = '#fff'; ctx.font = (12 / z) + 'px sans-serif'; ctx.fillText('🧩 ' + o.id, (cx + 1) * CELL, cy * CELL);
+  }
+}
 function dibujarHerramienta() {
   const z = cam.z * devicePixelRatio;
+  dibujarPuzle();
   if (S.tool === 'zona' || S.tool === 'ruta') { if (drag && drag.pts) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2 / z; ctx.beginPath(); drag.pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.lineTo(cur.x, cur.y); ctx.stroke(); drag.pts.forEach(p => { ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(p[0], p[1], 5 / z, 0, 7); ctx.fill(); }); } return; }
   if (!cur.sobre) return;
   ctx.lineWidth = 2 / z;

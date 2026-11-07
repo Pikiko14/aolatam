@@ -264,11 +264,15 @@ function evTarjeta(p, mod, ev, antes) {
 // Reglas del servidor: "cuando pase X (matar, entrar al mapa, a una hora), si se cumple Y, haz Z". Viven en
 // server/plantillas/eventos_propios.json (server/eventos_propios.py): no van en el .mpc y no necesitan parche del cliente.
 const EVR = { datos: null, abiertas: new Set(), sucio: false, errores: null, elegir: null };
-const EVR_CUANDO = { matar: '⚔ Al matar monstruos', entrar: '🚪 Al entrar al mapa', horario: '⏰ A una hora / cada N minutos' };
+const EVR_CUANDO = { matar: '⚔ Al matar monstruos', entrar: '🚪 Al entrar al mapa', horario: '⏰ A una hora / cada N minutos',
+  pulsar: '👆 Al pulsar objetos (palancas)', pisar: '👣 Al pisar una zona (trampas)', manual: '🔗 Solo cuando otra regla la active' };
 const EVR_PREMIOS = {
   dar: '🎁 Dar un objeto', soltar: '🎲 Soltar uno al azar (con probabilidad)', oro: '💰 Dar oro', ag: '💎 Dar Angel Gold',
   exp: '⭐ Dar experiencia', portal: '🌀 Abrir un portal temporal', monstruo: '👹 Hacer aparecer monstruos',
-  llevar: '➡ Llevar al jugador a otro sitio', aviso_global: '📢 Aviso para todo el servidor'
+  llevar: '➡ Llevar al jugador a otro sitio', aviso_global: '📢 Aviso para todo el servidor',
+  abrir: '🔓 Abrir una barrera', cerrar: '🔒 Cerrar una barrera', dano: '🔥 Hacer daño (trampa)',
+  cuenta_atras: '⏳ Empezar una cuenta atrás', parar_cuenta: '⏹ Parar una cuenta atrás', activar: '🔗 Ejecutar otra regla',
+  reiniciar: '♻ Reiniciar la sala (barreras y puzles)'
 };
 const evrStageActual = () => +((typeof M !== 'undefined' && M && (M.aoStageManual || M.aoStage)) || +(((M && M.nombre) || '').match(/(\d+)/) || [])[1] || 0);
 const evrPremioNuevo = t => ({
@@ -276,8 +280,33 @@ const evrPremioNuevo = t => ({
   ag: { tipo: 'ag', cantidad: 50 }, exp: { tipo: 'exp', cantidad: 5000 },
   portal: { tipo: 'portal', destino: 0, llegada: [0, 0], donde: 'monstruo', segundos: 120 },
   monstruo: { tipo: 'monstruo', npc_type: 0, cantidad: 1, donde: 'monstruo', segundos: 0 },
-  llevar: { tipo: 'llevar', destino: 0, llegada: [0, 0] }, aviso_global: { tipo: 'aviso_global', texto: '' }
+  llevar: { tipo: 'llevar', destino: 0, llegada: [0, 0] }, aviso_global: { tipo: 'aviso_global', texto: '' },
+  abrir: { tipo: 'abrir', barrera: '' }, cerrar: { tipo: 'cerrar', barrera: '' }, dano: { tipo: 'dano', cantidad: 0, pct: 10 },
+  cuenta_atras: { tipo: 'cuenta_atras', segundos: 300, regla: '', texto: '' }, parar_cuenta: { tipo: 'parar_cuenta', regla: '' },
+  activar: { tipo: 'activar', regla: '' }, reiniciar: { tipo: 'reiniciar' }
 })[t];
+// Objetos de puzle y barreras del mapa: viven en el mismo archivo que las reglas.
+let EVR_SPRITES = null;
+const evrObjetos = () => EVR.datos.objetos || (EVR.datos.objetos = []);
+const evrBarreras = () => EVR.datos.barreras || (EVR.datos.barreras = []);
+function evrIdLista(lista, base) { const ids = new Set(lista.map(x => x.id)); let n = 1; while (ids.has(base + n)) n++; return base + n; }
+function evrSelId(lista, valor, alCambiar, vacio) {
+  const s = el('select'); s.append(new Option(vacio || '— elige —', ''));
+  for (const x of lista) s.append(new Option(x.id + (x.nombre ? ' · ' + x.nombre : ''), x.id));
+  if (valor && !lista.some(x => x.id === valor)) s.append(new Option(valor + ' (no existe)', valor));
+  s.value = valor || ''; s.onchange = () => { alCambiar(s.value); evrSucio(); }; return s;
+}
+function evrSelSprite(valor, alCambiar, conNinguno) {
+  const s = el('select'); if (conNinguno) s.append(new Option('sin dibujo (invisible)', 0));
+  for (const [k, v] of Object.entries(EVR_SPRITES || {})) s.append(new Option(v + ' (' + k + ')', k));
+  s.value = String(valor || 0); s.onchange = () => { alCambiar(+s.value); evrSucio(); }; return s;
+}
+function evrZona(etq, z) {
+  return [evrCampo(etq, el('span', { className: 'mu' }, 'de x'), evrNum(z[0], v => { z[0] = v; }, '55px'), el('span', { className: 'mu' }, 'y'), evrNum(z[1], v => { z[1] = v; }, '55px'),
+    evrPick(t => { z[0] = t[0]; z[1] = t[1]; })),
+  evrCampo('', el('span', { className: 'mu' }, 'a x'), evrNum(z[2], v => { z[2] = v; }, '55px'), el('span', { className: 'mu' }, 'y'), evrNum(z[3], v => { z[3] = v; }, '55px'),
+    evrPick(t => { z[2] = t[0]; z[3] = t[1]; }), el('span', { className: 'mu' }, '(dos esquinas)'))];
+}
 function evrIdLibre(base) { const ids = new Set((EVR.datos.reglas || []).map(r => r.id)); let n = 1; while (ids.has(base + n)) n++; return base + n; }
 
 // Escenarios listos: eligen disparador, condiciones y premios; solo queda elegir monstruos, objetos o casillas.
@@ -292,18 +321,39 @@ const EVR_ESCENARIOS = [
   ['Invasión diaria a una hora', st => ({ nombre: 'Invasión', cuando: 'horario', stage: st, horario: { horas: ['20:00'] }, aviso: '', premios: [{ tipo: 'monstruo', npc_type: 0, cantidad: 10, donde: [0, 0], segundos: 1800 }, { tipo: 'aviso_global', texto: 'Monsters are invading!' }] })],
   ['Jefe cada N minutos', st => ({ nombre: 'Jefe periódico', cuando: 'horario', stage: st, horario: { cada_min: 60 }, aviso: '', premios: [{ tipo: 'monstruo', npc_type: 0, cantidad: 1, donde: [0, 0], segundos: 0 }, { tipo: 'aviso_global', texto: 'The boss is back!' }] })],
   ['Lluvia de oro: a todos los del mapa a una hora', st => ({ nombre: 'Lluvia de oro', cuando: 'horario', stage: st, horario: { horas: ['21:00'] }, aviso: 'Gold rain!', premios: [{ tipo: 'oro', cantidad: 5000 }] })],
+  ['🧩 Sala de palancas en orden → abre la puerta', st => {
+    const ob = ['a', 'b', 'c'].map((l, i) => ({ id: evrIdLista(evrObjetos(), 'palanca_' + l + '_'), stage: st, tile: [0, 0], sprite: 60306, nombre: 'Lever ' + (i + 1) }));
+    ob.forEach(o => evrObjetos().push(o));
+    const pu = { id: evrIdLista(evrBarreras(), 'puerta'), stage: st, zona: [0, 0, 0, 0], sprite: 60402, abierta: false, aviso: 'The door is sealed. Find the levers.' }; evrBarreras().push(pu);
+    return { nombre: 'Palancas en orden', cuando: 'pulsar', stage: st, pulsar: { objetos: ob.map(o => o.id), en_orden: true, aviso_error: 'Wrong order... everything resets.' }, aviso: 'The door opens!', premios: [{ tipo: 'abrir', barrera: pu.id }] };
+  }],
+  ['🧩 Puerta del guardián: matar al guardián abre la puerta', st => {
+    const pu = { id: evrIdLista(evrBarreras(), 'puerta'), stage: st, zona: [0, 0, 0, 0], sprite: 60402, abierta: false, aviso: 'A guardian keeps this door sealed.' }; evrBarreras().push(pu);
+    return { nombre: 'Puerta del guardián', cuando: 'matar', stage: st, matar: { mobs: [], cantidad: 1, alcance: 'mapa', repetir: true }, aviso: 'The guardian has fallen. The door opens!', premios: [{ tipo: 'abrir', barrera: pu.id }] };
+  }],
+  ['🧩 Pasillo de trampas (daño al pisar)', st => ({ nombre: 'Trampa', cuando: 'pisar', stage: st, pisar: { zona: [0, 0, 0, 0], repetir: true, enfriamiento_s: 3 }, aviso: 'A trap!', premios: [{ tipo: 'dano', cantidad: 0, pct: 15 }] })],
+  ['🧩 Teletransporte oculto (pisar una casilla)', st => ({ nombre: 'Pasadizo secreto', cuando: 'pisar', stage: st, pisar: { zona: [0, 0, 0, 0], repetir: true, enfriamiento_s: 2 }, aviso: 'You found a secret passage!', premios: [{ tipo: 'llevar', destino: st, llegada: [0, 0] }] })],
+  ['🧩 Dungeon por fases: sala limpia → se abre la siguiente', st => {
+    const pu = { id: evrIdLista(evrBarreras(), 'fase'), stage: st, zona: [0, 0, 0, 0], sprite: 60402, abierta: false, aviso: 'Clear this room first.' }; evrBarreras().push(pu);
+    return { nombre: 'Fase 1 limpia', cuando: 'matar', stage: st, matar: { mobs: [], cantidad: 20, alcance: 'mapa', repetir: false }, aviso: 'Room cleared! The next room opens.', premios: [{ tipo: 'abrir', barrera: pu.id }, { tipo: 'monstruo', npc_type: 0, cantidad: 1, donde: [0, 0], segundos: 0 }] };
+  }],
+  ['🧩 Contrarreloj: al entrar empieza la cuenta; si se acaba, fuera', st => {
+    const fuera = { id: evrIdLista(EVR.datos.reglas, 'tiempo_fuera'), nombre: 'Se acabó el tiempo', activa: true, cuando: 'manual', stage: st, aviso: "Time's up!", premios: [{ tipo: 'llevar', destino: 0, llegada: [0, 0] }, { tipo: 'reiniciar' }] };
+    EVR.datos.reglas.push(fuera);
+    return { nombre: 'Empieza el contrarreloj', cuando: 'entrar', stage: st, entrar: { repetir: true, enfriamiento_min: 1 }, aviso: '', premios: [{ tipo: 'cuenta_atras', segundos: 600, regla: fuera.id, texto: 'You have 10 minutes to defeat the boss!' }] };
+  }],
   ['Regla vacía', st => ({ nombre: 'Regla nueva', cuando: 'matar', stage: st, matar: { mobs: [], cantidad: 10, alcance: 'jugador', repetir: true }, aviso: '', premios: [evrPremioNuevo('dar')] })],
 ];
 function evrDesdeEscenario(i) {
   const r = EVR_ESCENARIOS[i][1](evrStageActual());
-  r.id = evrIdLibre(r.cuando === 'matar' ? 'caza' : r.cuando === 'entrar' ? 'entrar' : 'reloj'); r.activa = true;
+  r.id = evrIdLibre({ matar: 'caza', entrar: 'entrar', horario: 'reloj', pulsar: 'puzle', pisar: 'zona', manual: 'regla' }[r.cuando] || 'regla'); r.activa = true;
   return r;
 }
 
 function evrCampo(etq, ...hijos) { const r = el('div', { className: 'row' }); r.style.cssText = 'gap:6px;margin:3px 0;flex-wrap:wrap;align-items:center'; r.append(el('span', { className: 'mu' }, etq), ...hijos); return r; }
 function evrNum(v, alCambiar, ancho) { const i = el('input', { type: 'number', value: v ?? 0 }); i.style.width = ancho || '70px'; i.onchange = () => { alCambiar(+i.value || 0); evrSucio(); }; return i; }
 function evrTxt(v, alCambiar, ancho, ph) { const i = el('input', { type: 'text', value: v || '', placeholder: ph || '' }); i.style.width = ancho || '220px'; i.onchange = () => { alCambiar(i.value); evrSucio(); }; return i; }
-function evrSucio() { EVR.sucio = true; panelRefresh(); }
+function evrSucio() { EVR.sucio = true; panelRefresh(); if (typeof redraw === 'function') redraw(); }
 // "📍" = el siguiente clic en el mapa pone esa casilla (en coordenadas del servidor).
 function evrPick(alElegir) {
   const b = el('button', { className: 'btn sm' }, '📍 elegir en el mapa'); b.title = 'Haz clic aquí y luego en el mapa';
@@ -354,6 +404,17 @@ function evrPremio(caja, r, pr, i) {
     b.append(evrCampo('Se va a los (segundos)', evrNum(pr.segundos, v => { pr.segundos = Math.max(0, v); }, '80px'), el('span', { className: 'mu' }, '0 = se queda hasta que lo maten')));
   }
   if (t === 'aviso_global') b.append(evrCampo('Texto', evrTxt(pr.texto, v => { pr.texto = v; }, '260px', 'sale como cartel para todos los jugadores')));
+  if (t === 'abrir' || t === 'cerrar') b.append(evrCampo('Barrera', evrSelId(evrBarreras().filter(x => !r.stage || +x.stage === +r.stage), pr.barrera, v => { pr.barrera = v; }), el('span', { className: 'mu' }, 'se crean abajo, en "Barreras"')));
+  if (t === 'dano') b.append(evrCampo('Quita', evrNum(pr.cantidad, v => { pr.cantidad = Math.max(0, v); }, '70px'), el('span', { className: 'mu' }, 'de vida y'), evrNum(pr.pct, v => { pr.pct = Math.min(90, Math.max(0, v)); }, '50px'), el('span', { className: 'mu' }, '% de su vida máxima (nunca mata: deja 1)')));
+  const otras = (EVR.datos.reglas || []).filter(x => x !== r);
+  if (t === 'cuenta_atras') {
+    b.append(evrCampo('Segundos', evrNum(pr.segundos, v => { pr.segundos = Math.max(5, v); }, '80px')));
+    b.append(evrCampo('Al acabar ejecuta', evrSelId(otras, pr.regla, v => { pr.regla = v; }, '— elige regla —'), el('span', { className: 'mu' }, 'suele ser una regla "Solo cuando otra la active"')));
+    b.append(evrCampo('Mensaje al empezar', evrTxt(pr.texto, v => { pr.texto = v; }, '220px', 'You have 5 minutes!')));
+  }
+  if (t === 'parar_cuenta') b.append(evrCampo('Para la cuenta que ejecuta', evrSelId(otras, pr.regla, v => { pr.regla = v; }, '— elige regla —')));
+  if (t === 'activar') b.append(evrCampo('Regla', evrSelId(otras, pr.regla, v => { pr.regla = v; }, '— elige regla —')));
+  if (t === 'reiniciar') b.append(el('div', { className: 'mu' }, 'Las barreras vuelven a su estado inicial y los puzles, cuentas atrás y bajas "entre todos" del mapa se ponen a cero.'));
   caja.append(b);
 }
 
@@ -365,6 +426,9 @@ function evrFrase(r) {
     const k = r.matar || {}, mobs = (k.mobs || []).length ? k.mobs.map(m => evNombreDe('mob', m) || m).join(', ') : 'cualquier monstruo';
     q = `Al matar ${k.cantidad} × ${mobs} (${k.alcance === 'mapa' ? 'entre todos' : 'cada jugador'}${k.repetir === false ? ', una vez' : ''}) en ${mapa}`;
   } else if (c === 'entrar') q = `Al entrar a ${mapa}${(r.entrar || {}).repetir ? ' (cada vez' + ((r.entrar || {}).enfriamiento_min ? ', cada ' + r.entrar.enfriamiento_min + ' min como mucho' : '') + ')' : ' (la primera vez)'}`;
+  else if (c === 'pulsar') { const k = r.pulsar || {}; q = `Al pulsar ${(k.objetos || []).join(k.en_orden ? ' → ' : ' + ') || '?'}${k.en_orden ? ' (en orden)' : ''} en ${mapa}`; }
+  else if (c === 'pisar') { const z = (r.pisar || {}).zona || []; q = `Al pisar la zona ${z[0]},${z[1]} – ${z[2]},${z[3]} en ${mapa}`; }
+  else if (c === 'manual') q = `Cuando otra regla la active (${mapa})`;
   else { const h = r.horario || {}; q = (h.horas || []).length ? `A las ${h.horas.join(', ')}` : `Cada ${h.cada_min} min`; q += ` en ${mapa}`; }
   const conds = [];
   if (si.nivel_min) conds.push('nivel ≥ ' + si.nivel_min); if (si.nivel_max) conds.push('nivel ≤ ' + si.nivel_max);
@@ -396,6 +460,8 @@ function evrTarjeta(p, r, idx) {
     if (r.cuando === 'matar' && !r.matar) r.matar = { mobs: [], cantidad: 10, alcance: 'jugador', repetir: true };
     if (r.cuando === 'entrar' && !r.entrar) r.entrar = { repetir: false };
     if (r.cuando === 'horario' && !r.horario) r.horario = { horas: ['20:00'] };
+    if (r.cuando === 'pulsar' && !r.pulsar) r.pulsar = { objetos: [], en_orden: false };
+    if (r.cuando === 'pisar' && !r.pisar) r.pisar = { zona: [0, 0, 0, 0], repetir: true, enfriamiento_s: 5 };
     evrSucio();
   };
   c.append(evrCampo('', cu));
@@ -419,6 +485,28 @@ function evrTarjeta(p, r, idx) {
     const rep = el('input', { type: 'checkbox', checked: !!r.entrar.repetir }); rep.onchange = () => { r.entrar.repetir = rep.checked; evrSucio(); };
     c.append(evrCampo('', rep, el('span', { className: 'mu' }, 'cada vez que entra (si no, solo la primera vez de cada jugador)')));
     if (r.entrar.repetir) c.append(evrCampo('Como mucho cada (min)', evrNum(r.entrar.enfriamiento_min || 0, v => { r.entrar.enfriamiento_min = Math.max(0, v); }), el('span', { className: 'mu' }, '0 = siempre')));
+  } else if (cuando === 'pulsar') {
+    if (!r.pulsar) r.pulsar = { objetos: [], en_orden: false };
+    const lista = evrObjetos().filter(o => !r.stage || +o.stage === +r.stage);
+    r.pulsar.objetos.forEach((oid, j) => {
+      const q = el('button', { className: 'btn sm' }, '✕'); q.onclick = () => { r.pulsar.objetos.splice(j, 1); evrSucio(); };
+      c.append(evrCampo((j + 1) + '.', evrSelId(lista, oid, v => { r.pulsar.objetos[j] = v; }), q));
+    });
+    const mo = el('button', { className: 'btn sm' }, '+ objeto'); mo.onclick = () => { r.pulsar.objetos.push(''); evrSucio(); };
+    c.append(mo, el('span', { className: 'mu' }, lista.length ? '' : '  (crea objetos abajo, en "Objetos de puzle")'));
+    const ord = el('input', { type: 'checkbox', checked: !!r.pulsar.en_orden }); ord.onchange = () => { r.pulsar.en_orden = ord.checked; evrSucio(); };
+    const rp = el('input', { type: 'checkbox', checked: r.pulsar.repetir !== false }); rp.onchange = () => { r.pulsar.repetir = rp.checked; evrSucio(); };
+    c.append(evrCampo('', ord, el('span', { className: 'mu' }, 'en este orden (si se equivocan, vuelve a empezar)')), evrCampo('', rp, el('span', { className: 'mu' }, 'se puede repetir')));
+    if (r.pulsar.en_orden) c.append(evrCampo('Si se equivocan', evrTxt(r.pulsar.aviso_error, v => { r.pulsar.aviso_error = v; }, '220px', 'Wrong order... everything resets.')));
+    c.append(el('div', { className: 'mu' }, 'Se pulsa haciendo clic en el objeto a 3 casillas o menos. Con varios objetos la cuenta es de todo el mapa (o de la copia de la instancia).'));
+  } else if (cuando === 'pisar') {
+    if (!r.pisar) r.pisar = { zona: [0, 0, 0, 0], repetir: true, enfriamiento_s: 5 };
+    evrZona('Zona', r.pisar.zona).forEach(x => c.append(x));
+    const rp = el('input', { type: 'checkbox', checked: r.pisar.repetir !== false }); rp.onchange = () => { r.pisar.repetir = rp.checked; evrSucio(); };
+    c.append(evrCampo('', rp, el('span', { className: 'mu' }, 'cada vez que la pisan (si no, una vez por jugador)')));
+    c.append(evrCampo('Como mucho cada (s)', evrNum(r.pisar.enfriamiento_s ?? 5, v => { r.pisar.enfriamiento_s = Math.max(0, v); })));
+  } else if (cuando === 'manual') {
+    c.append(el('div', { className: 'mu' }, 'No salta sola: la ejecutan otras reglas con "Ejecutar otra regla" o al acabar una "Cuenta atrás". Se aplica a los jugadores del mapa.'));
   } else {
     if (!r.horario) r.horario = { horas: ['20:00'] };
     const modo = el('select'); modo.append(new Option('a estas horas (todos los días)', 'horas'), new Option('cada N minutos', 'cada'));
@@ -468,6 +556,7 @@ EVU.reglas = function (p) {
     api('/api/ao/reglas').then(d => { EVR.datos = d; EVR.datos.reglas = d.reglas || [];
       evPedirNombres(EVR.datos.reglas.flatMap(r => (r.premios || []).flatMap(x => x.tipo === 'dar' ? [x.item] : x.tipo === 'soltar' ? x.items.map(i => i[0]) : [])));
       if (!AOCAT) api('/api/ao/catalogo').then(l => { AOCAT = l; panelRefresh(); });
+      if (!EVR_SPRITES) api('/api/ao/sprites_objeto').then(l => { EVR_SPRITES = l; panelRefresh(); });
       panelRefresh(); }).catch(e => p.append(el('div', { className: 'mal' }, e.message)));
     return;
   }
@@ -479,7 +568,7 @@ EVU.reglas = function (p) {
   const guardar = el('button', { className: 'btn sm' + (EVR.sucio ? ' on' : '') }, EVR.sucio ? '💾 Guardar reglas' : 'Guardado');
   guardar.onclick = async () => {
     try {
-      const res = await api('/api/ao/reglas', { method: 'POST', body: JSON.stringify({ reglas }) });
+      const res = await api('/api/ao/reglas', { method: 'POST', body: JSON.stringify({ reglas, objetos: evrObjetos(), barreras: evrBarreras() }) });
       EVR.errores = res.ok ? null : res.errores;
       if (res.ok) { EVR.sucio = false; msg(`Reglas guardadas (${res.total}) en server/plantillas/eventos_propios.json. El servidor las relee solo.`, 'ok'); }
       else { msg('Hay reglas con errores (marcadas con ⚠): no se guardó nada.', 'mal'); reglas.forEach((x, i) => { if (res.errores[x.id]) EVR.abiertas.add(i); }); }
@@ -492,7 +581,41 @@ EVU.reglas = function (p) {
   const deEste = reglas.map((x, i) => [x, i]).filter(([x]) => EVR.todas || !est || !x.stage || +x.stage === est);
   p.append(el('div', { className: 'mu' }, `${deEste.length} de ${reglas.length} regla(s)${!EVR.todas && est ? ' para este mapa (' + (STAGE[est] || est) + ') o cualquiera' : ''}`));
   deEste.forEach(([x, i]) => evrTarjeta(p, x, i));
+  evrPuzle(p, est);
 };
+
+// Objetos que se pulsan y barreras que no dejan pasar, por mapa.
+function evrPuzle(p, est) {
+  const del = (x) => !est || EVR.todas || +x.stage === est;
+  p.append(el('h4', {}, '🧩 Objetos de puzle (palancas, cristales…)'));
+  p.append(el('div', { className: 'mu' }, 'Se ven en el mapa y se pulsan con clic (a 3 casillas o menos). Úsalos en reglas "Al pulsar objetos".'));
+  evrObjetos().forEach((o, i) => {
+    if (!del(o)) return;
+    const caja = el('div'); caja.style.cssText = 'border:1px solid var(--bd);border-radius:6px;padding:4px 6px;margin:4px 0';
+    const q = el('button', { className: 'btn sm' }, '✕'); q.onclick = () => { evrObjetos().splice(i, 1); evrSucio(); };
+    caja.append(evrCampo('Id', evrTxt(o.id, v => { o.id = v.trim().replace(/\s+/g, '_'); }, '110px'), evrTxt(o.nombre, v => { o.nombre = v; }, '110px', 'nombre'), q));
+    caja.append(evrCampo('Dibujo', evrSelSprite(o.sprite, v => { o.sprite = v; })), evrCampo('Mapa', evrNum(o.stage, v => { o.stage = v; }, '70px')));
+    caja.append(evrCasilla('Casilla', o.tile));
+    p.append(caja);
+  });
+  const no = el('button', { className: 'btn sm' }, '+ objeto'); no.onclick = () => { evrObjetos().push({ id: evrIdLista(evrObjetos(), 'objeto'), stage: est, tile: [0, 0], sprite: 60306, nombre: '' }); evrSucio(); };
+  p.append(no);
+  p.append(el('h4', {}, '🚧 Barreras (puertas)'));
+  p.append(el('div', { className: 'mu' }, 'Una zona por la que no se puede pasar mientras esté cerrada: quien lo intenta vuelve atrás. Se abren y cierran con las acciones "Abrir / Cerrar una barrera".'));
+  evrBarreras().forEach((b, i) => {
+    if (!del(b)) return;
+    const caja = el('div'); caja.style.cssText = 'border:1px solid var(--bd);border-radius:6px;padding:4px 6px;margin:4px 0';
+    const q = el('button', { className: 'btn sm' }, '✕'); q.onclick = () => { evrBarreras().splice(i, 1); evrSucio(); };
+    const ab = el('input', { type: 'checkbox', checked: !!b.abierta }); ab.onchange = () => { b.abierta = ab.checked; evrSucio(); };
+    caja.append(evrCampo('Id', evrTxt(b.id, v => { b.id = v.trim().replace(/\s+/g, '_'); }, '110px'), ab, el('span', { className: 'mu' }, 'abierta al empezar'), q));
+    caja.append(evrCampo('Dibujo', evrSelSprite(b.sprite, v => { b.sprite = v; }, true)), evrCampo('Mapa', evrNum(b.stage, v => { b.stage = v; }, '70px')));
+    evrZona('Zona', b.zona).forEach(x => caja.append(x));
+    caja.append(evrCampo('Aviso al chocar', evrTxt(b.aviso, v => { b.aviso = v; }, '220px', 'The way is closed.')));
+    p.append(caja);
+  });
+  const nb = el('button', { className: 'btn sm' }, '+ barrera'); nb.onclick = () => { evrBarreras().push({ id: evrIdLista(evrBarreras(), 'puerta'), stage: est, zona: [0, 0, 0, 0], sprite: 60402, abierta: false, aviso: '' }); evrSucio(); };
+  p.append(nb);
+}
 
 EVU.tab = function (p, xmlEditor) {
   EVU.reglas(p);

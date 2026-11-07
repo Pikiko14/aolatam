@@ -140,13 +140,22 @@ def _archivo_reglas():
     return os.path.join(E.PLANTILLAS, 'eventos_propios.json')
 
 
-def _validar_regla(r):
+def _modulo_eventos():
     import importlib.util
     f = os.path.join(_raiz(), 'server', 'eventos_propios.py')
     spec = importlib.util.spec_from_file_location('eventos_propios_editor', f)
     m = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(m)
-    return m.validar(r)
+    return m
+
+
+def _validar_regla(r):
+    return _modulo_eventos().validar(r)
+
+
+def sprites_objeto():
+    """Los dibujos que se pueden usar en objetos y barreras de puzle (los que el cliente pinta sin cerrarse)."""
+    return {str(k): v for k, v in _modulo_eventos().SPRITES_OBJETO.items()}
 
 
 def reglas():
@@ -156,18 +165,42 @@ def reglas():
     return json.load(open(f, encoding='utf-8'))
 
 
-def guardar_reglas(lista):
-    """Valida y escribe server/plantillas/eventos_propios.json (con .bak). Devuelve los errores
-    por regla sin escribir si alguna esta mal."""
+def guardar_reglas(lista, objetos=None, barreras=None):
+    """Valida y escribe server/plantillas/eventos_propios.json (con .bak): reglas, objetos de puzle y barreras.
+    Devuelve los errores (por regla, objeto o barrera) sin escribir si algo esta mal. objetos/barreras None = no tocarlos."""
     errores = {}
     ids = set()
+    mod = _modulo_eventos()
+    oids = {str(o.get('id')) for o in (objetos or [])}
+    bids = {str(b.get('id')) for b in (barreras or [])}
     for i, r in enumerate(lista):
-        mal = _validar_regla(r)
+        mal = mod.validar(r)
         if r.get('id') in ids:
             mal.append('id repetido')
         ids.add(r.get('id'))
+        if objetos is not None:
+            for o in ((r.get('pulsar') or {}).get('objetos') or []):
+                if str(o) not in oids:
+                    mal.append('el objeto "%s" no existe' % o)
+        if barreras is not None:
+            for pr in r.get('premios') or []:
+                if pr.get('tipo') in ('abrir', 'cerrar') and str(pr.get('barrera')) not in bids:
+                    mal.append('la barrera "%s" no existe' % pr.get('barrera'))
         if mal:
             errores[r.get('id') or '#%d' % (i + 1)] = mal
+    todas = {str(x.get('id')) for x in lista}
+    for r in lista:
+        for pr in r.get('premios') or []:
+            if pr.get('tipo') in ('activar', 'cuenta_atras', 'parar_cuenta') and str(pr.get('regla')) not in todas:
+                errores.setdefault(r.get('id'), []).append('la regla "%s" no existe' % pr.get('regla'))
+    for o in objetos or []:
+        mal = mod.validar_objeto(o)
+        if mal:
+            errores['objeto ' + str(o.get('id'))] = mal
+    for b in barreras or []:
+        mal = mod.validar_barrera(b)
+        if mal:
+            errores['barrera ' + str(b.get('id'))] = mal
     if errores:
         return dict(ok=False, errores=errores)
     f = _archivo_reglas()
@@ -177,6 +210,10 @@ def guardar_reglas(lista):
     j.setdefault('_nota', 'Reglas "matar X monstruos" del servidor; ver server/eventos_propios.py. '
                           'Se editan con tools/editor_mapas (pestana Eventos).')
     j['reglas'] = lista
+    if objetos is not None:
+        j['objetos'] = objetos
+    if barreras is not None:
+        j['barreras'] = barreras
     tmp = f + '.tmp'
     open(tmp, 'w', encoding='utf-8').write(json.dumps(j, ensure_ascii=False, indent=1) + '\n')
     os.replace(tmp, f)
