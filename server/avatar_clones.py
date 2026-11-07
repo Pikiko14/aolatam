@@ -141,8 +141,50 @@ def lanzar(ses, tipo, mag):
     return True
 
 
+ESTADO_ESCUDO_MP = '法力護盾'
+
+
+def escudo_mp_activo(ses):
+    """(id, entrada) del Power Shield activo del jugador, o (None, None)."""
+    import combate
+    ahora = time.time()
+    for bid, b in list((getattr(getattr(ses, 'personaje', None), 'buffs', None) or {}).items()):
+        if not (str(bid).isdigit() and isinstance(b, dict) and b.get('fin', 0) > ahora):
+            continue
+        d = combate._magic_xml().get(int(bid)) or {}
+        if d.get('魔法狀態') == ESTADO_ESCUDO_MP:
+            return int(bid), b
+    return None, None
+
+
+def escudo_mp(ses, dano):
+    """POWER SHIELD (法力護盾, 06/11/2026: "no se ve su efecto"). Mientras dura, el dano recibido se paga con MP en vez
+    de HP, hasta 'It can counteract N damage' (動態參數1: 1350 / 1620 / 1890 / 2160 / 3000). Se gasta al llegar al
+    tope o al quedarse sin MP. No estaba hecho: el buff solo ponia su icono."""
+    import combate
+    bid, b = escudo_mp_activo(ses)
+    dano = max(0, int(dano))
+    pj = getattr(ses, 'personaje', None)
+    if bid is None or not dano or pj is None:
+        return dano
+    if 'escudo_restante' not in b:
+        b['escudo_restante'] = int((combate._magic_xml().get(bid) or {}).get('動態參數1') or 0)
+    tapa = min(dano, int(b['escudo_restante']), max(0, int(pj.mp or 0)))
+    if tapa <= 0:
+        return dano
+    b['escudo_restante'] -= tapa
+    pj.mp -= tapa
+    pkts = [combate.atributo(pj.entity_id, pj.mp, combate.KIND_MP)]
+    if b['escudo_restante'] <= 0 or pj.mp <= 0:
+        pj.buffs.pop(bid, None)
+        pkts.append(struct.pack('<HIBBII', 0x001D, pj.entity_id, 1, 4, bid, 0))
+    ses.enviar(*pkts)
+    return dano - tapa
+
+
 def absorber(ses, dano):
     import combate,presencia
+    dano = escudo_mp(ses, dano)
     inv=getattr(ses,'avatar_clon',None)
     if not inv or not inv.get('clon_sustituto') or inv.get('expira',0)<=time.time() or inv.get('hp',0)<=0:
         return dano

@@ -349,6 +349,10 @@ def _aplicar_control(ses, otro, tipo, mag, estado):
     import asyncio
     import combate, presencia
     p, q = ses.personaje, otro.personaje
+    # Power Shield: "Demon Seal and Silence are invalid on you".
+    if estado == 'silenciado' and __import__('avatar_clones').escudo_mp_activo(otro)[0] is not None:
+        log.info('%s no silencia a %s: tiene Power Shield', p.nombre, q.nombre)
+        return
     dur_ms = int(mag.get('dur_ms') or 0) or 5000
     fin = time.time() + dur_ms / 1000.0
     entrada = {'fin': fin, 'estado': estado, 'control_pvp': True,
