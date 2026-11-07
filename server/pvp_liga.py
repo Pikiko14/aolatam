@@ -460,7 +460,7 @@ def _aplicar(ses, otro, dano, es_crit, con_efecto, tipo, efecto, magia, *, orige
             return
         import outpost_pvp
         if not outpost_pvp.es_mapa(p.stage):
-            _contar_baja(ses, p)  # Outpost is not a source of TW credits/round kills.
+            _contar_baja(ses, p, q)  # Outpost is not a source of TW credits/round kills.
         try:
             import app as _app_l
             _app_l._logros_contar(otro, 'muertes')
@@ -479,10 +479,11 @@ def _aplicar(ses, otro, dano, es_crit, con_efecto, tipo, efecto, magia, *, orige
         cuentas.guardar_progreso(otro.usuario, q.char_id, q.nivel, q.exp, q.hp, q.mp)
 
 
-def _contar_baja(ses, p):
-    """La baja: marcador K.O. (0x001D codigo 25) y creditos de rango."""
+def _contar_baja(ses, p, victima=None):
+    """La baja: marcador K.O. (0x001D codigo 25) y creditos de rango (segun el nivel de la victima, totem_war)."""
     import combate, clases, totem_war
     try:
+        creditos = totem_war.creditos_por_baja(victima)
         ronda = totem_war._RONDA.get(p.char_id, 0) + 1
         totem_war._RONDA[p.char_id] = ronda
         total = [int(getattr(p, 'pvp_kills', 0) or 0) + 1]
@@ -494,11 +495,11 @@ def _contar_baja(ses, p):
             cuentas._actualizar_personaje(ses.usuario, p.char_id, _sumar)
         total = total[0]
         p.pvp_kills = total
-        p.creditos = int(getattr(p, 'creditos', 0) or 0) + totem_war.CREDITOS_POR_BAJA
+        p.creditos = int(getattr(p, 'creditos', 0) or 0) + creditos
         nuevo_rango = combate.rango_de_creditos(p.creditos)
         pkts = [totem_war.kills_ko(p.entity_id, ronda, total),
                 combate.atributo(p.entity_id, p.creditos, combate.KIND_CREDITO),
-                clases.aviso(str(totem_war.CREDITOS_POR_BAJA), tipo=0, msg_id=642)]
+                clases.aviso(str(creditos), tipo=0, msg_id=642)]
         if nuevo_rango > int(getattr(p, 'rango', 1) or 1):
             p.rango = nuevo_rango
             pkts += [combate.atributo(p.entity_id, p.rango, combate.KIND_RANGO),
@@ -507,6 +508,6 @@ def _contar_baja(ses, p):
         if getattr(ses, 'usuario', None):
             cuentas.guardar_rango(ses.usuario, p.char_id, p.rango, p.creditos)
         log.info('PvP: %s lleva %d bajas en la ronda (%d en total), +%d creditos',
-                 p.nombre, ronda, total, totem_war.CREDITOS_POR_BAJA)
+                 p.nombre, ronda, total, creditos)
     except Exception:
         log.exception('PvP: no se pudo contar la baja')

@@ -250,7 +250,24 @@ def kills_ko(entity_id, ronda, total) -> bytes:
 
 # Creditos de rango por baja en la arena. El cliente los muestra con el 642
 # ("Obtain %s Credit."); la cantidad oficial no esta en sus datos.
-CREDITOS_POR_BAJA = 10
+# Antes 10 fijos. Ahora el NIVEL del que muere x5 si es su primera muerte en esta guerra y x2 si ya habia muerto
+# ("que sea dependiendo del nivel de la persona, si no ha muerto lo multiplica por 5, si ya ha muerto por 2", 07/11/2026).
+CREDITOS_POR_BAJA = 10          # sin victima conocida
+MULT_PRIMERA_MUERTE = 5
+MULT_YA_MUERTO = 2
+_MUERTOS = set()                # char_id de los que ya murieron en esta guerra
+
+
+def creditos_por_baja(victima) -> int:
+    """Los creditos que da matar a `victima` (su Personaje), y la apunta como muerta en esta guerra."""
+    if victima is None:
+        return CREDITOS_POR_BAJA
+    nivel = max(1, int(getattr(victima, 'nivel', 1) or 1))
+    cid = getattr(victima, 'char_id', None)
+    mult = MULT_YA_MUERTO if cid in _MUERTOS else MULT_PRIMERA_MUERTE
+    if cid is not None:
+        _MUERTOS.add(cid)
+    return nivel * mult
 
 
 # LOS OBJETOS DE LA ARENA que el servidor tiene que mandar (server.obd):
@@ -915,6 +932,7 @@ def iniciar(minutos=MINUTOS_GM, por='gm'):
     else:
         _DISPUTADAS.clear()
         _RONDA.clear()
+        _MUERTOS.clear()
         a._tw_difundir(*anuncio('Totem War has begun! Enter any battlefield to fight for '
                                 'your faction (%d min).' % int(minutos), STR_EMPIEZA))
         a._tw_levantar_todos()
