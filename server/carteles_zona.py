@@ -21,6 +21,9 @@ NPC_TYPE = 1                  # sin ficha propia en npc.xml
 KLASS = 199
 # Un objeto sin animaciones podria tumbar al cliente: hasta comprobarlo, solo lo ven los GM (marcas_npc lo filtra).
 SOLO_GM = True
+# APAGADO (06/11/2026): con el 40442 el cliente se cierra al entrar al mapa ("This program will be terminated
+# because an error occur", en el Angel Lyceum con Zetha). Sin un sprite invisible que aguante, no se mandan.
+ACTIVOS = False
 EID_BASE = 7_000_000          # + stage * 1000 + n
 DISTANCIA_GRUPO = 40
 LARGO_NOMBRE = 16
@@ -110,6 +113,8 @@ def carteles(stage):
 
 def poblar(stage):
     """Los 0x0008 de los carteles del mapa (login.poblar)."""
+    if not ACTIVOS:
+        return []
     import login
     return [login._npc_spawn(eid, NPC_TYPE, texto, tile, sprite=SPRITE, klass=KLASS, direccion=6)
             for eid, texto, tile in carteles(stage)]
