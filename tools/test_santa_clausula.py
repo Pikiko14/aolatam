@@ -31,7 +31,7 @@ def _santa():
 
 def test_stats_y_jefe():
     m = _santa()
-    assert (m.hp_max, m.atk, m.matk) == (500000, 450, 600)
+    assert (m.hp_max, m.atk, m.matk) == (500000, 950, 1100)
     assert cb.es_jefe(sc.NPC_TYPE)
 
 
@@ -48,7 +48,7 @@ def test_habilidades():
     assert sc.elegir_habilidad(Dados(0.1, 0.1)) == sc.HAB_AREA
     assert sc.elegir_habilidad(Dados(0.1, 0.9)) == sc.HAB_UNO
     m = _santa()
-    assert 0 < sc.dano_habilidad(sc.HAB_AREA, m, 100) <= 600
+    assert 0 < sc.dano_habilidad(sc.HAB_AREA, m, 100) <= 1100
     assert sc.dano_habilidad(sc.HAB_UNO, m, 0) > 0
 
 

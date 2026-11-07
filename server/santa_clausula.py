@@ -4,7 +4,8 @@ Un monstruo nuevo: el Wham Ogre del juego (sprite 110668) recoloreado con piel d
 de baston de caramelo, el gorro de Navidad del juego y barba blanca (los .spr salen de tools/santa_clausula_datos.py).
 
   monster 23901, sprite 111648 (npc.obd: carpeta \\mon\\M9001\\)
-  nivel 60, vida 500.000, ataque 450 / defensa 880, ataque magico 600 / defensa magica 450, critico 20 %
+  nivel 60, vida 500.000, ataque 950 / defensa 880, ataque magico 1100 / defensa magica 450, critico 20 %
+  (06/11/2026: +500 de ataque y de ataque magico, "pega muy poco")
   habilidades: Cross Chop I (605, a uno) y Revolving Swords I (5706, en area); el dano sale de sus stats
   inmune a aturdir, congelar, inmovilizar, ralentizar y encantar
   evento: cada 24 h en un mapa al azar junto a las ciudades, con cartel arriba; se va a los 60 minutos
@@ -25,7 +26,7 @@ NOMBRE = 'Santa Clausula'
 # Las columnas de content.db (tabla monster) y su equivalente en monster.xml del cliente.
 STATS = {
     'name': NOMBRE, 'sprite_id': str(SPRITE), 'level': '60', 'element': '人型', 'faction': '怪物陣營',
-    'hp': '500000', 'atk_avg': '450', 'atk_var': '45', 'def': '880', 'matk': '600', 'mdef': '450',
+    'hp': '500000', 'atk_avg': '950', 'atk_var': '95', 'def': '880', 'matk': '1100', 'mdef': '450',
     'accuracy': '420', 'agility': '260', 'res_body': '50', 'res_mind': '50',
     'move_speed': '80', 'move_range': '8', 'atk_speed': '70', 'atk_range': '1', 'crit_rate': '20',
     'exp_value': '25000', 'snd_idle': 'M01801', 'snd_atk': 'M01802', 'snd_die': 'M01803',
