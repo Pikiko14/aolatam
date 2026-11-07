@@ -157,6 +157,44 @@ def escudo_mp_activo(ses):
     return None, None
 
 
+# La BURBUJA del Power Shield (captura del usuario, 07/11/2026): es el efecto 219 (m02.obd 419 "R19 魔力結界 球", la
+# esfera de \magic9\), que el cliente pinta UNA vez y se desvanece. Para que se vea mientras dura, se repite solo su
+# fase 0x80 (sin el gesto de lanzar) cada BURBUJA_CADA segundos, a el y a los que lo ven.
+EFECTO_BURBUJA = 219
+BURBUJA_CADA = 1.5
+
+
+def iniciar_burbuja(ses, bid, entrada):
+    """Repite la burbuja del Power Shield `bid` mientras siga activo (mismo dict de buff)."""
+    import asyncio
+    import combate
+    import presencia
+
+    def _tic():
+        p = getattr(ses, 'personaje', None)
+        if (p is None or getattr(ses, 'muerto', False) or (p.buffs or {}).get(bid) is not entrada
+                or entrada.get('fin', 0) <= time.time()):
+            return
+        try:
+            ses.enviar(combate.efecto_magia_self_fin(p.entity_id, EFECTO_BURBUJA, bid, es_magia=True))
+            pub = presencia.entidad_de(ses)
+            stage = presencia.clave_de_mapa(ses, p.stage)
+            pk = combate.efecto_magia_self_fin(pub, EFECTO_BURBUJA, bid, es_magia=True)
+            for s in presencia._vivas(stage):
+                if s is not ses:
+                    presencia._mandar(s, pk)
+        except Exception:
+            pass
+        try:
+            asyncio.get_event_loop().call_later(BURBUJA_CADA, _tic)
+        except RuntimeError:
+            pass
+    try:
+        asyncio.get_event_loop().call_later(BURBUJA_CADA, _tic)
+    except RuntimeError:
+        pass
+
+
 def escudo_mp(ses, dano):
     """POWER SHIELD (法力護盾, 06/11/2026: "no se ve su efecto"). Mientras dura, el dano recibido se paga con MP en vez
     de HP, hasta 'It can counteract N damage' (動態參數1: 1350 / 1620 / 1890 / 2160 / 3000). Se gasta al llegar al

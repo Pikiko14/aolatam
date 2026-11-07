@@ -15602,6 +15602,9 @@ class Servidor:
                                 f_pet_cast.setdefault('buffs', {})[tipo] = dict(buff_entry)
                             elif _a_mi_b and not _cb.solo_da_sp(mag):     # Bloody Storm: sube el SP y ya
                                 ses.personaje.buffs[tipo] = buff_entry
+                                # Power Shield: su burbuja, mientras dure (avatar_clones.iniciar_burbuja).
+                                if (_cb._magic_xml().get(int(tipo)) or {}).get('魔法狀態') == '法力護盾':
+                                    __import__('avatar_clones').iniciar_burbuja(ses, tipo, buff_entry)
                             for _s_b in _otros_b:
                                 try:
                                     _buff_a_otro(_s_b, tipo, buff_entry, dur_ms, mag,
