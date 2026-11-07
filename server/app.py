@@ -8088,13 +8088,15 @@ def _cb_mod():
     return _cb_x
 
 
-def _tw_efecto_nivel(stage):
-    """El efecto de LEVEL UP sobre el totem, para todos los del mapa: al subir de nivel y al volver a nivel 1."""
+def _tw_efecto_nivel(stage, baja=False):
+    """El "Level N" sobre el totem (efecto TotemLevelUp / TotemLevelDown del cliente), para todos los del mapa."""
     import totem_war as _tw_ef
     sala = _SALAS_DEL_MUNDO.get(int(stage))
     if sala is None:
         return
-    pk = _cb_mod().efecto_level_up(_tw_ef.eid_totem(stage))
+    _eid_fx = _tw_ef.eid_totem(stage)
+    _n_fx = _tw_ef.EFECTO_TOTEM_BAJA if baja else _tw_ef.EFECTO_TOTEM_SUBE
+    pk = struct.pack('<HIHI', 0x0020, _eid_fx, _n_fx, _eid_fx)
     for s in list(getattr(sala, 'sesiones', []) or []):
         if getattr(getattr(s, 'personaje', None), 'stage', None) == int(stage):
             try:
@@ -8222,7 +8224,7 @@ def _tw_totem_roto(ses, m, addr):
     if int(m.stage) in _tw_k.TOTEM_CAMPO and _tw_k.nivel_totem(m.stage)[0] > 1:
         _nv_b = _tw_k.bajar_nivel(m.stage)
         _tw_relevantar(int(m.stage))
-        _tw_efecto_nivel(int(m.stage))
+        _tw_efecto_nivel(int(m.stage), baja=True)
         try:
             import clases as _cl_b
             _txt_b = 'The totem of %s falls to level %d!' % (_cl_b.nombre_de_mapa(int(m.stage)), _nv_b)
@@ -8247,7 +8249,7 @@ def _tw_totem_roto(ses, m, addr):
     # Al levantarse de nuevo (nivel 1), con el efecto de LEVEL UP: "hay 1 efecto que debe hacer, y al bajarlo" (07/11/2026).
     def _relevantar_con_efecto(st=int(m.stage)):
         _tw_relevantar(st)
-        _tw_efecto_nivel(st)
+        _tw_efecto_nivel(st, baja=True)
     try:
         asyncio.get_event_loop().call_later(_tw_k.SEGUNDOS_RELEVANTAR, _relevantar_con_efecto)
     except Exception:

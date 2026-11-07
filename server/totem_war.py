@@ -253,6 +253,11 @@ def kills_ko(entity_id, ronda, total) -> bytes:
 # Antes 10 fijos. Ahora el NIVEL del que muere x5 si es su primera muerte en esta guerra y x2 si ya habia muerto
 # ("que sea dependiendo del nivel de la persona, si no ha muerto lo multiplica por 5, si ya ha muerto por 2", 07/11/2026).
 CREDITOS_POR_BAJA = 10          # sin victima conocida
+# El "Level N" que sale sobre el totem al subir o bajar (captura del usuario, 07/11/2026). Son los efectos del 0x0020 que
+# en el script de efectos del cliente llaman a TotemLevelUp / TotemLevelDown; el numero se deduce del orden del script
+# y SE PRUEBA en el juego con /efecto N.
+EFECTO_TOTEM_SUBE = 8
+EFECTO_TOTEM_BAJA = 9
 MULT_PRIMERA_MUERTE = 5
 MULT_YA_MUERTO = 2
 _MUERTOS = set()                # char_id de los que ya murieron en esta guerra

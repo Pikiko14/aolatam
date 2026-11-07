@@ -47,6 +47,9 @@ _CMDS_SETMAP = ('setmap', 'setstage', 'tpjugador', 'enviarmapa')
 # no estan en item.xml ni en magic.xml y no hay capturas con arco ni con arma+escudo: asi
 # se prueban en el juego y luego se fija la buena en combate.GOLPE_POR_SKILL.
 _CMDS_ANIM = ('anim', 'golpe')
+# /efecto N: el efecto N del 0x0020 (Lua effectNNN del cliente) sobre el totem del mapa, o sobre ti si no hay. Para
+# encontrar el de 'Level N' del totem (TotemLevelUp / TotemLevelDown del script de efectos), 07/11/2026.
+_CMDS_EFECTO = ('efecto', 'fx')
 # Prueba del 0x001D kind 9 (hechizo) con un tercer campo a eleccion. Solo se midio con
 # rango I (valor 1). Sirve para averiguar si un valor (p.ej. 0) le quita al cliente un
 # hechizo, que es lo que haria falta para que el rango II tape al I sin reloguear.
@@ -58,7 +61,7 @@ _CMDS = frozenset(('help',) + _CMDS_ITEM + _CMDS_LEVEL + _CMDS_SETLEVEL + _CMDS_
                   + _CMDS_LEVELALL + _CMDS_SKILLS + _CMDS_SKILLSALL + _CMDS_SKILLS5
                   + _CMDS_CLEARSKILLS + _CMDS_PET + _CMDS_QUEST + _CMDS_BALL
                   + _CMDS_GUILDLEVEL + _CMDS_GUILDREP + _CMDS_GUILD
-                  + _CMDS_TW + _CMDS_FARM + _CMDS_SETMAP + _CMDS_ANIM + _CMDS_HECHIZO + _CMDS_TRADE)
+                  + _CMDS_TW + _CMDS_FARM + _CMDS_SETMAP + _CMDS_ANIM + _CMDS_EFECTO + _CMDS_HECHIZO + _CMDS_TRADE)
 # _CMDS se quedaba sin 'gold' y 'setlevel' (se anadieron arriba, al vuelo: no se tocan las
 # tuplas que ya tenia cada quien para no reordenar nada). No cambia nada vivo: _CMDS solo lo
 # usa texto_de(), y nada del servidor llama a texto_de() hoy (ver mas abajo, PALABRAS).
@@ -79,14 +82,14 @@ _CMDS = frozenset(('help',) + _CMDS_ITEM + _CMDS_LEVEL + _CMDS_SETLEVEL + _CMDS_
 PALABRAS = _CMDS
 _GRUPOS_DELEGADOS = (_CMDS_LEVEL, _CMDS_SETLEVEL, _CMDS_GOLD, _CMDS_LEVELALL,
                     _CMDS_SKILLS, _CMDS_SKILLSALL, _CMDS_SKILLS5, _CMDS_CLEARSKILLS,
-                    _CMDS_PET, _CMDS_QUEST, _CMDS_BALL, _CMDS_SETMAP, _CMDS_ANIM, _CMDS_HECHIZO,
+                    _CMDS_PET, _CMDS_QUEST, _CMDS_BALL, _CMDS_SETMAP, _CMDS_ANIM, _CMDS_EFECTO, _CMDS_HECHIZO,
                     _CMDS_TRADE)    # /job, /caravana, /aro: sin esto el chat no los mandaba aqui (06/11/2026)
 PALABRAS_DELEGADAS = frozenset(w for grupo in _GRUPOS_DELEGADOS for w in grupo)
 # Los 'kind' que gm.parsear() puede devolver para PALABRAS_DELEGADAS, para que el
 # dispatcher de app.py sepa cuales reenviar a gm.aplicar().
 RESULTADOS_DELEGADOS = frozenset((
     'level', 'levelall', 'setlevel', 'gold', 'skills', 'skillsall', 'skills5',
-    'clearskills', 'pet', 'quest', 'ball', 'setmap', 'anim', 'hechizo', 'trade',
+    'clearskills', 'pet', 'quest', 'ball', 'setmap', 'anim', 'efecto', 'hechizo', 'trade',
 ))
 
 AYUDA = ("GM: /item <id> [qty]  /level <n>  /levelall <n>  /setlevel <name|all> <n>/guildlevel <1..10>  /guildrep <n>  "
@@ -658,6 +661,11 @@ def parsear(texto: str):
         except ValueError:
             return ('err', 'usage: /setmap <name> <stage> [x] [y]  (stage/x/y son numeros)')
         return ('setmap', parts[1], stage, x, y)
+    if cmd in _CMDS_EFECTO:
+        try:
+            return ('efecto', int(parts[1], 0))
+        except (IndexError, ValueError):
+            return ('err', 'usage: /efecto <numero>  (0x0020 sobre el totem del mapa o sobre ti)')
     if cmd in _CMDS_ANIM:
         uso = 'usage: /anim <tipo> <animacion>  |  /anim off'
         if len(parts) == 2 and parts[1].lower() in ('off', 'reset', 'no'):
@@ -855,6 +863,18 @@ def aplicar(ses, parsed) -> str:
         ses.enviar(struct.pack('<HIB', 0x001D, p.entity_id, 1)
                    + struct.pack('<BII', _cl_h.KIND_HECHIZO, parsed[1], parsed[2]))
         msg = 'spell packet: magic %d, valor %d' % (parsed[1], parsed[2])
+        _avisar(ses, msg)
+        return msg
+    if kind == 'efecto':
+        import totem_war as _tw_fx
+        p = getattr(ses, 'personaje', None)
+        if not p:
+            return 'no character in world yet'
+        eid = p.entity_id
+        if int(p.stage) in _tw_fx.TOTEM_CAMPO:
+            eid = _tw_fx.eid_totem(p.stage)
+        ses.enviar(struct.pack('<HIHI', 0x0020, eid, int(parsed[1]) & 0xFFFF, eid))
+        msg = 'effect %d sobre %s' % (parsed[1], 'el totem' if eid != p.entity_id else 'ti')
         _avisar(ses, msg)
         return msg
     if kind == 'anim':

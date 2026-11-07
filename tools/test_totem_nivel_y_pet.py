@@ -71,7 +71,7 @@ def test_matar_un_totem_de_nivel_alto_lo_baja_uno_sin_dar_el_territorio(monkeypa
     capturas, relevantados = [], []
     monkeypatch.setattr(tw, 'capturado', lambda ses, m: capturas.append(1) or 'x')
     monkeypatch.setattr(app, '_tw_relevantar', lambda s: relevantados.append(s))
-    monkeypatch.setattr(app, '_tw_efecto_nivel', lambda s: None)
+    monkeypatch.setattr(app, '_tw_efecto_nivel', lambda s, baja=False: None)
     ses = NS(personaje=NS(nombre='Zetha'))
     m = NS(stage=st)
     app._tw_totem_roto(ses, m, 'test')
