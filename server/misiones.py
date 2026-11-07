@@ -17,6 +17,9 @@ import combate as _cb
 
 log = logging.getLogger('misiones')
 
+# Fraccion de la EXP de recompensa que se da al entregar una mision (06/11/2026: -90 %).
+FACTOR_EXP_MISIONES = 0.10
+
 RUTA_MISIONES_COMPLETAS = pathlib.Path(__file__).parent / 'plantillas' / 'misiones_completas.json'
 RUTA_MISIONES_JSON = pathlib.Path(__file__).parent / 'plantillas' / 'misiones.json'
 
@@ -902,7 +905,9 @@ def completar_mision(ses, qid: int, exp: int = 0, oro: int = 0,
             cuentas.guardar_oro(ses.usuario, char_id, ses.oro)
 
     # 6. Experiencia de recompensa
+    # "las misiones dan mucha exp, reduce un 90% la exp actual" (06/11/2026): se da el 10 %.
     if exp > 0:
+        exp = max(1, int(exp * FACTOR_EXP_MISIONES))
         p.exp = getattr(p, 'exp', 0) + exp
         exp_actual_ui, _ = _cb.exp_para_barra(getattr(p, 'nivel', 1), p.exp)
         eid = getattr(p, 'entity_id', char_id)

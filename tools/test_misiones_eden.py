@@ -65,7 +65,7 @@ class TestMisionesEden(unittest.TestCase):
         ok = misiones.completar_mision(ses, 133, exp=1500, oro=500)
         self.assertTrue(ok)
         self.assertTrue(misiones.mision_completada(ses.personaje, 133))
-        self.assertEqual(ses.personaje.exp, exp_antes + 1500)
+        self.assertEqual(ses.personaje.exp, exp_antes + 150)    # 10 % (FACTOR_EXP_MISIONES)
         self.assertEqual(ses.oro, oro_antes + 500)
 
     def test_caceria_quest_142(self):
