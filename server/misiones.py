@@ -906,6 +906,9 @@ def completar_mision(ses, qid: int, exp: int = 0, oro: int = 0,
 
     # 6. Experiencia de recompensa
     # "las misiones dan mucha exp, reduce un 90% la exp actual" (06/11/2026): se da el 10 %.
+    # En el nivel maximo no se gana exp ("el cap es lvl 60, porque me sigue dando exp", 07/11/2026).
+    if int(getattr(p, 'nivel', 1) or 1) >= _cb.nivel_maximo():
+        exp = 0
     if exp > 0:
         exp = max(1, int(exp * FACTOR_EXP_MISIONES))
         p.exp = getattr(p, 'exp', 0) + exp

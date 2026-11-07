@@ -4026,7 +4026,8 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
         if ses.personaje and getattr(ses, 'usuario', None):
             cuentas.guardar_inventario(ses.usuario, cid, bolsa, _cantidades(ses))
 
-        log.info(f"[{addr}] mato un {m.nombre} (entidad {objetivo}); +{exp_ganada} exp, +{oro} oro, {len(drops)} items")
+        log.info(f"[{addr}] mato un {m.nombre} (entidad {objetivo}); "
+                 f"+{0 if ses.personaje.nivel >= _cb.nivel_maximo() else exp_ganada} exp, +{oro} oro, {len(drops)} items")
 
     for _s_pr, _fr_pr, _bot_pr in _repartir_muerte(ses, m):
         try:
@@ -8649,6 +8650,8 @@ def _dar_exp_y_creditos(ses, exp=0, creditos=0):
     import combate, clases
     from producer_orders import reward_progress
     p = ses.personaje
+    if p.nivel >= combate.nivel_maximo():
+        exp = 0                     # en el tope no se gana exp (07/11/2026)
     progreso = reward_progress(
         dict(exp=p.exp, oro=0, creditos=getattr(p, 'creditos', 0) or 0, nivel=p.nivel,
              rango=getattr(p, 'rango', 1) or 1, hp_max=p.hp_max, mp_max=p.mp_max),
