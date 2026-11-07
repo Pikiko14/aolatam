@@ -242,7 +242,8 @@ def _dueno_corto(st):
 
 def kills_ko(entity_id, ronda, total) -> bytes:
     """s2c 0x001D codigo 25: el marcador K.O. (REA 00602470 -> 00602110):
-    a = bajas de la ronda (el numero grande, 3 cifras), b = total (5 cifras).
+    a = bajas de la ronda (el numero grande, 3 cifras), b = el numero amarillo de debajo (5 cifras): los creditos
+    ganados en esta guerra (_CREDITOS_GUERRA).
     El cliente lo lee tambien de la ficha del 0x0002 (+0xf6f y +0xf6b)."""
     return struct.pack('<HIBBII', 0x001D, int(entity_id), 1, 25,
                        max(0, int(ronda)) % 1000, max(0, int(total)) % 100000)
@@ -261,6 +262,7 @@ EFECTO_TOTEM_BAJA = 9
 MULT_PRIMERA_MUERTE = 5
 MULT_YA_MUERTO = 2
 _MUERTOS = set()                # char_id de los que ya murieron en esta guerra
+_CREDITOS_GUERRA = {}           # char_id -> creditos ganados por bajas en esta guerra (el numero amarillo del K.O.)
 
 
 def creditos_por_baja(victima) -> int:
@@ -938,6 +940,7 @@ def iniciar(minutos=MINUTOS_GM, por='gm'):
         _DISPUTADAS.clear()
         _RONDA.clear()
         _MUERTOS.clear()
+        _CREDITOS_GUERRA.clear()
         a._tw_difundir(*anuncio('Totem War has begun! Enter any battlefield to fight for '
                                 'your faction (%d min).' % int(minutos), STR_EMPIEZA))
         a._tw_levantar_todos()

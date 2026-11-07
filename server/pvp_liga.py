@@ -576,7 +576,11 @@ def _contar_baja(ses, p, victima=None):
         p.pvp_kills = total
         p.creditos = int(getattr(p, 'creditos', 0) or 0) + creditos
         nuevo_rango = combate.rango_de_creditos(p.creditos)
-        pkts = [totem_war.kills_ko(p.entity_id, ronda, total),
+        # Debajo del K.O. van los CREDITOS ganados en esta guerra, no las bajas totales ("debajo del 1 K.O. sale los
+        # creditos obtenidos, ese numero amarillo", 07/11/2026).
+        ganados = totem_war._CREDITOS_GUERRA.get(p.char_id, 0) + creditos
+        totem_war._CREDITOS_GUERRA[p.char_id] = ganados
+        pkts = [totem_war.kills_ko(p.entity_id, ronda, ganados),
                 combate.atributo(p.entity_id, p.creditos, combate.KIND_CREDITO),
                 clases.aviso(str(creditos), tipo=0, msg_id=642)]
         if nuevo_rango > int(getattr(p, 'rango', 1) or 1):

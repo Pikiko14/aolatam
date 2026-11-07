@@ -9756,7 +9756,7 @@ def _tw_al_entrar(ses):
         ses.tw_modo_pvp = True
         ses.enviar(_tw_e.modo_pvp(p.entity_id, True, _tw_e.STR_ARENA),
                    _tw_e.kills_ko(p.entity_id, _tw_e._RONDA.get(p.char_id, 0),
-                                  int(getattr(p, 'pvp_kills', 0) or 0)))
+                                  _tw_e._CREDITOS_GUERRA.get(p.char_id, 0)))
         ses.enviar(_cl_e.aviso('Totem War: %d min left. %s holds this field.' % (
             max(1, _tw_e.restante() // 60),
             _tw_e.NOMBRE_FACCION.get(_tw_e.faccion_duena(p.stage), 'Nobody')), tipo=0))
