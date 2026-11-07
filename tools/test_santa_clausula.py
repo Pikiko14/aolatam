@@ -31,7 +31,7 @@ def _santa():
 
 def test_stats_y_jefe():
     m = _santa()
-    assert (m.hp_max, m.atk, m.matk) == (500000, 950, 1100)
+    assert (m.hp_max, m.atk, m.matk) == (500000, round(950 * cb.MULT_ATAQUE_MONSTRUOS), round(1100 * cb.MULT_ATAQUE_MONSTRUOS))
     assert cb.es_jefe(sc.NPC_TYPE)
 
 

@@ -146,6 +146,8 @@ def rango_de_creditos(creditos: int) -> int:
 
 COSTE_GOLPE = 4
 SEGUNDOS_REAPARICION = 20
+# Ataque y ataque magico de TODOS los monstruos sobre su ficha: "sube el ataque de todos los mob un 50%" (06/11/2026).
+MULT_ATAQUE_MONSTRUOS = 1.5
 # Los jefes (columna 王) tardan mas: "los jefes salen muy rapido, que salgan cada 20 min" (06/11/2026).
 SEGUNDOS_REAPARICION_JEFE = 20 * 60
 _MON = None
@@ -588,11 +590,11 @@ class Monstruo:
         }
         self.hp_max = d['hp']
         self.hp = d['hp']
-        self.atk = d['atk']
-        self.var = d['var']
+        self.atk = int(round(d['atk'] * MULT_ATAQUE_MONSTRUOS))
+        self.var = int(round(d['var'] * MULT_ATAQUE_MONSTRUOS))
         self.defensa = d['def']
         self.mdef = d.get('mdef', 0)
-        self.matk = d.get('matk', 0)
+        self.matk = int(round(d.get('matk', 0) * MULT_ATAQUE_MONSTRUOS))
         self.atk_range = d.get('atk_range', 1)
         self.proj_ef = d.get('proj_ef', 0)
         self.move_speed = d.get('move_speed', 50)
