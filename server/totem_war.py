@@ -711,6 +711,23 @@ def reiniciar_nivel(stage):
             con.close()
 
 
+def bajar_nivel(stage):
+    """El totem que cae con nivel 2 o mas baja UNO y sigue en pie con la vida de ese nivel; solo el de nivel 1 se pierde
+    ("si el totem es lvl 8 y lo mato me da la tierra, no deberia: debe bajar a lvl 7... y asi hasta 1", 07/11/2026).
+    Devuelve el nivel nuevo."""
+    nivel = max(1, nivel_totem(stage)[0] - 1)
+    with cuentas._LOCK:
+        _tabla_nivel()
+        con = cuentas._get_conn()
+        try:
+            con.execute('INSERT OR REPLACE INTO tw_totem_nivel (tw_stage, nivel, puntos) VALUES (?,?,0)',
+                        (_tw(stage), nivel))
+            con.commit()
+        finally:
+            con.close()
+    return nivel
+
+
 def sumar_puntos_totem(stage, puntos):
     """Suma ofrendas y sube de nivel cuando toca. Devuelve (nivel, puntos)."""
     nivel, actual = nivel_totem(stage)

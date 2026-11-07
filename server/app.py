@@ -8217,6 +8217,21 @@ def _tw_totem_roto(ses, m, addr):
     import totem_war as _tw_k
     if not _tw_k.activa():
         return
+    # Con nivel 2 o mas no se pierde: baja uno y vuelve a levantarse con la vida de ese nivel. Solo el de nivel 1 da
+    # el territorio (07/11/2026).
+    if int(m.stage) in _tw_k.TOTEM_CAMPO and _tw_k.nivel_totem(m.stage)[0] > 1:
+        _nv_b = _tw_k.bajar_nivel(m.stage)
+        _tw_relevantar(int(m.stage))
+        _tw_efecto_nivel(int(m.stage))
+        try:
+            import clases as _cl_b
+            _txt_b = 'The totem of %s falls to level %d!' % (_cl_b.nombre_de_mapa(int(m.stage)), _nv_b)
+            for _s_b in list(getattr(_SALAS_DEL_MUNDO.get(int(m.stage)), 'sesiones', []) or []):
+                _s_b.enviar(_cl_b.aviso(_txt_b, tipo=0))
+        except Exception:
+            log.exception('aviso de nivel bajado del totem')
+        log.info('[%s] %s tira el totem de %s a nivel %d', addr, ses.personaje.nombre, m.stage, _nv_b)
+        return
     texto = _tw_k.capturado(ses, m)
     if not texto:
         _tw_relevantar(int(m.stage))

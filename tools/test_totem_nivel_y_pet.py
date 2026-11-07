@@ -56,3 +56,29 @@ def test_efecto_level_up_al_subir(monkeypatch):
 def test_sentado_a_los_demas_es_el_8_no_el_7():
     import presencia
     assert presencia.ACCION_SENTADO_AJENO == 8        # en el 0x000A el 7 es la muerte
+
+
+def test_matar_un_totem_de_nivel_alto_lo_baja_uno_sin_dar_el_territorio(monkeypatch):
+    st = _campo()
+    niveles = {'n': 3}
+    monkeypatch.setattr(tw, 'activa', lambda: True)
+    monkeypatch.setattr(tw, 'nivel_totem', lambda s: (niveles['n'], 0))
+
+    def bajar(s):
+        niveles['n'] -= 1
+        return niveles['n']
+    monkeypatch.setattr(tw, 'bajar_nivel', bajar)
+    capturas, relevantados = [], []
+    monkeypatch.setattr(tw, 'capturado', lambda ses, m: capturas.append(1) or 'x')
+    monkeypatch.setattr(app, '_tw_relevantar', lambda s: relevantados.append(s))
+    monkeypatch.setattr(app, '_tw_efecto_nivel', lambda s: None)
+    ses = NS(personaje=NS(nombre='Zetha'))
+    m = NS(stage=st)
+    app._tw_totem_roto(ses, m, 'test')
+    assert niveles['n'] == 2 and relevantados == [st] and not capturas
+    niveles['n'] = 1
+    monkeypatch.setattr(app, '_logros_contar', lambda *a, **k: None)
+    monkeypatch.setattr(app, '_tw_difundir', lambda *a: None)
+    monkeypatch.setattr(app, '_tw_echar_del_campo', lambda s: None)
+    app._tw_totem_roto(ses, m, 'test')
+    assert capturas == [1]                                   # en nivel 1 si se pierde
