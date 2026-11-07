@@ -8418,21 +8418,16 @@ def _avisar_muerte_a_los_demas(ses, asesino_eid):
         log.debug('aviso de muerte a los demas', exc_info=True)
 
 
-def _usar_pergamino_revivir(ses, addr, ranura, pct):
-    """Revive alli mismo con el pct% de vida y mana y gasta el pergamino."""
+def _revivir_alli(ses, pct, antes=()):
+    """Levanta al muerto (o alma) `ses` donde esta, con el pct% de vida y mana. `antes`: paquetes que van primero."""
     import combate as _cb_rv
-    import clases as _cl_rv
     p = ses.personaje
-    if not p or not getattr(ses, 'muerto', False):
-        ses.enviar(_cl_rv.aviso('You can only use this item when your character is dead.', tipo=0))
-        return
     p.hp = max(1, _vida_max(p) * pct // 100)
     p.mp = max(0, _mana_max(p) * pct // 100)
     ses.muerto = False
     ses.fantasma = False
     ses._revivido = True                 # presencia.entrar: que los demas lo vean levantarse
-    _sacar(ses, ranura, 1)
-    ses.enviar(*_refrescar(ses, [ranura]),
+    ses.enviar(*antes,
                __import__('supremo').paquete_estado(p),
                _cb_rv.atributo(p.entity_id, p.hp, _cb_rv.KIND_HP),
                _cb_rv.atributo(p.entity_id, p.mp, _cb_rv.KIND_MP),
@@ -8441,12 +8436,102 @@ def _usar_pergamino_revivir(ses, addr, ranura, pct):
         import presencia as _pr_rv
         _pr_rv.entrar(ses, p.stage)      # que los demas lo vean de pie otra vez
     except Exception:
-        log.debug('pergamino de revivir: presencia', exc_info=True)
-    _guardar_bolsa(ses, p.char_id)
+        log.debug('revivir: presencia', exc_info=True)
     if getattr(ses, 'usuario', None):
         cuentas.guardar_progreso(ses.usuario, p.char_id, p.nivel, p.exp, p.hp, p.mp,
                                  sp=getattr(ses, 'sp', None))
+
+
+def _usar_pergamino_revivir(ses, addr, ranura, pct):
+    """Revive alli mismo con el pct% de vida y mana y gasta el pergamino."""
+    import clases as _cl_rv
+    p = ses.personaje
+    if not p or not getattr(ses, 'muerto', False):
+        ses.enviar(_cl_rv.aviso('You can only use this item when your character is dead.', tipo=0))
+        return
+    _sacar(ses, ranura, 1)
+    _revivir_alli(ses, pct, antes=_refrescar(ses, [ranura]))
+    _guardar_bolsa(ses, p.char_id)
     log.info('[%s] %s revive con un pergamino (%d%%)', addr, p.nombre, pct)
+
+
+ALMA_TOTEM_CASILLAS = 3
+
+
+def _alma_junto_al_totem(ses, addr):
+    """En la Totem War el alma que llega junto al totem de SU faccion revive alli ("no me deja seleccionar el totem
+    para revivir", 07/11/2026). El cliente no deja clicar un monstruo siendo alma (no llega ningun 0x0005), asi que
+    vale con acercarse a ALMA_TOTEM_CASILLAS casillas."""
+    p = ses.personaje
+    try:
+        import totem_war as _tw_al
+        mia = _tw_al.codigo_faccion(p)
+        if not mia or _tw_al.faccion_duena(p.stage) != mia:
+            return
+    except Exception:
+        log.debug('alma junto al totem', exc_info=True)
+        return
+    for m in list((getattr(ses, 'monstruos', None) or {}).values()):
+        if (getattr(m, 'es_totem_tw', False) and getattr(m, 'vivo', True)
+                and max(abs(int(m.tile_x) - p.tile_x), abs(int(m.tile_y) - p.tile_y)) <= ALMA_TOTEM_CASILLAS):
+            _revivir_alli(ses, 100)
+            log.info('[%s] %s revive como alma junto al totem de su faccion', addr, p.nombre)
+            return
+
+
+def _revivir_con_hechizo(ses, addr, tipo, mag, objetivo):
+    """REVIVAL I..V (對象 屍體): levanta al jugador muerto `objetivo` (su id publico) con el 動態參數1 % de vida.
+
+    Antes caia en el camino de los buffs: el efecto le salia al que lo lanzaba y el muerto seguia muerto ("la persona
+    me esta intentando revivir con el spell revivir y el efecto le sale a el no a mi", 07/11/2026)."""
+    import asyncio
+    import combate as _cb_rh
+    import clases as _cl_rh
+    import presencia as _pr_rh
+    p = ses.personaje
+    otro = _pr_rh.sesion_por_entidad(ses, objetivo)
+    q = getattr(otro, 'personaje', None) if otro is not None else None
+    if q is None or otro is ses or not getattr(otro, 'muerto', False):
+        ses.enviar(_cl_rh.aviso('You can only use this skill on a dead player.', tipo=7))
+        return
+    if q.stage != p.stage or max(abs(q.tile_x - p.tile_x), abs(q.tile_y - p.tile_y)) > int(mag.get('rango') or 12):
+        ses.enviar(_cl_rh.aviso('Target is too far away.', tipo=7))
+        return
+    coste = int(mag.get('mp') or 0)
+    if p.mp < coste:
+        return
+    p.mp -= coste
+    d = _cb_rh._magic_xml().get(int(tipo)) or {}
+    pct = max(1, min(100, int(float(d.get('動態參數1') or 50))))
+    ef = int(mag.get('efecto') or 0)
+    cast = int(mag.get('cast_time') or 0)
+    yo = p.entity_id
+    pub_yo = _pr_rh.entidad_de(ses)
+    pub_q = _pr_rh.entidad_de(otro)
+    # Al que lo lanza: el gesto es suyo y el efecto cae sobre el muerto.
+    (getattr(ses, 'enviar_sin_espejo', None) or ses.enviar)(
+        _cb_rh.atributo(yo, p.mp, _cb_rh.KIND_MP),
+        _cb_rh.efecto_magia_self_inicio(yo, ef, tipo, cast_time=cast, objetivo=pub_q, es_magia=True),
+        _cb_rh.efecto_magia_self_fin(yo, ef, tipo, objetivo=pub_q, es_magia=True))
+    # Al muerto, con su propio id; a los demas, con los publicos.
+    _pr_rh._mandar(otro, _cb_rh.efecto_magia_self_inicio(pub_yo, ef, tipo, cast_time=cast, objetivo=q.entity_id,
+                                                          es_magia=True),
+                   _cb_rh.efecto_magia_self_fin(pub_yo, ef, tipo, objetivo=q.entity_id, es_magia=True))
+    for s in _pr_rh._vivas(_pr_rh.clave_de_mapa(ses, p.stage)):
+        if s is not ses and s is not otro:
+            _pr_rh._mandar(s, _cb_rh.efecto_magia_self_inicio(pub_yo, ef, tipo, cast_time=cast, objetivo=pub_q,
+                                                              es_magia=True),
+                           _cb_rh.efecto_magia_self_fin(pub_yo, ef, tipo, objetivo=pub_q, es_magia=True))
+    log.info('[%s] %s lanza %s sobre %s (%d%%)', addr, p.nombre, mag.get('nombre'), q.nombre, pct)
+
+    def _levantar():
+        if getattr(otro, 'personaje', None) is q and getattr(otro, 'muerto', False):
+            _revivir_alli(otro, pct)
+            log.info('%s revive por %s de %s', q.nombre, mag.get('nombre'), p.nombre)
+    try:
+        asyncio.get_event_loop().call_later(min(cast, 3000) / 1000.0, _levantar)
+    except RuntimeError:
+        _levantar()
 
 
 # ---------------------------------------------------------------- LOGROS
@@ -14416,6 +14501,9 @@ class Servidor:
                          f"tile ({tx},{ty}) cuerpo {cuerpo.hex(' ')}")
 
             mag = _cb.datos_magia(tipo) if tipo != _cb.ATAQUE_NORMAL else {}
+            if mag.get('target') == '屍體' and ses.personaje:
+                _revivir_con_hechizo(ses, addr, tipo, mag, objetivo)
+                return
             # ANDANDO NO SE DA EL GOLPE BASICO: el cliente lo sigue pidiendo mientras el jugador corre, y el
             # servidor lo aceptaba midiendo el alcance desde el destino (tile_x/tile_y), no desde donde va.
             # Le queda mas de una casilla del tramo: se suelta el objetivo y no sale el golpe.
@@ -22614,6 +22702,11 @@ class Servidor:
                     log.debug('alma a los demas', exc_info=True)
                 log.info(f"[{addr}] {ses.personaje.nombre} sigue como alma")
                 return
+            if accion == 2 and parametro in (1, 2):
+                # dead.lua OnOKReborn / OnCancelReborn (netcommand(2, 1|2)): la respuesta al "te quieren revivir".
+                # El Revival ya levanta directamente (_revivir_con_hechizo): no es "volver a la ciudad".
+                log.info(f"[{addr}] respuesta a revivir: {parametro}")
+                return
             if accion == 2 and ses.personaje and getattr(ses, 'muerto', False):
                 # "Return to Angel Lyceum to revive". La ventana la abre el
                 # cliente al morir y contesta con este 0x0016 [02 00 00 00 00];
@@ -22974,6 +23067,8 @@ class Servidor:
                         continue
                     _vistos.add(_evc)
                     _eventos_al_pisar(ses, addr, _cas)
+                if getattr(ses, 'fantasma', False) and getattr(ses, 'muerto', False):
+                    _alma_junto_al_totem(ses, addr)
                 # CHOCAR al llegar (ver _choques_al_llegar). Se espera lo que
                 # tarda en andar el tramo: el servidor le pone la casilla de
                 # destino al recibir el 0x0004 y, si se mirara ya, el menu del

@@ -2,7 +2,10 @@
 import asyncio
 import random
 import struct
+import logging
 import time
+
+log = logging.getLogger(__name__)
 
 
 def objetivo(ses,inv,target=None):
@@ -170,21 +173,28 @@ def iniciar_burbuja(ses, bid, entrada):
     import combate
     import presencia
 
+    fin = entrada.get('fin', 0)
+    log.info('Power Shield: burbuja de %s hasta %.0f s', getattr(ses.personaje, 'nombre', '?'), fin - time.time())
+
     def _tic():
         p = getattr(ses, 'personaje', None)
-        if (p is None or getattr(ses, 'muerto', False) or (p.buffs or {}).get(bid) is not entrada
-                or entrada.get('fin', 0) <= time.time()):
+        # Por el fin y no por identidad: al cambiar de mapa o guardar, el dict del buff puede ser otro.
+        actual = (getattr(p, 'buffs', None) or {}).get(bid) if p is not None else None
+        if (actual is None or getattr(ses, 'muerto', False) or time.time() >= fin
+                or abs(float((actual or {}).get('fin', 0)) - fin) > 1):
             return
         try:
-            ses.enviar(combate.efecto_magia_self_fin(p.entity_id, EFECTO_BURBUJA, bid, es_magia=True))
+            # Solo la fase 0x80 con anim=2, como los procs (app._ejecutar_proc_subhechizo), que si se ven sin la fase 0x00.
+            (getattr(ses, 'enviar_sin_espejo', None) or ses.enviar)(
+                combate.efecto_magia_self_fin(p.entity_id, EFECTO_BURBUJA, bid))
             pub = presencia.entidad_de(ses)
             stage = presencia.clave_de_mapa(ses, p.stage)
-            pk = combate.efecto_magia_self_fin(pub, EFECTO_BURBUJA, bid, es_magia=True)
+            pk = combate.efecto_magia_self_fin(pub, EFECTO_BURBUJA, bid)
             for s in presencia._vivas(stage):
                 if s is not ses:
                     presencia._mandar(s, pk)
         except Exception:
-            pass
+            log.exception('burbuja del Power Shield')
         try:
             asyncio.get_event_loop().call_later(BURBUJA_CADA, _tic)
         except RuntimeError:
