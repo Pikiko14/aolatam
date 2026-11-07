@@ -212,8 +212,15 @@ def foto(sid):
     return res
 
 
-def stage_de_mapa(nombre):
-    m = re.fullmatch(r'(?i)map0*(\d+)', nombre or '')
+def stage_de_mapa(nombre, stage=None):
+    """El stage del servidor de ese mapa: el que se pase a mano, o el numero de su nombre (map900, mapa900, MAP_900,
+    stage900, 900). Antes solo valia "mapNNN" exacto y un proyecto guardado como "mapa900" no dejaba poner bichos."""
+    try:
+        if stage not in (None, '', 0, '0') and int(stage) > 0:
+            return int(stage)
+    except (TypeError, ValueError):
+        pass
+    m = re.fullmatch(r'(?i)(?:_auto_)?(?:map|mapa|stage)?[ _-]?0*(\d+)(?:[ _-].*)?', (nombre or '').strip())
     return int(m.group(1)) if m else None
 
 
@@ -230,8 +237,8 @@ def archivo_plantilla(stage):
     return os.path.join(E.PLANTILLAS, nom + '.json'), False
 
 
-def spawns(mapa):
-    stage = stage_de_mapa(mapa)
+def spawns(mapa, stage=None):
+    stage = stage_de_mapa(mapa, stage)
     if stage is None:
         return dict(stage=None, archivo=None, existe=False, spawns=[])
     f, existe = archivo_plantilla(stage)
@@ -254,15 +261,15 @@ def poner_tipo(e, tipo):
             e.pop(k, None)
 
 
-def exportar(mapa, nuevos):
+def exportar(mapa, nuevos, stage=None):
     """Escribe los spawns editados en la plantilla del servidor.
 
     Las entidades que ya estaban conservan todos sus campos; solo cambian tile y direccion.
     Las nuevas reciben un entity_id libre (900001 en adelante). Las que faltan se borran.
     Copia .bak antes de escribir."""
-    stage = stage_de_mapa(mapa)
+    stage = stage_de_mapa(mapa, stage)
     if stage is None:
-        raise ValueError('el mapa debe llamarse mapNNN para saber a que stage del servidor pertenece')
+        raise ValueError('no se sabe a que mapa del servidor pertenece: ponle un numero al nombre (map900) o escribe el stage en la pestana NPC/Monstruos AO')
     f, existe = archivo_plantilla(stage)
     if existe:
         j = json.load(open(f, encoding='utf-8'))

@@ -281,14 +281,14 @@ const aoTile = (cx, cy) => [cx, M.h - 1 - cy];
 async function cargarSpawnsAO() {
   const nombre = M.nombre, mapa = M;
   try {
-    const r = await api('/api/ao/spawns?mapa=' + encodeURIComponent(nombre));
+    const r = await api('/api/ao/spawns?mapa=' + encodeURIComponent(nombre) + (mapa.aoStageManual ? '&stage=' + mapa.aoStageManual : ''));
     if (M !== mapa) return;
     M.aoStage = r.stage; M.aoArchivo = r.archivo; M.aoExiste = r.existe;
     M.ao = (r.spawns || []).map(e => ({ entity_id: e.entity_id, nombre: e.nombre || '?', npc_type: e.npc_type, sprite: e.sprite, monstruo: !!e.monstruo, nivel: e.nivel || 0, dir: e.direccion || 0, cx: e.tile[0], cy: M.h - 1 - e.tile[1],
       tipo: e.jefe ? 'jefe' : e.elite ? 'elite' : 'normal', hp_mult: e.hp_mult, atk_mult: e.atk_mult, propio: e.propio || null, sello: e.sello || null }));
     M.aoOk = r.stage != null; M.aoDirty = false;
     if (M.aoOk) msg('Servidor: stage ' + r.stage + ' (' + r.archivo + (r.existe ? '' : ', archivo nuevo') + '), ' + M.ao.length + ' NPC y monstruos.');
-    else msg('El mapa no se llama mapNNN: no se sabe a que stage del servidor pertenece, no se podran exportar NPC y monstruos.', 'av');
+    else msg('No se sabe a que mapa del servidor pertenece este: escribe su numero (stage) en la pestana NPC/Monstruos AO (tecla N).', 'av');
     panelRefreshLight(); redraw();
   } catch (e) { msg('No se pudieron leer los spawns del servidor: ' + e.message, 'mal'); }
 }
@@ -323,14 +323,22 @@ function dibujarPrevAO() {
 }
 function aoCerca(wx, wy) { let b = null, bd = 1e9; for (const a of M.ao || []) { const d = Math.hypot((a.cx + .5) * CELL - wx, (a.cy + .5) * CELL - wy); if (d < Math.max(14 / cam.z, CELL * .8) && d < bd) { bd = d; b = a; } } return b; }
 function casillaLibre(cx, cy) { return cx >= 0 && cy >= 0 && cx < M.w && cy < M.h && M.cel[(cy * M.w + cx) * 6 + 1] === 0; }
+function casillaLibreCerca(cx, cy, radio) {
+  for (let r = 1; r <= radio; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++)
+    if (Math.max(Math.abs(dx), Math.abs(dy)) === r && casillaLibre(cx + dx, cy + dy)) return { cx: cx + dx, cy: cy + dy };
+  return null;
+}
 function iniciarAO(e) {
   const a = aoCerca(cur.x, cur.y);
   if (a) { S.ao.sel = a; drag = { ao: a, ant: { cx: a.cx, cy: a.cy } }; setTab('ao'); return; }
   S.ao.sel = null;
   if (!S.ao.tpl) { msg('Elige primero un NPC o monstruo en la pestana "NPC/Monstruos AO".', 'av'); setTab('ao'); return; }
-  if (!M.aoOk) { msg('Este mapa no tiene stage del servidor (debe llamarse mapNNN).', 'mal'); return; }
-  if (!casillaLibre(cur.cx, cur.cy)) { msg('Esa casilla esta bloqueada o fuera del mapa.', 'mal'); return; }
-  const t = S.ao.tpl, n = { entity_id: null, nombre: t.nombre, npc_type: t.id, sprite: t.sprite, monstruo: t.monstruo, nivel: t.nivel, dir: S.ao.dir, cx: cur.cx, cy: cur.cy, tipo: 'normal', propio: t.propio || null };
+  if (!M.aoOk) { msg('Falta el numero del mapa del servidor: escribelo arriba en esta pestana (stage) y vuelve a hacer clic.', 'mal'); setTab('ao'); return; }
+  // Casilla bloqueada: se pone en la libre mas cercana (hasta 4 casillas) en vez de no hacer nada.
+  const c = casillaLibre(cur.cx, cur.cy) ? { cx: cur.cx, cy: cur.cy } : casillaLibreCerca(cur.cx, cur.cy, 4);
+  if (!c) { msg('Esa casilla y las de alrededor estan bloqueadas (obstaculo, agua o fuera del mapa). Prueba en suelo libre o mira la capa Colision (T).', 'mal'); return; }
+  if (c.cx !== cur.cx || c.cy !== cur.cy) msg('La casilla estaba bloqueada: se puso en la libre mas cercana (' + c.cx + ', ' + c.cy + ').', 'av');
+  const t = S.ao.tpl, n = { entity_id: null, nombre: t.nombre, npc_type: t.id, sprite: t.sprite, monstruo: t.monstruo, nivel: t.nivel, dir: S.ao.dir, cx: c.cx, cy: c.cy, tipo: 'normal', propio: t.propio || null };
   M.ao.push(n); S.ao.sel = n; M.aoDirty = true;
   push({ undo() { const i = M.ao.indexOf(n); if (i >= 0) M.ao.splice(i, 1); if (S.ao.sel === n) S.ao.sel = null; }, redo() { M.ao.push(n); } }); panelRefresh();
 }
@@ -341,7 +349,7 @@ function borrarAO(a) {
 async function exportarAO(forzar) {
   if (!M || !M.aoOk || (!M.aoDirty && !forzar)) return null;
   const spawns = M.ao.map(a => ({ entity_id: a.entity_id, nombre: a.nombre, npc_type: a.npc_type, sprite: a.sprite, monstruo: a.monstruo, nivel: a.nivel, direccion: a.dir, tile: aoTile(a.cx, a.cy), tipo: a.tipo || 'normal', propio: a.propio || undefined }));
-  const r = await api('/api/ao/exportar', { method: 'POST', body: JSON.stringify({ mapa: M.nombre, spawns }) });
+  const r = await api('/api/ao/exportar', { method: 'POST', body: JSON.stringify({ mapa: M.nombre, spawns, stage: M.aoStageManual || undefined }) });
   await cargarSpawnsAO(); M.aoDirty = false; return r;
 }
 function resumenAO(r) {
@@ -352,7 +360,17 @@ function resumenAO(r) {
 function tabAO() {
   const p = $('#panel'); p.innerHTML = '';
   p.append(el('div', { className: 'mu' }, 'N: elige un NPC o monstruo del catalogo (sale del cliente: monster.xml y npc.xml) y haz clic en el mapa para colocarlo. Clic sobre uno = seleccionarlo y arrastrarlo; Supr lo borra. "Exportar .mpc" tambien escribe estos cambios en el servidor.'));
-  if (M && !M.aoOk) p.append(el('div', { className: 'mal' }, 'Este mapa no se llama mapNNN: no se puede exportar al servidor.'));
+  if (M) {
+    // El numero del mapa del servidor (stage): sale del nombre (map900, mapa900...) o se escribe aqui.
+    const st = el('input', { type: 'number', value: M.aoStageManual || M.aoStage || '' }); st.style.width = '80px';
+    st.placeholder = 'p. ej. 900';
+    const ok = el('button', { className: 'btn sm' }, 'Usar');
+    ok.onclick = () => { M.aoStageManual = +st.value > 0 ? +st.value : null; cargarSpawnsAO(); };
+    const fila = el('div', { className: 'row' }); fila.append(el('span', { className: 'mu' }, 'Mapa del servidor (stage)'), st, ok);
+    p.append(fila);
+    if (!M.aoOk) p.append(el('div', { className: 'mal' }, 'No se sabe a que mapa del servidor pertenece este: escribe su numero arriba y pulsa Usar. Sin eso no se pueden poner ni exportar NPC y monstruos.'));
+    else p.append(el('div', { className: 'mu' }, 'Servidor: ' + (M.aoArchivo || '') + (M.aoExiste ? '' : ' (archivo nuevo)') + (M.aoStageManual ? ' · stage escrito a mano' : '')));
+  }
   const b = el('button', { className: 'btn sm' }, 'Exportar al servidor ahora' + (M && M.aoDirty ? ' ●' : '')); b.onclick = async () => { try { const r = await exportarAO(true); if (r) { msg('Spawns exportados a ' + r.archivo, 'ok'); modal('<h3 style="margin:0 0 8px">Exportado al servidor</h3><div>' + resumenAO(r) + '</div><div class="row"><button class="btn" id="mx3">Cerrar</button></div>'); $('#mx3').onclick = cerrarModal; panelRefresh(); } } catch (e) { msg('No se pudo exportar: ' + e.message, 'mal'); } };
   const rw = el('div', { className: 'row' }); rw.append(b); p.append(rw);
   const sel = S.ao.sel;
@@ -583,6 +601,8 @@ cv.addEventListener('wheel', e => { e.preventDefault(); const r = cv.getBounding
 function actualizarCursor(e) { const w = aMundo(e); cur.x = w.x; cur.y = w.y; cur.cx = Math.floor(w.x / CELL); cur.cy = Math.floor(w.y / CELL); cur.sobre = true; }
 cv.addEventListener('pointerdown', e => {
   if (!M) return; cv.setPointerCapture(e.pointerId); actualizarCursor(e);
+  // Reglas del servidor: "📍 elegir en el mapa" espera este clic (casilla en coordenadas del servidor).
+  if (typeof EVR !== 'undefined' && EVR.elegir && e.button === 0) { const f = EVR.elegir; EVR.elegir = null; f(aoTile(cur.cx, cur.cy)); return; }
   if (e.button === 1 || e.button === 2 || espacio || S.tool === 'mano') { drag = { pan: true, sx: e.clientX, sy: e.clientY, cx: cam.x, cy: cam.y }; cv.style.cursor = 'grabbing'; return; }
   if (e.altKey) { cuentagotas(); return; }
   const t = S.tool;
@@ -704,7 +724,7 @@ addEventListener('keydown', e => {
   if (e.ctrlKey && k === 'v') { if (!M || !portapapeles.length) return; const nuevos = portapapeles.map(o => ({ ...o, x: o.x + 32, y: o.y + 32 })); portapapeles = nuevos.map(o => ({ ...o })); addObjs(nuevos); S.sel = new Set(nuevos); panelRefreshLight(); return; }
   if (e.ctrlKey && k === 'a') { e.preventDefault(); S.sel = new Set(M.objs); panelRefreshLight(); redraw(); return; }
   if (k === 'delete' || k === 'backspace') { if (S.tool === 'ao' && S.ao.sel) { borrarAO(S.ao.sel); return; } if (S.campSel) { borrarCamp(S.campSel); return; } if (S.sel.size) delObjs([...S.sel]); return; }
-  if (k === 'enter') { terminarForma(); return; } if (k === 'escape') { drag = null; S.sel.clear(); panelRefreshLight(); redraw(); return; }
+  if (k === 'enter') { terminarForma(); return; } if (k === 'escape') { if (typeof EVR !== 'undefined') EVR.elegir = null; drag = null; S.sel.clear(); panelRefreshLight(); redraw(); return; }
   if (S.sel.size && k.startsWith('arrow')) { const s = e.ctrlKey ? 32 : e.shiftKey ? 8 : 1, d = { arrowleft: [-s, 0], arrowright: [s, 0], arrowup: [0, -s], arrowdown: [0, s] }[k]; moverObjs([...S.sel], d[0], d[1]); e.preventDefault(); panelRefreshLight(); return; }
   const map = { h: 'mano', b: 'pincel', t: 'attr', r: 'rect', g: 'cubo', i: 'cuentagotas', o: 'objeto', v: 'sel', z: 'zona', x: 'ruta', c: 'camp', n: 'ao', e: 'borrar' };
   if (map[k] && !e.ctrlKey) { setTool(map[k]); return; }

@@ -384,7 +384,7 @@ class H(BaseHTTPRequestHandler):
                 r = ao_servidor.foto(int(g('id', '0') or 0))
                 return self.out(200, r, 'image/png') if r else self.out(404, b'')
             if u.path == '/api/ao/spawns':
-                return self.out(200, ao_servidor.spawns(g('mapa')))
+                return self.out(200, ao_servidor.spawns(g('mapa'), g('stage')))
             if u.path == '/api/ao/items':
                 return self.out(200, ao_servidor.buscar_items(g('q')))
             if u.path == '/api/ao/nombres_items':
@@ -445,7 +445,7 @@ class H(BaseHTTPRequestHandler):
                 return self.out(200, dict(ok=True, ruta=ruta, bytes=len(data), w=chk['w'], h=chk['h'], objetos=len(chk['objetos']), archivo=nombre + '.mpc',
                                           campamentos=len(j.get('campamentos') or []), campamentos_lua=rc, pack=pk))
             if u.path == '/api/ao/exportar':
-                return self.out(200, ao_servidor.exportar(j.get('mapa'), j.get('spawns') or []))
+                return self.out(200, ao_servidor.exportar(j.get('mapa'), j.get('spawns') or [], j.get('stage')))
             if u.path == '/api/ao/reglas':
                 return self.out(200, ao_servidor.guardar_reglas(j.get('reglas') or []))
             if u.path == '/api/guardar_proyecto':

@@ -261,30 +261,80 @@ function evTarjeta(p, mod, ev, antes) {
 }
 
 // ---------------------------------------------------------------------------------------------------- reglas del servidor
-// "Al matar X monstruos -> premio / soltar algo / aparece un portal". Viven en server/plantillas/eventos_propios.json
-// (server/eventos_propios.py): no van en el .mpc y no necesitan parche del cliente.
-const EVR = { datos: null, abiertas: new Set(), sucio: false, errores: null };
-const EVR_PREMIOS = { dar: 'Dar un objeto', soltar: 'Soltar uno al azar (con probabilidad)', oro: 'Dar oro', ag: 'Dar Angel Gold', portal: 'Aparece un portal (TP)' };
-const evrStageActual = () => +((typeof M !== 'undefined' && M && (M.nombre || '').match(/(\d+)/)) || [])[1] || 0;
-const evrPremioNuevo = t => ({ dar: { tipo: 'dar', item: 0, cantidad: 1 }, soltar: { tipo: 'soltar', items: [[0, 1]], prob: 50 }, oro: { tipo: 'oro', cantidad: 1000 },
-  ag: { tipo: 'ag', cantidad: 50 }, portal: { tipo: 'portal', destino: 0, llegada: [0, 0], donde: 'monstruo', segundos: 120 } })[t];
-function evrReglaNueva() {
-  const ids = new Set((EVR.datos.reglas || []).map(r => r.id)); let n = 1; while (ids.has('regla' + n)) n++;
-  return { id: 'regla' + n, nombre: 'Matar monstruos', activa: true, stage: evrStageActual(),
-    matar: { mobs: [], cantidad: 30, alcance: 'jugador', repetir: true }, aviso: '', premios: [evrPremioNuevo('dar')] };
+// Reglas del servidor: "cuando pase X (matar, entrar al mapa, a una hora), si se cumple Y, haz Z". Viven en
+// server/plantillas/eventos_propios.json (server/eventos_propios.py): no van en el .mpc y no necesitan parche del cliente.
+const EVR = { datos: null, abiertas: new Set(), sucio: false, errores: null, elegir: null };
+const EVR_CUANDO = { matar: '⚔ Al matar monstruos', entrar: '🚪 Al entrar al mapa', horario: '⏰ A una hora / cada N minutos' };
+const EVR_PREMIOS = {
+  dar: '🎁 Dar un objeto', soltar: '🎲 Soltar uno al azar (con probabilidad)', oro: '💰 Dar oro', ag: '💎 Dar Angel Gold',
+  exp: '⭐ Dar experiencia', portal: '🌀 Abrir un portal temporal', monstruo: '👹 Hacer aparecer monstruos',
+  llevar: '➡ Llevar al jugador a otro sitio', aviso_global: '📢 Aviso para todo el servidor'
+};
+const evrStageActual = () => +((typeof M !== 'undefined' && M && (M.aoStageManual || M.aoStage)) || +(((M && M.nombre) || '').match(/(\d+)/) || [])[1] || 0);
+const evrPremioNuevo = t => ({
+  dar: { tipo: 'dar', item: 0, cantidad: 1 }, soltar: { tipo: 'soltar', items: [[0, 1]], prob: 50 }, oro: { tipo: 'oro', cantidad: 1000 },
+  ag: { tipo: 'ag', cantidad: 50 }, exp: { tipo: 'exp', cantidad: 5000 },
+  portal: { tipo: 'portal', destino: 0, llegada: [0, 0], donde: 'monstruo', segundos: 120 },
+  monstruo: { tipo: 'monstruo', npc_type: 0, cantidad: 1, donde: 'monstruo', segundos: 0 },
+  llevar: { tipo: 'llevar', destino: 0, llegada: [0, 0] }, aviso_global: { tipo: 'aviso_global', texto: '' }
+})[t];
+function evrIdLibre(base) { const ids = new Set((EVR.datos.reglas || []).map(r => r.id)); let n = 1; while (ids.has(base + n)) n++; return base + n; }
+
+// Escenarios listos: eligen disparador, condiciones y premios; solo queda elegir monstruos, objetos o casillas.
+const EVR_ESCENARIOS = [
+  ['Cazar N monstruos → premio', st => ({ nombre: 'Cazador', cuando: 'matar', stage: st, matar: { mobs: [], cantidad: 30, alcance: 'jugador', repetir: true }, aviso: 'Hunt complete!', premios: [evrPremioNuevo('dar'), evrPremioNuevo('exp')] })],
+  ['Matar N entre todos → aparece un jefe', st => ({ nombre: 'Aparece el jefe', cuando: 'matar', stage: st, matar: { mobs: [], cantidad: 50, alcance: 'mapa', repetir: true }, aviso: '', premios: [evrPremioNuevo('monstruo'), { tipo: 'aviso_global', texto: 'A boss has appeared!' }] })],
+  ['Matar al jefe → portal de salida', st => ({ nombre: 'Portal del jefe', cuando: 'matar', stage: st, matar: { mobs: [], cantidad: 1, alcance: 'mapa', repetir: true }, aviso: 'A portal has opened!', premios: [{ tipo: 'portal', destino: 0, llegada: [0, 0], donde: 'monstruo', segundos: 300 }] })],
+  ['Botín raro: 1 % al matar', st => ({ nombre: 'Botín raro', cuando: 'matar', stage: st, matar: { mobs: [], cantidad: 1, alcance: 'jugador', repetir: true }, si: { prob: 1 }, aviso: 'Lucky drop!', premios: [{ tipo: 'soltar', items: [[0, 1]], prob: 100 }] })],
+  ['Caza nocturna: premio extra de 20:00 a 23:59', st => ({ nombre: 'Caza nocturna', cuando: 'matar', stage: st, matar: { mobs: [], cantidad: 20, alcance: 'jugador', repetir: true }, si: { desde: '20:00', hasta: '23:59' }, aviso: 'Night hunt bonus!', premios: [evrPremioNuevo('exp')] })],
+  ['Bienvenida: regalo la primera vez que entras', st => ({ nombre: 'Bienvenida', cuando: 'entrar', stage: st, entrar: { repetir: false }, aviso: 'Welcome!', premios: [evrPremioNuevo('dar')] })],
+  ['Mapa de nivel: saca a los de poco nivel', st => ({ nombre: 'Solo nivel alto', cuando: 'entrar', stage: st, entrar: { repetir: true }, si: { nivel_max: 39 }, aviso: 'You need level 40 to enter this map.', premios: [evrPremioNuevo('llevar')] })],
+  ['Invasión diaria a una hora', st => ({ nombre: 'Invasión', cuando: 'horario', stage: st, horario: { horas: ['20:00'] }, aviso: '', premios: [{ tipo: 'monstruo', npc_type: 0, cantidad: 10, donde: [0, 0], segundos: 1800 }, { tipo: 'aviso_global', texto: 'Monsters are invading!' }] })],
+  ['Jefe cada N minutos', st => ({ nombre: 'Jefe periódico', cuando: 'horario', stage: st, horario: { cada_min: 60 }, aviso: '', premios: [{ tipo: 'monstruo', npc_type: 0, cantidad: 1, donde: [0, 0], segundos: 0 }, { tipo: 'aviso_global', texto: 'The boss is back!' }] })],
+  ['Lluvia de oro: a todos los del mapa a una hora', st => ({ nombre: 'Lluvia de oro', cuando: 'horario', stage: st, horario: { horas: ['21:00'] }, aviso: 'Gold rain!', premios: [{ tipo: 'oro', cantidad: 5000 }] })],
+  ['Regla vacía', st => ({ nombre: 'Regla nueva', cuando: 'matar', stage: st, matar: { mobs: [], cantidad: 10, alcance: 'jugador', repetir: true }, aviso: '', premios: [evrPremioNuevo('dar')] })],
+];
+function evrDesdeEscenario(i) {
+  const r = EVR_ESCENARIOS[i][1](evrStageActual());
+  r.id = evrIdLibre(r.cuando === 'matar' ? 'caza' : r.cuando === 'entrar' ? 'entrar' : 'reloj'); r.activa = true;
+  return r;
 }
+
 function evrCampo(etq, ...hijos) { const r = el('div', { className: 'row' }); r.style.cssText = 'gap:6px;margin:3px 0;flex-wrap:wrap;align-items:center'; r.append(el('span', { className: 'mu' }, etq), ...hijos); return r; }
-function evrNum(v, alCambiar, ancho) { const i = el('input', { type: 'number', value: v }); i.style.width = ancho || '70px'; i.onchange = () => { alCambiar(+i.value || 0); evrSucio(); }; return i; }
+function evrNum(v, alCambiar, ancho) { const i = el('input', { type: 'number', value: v ?? 0 }); i.style.width = ancho || '70px'; i.onchange = () => { alCambiar(+i.value || 0); evrSucio(); }; return i; }
+function evrTxt(v, alCambiar, ancho, ph) { const i = el('input', { type: 'text', value: v || '', placeholder: ph || '' }); i.style.width = ancho || '220px'; i.onchange = () => { alCambiar(i.value); evrSucio(); }; return i; }
 function evrSucio() { EVR.sucio = true; panelRefresh(); }
+// "📍" = el siguiente clic en el mapa pone esa casilla (en coordenadas del servidor).
+function evrPick(alElegir) {
+  const b = el('button', { className: 'btn sm' }, '📍 elegir en el mapa'); b.title = 'Haz clic aquí y luego en el mapa';
+  b.onclick = () => { EVR.elegir = t => { alElegir(t); evrSucio(); msg('Casilla ' + t[0] + ', ' + t[1] + ' elegida.', 'ok'); }; msg('Haz clic en el mapa para elegir la casilla (Esc cancela).', 'av'); };
+  return b;
+}
+function evrCasilla(etq, par, alCambiar) {
+  return evrCampo(etq, el('span', { className: 'mu' }, 'x'), evrNum(par[0], v => { par[0] = v; }, '60px'), el('span', { className: 'mu' }, 'y'),
+    evrNum(par[1], v => { par[1] = v; }, '60px'), evrPick(t => { par[0] = t[0]; par[1] = t[1]; if (alCambiar) alCambiar(); }));
+}
+function evrDonde(b, r, pr, etq) {
+  const dn = el('select');
+  if ((r.cuando || 'matar') === 'matar') dn.append(new Option('donde murió el último monstruo', 'monstruo'));
+  if ((r.cuando || 'matar') !== 'horario') dn.append(new Option('junto al jugador', 'jugador'));
+  dn.append(new Option('en una casilla fija', 'casilla'));
+  const fija = Array.isArray(pr.donde); dn.value = fija ? 'casilla' : pr.donde;
+  if (!fija && ![...dn.options].some(o => o.value === pr.donde)) { pr.donde = dn.options[0].value === 'casilla' ? [0, 0] : dn.options[0].value; }
+  dn.onchange = () => { pr.donde = dn.value === 'casilla' ? [0, 0] : dn.value; evrSucio(); };
+  b.append(evrCampo(etq, dn));
+  if (Array.isArray(pr.donde)) b.append(evrCasilla('Casilla', pr.donde));
+}
 
 function evrPremio(caja, r, pr, i) {
   const b = el('div'); b.style.cssText = 'border:1px dashed var(--bd);border-radius:6px;padding:4px 6px;margin:4px 0';
   const sel = el('select'); for (const [k, v] of Object.entries(EVR_PREMIOS)) sel.append(new Option(v, k)); sel.value = pr.tipo;
   sel.onchange = () => { r.premios[i] = evrPremioNuevo(sel.value); evrSucio(); };
-  const x = el('button', { className: 'btn sm' }, '✕'); x.title = 'Quitar premio'; x.onclick = () => { r.premios.splice(i, 1); evrSucio(); };
+  const x = el('button', { className: 'btn sm' }, '✕'); x.title = 'Quitar'; x.onclick = () => { r.premios.splice(i, 1); evrSucio(); };
   b.append(evrCampo('', sel, x));
-  if (pr.tipo === 'dar') b.append(evrCampo('Objeto', evSelector('item', pr.item, v => { pr.item = +v; evrSucio(); })), evrCampo('Cantidad', evrNum(pr.cantidad, v => { pr.cantidad = Math.max(1, v); })));
-  if (pr.tipo === 'soltar') {
+  const t = pr.tipo;
+  if (t === 'dar') b.append(evrCampo('Objeto', evSelector('item', pr.item, v => { pr.item = +v; evrSucio(); })), evrCampo('Cantidad', evrNum(pr.cantidad, v => { pr.cantidad = Math.max(1, v); })));
+  if (t === 'soltar') {
     pr.items.forEach((it, j) => {
       const q = el('button', { className: 'btn sm' }, '✕'); q.onclick = () => { pr.items.splice(j, 1); evrSucio(); };
       b.append(evrCampo('Objeto ' + (j + 1), evSelector('item', it[0], v => { it[0] = +v; evrSucio(); }), el('span', { className: 'mu' }, '×'), evrNum(it[1], v => { it[1] = Math.max(1, v); }, '50px'), q));
@@ -292,90 +342,155 @@ function evrPremio(caja, r, pr, i) {
     const mas = el('button', { className: 'btn sm' }, '+ objeto posible'); mas.onclick = () => { pr.items.push([0, 1]); evrSucio(); };
     b.append(mas, evrCampo('Probabilidad %', evrNum(pr.prob, v => { pr.prob = Math.min(100, Math.max(0, v)); })));
   }
-  if (pr.tipo === 'oro' || pr.tipo === 'ag') b.append(evrCampo('Cantidad', evrNum(pr.cantidad, v => { pr.cantidad = Math.max(1, v); }, '90px')));
-  if (pr.tipo === 'portal') {
+  if (t === 'oro' || t === 'ag' || t === 'exp') b.append(evrCampo('Cantidad', evrNum(pr.cantidad, v => { pr.cantidad = Math.max(1, v); }, '100px')));
+  if (t === 'portal' || t === 'llevar') {
     b.append(evrCampo('Lleva al mapa', evSelector('mapa', pr.destino, v => { pr.destino = +v; evrSucio(); })));
-    b.append(evrCampo('Casilla de llegada x', evrNum(pr.llegada[0], v => { pr.llegada[0] = v; }, '60px'), el('span', { className: 'mu' }, 'y'), evrNum(pr.llegada[1], v => { pr.llegada[1] = v; }, '60px')));
-    const dn = el('select'); dn.append(new Option('donde murió el último monstruo', 'monstruo'), new Option('en una casilla fija', 'casilla'));
-    const fija = Array.isArray(pr.donde); dn.value = fija ? 'casilla' : 'monstruo';
-    dn.onchange = () => { pr.donde = dn.value === 'casilla' ? [0, 0] : 'monstruo'; evrSucio(); };
-    b.append(evrCampo('Aparece', dn));
-    if (fija) b.append(evrCampo('Casilla del portal x', evrNum(pr.donde[0], v => { pr.donde[0] = v; }, '60px'), el('span', { className: 'mu' }, 'y'), evrNum(pr.donde[1], v => { pr.donde[1] = v; }, '60px')));
-    b.append(evrCampo('Dura (segundos)', evrNum(pr.segundos, v => { pr.segundos = Math.max(5, v); })));
+    b.append(evrCasilla('Llegada', pr.llegada));
   }
+  if (t === 'portal') { evrDonde(b, r, pr, 'Aparece'); b.append(evrCampo('Dura (segundos)', evrNum(pr.segundos, v => { pr.segundos = Math.max(5, v); }))); }
+  if (t === 'monstruo') {
+    b.append(evrCampo('Monstruo', evSelector('mob', pr.npc_type, v => { pr.npc_type = +v || 0; evrSucio(); }, '70px'), el('span', { className: 'mu' }, '×'), evrNum(pr.cantidad, v => { pr.cantidad = Math.min(50, Math.max(1, v)); }, '50px')));
+    evrDonde(b, r, pr, 'Aparece');
+    b.append(evrCampo('Se va a los (segundos)', evrNum(pr.segundos, v => { pr.segundos = Math.max(0, v); }, '80px'), el('span', { className: 'mu' }, '0 = se queda hasta que lo maten')));
+  }
+  if (t === 'aviso_global') b.append(evrCampo('Texto', evrTxt(pr.texto, v => { pr.texto = v; }, '260px', 'sale como cartel para todos los jugadores')));
   caja.append(b);
+}
+
+// La regla dicha en una frase, para entenderla sin abrirla.
+function evrFrase(r) {
+  const c = r.cuando || 'matar', si = r.si || {}, mapa = r.stage ? (STAGE[r.stage] || 'mapa ' + r.stage) : 'cualquier mapa';
+  let q;
+  if (c === 'matar') {
+    const k = r.matar || {}, mobs = (k.mobs || []).length ? k.mobs.map(m => evNombreDe('mob', m) || m).join(', ') : 'cualquier monstruo';
+    q = `Al matar ${k.cantidad} × ${mobs} (${k.alcance === 'mapa' ? 'entre todos' : 'cada jugador'}${k.repetir === false ? ', una vez' : ''}) en ${mapa}`;
+  } else if (c === 'entrar') q = `Al entrar a ${mapa}${(r.entrar || {}).repetir ? ' (cada vez' + ((r.entrar || {}).enfriamiento_min ? ', cada ' + r.entrar.enfriamiento_min + ' min como mucho' : '') + ')' : ' (la primera vez)'}`;
+  else { const h = r.horario || {}; q = (h.horas || []).length ? `A las ${h.horas.join(', ')}` : `Cada ${h.cada_min} min`; q += ` en ${mapa}`; }
+  const conds = [];
+  if (si.nivel_min) conds.push('nivel ≥ ' + si.nivel_min); if (si.nivel_max) conds.push('nivel ≤ ' + si.nivel_max);
+  if (si.desde || si.hasta) conds.push('de ' + (si.desde || '00:00') + ' a ' + (si.hasta || '23:59'));
+  if (si.prob != null && si.prob < 100) conds.push(si.prob + ' % de las veces');
+  return q + (conds.length ? ', si ' + conds.join(' y ') : '') + ' → ' + (r.premios || []).map(x => (EVR_PREMIOS[x.tipo] || x.tipo).replace(/^\S+ /, '')).join(', ');
 }
 
 function evrTarjeta(p, r, idx) {
   const abierta = EVR.abiertas.has(idx);
-  const mobsTxt = r.matar.mobs.length ? r.matar.mobs.map(m => evNombreDe('mob', m) || m).join(', ') : 'cualquier monstruo';
   const cab = el('div', { className: 'att' + (abierta ? ' on' : '') });
-  cab.innerHTML = `<b>${r.activa === false ? '⏸ ' : ''}${r.nombre || r.id}</b><span class="mu"></span>`;
-  cab.lastChild.textContent = `matar ${r.matar.cantidad} × ${mobsTxt} → ${r.premios.map(x => EVR_PREMIOS[x.tipo] || x.tipo).join(', ')}`;
+  cab.innerHTML = `<b></b><span class="mu"></span>`;
+  cab.firstChild.textContent = (r.activa === false ? '⏸ ' : '') + (r.nombre || r.id) + '  ';
+  cab.lastChild.textContent = evrFrase(r);
   cab.onclick = () => { abierta ? EVR.abiertas.delete(idx) : EVR.abiertas.add(idx); panelRefresh(); };
   p.append(cab);
   if (EVR.errores && EVR.errores[r.id]) p.append(el('div', { className: 'mal' }, '⚠ ' + EVR.errores[r.id].join('; ')));
   if (!abierta) return;
   const c = el('div'); c.style.cssText = 'margin:0 0 8px 8px;border-left:2px solid var(--bd);padding-left:8px';
-  const nom = el('input', { type: 'text', value: r.nombre || '' }); nom.onchange = () => { r.nombre = nom.value; evrSucio(); };
   const id = el('input', { type: 'text', value: r.id }); id.style.width = '110px'; id.onchange = () => { r.id = id.value.trim().replace(/\s+/g, '_'); evrSucio(); };
   const act = el('input', { type: 'checkbox', checked: r.activa !== false }); act.onchange = () => { r.activa = act.checked; evrSucio(); };
-  c.append(evrCampo('Nombre', nom), evrCampo('Id', id, act, el('span', { className: 'mu' }, 'activa')));
+  c.append(evrCampo('Nombre', evrTxt(r.nombre, v => { r.nombre = v; })), evrCampo('Id', id, act, el('span', { className: 'mu' }, 'activa')));
   c.append(evrCampo('Mapa', evSelector('mapa', r.stage || 0, v => { r.stage = +v; evrSucio(); }), el('span', { className: 'mu' }, '0 = cualquier mapa')));
-  c.append(el('h4', {}, 'Cuando se maten…'));
-  r.matar.mobs.forEach((m, j) => {
-    const q = el('button', { className: 'btn sm' }, '✕'); q.onclick = () => { r.matar.mobs.splice(j, 1); evrSucio(); };
-    c.append(evrCampo('Monstruo', evSelector('mob', m, v => { r.matar.mobs[j] = v; evrSucio(); }, '70px'), q));
-  });
-  const mm = el('button', { className: 'btn sm' }, '+ monstruo'); mm.title = 'Sin monstruos en la lista cuenta cualquiera';
-  mm.onclick = () => { r.matar.mobs.push(0); evrSucio(); };
-  c.append(mm, el('span', { className: 'mu' }, r.matar.mobs.length ? '' : '  (sin lista: vale cualquier monstruo)'));
-  c.append(evrCampo('Cuántos', evrNum(r.matar.cantidad, v => { r.matar.cantidad = Math.max(1, v); })));
-  const al = el('select'); al.append(new Option('cada jugador cuenta lo suyo', 'jugador'), new Option('todos los del mapa juntos', 'mapa'));
-  al.value = r.matar.alcance || 'jugador'; al.onchange = () => { r.matar.alcance = al.value; evrSucio(); };
-  const rep = el('input', { type: 'checkbox', checked: r.matar.repetir !== false }); rep.onchange = () => { r.matar.repetir = rep.checked; evrSucio(); };
-  c.append(evrCampo('Cuenta', al), evrCampo('', rep, el('span', { className: 'mu' }, 'se repite (si no, solo una vez)')));
-  c.append(el('h4', {}, 'Entonces…'));
-  const av = el('input', { type: 'text', value: r.aviso || '', placeholder: 'mensaje para el jugador (opcional)' }); av.style.width = '220px'; av.onchange = () => { r.aviso = av.value; evrSucio(); };
-  c.append(evrCampo('Aviso', av));
+
+  c.append(el('h4', {}, '1. Cuándo'));
+  const cu = el('select'); for (const [k, v] of Object.entries(EVR_CUANDO)) cu.append(new Option(v, k)); cu.value = r.cuando || 'matar';
+  cu.onchange = () => {
+    r.cuando = cu.value;
+    if (r.cuando === 'matar' && !r.matar) r.matar = { mobs: [], cantidad: 10, alcance: 'jugador', repetir: true };
+    if (r.cuando === 'entrar' && !r.entrar) r.entrar = { repetir: false };
+    if (r.cuando === 'horario' && !r.horario) r.horario = { horas: ['20:00'] };
+    evrSucio();
+  };
+  c.append(evrCampo('', cu));
+  const cuando = r.cuando || 'matar';
+  if (cuando === 'matar') {
+    if (!r.matar) r.matar = { mobs: [], cantidad: 10, alcance: 'jugador', repetir: true };
+    r.matar.mobs.forEach((m, j) => {
+      const q = el('button', { className: 'btn sm' }, '✕'); q.onclick = () => { r.matar.mobs.splice(j, 1); evrSucio(); };
+      c.append(evrCampo('Monstruo', evSelector('mob', m, v => { r.matar.mobs[j] = v; evrSucio(); }, '70px'), q));
+    });
+    const mm = el('button', { className: 'btn sm' }, '+ monstruo'); mm.title = 'Sin monstruos en la lista cuenta cualquiera';
+    mm.onclick = () => { r.matar.mobs.push(0); evrSucio(); };
+    c.append(mm, el('span', { className: 'mu' }, r.matar.mobs.length ? '' : '  (sin lista: vale cualquier monstruo)'));
+    c.append(evrCampo('Cuántos', evrNum(r.matar.cantidad, v => { r.matar.cantidad = Math.max(1, v); })));
+    const al = el('select'); al.append(new Option('cada jugador cuenta lo suyo', 'jugador'), new Option('todos los del mapa juntos', 'mapa'));
+    al.value = r.matar.alcance || 'jugador'; al.onchange = () => { r.matar.alcance = al.value; evrSucio(); };
+    const rep = el('input', { type: 'checkbox', checked: r.matar.repetir !== false }); rep.onchange = () => { r.matar.repetir = rep.checked; evrSucio(); };
+    c.append(evrCampo('Cuenta', al), evrCampo('', rep, el('span', { className: 'mu' }, 'se repite (si no, solo una vez)')));
+  } else if (cuando === 'entrar') {
+    if (!r.entrar) r.entrar = { repetir: false };
+    const rep = el('input', { type: 'checkbox', checked: !!r.entrar.repetir }); rep.onchange = () => { r.entrar.repetir = rep.checked; evrSucio(); };
+    c.append(evrCampo('', rep, el('span', { className: 'mu' }, 'cada vez que entra (si no, solo la primera vez de cada jugador)')));
+    if (r.entrar.repetir) c.append(evrCampo('Como mucho cada (min)', evrNum(r.entrar.enfriamiento_min || 0, v => { r.entrar.enfriamiento_min = Math.max(0, v); }), el('span', { className: 'mu' }, '0 = siempre')));
+  } else {
+    if (!r.horario) r.horario = { horas: ['20:00'] };
+    const modo = el('select'); modo.append(new Option('a estas horas (todos los días)', 'horas'), new Option('cada N minutos', 'cada'));
+    modo.value = (r.horario.horas || []).length ? 'horas' : 'cada';
+    modo.onchange = () => { r.horario = modo.value === 'horas' ? { horas: ['20:00'] } : { cada_min: 60 }; evrSucio(); };
+    c.append(evrCampo('', modo));
+    if (modo.value === 'horas') {
+      r.horario.horas.forEach((h, j) => {
+        const hi = el('input', { type: 'time', value: h }); hi.onchange = () => { r.horario.horas[j] = hi.value; evrSucio(); };
+        const q = el('button', { className: 'btn sm' }, '✕'); q.onclick = () => { r.horario.horas.splice(j, 1); evrSucio(); };
+        c.append(evrCampo('Hora', hi, q));
+      });
+      const mh = el('button', { className: 'btn sm' }, '+ hora'); mh.onclick = () => { r.horario.horas.push('12:00'); evrSucio(); };
+      c.append(mh, el('span', { className: 'mu' }, '  hora del servidor'));
+    } else c.append(evrCampo('Cada (minutos)', evrNum(r.horario.cada_min, v => { r.horario.cada_min = Math.max(1, v); })));
+    c.append(el('div', { className: 'mu' }, 'A esa hora no hay un jugador concreto: los premios personales (objetos, oro, exp…) van a todos los que estén en el mapa.'));
+  }
+
+  c.append(el('h4', {}, '2. Solo si… (opcional)'));
+  const si = r.si || (r.si = {});
+  c.append(evrCampo('Nivel del jugador de', evrNum(si.nivel_min || 0, v => { si.nivel_min = Math.max(0, v); }, '60px'), el('span', { className: 'mu' }, 'a'), evrNum(si.nivel_max || 0, v => { si.nivel_max = Math.max(0, v); }, '60px'), el('span', { className: 'mu' }, '0 = sin límite')));
+  const de = el('input', { type: 'time', value: si.desde || '' }), ha = el('input', { type: 'time', value: si.hasta || '' });
+  de.onchange = () => { si.desde = de.value || undefined; evrSucio(); }; ha.onchange = () => { si.hasta = ha.value || undefined; evrSucio(); };
+  const sinH = el('button', { className: 'btn sm' }, 'todo el día'); sinH.onclick = () => { delete si.desde; delete si.hasta; evrSucio(); };
+  c.append(evrCampo('Entre las', de, el('span', { className: 'mu' }, 'y las'), ha, sinH));
+  c.append(evrCampo('Probabilidad %', evrNum(si.prob ?? 100, v => { si.prob = Math.min(100, Math.max(0, v)); }), el('span', { className: 'mu' }, '100 = siempre')));
+
+  c.append(el('h4', {}, '3. Entonces…'));
+  c.append(evrCampo('Mensaje al jugador', evrTxt(r.aviso, v => { r.aviso = v; }, '240px', 'opcional')));
   r.premios.forEach((pr, i) => evrPremio(c, r, pr, i));
   const ap = el('select'); ap.append(new Option('+ añadir…', ''));
   for (const [k, v] of Object.entries(EVR_PREMIOS)) ap.append(new Option(v, k));
   ap.onchange = () => { if (ap.value) { r.premios.push(evrPremioNuevo(ap.value)); evrSucio(); } };
+  const dup = el('button', { className: 'btn sm' }, 'Duplicar');
+  dup.onclick = () => { const cp = JSON.parse(JSON.stringify(r)); cp.id = evrIdLibre(r.id.replace(/\d+$/, '') || 'regla'); cp.nombre = (r.nombre || '') + ' (copia)'; EVR.datos.reglas.splice(idx + 1, 0, cp); EVR.abiertas = new Set([idx + 1]); evrSucio(); };
   const bd = el('button', { className: 'btn sm' }, 'Borrar regla');
   bd.onclick = () => { if (confirm('¿Borrar la regla ' + (r.nombre || r.id) + '?')) { EVR.datos.reglas.splice(idx, 1); EVR.abiertas.clear(); evrSucio(); } };
-  c.append(evrCampo('', ap, bd));
+  c.append(evrCampo('', ap, dup, bd));
   p.append(c);
 }
 
 EVU.reglas = function (p) {
-  p.append(el('h4', {}, 'Reglas del servidor: matar X monstruos'));
-  p.append(el('div', { className: 'mu' }, 'Al matar N monstruos (de una lista, o cualquiera) el servidor da objetos, oro, Angel Gold, suelta algo al azar o abre un portal temporal. No hace falta parche del cliente.'));
+  p.append(el('h4', {}, 'Reglas del servidor'));
+  p.append(el('div', { className: 'mu' }, 'Cuando pase algo (matar monstruos, entrar al mapa o a una hora), si se cumplen las condiciones, el servidor da objetos, oro, exp, hace aparecer monstruos, abre portales, mueve al jugador o avisa a todos. No hace falta parche del cliente: el servidor las relee al guardar.'));
   if (!EVR.datos) {
     p.append(el('div', { className: 'mu' }, 'Cargando…'));
     api('/api/ao/reglas').then(d => { EVR.datos = d; EVR.datos.reglas = d.reglas || [];
-      evPedirNombres(EVR.datos.reglas.flatMap(r => r.premios.flatMap(x => x.tipo === 'dar' ? [x.item] : x.tipo === 'soltar' ? x.items.map(i => i[0]) : [])));
+      evPedirNombres(EVR.datos.reglas.flatMap(r => (r.premios || []).flatMap(x => x.tipo === 'dar' ? [x.item] : x.tipo === 'soltar' ? x.items.map(i => i[0]) : [])));
       if (!AOCAT) api('/api/ao/catalogo').then(l => { AOCAT = l; panelRefresh(); });
       panelRefresh(); }).catch(e => p.append(el('div', { className: 'mal' }, e.message)));
     return;
   }
   const est = evrStageActual(), reglas = EVR.datos.reglas;
   const r = el('div', { className: 'row' });
-  const nueva = el('button', { className: 'btn sm' }, '+ Regla nueva');
-  nueva.onclick = () => { reglas.push(evrReglaNueva()); EVR.abiertas.add(reglas.length - 1); evrSucio(); };
+  const esc = el('select'); esc.append(new Option('+ Regla nueva desde un escenario…', ''));
+  EVR_ESCENARIOS.forEach(([nom], i) => esc.append(new Option(nom, i)));
+  esc.onchange = () => { if (esc.value === '') return; reglas.push(evrDesdeEscenario(+esc.value)); EVR.abiertas = new Set([reglas.length - 1]); evrSucio(); };
   const guardar = el('button', { className: 'btn sm' + (EVR.sucio ? ' on' : '') }, EVR.sucio ? '💾 Guardar reglas' : 'Guardado');
   guardar.onclick = async () => {
     try {
       const res = await api('/api/ao/reglas', { method: 'POST', body: JSON.stringify({ reglas }) });
       EVR.errores = res.ok ? null : res.errores;
       if (res.ok) { EVR.sucio = false; msg(`Reglas guardadas (${res.total}) en server/plantillas/eventos_propios.json. El servidor las relee solo.`, 'ok'); }
-      else msg('Hay reglas con errores: no se guardó nada.', 'mal');
+      else { msg('Hay reglas con errores (marcadas con ⚠): no se guardó nada.', 'mal'); reglas.forEach((x, i) => { if (res.errores[x.id]) EVR.abiertas.add(i); }); }
     } catch (e) { msg(e.message, 'mal'); }
     panelRefresh();
   };
-  r.append(nueva, guardar); p.append(r);
-  const deEste = reglas.map((x, i) => [x, i]).filter(([x]) => !est || !x.stage || +x.stage === est);
-  p.append(el('div', { className: 'mu' }, `${deEste.length} de ${reglas.length} regla(s) ${est ? 'para este mapa (' + (STAGE[est] || est) + ') o cualquiera' : ''}`));
+  const todas = el('button', { className: 'btn sm' + (EVR.todas ? ' on' : '') }, EVR.todas ? 'ver solo este mapa' : 'ver todas');
+  todas.onclick = () => { EVR.todas = !EVR.todas; panelRefresh(); };
+  r.append(esc, guardar, todas); p.append(r);
+  const deEste = reglas.map((x, i) => [x, i]).filter(([x]) => EVR.todas || !est || !x.stage || +x.stage === est);
+  p.append(el('div', { className: 'mu' }, `${deEste.length} de ${reglas.length} regla(s)${!EVR.todas && est ? ' para este mapa (' + (STAGE[est] || est) + ') o cualquiera' : ''}`));
   deEste.forEach(([x, i]) => evrTarjeta(p, x, i));
 };
 

@@ -9615,6 +9615,7 @@ def _tw_al_entrar(ses):
         __import__('trade_routes').al_entrar_mapa(ses)
     except Exception:
         log.exception('trade routes: al entrar al mapa')
+    _eventos_propios_al_entrar(ses)          # reglas "al entrar al mapa" del editor
     p = ses.personaje
     if _tw_e.es_totem_decorativo(getattr(p, 'stage', 0)):
         # Campo de entrenamiento: su totem, siempre a la vista y sin guerra.
@@ -10356,53 +10357,116 @@ def _eventos_propios_al_morir(ses, monstruo, addr):
         return
     try:
         import eventos_propios as _evp
-        import clases as _cl
-        import presencia as _pr
         for regla, premios in _evp.al_morir(ses, monstruo):
-            efectos, ag, portales = _evp.efectos_de(premios)
-            if regla.get('aviso'):
-                ses.enviar(_cl.aviso(str(regla['aviso']), tipo=0))
-            _aplicar_efectos(ses, addr, efectos, ' por la regla %s' % regla['id'])
-            if ag and getattr(ses, 'usuario', None):
-                __import__('item_mall').sumar_ag(ses.usuario, ag)
-                ses.enviar(_cl.aviso('%d Angel Gold' % ag, tipo=0, msg_id=_cl.MSG_ITEM))
-            for pr in portales:
-                donde = pr.get('donde', 'monstruo')
-                tile = (monstruo.tile_x, monstruo.tile_y) if donde == 'monstruo' else tuple(donde)
-                # En una instancia el portal es de ESA copia (la del equipo): los demas no lo ven ni lo usan.
-                sala = _evp.sala_de(ses)
-                # Uno solo por copia: si ya hay uno abierto hacia ese destino se alarga y no se abre otro.
-                eid = _evp.portal_abierto(ses.personaje.stage, pr['destino'], sala=sala)
-                if eid is not None:
-                    _evp.alargar(eid, pr.get('segundos', 120))
-                    log.info('[%s] regla %s: portal %d ya abierto, se alarga' % (addr, regla['id'], eid))
-                else:
-                    eid = _evp.abrir_portal(ses.personaje.stage, tile, pr['destino'], pr['llegada'],
-                                            pr.get('segundos', 120), sala=sala)
-                    paquete = _evp.paquete_portal(eid)
-                    quienes = _evp.destinatarios(ses.personaje.stage, sala)
-                    if ses not in quienes:
-                        quienes.append(ses)          # el que lo mato lo ve siempre
-                    for s in quienes:
-                        s.enviar_inmediato(paquete, _cl.aviso('A portal has appeared!', tipo=0))
-                    log.info('[%s] regla %s: portal %d en %s -> stage %s (%d jugadores lo ven)'
-                             % (addr, regla['id'], eid, tile, pr['destino'], len(quienes)))
-
-                def _cerrar(eid=eid, vivas_stage=ses.personaje.stage, sala=sala):
-                    import combate as _cb_p
-                    if _evp.portal(eid):
-                        return                       # lo alargo otra baja: lo cierra el temporizador de esa
-                    for s in _evp.destinatarios(vivas_stage, sala):
-                        try:
-                            s.enviar_inmediato(_cb_p.despawn_monstruo(eid))
-                        except Exception:
-                            pass
-                try:
-                    asyncio.get_event_loop().call_later(max(5, int(pr.get('segundos', 120))) + 1, _cerrar)
-                except Exception:
-                    pass
+            _ejecutar_regla_propia(ses, regla, premios, addr, monstruo=monstruo)
     except Exception:
         log.exception('fallo una regla de eventos propios')
+
+
+def _eventos_propios_al_entrar(ses):
+    """Las reglas "al entrar al mapa" del editor."""
+    if not getattr(ses, 'personaje', None):
+        return
+    try:
+        import eventos_propios as _evp
+        for regla, premios in _evp.al_entrar(ses):
+            _ejecutar_regla_propia(ses, regla, premios, getattr(ses, 'addr', '?'))
+    except Exception:
+        log.exception('fallo una regla de eventos propios al entrar')
+
+
+async def _vigilar_eventos_propios(cada=10.0):
+    """El reloj de las reglas "a una hora" o "cada N minutos" del editor."""
+    while True:
+        await asyncio.sleep(cada)
+        try:
+            import eventos_propios as _evp
+            for regla, premios in _evp.horario_pendientes():
+                _ejecutar_regla_propia(None, regla, premios, 'horario')
+        except Exception:
+            log.exception('fallo una regla de horario de eventos propios')
+
+
+def _ejecutar_regla_propia(ses, regla, premios, addr, monstruo=None):
+    """Hace lo que pide una regla cumplida. `ses` es quien la cumplio; en las de horario es None y los premios
+    personales van a todos los que esten en el mapa de la regla."""
+    import eventos_propios as _evp
+    import clases as _cl
+    import presencia as _pr
+    p = getattr(ses, 'personaje', None) if ses is not None else None
+    stage = int(p.stage) if p is not None else int(regla.get('stage') or 0)
+    sala = _evp.sala_de(ses) if ses is not None else None
+    if ses is not None:
+        receptores = [ses]
+    else:
+        receptores = [s for s in _pr._vivas(stage) if getattr(s, 'personaje', None)] if stage else []
+    efectos_base, ag_base, portales = _evp.efectos_de(premios)
+    extras = _evp.extras_de(premios)
+    for texto in extras['avisos']:
+        try:
+            import totem_war as _tw_av
+            _tw_difundir(_tw_av.cartel_deslizante(texto))
+        except Exception:
+            log.exception('aviso para todos de la regla %s', regla.get('id'))
+    for s in receptores:
+        # "soltar" se tira para cada uno: se vuelven a sacar los efectos si hay mas de un receptor.
+        efectos, ag = (efectos_base, ag_base) if s is ses or len(receptores) == 1 else _evp.efectos_de(premios)[:2]
+        if regla.get('aviso'):
+            s.enviar(_cl.aviso(str(regla['aviso']), tipo=0))
+        _aplicar_efectos(s, getattr(s, 'addr', addr), efectos, ' por la regla %s' % regla['id'])
+        if ag and getattr(s, 'usuario', None):
+            __import__('item_mall').sumar_ag(s.usuario, ag)
+            s.enviar(_cl.aviso('%d Angel Gold' % ag, tipo=0, msg_id=_cl.MSG_ITEM))
+        if extras['exp']:
+            try:
+                _dar_exp_y_creditos(s, exp=extras['exp'])
+            except Exception:
+                log.exception('exp de la regla %s', regla.get('id'))
+    for pr in extras['monstruos']:
+        tile = _evp.sitio(pr.get('donde', 'monstruo'), monstruo, p)
+        if tile and stage:
+            _evp.aparecer_monstruos(stage, pr, tile)
+    for pr in portales:
+        tile = _evp.sitio(pr.get('donde', 'monstruo'), monstruo, p)
+        if not tile or not stage:
+            continue
+        # Uno solo por copia: si ya hay uno abierto hacia ese destino se alarga y no se abre otro.
+        eid = _evp.portal_abierto(stage, pr['destino'], sala=sala)
+        if eid is not None:
+            _evp.alargar(eid, pr.get('segundos', 120))
+            log.info('[%s] regla %s: portal %d ya abierto, se alarga' % (addr, regla['id'], eid))
+        else:
+            eid = _evp.abrir_portal(stage, tile, pr['destino'], pr['llegada'], pr.get('segundos', 120), sala=sala)
+            paquete = _evp.paquete_portal(eid)
+            quienes = _evp.destinatarios(stage, sala)
+            if ses is not None and ses not in quienes:
+                quienes.append(ses)          # el que lo mato lo ve siempre
+            for s in quienes:
+                s.enviar_inmediato(paquete, _cl.aviso('A portal has appeared!', tipo=0))
+            log.info('[%s] regla %s: portal %d en %s -> stage %s (%d jugadores lo ven)'
+                     % (addr, regla['id'], eid, tile, pr['destino'], len(quienes)))
+
+        def _cerrar(eid=eid, vivas_stage=stage, sala=sala):
+            import combate as _cb_p
+            if _evp.portal(eid):
+                return                       # lo alargo otra baja: lo cierra el temporizador de esa
+            for s in _evp.destinatarios(vivas_stage, sala):
+                try:
+                    s.enviar_inmediato(_cb_p.despawn_monstruo(eid))
+                except Exception:
+                    pass
+        try:
+            asyncio.get_event_loop().call_later(max(5, int(pr.get('segundos', 120))) + 1, _cerrar)
+        except Exception:
+            pass
+    if extras['llevar']:
+        pr = extras['llevar']
+        for s in receptores:
+            try:
+                _viajar_por_portal(s, getattr(s, 'addr', addr), {'destino': pr['destino'], 'llegada': pr['llegada']},
+                                   motivo='por la regla %s' % regla['id'])
+            except Exception:
+                log.exception('llevar de la regla %s', regla.get('id'))
 
 
 def _cerrar_viaje(ses, addr, stage, tile, nombre_dest):
@@ -23033,6 +23097,7 @@ class Servidor:
         tareas.append(gm.consola(self))
         tareas.append(gm.cola(self))
         tareas.append(__import__('santa_clausula').vigilar())
+        tareas.append(_vigilar_eventos_propios())      # reglas de horario del editor
         tareas.append(cuentas.tarea_backup_periodico())
         tareas.append(self.vigilar_baneos())
         import totem_war as _tw_reloj

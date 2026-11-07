@@ -122,3 +122,70 @@ def test_un_solo_portal_por_copia_y_otra_baja_lo_alarga(monkeypatch):
     monkeypatch.setattr(time, 'time', lambda: antes - 10)
     evp.alargar(eid, 300)
     assert evp._portales[eid]['hasta'] == antes + 290
+
+
+# ------------------------------------------------------------------ disparadores nuevos (07/11/2026)
+def _limpio(monkeypatch):
+    monkeypatch.setattr(evp, '_ultima', {})
+
+
+def test_al_entrar_una_vez_por_jugador(tmp_path, monkeypatch):
+    _limpio(monkeypatch)
+    _reglas(tmp_path, monkeypatch, dict(id='bienv', cuando='entrar', stage=900, entrar=dict(repetir=False),
+                                        premios=[dict(tipo='exp', cantidad=500)]))
+    a = _ses(1)
+    a.personaje.nivel = 10
+    assert evp.al_entrar(a)[0][0]['id'] == 'bienv'
+    assert evp.al_entrar(a) == []                       # solo la primera vez
+    assert evp.al_entrar(_ses(2, stage=3)) == []        # otro mapa
+    assert evp.extras_de(evp.al_entrar(_ses(3))[0][1])['exp'] == 500
+
+
+def test_al_entrar_con_enfriamiento(tmp_path, monkeypatch):
+    _limpio(monkeypatch)
+    _reglas(tmp_path, monkeypatch, dict(id='e', cuando='entrar', stage=900, entrar=dict(repetir=True, enfriamiento_min=10),
+                                        premios=[dict(tipo='oro', cantidad=5)]))
+    a = _ses(1)
+    assert evp.al_entrar(a, ahora=1000) and not evp.al_entrar(a, ahora=1300) and evp.al_entrar(a, ahora=1700)
+
+
+def test_condiciones_de_nivel_y_franja(tmp_path, monkeypatch):
+    r = dict(si=dict(nivel_min=20, nivel_max=40))
+    assert not evp.cumple_si(r, NS(nivel=10)) and evp.cumple_si(r, NS(nivel=30)) and not evp.cumple_si(r, NS(nivel=50))
+    import time
+    t = time.mktime((2026, 11, 7, 22, 30, 0, 0, 0, -1))
+    assert evp.cumple_si(dict(si=dict(desde='20:00', hasta='23:00')), None, t)
+    assert not evp.cumple_si(dict(si=dict(desde='08:00', hasta='12:00')), None, t)
+    assert evp.cumple_si(dict(si=dict(desde='22:00', hasta='02:00')), None, t)       # cruza la medianoche
+    assert not evp.cumple_si(dict(si=dict(prob=0)), None, t)
+
+
+def test_horario_a_la_hora_y_cada_n(tmp_path, monkeypatch):
+    _limpio(monkeypatch)
+    import time
+    _reglas(tmp_path, monkeypatch,
+            dict(id='h', cuando='horario', stage=900, horario=dict(horas=['20:00']),
+                 premios=[dict(tipo='aviso_global', texto='hola')]),
+            dict(id='c', cuando='horario', stage=0, horario=dict(cada_min=30), premios=[dict(tipo='aviso_global', texto='x')]))
+    t20 = time.mktime((2026, 11, 7, 20, 0, 5, 0, 0, -1))
+    assert [r['id'] for r, _ in evp.horario_pendientes(t20)] == ['h']               # 'c' arranca su reloj
+    assert evp.horario_pendientes(t20 + 20) == []                                   # una vez por hora marcada
+    assert [r['id'] for r, _ in evp.horario_pendientes(t20 + 31 * 60)] == ['c']
+
+
+def test_validar_escenarios_nuevos():
+    assert evp.validar(dict(id='a', cuando='horario', stage=900, horario=dict(horas=['25:00']),
+                            premios=[dict(tipo='oro', cantidad=1)]))
+    assert evp.validar(dict(id='a', cuando='horario', stage=900, horario=dict(cada_min=5),
+                            premios=[dict(tipo='monstruo', npc_type=209, donde='monstruo')]))       # sin casilla fija
+    assert evp.validar(dict(id='a', cuando='entrar', stage=0, premios=[dict(tipo='oro', cantidad=1)]))
+    assert evp.validar(dict(id='a', cuando='horario', stage=900, horario=dict(horas=['20:00']),
+                            premios=[dict(tipo='monstruo', npc_type=209, cantidad=3, donde=[10, 10], segundos=600),
+                                     dict(tipo='aviso_global', texto='Boss!')])) == []
+    assert evp.validar(dict(REGLA, si=dict(nivel_min=50, nivel_max=10)))
+
+
+def test_sitio():
+    assert evp.sitio([3, 4]) == (3, 4)
+    assert evp.sitio('jugador', _mob(), NS(tile_x=1, tile_y=2)) == (1, 2)
+    assert evp.sitio('monstruo', _mob(), NS(tile_x=1, tile_y=2)) == (5, 6)

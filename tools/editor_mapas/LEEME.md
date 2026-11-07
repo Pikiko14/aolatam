@@ -6,8 +6,8 @@ Vive en `tools/editor_mapas/` del repo. Lee los **assets del cliente** (carpeta 
 
 ## NPC y monstruos de AO (pestana "NPC/Monstruos AO", tecla N)
 - El catalogo sale del cliente (`setting/eng/monster.xml` y `npc.xml`), con la miniatura de cada sprite.
-- Al abrir `mapNNN` se leen los spawns de `server/plantillas/<mapa>.json` (el numero del .mpc es el stage del servidor).
-- Clic en el mapa = colocar el elegido (solo en casillas libres); clic sobre uno = seleccionar y arrastrar; Supr = borrar; direccion 0..7.
+- Al abrir un mapa se leen los spawns de `server/plantillas/<mapa>.json`. El stage del servidor sale del numero del nombre (`map900`, `mapa900`, `MAP_900`...) o se escribe a mano arriba en la pestana ("Mapa del servidor (stage)" + Usar).
+- Clic en el mapa = colocar el elegido; si la casilla esta bloqueada va a la libre mas cercana (hasta 4 casillas, con aviso). Clic sobre uno = seleccionar y arrastrar; Supr = borrar; direccion 0..7.
 - **Exportar .mpc** tambien escribe los spawns en la plantilla del servidor (o el boton "Exportar al servidor ahora" de la pestana).
   Las entidades que ya estaban conservan todos sus campos; solo cambian su casilla y direccion. Las nuevas reciben `entity_id` libre
   (de 900001 en adelante) y los monstruos llevan `nivel`. Antes de escribir deja `<mapa>.json.bak`.
@@ -18,7 +18,11 @@ Vive en `tools/editor_mapas/` del repo. Lee los **assets del cliente** (carpeta 
 ---
 
 ## Eventos en español (pestaña "Eventos")
-- **Reglas del servidor: matar X monstruos** (arriba de la pestaña): "al matar N monstruos (de una lista o cualquiera), en este mapa o en cualquiera, por jugador o entre todos los del mapa, una vez o siempre" → dar un objeto, soltar uno al azar con probabilidad, oro, Angel Gold o **abrir un portal temporal** (donde murio el ultimo monstruo o en una casilla fija, con mapa y casilla de llegada y duracion). Se guardan en `server/plantillas/eventos_propios.json` (con `.bak`), las valida antes de escribir y el servidor las relee solo (`server/eventos_propios.py`); no hace falta parche del cliente. Las cuentas viven en memoria: un reinicio las pone a cero.
+- **Reglas del servidor** (arriba de la pestaña): "**cuando** pase algo, **solo si** se cumple, **entonces** haz esto". Se guardan en `server/plantillas/eventos_propios.json` (con `.bak`), se validan antes de escribir (las que fallan quedan marcadas con ⚠ y no se guarda nada) y el servidor las relee solo (`server/eventos_propios.py`); no hace falta parche del cliente. Las cuentas viven en memoria: un reinicio las pone a cero.
+  - **Cuándo**: al matar N monstruos (de una lista o cualquiera; cada jugador o todos juntos; una vez o siempre), **al entrar al mapa** (la primera vez o cada vez, con enfriamiento) o **a una hora / cada N minutos** (hora del servidor; los premios personales van a todos los del mapa).
+  - **Solo si**: nivel del jugador entre dos valores, franja horaria (puede cruzar la medianoche) y probabilidad %.
+  - **Entonces**: mensaje al jugador, dar objeto, soltar uno al azar, oro, Angel Gold, experiencia, abrir un portal temporal, **hacer aparecer monstruos** (cantidad y cuánto duran), **llevar al jugador** a otro mapa/casilla y **aviso para todo el servidor**. Las casillas se escriben o se eligen con **📍 elegir en el mapa** (clic en el botón y luego en el mapa; Esc cancela).
+  - **+ Regla nueva desde un escenario**: cazar N → premio; matar N entre todos → aparece un jefe; jefe → portal de salida; botín raro al 1 %; caza nocturna; bienvenida al entrar; mapa de nivel (saca a los de poco nivel); invasión diaria; jefe cada N minutos; lluvia de oro; regla vacía. Cada tarjeta se resume en una frase; **Duplicar** copia una regla; "ver todas" muestra las de todos los mapas.
 - Objetos, monstruos y mapas se eligen con la **🔍** (buscador por nombre o numero): en las reglas y en los parametros "Objeto…", "Mapa…" y "Monstruo…" de los eventos del .mpc. El numero sigue visible y editable.
 - Constructor visual de la logica del mapa: un **evento** es "cuando pase X (disparador), si se cumple Y (condiciones), haz Z (acciones)". Todo en español, con la etiqueta de cada parametro.
 - **+ Evento nuevo desde plantilla**: salida a otro mapa, dar objeto o oro al hacer clic, cobrar y dar, abrir tienda, contador de bajas de una mision, evento vacio.
