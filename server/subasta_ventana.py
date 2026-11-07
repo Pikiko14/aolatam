@@ -274,6 +274,12 @@ def procesar(ses, cuerpo) -> bool:
         import torre_babel
         ses.enviar(canal_lua.paquete(SALUDO_LUA), canal_lua.paquete(medidor_dano.SALUDO_LUA),
                    canal_lua.paquete(torre_babel.SALUDO_LUA))
+        # La pestana AOF de System y las teclas de la barra (server/lua/teclas.lua, tools/parche_teclas_aof.py):
+        # sin los nativos game.aof* del exe el propio script no hace nada.
+        try:
+            ses.enviar(canal_lua.paquete((canal_lua.CARPETA / 'teclas.lua').read_text(encoding='utf-8')))
+        except Exception:
+            log.exception('teclas.lua')
         return True
     if not tiene_ventana(ses):
         return True
