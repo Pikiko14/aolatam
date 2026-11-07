@@ -16,6 +16,12 @@ import ranking
 import login
 
 
+@pytest.fixture(autouse=True)
+def _olly_y_ozzy_visibles(monkeypatch):
+    # En el servidor estan ocultos (olympus.OCULTOS_LYCEUM); aqui se prueba su logica.
+    monkeypatch.setattr(ot, 'OCULTOS_LYCEUM', frozenset())
+
+
 @pytest.fixture
 def town(world):
     s=world.player(items={20:54260})

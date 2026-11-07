@@ -12,6 +12,8 @@ import uuid
 
 STAGES=frozenset((217,332))
 MARK=8561
+# Olly y Ozzy del Angel Lyceum, ocultos ("oculta estos 2 npc", 07/11/2026): no se presentan ni responden.
+OCULTOS_LYCEUM=frozenset(('Olly','Ozzy'))
 
 
 @functools.lru_cache(maxsize=1)
@@ -22,7 +24,7 @@ def datos():
 def _npc(ses):
     if not getattr(ses,'personaje',None):return None
     stage=ses.personaje.stage
-    if stage==41:return datos()['npcs']
+    if stage==41:return [n for n in datos()['npcs'] if n['nombre'] not in OCULTOS_LYCEUM]
     return [n for n in datos()['maps'].get(str(stage),{}).get('spawns',[]) if not n['monstruo']]
 
 
@@ -34,7 +36,7 @@ def cerca(ses,name):
 
 def poblar(stage):
     import login
-    ns=datos()['npcs'] if stage==41 else datos()['maps'].get(str(stage),{}).get('spawns',[])
+    ns=[n for n in datos()['npcs'] if n['nombre'] not in OCULTOS_LYCEUM] if stage==41 else datos()['maps'].get(str(stage),{}).get('spawns',[])
     packets=[login._npc_spawn(n['entity_id'],n['npc_type'],n['nombre'],tuple(n['tile']),
                              sprite=n['sprite'],klass=199,direccion=n.get('direccion',6))
              for n in ns if not n.get('monstruo')]

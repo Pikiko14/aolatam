@@ -375,6 +375,7 @@ NPCS_OCULTOS = {
         2686,       # Little Exp Angel
         24516,      # Astral Angel (evento: sp_star_angel.xml, mapa 41)
         24801,      # Reissue Angel (evento: sp_reissue_angel.xml, mapa 41)
+        8804,       # Blessing Angel (07/11/2026; Olly y Ozzy van en olympus.OCULTOS_LYCEUM)
     },
 }
 
