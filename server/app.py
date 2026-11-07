@@ -119,8 +119,9 @@ def skills_arma_ses(ses):
 # los que piden a partir de 0.92, que son los que se veian en el log
 # (1.03, 1.05, 1.10). Lo que llegue antes de eso sigue fuera.
 MARGEN_CADENCIA = 0.20
-# Golpes basicos que se aceptan tras una habilidad de ataque, hasta el siguiente clic al mob (05/11/2026).
-BASICOS_TRAS_HABILIDAD = 1
+# Golpes basicos que se aceptan tras una habilidad de ataque, hasta el siguiente clic al mob (05/11/2026). Era 1;
+# "el golpe basico solo sale al dar clic" (07/11/2026): ninguno, el siguiente basico lo pide el clic al mob.
+BASICOS_TRAS_HABILIDAD = 0
 
 
 def lleva_duales_ses(ses):
@@ -16396,11 +16397,9 @@ class Servidor:
                         _cb.numero_de_dano(yo, objetivo, dano, tipo, efecto=atk_efecto,
                                            cast_time=cast_time, es_magia=False),
                     ]
-                    # El 0x000A es el GOLPE BASICO del arma: con el, usar una habilidad se veia ademas como un
+                    # Sin el 0x000A: es el GOLPE BASICO del arma y con el, usar una habilidad se veia ademas como un
                     # basico ("cuando uso 1 ataque hace la animacion de basico... el ataque spell es el turno de
-                    # ataque", 07/11/2026, Assassin). No va con las de ShadowBlade ni con las 無動作 (sin animacion).
-                    if not _cb.habilidad_sin_golpe_basico(mag):
-                        salida_golpe.append(_cb.ataque(yo, objetivo, _anim_golpe, _tipo_golpe))
+                    # ataque"; "tampoco lo hagan, el golpe basico solo sale al dar clic", 07/11/2026). Para todas.
                     _cierre_skill = _cb.cierre_de_dano(yo, objetivo, tipo,
                                                        efecto=atk_efecto, es_magia=False)
             else:

@@ -3067,15 +3067,6 @@ ANIM_POR_SKILL = {}
 # -------------------------------------------------------------------------
 
 
-RAMAS_SIN_GOLPE_BASICO = {'影刃技能'}      # ShadowBlade (Assassin)
-
-
-def habilidad_sin_golpe_basico(mag) -> bool:
-    """Si al usar esta habilidad NO se manda tambien el golpe basico del arma (0x000A)."""
-    mag = mag or {}
-    return mag.get('accion') == '無動作' or mag.get('rama_skill') in RAMAS_SIN_GOLPE_BASICO
-
-
 def golpe_de_arma(item_id: int = 0, duales: bool = False, escudo: bool = False) -> tuple:
     """(tipo, animacion) del 0x000A para el arma que se lleva puesta.
 

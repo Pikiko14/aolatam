@@ -65,14 +65,15 @@ def test_con_clic_los_basicos_siguen(monkeypatch):
     assert Servidor.basicos == 5
 
 
-def test_tras_una_habilidad_solo_un_basico(monkeypatch):
+def test_tras_una_habilidad_ningun_basico_hasta_el_clic(monkeypatch):
+    # "el golpe basico solo sale al dar clic" (07/11/2026): antes se dejaba pasar uno.
     basico, clic, skill = _montar(monkeypatch)
     clic()
     skill()
     for _ in range(6):                                  # el cliente sigue pidiendolos
         basico()
-    assert Servidor.basicos == 1
+    assert Servidor.basicos == 0
     clic()                                              # clic al mob sin habilidad: vuelven
     basico()
     basico()
-    assert Servidor.basicos == 3
+    assert Servidor.basicos == 2
