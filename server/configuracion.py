@@ -890,3 +890,9 @@ COOLDOWN_POCION_TOLERANCIA_S = 0.15
 # Extra (en %) sobre la velocidad de las cartas de recoleccion y fabricacion (Collection / Facture Speedup Card
 # y sus variantes): una carta de +50% da 50 * 1.30 = 65. Pedido del usuario, 29/10/2026. 0 = el valor del xml.
 BONO_CARTAS_VELOCIDAD_PCT = 30
+
+
+# Objetos que NINGUNA tienda NPC vende, aunque el shop.xml del cliente (de antes del parche) los siga mostrando: el
+# servidor rechaza su compra. "del npc healer quita el fusion potion, el poke egg y todos los hammer... y el
+# Shapeshifting Slime" (07/11/2026; la tienda 35 del Healer, tambien sin ellos en parches/extras/setting/shop.xml).
+ITEMS_NO_VENTA_NPC = frozenset({16979, 16070, 43076} | set(range(1202, 1212)) | set(range(14634, 14644)))

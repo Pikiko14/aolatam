@@ -107,3 +107,14 @@ def test_la_municion_se_compra_y_vende_por_paquete_de_1000():
     assert app._unidades_por_compra(6) == 1         # Newbie Bow
     # Vender las 1000 da lo mismo que vender 1 antes (4), no 4000.
     assert app._precio_venta(138) * 1000 // app._unidades_por_compra(138) == app._precio_venta(138)
+
+
+def test_el_healer_ya_no_vende_huevos_pociones_de_fusion_ni_martillos():
+    import configuracion
+    import xml.etree.ElementTree as ET
+    vet = configuracion.ITEMS_NO_VENTA_NPC
+    assert {16979, 16070, 43076, 1202, 1211, 14634, 14643} <= vet
+    raiz = pathlib.Path(__file__).resolve().parent.parent
+    tienda = next(t for t in ET.parse(raiz / 'parches' / 'extras' / 'setting' / 'shop.xml').getroot().iter('商店')
+                  if t.get('編號') == '35')
+    assert not {int(x.text) for x in tienda} & vet

@@ -17023,6 +17023,12 @@ class Servidor:
                     pedido.append((item_id, min(int(cant), 9999)))
             if not pedido:
                 return
+            import configuracion as _cf_nv
+            _vetados = [i for i, _c_v in pedido if i in getattr(_cf_nv, 'ITEMS_NO_VENTA_NPC', ())]
+            if _vetados:
+                log.warning(f"[{addr}] compra rechazada: {_vetados} ya no se venden en tiendas NPC")
+                ses.enviar(_c.aviso('This item is no longer sold here.', tipo=0))
+                return
 
             total_pedido = sum(_precio_compra(i) * c for i, c in pedido)
             if getattr(ses, 'oro', 0) < total_pedido:
