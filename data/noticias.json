@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-07",
+    "titulo": "Update 0.0.0.70: Totem War and Healer",
+    "texto": "Please update to version 0.0.0.70 from the launcher. Totem War totems now go up to level 5 at most, with their LEVEL effect when they go up (levels 2 to 5) and when they go down (levels 4 to 1). The yellow number under K.O. now shows the credits you earned in the war. When the war ends, the PvP rings and the K.O. counter are cleared, and they no longer show on Totem War maps when there is no war. The Healer no longer sells Fusion Potions, Poke Eggs, hammers or Shapeshifting Slime."
+  },
+  {
+    "fecha": "2026-11-07",
     "titulo": "Combat and Totem War",
     "texto": "Skill side effects now work in PvP too, with each skill's own chance, duration and interval: burns, poisons and bleeds (they never kill), stun, freeze, root and slow. Totem War kills now give credits based on the victim's level: x5 for their first death in the war, x2 after that. The totem shows its new level when it goes up or down. Power Shield now shows its blue bubble while it lasts. At the max level (60) quests and rewards no longer give experience."
   },
