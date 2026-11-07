@@ -73,6 +73,15 @@ def defensa_jugador(ses) -> int:
         return 0
 
 
+def defensa_magica_jugador(ses) -> int:
+    """La defensa magica (S.Def) del personaje, leida de su hoja de stats (offset 52 del 0x0042)."""
+    try:
+        import struct as _s
+        return _s.unpack_from('<I', _stats_ses(ses), 54)[0]
+    except Exception:
+        return 0
+
+
 def defensas_elementales_jugador(ses) -> dict:
     """Las defensas de resistencia y elementales del personaje, leidas del 0x0042."""
     try:
@@ -13091,6 +13100,14 @@ class Servidor:
                                                     ef_atk = _cb.efecto_de_ataque(_hab_sc) or ef_atk
                                                     if _hab_sc == _sc_h.HAB_AREA:
                                                         _sc_h.area_a_otros(ses, m, _hab_sc, ef_atk)
+                                            elif targ_eid == yo and suyo:
+                                                # Los demas usan sus 攻擊法術 (ver hechizos_mob.py).
+                                                import hechizos_mob as _hm
+                                                _hech_m = _hm.elegir(m)
+                                                if _hech_m:
+                                                    atk_id = _hech_m[0]
+                                                    suyo = _hm.dano(_hech_m, m, def_targ, defensa_magica_jugador(ses))
+                                                    ef_atk = _cb.efecto_de_ataque(atk_id) or ef_atk
 
                                             # Con el objetivo = yo, el cliente (0x5ed03b -> 0x649c70) selecciona
                                             # solo al atacante y mi personaje empieza a pegarle sin que yo lo
@@ -13152,7 +13169,8 @@ class Servidor:
                                                         # Habilidad del bicho (Santa Clausula): sin la fase 0x80 el
                                                         # efecto no se veia ("no veo lance poderes", 06/11/2026).
                                                         pkgs_imp_yo.insert(1, _cb.cierre_de_dano(m.entity_id, yo, atk_id, efecto=ef_atk))
-                                                        log.info('[%s] %s usa %s: %d de dano', addr, m.nombre, atk_id, suyo)
+                                                        (log.info if m.npc_type == 23901 else log.debug)(
+                                                            '[%s] %s usa %s: %d de dano', addr, m.nombre, atk_id, suyo)
                                                     if _sa_bid is not None and pj.hp > 0:
                                                         _sa_pct = 0.12 + 0.02 * (int(_sa_bid) - 13674)
                                                         _mp_rec = max(1, int(round(suyo * _sa_pct)))
