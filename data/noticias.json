@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-07",
+    "titulo": "Combat and Totem War",
+    "texto": "Skill side effects now work in PvP too, with each skill's own chance, duration and interval: burns, poisons and bleeds (they never kill), stun, freeze, root and slow. Totem War kills now give credits based on the victim's level: x5 for their first death in the war, x2 after that. The totem shows its new level when it goes up or down. Power Shield now shows its blue bubble while it lasts. At the max level (60) quests and rewards no longer give experience."
+  },
+  {
+    "fecha": "2026-11-07",
     "titulo": "Totem War: totem levels",
     "texto": "Destroying a totem of level 2 or higher now only lowers it one level, and it comes back with the full health of that level. Only a level 1 totem gives the territory. The totem now shows the LEVEL UP effect when its level changes. Sitting down no longer looks like dying to other players."
   },
