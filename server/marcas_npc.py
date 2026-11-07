@@ -63,8 +63,13 @@ def marcar(ses, submsgs):
         return submsgs
     stage = int(getattr(p, 'stage', 0) or 0)
     vistos = _ULTIMOS.setdefault(id(ses), {})
+    import carteles_zona
+    ocultar_carteles = carteles_zona.SOLO_GM and not __import__('configuracion').es_gm(getattr(ses, 'usuario', None))
     salida = []
     for s in submsgs:
+        if (ocultar_carteles and isinstance(s, (bytes, bytearray)) and len(s) >= 6 and s[:2] == b'\x08\x00'
+                and carteles_zona.es_cartel(struct.unpack_from('<I', s, 2)[0])):
+            continue                      # cartel de zona en prueba: solo para GM
         if isinstance(s, (bytes, bytearray)) and _es_npc(s):
             nombre = _nombre(s)
             if nombre.startswith(MARCA):

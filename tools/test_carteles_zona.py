@@ -24,3 +24,13 @@ def test_paquete_cartel():
 def test_texto_corto():
     assert cz._texto('Jackstraw Mige', [17]) == 'Jackstraw M Lv17'
     assert cz._texto('Slarm', [1, 3]) == 'Slarm Lv1-3'
+
+
+def test_solo_gm_mientras_se_prueba():
+    from types import SimpleNamespace as NS
+    pk = cz.poblar(6)[0]
+    p = NS(stage=6, nivel=1, rango=1, faction='Aurora', quests=[])
+    otro = NS(personaje=p, rol='mundo', usuario='alguien')
+    gm = NS(personaje=p, rol='mundo', usuario='baco01')
+    assert marcas_npc.marcar(otro, (pk,)) == ()
+    assert marcas_npc.marcar(gm, (pk,)) == (pk,)

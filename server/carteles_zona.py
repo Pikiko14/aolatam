@@ -13,9 +13,14 @@ import pathlib
 
 log = logging.getLogger('carteles_zona')
 
-SPRITE = 40702
-NPC_TYPE = 1                  # como las mascotas: sin ficha propia en npc.xml
-KLASS = 200
+# Primero se uso el tablon 40702 y se veia el edificio entero ("pero que no se vea eso", 06/11/2026). El 40442
+# (日版新手教學圖片頭像) es el unico objeto de npc.obd sin ninguna animacion: sin dibujo, solo queda el nombre.
+SPRITE = 40442
+NPC_TYPE = 1                  # sin ficha propia en npc.xml
+# 199 = NPC. Con 200 (el de las mascotas) el clic abria "Set Deal Password or not?".
+KLASS = 199
+# Un objeto sin animaciones podria tumbar al cliente: hasta comprobarlo, solo lo ven los GM (marcas_npc lo filtra).
+SOLO_GM = True
 EID_BASE = 7_000_000          # + stage * 1000 + n
 DISTANCIA_GRUPO = 40
 LARGO_NOMBRE = 16
