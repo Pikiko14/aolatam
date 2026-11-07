@@ -3480,6 +3480,24 @@ EMOTE_POR_POSICION = (0, 1, 2, 3, 4, 5, 6, 7, 11, 12, 20, 22, 8, 9, 10, 13, 14, 
 POSICIONES_EN_VENTANA = 34
 
 
+PRIMERA_COMPRADA = 12
+
+
+def posicion_de_tarjeta(indice):
+    """La posicion en la ventana que desbloquea una tarjeta de expresion (表情卡), o None.
+
+    El 動態資料1 de la tarjeta NO es el numero del emote: es el indice en la tabla de compradas, que empieza en la
+    posicion 12 (el 0x005C trae 37 banderas, posiciones 12..48, y las tarjetas van de 0 a 36). Todas dicen "se obtiene
+    una expresion nueva", incluso Wait o Train: con la lectura anterior 11 de las 22 caian en las 12 fijas y no hacian
+    nada ("Train ... no esta en mi pestana de emotes", 06/11/2026). Las 22 inglesas (0..21) llenan justo las posiciones
+    12..33, que es lo que pinta la ventana (MaxEmotionIcon = 34).
+    """
+    if indice is None:
+        return None
+    pos = PRIMERA_COMPRADA + int(indice)
+    return pos if PRIMERA_COMPRADA <= pos < POSICIONES_EN_VENTANA else None
+
+
 def posicion_de_emote(numero):
     """La posicion (lo que manda y entiende el cliente) del emote con ese numero, o None si la ventana no lo tiene."""
     if numero is None:

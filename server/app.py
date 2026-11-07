@@ -2041,7 +2041,7 @@ def _probar_gm(ses, cuerpo, addr) -> bool:
         if emotes is None:
             emotes = set()
             ses.personaje.emotes = emotes
-        for i in range(37):
+        for i in range(12, 49):          # las compradas: posiciones 12..48 (0..11 ya las tiene todo el mundo)
             emotes.add(i)
         if getattr(ses, 'usuario', None):
             cuentas.guardar_emotes(ses.usuario, ses.personaje.char_id, emotes)
@@ -19744,7 +19744,7 @@ class Servidor:
                 # La tarjeta trae el NUMERO del emote y el cliente trabaja con su POSICION en la ventana (ver
                 # inventario.EMOTE_POR_POSICION): se guardaba el numero y la ventana no la mostraba o mostraba
                 # otra ("revisa los emojis, algunos no estan funcionando", 05/11/2026).
-                emo_id = inv.posicion_de_emote(inv.emote_de_tarjeta(item_id))
+                emo_id = inv.posicion_de_tarjeta(inv.emote_de_tarjeta(item_id))
                 log.info("[%s] tarjeta de expresion %s: emote %s, posicion %s", addr, item_id,
                          inv.emote_de_tarjeta(item_id), emo_id)
                 if emo_id is None:

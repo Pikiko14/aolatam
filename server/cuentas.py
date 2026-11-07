@@ -929,7 +929,8 @@ def personaje_de(cuenta, ranura=0):
         apariencia=list(p.get('apariencia') or [0, 0, 0, 8, 8]),
         quest_kills={str(k): int(v) for k, v in (p.get('quest_kills') or {}).items()},
         expiracion_puesto=_exp_puesto,
-        emotes={int(x) for x in (p.get('emotes') or [])},
+        # Lo guardado antes del 06/11/2026 es el numero de la tarjeta (0..11), no la posicion: pasa a 12 + numero.
+        emotes={int(x) if int(x) >= 12 else 12 + int(x) for x in (p.get('emotes') or [])},
         quick_emotes={int(k): int(v) for k, v in (p.get('quick_emotes') or {0: -1, 1: -1, 2: -1, 3: -1}).items()},
         chat_filtros={int(k):int(v) for k,v in (p.get('chat_filtros') or {}).items()},
     )

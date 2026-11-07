@@ -1,7 +1,7 @@
-"""Las tarjetas de expresion desbloquean la POSICION del emote en la ventana, no su numero (05/11/2026).
+"""Las tarjetas de expresion desbloquean la posicion 12 + su 動態資料1 en la ventana (06/11/2026).
 
-"revisa los emojis, algunos no estan funcionando": Yawn (numero 13) marcaba la posicion 13, que la ventana pinta como
-el emote 9 (Knarl); y Yawn no salia. La tabla posicion -> numero es la de angel.dat (getemotbyindex).
+El 動態資料1 de la tarjeta es el indice en la tabla de compradas (0x005C: posiciones 12..48), no el numero del emote:
+"Train ... no esta en mi pestana de emotes" -- con la lectura anterior Train (7) caia en las 12 fijas y no hacia nada.
 """
 import pathlib
 import sys
@@ -13,16 +13,23 @@ import inventario as inv  # noqa: E402
 import presencia  # noqa: E402
 
 
-def test_numero_a_posicion():
-    assert inv.posicion_de_emote(inv.emote_de_tarjeta(3275)) == 8        # Laugh (11): basico, posicion 8
-    assert inv.posicion_de_emote(inv.emote_de_tarjeta(3277)) == 15       # Yawn (13)
-    assert inv.posicion_de_emote(inv.emote_de_tarjeta(3262)) == 0        # Wait (0)
-    assert inv.posicion_de_emote(inv.emote_de_tarjeta(3270)) == 12       # Make faces (8): la primera comprada
-    assert inv.posicion_de_emote(41) is None                              # no esta en la ventana
+def test_tarjeta_a_posicion():
+    assert inv.posicion_de_tarjeta(inv.emote_de_tarjeta(3262)) == 12      # Wait (0): la primera comprada
+    assert inv.posicion_de_tarjeta(inv.emote_de_tarjeta(3269)) == 19      # Train (7)
+    assert inv.posicion_de_tarjeta(inv.emote_de_tarjeta(3275)) == 23      # Laugh (11)
+    assert inv.posicion_de_tarjeta(inv.emote_de_tarjeta(3285)) == 33      # Silent (21): la ultima de la ventana
+    assert inv.posicion_de_tarjeta(22) is None                            # fuera de la ventana (MaxEmotionIcon 34)
+
+
+def test_ninguna_tarjeta_inglesa_cae_en_las_fijas():
+    for item in range(3262, 3286):
+        if inv.es_tarjeta_emocion(item):
+            pos = inv.posicion_de_tarjeta(inv.emote_de_tarjeta(item))
+            assert pos is not None and pos not in inv.EMOTES_BASICOS, item
 
 
 def test_la_ventana_marca_la_posicion_y_se_puede_usar():
-    pos = inv.posicion_de_emote(13)                                        # Yawn
+    pos = inv.posicion_de_tarjeta(7)                                       # Train
     flags = presencia.paquete_emotes_desbloqueados({pos})[2:]
     assert flags[pos - 12] == 1 and sum(flags) == 1
     assert inv.puede_usar_emocion(NS(emotes={pos}), pos)
