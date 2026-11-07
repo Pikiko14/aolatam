@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-07",
+    "titulo": "Power Shield",
+    "texto": "Power Shield now works: while it lasts, the damage you take is paid with MP instead of HP, up to its limit (1350 to 3000 damage depending on the level). Silence cannot be used on you while it is active."
+  },
+  {
+    "fecha": "2026-11-07",
     "titulo": "Expression Codes",
     "texto": "Expression Code cards (Train, Wait, Laugh, Yawn, Love...) now unlock a new expression at the end of the Emotes window, as their description says. If you used a Laugh card before, it is now in your window."
   },
