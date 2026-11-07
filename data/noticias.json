@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-07",
+    "titulo": "Custom events",
+    "texto": "New custom event system on the server: maps can now have events when you enter them, at scheduled times or after hunting, with rewards, experience, portals, monster invasions and server-wide announcements. Stay tuned for the first ones!"
+  },
+  {
+    "fecha": "2026-11-07",
     "titulo": "Map help and stronger monsters",
     "texto": "NPCs that have a quest for you now show [!] before their name. All monsters now hit 50% harder."
   },
