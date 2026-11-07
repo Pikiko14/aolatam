@@ -2522,6 +2522,24 @@ def indice_opcion(valor: int) -> int:
     return valor - PRIMERA_OPCION
 
 
+def acciones_de(linea: bytes):
+    """Las acciones (una por opcion, 0 = ninguna) que van detras de las opciones de una linea, o []."""
+    ops = opciones_de(linea)
+    base = 9 + 4 * len(ops)
+    if not ops or len(linea) < base + 4 * len(ops):
+        return []
+    return [struct.unpack_from('<I', linea, base + 4 * k)[0] for k in range(len(ops))]
+
+
+def opcion_de_valor(linea: bytes, valor: int):
+    """La opcion a la que corresponde la ACCION que devuelve el cliente (Cupid manda 1000030 por "Set the place for your
+    revival", no la posicion de la opcion), o None."""
+    acc = acciones_de(linea)
+    if valor and valor in acc:
+        return opciones_de(linea)[acc.index(valor)]
+    return None
+
+
 def opciones_de(linea: bytes):
     """Los ids de opcion que lleva una linea de dialogo."""
     if len(linea) < 9 or not linea[7]:

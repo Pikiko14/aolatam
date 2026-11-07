@@ -1535,6 +1535,7 @@ def datos_magia(magic_id: int) -> dict:
             desc = str(d.get('desc') or d.get('說明') or '')
             act = str(d.get('施展動作') or '')
             res['accion'] = act
+            res['rama_skill'] = str(d.get('技能限制1') or '')
             # magic.xml distingue "施法動作" (cast) de "攻擊動作"
             # (ataque fisico). Ese dato decide el byte 20 del 0x0011.
             res['es_magia_visual'] = '\u65bd\u6cd5' in act
@@ -3044,7 +3045,8 @@ ANIM_DOS_MANOS_TEST = 0     # lanza, o cualquier arma a dos manos
 #   9 espada, 10 hacha, 11 lanza, 17 arco, 30 daga, 8 baston
 GOLPE_POR_SKILL = {
     9: (3, 1480),
-    30: (3, 1480),
+    # ShadowBlade (Assassin): "animacion de basico debe ser la 1" (07/11/2026), como el tajo de una mano con escudo.
+    30: (3, 1),
     # Lanza: (2, 827) salio de una captura pero en este cliente no animaba. (2, 181)
     # lo eligio el usuario probando en el juego con /anim (30/10/2026).
     11: (2, 181),
@@ -3063,6 +3065,15 @@ GOLPE_CON_ESCUDO = (3, 1)
 SKILLS_GOLPE_CON_ESCUDO = {9}
 ANIM_POR_SKILL = {}
 # -------------------------------------------------------------------------
+
+
+RAMAS_SIN_GOLPE_BASICO = {'影刃技能'}      # ShadowBlade (Assassin)
+
+
+def habilidad_sin_golpe_basico(mag) -> bool:
+    """Si al usar esta habilidad NO se manda tambien el golpe basico del arma (0x000A)."""
+    mag = mag or {}
+    return mag.get('accion') == '無動作' or mag.get('rama_skill') in RAMAS_SIN_GOLPE_BASICO
 
 
 def golpe_de_arma(item_id: int = 0, duales: bool = False, escudo: bool = False) -> tuple:

@@ -12353,7 +12353,15 @@ class Servidor:
                 personajes.guardar(ses.usuario, nuevo, cuentas.ARCHIVO)
             except ValueError as exc:
                 log.warning('[%s] CREAR RECHAZADO: %s', addr, exc)
-                ses.enviar(struct.pack('<HH', 0x0001, 1) + bytes(150))
+                # "si elijo uno en uso no me dice que el nombre esta en uso, solo dice angel online" (07/11/2026). Con el
+                # codigo 1 el cliente sacaba el cuadro vacio. Los textos de login de string.xml van seguidos desde el 151
+                # (151 cuenta ya conectada, 152 clave mala, 153 "The character name is unavailable.", 154 "Create a
+                # character failed"...): se manda 3 = 153 para el nombre y 4 = 154 para lo demas. SIN VERIFICAR en el
+                # cliente: si sigue saliendo vacio, el numero esta en configuracion.ERROR_CREAR_*.
+                import configuracion as _cf_cr
+                _cod_cr = (getattr(_cf_cr, 'ERROR_CREAR_NOMBRE_EN_USO', 3) if 'name' in str(exc).lower()
+                           else getattr(_cf_cr, 'ERROR_CREAR_OTRO', 4))
+                ses.enviar(struct.pack('<HH', 0x0001, _cod_cr) + bytes(150))
                 return
             ses.enviar(personajes.respuesta_creacion(d['ranura'], nuevo))
             log.info(f"[{addr}] PERSONAJE CREADO '{nuevo['nombre']}' "
@@ -16387,8 +16395,12 @@ class Servidor:
                         _cb.confirmar_cast(objetivo, m.tile_x, m.tile_y),
                         _cb.numero_de_dano(yo, objetivo, dano, tipo, efecto=atk_efecto,
                                            cast_time=cast_time, es_magia=False),
-                        _cb.ataque(yo, objetivo, _anim_golpe, _tipo_golpe),
                     ]
+                    # El 0x000A es el GOLPE BASICO del arma: con el, usar una habilidad se veia ademas como un
+                    # basico ("cuando uso 1 ataque hace la animacion de basico... el ataque spell es el turno de
+                    # ataque", 07/11/2026, Assassin). No va con las de ShadowBlade ni con las 無動作 (sin animacion).
+                    if not _cb.habilidad_sin_golpe_basico(mag):
+                        salida_golpe.append(_cb.ataque(yo, objetivo, _anim_golpe, _tipo_golpe))
                     _cierre_skill = _cb.cierre_de_dano(yo, objetivo, tipo,
                                                        efecto=atk_efecto, es_magia=False)
             else:
@@ -21436,8 +21448,17 @@ class Servidor:
                 _i = dialogos.indice_opcion(_v)
                 import dialogos as _dlg_mod
                 _el = _ops[_i] if 0 <= _i < len(_ops) else None
+                if _el is None:
+                    # El cliente puede devolver la ACCION de la opcion en vez de su posicion (Cupid: 1000030 =
+                    # "Set the place for your revival"). Sin traducirla no se guardaba nunca el punto de revivir
+                    # ("cuando muera debo aparecer en el cupido que guarde", 07/11/2026).
+                    for _l_ac in reversed(g[:paso] if 0 < paso <= len(g) else g):
+                        _el = dialogos.opcion_de_valor(_l_ac, _v)
+                        if _el is not None or dialogos.opciones_de(_l_ac):
+                            break
                 if _el is None and (_v in _ops or _v > 100):
                     _el = _v
+                log.info(f"[{addr}] dialogo {ent}: el cliente manda {_v} -> opcion {_el}")
                 val = getattr(ses, 'dlg_val', 4)
                 if _el is None:
                     # Sin opcion que corresponda no hay nada que hacer: se

@@ -592,7 +592,8 @@ def regalo(ids):
         salida.append((4, MUNICION_HONDA))
 
     # Clases de productor: reciben el Freshman Cask, el ride robot basico (ranura montura 10)
-    CLASES_PROD = {10, 11, 12, 13, 14, 15, 19, 20}
+    # 14 es Assassin (class.xml), no un productor: le daban el robot de montura al elegirla (07/11/2026).
+    CLASES_PROD = {10, 11, 12, 13, 15, 19, 20}
     if any(i in SKILLS_PRODUCCION for i in skill_ids) or class_id(skill_ids) in CLASES_PROD:
         salida.append((10, CASK_PRODUCTOR))
 
@@ -1159,7 +1160,8 @@ def premio_final(ids):
     """
     salida = [(5, 28), (6, 30)]
     skill_ids = [s[0] if isinstance(s, (list, tuple)) else int(s) for s in (ids or [])]
-    CLASES_PROD = {10, 11, 12, 13, 14, 15, 19, 20}
+    # 14 es Assassin (class.xml), no un productor: le daban el robot de montura al elegirla (07/11/2026).
+    CLASES_PROD = {10, 11, 12, 13, 15, 19, 20}
     if any(i in SKILLS_PRODUCCION for i in skill_ids) or class_id(skill_ids) in CLASES_PROD:
         salida.append((10, CASK_PRODUCTOR))
     # Sin cajas: ni la Lv 1-10 Growth Box ("que no me de mas esto") ni las de clase, Newborn, Newbie y Risk Gift Box
