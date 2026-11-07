@@ -677,6 +677,46 @@ def _tope_bolsa(bolsa) -> int:
     return PROP_EXTRA[-1]
 
 
+def _equipo_que_ya_no_vale(ses, habilidades):
+    """Al cambiar de rama: {ranura_equipo: ranura_mochila} de lo puesto que con `habilidades` ya no se puede llevar
+    (inventario.falta_requisito), cada pieza con su hueco libre. None si no caben todas en la mochila.
+
+    "Cuando me cambio de Mantle a Vestment o Garment sigo manteniendo el set puesto y la defensa ... se debe quitar lo
+    que lleva puesto validando tenga espacio en la bolsa, si no tiene el espacio falla el cambio" (07/11/2026)."""
+    import inventario as _inv_q
+    p = ses.personaje
+    bolsa = ses.inventario or {}
+    fuera = [r for r in sorted(bolsa) if _inv_q.es_equipo(r) and int(r) not in (558, _inv_q.RANURA_BURBUJA)
+             and bolsa.get(r)
+             and _inv_q.falta_requisito(int(bolsa[r]), getattr(p, 'nivel', 1), habilidades)]
+    plan, ocupadas = {}, dict(bolsa)
+    for r in fuera:
+        hueco = _ranura_libre(ocupadas)
+        if hueco is None:
+            return None
+        plan[r] = hueco
+        ocupadas[hueco] = bolsa[r]
+    return plan
+
+
+def _quitar_equipo(ses, plan):
+    """Pasa a la mochila lo de `plan` ({ranura_equipo: hueco}) y devuelve los paquetes: casillas, vida/mana y
+    apariencia. Las mejoras e instancias viajan con la pieza (_mover_inst)."""
+    import combate as _cb_qe
+    p = ses.personaje
+    bolsa = ses.inventario
+    for r, hueco in plan.items():
+        bolsa[hueco] = bolsa.pop(r)
+        _cantidades(ses)[hueco] = _cantidades(ses).pop(r, 1)
+        _mover_inst(ses, r, hueco)
+    p.hp = min(p.hp, _vida_max(p, bolsa=bolsa))
+    p.mp = min(p.mp, _mana_max(p, bolsa=bolsa))
+    salida = list(_refrescar(ses, list(plan) + list(plan.values())))
+    salida += [_cb_qe.atributo(p.entity_id, p.hp, _cb_qe.KIND_HP), _cb_qe.atributo(p.entity_id, p.mp, _cb_qe.KIND_MP)]
+    salida.extend(_apariencia(ses))
+    return salida
+
+
 def _falta_requisito(ses, item_id, ranura):
     """Nivel y rama que pide item.xml para equipar (inventario.falta_requisito), o None. La mascota (558) no: su
     等級限制 es otra cosa."""
@@ -17762,6 +17802,19 @@ class Servidor:
                                 f"{_sk.nombre_rama(_conf_sw)}")
                     return
 
+                # Lo puesto que la rama que sale permitia (la armadura de Mantle al pasar a Vestment, el arma...) se
+                # quita a la mochila; si no cabe, el cambio no se hace.
+                _habs_nuevas = list(_habs)
+                _nv_q, _xp_q = (getattr(_p, 'banco_habilidades', None) or {}).get(_dentro, (1, 0))
+                _habs_nuevas[_pos] = (_dentro, _nv_q, _xp_q)
+                _plan_eq = _equipo_que_ya_no_vale(ses, _habs_nuevas)
+                if _plan_eq is None:
+                    log.warning(f"[{addr}] cambio de rama rechazado: no cabe en la mochila el equipo de "
+                                f"{_sk.nombre_rama(_fuera)}")
+                    ses.enviar(_cl2.aviso('Not enough space in your bag to unequip the items that need '
+                                          '%s. Free some space and try again.' % _sk.nombre_rama(_fuera), tipo=0))
+                    return
+
                 # Guardar el progreso de la rama que sale en el banco de habilidades
                 if not hasattr(_p, 'banco_habilidades') or _p.banco_habilidades is None:
                     _p.banco_habilidades = {}
@@ -17772,6 +17825,7 @@ class Servidor:
                 _habs[_pos] = (_dentro, _nv_rec, _exp_rec)
                 _p.habilidades = _habs
                 _p.class_id = _sk.calcular_class_id([h[0] for h in _p.habilidades])
+                _salida_eq = _quitar_equipo(ses, _plan_eq) if _plan_eq else []
 
                 # El orden es el del servidor real: primero aviso de la que entra,
                 # luego la que sale, stats, arbol, y 0x001D + aviso por cada hechizo nuevo.
@@ -17789,9 +17843,13 @@ class Servidor:
                 if _ranura_cristal is not None:
                     _sacar(ses, _ranura_cristal, 1)
                     _salida.extend(_refrescar(ses, [_ranura_cristal]))
+                _salida.extend(_salida_eq)
 
                 ses.enviar(*_salida)
-                if _ranura_cristal is not None and getattr(ses, 'usuario', None):
+                if _plan_eq:
+                    __import__('presencia').notificar_equipo(ses)
+                    log.info(f"[{addr}] cambio de rama: se quita a la mochila {_plan_eq}")
+                if (_ranura_cristal is not None or _plan_eq) and getattr(ses, 'usuario', None):
                     _guardar_bolsa(ses, _p.char_id)
                 if getattr(ses, 'usuario', None):
                     cuentas.guardar_habilidades(ses.usuario, _p.char_id, _p.habilidades)
