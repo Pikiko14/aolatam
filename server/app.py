@@ -8265,9 +8265,11 @@ def _tw_sacar_de_las_arenas():
     import totem_war as _tw_s
     for s in _tw_sesiones():
         p = s.personaje
-        if getattr(s, 'tw_modo_pvp', False) and p is not None:
+        # A TODOS los que esten en un mapa de la guerra, no solo a los apuntados: el marcador K.O. y el aro se quedaban
+        # al terminar ("termino el totem war y me sigue saliendo el coso de KO", 07/11/2026).
+        if p is not None and (getattr(s, 'tw_modo_pvp', False) or _tw_s.es_mapa_tw(getattr(p, 'stage', 0))):
             s.tw_modo_pvp = False
-            s.enviar(_tw_s.modo_pvp(p.entity_id, False))
+            s.enviar(_tw_s.modo_pvp(p.entity_id, False), _tw_s.kills_ko(p.entity_id, 0, 0))
         if _tw_s.es_arena(getattr(p, 'stage', 0)):
             try:
                 st, x, y = _tw_s.redirigir(s, p.stage, p.tile_x, p.tile_y)
