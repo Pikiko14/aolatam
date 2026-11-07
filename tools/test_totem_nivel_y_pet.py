@@ -91,4 +91,5 @@ def test_efecto_por_nivel_y_tope_5():
 
 
 def test_al_bajar_no_usa_los_de_subir():
-    assert tw.efecto_de_nivel(3, baja=True) is None and tw.efecto_de_nivel(3) == 8
+    assert [tw.efecto_de_nivel(n, baja=True) for n in (1, 2, 3, 4, 5)] == [11, 12, 13, 14, None]
+    assert tw.efecto_de_nivel(3) == 8

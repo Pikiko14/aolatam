@@ -266,7 +266,7 @@ NIVEL_TOTEM_CON_EFECTO = 5
 
 # Los de BAJAR de nivel son otros: {nivel al que baja: efecto}. Pendiente de que el usuario los pruebe con /efecto
 # ("solo cuando se sube de nivel esos efectos, ya te digo los de cuando se bajan", 07/11/2026).
-EFECTOS_TOTEM_BAJA = {}
+EFECTOS_TOTEM_BAJA = {4: 14, 3: 13, 2: 12, 1: 11}     # probados por el usuario con /efecto (07/11/2026)
 
 
 def efecto_de_nivel(nivel, baja=False):
