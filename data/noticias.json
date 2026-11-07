@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-07",
+    "titulo": "Bosses",
+    "texto": "Field bosses now take 20 minutes to come back after they die."
+  },
+  {
+    "fecha": "2026-11-07",
     "titulo": "Quest rewards",
     "texto": "Quests now give 10% of the experience they used to give. The quest window still shows the old amount."
   },
