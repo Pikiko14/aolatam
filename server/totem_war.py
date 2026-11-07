@@ -703,7 +703,8 @@ def nivel_totem(stage):
                             (_tw(stage),)).fetchone()
         finally:
             con.close()
-    return (int(r[0]), int(r[1])) if r else (1, 0)
+    # Los guardados con el tope de antes (8) se leen con el de ahora (NIVEL_MAX_TOTEM).
+    return (min(int(r[0]), NIVEL_MAX_TOTEM), int(r[1])) if r else (1, 0)
 
 
 def puntos_para_subir(nivel) -> int:
