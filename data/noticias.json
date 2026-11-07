@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-07",
+    "titulo": "Totem War fixes",
+    "texto": "Everyone now sees the same totem level, and it updates as soon as it levels up during the war. A totem that levels up during the war also gets the health of its new level. Pets and summons no longer attack the totem of their own faction or league."
+  },
+  {
+    "fecha": "2026-11-07",
     "titulo": "Skills and basic attacks",
     "texto": "Using a skill no longer plays a basic attack too, for every class: the skill is your attack for that turn. After a skill, basic attacks only start again when you click the monster."
   },
