@@ -61,6 +61,7 @@ def battle(monkeypatch):
 def test_max_mana_buff_never_refills_current_resources(battle, skill, bonus):
     before_max = app._mana_max(battle.p, {})
     cost = cb.datos_magia(skill)['mp']
+    battle.p.habilidades = [(3, 30, 0)]      # 270 es de Chaos: hay que llevar la rama
     battle.cast(skill)
     assert skill in battle.p.buffs
     assert battle.p.mp == 50000 - cost

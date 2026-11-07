@@ -18,18 +18,22 @@ import skills
 BASIC_BEATING = 701   # Basic Beating I, tecnica de Axe (rama 10)
 
 
-def _atacar(habilidades):
+def _golpes(packets):
+    return [x for x in packets if x[:2] in (struct.pack('<H', 0x000A), struct.pack('<H', 0x0011))]
+
+
+def _atacar(habilidades, tipo=BASIC_BEATING, arma=19832):
     p = login.Personaje(hp=20000, hp_max=100000, mp=50000, mp_max=150000)
     p.tile_x, p.tile_y = 100, 100
     p.habilidades = habilidades
     m = cb.Monstruo(9999, 999999, 'Dummy', (100, 100))
     m.hp = m.hp_max = 10 ** 9   # que no muera: aqui solo importa si el golpe entra
     packets = []
-    s = NS(personaje=p, rol='mundo', entity_id=p.entity_id, inventario={3: 19832},
+    s = NS(personaje=p, rol='mundo', entity_id=p.entity_id, inventario={3: arma},
            monstruos={9999: m}, usuario=None, muerto=False, objetivo_actual=None, sp=5000,
            enviar=lambda *pk: packets.extend(pk), enviar_inmediato=lambda *pk: packets.extend(pk))
     server = app.Servidor.__new__(app.Servidor)
-    server.manejar(s, 0x0006, None, None, 'test', struct.pack('<HI', BASIC_BEATING, 9999))
+    server.manejar(s, 0x0006, None, None, 'test', struct.pack('<HI', tipo, 9999))
     return packets, m
 
 
@@ -39,7 +43,7 @@ def test_basic_beating_es_de_axe():
 
 def test_con_spear_ya_no_se_puede_usar_la_tecnica_de_axe():
     packets, m = _atacar([(11, 30, 0), (12, 1, 0)])   # Spear + Enhance, sin Axe
-    assert not packets
+    assert not _golpes(packets)                       # solo el aviso
     assert m.hp == m.hp_max
 
 
@@ -53,3 +57,17 @@ def test_recovery_shield_vale_con_cualquiera_de_sus_ramas():
     import skills
     assert skills.ramas_de_magia(821) == {9, 10, 11, 17, 30}
     assert skills.ramas_de_magia(703) == {10}
+
+
+SHOCK_WAVE = 1      # Shock Wave I, de Life (rama 1)
+
+
+def test_mago_con_wraith_no_usa_las_de_life():
+    """"baco se puso life, luego se cambio a wraith y podia seguir usando los poderes de life" (07/11/2026)."""
+    packets, m = _atacar([(2, 30, 0)], tipo=SHOCK_WAVE, arma=0)
+    assert not _golpes(packets) and m.hp == m.hp_max
+
+
+def test_mago_con_life_si_las_usa():
+    packets, _ = _atacar([(1, 30, 0)], tipo=SHOCK_WAVE, arma=0)
+    assert _golpes(packets)

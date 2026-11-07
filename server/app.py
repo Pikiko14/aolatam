@@ -14522,9 +14522,6 @@ class Servidor:
                          f"tile ({tx},{ty}) cuerpo {cuerpo.hex(' ')}")
 
             mag = _cb.datos_magia(tipo) if tipo != _cb.ATAQUE_NORMAL else {}
-            if mag.get('target') == '屍體' and ses.personaje:
-                _revivir_con_hechizo(ses, addr, tipo, mag, objetivo)
-                return
             # ANDANDO NO SE DA EL GOLPE BASICO: el cliente lo sigue pidiendo mientras el jugador corre, y el
             # servidor lo aceptaba midiendo el alcance desde el destino (tile_x/tile_y), no desde donde va.
             # Le queda mas de una casilla del tramo: se suelta el objetivo y no sale el golpe.
@@ -14579,7 +14576,9 @@ class Servidor:
                     ses.enviar(__import__('clases').aviso('Cannot use skills while riding a robot.', tipo=7))
                     log.info(f"[{addr}] habilidad {tipo} rechazada: lleva un robot puesto")
                     return
-                if _rama_tipo in _sk_arma.RAMAS_MELEE:
+                # Y las de mago (Life, Wraith, Chaos, Earth): "baco se puso life, luego se cambio a wraith y podia
+                # seguir usando los poderes de life" (07/11/2026).
+                if _rama_tipo in _sk_arma.RAMAS_MELEE or _rama_tipo in _sk_arma.RAMAS_MAGIA:
                     _ramas_actuales = {h[0] if isinstance(h, (list, tuple)) else h
                                        for h in (ses.personaje.habilidades or [])}
                     # Vale cualquiera de las ramas que admite (Recovery Shield II: Sword, Axe, Spear, Longbow o
@@ -14587,6 +14586,8 @@ class Servidor:
                     if not (_sk_arma.ramas_de_magia(tipo) & _ramas_actuales):
                         log.info(f"[{addr}] habilidad {tipo} rechazada: ya no se lleva "
                                  f"la rama {_sk_arma.nombre_rama(_rama_tipo)}")
+                        ses.enviar(__import__('clases').aviso(
+                            'You need the %s skill equipped to use this.' % _sk_arma.nombre_rama(_rama_tipo), tipo=7))
                         return
             # Una habilidad de arma solo se usa con esa arma en una mano (o el escudo en la otra): con una espada no se lanzan las de hacha. Ni el robot sustituye al arma.
             _req_arma = mag.get('equip_req') if mag else None
@@ -14598,6 +14599,10 @@ class Servidor:
                     ses.enviar(_cl_req.aviso('You need the proper weapon equipped to use this skill.', tipo=7))
                     log.info('[%s] habilidad %s rechazada: pide %s y lleva %s', addr, tipo, _req_arma, _manos)
                     return
+            # REVIVAL (objetivo cadaver): despues de mirar la rama, antes del camino de los buffs.
+            if mag.get('target') == '屍體' and ses.personaje:
+                _revivir_con_hechizo(ses, addr, tipo, mag, objetivo)
+                return
             # SP Y MANA ANTES DE GASTAR NADA. Cada camino de abajo cobraba el SP antes
             # de mirar el mana (sin mana, se perdia el SP) y marcaba el cooldown antes
             # de los dos (sin mana, el hechizo quedaba en cooldown sin salir); el SP

@@ -42,6 +42,7 @@ def test_el_buff_se_relanza_al_acabar_su_enfriamiento(monkeypatch):
     monkeypatch.setattr(app, '_stats_ses', lambda *a: b'')
     monkeypatch.setattr(app, '_receptores_de_buff', lambda *a: ([], True))
     p = login.Personaje(hp=5000, hp_max=5000, mp=5000, mp_max=5000)
+    p.habilidades = [(3, 30, 0)]     # Chaos: Charming Blessing (202) y Sage Blessing (203) son suyas
     s = SimpleNamespace(personaje=p, rol='mundo', entity_id=p.entity_id, inventario={}, monstruos={},
                         usuario=None, muerto=False, enviar=lambda *a: None, enviar_inmediato=lambda *a: None)
     srv = app.Servidor.__new__(app.Servidor)
@@ -71,6 +72,7 @@ def test_al_rechazar_se_le_dice_al_cliente_cuanto_falta(monkeypatch):
     monkeypatch.setattr(app, '_stats_ses', lambda *a: b'')
     monkeypatch.setattr(app, '_receptores_de_buff', lambda *a: ([], True))
     p = login.Personaje(hp=5000, hp_max=5000, mp=5000, mp_max=5000)
+    p.habilidades = [(3, 30, 0)]     # Chaos: Charming Blessing (202) y Sage Blessing (203) son suyas
     pk = []
     s = SimpleNamespace(personaje=p, rol='mundo', entity_id=p.entity_id, inventario={}, monstruos={},
                         usuario=None, muerto=False, enviar=lambda *a: pk.extend(a), enviar_inmediato=lambda *a: pk.extend(a))
@@ -101,6 +103,7 @@ def test_el_segundo_buff_sale_al_acabar_la_animacion_del_primero(monkeypatch):
     monkeypatch.setattr(app, '_stats_ses', lambda *a: b'')
     monkeypatch.setattr(app, '_receptores_de_buff', lambda *a: ([], True))
     p = login.Personaje(hp=5000, hp_max=5000, mp=5000, mp_max=5000)
+    p.habilidades = [(3, 30, 0)]     # Chaos: Charming Blessing (202) y Sage Blessing (203) son suyas
     pk = []
     s = SimpleNamespace(personaje=p, rol='mundo', entity_id=p.entity_id, inventario={}, monstruos={},
                         usuario=None, muerto=False, enviar=lambda *a: pk.extend(a), enviar_inmediato=lambda *a: pk.extend(a))
