@@ -13148,6 +13148,11 @@ class Servidor:
                                                         _cb.numero_flotante(yo, suyo),
                                                         _cb.atributo(yo, pj.hp, _cb.KIND_HP),
                                                     ]
+                                                    if atk_id != 656:
+                                                        # Habilidad del bicho (Santa Clausula): sin la fase 0x80 el
+                                                        # efecto no se veia ("no veo lance poderes", 06/11/2026).
+                                                        pkgs_imp_yo.insert(1, _cb.cierre_de_dano(m.entity_id, yo, atk_id, efecto=ef_atk))
+                                                        log.info('[%s] %s usa %s: %d de dano', addr, m.nombre, atk_id, suyo)
                                                     if _sa_bid is not None and pj.hp > 0:
                                                         _sa_pct = 0.12 + 0.02 * (int(_sa_bid) - 13674)
                                                         _mp_rec = max(1, int(round(suyo * _sa_pct)))

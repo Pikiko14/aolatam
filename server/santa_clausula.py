@@ -159,6 +159,7 @@ def area_a_otros(ses, m, magia, efecto):
             p.hp = max(0, p.hp - dano)
             yo = p.entity_id
             pk = [cb.numero_de_dano(m.entity_id, yo, dano, ataque=magia, efecto=efecto),
+                  cb.cierre_de_dano(m.entity_id, yo, magia, efecto=efecto),
                   cb.numero_flotante(yo, dano), cb.atributo(yo, p.hp, cb.KIND_HP)]
             if p.hp <= 0:
                 app._quitar_buffs_al_morir(s)
