@@ -8470,28 +8470,34 @@ def _usar_pergamino_revivir(ses, addr, ranura, pct):
     log.info('[%s] %s revive con un pergamino (%d%%)', addr, p.nombre, pct)
 
 
-ALMA_TOTEM_CASILLAS = 3
+ALMA_TOTEM_CASILLAS = 5
 
 
-def _alma_junto_al_totem(ses, addr):
-    """En la Totem War el alma que llega junto al totem de SU faccion revive alli ("no me deja seleccionar el totem
-    para revivir", 07/11/2026). El cliente no deja clicar un monstruo siendo alma (no llega ningun 0x0005), asi que
-    vale con acercarse a ALMA_TOTEM_CASILLAS casillas."""
+def _alma_pulsa_totem(ses, addr, m):
+    """En la Totem War el alma que pulsa el totem de SU faccion revive alli ("no me deja seleccionar el totem para
+    revivir" / "que detecte el click en el totem", 07/11/2026).
+
+    El cliente solo deja pulsar un totem siendo alma si tiene la fila del 0x0131 de la clave del mapa (0x5b3d40;
+    los campos no tienen 原領地編號 y su clave es 0): totem_war.paquete_territorios la manda con faccion 0, asi que
+    la faccion se mira aqui."""
+    import clases as _cl_at
     p = ses.personaje
     try:
         import totem_war as _tw_al
         mia = _tw_al.codigo_faccion(p)
-        if not mia or _tw_al.faccion_duena(p.stage) != mia:
-            return
+        es_mio = bool(mia) and _tw_al.faccion_duena(p.stage) == mia
     except Exception:
-        log.debug('alma junto al totem', exc_info=True)
+        log.debug('alma pulsa el totem', exc_info=True)
         return
-    for m in list((getattr(ses, 'monstruos', None) or {}).values()):
-        if (getattr(m, 'es_totem_tw', False) and getattr(m, 'vivo', True)
-                and max(abs(int(m.tile_x) - p.tile_x), abs(int(m.tile_y) - p.tile_y)) <= ALMA_TOTEM_CASILLAS):
-            _revivir_alli(ses, 100)
-            log.info('[%s] %s revive como alma junto al totem de su faccion', addr, p.nombre)
-            return
+    if not es_mio:
+        ses.enviar(_cl_at.aviso('You can only revive at a totem of your own faction.', tipo=7))
+        log.info('[%s] %s (alma) pulsa un totem que no es de su faccion', addr, p.nombre)
+        return
+    if max(abs(int(m.tile_x) - p.tile_x), abs(int(m.tile_y) - p.tile_y)) > ALMA_TOTEM_CASILLAS:
+        log.info('[%s] %s (alma) pulsa el totem desde lejos', addr, p.nombre)
+        return
+    _revivir_alli(ses, 100)
+    log.info('[%s] %s revive como alma en el totem de su faccion', addr, p.nombre)
 
 
 def _revivir_con_hechizo(ses, addr, tipo, mag, objetivo):
@@ -20907,6 +20913,13 @@ class Servidor:
             import dialogos
             ent = struct.unpack_from('<I', cuerpo, 0)[0]
             log.info(f"[{addr}] CLIC 0x0005 en {ent} (es mob: {ent in (getattr(ses, 'monstruos', None) or {})})")
+            if ses.personaje and getattr(ses, 'muerto', False) and getattr(ses, 'fantasma', False):
+                # Alma que pulsa un totem: si es el de su faccion revive alli; si no, nada (para un vivo el 0x0005
+                # sobre el totem es el golpe basico: no debe seguir por ese camino).
+                _m_alma = (getattr(ses, 'monstruos', None) or {}).get(ent)
+                if _m_alma is not None and getattr(_m_alma, 'es_totem_tw', False):
+                    _alma_pulsa_totem(ses, addr, _m_alma)
+                    return
             if __import__('carteles_zona').es_cartel(ent):
                 return                                  # cartel de zona: solo se lee
             if ses.personaje and __import__('trade_routes').pulsar(ses, ent):
@@ -23082,8 +23095,6 @@ class Servidor:
                         continue
                     _vistos.add(_evc)
                     _eventos_al_pisar(ses, addr, _cas)
-                if getattr(ses, 'fantasma', False) and getattr(ses, 'muerto', False):
-                    _alma_junto_al_totem(ses, addr)
                 # CHOCAR al llegar (ver _choques_al_llegar). Se espera lo que
                 # tarda en andar el tramo: el servidor le pone la casilla de
                 # destino al recibir el 0x0004 y, si se mirara ya, el menu del

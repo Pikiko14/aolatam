@@ -56,7 +56,7 @@ def test_revival_sobre_un_vivo_no_hace_nada():
     assert not _efectos(a_ve) and cura.personaje.mp == 5000
 
 
-def test_alma_junto_al_totem_de_su_faccion_revive(monkeypatch):
+def test_alma_que_pulsa_el_totem_de_su_faccion_revive(monkeypatch):
     import totem_war
     presencia._POR_MAPA.clear()
     ve = []
@@ -67,13 +67,22 @@ def test_alma_junto_al_totem_de_su_faccion_revive(monkeypatch):
     monkeypatch.setattr(totem_war, 'codigo_faccion', lambda p: 2)
     duena = {'f': 1}
     monkeypatch.setattr(totem_war, 'faccion_duena', lambda st: duena['f'])
-    alma.monstruos = {9: NS(es_totem_tw=True, vivo=True, tile_x=102, tile_y=101)}
-    app._alma_junto_al_totem(alma, 't')
+    totem = NS(es_totem_tw=True, vivo=True, tile_x=102, tile_y=101)
+    app._alma_pulsa_totem(alma, 't', totem)
     assert alma.muerto                                      # totem de otra faccion: nada
     duena['f'] = 2
-    alma.monstruos[9].tile_x = 110
-    app._alma_junto_al_totem(alma, 't')
+    totem.tile_x = 120
+    app._alma_pulsa_totem(alma, 't', totem)
     assert alma.muerto                                      # lejos: nada
-    alma.monstruos[9].tile_x = 102
-    app._alma_junto_al_totem(alma, 't')
+    totem.tile_x = 102
+    app._alma_pulsa_totem(alma, 't', totem)
     assert not alma.muerto and alma.personaje.hp == 1000
+
+
+def test_territorios_lleva_la_fila_de_clave_0():
+    import struct as st
+    import totem_war
+    pk = totem_war.paquete_territorios()
+    n = st.unpack_from('<H', pk, 2)[0]
+    filas = [st.unpack_from('<III', pk, 4 + 29 * i) for i in range(n)]
+    assert (0, 0, 0) in filas

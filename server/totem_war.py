@@ -502,6 +502,10 @@ def paquete_territorios():
         if campo not in CAMPO_A_TW:
             filas += [struct.pack('<III17s', campo, 0, 0, b''), struct.pack('<III17s', st, 0, 0, b'')]
     filas.append(struct.pack('<III17s', 28, 0, 0, b''))
+    # Clave 0, faccion 0: la de los mapas sin 原領地編號 (los campos). Sin ella el cliente no deja al ALMA pulsar el
+    # totem (0x5b3d40 busca la fila de la clave del mapa; con faccion 0 vale para todas). La faccion la mira
+    # app._alma_pulsa_totem. "que detecte el click en el totem", 07/11/2026.
+    filas.append(struct.pack('<III17s', 0, 0, 0, b''))
     return struct.pack('<HH', 0x0131, len(filas)) + b''.join(filas)
 
 
