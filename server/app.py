@@ -6859,6 +6859,48 @@ def _sigilo_activo(ses, ahora=None):
     return (ahora or time.time()) < float(getattr(ses, 'sigilo_hasta', 0) or 0)
 
 
+# El SIGILO se pinta con el 0x0185 (estado magico de 64 bits de la entidad) y el bit 潛行 = 0x0000004000000000 de la
+# cabecera de magic.xml, o sea el 0x40 de la palabra alta. Manejador 0x60fc60 -> 0x4b6790 (ent+0x258/+0x25c); el dibujo
+# (0x4ad880) lo pone casi transparente, sin nombre ni barra de vida, y el cursor no lo selecciona. El 0x001D del buff no
+# lo toca: por eso "el sneak no me vuelve invisible" (07/11/2026).
+SIGILO_BIT_ALTO = 0x40
+
+
+def _paquete_sigilo(ses, eid, activo):
+    lo, hi = getattr(ses, 'flags_magicos', None) or (0, 0)          # conserva los demas bits (el del cristal...)
+    hi = (int(hi) & ~SIGILO_BIT_ALTO) | (SIGILO_BIT_ALTO if activo else 0)
+    return struct.pack('<HIII', 0x0185, int(eid), int(lo), hi)
+
+
+def _avisar_sigilo(ses, activo):
+    """El 0x0185 de sigilo a el (id propio) y a los demas del mapa (id publico)."""
+    p = getattr(ses, 'personaje', None)
+    if p is None:
+        return
+    try:
+        import presencia as _pr_sg
+        (getattr(ses, 'enviar_sin_espejo', None) or ses.enviar)(_paquete_sigilo(ses, p.entity_id, activo))
+        _pr_sg.notificar_companero_accion(ses, _paquete_sigilo(ses, _pr_sg.entidad_de(ses), activo))
+    except Exception:
+        log.exception('aviso de sigilo')
+
+
+def _programar_fin_sigilo(ses, addr):
+    """Al caducar el Sneak (sin que lo rompa un golpe) tambien se avisa: si no, seguia transparente."""
+    hasta = float(getattr(ses, 'sigilo_hasta', 0) or 0)
+
+    def _fin():
+        if float(getattr(ses, 'sigilo_hasta', 0) or 0) != hasta:
+            return                                   # lo rompio un golpe o se renovo
+        ses.sigilo_hasta = 0
+        _avisar_sigilo(ses, False)
+        log.info('[%s] el sigilo se acaba', addr)
+    try:
+        asyncio.get_event_loop().call_later(max(0.0, hasta - time.time()) + 0.05, _fin)
+    except RuntimeError:
+        pass
+
+
 def _romper_sigilo(ses, addr, motivo=''):
     """Saca al jugador del sigilo y le quita el icono y la animacion.
 
@@ -6872,6 +6914,7 @@ def _romper_sigilo(ses, addr, motivo=''):
     p = getattr(ses, 'personaje', None)
     if mid and p:
         ses.enviar(struct.pack('<HIBBII', 0x001D, p.entity_id, 1, 4, mid, 0))
+    _avisar_sigilo(ses, False)
     log.info('[%s] sale del sigilo %s', addr, motivo)
 
 
@@ -15911,6 +15954,8 @@ class Servidor:
                             ses.sigilo_hasta = time.time() + dur_ms / 1000.0
                             ses.sigilo_mid = tipo
                             ses.sigilo_esquiva = int(mag.get('esquiva_fis') or 0)
+                            _avisar_sigilo(ses, True)
+                            _programar_fin_sigilo(ses, addr)
                             log.info(f"[{addr}] entra en sigilo {dur_ms // 1000}s "
                                      f"(esquiva {ses.sigilo_esquiva}%)")
                     return

@@ -132,6 +132,10 @@ def _presentar(owner, viewer):
     if forma:
         _mandar(viewer, combate.atributo(entidad_de(owner), forma, combate.KIND_TRANSFORM))
     _mandar(viewer, *paquetes_invocaciones(owner), *paquetes_mascota(owner))
+    # En sigilo (Sneak): el que llega despues tambien lo ve transparente (app._paquete_sigilo).
+    import time as _t_sg
+    if _t_sg.time() < float(getattr(owner, 'sigilo_hasta', 0) or 0):
+        _mandar(viewer, __import__('app')._paquete_sigilo(owner, entidad_de(owner), True))
     m = getattr(owner, 'monstruo_encantado', None)
     if m and getattr(m, 'vivo', False) and m.hp > 0:
         _mandar(viewer, login._npc_spawn(m.entity_id, m.tipo, m.nombre,
