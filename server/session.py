@@ -95,6 +95,7 @@ class Session:
         submsgs = self._filtrar_carga_mapa(submsgs)
         if not submsgs:
             return
+        submsgs = self._marcar_npc(submsgs)
         self._registrar_flags_magicos(submsgs)
         self.salida.append(build_frame(pack_submessages(submsgs), self._next_seq()))
         # SALA DE INSTANCIA COMPARTIDA: lo que le pasa a un bicho de la sala
@@ -111,8 +112,18 @@ class Session:
         entregar lo que llega reenviado de otro, para que no rebote."""
         submsgs = self._filtrar_carga_mapa(submsgs)
         if submsgs:
+            submsgs = self._marcar_npc(submsgs)
             self._registrar_flags_magicos(submsgs)
             self.salida.append(build_frame(pack_submessages(submsgs), self._next_seq()))
+
+    def _marcar_npc(self, submsgs):
+        """[!] en el nombre de los NPC con mision para este jugador (marcas_npc.py)."""
+        try:
+            import marcas_npc
+            return marcas_npc.marcar(self, submsgs)
+        except Exception:
+            log.debug('marcas_npc', exc_info=True)
+            return submsgs
 
     def _registrar_flags_magicos(self,submsgs):
         """Keep authoritative0185 snapshots so one mechanic preserves other bits."""

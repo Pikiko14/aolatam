@@ -1,0 +1,26 @@
+"""Carteles con los bichos de cada zona (06/11/2026)."""
+import pathlib
+import struct
+import sys
+
+RAIZ = pathlib.Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(RAIZ / 'server'))
+import carteles_zona as cz  # noqa: E402
+import marcas_npc  # noqa: E402
+
+
+def test_spike_farm_tiene_sus_bichos_con_nivel():
+    textos = [t for _e, t, _p in cz.carteles(6)]
+    assert 'Field Mouse Lv9' in textos and all(len(t) <= 16 for t in textos)
+
+
+def test_paquete_cartel():
+    pk = cz.poblar(6)[0]
+    assert pk[:2] == b'\x08\x00' and struct.unpack_from('<I', pk, 2 + 34)[0] == cz.SPRITE
+    assert cz.es_cartel(struct.unpack_from('<I', pk, 2)[0])
+    assert not marcas_npc._es_npc(pk)          # no lleva [!]
+
+
+def test_texto_corto():
+    assert cz._texto('Jackstraw Mige', [17]) == 'Jackstraw M Lv17'
+    assert cz._texto('Slarm', [1, 3]) == 'Slarm Lv1-3'

@@ -1837,3 +1837,27 @@ def obtener_mapa_instancia(qid: int, paso: int = 1) -> int:
     if (qid, paso) in QUEST_MAPAS_INSTANCIA:
         return QUEST_MAPAS_INSTANCIA[(qid, paso)]
     return None
+
+
+# MARCA [!] DE LOS NPC (marcas_npc.py): al aceptar, avanzar, entregar o abandonar cambia que NPC tienen mision para
+# el jugador, asi que se repintan los del mapa en ese momento y no al cambiar de mapa.
+def _con_refresco_de_marcas(f):
+    import functools
+
+    @functools.wraps(f)
+    def envuelta(ses, *a, **k):
+        ok = f(ses, *a, **k)
+        if ok:
+            try:
+                import marcas_npc
+                marcas_npc.refrescar(ses)
+            except Exception:
+                log.debug('refresco de marcas de NPC', exc_info=True)
+        return ok
+    return envuelta
+
+
+aceptar_mision = _con_refresco_de_marcas(aceptar_mision)
+avanzar_paso = _con_refresco_de_marcas(avanzar_paso)
+completar_mision = _con_refresco_de_marcas(completar_mision)
+abandonar_mision = _con_refresco_de_marcas(abandonar_mision)

@@ -1261,6 +1261,7 @@ def poblar(stage: int, player_level=1):
     salida += portales_de(stage)
     salida += __import__('instancia_oscura').poblar(stage)
     salida += __import__('eventos_propios').poblar(stage)
+    salida += __import__('carteles_zona').poblar(stage)     # los bichos de cada zona
     try:
         import casas as _cs_pob
         if stage in _cs_pob.MAPAS_EXHIBICION:

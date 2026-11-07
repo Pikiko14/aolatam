@@ -20550,6 +20550,8 @@ class Servidor:
             import dialogos
             ent = struct.unpack_from('<I', cuerpo, 0)[0]
             log.info(f"[{addr}] CLIC 0x0005 en {ent} (es mob: {ent in (getattr(ses, 'monstruos', None) or {})})")
+            if __import__('carteles_zona').es_cartel(ent):
+                return                                  # cartel de zona: solo se lee
             if ses.personaje and __import__('trade_routes').pulsar(ses, ent):
                 return                                  # clic en una carga de Trade Routes en el suelo
             if ses.personaje and __import__('elementary').pulsar(ses,ent):
