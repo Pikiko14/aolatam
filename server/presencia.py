@@ -941,12 +941,14 @@ def notificar_companero_accion(ses, *paquetes):
             _mandar(s, *limpios)
 
 
-ACCION_SENTADO_AJENO = 7      # lo que el servidor real pone en el byte 61 del spawn de un jugador sentado
+# En el 0x000A el codigo es otro que en el spawn (byte 61 = 7): el manejador del cliente (0x5ecbd0, tabla 0x5ed2f4) hace con
+# el 7 la MUERTE del personaje (0x5be800) y con el 8 la pose de sentado (0x4b4c10(1)), la misma que usa el propio
+# jugador. Con el 7 a los demas les salia muerto al sentarse ("baco se sienta y aparece muerto", 07/11/2026).
+ACCION_SENTADO_AJENO = 8
 
 
 def notificar_sentado(ses):
-    """A los demas del mapa, que `ses` se sento o se levanto: 0x000A con su entidad publica y el 7 (sentado) o el 0.
-    El 8 del propio personaje, en otro, es la pose tumbada y le veian muerto."""
+    """A los demas del mapa, que `ses` se sento o se levanto: 0x000A con su entidad publica y el 8 (sentado) o el 0."""
     stage = getattr(ses, '_mapa_presencia', None)
     if stage is None:
         return

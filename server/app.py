@@ -8088,6 +8088,21 @@ def _cb_mod():
     return _cb_x
 
 
+def _tw_efecto_nivel(stage):
+    """El efecto de LEVEL UP sobre el totem, para todos los del mapa: al subir de nivel y al volver a nivel 1."""
+    import totem_war as _tw_ef
+    sala = _SALAS_DEL_MUNDO.get(int(stage))
+    if sala is None:
+        return
+    pk = _cb_mod().efecto_level_up(_tw_ef.eid_totem(stage))
+    for s in list(getattr(sala, 'sesiones', []) or []):
+        if getattr(getattr(s, 'personaje', None), 'stage', None) == int(stage):
+            try:
+                (getattr(s, 'enviar_sin_espejo', None) or s.enviar)(pk)
+            except Exception:
+                log.debug('efecto de nivel del totem', exc_info=True)
+
+
 def _pet_puede_atacar(ses, m) -> bool:
     """Si la mascota de `ses` puede atacar a ese bicho: lo de Holy y, en Totem War, solo los totems y fuertes que su
     dueno podria romper ("y mi pet lo ataca", 07/11/2026: le pegaba al totem de su propia liga)."""
@@ -8214,11 +8229,14 @@ def _tw_totem_roto(ses, m, addr):
     _tw_difundir(*_tw_k.anuncio(texto))
     _tw_difundir(_tw_k.paquete_territorios())
     _tw_echar_del_campo(int(m.stage))
+    # Al levantarse de nuevo (nivel 1), con el efecto de LEVEL UP: "hay 1 efecto que debe hacer, y al bajarlo" (07/11/2026).
+    def _relevantar_con_efecto(st=int(m.stage)):
+        _tw_relevantar(st)
+        _tw_efecto_nivel(st)
     try:
-        asyncio.get_event_loop().call_later(_tw_k.SEGUNDOS_RELEVANTAR,
-                                            lambda st=int(m.stage): _tw_relevantar(st))
+        asyncio.get_event_loop().call_later(_tw_k.SEGUNDOS_RELEVANTAR, _relevantar_con_efecto)
     except Exception:
-        _tw_relevantar(int(m.stage))
+        _relevantar_con_efecto()
 
 
 def _tw_sacar_de_las_arenas():
@@ -9639,6 +9657,7 @@ def _ofrenda_al_totem(ses, addr, cuerpo):
             # En guerra no se levanta de nuevo (se curaria entero): se le repinta el cartel con el nivel nuevo a todos los
             # del mapa, con su vida de ahora. Antes solo lo veia actualizado quien entraba despues (07/11/2026).
             _tw_repintar_totem(p.stage)
+        _tw_efecto_nivel(p.stage)
         # Solo a la liga duena, por su chat (no un cartel a todo el servidor).
         try:
             import gremios as _grm_of
@@ -22588,9 +22607,8 @@ class Servidor:
                 yo = ses.personaje.entity_id
                 ses.sentado = not getattr(ses, 'sentado', False)
                 act_code = 8 if ses.sentado else 0
-                # SIN espejo: el 8 es "sentado" solo para el propio personaje. En otro jugador el 8 es la pose de
-                # descanso tumbada (005e97f0 -> FUN_004b4c10(1)) y lo veian muerto ("porque baco sale muerto si esta
-                # sentado??", 05/11/2026); a ellos va el 7, el mismo del byte 61 del spawn (presencia._spawn).
+                # SIN espejo: a los demas va con su entidad publica (presencia.notificar_sentado). Tambien el 8: en el
+                # 0x000A el 7 es la MUERTE y les salia muerto (07/11/2026).
                 (getattr(ses, 'enviar_sin_espejo', None) or ses.enviar)(struct.pack('<HIII', 0x000A, yo, 0, act_code))
                 try:
                     __import__('presencia').notificar_sentado(ses)

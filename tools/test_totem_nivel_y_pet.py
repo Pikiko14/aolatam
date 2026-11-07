@@ -42,3 +42,17 @@ def test_repintar_sube_la_vida_con_el_nivel(monkeypatch):
     monkeypatch.setattr(tw, 'nivel_totem', lambda s: (4, 0))
     app._tw_repintar_totem(st)
     assert m.hp_max == tw.VIDA_POR_NIVEL * 4 and m.hp == m.hp_max // 2
+
+
+def test_efecto_level_up_al_subir(monkeypatch):
+    st = _campo()
+    enviados = []
+    ses = NS(personaje=NS(stage=st), enviar=lambda *p: enviados.extend(p))
+    monkeypatch.setitem(app._SALAS_DEL_MUNDO, st, NS(sesiones=[ses], monstruos={}))
+    app._tw_efecto_nivel(st)
+    assert enviados and enviados[0][:2] == b'\x20\x00'
+
+
+def test_sentado_a_los_demas_es_el_8_no_el_7():
+    import presencia
+    assert presencia.ACCION_SENTADO_AJENO == 8        # en el 0x000A el 7 es la muerte
