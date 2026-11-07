@@ -14661,6 +14661,10 @@ class Servidor:
                 _romper_sigilo(ses, addr, f"por atacar con {mag.get('nombre') or 'un golpe normal'}")
 
             # SILENCIADO (Silence de otro jugador, pvp_liga): no lanza habilidades mientras dure; el golpe basico si.
+            # ATURDIDO / CONGELADO por otro jugador: ni golpe ni habilidad mientras dure.
+            if __import__('pvp_liga').esta_quieto(ses, ataque=True):
+                log.info(f"[{addr}] ataque rechazado: aturdido")
+                return
             if tipo != _cb.ATAQUE_NORMAL and __import__('pvp_liga').tiene_estado(ses, 'silenciado'):
                 ses.enviar(__import__('clases').aviso('You are silenced and cannot use skills.', tipo=0))
                 log.info(f"[{addr}] HABILIDAD {tipo} rechazada: silenciado")
@@ -22824,6 +22828,12 @@ class Servidor:
                     ses.enviar(ACK.build(), MOVE.build(entity_id=ses.personaje.entity_id,
                         cur_x=_px_hb,cur_y=_py_hb,dst_x=_px_hb,dst_y=_py_hb,speed=_velocidad_de(ses)))
                     return
+            # Aturdido, congelado o inmovilizado por una habilidad de otro jugador (pvp_liga.aplicar_secundario).
+            if ses.personaje and __import__('pvp_liga').esta_quieto(ses):
+                _px_q, _py_q = ses.personaje.tile_x*32, ses.personaje.tile_y*32
+                ses.enviar(ACK.build(), MOVE.build(entity_id=ses.personaje.entity_id,
+                    cur_x=_px_q, cur_y=_py_q, dst_x=_px_q, dst_y=_py_q, speed=_velocidad_de(ses)))
+                return
             if ses.personaje and __import__('eventos_propios').bloquear_paso(
                     ses, (ses.personaje.tile_x, ses.personaje.tile_y), (dst['x']//32, dst['y']//32)):
                 _px_ep, _py_ep = ses.personaje.tile_x*32, ses.personaje.tile_y*32

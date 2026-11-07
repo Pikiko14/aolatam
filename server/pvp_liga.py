@@ -1,5 +1,6 @@
 """Player combat: timed wars, competitions and permanent Outpost faction PvP."""
 import logging
+import random
 import struct
 import cuentas
 
@@ -298,14 +299,11 @@ def atacar(ses, otro, tipo, mag, arma, en_area=False, golpes=None, separacion=No
         _aplicar(ses, otro, dano, es_crit, primero and not en_area, tipo, efecto, magia)
 
     _golpe(primero=True)
-    # El control que la habilidad encadena (轉嫁法術) con su probabilidad: Silencing Chop, Silent Blow, Boneshave...
-    # Contra monstruos ya lo aplicaba app; contra jugadores no.
+    # Lo que la habilidad encadena (轉嫁法術) con su probabilidad, igual que contra monstruos: controles (Silence,
+    # Binding, aturdir, congelar, inmovilizar), ralentizar y dano por tiempo (quemadura, veneno, sangrado).
+    # "en pvp tambien debe aplicar los efectos en base a su configuracion" (07/11/2026).
     if tipo != combate.ATAQUE_NORMAL and q.hp > 0:
-        sec = combate.efecto_secundario(tipo) or {}
-        est = ESTADO_ENCADENADO.get(sec.get('estado'))
-        if est and random.random() * 100 < float(sec.get('prob') or 100):
-            _aplicar_control(ses, otro, int(sec.get('magia') or tipo),
-                             {'nombre': mag.get('nombre', ''), 'dur_ms': int(sec.get('dur_ms') or 3000)}, est)
+        aplicar_secundario(ses, otro, tipo, mag)
     if n > 1:
         try:
             bucle = asyncio.get_event_loop()
@@ -334,6 +332,85 @@ ESTADO_ENCADENADO = {'silenciado': 'silenciado', 'sellado': 'silenciado', 'atado
 LENTITUD_BINDING = -50          # % de velocidad mientras dura
 
 
+# Estados de magic.xml que paran al jugador: aturdido / congelado / paralizado / miedo no dejan ni moverse ni atacar;
+# inmovilizado solo no deja moverse.
+ESTADOS_QUIETO = {'aturdido': 'aturdido', 'congelado': 'aturdido', 'paralizado': 'aturdido', 'miedo': 'aturdido',
+                  'inmovilizado': 'inmovil'}
+
+
+def aplicar_secundario(ses, otro, tipo, mag):
+    """El efecto secundario de la habilidad `tipo` sobre el jugador `otro`, con su probabilidad, duracion e intervalo."""
+    import combate
+    sec = combate.efecto_secundario(tipo) or {}
+    prob = sec.get('prob')
+    if not sec or random.random() * 100 >= float(100 if prob is None else prob):
+        return
+    sub = int(sec.get('magia') or tipo)
+    dur = int(sec.get('dur_ms') or 0) or 3000
+    nombre = mag.get('nombre', '')
+    est = ESTADO_ENCADENADO.get(sec.get('estado')) or ESTADOS_QUIETO.get(sec.get('estado'))
+    if est:
+        _aplicar_control(ses, otro, sub, {'nombre': nombre, 'dur_ms': dur}, est)
+    elif int(sec.get('vel_mov') or 0) < 0:
+        # Ralentiza: el 移動速度 del hechizo hijo, en el mismo tanto por ciento que usa app._velocidad_de.
+        _aplicar_control(ses, otro, sub, {'nombre': nombre, 'dur_ms': dur,
+                                          'lentitud': max(-90, int(sec['vel_mov']))}, 'lento')
+    if int(sec.get('hp_tick') or 0) < 0 and int(sec.get('intervalo') or 0) > 0:
+        aplicar_dot(ses, otro, sub, -int(sec['hp_tick']), int(sec['intervalo']), dur, nombre)
+
+
+def aplicar_dot(ses, otro, sub, dano, intervalo_s, dur_ms, nombre=''):
+    """Dano por tiempo a un jugador: `dano` cada `intervalo_s` segundos durante `dur_ms`. Deja 1 de vida (no mata: la
+    muerte la decide un golpe). Lleva el icono del hechizo hijo (0x001D kind 4) y se renueva si vuelve a entrar."""
+    import asyncio
+    import time
+    import combate, presencia
+    q = otro.personaje
+    fin = time.time() + dur_ms / 1000.0
+    marca = object()
+    dots = otro.__dict__.setdefault('_dots_pvp', {})
+    dots[int(sub)] = marca
+    try:
+        otro.enviar(struct.pack('<HIBBII', 0x001D, q.entity_id, 1, 4, int(sub), int(dur_ms)))
+    except Exception:
+        pass
+    log.info('PvP: %s le pone %s a %s (%d cada %d s, %d ms)', getattr(ses.personaje, 'nombre', '?'), nombre,
+             q.nombre, dano, intervalo_s, dur_ms)
+
+    def _tic():
+        if dots.get(int(sub)) is not marca:
+            return                                  # lo renovo otro golpe: sigue ese
+        if time.time() > fin + 0.05 or getattr(otro, 'muerto', False) or not getattr(otro, 'personaje', None):
+            dots.pop(int(sub), None)
+            return
+        if q.hp > 1:
+            d = min(int(dano), q.hp - 1)
+            q.hp -= d
+            pk_yo = [combate.numero_flotante(q.entity_id, d), combate.atributo(q.entity_id, q.hp, combate.KIND_HP)]
+            try:
+                otro.enviar(*pk_yo)
+                pub = presencia.entidad_de(otro)
+                stage = presencia.clave_de_mapa(otro, q.stage)
+                for s in presencia._vivas(stage):
+                    if s is not otro:
+                        presencia._mandar(s, combate.numero_flotante(pub, d), presencia._vida_publica(otro))
+            except Exception:
+                log.debug('tic de dano por tiempo', exc_info=True)
+        try:
+            asyncio.get_event_loop().call_later(max(1, intervalo_s), _tic)
+        except RuntimeError:
+            pass
+    try:
+        asyncio.get_event_loop().call_later(max(1, intervalo_s), _tic)
+    except RuntimeError:
+        pass
+
+
+def esta_quieto(ses, ataque=False) -> bool:
+    """Aturdido/congelado no se mueve ni ataca; inmovilizado solo no se mueve."""
+    return tiene_estado(ses, 'aturdido') or (not ataque and tiene_estado(ses, 'inmovil'))
+
+
 def estado_de_control(tipo):
     """'atado' / 'silenciado' si la habilidad es un control de jugadores sin dano, o None."""
     import combate
@@ -355,9 +432,11 @@ def _aplicar_control(ses, otro, tipo, mag, estado):
         return
     dur_ms = int(mag.get('dur_ms') or 0) or 5000
     fin = time.time() + dur_ms / 1000.0
+    lentitud = mag.get('lentitud')
+    if lentitud is None:
+        lentitud = LENTITUD_BINDING if estado == 'atado' else 0
     entrada = {'fin': fin, 'estado': estado, 'control_pvp': True,
-               'mag': {'nombre': mag.get('nombre', ''),
-                       'move_speed_bonus': LENTITUD_BINDING if estado == 'atado' else 0}}
+               'mag': {'nombre': mag.get('nombre', ''), 'move_speed_bonus': lentitud}}
     if q.buffs is None:
         q.buffs = {}
     q.buffs[int(tipo)] = entrada
