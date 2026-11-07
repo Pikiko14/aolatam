@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-07",
+    "titulo": "Update 0.0.0.71: Login Rewarder",
+    "texto": "Please update to version 0.0.0.71 from the launcher. The Login Rewarder exchange no longer offers the Olympic Heart, Goddess Statue (7-Day), Angel Power Necklace (7 days) or Super Purple Potion, and the 3x EXP, 3x Skill EXP and 3x Pet EXP Chocolates now give 1 chocolate instead of 8. Less lag right after a server restart."
+  },
+  {
+    "fecha": "2026-11-07",
     "titulo": "Revival, Totem War souls and Power Shield",
     "texto": "Revival skills now work: the effect lands on the dead player and revives them where they are, with the health of the skill. In Totem War, a soul that walks next to its own faction totem revives there. Power Shield shows its bubble again while it lasts. Olly, Ozzy and the Blessing Angel are no longer in Angel Lyceum."
   },
