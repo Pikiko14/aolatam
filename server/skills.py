@@ -592,10 +592,18 @@ def nivel_de_magia(magic_id: int) -> int:
     if not DB_PATH.exists():
         return 1
     try:
-        con = sqlite3.connect(DB_PATH)
-        row = con.execute('SELECT "法術等級" FROM magic WHERE id = ?', (str(mid),)).fetchone()
-        con.close()
-        lv = int(float(row[0])) if row and row[0] else 1
+        # TODA la tabla de una vez (07/11/2026). Abria la base y hacia una consulta por cada hechizo nuevo: al entrar
+        # un personaje con muchas habilidades (otorgar_hechizos) eran cientos y el bucle se paraba 0,44 s.
+        if not _MAGIC_LV_CACHE.get('_todo'):
+            con = sqlite3.connect(DB_PATH)
+            for i_m, lv_m in con.execute('SELECT id, "法術等級" FROM magic'):
+                try:
+                    _MAGIC_LV_CACHE[int(i_m)] = int(float(lv_m)) if lv_m else 1
+                except (TypeError, ValueError):
+                    continue
+            con.close()
+            _MAGIC_LV_CACHE['_todo'] = True
+        lv = _MAGIC_LV_CACHE.get(mid, 1)
         _MAGIC_LV_CACHE[mid] = lv
         return lv
     except Exception:

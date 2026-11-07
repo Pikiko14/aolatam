@@ -762,7 +762,22 @@ def _precalentar():
                                          __import__('inventario').es_municion(1), __import__('mejoras')._fila(163))),
             ('drops', lambda: __import__('combate')._cargar_drops_plantilla()),
             ('eventos propios', lambda: __import__('eventos_propios').reglas()),
-            ('parche', lambda: __import__('parche').entradas())):
+            ('parche', lambda: __import__('parche').entradas()),
+            # Lo que el vigia aun vio parado el 07/11/2026 tras cada reinicio (sobre todo al entrar al mundo, el 0x0003,
+            # con tirones de 3-5 s): pesos, curva de nivel, nombres de habilidades, eventos de casilla, petattrib,
+            # mapas sin minimapa, jefes/tropa, armas a dos manos, sprites, descripciones de bolsas, huevos, magias.
+            ('pesos', lambda: __import__('inventario').peso_de(1)),
+            ('curva de nivel', lambda: __import__('combate')._cargar_curva_nivel()),
+            ('nombres de habilidades', lambda: __import__('clases')._cargar()),
+            ('eventos de casilla', lambda: __import__('eventos')._datos()),
+            ('petattrib', lambda: __import__('mascotas')._petattrib()),
+            ('mapas sin minimapa', lambda: __import__('login')._mapas_sin_minimapa()),
+            ('jefes y tropa', lambda: (__import__('combate').es_jefe(1), __import__('combate').es_de_tropa(1))),
+            ('armas a dos manos', lambda: __import__('clases').es_dos_manos(1)),
+            ('sprites de npc', lambda: __import__('login').sprite_de(1)),
+            ('descripciones de bolsas', lambda: __import__('bolsas')._cargar_descripciones()),
+            ('huevos de captura', lambda: __import__('house_services').capture_eggs()),
+            ('niveles de magia', lambda: __import__('skills').nivel_de_magia(1))):
         try:
             f()
             hecho.append(nombre)
