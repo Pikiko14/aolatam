@@ -9754,6 +9754,10 @@ def _tw_al_entrar(ses):
     if m is not None and m.vivo and (sala is None or len(sala.sesiones) <= 1
                                      or not _tw_e.es_arena(p.stage)):
         ses.enviar(_tw_e.spawn_totem(m), _cb_mod().atributo(m.entity_id, m.porcentaje))
+    if not _tw_e.activa():
+        # Campo de guerra sin guerra: sin modo PvP, ni aro de bando ni K.O. ("y porque sigue el aro naranja", 07/11/2026).
+        ses.tw_modo_pvp = False
+        ses.enviar(_tw_e.modo_pvp(p.entity_id, False), _tw_e.kills_ko(p.entity_id, 0, 0))
     if _tw_e.activa():
         import clases as _cl_e
         # El modo PvP del cliente; el 1751 ("You are in the Totem Battlefield
