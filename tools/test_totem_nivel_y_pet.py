@@ -82,3 +82,15 @@ def test_matar_un_totem_de_nivel_alto_lo_baja_uno_sin_dar_el_territorio(monkeypa
     monkeypatch.setattr(app, '_tw_echar_del_campo', lambda s: None)
     app._tw_totem_roto(ses, m, 'test')
     assert capturas == [1]                                   # en nivel 1 si se pierde
+
+
+def test_efecto_por_nivel_y_tope_50(monkeypatch):
+    assert tw.efecto_de_nivel(2) == 7 and tw.efecto_de_nivel(5) == 10      # probados en el juego
+    assert tw.efecto_de_nivel(1) == 6 and tw.efecto_de_nivel(13) is None
+    assert tw.NIVEL_MAX_TOTEM == 50
+    st = _campo()
+    monkeypatch.setattr(tw, 'nivel_totem', lambda s: (30, 0))
+    m = NS(entity_id=5, tile_x=1, tile_y=2, stage=st, npc_type=tw.TOTEM_TIPO_CAMPO, porcentaje=100)
+    pk = tw.spawn_totem_campo(m)
+    assert struct.unpack_from('<H', pk, 2 + 45)[0] == tw.TOTEM_TIPO_CAMPO + 7      # se queda en "Totem Lv 8"
+    assert struct.unpack_from('<I', pk, 2 + 40)[0] == 29                            # el cartel pinta 30

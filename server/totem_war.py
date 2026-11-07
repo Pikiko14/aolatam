@@ -257,8 +257,17 @@ CREDITOS_POR_BAJA = 10          # sin victima conocida
 # El "Level N" que sale sobre el totem al subir o bajar (captura del usuario, 07/11/2026). Son los efectos del 0x0020 que
 # en el script de efectos del cliente llaman a TotemLevelUp / TotemLevelDown; el numero se deduce del orden del script
 # y SE PRUEBA en el juego con /efecto N.
-EFECTO_TOTEM_SUBE = 8
-EFECTO_TOTEM_BAJA = 9
+# Cada efecto pinta un nivel fijo: el 7 "Level 2" y el 10 "Level 5" (probado por el usuario con /efecto, 07/11/2026),
+# o sea efecto = 5 + nivel. Por el orden del script de efectos del cliente, los de nivel parecen llegar al effect017
+# (nivel 12): por encima no se manda ninguno hasta comprobarlo.
+EFECTO_TOTEM_BASE = 5
+NIVEL_TOTEM_CON_EFECTO = 12
+
+
+def efecto_de_nivel(nivel):
+    """El numero de efecto del 0x0020 que pinta "Level N" sobre el totem, o None si no hay para ese nivel."""
+    n = int(nivel or 0)
+    return EFECTO_TOTEM_BASE + n if 1 <= n <= NIVEL_TOTEM_CON_EFECTO else None
 MULT_PRIMERA_MUERTE = 5
 MULT_YA_MUERTO = 2
 _MUERTOS = set()                # char_id de los que ya murieron en esta guerra
@@ -567,7 +576,7 @@ def crear_totem(stage):
         # monster.xml: 21397 "Totem Lv 1" (300.000 HP) .. 21404 "Totem Lv 8"
         # (17.689.000 HP). El nivel lo suben las ofrendas.
         nivel = max(1, min(NIVEL_MAX_TOTEM, nivel_totem(stage)[0]))
-        tipo = TOTEM_TIPO_CAMPO + nivel - 1
+        tipo = TOTEM_TIPO_CAMPO + min(nivel, TIPOS_TOTEM) - 1
         m = _totem_clase()(eid_totem(stage), tipo, nombre_totem(stage),
                            list(TOTEM_CAMPO[int(stage)]), sprite_totem(stage), stage=int(stage))
         # La vida no es la de monster.xml (300.000 a 17.689.000): VIDA_POR_NIVEL por nivel (01/11/2026).
@@ -626,7 +635,7 @@ def spawn_totem_campo(m) -> bytes:
     # jugador veia un nivel distinto ("el totem me dice lvl 8, yo lo veo lvl 5 y Baco lvl 1", 07/11/2026).
     _tipo = int(getattr(m, 'npc_type', TOTEM_TIPO_CAMPO))
     if int(m.stage) in TOTEM_CAMPO and not getattr(m, 'decorativo', False):
-        _tipo = TOTEM_TIPO_CAMPO + max(1, min(NIVEL_MAX_TOTEM, nivel_totem(m.stage)[0])) - 1
+        _tipo = TOTEM_TIPO_CAMPO + max(1, min(TIPOS_TOTEM, nivel_totem(m.stage)[0])) - 1
         m.npc_type = _tipo
     struct.pack_into('<H', b, 45, _tipo)
     # El cartel es la ventana 0x2fda (REA 0064ab90):
@@ -649,7 +658,10 @@ def spawn_totem_campo(m) -> bytes:
 # La ventana del totem (s2c 0x012F, REA 0060c6c0). Solo la abre el cliente si
 # la faccion del paquete (+4) es la suya. +8 liga[17], +25/+29 Fortification
 # actual/maxima, +33 nivel-1 ("1/08"), +37 "Upgrade need", +41 0 = crearla.
-NIVEL_MAX_TOTEM = 8
+# Tope de nivel del totem: "haz que el totem suba maximo a lvl 50" (07/11/2026; antes 8). monster.xml solo trae
+# "Totem Lv 1".."Totem Lv 8" (21397..21404): de ahi para arriba el tipo se queda en el 8 y el numero va en el cartel.
+NIVEL_MAX_TOTEM = 50
+TIPOS_TOTEM = 8
 PUNTOS_POR_NIVEL = 100
 
 
