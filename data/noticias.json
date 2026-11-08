@@ -1,5 +1,10 @@
 [
   {
+    "fecha": "2026-11-08",
+    "titulo": "Update 0.0.0.77: rebind your quick bar keys",
+    "texto": "Please update to version 0.0.0.77 from AngelsLauncher (it also updates the game). New AOF tab in the System window (Esc): chat is now closed until you press Enter; type your message and press Enter again to send it and close the chat (Esc closes it too). With Rebind you can assign any key to each quick bar slot, including numbers and letters, and they are saved on your PC. The quick bar now shows the key of each slot."
+  },
+  {
     "fecha": "2026-11-07",
     "titulo": "Sneak",
     "texto": "Sneak now really hides the Assassin: while it lasts you become almost transparent, without name or health bar, and other players cannot select you. Attacking with anything other than an assassination technique, or the end of the effect, makes you visible again."
