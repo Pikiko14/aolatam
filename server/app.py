@@ -22525,11 +22525,10 @@ class Servidor:
                         _sincronizar_cambio_mapa(ses, 152, 132, 95)
                         log.info(f"[{addr}] Block Envoy: {ses.personaje.nombre} enviado a Building Blocks County (stage 152)")
                     else:
-                        # Director Wolay: retorno a la ciudad de faccion elegida
-                        CIUDAD_POR_FACCION = {
-                            NOMBRE_DE_FACCION[c]: CIUDAD_DE_FACCION[c]
-                            for c in CIUDAD_DE_FACCION if c in NOMBRE_DE_FACCION
-                        }
+                        # Director Wolay: retorno a la ciudad de faccion elegida. Con el CIUDAD_POR_FACCION del modulo:
+                        # aqui se volvia a construir con el mismo nombre y eso lo hacia LOCAL en todo manejar(), asi
+                        # que el Angel de ciudad (opcion 18, mas arriba) reventaba con UnboundLocalError y no
+                        # mandaba a nadie al Lyceum ("no nos envia a lyceum", 08/11/2026).
                         st_dest, tile_dest = CIUDAD_POR_FACCION.get(
                             ses.personaje.faction, CIUDAD_DE_FACCION["Aurora"])
                         ses.viaje_pendiente = (st_dest, tile_dest, ses.personaje.faction)
