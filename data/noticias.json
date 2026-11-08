@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-08",
+    "titulo": "Update 0.0.0.78",
+    "texto": "Please update to version 0.0.0.78 from AngelsLauncher. The AOF tab of the System window now has a clean background that follows your window color."
+  },
+  {
+    "fecha": "2026-11-08",
     "titulo": "Update 0.0.0.77: rebind your quick bar keys",
     "texto": "Please update to version 0.0.0.77 from AngelsLauncher (it also updates the game). New AOF tab in the System window (Esc): chat is now closed until you press Enter; type your message and press Enter again to send it and close the chat (Esc closes it too). With Rebind you can assign any key to each quick bar slot, including numbers and letters, and they are saved on your PC. The quick bar now shows the key of each slot."
   },
