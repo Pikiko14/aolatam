@@ -41,7 +41,11 @@ PAGINA_XML = '''    <!-- AOF: la pestana propia (tools/parche_aof_ventana.py, se
         <style wsVisible="" bsVCenter="" bsHCenter="" bsRadio="" bsRadioEnd="" wsTab="" />
         <OnCommand>Setting_ChangePage</OnCommand>
     </window>
-    <window class="WND_CLASS_BASE" id="59101" range="0,0,249,343" icon="12011">
+    <!-- Fondo propio: el de Sound sin sus railes ni casillas (tools/fondos_interfaz.py), con el color del tema -->
+    <icon id="59107" dir="\\wnd01\\" normal="aolat_sys_aof" focus="normal" down="normal" disable="normal">
+        <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />
+    </icon>
+    <window class="WND_CLASS_BASE" id="59101" range="0,0,249,343" icon="59107">
         <style />
         <child>59102</child>
         <child>59103</child>

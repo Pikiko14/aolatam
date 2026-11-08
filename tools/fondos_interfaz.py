@@ -123,9 +123,25 @@ def barra():
     return escribir(cab, bpp, nuevas, paleta)
 
 
+# 3. aolat_sys_aof.shp: el fondo de la pestana AOF de la ventana System (tools/parche_aof_ventana.py). Es el de la
+#    pagina Sound (shape/wnd01/w050_01, 249x343, con el atributo del tema: sigue el color de ventana elegido) sin sus
+#    tres railes de deslizador (y 13..64) ni sus tres casillas (y 84..133): esas filas se tapan con una fila limpia del
+#    cuerpo ("se ve mal", 08/11/2026: con el fondo de Sound salian los railes y las casillas detras del texto).
+FILAS_SUCIAS_AOF = range(0, 161)
+FILA_LIMPIA_AOF = 200
+
+
+def sys_aof():
+    cab, bpp, filas, paleta = leer(del_cliente(r'shape\wnd01\w050_01.shp'))
+    limpia = filas[FILA_LIMPIA_AOF]
+    nuevas = [limpia if y in FILAS_SUCIAS_AOF else tramos for y, tramos in enumerate(filas)]
+    return escribir(cab, bpp, nuevas, paleta)
+
+
 def main():
     SALIDA.mkdir(parents=True, exist_ok=True)
-    for nombre, datos in (('aolat_prop50.shp', prop50()), ('aolat_barra.shp', barra())):
+    for nombre, datos in (('aolat_prop50.shp', prop50()), ('aolat_barra.shp', barra()),
+                          ('aolat_sys_aof.shp', sys_aof())):
         (SALIDA / nombre).write_bytes(datos)
         print(nombre, len(datos), 'bytes')
 
