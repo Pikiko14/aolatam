@@ -65,6 +65,68 @@ if type(AOF_CHAT_ENTER) ~= "number" then
 end
 AOF_ESPERA = nil
 
+-- Lo que cabe en la etiqueta de la barra (26 px en horizontal, 13 en vertical).
+local CORTOS = {
+  [0x39] = "Spc", [0xD2] = "Ins", [0xD3] = "Del", [0xC7] = "Hom", [0xCF] = "End", [0xC9] = "PU", [0xD1] = "PD",
+  [0xC8] = "Up", [0xD0] = "Dn", [0xCB] = "Lf", [0xCD] = "Rt", [0x46] = "SL", [0x45] = "NL", [0x37] = "N*",
+  [0x4A] = "N-", [0x4E] = "N+", [0xB5] = "N/", [0x53] = "N.",
+}
+
+local function corto(dik)
+  local n = CORTOS[dik]
+  if n then
+    return n
+  end
+  n = nombre(dik)
+  if string.sub(n, 1, 4) == "Num " then
+    return "N" .. string.sub(n, 5)
+  end
+  if string.sub(n, 1, 4) == "Key " then
+    return "?"
+  end
+  return n
+end
+
+-- Las etiquetas encima de los rotulos F1..F12 dibujados en la barra (wnd01.xml 59041.. horizontal, 59061.. vertical).
+function AofEtiquetas()
+  if WND_QUICK_COMMAND == nil or not window.isexist(WND_QUICK_COMMAND) then
+    return
+  end
+  local vertical = (QUICK_COMMAND_TYPE == 0)
+  local base = vertical and 59061 or 59041
+  for i = 0, 11 do
+    local w = window.find(WND_QUICK_COMMAND, base + i)
+    if w == 0 then
+      w = window.create(base + i, WND_QUICK_COMMAND, 0, 0)
+      local extra = 0
+      if i > 3 then extra = extra + 1 end
+      if i > 7 then extra = extra + 1 end
+      if vertical then
+        window.moveoffset(w, 36, 33 + 31 * i + extra + 10)
+      else
+        window.moveoffset(w, 33 + 31 * i + extra + 2, 35)
+      end
+    end
+    if w ~= 0 then
+      local t = corto(_G[clave(i + 1)])
+      if vertical and string.len(t) > 2 then
+        t = string.sub(t, 1, 2)
+      end
+      window.settitle(w, t)
+    end
+  end
+end
+
+if AOF_ORIG_CreateQuickCommandButtons == nil then
+  AOF_ORIG_CreateQuickCommandButtons = CreateQuickCommandButtons
+end
+
+function CreateQuickCommandButtons()
+  local r = AOF_ORIG_CreateQuickCommandButtons()
+  AofEtiquetas()
+  return r
+end
+
 function AofAplicar()
   for i = 1, 12 do
     local k = _G[clave(i)]
@@ -74,6 +136,7 @@ function AofAplicar()
   if AOF_CHAT_ENTER == 1 then
     game.aofchat(0)                -- empieza cerrado
   end
+  AofEtiquetas()
 end
 
 -- Que el cliente guarde las variables al salir (solo escribe las registradas en esta sesion).
@@ -133,6 +196,7 @@ function Setting_ChangePage(dwID, dwCmdID, dwParam, pParam)
   end
   local r = AOF_ORIG_Setting_ChangePage(dwID, dwCmdID, dwParam, pParam)
   if window.getappdata(dwID) == 59101 then
+    -- El fondo es el de la pagina Sound (icono 12011, wnd05.xml): lleva ICON_ATTRIB_THEME y sigue el color del tema.
     pintar_pagina()
   end
   return r

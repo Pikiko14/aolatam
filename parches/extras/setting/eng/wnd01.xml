@@ -6180,4 +6180,36 @@
 	<window class="WND_CLASS_STATIC" id="50084" range="2,27,686,18" icon="" title="  Type           Requirements                                 Type           Requirements" font="1" fcolor="103" fbcolor1="3">
 		<style wsVisible="" bsVCenter=""/>	
 	</window>
+    <!-- AOF: etiquetas de las teclas de la barra (tools/parche_aof_ventana.py, server/lua/teclas.lua) -->
+    <color id="59099" normal="0,107,115" focus="0,107,115" down="0,107,115" disable="0,107,115"/>
+    <template class="WND_CLASS_STATIC" range="0,0,26,11" id="59040" fcolor="103" bcolor="59099" font="3" title="">
+        <style wsVisible="" ssHCenter="" ssVCenter="" />
+    </template>
+    <window id="59041" derive="59040" />
+    <window id="59042" derive="59040" />
+    <window id="59043" derive="59040" />
+    <window id="59044" derive="59040" />
+    <window id="59045" derive="59040" />
+    <window id="59046" derive="59040" />
+    <window id="59047" derive="59040" />
+    <window id="59048" derive="59040" />
+    <window id="59049" derive="59040" />
+    <window id="59050" derive="59040" />
+    <window id="59051" derive="59040" />
+    <window id="59052" derive="59040" />
+    <template class="WND_CLASS_STATIC" range="0,0,13,11" id="59060" fcolor="103" bcolor="59099" font="3" title="">
+        <style wsVisible="" ssHCenter="" ssVCenter="" />
+    </template>
+    <window id="59061" derive="59060" />
+    <window id="59062" derive="59060" />
+    <window id="59063" derive="59060" />
+    <window id="59064" derive="59060" />
+    <window id="59065" derive="59060" />
+    <window id="59066" derive="59060" />
+    <window id="59067" derive="59060" />
+    <window id="59068" derive="59060" />
+    <window id="59069" derive="59060" />
+    <window id="59070" derive="59060" />
+    <window id="59071" derive="59060" />
+    <window id="59072" derive="59060" />
 </root>

@@ -18,7 +18,19 @@ import pathlib
 import re
 
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
-ORIGEN = RAIZ / 'extracted_paks' / 'update26' / 'setting' / 'eng' / 'wnd05.xml'
+# El ORIGINAL sale del update26.pak del cliente de desarrollo: extracted_paks no sirve, el servidor local lo sincroniza
+# con el parche al arrancar y alli ya esta este wnd05.xml (lo mismo pasa con wnd03.xml).
+PAK_ORIGEN = pathlib.Path(r'C:\AO\Angels Online\update26.pak')
+ENTRADA = 'SETTING\\ENG\\WND05.XML'
+
+
+def original() -> bytes:
+    import sys
+    sys.path.insert(0, str(RAIZ / 'tools' / 'editor_mapas'))
+    import packmapas
+    return packmapas.leer(str(PAK_ORIGEN))[ENTRADA]
+
+
 SALIDA = RAIZ / 'parches' / 'extras' / 'setting' / 'eng' / 'wnd05.xml'
 
 TAB, PAGINA, DIALOGO = 59100, 59101, 59110
@@ -29,8 +41,8 @@ PAGINA_XML = '''    <!-- AOF: la pestana propia (tools/parche_aof_ventana.py, se
         <style wsVisible="" bsVCenter="" bsHCenter="" bsRadio="" bsRadioEnd="" wsTab="" />
         <OnCommand>Setting_ChangePage</OnCommand>
     </window>
-    <window class="WND_CLASS_BASE" id="59101" range="0,0,249,343" icon="12081">
-        <style wsVisible="" />
+    <window class="WND_CLASS_BASE" id="59101" range="0,0,249,343" icon="12011">
+        <style />
         <child>59102</child>
         <child>59103</child>
         <child>59104</child>
@@ -44,14 +56,14 @@ PAGINA_XML = '''    <!-- AOF: la pestana propia (tools/parche_aof_ventana.py, se
         <style wsVisible="" bsCheck="" wsTab="" />
         <OnCommand>AofChatEnter</OnCommand>
     </window>
-    <window class="WND_CLASS_STATIC" id="59104" range="11,56,1,1" fcolor="103" font="1" title="Quick bar keys">
+    <window class="WND_CLASS_STATIC" id="59104" range="11,60,1,1" fcolor="103" font="1" title="Quick bar keys">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="59105" range="14,74,110,18" fcolor="101" font="1" icon="12006" title="Rebind keys...">
+    <window class="WND_CLASS_BUTTON" id="59105" range="130,56,55,18" fcolor="101" font="1" icon="12006" title="Rebind">
         <style wsVisible="" bsVCenter="" bsHCenter="" wsTab="" />
         <OnCommand>AofAbrirTeclas</OnCommand>
     </window>
-    <window class="WND_CLASS_MSTATIC" id="59106" range="11,104,226,120" lines="8" words="36" fcolor="103" font="1" title="">
+    <window class="WND_CLASS_MSTATIC" id="59106" range="11,92,226,140" lines="9" words="36" fcolor="103" font="1" title="">
         <style wsVisible="" />
     </window>
     <window class="WND_CLASS_DLG_1" id="59110" range="0,0,210,338" title="Rebind keys" fcolor="104" font="1">
@@ -91,8 +103,14 @@ def generar(texto: str) -> str:
     m = re.search(r'(<window class="WND_CLASS_DLG_1" id="12002"[^>]*>.*?)(\s*</window>)', texto, re.S)
     if not m or '<child>12081</child>' not in m.group(1):
         raise SystemExit('no encuentro la ventana System (12002)')
-    texto = (texto[:m.end(1)] + nl + '        <child>%d</child>' % TAB + nl + '        <child>%d</child>' % PAGINA
-             + texto[m.end(1):])
+    # El cliente pinta la PRIMERA hija encima: las pestanas originales (12003..12005) van antes que las paginas y se
+    # ven sobre su fondo (249x343, que cubre tambien la fila de pestanas). La AOF va pegada tras Set ITF; puesta
+    # detras de las paginas, el cliente la encontraba (window.find) pero tapada. La pagina, al final.
+    texto = texto[:m.end(1)] + nl + '        <child>%d</child>' % PAGINA + texto[m.end(1):]
+    hijo_itf = '<child>12005</child>'
+    if texto.count(hijo_itf) != 1:
+        raise SystemExit('no encuentro la pestana Set ITF entre las hijas de System')
+    texto = texto.replace(hijo_itf, hijo_itf + nl + '        <child>%d</child>' % TAB)
     # 2. Set ITF deja de ser la ultima del grupo de radio.
     m = re.search(r'<window class="WND_CLASS_BUTTON" id="12005"[^>]*>\s*<style[^>]*>', texto)
     if not m or 'bsRadioEnd=""' not in m.group(0):
@@ -106,12 +124,49 @@ def generar(texto: str) -> str:
     return texto[:pos] + nuevo + texto[pos:]
 
 
-def main():
-    crudo = ORIGEN.read_bytes()
+# LAS ETIQUETAS DE LA BARRA ("y puede cambiar aca el numero que lanza??", 07/11/2026). Los rotulos F1..F12 vienen
+# DIBUJADOS en la imagen de la barra (shape/wnd01/w004_01 horizontal 409x48, w004_03 vertical 49x409: la franja de
+# rotulos sobra de la ventana, 409x36 / 36x409). Encima va un texto con el nombre de la tecla y fondo del mismo verde
+# azulado (0,107,115) para tapar el dibujado; los coloca server/lua/teclas.lua (AofEtiquetas) en la ventana de la barra.
+WND01 = RAIZ / 'parches' / 'extras' / 'setting' / 'eng' / 'wnd01.xml'
+ETIQUETA_H, ETIQUETA_V, COLOR_ETIQUETA = 59041, 59061, 59099
+ETIQUETAS_XML = '''    <!-- AOF: etiquetas de las teclas de la barra (tools/parche_aof_ventana.py, server/lua/teclas.lua) -->
+    <color id="59099" normal="0,107,115" focus="0,107,115" down="0,107,115" disable="0,107,115"/>
+    <template class="WND_CLASS_STATIC" range="0,0,26,11" id="59040" fcolor="103" bcolor="59099" font="3" title="">
+        <style wsVisible="" ssHCenter="" ssVCenter="" />
+    </template>
+{horizontales}
+    <template class="WND_CLASS_STATIC" range="0,0,13,11" id="59060" fcolor="103" bcolor="59099" font="3" title="">
+        <style wsVisible="" ssHCenter="" ssVCenter="" />
+    </template>
+{verticales}
+'''
+
+
+def etiquetas_en_la_barra(texto: str) -> str:
+    """wnd01.xml con las 24 etiquetas (12 de la barra horizontal y 12 de la vertical); no repite si ya estan."""
+    if 'id="%d"' % ETIQUETA_H in texto:
+        return texto
+    nl = '\r\n' if '\r\n' in texto else '\n'
+    h = nl.join('    <window id="%d" derive="59040" />' % (ETIQUETA_H + i) for i in range(12))
+    v = nl.join('    <window id="%d" derive="59060" />' % (ETIQUETA_V + i) for i in range(12))
+    nuevo = ETIQUETAS_XML.replace('{horizontales}', h).replace('{verticales}', v).replace('\n', nl)
+    pos = texto.rindex('</root>')
+    return texto[:pos] + nuevo + texto[pos:]
+
+
+def _leer(crudo):
     bom = crudo.startswith(b'\xef\xbb\xbf')
-    texto = crudo[3:].decode('utf-8') if bom else crudo.decode('utf-8')
+    return bom, (crudo[3:] if bom else crudo).decode('utf-8')
+
+
+def main():
+    bom, texto = _leer(original())
     SALIDA.write_bytes((b'\xef\xbb\xbf' if bom else b'') + generar(texto).encode('utf-8'))
     print('escrito', SALIDA)
+    bom, texto = _leer(WND01.read_bytes())
+    WND01.write_bytes((b'\xef\xbb\xbf' if bom else b'') + etiquetas_en_la_barra(texto).encode('utf-8'))
+    print('escrito', WND01)
 
 
 if __name__ == '__main__':

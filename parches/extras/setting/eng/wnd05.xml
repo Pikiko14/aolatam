@@ -154,6 +154,7 @@
         <child>12003</child>
         <child>12004</child>
         <child>12005</child>
+        <child>59100</child>
         <child>12006</child>
         <child>12007</child>
         <child>12008</child>
@@ -163,7 +164,6 @@
         <child>12011</child>
         <child>12031</child>
         <child>12081</child>
-        <child>59100</child>
         <child>59101</child>
     </window>
     <icon id="12011" dir="\wnd01\" normal="w050_01" focus="normal" down="normal" disable="normal">
@@ -5742,8 +5742,8 @@ Leagues will receive different amounts of Repute based on the outcome of the bat
         <style wsVisible="" bsVCenter="" bsHCenter="" bsRadio="" bsRadioEnd="" wsTab="" />
         <OnCommand>Setting_ChangePage</OnCommand>
     </window>
-    <window class="WND_CLASS_BASE" id="59101" range="0,0,249,343" icon="12081">
-        <style wsVisible="" />
+    <window class="WND_CLASS_BASE" id="59101" range="0,0,249,343" icon="12011">
+        <style />
         <child>59102</child>
         <child>59103</child>
         <child>59104</child>
@@ -5757,14 +5757,14 @@ Leagues will receive different amounts of Repute based on the outcome of the bat
         <style wsVisible="" bsCheck="" wsTab="" />
         <OnCommand>AofChatEnter</OnCommand>
     </window>
-    <window class="WND_CLASS_STATIC" id="59104" range="11,56,1,1" fcolor="103" font="1" title="Quick bar keys">
+    <window class="WND_CLASS_STATIC" id="59104" range="11,60,1,1" fcolor="103" font="1" title="Quick bar keys">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="59105" range="14,74,110,18" fcolor="101" font="1" icon="12006" title="Rebind keys...">
+    <window class="WND_CLASS_BUTTON" id="59105" range="130,56,55,18" fcolor="101" font="1" icon="12006" title="Rebind">
         <style wsVisible="" bsVCenter="" bsHCenter="" wsTab="" />
         <OnCommand>AofAbrirTeclas</OnCommand>
     </window>
-    <window class="WND_CLASS_MSTATIC" id="59106" range="11,104,226,120" lines="8" words="36" fcolor="103" font="1" title="">
+    <window class="WND_CLASS_MSTATIC" id="59106" range="11,92,226,140" lines="9" words="36" fcolor="103" font="1" title="">
         <style wsVisible="" />
     </window>
     <window class="WND_CLASS_DLG_1" id="59110" range="0,0,210,338" title="Rebind keys" fcolor="104" font="1">

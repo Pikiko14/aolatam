@@ -54,13 +54,16 @@ def test_el_parche_pone_los_nativos_y_los_saltos():
 
 def test_la_pestana_aof_entra_en_la_ventana_system():
     import xml.etree.ElementTree as ET
-    crudo = parche_aof_ventana.ORIGEN.read_bytes()
+    if not parche_aof_ventana.PAK_ORIGEN.exists():
+        pytest.skip('sin el cliente de desarrollo')
+    crudo = parche_aof_ventana.original()
     texto = crudo[3:].decode('utf-8') if crudo.startswith(b'\xef\xbb\xbf') else crudo.decode('utf-8')
     if 'id="59100"' in texto:
         pytest.skip('el origen ya lleva la pestana')
     raiz = ET.fromstring(parche_aof_ventana.generar(texto).encode('utf-8'))
     ventanas = {w.get('id'): w for w in raiz.iter('window')}
-    assert [c.text for c in ventanas['12002'].findall('child')][-2:] == ['59100', '59101']
+    hijos = [c.text for c in ventanas['12002'].findall('child')]
+    assert hijos[-1:] == ['59101'] and hijos.index('59100') == hijos.index('12005') + 1
     assert 'bsRadioEnd' not in ventanas['12005'].find('style').attrib
     assert 'bsRadioEnd' in ventanas['59100'].find('style').attrib
     assert ventanas['59100'].get('appdata') == '59101'
