@@ -136,20 +136,27 @@ WND01 = RAIZ / 'parches' / 'extras' / 'setting' / 'eng' / 'wnd01.xml'
 ETIQUETA_H, ETIQUETA_V, COLOR_ETIQUETA = 59041, 59061, 59099
 ETIQUETAS_XML = '''    <!-- AOF: etiquetas de las teclas de la barra (tools/parche_aof_ventana.py, server/lua/teclas.lua) -->
     <color id="59099" normal="0,107,115" focus="0,107,115" down="0,107,115" disable="0,107,115"/>
-    <template class="WND_CLASS_STATIC" range="0,0,26,11" id="59040" fcolor="103" bcolor="59099" font="3" title="">
+    <template class="WND_CLASS_STATIC" range="0,0,26,11" id="59040" fcolor="103" bcolor="59099" font="1" title="">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
     </template>
 {horizontales}
-    <template class="WND_CLASS_STATIC" range="0,0,13,11" id="59060" fcolor="103" bcolor="59099" font="3" title="">
+    <template class="WND_CLASS_STATIC" range="0,0,13,11" id="59060" fcolor="103" bcolor="59099" font="1" title="">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
     </template>
 {verticales}
 '''
+# La fuente 3 (la de las cantidades de las casillas) solo trae numeros: con una letra la etiqueta salia vacia ("si
+# coloca la a no sale", 08/11/2026). La 1 es la de los textos normales.
+FUENTE_ETIQUETA = '1'
 
 
 def etiquetas_en_la_barra(texto: str) -> str:
-    """wnd01.xml con las 24 etiquetas (12 de la barra horizontal y 12 de la vertical); no repite si ya estan."""
+    """wnd01.xml con las 24 etiquetas (12 de la barra horizontal y 12 de la vertical); no repite si ya estan, pero si
+    corrige la fuente de las que ya hay."""
     if 'id="%d"' % ETIQUETA_H in texto:
+        for plantilla in ('59040', '59060'):
+            texto = re.sub(r'(<template class="WND_CLASS_STATIC" range="[^"]*" id="%s"[^>]*?font=")\d+(")' % plantilla,
+                           r'\g<1>%s\g<2>' % FUENTE_ETIQUETA, texto)
         return texto
     nl = '\r\n' if '\r\n' in texto else '\n'
     h = nl.join('    <window id="%d" derive="59040" />' % (ETIQUETA_H + i) for i in range(12))

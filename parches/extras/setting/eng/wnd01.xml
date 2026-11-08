@@ -6182,7 +6182,7 @@
 	</window>
     <!-- AOF: etiquetas de las teclas de la barra (tools/parche_aof_ventana.py, server/lua/teclas.lua) -->
     <color id="59099" normal="0,107,115" focus="0,107,115" down="0,107,115" disable="0,107,115"/>
-    <template class="WND_CLASS_STATIC" range="0,0,26,11" id="59040" fcolor="103" bcolor="59099" font="3" title="">
+    <template class="WND_CLASS_STATIC" range="0,0,26,11" id="59040" fcolor="103" bcolor="59099" font="1" title="">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
     </template>
     <window id="59041" derive="59040" />
@@ -6197,7 +6197,7 @@
     <window id="59050" derive="59040" />
     <window id="59051" derive="59040" />
     <window id="59052" derive="59040" />
-    <template class="WND_CLASS_STATIC" range="0,0,13,11" id="59060" fcolor="103" bcolor="59099" font="3" title="">
+    <template class="WND_CLASS_STATIC" range="0,0,13,11" id="59060" fcolor="103" bcolor="59099" font="1" title="">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
     </template>
     <window id="59061" derive="59060" />
