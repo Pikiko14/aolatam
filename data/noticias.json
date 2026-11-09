@@ -1,6 +1,11 @@
 [
  {
   "fecha": "2026-11-09",
+  "titulo": "Assassin basic attack",
+  "texto": "ShadowBlade (Assassin) basic attacks now use their proper attack animation."
+ },
+ {
+  "fecha": "2026-11-09",
   "titulo": "Maple Mark fixed",
   "texto": "Maple Mark works again: right click it to record your current position, then right click it again to travel there. Each travel uses one Maple Teleportation Scroll; if you have none, it uses one Maple Mark instead."
  },
