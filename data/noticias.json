@@ -1,6 +1,11 @@
 [
  {
   "fecha": "2026-11-09",
+  "titulo": "Maple Mark fixed",
+  "texto": "Maple Mark works again: right click it to record your current position, then right click it again to travel there. Each travel uses one Maple Teleportation Scroll; if you have none, it uses one Maple Mark instead."
+ },
+ {
+  "fecha": "2026-11-09",
   "titulo": "Treasure maps",
   "texto": "A completed treasure map (10/10 pieces) now shows where the treasure is: open the Quest Log, TreMap tab, to see the place marked on the map. Walk to that spot to dig it up and get the reward; the map then starts again at 0/10. The level of the Map Pieces you use decides how rich the treasure is. The Delete button clears the map."
  },
