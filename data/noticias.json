@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-09",
+    "titulo": "Update 0.0.0.80: exchanges fixed",
+    "texto": "Please update to version 0.0.0.80 from AngelsLauncher. The Exchange lists (Event Overview > Exchange: Winter Holiday PD, Ride and Robots, Enhanced Pestle and Ride Feed, and other exchanges) show all their items again."
+  },
+  {
+    "fecha": "2026-11-09",
     "titulo": "Fixes",
     "texto": "Monsters charmed with Shining Charm now only use basic attacks, with their normal damage. Skill levels of ShadowBlade can no longer go above your character level. Fixed a colored ring that could stay under your character after traveling to another map."
   },
