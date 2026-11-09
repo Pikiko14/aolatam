@@ -1,6 +1,11 @@
 [
  {
   "fecha": "2026-11-09",
+  "titulo": "Charm: one monster at a time",
+  "texto": "You can only have one charmed monster at a time. Charming a new one releases the previous one, which becomes a normal monster again."
+ },
+ {
+  "fecha": "2026-11-09",
   "titulo": "Update 0.0.0.82: sort your bag",
   "texto": "Please update to version 0.0.0.82 from AngelsLauncher. The Prop and Backpack windows have a new Sort button in their title bar, next to the lock: it sorts your items by category and stacks them together. Pets stay where they are. Maple Mark now shows the recorded place in its tooltip (Sign)."
  },
