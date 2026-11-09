@@ -10991,7 +10991,9 @@ def _otorgar_skill_exp(ses, p, yo, arma_puesta=0, magic_id=0, accion=None, skill
     mult = configuracion.multiplicador_skill_exp(getattr(p, 'buffs', None))
     exp_ganada = max(1, int(round(1 * mult)))
 
-    SKILLS_PRODUCTOR = {20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31}
+    # Recoleccion y produccion (20..29 y 31 Cook) pueden ir 11 niveles por encima del personaje. La 30 NO: en este
+    # cliente es ShadowBlade, una rama de combate ("porque shadow blade sube mas que el nivel del personaje", 08/11/2026).
+    SKILLS_PRODUCTOR = {20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 31}
 
     # Las habilidades de arma de TODO lo equipado, no solo de la ranura del
     # arma: un Protector con hacha y escudo entrena Axe y Shield, y asi sale
