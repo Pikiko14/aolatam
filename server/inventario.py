@@ -1576,6 +1576,22 @@ def marcar_caducidad_holy(entrada, estado):
     return bytes(b)
 
 
+def marcar_maple(entrada, estado):
+    """El sitio grabado en un Maple Mark (categoria 魯易浮標 = 71), para el "Sign:" del tooltip.
+
+    El cliente (0x5144a3) copia en el objeto (+0xA0 escena, +0xA4 x, +0xA8 y) los 12 bytes que van detras de los 86 de
+    la entrada (v19 + 0x55), y el tooltip (0x672150) ensena "none" si la escena es 0. Se alarga la entrada con ellos y
+    se pone su longitud extra en e[51:53], como en las mascotas ("en el signing sigue saliendo none", 09/11/2026).
+    """
+    marca = (estado or {}).get('maple_mark')
+    base = 6 if entrada[:2] == struct.pack('<H', 0x001B) else 0
+    if not marca or len(entrada) != base + 86:
+        return entrada
+    b = bytearray(entrada)
+    struct.pack_into('<H', b, base + 51, 12)
+    return bytes(b) + struct.pack('<III', int(marca['stage']), int(marca['x']), int(marca['y']))
+
+
 def marcar_vinculacion(entrada, estado):
     v = (estado or {}).get('vinculacion')
     if not v:
@@ -2574,6 +2590,7 @@ def completo(char_id: int, items, dueno: int = None, mejoras=None,
             _e = marcar_caducidad_mercenario(_e, _m)
             _e = marcar_caducidad_holy(_e, _m)
             _e = marcar_vinculacion(_e, _m)
+            _e = marcar_maple(_e, _m)
             if _m and _m.get('veces'):
                 _e = marcar_mejora(_e, _m['veces'])
             if extras_visibles(_m):
@@ -2748,6 +2765,7 @@ def actualizar_ranuras(char_id: int, entradas, dueno: int = None,
             _e = marcar_caducidad_mercenario(_e, _m)
             _e = marcar_caducidad_holy(_e, _m)
             _e = marcar_vinculacion(_e, _m)
+            _e = marcar_maple(_e, _m)
             if _m and _m.get('veces'):
                 _e = marcar_mejora(_e, _m['veces'])
             if extras_visibles(_m):

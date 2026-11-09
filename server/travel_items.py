@@ -139,6 +139,7 @@ def usar(s,slot,target=None):
             if not maple:s.personaje.travel_mark=record
             _efecto(s,row)
             _notice(s,'Location recorded: map %d (%d, %d).'%(record['stage'],record['x'],record['y']))
+            if maple:s.enviar(*app._refrescar(s,[slot]))   # el "Sign:" del tooltip con el sitio grabado
         if destination:
             _efecto(traveler,row)
             _move(traveler,destination)

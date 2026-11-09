@@ -1307,6 +1307,7 @@ def _refrescar(ses, ranuras, con_oro=False):
                 _linea = inv.marcar_caducidad_mercenario(_linea, _mej)
                 _linea = inv.marcar_caducidad_holy(_linea, _mej)
                 _linea = inv.marcar_vinculacion(_linea, _mej)
+                _linea = inv.marcar_maple(_linea, _mej)
                 if _mej and _mej.get('veces'):
                     _linea = inv.marcar_mejora(_linea, _mej['veces'])
                 # Y los stats del martillo verde, que van en la misma entrada en
@@ -8771,6 +8772,67 @@ def _tesoro_al_pisar(ses, addr, casillas):
     _logros_guardar(ses)
     log.info('[%s] tesoro %s encontrado en la escena %d -> %s x%d (%s)', addr, destino[0], destino[1], premio_id,
              premio_n, nombre)
+
+
+ESPERA_ORDENAR = 2.0
+
+
+def _ordenar_bolsa(ses, addr, cual):
+    """El boton de ordenar del Prop (1) o de la Backpack (2): ver ordenar_bolsa.py. Cada objeto lleva consigo su
+    cantidad, su instancia y sus mejoras, como al arrastrarlo; las mascotas se quedan donde estan."""
+    import clases as _cl_ob
+    import inventario as inv
+    import ordenar_bolsa as ob
+    p = ses.personaje
+    bolsa = ses.inventario
+    if getattr(ses, 'trade', None) or getattr(ses, 'puesto', None):
+        ses.enviar(_cl_ob.aviso('Close the trade or your stall before sorting.', tipo=0))
+        return
+    ahora = time.time()
+    if ahora - getattr(ses, '_ordenar_t', 0) < ESPERA_ORDENAR:
+        return
+    ses._ordenar_t = ahora
+    if cual == ob.PROP:
+        casillas = list(range(20, TOPE_SIN_MOCHILA + 1)) + list(PROP_EXTRA)
+    elif cual == ob.MOCHILA:
+        casillas = list(range(PRIMERA_MOCHILA, PRIMERA_MOCHILA + _casillas_mochila(bolsa)))
+    else:
+        return
+    mejoras = getattr(p, 'mejoras', None)
+    if mejoras is None:
+        p.mejoras = mejoras = {}
+    cant = _cantidades(ses)
+    insts = _instancias(ses)
+    objetos = {c: (int(bolsa[c]), _cant_de(ses, c)) for c in casillas if bolsa.get(c)}
+    if not objetos:
+        return
+    nuevo = ob.plan(casillas, objetos, inv.categoria_item,
+                    lambda c: inv.es_apilable(objetos[c][0]) and not mejoras.get(c),
+                    lambda c: inv.es_mascota(objetos[c][0]))
+    movidas = {c for c in objetos if c not in nuevo or nuevo[c][0] != c or nuevo[c][2] != objetos[c][1]}
+    if not movidas:
+        ses.enviar(_cl_ob.aviso('Already sorted.', tipo=0))
+        return
+    fijas = {c for c in objetos if inv.es_mascota(objetos[c][0])}
+    viejo_inst = {c: insts.get(c) for c in casillas}
+    viejo_mej = {c: mejoras.get(c) for c in casillas}
+    for c in casillas:
+        if c in fijas:
+            continue
+        bolsa.pop(c, None)
+        cant.pop(c, None)
+        insts.pop(c, None)
+        mejoras.pop(c, None)
+    for destino, (origen, item, n) in nuevo.items():
+        bolsa[destino] = item
+        cant[destino] = n
+        if viejo_inst.get(origen) is not None:
+            insts[destino] = viejo_inst[origen]
+        if viejo_mej.get(origen) is not None:
+            mejoras[destino] = viejo_mej[origen]
+    ses.enviar(*_refrescar(ses, casillas))
+    _guardar_bolsa(ses, p.char_id)
+    log.info('[%s] %s ordenado: %d casillas movidas', addr, 'Prop' if cual == ob.PROP else 'Backpack', len(movidas))
 
 
 def _tesoro_borrar(ses, addr):
@@ -22998,6 +23060,10 @@ class Servidor:
                 except Exception:
                     log.debug('alma a los demas', exc_info=True)
                 log.info(f"[{addr}] {ses.personaje.nombre} sigue como alma")
+                return
+            if accion == __import__('ordenar_bolsa').ACCION and ses.personaje:
+                # El boton de ordenar del titulo del Prop / la Backpack (ordenar_bolsa.py).
+                _ordenar_bolsa(ses, addr, parametro)
                 return
             if accion == 2 and parametro in (1, 2):
                 # dead.lua OnOKReborn / OnCancelReborn (netcommand(2, 1|2)): la respuesta al "te quieren revivir".

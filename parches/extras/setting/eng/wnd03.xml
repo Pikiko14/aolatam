@@ -837,6 +837,7 @@
     <!-- 物品欄 -->
     <window class="WND_CLASS_DLG_1" range="450,50,200,449" id="3031" title="Prop" fcolor="104" font="1" icon="3031">
         <style wsVisible="" wsMoveable="" />
+        <child>59201</child>
         <child>3101</child>
         <child>3102</child>
         <child>3103</child>
@@ -1923,6 +1924,7 @@
     <!-- 背包介面 5格(1行) -->
     <window class="WND_CLASS_DLG_1" range="450,50,200,64" id="3401" title="Backpack" fcolor="104" font="1" icon="3403">
         <style wsVisible="" wsMoveable="" />
+        <child>59202</child>
         <child>3801</child>
         <child>3802</child>
         <child>3803</child>
@@ -1944,6 +1946,7 @@
     <!-- 背包介面 10格(2行) -->
     <window class="WND_CLASS_DLG_1" range="450,50,200,102" id="3407" title="Backpack" fcolor="104" font="1" icon="3407">
         <style wsVisible="" wsMoveable="" />
+        <child>59202</child>
         <child>3801</child>
         <child>3802</child>
         <child>3803</child>
@@ -1962,6 +1965,7 @@
     <!-- 背包介面 15格(3行) -->
     <window class="WND_CLASS_DLG_1" range="450,50,200,140" id="3418" title="Backpack" fcolor="104" font="1" icon="3418">
         <style wsVisible="" wsMoveable="" />
+        <child>59202</child>
         <child>3801</child>
         <child>3802</child>
         <child>3803</child>
@@ -1985,6 +1989,7 @@
     <!-- 背包介面 20格(4行) -->
     <window class="WND_CLASS_DLG_1" range="450,50,200,178" id="3434" title="Backpack" fcolor="104" font="1" icon="3434">
         <style wsVisible="" wsMoveable="" />
+        <child>59202</child>
         <child>3801</child>
         <child>3802</child>
         <child>3803</child>
@@ -2013,6 +2018,7 @@
     <!-- 背包介面 25格(5行) -->
     <window class="WND_CLASS_DLG_1" range="450,50,200,216" id="3455" title="Backpack" fcolor="104" font="1" icon="3455">
         <style wsVisible="" wsMoveable="" />
+        <child>59202</child>
         <child>3801</child>
         <child>3802</child>
         <child>3803</child>
@@ -2046,6 +2052,7 @@
     <!-- 背包介面 30格(6行) -->
     <window class="WND_CLASS_DLG_1" range="450,50,200,254" id="3456" title="Backpack" fcolor="104" font="1" icon="3456">
         <style wsVisible="" wsMoveable="" />
+        <child>59202</child>
         <child>3801</child>
         <child>3802</child>
         <child>3803</child>
@@ -2084,6 +2091,7 @@
     <!-- 背包介面 35格(7行) -->
     <window class="WND_CLASS_DLG_1" range="450,50,200,292" id="3457" title="Backpack" fcolor="104" font="1" icon="3457">
         <style wsVisible="" wsMoveable="" />
+        <child>59202</child>
         <child>3801</child>
         <child>3802</child>
         <child>3803</child>
@@ -2127,6 +2135,7 @@
     <!-- 背包介面 40格(8行) -->
     <window class="WND_CLASS_DLG_1" range="450,50,200,330" id="3458" title="Backpack" fcolor="104" font="1" icon="3458">
         <style wsVisible="" wsMoveable="" />
+        <child>59202</child>
         <child>3801</child>
         <child>3802</child>
         <child>3803</child>
@@ -2175,6 +2184,7 @@
     <!-- 背包介面 45格(9行) -->
     <window class="WND_CLASS_DLG_1" range="450,50,200,368" id="3459" title="Backpack" fcolor="104" font="1" icon="3459">
         <style wsVisible="" wsMoveable="" />
+        <child>59202</child>
         <child>3801</child>
         <child>3802</child>
         <child>3803</child>
@@ -2228,6 +2238,7 @@
     <!-- 背包介面 50格(10行) -->
     <window class="WND_CLASS_DLG_1" range="450,50,200,406" id="3460" title="Backpack" fcolor="104" font="1" icon="3460">
         <style wsVisible="" wsMoveable="" />
+        <child>59202</child>
         <child>3801</child>
         <child>3802</child>
         <child>3803</child>
@@ -7964,4 +7975,15 @@
     <icon id="2103" dir="\wnd01\" normal="w301_02" focus="normal" down="normal" disable="normal">
         <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />
     </icon>
+    <!-- aolat ordenar -->
+    <icon id="59200" dir="\wnd01\" normal="aolat_ordenar_n" focus="aolat_ordenar_f" down="aolat_ordenar_d" disable="aolat_ordenar_n" />
+    <window class="WND_CLASS_BUTTON" id="59201" range="128,-15,14,14" icon="59200" tooltip="10040" tooltext="Sort items" tooldelay="20">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>AofOrdenarProp</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59202" range="128,-15,14,14" icon="59200" tooltip="10040" tooltext="Sort items" tooldelay="20">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>AofOrdenarMochila</OnCommand>
+    </window>
+    <!-- /aolat ordenar -->
 </root>

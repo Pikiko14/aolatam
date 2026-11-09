@@ -91,3 +91,14 @@ def test_party_book_rejects_event_target_without_spending(world,monkeypatch):
     monkeypatch.setattr(equipos,'grupo_de',lambda s:[a,b])
     before=copy.deepcopy(stored(world,a));use(a,20,b.personaje.char_id)
     assert stored(world,a)==before and not world.trips
+
+
+def test_maple_mark_entry_carries_the_recorded_point_for_the_tooltip():
+    # 09/11/2026 "en el signing sigue saliendo none": el cliente (0x5144a3) lee escena, x, y detras de los 86 bytes.
+    import inventario
+    marca={'maple_mark':dict(stage=34,x=119,y=70)}
+    e=inventario.actualizar_ranuras(1,[(30,20565,1,None)],5,mejoras={30:marca})
+    assert struct.unpack_from('<H',e,6+51)[0]==12 and len(e)==6+86+12
+    assert struct.unpack_from('<III',e,6+86)==(34,119,70)
+    sin=inventario.actualizar_ranuras(1,[(30,20565,1,None)],5)
+    assert len(sin)==6+86

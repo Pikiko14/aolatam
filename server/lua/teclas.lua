@@ -315,5 +315,18 @@ function AofTeclasUpdate(dwID, dwCmdID, dwParam, pParam)
   return 1
 end
 
+
+-- Boton de ordenar del titulo del Prop y de la Backpack (tools/parche_ordenar_bolsa.py): el servidor ordena por
+-- categoria (server/ordenar_bolsa.py, accion 200 del 0x0016; 1 = Prop, 2 = Backpack).
+function AofOrdenarProp(dwID, dwCmdID, dwParam, pParam)
+  game.netcommand(200, 1)
+  return 1
+end
+
+function AofOrdenarMochila(dwID, dwCmdID, dwParam, pParam)
+  game.netcommand(200, 2)
+  return 1
+end
+
 AofRegistrar()
 AofAplicar()
