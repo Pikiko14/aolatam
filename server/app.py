@@ -9884,6 +9884,51 @@ def _ofrenda_al_totem(ses, addr, cuerpo):
     log.info('[%s] ofrenda al totem de %s: +%d (nivel %d)', addr, p.stage, total, nivel)
 
 
+ESPERA_LIMPIAR_AROS = 1.5
+
+
+def _paquetes_aros_apagados(ses):
+    """Los apagados de las marcas que pintan un aro bajo el propio personaje, o () si en su mapa le puede tocar alguna:
+    modo PvP (0x001D 22), arena (36), hostil (42) y equipo de Holy (38)."""
+    import competiciones as _co_la
+    import holy_battlefield as _hb_la
+    import totem_war as _tw_la
+    import trade_routes as _tr_la
+    p = getattr(ses, 'personaje', None)
+    if p is None:
+        return ()
+    st = int(getattr(p, 'stage', 0) or 0)
+    if (_tw_la.es_mapa_tw(st) or __import__('outpost_pvp').es_mapa(st) or st in _co_la.MAPAS
+            or st in __import__('daily_events').STAGES or st in __import__('league_war').STAGES):
+        return ()
+    if any(e.get('portador') or e.get('suelo') for e in _tr_la._ENCARGOS.values()):
+        return ()                                   # Trade Routes en disputa: sus marcas las pone trade_routes
+    yo = p.entity_id
+    return (_tw_la.modo_pvp(yo, False), _co_la.modo_arena(yo, False),
+            struct.pack('<HIBBII', 0x001D, yo, 1, 42, yo, 0), _hb_la.equipo(yo, 0))
+
+
+def _limpiar_aros_propios(ses):
+    """PARCHE DEFENSIVO (08/11/2026): tras viajar con Angels GO! de Aurora a Dark City a Zetha le quedaba un aro bajo
+    el personaje (azul en su ciudad, naranja en el Lyceum) que solo se iba al volver a entrar: "no deberia pasar eso".
+    No se encontro que paquete lo enciende; al cargar cada mapa normal se apagan todas las marcas de aro conocidas del
+    propio personaje, y otra vez a ESPERA_LIMPIAR_AROS por si la presentacion del mapa las pisa."""
+    def _mandar():
+        try:
+            pk = _paquetes_aros_apagados(ses)
+            if pk and getattr(ses, 'personaje', None) and not getattr(ses, 'mapa_cargando', False):
+                (getattr(ses, 'enviar_sin_espejo', None) or ses.enviar)(*pk)
+                if hasattr(ses, 'volcar'):
+                    ses.volcar()
+        except Exception:
+            log.debug('limpiar aros propios', exc_info=True)
+    _mandar()
+    try:
+        asyncio.get_event_loop().call_later(ESPERA_LIMPIAR_AROS, _mandar)
+    except RuntimeError:
+        pass
+
+
 def _tw_al_entrar(ses):
     """Al cargar una arena: el totem a la vista (el primero de la sala no
     lo recibe de _entrar_en_sala) y cuanto le queda a la guerra."""
@@ -17200,6 +17245,7 @@ class Servidor:
 
             if hasattr(ses,'terminar_carga_mapa'):
                 ses.terminar_carga_mapa()
+            _limpiar_aros_propios(ses)
             log.info(f"[{addr}] mapa cargado exitosamente: stage {p.stage} "
                      f"tile ({p.tile_x},{p.tile_y})")
             _reaplicar_muerte(ses)
