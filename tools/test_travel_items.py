@@ -41,9 +41,20 @@ def test_two_maple_marks_have_independent_immutable_points_and_spend_scroll_only
     assert s.personaje.tile_x==177 and s.cantidades[22]==1
     use(s,21);assert s.personaje.tile_x==175 and 22 not in s.inventario
     assert s.inventario=={20:20565,21:20565}
-    before=copy.deepcopy(stored(world,s));use(s,20)
-    assert stored(world,s)==before and s.personaje.tile_x==175
-    assert stored(world,s)['mejoras']['20']['maple_mark']['x']==177
+    # Sin pergamino viaja gastando el propio Maple Mark ("you can be teleported with Maple Mark").
+    use(s,20)
+    assert s.personaje.tile_x==177 and s.inventario=={21:20565}
+    assert '20' not in stored(world,s)['mejoras']
+
+
+def test_maple_mark_records_although_the_saved_bag_is_behind(world):
+    # 09/11/2026 "marco un mapa y no me funciona": un drop recogido que aun no estaba en disco hacia que
+    # recent_mall rechazara con "Inventory changed".
+    s=world.player(items={20:20565});world.save(s);place(s)
+    s.inventario[30]=1352;s.cantidades[30]=5
+    use(s,20)
+    assert s.personaje.mejoras[20]['maple_mark']==dict(stage=41,x=177,y=100)
+    assert stored(world,s)['inventario']['30']==1352
 
 
 def test_unmarked_scroll_and_restricted_record_spend_nothing(world):

@@ -1,6 +1,10 @@
 """Native city scrolls, recorded marks and party books; atomic item/travel state."""
 import functools
+import logging
 import time
+
+
+_log = logging.getLogger('app')
 
 
 class Rechazo(ValueError):pass
@@ -114,8 +118,9 @@ def usar(s,slot,target=None):
             if recorded:
                 destination=_point(recorded['stage'],recorded['x'],recorded['y'])
                 scroll=next((k for k,i in s.inventario.items() if i==20566 and 20<=k<=app._tope_bolsa(s.inventario)),None)
-                if scroll is None:raise Rechazo('You need a Maple Teleportation Scroll; the mark was not changed.')
-                consume={scroll:1}
+                # "If there's no Maple Teleportation Scroll in the item bag, you can be teleported with Maple Mark":
+                # sin pergamino se gasta el propio Maple Mark (09/11/2026).
+                consume={scroll:1} if scroll is not None else {slot:1}
             else:record=_point(s.personaje.stage,s.personaje.tile_x,s.personaje.tile_y);consume={}
         else:
             mark=getattr(s.personaje,'travel_mark',{})
@@ -126,6 +131,9 @@ def usar(s,slot,target=None):
                 if maple:data['mejoras'].setdefault(str(slot),{})['maple_mark']=record
                 else:data['travel_mark']=record
             if destination:_persist_position(con,traveler,destination,data if traveler is s else None)
+        # La bolsa de la sesion manda: se guarda antes para que la comprobacion de recent_mall no rechace con
+        # "Inventory changed" por un drop recogido y aun no escrito ("marco un mapa y no me funciona", 09/11/2026).
+        app._guardar_bolsa(s,s.personaje.char_id)
         recent_mall.cambiar(s,consume,[],transaccion=transaction)
         if record:
             if not maple:s.personaje.travel_mark=record
@@ -135,7 +143,11 @@ def usar(s,slot,target=None):
             _efecto(traveler,row)
             _move(traveler,destination)
         s._travel_item=None
-    except (Rechazo,recent_mall.Rechazo) as exc:_notice(s,str(exc))
+        _log.info('item de viaje %s (casilla %s): %s', ident, slot,
+                  'graba %s' % (record,) if record else 'viaja a %s gastando %s' % (destination, consume))
+    except (Rechazo,recent_mall.Rechazo) as exc:
+        _log.info('item de viaje %s (casilla %s) rechazado: %s', ident, slot, exc)
+        _notice(s,str(exc))
     return True
 
 
