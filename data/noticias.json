@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-08",
+    "titulo": "Update 0.0.0.79 and fixes",
+    "texto": "Please update to version 0.0.0.79 from AngelsLauncher: the quick bar now shows letters too when you assign them to a slot. City Angels send their citizens back to the Angel Lyceum again."
+  },
+  {
+    "fecha": "2026-11-08",
     "titulo": "Update 0.0.0.78",
     "texto": "Please update to version 0.0.0.78 from AngelsLauncher. The AOF tab of the System window now has a clean background that follows your window color."
   },
