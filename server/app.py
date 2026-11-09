@@ -22970,6 +22970,9 @@ class Servidor:
                 elif any(int(r.get('群組') or 0) == int(parametro)
                          for r in _hs73.xml_rows('exchange.xml').values()):
                     ses.enviar(struct.pack('<HI', 0x0151, int(parametro)))
+                    # Diagnostico (08/11/2026: "ninguna de las 3 activa le salen items"): sin esto el canje que SI se
+                    # abria no dejaba rastro y no se sabia si la peticion llegaba.
+                    log.info(f"[{addr}] exchange: abre el grupo {parametro}")
                 else:
                     log.info(f"[{addr}] exchange: grupo {parametro} sin recetas")
                 return
