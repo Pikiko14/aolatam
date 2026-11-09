@@ -1220,6 +1220,11 @@ def _obtener_receta_exchange(recipe_id: int):
     r = rows.get(int(recipe_id))
     if not r:
         return None
+    # Grupo 0 = receta retirada. Las filas no se borran de exchange.xml (el cliente recorre los ids desde 1 y se para
+    # en el primero que falta: un hueco dejo vacios los canjes con id mayor, 09/11/2026), se les pone el grupo 0; y
+    # aqui no valen, aunque alguien mande su id a mano.
+    if not int(r.get('群組') or 0):
+        return None
     materiales = []
     for i in range(1, 10):
         m_id = r.get(f'\u6750\u6599{i}') or r.get(f'材料{i}')
