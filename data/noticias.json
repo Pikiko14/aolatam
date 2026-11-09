@@ -1,6 +1,11 @@
 [
  {
   "fecha": "2026-11-09",
+  "titulo": "Charm success chance",
+  "texto": "Shining Charm no longer always works. Its chance is 10% at level I, 20% at II, 30% at III, 40% at IV and 50% at V, a bit lower against monsters above your level and a bit higher (up to +10%) against weaker ones. If it fails, the mana is spent and the monster attacks you."
+ },
+ {
+  "fecha": "2026-11-09",
   "titulo": "Charm: one monster at a time",
   "texto": "You can only have one charmed monster at a time. Charming a new one releases the previous one, which becomes a normal monster again."
  },
