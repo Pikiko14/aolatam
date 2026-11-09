@@ -13327,7 +13327,12 @@ class Servidor:
                                         if dt <= r_m:
                                             if ahora - getattr(m, 'ultimo_ataque', 0) >= _cb.cadencia_monstruo(m):
                                                 m.ultimo_ataque = ahora
-                                                dano_ch = max(5, m.pegar() - getattr(ch_targ, 'defensa', 0) // 2)
+                                                # SOLO GOLPE BASICO y con su ataque ORIGINAL (08/11/2026: "porque el enchanted de
+                                                # earth pega tanto y porque usan poderes?? solo deben pegar basicos"). Se mandaba
+                                                # con la fase 0x80 de los hechizos (_fx_golpe_mob la omite en el golpe normal 656) y con el +50% de los monstruos
+                                                # para pegar a los jugadores (combate.MULT_ATAQUE_MONSTRUOS).
+                                                _base_ch = int(m.pegar() / _cb.MULT_ATAQUE_MONSTRUOS)
+                                                dano_ch = max(1, _base_ch - getattr(ch_targ, 'defensa', 0) // 2)
                                                 ch_targ.registrar_dano(min(ch_targ.hp, dano_ch), es_pet=False)
                                                 ch_targ.hp = max(0, ch_targ.hp - dano_ch)
                                                 anim_m = _cb.anim_de_monstruo(m.nombre)
@@ -13336,8 +13341,7 @@ class Servidor:
                                                     m.charmed_objetivo = None
                                                     ses.enviar_inmediato(
                                                         _cb.ataque(m.entity_id, ch_targ.entity_id, anim_m),
-                                                        _cb.numero_de_dano(m.entity_id, ch_targ.entity_id, dano_ch, ataque=656, efecto=148),
-                                                        _cb.cierre_de_dano(m.entity_id, ch_targ.entity_id, ataque=656, efecto=148),
+                                                        *_fx_golpe_mob(m.entity_id, ch_targ.entity_id, dano_ch, 656, m.proj_ef if m.proj_ef > 0 else 148),
                                                         _cb.numero_flotante(ch_targ.entity_id, dano_ch),
                                                         _cb.atributo(ch_targ.entity_id, 0, _cb.VIDA)
                                                     )
@@ -13345,8 +13349,7 @@ class Servidor:
                                                 else:
                                                     ses.enviar_inmediato(
                                                         _cb.ataque(m.entity_id, ch_targ.entity_id, anim_m),
-                                                        _cb.numero_de_dano(m.entity_id, ch_targ.entity_id, dano_ch, ataque=656, efecto=148),
-                                                        _cb.cierre_de_dano(m.entity_id, ch_targ.entity_id, ataque=656, efecto=148),
+                                                        *_fx_golpe_mob(m.entity_id, ch_targ.entity_id, dano_ch, 656, m.proj_ef if m.proj_ef > 0 else 148),
                                                         _cb.numero_flotante(ch_targ.entity_id, dano_ch),
                                                         _cb.atributo(ch_targ.entity_id, ch_targ.porcentaje)
                                                     )
