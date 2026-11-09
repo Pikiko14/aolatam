@@ -1,5 +1,10 @@
 [
   {
+    "fecha": "2026-11-09",
+    "titulo": "Fixes",
+    "texto": "Monsters charmed with Shining Charm now only use basic attacks, with their normal damage. Skill levels of ShadowBlade can no longer go above your character level. Fixed a colored ring that could stay under your character after traveling to another map."
+  },
+  {
     "fecha": "2026-11-08",
     "titulo": "Update 0.0.0.79 and fixes",
     "texto": "Please update to version 0.0.0.79 from AngelsLauncher: the quick bar now shows letters too when you assign them to a slot. City Angels send their citizens back to the Angel Lyceum again."
