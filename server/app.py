@@ -8774,6 +8774,26 @@ def _tesoro_al_pisar(ses, addr, casillas):
              premio_n, nombre)
 
 
+def _soltar_encantado(ses, nuevo=None):
+    """Deja de estar encantado el monstruo que tenia el jugador (si no es `nuevo`), como cuando se le acaba el
+    encanto: vuelve a ser un monstruo normal."""
+    viejo = getattr(ses, 'monstruo_encantado', None)
+    if viejo is None or viejo is nuevo:
+        return
+    ses.monstruo_encantado = None
+    if not getattr(viejo, 'encantado', False):
+        return
+    viejo.encantado = False
+    viejo.charmed_objetivo = None
+    viejo.encantado_expira = 0
+    paquetes = [struct.pack('<HIBBII', 0x001D, viejo.entity_id, 1, 4, 303, 0)]
+    if getattr(viejo, 'encanto_tipo', 0):
+        paquetes.append(struct.pack('<HIBBII', 0x001D, viejo.entity_id, 1, 4, int(viejo.encanto_tipo), 0))
+    paquetes.append(struct.pack('<HIBBI', 0x0013, viejo.entity_id, 1, 0x3c, 0))
+    ses.enviar(*paquetes)
+    log.info('encanto sobre %s soltado: solo uno a la vez', getattr(viejo, 'nombre', '?'))
+
+
 ESPERA_ORDENAR = 2.0
 
 
@@ -16306,7 +16326,11 @@ class Servidor:
 
                 dur_s = max(10, mag.get('dur_ms', 600000) // 1000)
                 dur_ms = dur_s * 1000
+                # UNO SOLO A LA VEZ ("ahora puedo encantar a 3 mobs, no deberia poderse", 09/11/2026): solo se
+                # cambiaba el puntero y el anterior seguia encantado y peleando a tu lado.
+                _soltar_encantado(ses, m)
                 m.encantado = True
+                m.encanto_tipo = tipo
                 m.encantado_expira = time.time() + dur_s
                 m.en_combate_con = None
                 m.charmed_objetivo = None
