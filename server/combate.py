@@ -3045,8 +3045,9 @@ ANIM_DOS_MANOS_TEST = 0     # lanza, o cualquier arma a dos manos
 #   9 espada, 10 hacha, 11 lanza, 17 arco, 30 daga, 8 baston
 GOLPE_POR_SKILL = {
     9: (3, 1480),
-    # ShadowBlade (Assassin): "animacion de basico debe ser la 1" (07/11/2026), como el tajo de una mano con escudo.
-    30: (3, 1),
+    # ShadowBlade (Assassin): "la animacion de basico es la 1, anim 1 1261" (09/11/2026, /anim 1 1261 probado por el
+    # usuario). Antes (3, 1), el tajo de una mano con escudo.
+    30: (1, 1261),
     # Lanza: (2, 827) salio de una captura pero en este cliente no animaba. (2, 181)
     # lo eligio el usuario probando en el juego con /anim (30/10/2026).
     11: (2, 181),

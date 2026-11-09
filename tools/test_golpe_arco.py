@@ -24,3 +24,9 @@ def test_lanza_usa_el_golpe_probado_en_el_juego():
 
 def test_espada_sigue_con_lo_medido():
     assert cb.golpe_de_arma(ESPADA) == (3, 1480)
+
+
+def test_shadowblade_pega_con_la_animacion_1_1261():
+    # 09/11/2026 "los asesinos la animacion de basico es la 1, anim 1 1261".
+    import combate
+    assert combate.GOLPE_POR_SKILL[30] == (1, 1261)
