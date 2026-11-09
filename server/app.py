@@ -8664,13 +8664,55 @@ def tesoro_hallados(personaje) -> int:
     return bin(int(lc.get(CLAVE_TESORO, 0) or 0)).count('1')
 
 
-def anotar_fragmento(personaje):
+# El album completo apunta a un tesoro: "al llenar el mapa no me dice donde esta el tesoro" (09/11/2026). Se guarda en
+# logros_cont (solo enteros): el mapa de treasuremap.xml, la escena y el punto (un tag de la escena).
+CLAVE_TESORO_NIVELES = 'tesoro_niveles'   # suma de los niveles de los Map Piece anotados
+CLAVE_TESORO_CON_NIVEL = 'tesoro_con_nivel'  # cuantos de ellos se anotaron con nivel (las fichas de antes no lo tienen)
+CLAVE_TESORO_MAPA = 'tesoro_mapa'
+CLAVE_TESORO_ESCENA = 'tesoro_escena'
+CLAVE_TESORO_PUNTO = 'tesoro_punto'
+TESORO_RADIO = 2                           # casillas alrededor del punto en las que se encuentra
+
+
+def anotar_fragmento(personaje, nivel=1):
     """(ok, hallados) al anotar un fragmento: False si el album ya esta completo."""
     n = tesoro_hallados(personaje)
     if n >= TESORO_TOTAL:
         return False, n
-    personaje.logros_cont[CLAVE_TESORO_N] = n + 1
+    lc = personaje.logros_cont
+    lc[CLAVE_TESORO_N] = n + 1
+    lc[CLAVE_TESORO_NIVELES] = int(lc.get(CLAVE_TESORO_NIVELES, 0) or 0) + max(1, min(10, int(nivel or 1)))
+    lc[CLAVE_TESORO_CON_NIVEL] = int(lc.get(CLAVE_TESORO_CON_NIVEL, 0) or 0) + 1
     return True, n + 1
+
+
+def tesoro_destino(personaje):
+    """(mapa, escena, punto) del tesoro del album completo, eligiendolo la primera vez; None si el album no esta lleno.
+    Con un album lleno de antes de esto (sin niveles anotados) sale un tesoro de la primera franja."""
+    import tesoros
+    lc = getattr(personaje, 'logros_cont', None)
+    if lc is None or tesoro_hallados(personaje) < TESORO_TOTAL:
+        return None
+    if int(lc.get(CLAVE_TESORO_MAPA, 0) or 0):
+        return (int(lc[CLAVE_TESORO_MAPA]), int(lc.get(CLAVE_TESORO_ESCENA, 0) or 0),
+                int(lc.get(CLAVE_TESORO_PUNTO, 0) or 0))
+    con_nivel = int(lc.get(CLAVE_TESORO_CON_NIVEL, 0) or 0)
+    nivel = round(int(lc.get(CLAVE_TESORO_NIVELES, 0) or 0) / con_nivel) if con_nivel else 1
+    elegido = tesoros.elegir(nivel)
+    if not elegido:
+        return None
+    lc[CLAVE_TESORO_MAPA], lc[CLAVE_TESORO_ESCENA], lc[CLAVE_TESORO_PUNTO] = elegido
+    return elegido
+
+
+def tesoro_vaciar(personaje):
+    """El album vuelve a 0/10 y sin tesoro (al encontrarlo o con el boton Delete de la pestana TreMap)."""
+    lc = personaje.logros_cont
+    lc[CLAVE_TESORO_N] = 0
+    lc.pop(CLAVE_TESORO, None)
+    for k in (CLAVE_TESORO_NIVELES, CLAVE_TESORO_CON_NIVEL, CLAVE_TESORO_MAPA, CLAVE_TESORO_ESCENA,
+              CLAVE_TESORO_PUNTO):
+        lc.pop(k, None)
 
 
 def _tesoro_paquete(ses):
@@ -8680,9 +8722,64 @@ def _tesoro_paquete(ses):
     fragmentos hallados][u32 posicion 0][u8 0xF5], y el contador subia 4,5,6...9
     al anotar cada fragmento. El cliente (0x609600) copia el paquete y pinta
     "Found: n/10". Con mapa 0 es el mapa sin terminar.
+
+    Con mapa (id de treasuremap.xml) el cliente (0x6098e4) pinta su nombre y el de la escena, el dibujo de la escena y
+    una marca en el punto: 0x56fb90(escena, posicion) busca ese punto de disparo en el mapa de la escena.
     """
     _logros_datos(ses)
-    return struct.pack('<HIIIIIB', 0x012A, 0, 0, 0, tesoro_hallados(ses.personaje), 0, 0xF5)
+    destino = tesoro_destino(ses.personaje)
+    mapa, escena, punto = destino or (0, 0, 0)
+    return struct.pack('<HIIIIIB', 0x012A, 0, mapa, escena, tesoro_hallados(ses.personaje), punto, 0xF5)
+
+
+def _tesoro_al_pisar(ses, addr, casillas):
+    """Encuentra el tesoro al pasar cerca de su punto: sale el premio de la tabla de drop del mapa y el album se vacia.
+    Ninguna escena trae un script de tesoro (no hay MAKE_TREASURE en ningun mapa), asi que lo hace el servidor."""
+    p = ses.personaje
+    if not p or tesoro_hallados(p) < TESORO_TOTAL:
+        return
+    import tesoros
+    import bolsas as _bol_ts
+    import clases as _cl_ts
+    destino = tesoro_destino(p)
+    if not destino or int(p.stage or 0) != destino[1]:
+        return
+    sitio = tesoros.casilla(destino[1], destino[2])
+    if not sitio or not any(max(abs(x - sitio[0]), abs(y - sitio[1])) <= TESORO_RADIO for x, y in casillas):
+        return
+    fila = tesoros.de_id(destino[0]) or {}
+    premio = _bol_ts._sorteo(int(fila.get('drop') or 0))
+    if not premio:
+        log.warning('[%s] el tesoro %s no tiene tabla de premio', addr, destino[0])
+        return
+    premio_id, premio_n = premio
+    if premio_n > 1 and _bol_ts.es_premio_unitario(premio_id):
+        premio_n = 1
+    ranura = _meter(ses, premio_id, premio_n)
+    if ranura is None:
+        ahora = time.time()
+        if ahora - getattr(ses, '_tesoro_lleno_t', 0) > 10:
+            ses._tesoro_lleno_t = ahora
+            ses.enviar(_cl_ts.aviso('You found the treasure, but your inventory is full.', tipo=0))
+        return
+    tesoro_vaciar(p)
+    nombre = _nombre_item(premio_id)
+    ses.enviar(*_refrescar(ses, [ranura]), _tesoro_paquete(ses),
+               _cl_ts.aviso('You found %s: %s x%d!' % (fila.get('nombre') or 'the treasure', nombre, premio_n),
+                            tipo=0))
+    _guardar_bolsa(ses, p.char_id)
+    _logros_guardar(ses)
+    log.info('[%s] tesoro %s encontrado en la escena %d -> %s x%d (%s)', addr, destino[0], destino[1], premio_id,
+             premio_n, nombre)
+
+
+def _tesoro_borrar(ses, addr):
+    """c2s 0x012A [u32 tipo]: el boton Delete de la pestana TreMap (nativa deletetreasuremap)."""
+    _logros_datos(ses)
+    tesoro_vaciar(ses.personaje)
+    ses.enviar(_tesoro_paquete(ses))
+    _logros_guardar(ses)
+    log.info('[%s] mapa del tesoro borrado', addr)
 
 
 def _logros_datos(ses):
@@ -12990,6 +13087,8 @@ class Servidor:
                 _logros_vaciar(ses)
                 _logros_actualizar(ses, addr, enviar=True)
                 ses.enviar(_tesoro_paquete(ses))
+                if tesoro_hallados(ses.personaje) >= TESORO_TOTAL:
+                    _logros_guardar(ses)     # el tesoro que se acaba de elegir para un album lleno de antes
                 _pase_entrar(ses)
                 # Pet Amplify ya con el inventario de la sesion: el bono a los
                 # stats y el 0x0179 con las mascotas metidas.
@@ -14385,6 +14484,10 @@ class Servidor:
 
         if opcode == 0x012F and ses.rol == 'mundo' and ses.personaje and len(cuerpo) >= 4:
             _ofrenda_al_totem(ses, addr, cuerpo)
+            return
+
+        if opcode == 0x012A and ses.rol == 'mundo' and ses.personaje:
+            _tesoro_borrar(ses, addr)
             return
 
         if opcode == 0x014C and ses.rol == 'mundo' and ses.personaje:
@@ -19580,7 +19683,7 @@ class Servidor:
                 if not 1 <= _n_pieza <= 10:
                     return
                 # Cualquier nivel cuenta, y se pueden repetir: diez Map Piece 1 completan el album.
-                _ok_tm, _hallados = anotar_fragmento(ses.personaje)
+                _ok_tm, _hallados = anotar_fragmento(ses.personaje, _n_pieza)
                 if not _ok_tm:
                     ses.enviar(_cl_tm.aviso('Your treasure map is already complete (%d/%d).'
                                             % (_hallados, TESORO_TOTAL), tipo=0))
@@ -19588,6 +19691,9 @@ class Servidor:
                 _sacar(ses, ranura, 1)
                 ses.enviar(*_refrescar(ses, [ranura]), _tesoro_paquete(ses),
                            _cl_tm.aviso('Map piece recorded (%d/%d).' % (_hallados, TESORO_TOTAL), tipo=0))
+                if _hallados >= TESORO_TOTAL:
+                    ses.enviar(_cl_tm.aviso('Treasure map complete! The Quest Log (TreMap tab) shows where to dig.',
+                                            tipo=0))
                 _guardar_bolsa(ses, cid)
                 _logros_guardar(ses)
                 log.info('[%s] fragmento de nivel %d del mapa del tesoro anotado (%d/%d)', addr, _n_pieza,
@@ -23234,6 +23340,11 @@ class Servidor:
                         _ejecutar_regla_propia(ses, _r_p, _pr_p, addr)
                 except Exception:
                     log.exception('reglas al pisar')
+                try:
+                    _tesoro_al_pisar(ses, addr, [(_ox, _oy)] + list(_casillas_del_tramo(
+                        (_ox, _oy), (ses.personaje.tile_x, ses.personaje.tile_y))))
+                except Exception:
+                    log.exception('mapa del tesoro al pisar')
                 # Y el evento del mapa de esa casilla, si lo hay. Va DESPUES
                 # del portal y no en su lugar: los portales siguen saliendo
                 # de portales.json, que esta medido uno a uno.
