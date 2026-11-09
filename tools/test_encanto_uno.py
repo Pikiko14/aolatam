@@ -24,3 +24,12 @@ def test_reencantar_el_mismo_no_lo_suelta():
     ses = NS(monstruo_encantado=m, enviar=lambda *a: None)
     app._soltar_encantado(ses, m)
     assert m.encantado and ses.monstruo_encantado is m
+
+
+def test_probabilidad_de_encantar_por_nivel_de_hechizo_y_de_monstruo():
+    # 09/11/2026: "10, 20, 30, 40 dependiendo del lvl de la spell y lvl del mob", no el 100 % de antes.
+    import combate
+    assert [combate.prob_encanto(n, 50, 50) for n in (1, 2, 3, 4, 5)] == [10, 20, 30, 40, 50]
+    assert combate.prob_encanto(3, 50, 60) == 20             # el monstruo saca 10 niveles
+    assert combate.prob_encanto(3, 50, 20) == 40             # mucho mas flojo: como mucho +10
+    assert combate.prob_encanto(1, 10, 90) == 1

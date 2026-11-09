@@ -16324,6 +16324,22 @@ class Servidor:
                     except Exception:
                         pass
 
+                # NO SIEMPRE SALE: ver combate.prob_encanto. Si falla, el gasto de MP y la espera ya se cobraron y el
+                # monstruo se lo toma como un ataque.
+                import skills as _sk_enc
+                _prob_enc = _cb.prob_encanto(_sk_enc.nivel_de_magia(tipo), getattr(ses.personaje, 'nivel', 1),
+                                             getattr(m, 'nivel', 0))
+                if random.randrange(100) >= _prob_enc:
+                    _ef_f = mag.get('efecto', 64)
+                    ses.enviar(_cb.confirmar_cast(objetivo, m.tile_x, m.tile_y),
+                               _cb.numero_de_dano(yo, objetivo, dano=0, ataque=tipo, efecto=_ef_f, cast_time=0),
+                               _cb.cierre_de_dano(yo, objetivo, ataque=tipo, efecto=_ef_f),
+                               __import__('clases').aviso('The charm failed.', tipo=0))
+                    if getattr(m, 'vivo', False) and not getattr(m, 'encantado', False):
+                        m.en_combate_con = yo
+                    ses.enviar(*_otorgar_skill_exp(ses, ses.personaje, yo, magic_id=tipo))
+                    log.info(f"[{addr}] encanto {tipo} sobre {m.nombre} fallido ({_prob_enc}%)")
+                    return
                 dur_s = max(10, mag.get('dur_ms', 600000) // 1000)
                 dur_ms = dur_s * 1000
                 # UNO SOLO A LA VEZ ("ahora puedo encantar a 3 mobs, no deberia poderse", 09/11/2026): solo se

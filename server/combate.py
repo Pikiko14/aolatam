@@ -3068,6 +3068,22 @@ ANIM_POR_SKILL = {}
 # -------------------------------------------------------------------------
 
 
+# Probabilidad de encantar (Shining Charm I..V): "tiene 100% de chance de encantar, no he fallado ninguna; un 10, 20,
+# 30, 40 dependiendo del lvl de la spell y lvl del mob" (09/11/2026). 10 % por nivel del hechizo (法術等級 1..5), un punto
+# menos por cada nivel que el monstruo le saque al jugador y uno mas por cada nivel que tenga de menos, hasta +10.
+ENCANTO_POR_NIVEL = 10
+ENCANTO_BONO_MAX = 10
+ENCANTO_MIN = 1
+
+
+def prob_encanto(nivel_hechizo: int, nivel_jugador: int, nivel_monstruo: int) -> int:
+    """El % de que el encanto salga."""
+    base = ENCANTO_POR_NIVEL * max(1, int(nivel_hechizo or 1))
+    dif = int(nivel_monstruo or 0) - int(nivel_jugador or 0)
+    ajuste = -dif if dif > 0 else min(ENCANTO_BONO_MAX, -dif)
+    return max(ENCANTO_MIN, min(100, base + ajuste))
+
+
 def golpe_de_arma(item_id: int = 0, duales: bool = False, escudo: bool = False) -> tuple:
     """(tipo, animacion) del 0x000A para el arma que se lleva puesta.
 
