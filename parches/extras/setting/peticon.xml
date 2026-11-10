@@ -1,0 +1,669 @@
+﻿<?xml version="1.0"?>
+<root>
+	<INCLUDE file="setting\wnddef.xml"/>
+	<!-- 寵物頭像圖示 -->
+	<icon id="11501" pos="12,23" dir="\pet\" normal="p001" focus="normal" down="normal" disable="normal"/>
+	<icon id="11502" pos="12,23" dir="\pet\" normal="p002" focus="normal" down="normal" disable="normal"/>
+	<icon id="11503" pos="12,23" dir="\pet\" normal="p003" focus="normal" down="normal" disable="normal"/>
+	<icon id="11504" pos="12,23" dir="\pet\" normal="p004" focus="normal" down="normal" disable="normal"/>
+	<icon id="11505" pos="12,23" dir="\pet\" normal="p005" focus="normal" down="normal" disable="normal"/>
+	<icon id="11506" pos="12,23" dir="\pet\" normal="p006" focus="normal" down="normal" disable="normal"/>
+	<icon id="11507" pos="12,23" dir="\pet\" normal="p007" focus="normal" down="normal" disable="normal"/>
+	<icon id="11508" pos="12,23" dir="\pet\" normal="p008" focus="normal" down="normal" disable="normal"/>
+	<icon id="11509" pos="12,23" dir="\pet\" normal="p009" focus="normal" down="normal" disable="normal"/>
+	<icon id="11510" pos="12,23" dir="\pet\" normal="p010" focus="normal" down="normal" disable="normal"/>
+	<icon id="11511" pos="12,23" dir="\pet\" normal="p011" focus="normal" down="normal" disable="normal"/>
+	<icon id="11512" pos="12,23" dir="\pet\" normal="p012" focus="normal" down="normal" disable="normal"/>
+	<icon id="11513" pos="12,23" dir="\pet\" normal="p013" focus="normal" down="normal" disable="normal"/>
+	<icon id="11514" pos="12,23" dir="\pet\" normal="p014" focus="normal" down="normal" disable="normal"/>
+	<icon id="11515" pos="12,23" dir="\pet\" normal="p015" focus="normal" down="normal" disable="normal"/>
+	<icon id="11516" pos="12,23" dir="\pet\" normal="p016" focus="normal" down="normal" disable="normal"/>
+	<icon id="11517" pos="12,23" dir="\pet\" normal="p017" focus="normal" down="normal" disable="normal"/>
+	<icon id="11518" pos="12,23" dir="\pet\" normal="p018" focus="normal" down="normal" disable="normal"/>
+	<icon id="11519" pos="12,23" dir="\pet\" normal="p019" focus="normal" down="normal" disable="normal"/>
+	<icon id="11520" pos="12,23" dir="\pet\" normal="p020" focus="normal" down="normal" disable="normal"/>
+	<icon id="11521" pos="12,23" dir="\pet\" normal="p021" focus="normal" down="normal" disable="normal"/>
+	<icon id="11522" pos="12,23" dir="\pet\" normal="p022" focus="normal" down="normal" disable="normal"/>
+	<icon id="11523" pos="12,23" dir="\pet\" normal="p023" focus="normal" down="normal" disable="normal"/>
+	<icon id="11524" pos="12,23" dir="\pet\" normal="p024" focus="normal" down="normal" disable="normal"/>
+	<icon id="11525" pos="12,23" dir="\pet\" normal="p025" focus="normal" down="normal" disable="normal"/>
+	<icon id="11526" pos="12,23" dir="\pet\" normal="p026" focus="normal" down="normal" disable="normal"/>
+	<icon id="11527" pos="12,23" dir="\pet\" normal="p027" focus="normal" down="normal" disable="normal"/>
+	<icon id="11528" pos="12,23" dir="\pet\" normal="p028" focus="normal" down="normal" disable="normal"/>
+	<icon id="11529" pos="12,23" dir="\pet\" normal="p029" focus="normal" down="normal" disable="normal"/>
+	<icon id="11530" pos="12,23" dir="\pet\" normal="p030" focus="normal" down="normal" disable="normal"/>
+	<icon id="11531" pos="12,23" dir="\pet\" normal="p031" focus="normal" down="normal" disable="normal"/>
+	<icon id="11532" pos="12,23" dir="\pet\" normal="p032" focus="normal" down="normal" disable="normal"/>
+	<icon id="11533" pos="12,23" dir="\pet\" normal="p033" focus="normal" down="normal" disable="normal"/>
+	<icon id="11534" pos="12,23" dir="\pet\" normal="p034" focus="normal" down="normal" disable="normal"/>
+	<icon id="11535" pos="12,23" dir="\pet\" normal="p035" focus="normal" down="normal" disable="normal"/>
+	<icon id="11536" pos="12,23" dir="\pet\" normal="p036" focus="normal" down="normal" disable="normal"/>
+	<icon id="11537" pos="12,23" dir="\pet\" normal="p037" focus="normal" down="normal" disable="normal"/>
+	<icon id="11538" pos="12,23" dir="\pet\" normal="p038" focus="normal" down="normal" disable="normal"/>
+	<icon id="11539" pos="12,23" dir="\pet\" normal="p039" focus="normal" down="normal" disable="normal"/>
+	<icon id="11540" pos="12,23" dir="\pet\" normal="p040" focus="normal" down="normal" disable="normal"/>
+	<icon id="11541" pos="12,23" dir="\pet\" normal="p041" focus="normal" down="normal" disable="normal"/>
+	<icon id="11542" pos="12,23" dir="\pet\" normal="p042" focus="normal" down="normal" disable="normal"/>
+	<icon id="11543" pos="12,23" dir="\pet\" normal="p043" focus="normal" down="normal" disable="normal"/>
+	<icon id="11544" pos="12,23" dir="\pet\" normal="p044" focus="normal" down="normal" disable="normal"/>
+	<icon id="11545" pos="12,23" dir="\pet\" normal="p045" focus="normal" down="normal" disable="normal"/>
+	<icon id="11546" pos="12,23" dir="\pet\" normal="p046" focus="normal" down="normal" disable="normal"/>
+	<icon id="11547" pos="12,23" dir="\pet\" normal="p047" focus="normal" down="normal" disable="normal"/>
+	<icon id="11548" pos="12,23" dir="\pet\" normal="p048" focus="normal" down="normal" disable="normal"/>
+	<icon id="11549" pos="12,23" dir="\pet\" normal="p049" focus="normal" down="normal" disable="normal"/>
+	<icon id="11550" pos="12,23" dir="\pet\" normal="p050" focus="normal" down="normal" disable="normal"/>
+	<icon id="11551" pos="12,23" dir="\pet\" normal="p051" focus="normal" down="normal" disable="normal"/>
+	<icon id="11552" pos="12,23" dir="\pet\" normal="p052" focus="normal" down="normal" disable="normal"/>
+	<icon id="11553" pos="12,23" dir="\pet\" normal="p053" focus="normal" down="normal" disable="normal"/>
+	<icon id="11554" pos="12,23" dir="\pet\" normal="p054" focus="normal" down="normal" disable="normal"/>
+	<icon id="11555" pos="12,23" dir="\pet\" normal="p055" focus="normal" down="normal" disable="normal"/>
+	<icon id="11556" pos="12,23" dir="\pet\" normal="p056" focus="normal" down="normal" disable="normal"/>
+	<icon id="11557" pos="12,23" dir="\pet\" normal="p057" focus="normal" down="normal" disable="normal" basebias="0x806" basecolor="0x0" baserange="148" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	<icon id="11558" pos="12,23" dir="\pet\" normal="p058" focus="normal" down="normal" disable="normal" basebias="0x806" basecolor="0x0" baserange="148" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	<icon id="11559" pos="12,23" dir="\pet\" normal="p059" focus="normal" down="normal" disable="normal" basebias="0x806" basecolor="0x0" baserange="148" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	<icon id="11560" pos="12,23" dir="\pet\" normal="p060" focus="normal" down="normal" disable="normal" basebias="0x20a01" basecolor="0x4ac4" baserange="131" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	<icon id="11561" pos="12,23" dir="\pet\" normal="p061" focus="normal" down="normal" disable="normal" basebias="0x20a01" basecolor="0x4ac4" baserange="130" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	<icon id="11562" pos="12,23" dir="\pet\" normal="p062" focus="normal" down="normal" disable="normal" basebias="0x20a01" basecolor="0x5b46" baserange="130" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	<icon id="11563" pos="12,23" dir="\pet\" normal="p063" focus="normal" down="normal" disable="normal" basebias="0x3f" basecolor="0x0" baserange="160" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	<icon id="11564" pos="12,23" dir="\pet\" normal="p064" focus="normal" down="normal" disable="normal" basebias="0x3f" basecolor="0x0" baserange="160" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	<icon id="11565" pos="12,23" dir="\pet\" normal="p065" focus="normal" down="normal" disable="normal" basebias="0x3f" basecolor="0x0" baserange="160" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	<icon id="11566" pos="12,23" dir="\pet\" normal="p066" focus="normal" down="normal" disable="normal" basebias="0x14" basecolor="0x665b" baserange="130" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	<icon id="11567" pos="12,23" dir="\pet\" normal="p067" focus="normal" down="normal" disable="normal" basebias="0x14" basecolor="0x865b" baserange="130" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	<icon id="11568" pos="12,23" dir="\pet\" normal="p068" focus="normal" down="normal" disable="normal" basebias="0x14" basecolor="0x3454" baserange="130" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	<icon id="11569" pos="12,23" dir="\pet\" normal="p069" focus="normal" down="normal" disable="normal" basebias="0x825" basecolor="0x0" baserange="153" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	<icon id="11570" pos="12,23" dir="\pet\" normal="p070" focus="normal" down="normal" disable="normal" basebias="0x825" basecolor="0x0" baserange="155" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	<icon id="11571" pos="12,23" dir="\pet\" normal="p071" focus="normal" down="normal" disable="normal" basebias="0x825" basecolor="0x0" baserange="149" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	<icon id="11572" pos="12,23" dir="\pet\" normal="p072" focus="normal" down="normal" disable="normal"/>
+	<icon id="11573" pos="12,23" dir="\pet\" normal="p073" focus="normal" down="normal" disable="normal"/>
+	<icon id="11574" pos="12,23" dir="\pet\" normal="p074" focus="normal" down="normal" disable="normal"/>
+	<icon id="11575" pos="12,23" dir="\pet\" normal="p075" focus="normal" down="normal" disable="normal"/>
+	<icon id="11576" pos="12,23" dir="\pet\" normal="p076" focus="normal" down="normal" disable="normal"/>
+	<icon id="11577" pos="12,23" dir="\pet\" normal="p077" focus="normal" down="normal" disable="normal"/>
+	<icon id="11578" pos="12,23" dir="\pet\" normal="p078" focus="normal" down="normal" disable="normal"/>
+	<icon id="11579" pos="12,23" dir="\pet\" normal="p079" focus="normal" down="normal" disable="normal"/>
+	<icon id="11580" pos="12,23" dir="\pet\" normal="p080" focus="normal" down="normal" disable="normal"/>
+	<icon id="11581" pos="12,23" dir="\pet\" normal="p081" focus="normal" down="normal" disable="normal"/>
+	<icon id="11582" pos="12,23" dir="\pet\" normal="p082" focus="normal" down="normal" disable="normal"/>
+	<icon id="11583" pos="12,23" dir="\pet\" normal="p083" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x20007" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	<icon id="11584" pos="12,23" dir="\pet\" normal="p084" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x20e06" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	<icon id="11585" pos="12,23" dir="\pet\" normal="p085" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x8203f" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	<icon id="11586" pos="12,23" dir="\pet\" normal="p086" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x11c05" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	<icon id="11587" pos="12,23" dir="\pet\" normal="p087" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x8133f" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	<icon id="11588" pos="12,23" dir="\pet\" normal="p088" focus="normal" down="normal" disable="normal"/>
+	<icon id="11589" pos="12,23" dir="\pet\" normal="p089" focus="normal" down="normal" disable="normal"/>
+	<icon id="11590" pos="12,23" dir="\pet\" normal="p090" focus="normal" down="normal" disable="normal"/>
+	<icon id="11591" pos="12,23" dir="\pet\" normal="p091" focus="normal" down="normal" disable="normal"/>
+	<icon id="11592" pos="12,23" dir="\pet\" normal="p092" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x40a0f" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	<icon id="11593" pos="12,23" dir="\pet\" normal="p093" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x20b34" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	<icon id="11594" pos="12,23" dir="\pet\" normal="p094" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xfa0425" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	<icon id="11595" pos="12,23" dir="\pet\" normal="p095" focus="normal" down="normal" disable="normal"/>
+	<icon id="11596" pos="12,23" dir="\pet\" normal="p096" focus="normal" down="normal" disable="normal"/>
+	<icon id="11597" pos="12,23" dir="\pet\" normal="p097" focus="normal" down="normal" disable="normal"/>
+	<icon id="11598" pos="12,23" dir="\pet\" normal="p098" focus="normal" down="normal" disable="normal"/>
+	<icon id="11599" pos="12,23" dir="\pet\" normal="p099" focus="normal" down="normal" disable="normal"/>
+	<icon id="11600" pos="12,23" dir="\pet\" normal="p100" focus="normal" down="normal" disable="normal"/>
+	<icon id="11601" pos="12,23" dir="\pet\" normal="p101" focus="normal" down="normal" disable="normal"/>
+	<icon id="11602" pos="12,23" dir="\pet\" normal="p102" focus="normal" down="normal" disable="normal"/>
+	<icon id="11603" pos="12,23" dir="\pet\" normal="p103" focus="normal" down="normal" disable="normal"/>
+	<icon id="11604" pos="12,23" dir="\pet\" normal="p104" focus="normal" down="normal" disable="normal"/>
+	<icon id="11605" pos="12,23" dir="\pet\" normal="p105" focus="normal" down="normal" disable="normal"/>
+	<icon id="11606" pos="12,23" dir="\pet\" normal="p106" focus="normal" down="normal" disable="normal"/>
+	<icon id="11607" pos="12,23" dir="\pet\" normal="p107" focus="normal" down="normal" disable="normal"/>
+	<icon id="11608" pos="12,23" dir="\pet\" normal="p108" focus="normal" down="normal" disable="normal"/>
+	<icon id="11609" pos="12,23" dir="\pet\" normal="p109" focus="normal" down="normal" disable="normal"/>
+	<icon id="11610" pos="12,23" dir="\pet\" normal="p110" focus="normal" down="normal" disable="normal"/>
+	<icon id="11611" pos="12,23" dir="\pet\" normal="p111" focus="normal" down="normal" disable="normal"/>
+	<icon id="11612" pos="12,23" dir="\pet\" normal="p112" focus="normal" down="normal" disable="normal"/>
+	<icon id="11613" pos="12,23" dir="\pet\" normal="p113" focus="normal" down="normal" disable="normal"/>
+	<icon id="11614" pos="12,23" dir="\pet\" normal="p114" focus="normal" down="normal" disable="normal"/>
+	<icon id="11615" pos="12,23" dir="\pet\" normal="p115" focus="normal" down="normal" disable="normal"/>
+	<icon id="11616" pos="12,23" dir="\pet\" normal="p116" focus="normal" down="normal" disable="normal"/>
+
+	<icon id="11617" pos="12,23" dir="\pet\" normal="p117" focus="normal" down="normal" disable="normal"/>
+	<icon id="11618" pos="12,23" dir="\pet\" normal="p118" focus="normal" down="normal" disable="normal"/>
+
+	<icon id="11619" pos="12,23" dir="\pet\" normal="p119" focus="normal" down="normal" disable="normal"/>
+	<icon id="11620" pos="12,23" dir="\pet\" normal="p120" focus="normal" down="normal" disable="normal"/>
+	<icon id="11621" pos="12,23" dir="\pet\" normal="p121" focus="normal" down="normal" disable="normal"/>
+	<icon id="11622" pos="12,23" dir="\pet\" normal="p122" focus="normal" down="normal" disable="normal"/>
+	<icon id="11623" pos="12,23" dir="\pet\" normal="p123" focus="normal" down="normal" disable="normal"/>
+	<icon id="11624" pos="12,23" dir="\pet\" normal="p124" focus="normal" down="normal" disable="normal"/>
+	<icon id="11625" pos="12,23" dir="\pet\" normal="p125" focus="normal" down="normal" disable="normal"/>
+	<icon id="11626" pos="12,23" dir="\pet\" normal="p126" focus="normal" down="normal" disable="normal"/>
+	<icon id="11627" pos="12,23" dir="\pet\" normal="p127" focus="normal" down="normal" disable="normal"/>
+	<icon id="11628" pos="12,23" dir="\pet\" normal="p128" focus="normal" down="normal" disable="normal"/>
+	<icon id="11629" pos="12,23" dir="\pet\" normal="p129" focus="normal" down="normal" disable="normal"/>
+	<icon id="11630" pos="12,23" dir="\pet\" normal="p130" focus="normal" down="normal" disable="normal"/>
+        <icon id="11631" pos="12,23" dir="\pet\" normal="p131" focus="normal" down="normal" disable="normal"/>
+        <icon id="11632" pos="12,23" dir="\pet\" normal="p132" focus="normal" down="normal" disable="normal"/>
+	<icon id="11633" pos="12,23" dir="\pet\" normal="p133" focus="normal" down="normal" disable="normal"/>
+	<icon id="11634" pos="12,23" dir="\pet\" normal="p134" focus="normal" down="normal" disable="normal"/>
+	<icon id="11635" pos="12,23" dir="\pet\" normal="p135" focus="normal" down="normal" disable="normal"/>
+	<icon id="11636" pos="12,23" dir="\pet\" normal="p136" focus="normal" down="normal" disable="normal"/>
+	<icon id="11637" pos="12,23" dir="\pet\" normal="p137" focus="normal" down="normal" disable="normal"/>
+	<icon id="11638" pos="12,23" dir="\pet\" normal="p146" focus="normal" down="normal" disable="normal"/>
+	<icon id="11639" pos="12,23" dir="\pet\" normal="p147" focus="normal" down="normal" disable="normal"/>
+	<icon id="11641" pos="12,23" dir="\pet\" normal="p141" focus="normal" down="normal" disable="normal"/>
+	<icon id="11642" pos="12,23" dir="\pet\" normal="p142" focus="normal" down="normal" disable="normal"/>
+	<icon id="11643" pos="12,23" dir="\pet\" normal="p143" focus="normal" down="normal" disable="normal"/>
+	<icon id="11644" pos="12,23" dir="\pet\" normal="p144" focus="normal" down="normal" disable="normal"/>
+	<icon id="11645" pos="12,23" dir="\pet\" normal="p145" focus="normal" down="normal" disable="normal"/>
+	<icon id="11646" pos="12,23" dir="\pet\" normal="p280" focus="normal" down="normal" disable="normal"/>
+	<icon id="11647" pos="12,23" dir="\pet\" normal="p281" focus="normal" down="normal" disable="normal"/>
+	<icon id="11648" pos="12,23" dir="\pet\" normal="p282" focus="normal" down="normal" disable="normal"/>
+	<icon id="11649" pos="12,23" dir="\pet\" normal="p283" focus="normal" down="normal" disable="normal"/>
+	<icon id="11650" pos="12,23" dir="\pet\" normal="p284" focus="normal" down="normal" disable="normal"/>
+	<icon id="11651" pos="12,23" dir="\pet\" normal="p285" focus="normal" down="normal" disable="normal"/>
+	<icon id="11652" pos="12,23" dir="\pet\" normal="p286" focus="normal" down="normal" disable="normal"/>
+	<icon id="11653" pos="12,23" dir="\pet\" normal="p287" focus="normal" down="normal" disable="normal"/>
+        <icon id="11654" pos="12,23" dir="\pet\" normal="p300" focus="normal" down="normal" disable="normal"/>
+	<icon id="11655" pos="12,23" dir="\pet\" normal="p301" focus="normal" down="normal" disable="normal"/>
+	<icon id="11656" pos="12,23" dir="\pet\" normal="p302" focus="normal" down="normal" disable="normal"/>
+        <icon id="11657" pos="12,23" dir="\pet\" normal="P304" focus="normal" down="normal" disable="normal"/>
+        <icon id="11658" pos="12,23" dir="\pet\" normal="P306" focus="normal" down="normal" disable="normal"/>
+        <icon id="11659" pos="12,23" dir="\pet\" normal="P308" focus="normal" down="normal" disable="normal"/>
+        <icon id="11660" pos="12,23" dir="\pet\" normal="P310" focus="normal" down="normal" disable="normal"/>
+        <icon id="11661" pos="12,23" dir="\pet\" normal="P313" focus="normal" down="normal" disable="normal"/>
+
+        <icon id="11662" pos="12,23" dir="\pet\" normal="P318" focus="normal" down="normal" disable="normal"/>
+        <icon id="11663" pos="12,23" dir="\pet\" normal="P322" focus="normal" down="normal" disable="normal"/>
+
+        <icon id="11664" pos="12,23" dir="\pet\" normal="P339" focus="normal" down="normal" disable="normal"/>
+        <icon id="11665" pos="12,23" dir="\pet\" normal="P340" focus="normal" down="normal" disable="normal"/>
+
+        <icon id="11666" pos="12,23" dir="\pet\" normal="P347" focus="normal" down="normal" disable="normal" basebias="0x10609" basecolor="0x0" baserange="160" maskbias="0x9e100" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11667" pos="12,23" dir="\pet\" normal="P348" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x61707" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11668" pos="12,23" dir="\pet\" normal="P349" focus="normal" down="normal" disable="normal" basebias="0x404" basecolor="0xde13" baserange="137" maskbias="0x6173f" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11669" pos="12,23" dir="\pet\" normal="P350" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xa0925" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11670" pos="12,23" dir="\pet\" normal="P351" focus="normal" down="normal" disable="normal"/>
+        <icon id="11671" pos="12,23" dir="\pet\" normal="P347" focus="normal" down="normal" disable="normal" basebias="0x20127" basecolor="0x0" baserange="160" maskbias="0xce50d" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11672" pos="12,23" dir="\pet\" normal="P347" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xf043f" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11673" pos="12,23" dir="\pet\" normal="P348" focus="normal" down="normal" disable="normal" basebias="0x1e126" basecolor="0x9351" baserange="128" maskbias="0x50d25" maskcolor="0xb596" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11674" pos="12,23" dir="\pet\" normal="P348" focus="normal" down="normal" disable="normal" basebias="0x20725" basecolor="0x9bb2" baserange="128" maskbias="0x41000" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11675" pos="12,23" dir="\pet\" normal="P349" focus="normal" down="normal" disable="normal" basebias="0x10227" basecolor="0xde13" baserange="138" maskbias="0x60a1e" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11676" pos="12,23" dir="\pet\" normal="P349" focus="normal" down="normal" disable="normal" basebias="0x10301" basecolor="0xb2c7" baserange="140" maskbias="0x7e10c" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11677" pos="12,23" dir="\pet\" normal="P350" focus="normal" down="normal" disable="normal" basebias="0x4003f" basecolor="0xffb1" baserange="139" maskbias="0xa093e" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11678" pos="12,23" dir="\pet\" normal="P350" focus="normal" down="normal" disable="normal" basebias="0x1fd10" basecolor="0xfe90" baserange="138" maskbias="0x70e07" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11679" pos="12,23" dir="\pet\" normal="P350" focus="normal" down="normal" disable="normal" basebias="0x1f92c" basecolor="0xfe90" baserange="141" maskbias="0xf7e43f" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11680" pos="12,23" dir="\pet\" normal="P351" focus="normal" down="normal" disable="normal" basebias="0x10405" basecolor="0x0" baserange="160" maskbias="0x60407" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11681" pos="12,23" dir="\pet\" normal="P351" focus="normal" down="normal" disable="normal" basebias="0x1f83f" basecolor="0xfe52" baserange="135" maskbias="0x5f930" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11682" pos="12,23" dir="\pet\" normal="p007" focus="normal" down="normal" disable="normal" basebias="0xf63f" basecolor="0x0" baserange="160" maskbias="0x1f83c" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+
+        <icon id="11683" pos="12,23" dir="\pet\" normal="P287" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xfe25" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11684" pos="12,23" dir="\pet\" normal="P287" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x8f901" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11685" pos="12,23" dir="\pet\" normal="P287" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x4f937" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11686" pos="12,23" dir="\pet\" normal="P287" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x1fd14" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11687" pos="12,23" dir="\pet\" normal="P007" focus="normal" down="normal" disable="normal" basebias="0x10807" basecolor="0x0" baserange="160" maskbias="0xf71506" maskcolor="0x0" maskrange="128">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11688" pos="12,23" dir="\pet\" normal="p007" focus="normal" down="normal" disable="normal"  basebias="0x29" basecolor="0xf5ac" baserange="15" maskbias="0x0" maskcolor="0x0" maskrange="0">
+<attrib ICON_ATTRIB_BIAS=""/>
+</icon>
+
+        <icon id="11689" pos="12,23" dir="\pet\" normal="P007" focus="normal" down="normal" disable="normal"/>
+        <icon id="11690" pos="12,23" dir="\pet\" normal="P375" focus="normal" down="normal" disable="normal"/>
+        <icon id="11691" pos="12,23" dir="\pet\" normal="P376" focus="normal" down="normal" disable="normal"/>
+        <icon id="11692" pos="12,23" dir="\pet\" normal="P377" focus="normal" down="normal" disable="normal"/>
+        <icon id="11693" pos="12,23" dir="\pet\" normal="P378" focus="normal" down="normal" disable="normal"/>
+        <icon id="11694" pos="12,23" dir="\pet\" normal="P379" focus="normal" down="normal" disable="normal"/>
+
+        <icon id="11695" pos="12,23" dir="\pet\" normal="P394" focus="normal" down="normal" disable="normal"/>
+        <icon id="11696" pos="12,23" dir="\pet\" normal="P395" focus="normal" down="normal" disable="normal"/>
+        <icon id="11697" pos="12,23" dir="\pet\" normal="P396" focus="normal" down="normal" disable="normal"/>
+        <icon id="11698" pos="12,23" dir="\pet\" normal="P397" focus="normal" down="normal" disable="normal"/>
+        <icon id="11699" pos="12,23" dir="\pet\" normal="P398" focus="normal" down="normal" disable="normal"/>
+        <icon id="11700" pos="12,23" dir="\pet\" normal="P399" focus="normal" down="normal" disable="normal"/>
+        <icon id="11701" pos="12,23" dir="\pet\" normal="P400" focus="normal" down="normal" disable="normal"/>
+        <icon id="11702" pos="12,23" dir="\pet\" normal="P410" focus="normal" down="normal" disable="normal"/>
+        <icon id="11703" pos="12,23" dir="\pet\" normal="P411" focus="normal" down="normal" disable="normal"/>
+        <icon id="11704" pos="12,23" dir="\pet\" normal="P412" focus="normal" down="normal" disable="normal"/>
+        <icon id="11705" pos="12,23" dir="\pet\" normal="P412" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xfffd3f" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11706" pos="12,23" dir="\pet\" normal="P412" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x10908" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11707" pos="12,23" dir="\pet\" normal="P412" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x10231" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11708" pos="12,23" dir="\pet\" normal="P412" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xf1e100" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+
+        <icon id="11709" pos="12,23" dir="\pet\" normal="P375" focus="normal" down="normal" disable="normal" basebias="0x20504" basecolor="0xedf2" baserange="130" maskbias="0x10400" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+
+        <icon id="11710" pos="12,23" dir="\pet\" normal="P423" focus="normal" down="normal" disable="normal"/>
+        <icon id="11711" pos="12,23" dir="\pet\" normal="P424" focus="normal" down="normal" disable="normal"/>
+
+        <icon id="11712" pos="12,23" dir="\pet\" normal="P434" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x1e100" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11713" pos="12,23" dir="\pet\" normal="P435" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x1f900" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11714" pos="12,23" dir="\pet\" normal="P436" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x1fb27" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11715" pos="12,23" dir="\pet\" normal="P437" focus="normal" down="normal" disable="normal" basebias="0x3e105" basecolor="0x6412" baserange="130" maskbias="0xfbe100" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11716" pos="12,23" dir="\pet\" normal="P438" focus="normal" down="normal" disable="normal" basebias="0x207" basecolor="0x8472" baserange="130" maskbias="0x3f900" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+
+
+        <icon id="11717" pos="12,23" dir="\pet\" normal="P439" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x3ff28" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11718" pos="12,23" dir="\pet\" normal="P440" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x5ff28" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11719" pos="12,23" dir="\pet\" normal="P441" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x5ff28" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11720" pos="12,23" dir="\pet\" normal="P442" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x5ff28" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11721" pos="12,23" dir="\pet\" normal="P443" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xedff28" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+
+        <icon id="11722" pos="12,23" dir="\pet\" normal="P339" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xfc0400" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11723" pos="12,23" dir="\pet\" normal="P339" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xecf028" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11724" pos="12,23" dir="\pet\" normal="P339" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x2fd26" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11725" pos="12,23" dir="\pet\" normal="P339" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x2f800" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+
+        <icon id="11726" pos="12,23" dir="\pet\" normal="P453" focus="normal" down="normal" disable="normal"/>
+        <icon id="11727" pos="12,23" dir="\pet\" normal="P454" focus="normal" down="normal" disable="normal"/>
+        <icon id="11728" pos="12,23" dir="\pet\" normal="P455" focus="normal" down="normal" disable="normal"/>
+        <icon id="11729" pos="12,23" dir="\pet\" normal="P469" focus="normal" down="normal" disable="normal" basebias="0xfd3f" basecolor="0x2d9b" baserange="130" maskbias="0x3fb3f" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11730" pos="12,23" dir="\pet\" normal="P470" focus="normal" down="normal" disable="normal"/>
+        <icon id="11731" pos="12,23" dir="\pet\" normal="P471" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x2003f" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11732" pos="12,23" dir="\pet\" normal="P472" focus="normal" down="normal" disable="normal" basebias="0xede100" basecolor="0x1a4d" baserange="130" maskbias="0x827" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11733" pos="12,23" dir="\pet\" normal="P488" focus="normal" down="normal" disable="normal"/>
+
+        <icon id="11734" pos="12,23" dir="\pet\" normal="P495" focus="normal" down="normal" disable="normal" basebias="0x3f207" basecolor="0xa40a" baserange="155" maskbias="0x1207" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11735" pos="12,23" dir="\pet\" normal="P495" focus="normal" down="normal" disable="normal" basebias="0x2fd28" basecolor="0x9b8a" baserange="134" maskbias="0xfe1523" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11736" pos="12,23" dir="\pet\" normal="P495" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x11318" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11737" pos="12,23" dir="\pet\" normal="P495" focus="normal" down="normal" disable="normal" basebias="0x13f" basecolor="0x838d" baserange="160" maskbias="0x11a00" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11738" pos="12,23" dir="\pet\" normal="P495" focus="normal" down="normal" disable="normal" basebias="0xf7f200" basecolor="0xa40b" baserange="142" maskbias="0xfce100" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+
+        <icon id="11739" pos="12,23" dir="\pet\" normal="p102" focus="normal" down="normal" disable="normal" basebias="0xfc2b" basecolor="0x0" baserange="160" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11740" pos="12,23" dir="\pet\" normal="p102" focus="normal" down="normal" disable="normal" basebias="0x31e" basecolor="0x0" baserange="160" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11741" pos="12,23" dir="\pet\" normal="P347" focus="normal" down="normal" disable="normal" basebias="0xff021c" basecolor="0x0" baserange="160" maskbias="0x4e112" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11742" pos="12,23" dir="\pet\" normal="P347" focus="normal" down="normal" disable="normal" basebias="0xff013f" basecolor="0x0" baserange="160" maskbias="0x8023f" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11743" pos="12,23" dir="\pet\" normal="P469" focus="normal" down="normal" disable="normal" basebias="0xfc1e" basecolor="0x2d9b" baserange="130" maskbias="0xed1e" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11744" pos="12,23" dir="\pet\" normal="P469" focus="normal" down="normal" disable="normal" basebias="0x2fe06" basecolor="0x2d9b" baserange="130" maskbias="0x2f808" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11745" pos="12,23" dir="\pet\" normal="P469" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x2d9b" baserange="128" maskbias="0x2fa23" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11746" pos="12,23" dir="\pet\" normal="P469" focus="normal" down="normal" disable="normal" basebias="0xf6f220" basecolor="0x2d9b" baserange="130" maskbias="0xf5e120" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+
+        <icon id="11747" pos="12,23" dir="\pet\" normal="p126" focus="normal" down="normal" disable="normal" basebias="0xfd0f" basecolor="0x5a05" baserange="131" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11748" pos="12,23" dir="\pet\" normal="p090" focus="normal" down="normal" disable="normal" basebias="0xfa1f" basecolor="0x0" baserange="32" maskbias="0xf919" maskcolor="0x0" maskrange="32">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11749" pos="12,23" dir="\pet\" normal="p146" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xe143f" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+
+        <icon id="11750" pos="12,23" dir="\pet\" normal="P347" focus="normal" down="normal" disable="normal" basebias="0x1b" basecolor="0x0" baserange="160" maskbias="0x4041f" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+
+        <icon id="11751" pos="12,23" dir="\pet\" normal="P528" focus="normal" down="normal" disable="normal"/>
+        <icon id="11752" pos="12,23" dir="\pet\" normal="P529" focus="normal" down="normal" disable="normal"/>
+        <icon id="11753" pos="12,23" dir="\pet\" normal="P530" focus="normal" down="normal" disable="normal"/>
+        <icon id="11754" pos="12,23" dir="\pet\" normal="P531" focus="normal" down="normal" disable="normal"/>
+        <icon id="11755" pos="12,23" dir="\pet\" normal="P532" focus="normal" down="normal" disable="normal"/>
+
+        <icon id="11756" pos="12,23" dir="\pet\" normal="p117" focus="normal" down="normal" disable="normal"/>
+        <icon id="11757" pos="12,23" dir="\pet\" normal="p117" focus="normal" down="normal" disable="normal"/>
+        <icon id="11758" pos="12,23" dir="\pet\" normal="p117" focus="normal" down="normal" disable="normal"/>
+        <icon id="11759" pos="12,23" dir="\pet\" normal="p117" focus="normal" down="normal" disable="normal"/>
+        <icon id="11760" pos="12,23" dir="\pet\" normal="p117" focus="normal" down="normal" disable="normal"/>
+
+	<icon id="11761" pos="12,23" dir="\pet\" normal="p007" focus="normal" down="normal" disable="normal" basebias="0x60b01" basecolor="0xf4c4" baserange="129" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	<icon id="11762" pos="12,23" dir="\pet\" normal="p007" focus="normal" down="normal" disable="normal" basebias="0x1f529" basecolor="0x0" baserange="160" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	<icon id="11763" pos="12,23" dir="\pet\" normal="p007" focus="normal" down="normal" disable="normal" basebias="0x50d" basecolor="0x0" baserange="160" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+
+        <icon id="11764" pos="12,23" dir="\pet\" normal="P471" focus="normal" down="normal" disable="normal"/>
+        <icon id="11765" pos="12,23" dir="\pet\" normal="P471" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xf711" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11766" pos="12,23" dir="\pet\" normal="P471" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xeee100" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11767" pos="12,23" dir="\pet\" normal="P471" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x3e104" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11768" pos="12,23" dir="\pet\" normal="P472" focus="normal" down="normal" disable="normal" basebias="0x23f" basecolor="0x1a4d" baserange="154" maskbias="0x2f63f" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11769" pos="12,23" dir="\pet\" normal="P472" focus="normal" down="normal" disable="normal" basebias="0x1fe11" basecolor="0x1acf" baserange="130" maskbias="0x3ff09" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11770" pos="12,23" dir="\pet\" normal="P472" focus="normal" down="normal" disable="normal" basebias="0xf928" basecolor="0x1a4d" baserange="130" maskbias="0x20033" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11771" pos="12,23" dir="\pet\" normal="P472" focus="normal" down="normal" disable="normal" basebias="0x2e100" basecolor="0x1a4d" baserange="131" maskbias="0xf2e100" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11772" pos="12,23" dir="\pet\" normal="P470" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xfe24" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11773" pos="12,23" dir="\pet\" normal="P470" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xcf23f" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11774" pos="12,23" dir="\pet\" normal="P470" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x1e100" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11775" pos="12,23" dir="\pet\" normal="P470" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x9f908" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+
+        <icon id="11776" pos="12,23" dir="\pet\" normal="P589" focus="normal" down="normal" disable="normal" basebias="0xde120" basecolor="0x33eb" baserange="130" maskbias="0x2e100" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11777" pos="12,23" dir="\pet\" normal="P589" focus="normal" down="normal" disable="normal" basebias="0x30815" basecolor="0x32a8" baserange="130" maskbias="0x20814" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11778" pos="12,23" dir="\pet\" normal="P589" focus="normal" down="normal" disable="normal" basebias="0xff0534" basecolor="0x32a8" baserange="130" maskbias="0x2072e" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11779" pos="12,23" dir="\pet\" normal="P589" focus="normal" down="normal" disable="normal" basebias="0x30800" basecolor="0x32a8" baserange="130" maskbias="0x30d00" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11780" pos="12,23" dir="\pet\" normal="P589" focus="normal" down="normal" disable="normal" basebias="0xf7e100" basecolor="0x32a8" baserange="130" maskbias="0xf4e100" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+	
+        <icon id="11781" pos="12,23" dir="\pet\" normal="P603" focus="normal" down="normal" disable="normal"/>
+        <icon id="11782" pos="12,23" dir="\pet\" normal="P604" focus="normal" down="normal" disable="normal"/>
+		<icon id="11783" pos="12,23" dir="\pet\" normal="P605" focus="normal" down="normal" disable="normal"/>
+		<icon id="11784" pos="12,23" dir="\pet\" normal="P606" focus="normal" down="normal" disable="normal"/>
+		<icon id="11785" pos="12,23" dir="\pet\" normal="P607" focus="normal" down="normal" disable="normal"/>	
+	
+        <icon id="11786" pos="12,23" dir="\pet\" normal="p142" focus="normal" down="normal" disable="normal" basebias="0xf7e13f" basecolor="0x0" baserange="160" maskbias="0xebe132" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11787" pos="12,23" dir="\pet\" normal="p142" focus="normal" down="normal" disable="normal" basebias="0xff003e" basecolor="0x0" baserange="160" maskbias="0xfe1724" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11788" pos="12,23" dir="\pet\" normal="p142" focus="normal" down="normal" disable="normal" basebias="0xfd0c36" basecolor="0x0" baserange="160" maskbias="0xff1530" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11789" pos="12,23" dir="\pet\" normal="p142" focus="normal" down="normal" disable="normal" basebias="0x31107" basecolor="0x7bcf" baserange="160" maskbias="0xfa1308" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11790" pos="12,23" dir="\pet\" normal="p142" focus="normal" down="normal" disable="normal" basebias="0x6fd1b" basecolor="0x0" baserange="160" maskbias="0x2f400" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+
+        <icon id="11791" pos="12,23" dir="\pet\" normal="P646" focus="normal" down="normal" disable="normal"/>
+        <icon id="11792" pos="12,23" dir="\pet\" normal="P647" focus="normal" down="normal" disable="normal"/>
+        <icon id="11793" pos="12,23" dir="\pet\" normal="P648" focus="normal" down="normal" disable="normal"/>
+        <icon id="11794" pos="12,23" dir="\pet\" normal="P649" focus="normal" down="normal" disable="normal"/>
+        <icon id="11795" pos="12,23" dir="\pet\" normal="P650" focus="normal" down="normal" disable="normal"/>
+        <icon id="11796" pos="12,23" dir="\pet\" normal="P651" focus="normal" down="normal" disable="normal"/>
+        <icon id="11797" pos="12,23" dir="\pet\" normal="P652" focus="normal" down="normal" disable="normal"/>
+        <icon id="11798" pos="12,23" dir="\pet\" normal="P653" focus="normal" down="normal" disable="normal"/>
+        <icon id="11799" pos="12,23" dir="\pet\" normal="P654" focus="normal" down="normal" disable="normal"/>
+        <icon id="11800" pos="12,23" dir="\pet\" normal="P655" focus="normal" down="normal" disable="normal"/>
+        <icon id="11801" pos="12,23" dir="\pet\" normal="P656" focus="normal" down="normal" disable="normal"/>
+        <icon id="11802" pos="12,23" dir="\pet\" normal="P657" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xfe0823" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11803" pos="12,23" dir="\pet\" normal="P658" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x20806" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11804" pos="12,23" dir="\pet\" normal="P659" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xfc0b1d" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11805" pos="12,23" dir="\pet\" normal="P660" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x1033b" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11806" pos="12,23" dir="\pet\" normal="P661" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xfb0632" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11807" pos="12,23" dir="\pet\" normal="P662" focus="normal" down="normal" disable="normal"/>
+        <icon id="11808" pos="12,23" dir="\pet\" normal="P469" focus="normal" down="normal" disable="normal" basebias="0xfa012e" basecolor="0x5dfc" baserange="130" maskbias="0xfaff30" maskcolor="0x457a" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>	
+	
+		<icon id="11809" pos="12,23" dir="\pet\" normal="P680" focus="normal" down="normal" disable="normal" basebias="0x2f400" basecolor="0x6e5b" baserange="131" maskbias="0xfc34" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+		<icon id="11810" pos="12,23" dir="\pet\" normal="P681" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x3fd00" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+
+        <icon id="11811" pos="12,23" dir="\pet\" normal="P700" focus="normal" down="normal" disable="normal"/>
+        <icon id="11812" pos="12,23" dir="\pet\" normal="P701" focus="normal" down="normal" disable="normal"/>
+        <icon id="11813" pos="12,23" dir="\pet\" normal="P702" focus="normal" down="normal" disable="normal"/>
+        <icon id="11814" pos="12,23" dir="\pet\" normal="P703" focus="normal" down="normal" disable="normal"/>
+        <icon id="11815" pos="12,23" dir="\pet\" normal="P704" focus="normal" down="normal" disable="normal"/>
+		
+        <icon id="11816" pos="12,23" dir="\pet\" normal="P646" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xfc0324" maskcolor="0x0" maskrange="32">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11817" pos="12,23" dir="\pet\" normal="P646" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xf7e12a" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11818" pos="12,23" dir="\pet\" normal="P646" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xfa070d" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11819" pos="12,23" dir="\pet\" normal="P646" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xf60720" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11820" pos="12,23" dir="\pet\" normal="P647" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xfc0324" maskcolor="0x0" maskrange="32">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11821" pos="12,23" dir="\pet\" normal="P648" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xfc0324" maskcolor="0x0" maskrange="32">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11822" pos="12,23" dir="\pet\" normal="P649" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xfc0324" maskcolor="0x0" maskrange="32">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11823" pos="12,23" dir="\pet\" normal="P650" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xfc0324" maskcolor="0x0" maskrange="32">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11824" pos="12,23" dir="\pet\" normal="P662" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xfc0324" maskcolor="0x0" maskrange="32">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11825" pos="12,23" dir="\pet\" normal="P168" focus="normal" down="normal" disable="normal"/>
+        <icon id="11826" pos="12,23" dir="\pet\" normal="P168" focus="normal" down="normal" disable="normal"/>
+        <icon id="11827" pos="12,23" dir="\pet\" normal="p007" focus="normal" down="normal" disable="normal" basebias="0xfb1608" basecolor="0xf4c4" baserange="0" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+        <icon id="11828" pos="12,23" dir="\pet\" normal="p026" focus="normal" down="normal" disable="normal" basebias="0xf6eb1c" basecolor="0x0" baserange="148" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+		<icon id="11829" pos="12,23" dir="\pet\" normal="p026" focus="normal" down="normal" disable="normal" basebias="0xfd0d04" basecolor="0x0" baserange="148" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>
+		<icon id="11830" pos="12,23" dir="\pet\" normal="p026" focus="normal" down="normal" disable="normal" basebias="0x822" basecolor="0x0" baserange="148" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>		
+		<icon id="11831" pos="12,23" dir="\pet\" normal="p026" focus="normal" down="normal" disable="normal" basebias="0x83d" basecolor="0x0" baserange="148" maskbias="0x0" maskcolor="0x0" maskrange="0">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>	
+		<icon id="11832" pos="12,23" dir="\pet\" normal="p106" focus="normal" down="normal" disable="normal" basebias="0xef2d" basecolor="0x0" baserange="139" maskbias="0xfe021c" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>			
+		<icon id="11833" pos="12,23" dir="\pet\" normal="p106" focus="normal" down="normal" disable="normal" basebias="0xf425" basecolor="0x0" baserange="155" maskbias="0x20703" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>	
+		<icon id="11834" pos="12,23" dir="\pet\" normal="p106" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0xfe0034" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>			
+		<icon id="11835" pos="12,23" dir="\pet\" normal="p106" focus="normal" down="normal" disable="normal" basebias="0x0" basecolor="0x0" baserange="0" maskbias="0x20723" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>			
+		<icon id="11836" pos="12,23" dir="\pet\" normal="p106" focus="normal" down="normal" disable="normal" basebias="0xfdee1e" basecolor="0x0" baserange="160" maskbias="0x6073e" maskcolor="0x0" maskrange="160">
+		<attrib ICON_ATTRIB_BIAS=""/>
+	</icon>			
+
+        <icon id="11837" pos="12,23" dir="\pet\" normal="P732" focus="normal" down="normal" disable="normal"/>
+        <icon id="11838" pos="12,23" dir="\pet\" normal="P733" focus="normal" down="normal" disable="normal"/>
+        <icon id="11839" pos="12,23" dir="\pet\" normal="P734" focus="normal" down="normal" disable="normal"/>
+        <icon id="11840" pos="12,23" dir="\pet\" normal="P735" focus="normal" down="normal" disable="normal"/>
+        <icon id="11841" pos="12,23" dir="\pet\" normal="P736" focus="normal" down="normal" disable="normal"/>
+        <icon id="11842" pos="12,23" dir="\pet\" normal="P737" focus="normal" down="normal" disable="normal"/>
+        <icon id="11843" pos="12,23" dir="\pet\" normal="P738" focus="normal" down="normal" disable="normal"/>
+        <icon id="11844" pos="12,23" dir="\pet\" normal="P739" focus="normal" down="normal" disable="normal"/>
+        <icon id="11845" pos="12,23" dir="\pet\" normal="P740" focus="normal" down="normal" disable="normal"/>
+        <icon id="11846" pos="12,23" dir="\pet\" normal="P741" focus="normal" down="normal" disable="normal"/>
+
+        <icon id="11847" pos="12,23" dir="\pet\" normal="P742" focus="normal" down="normal" disable="normal"/>
+        <icon id="11848" pos="12,23" dir="\pet\" normal="P743" focus="normal" down="normal" disable="normal"/>
+        <icon id="11849" pos="12,23" dir="\pet\" normal="P744" focus="normal" down="normal" disable="normal"/>
+        <icon id="11850" pos="12,23" dir="\pet\" normal="P745" focus="normal" down="normal" disable="normal"/>
+        <icon id="11851" pos="12,23" dir="\pet\" normal="P746" focus="normal" down="normal" disable="normal"/>
+		
+        <icon id="11852" pos="12,23" dir="\pet\" normal="P765" focus="normal" down="normal" disable="normal"/>
+        <icon id="11853" pos="12,23" dir="\pet\" normal="P766" focus="normal" down="normal" disable="normal"/>
+		
+
+		
+							<!-- aolat abismo -->
+	<icon id="11990" pos="12,23" dir="\pet\" normal="p990" focus="normal" down="normal" disable="normal"/>
+	<icon id="11991" pos="12,23" dir="\pet\" normal="p991" focus="normal" down="normal" disable="normal"/>
+	<icon id="11992" pos="12,23" dir="\pet\" normal="p992" focus="normal" down="normal" disable="normal"/>
+	<icon id="11993" pos="12,23" dir="\pet\" normal="p993" focus="normal" down="normal" disable="normal"/>
+	<!-- /aolat abismo -->
+</root>

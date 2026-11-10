@@ -110390,3 +110390,85 @@ SpriteFile = Cast, 111648_Att.spr
 SpriteFile = Hurt, 111648_Hurt.spr
 SpriteFile = Dead, 111648_Dead.spr
 
+; aolat abismo
+[OBJECT]
+Name = P990 - Abyss Egg
+Sequence = 44990
+Space = 25, 80, 0
+Flags = SP_ATTRIB_DISTURB, SP_ATTRIB_HITTEST, SP_ATTRIB_SHADOW
+Process = SERV_CLASS_PETOBJ
+Directory = \mon\p990\
+Sprite = Wait, w013*, #8, !SoundWait, w023*, w033*, w043*, w053*, w063*
+Sprite = Run, r013*, #7, r023*, r033*, r043*, r053*, r063*
+Sprite = Att, a013*, #6, !SoundAttack, a023*, a033*, a043*, a053*, a063*, @SP_EVENT_ACT_WAIT, SCROVER
+Sprite = Cast, a013*, #6, a023*, a033*, a043*, a053*, a063*
+Sprite = Hurt, h013*, #4, h023*, h033*, h043*, h053*, h063*, @SP_EVENT_ACT_WAIT, SCROVER
+Sprite = Dead, d013*, #6, !SoundDie, d023*, d033*, d043*, d053*, d063*, SCROVER
+SpriteFile = Wait, 44990_Wait.spr
+SpriteFile = Run, 44990_Run.spr
+SpriteFile = Att, 44990_Att.spr
+SpriteFile = Cast, 44990_Att.spr
+SpriteFile = Hurt, 44990_Hurt.spr
+SpriteFile = Dead, 44990_Dead.spr
+
+[OBJECT]
+Name = P991 - Abyss Cub
+Sequence = 44991
+Space = 25, 80, 0
+Flags = SP_ATTRIB_DISTURB, SP_ATTRIB_HITTEST, SP_ATTRIB_SHADOW
+Process = SERV_CLASS_PETOBJ
+Directory = \mon\p991\
+Sprite = Wait, w013*, #8, !SoundWait, w023*, w033*, w043*, w053*, w063*
+Sprite = Run, r013*, #7, r023*, r033*, r043*, r053*, r063*
+Sprite = Att, a013*, #6, !SoundAttack, a023*, a033*, a043*, a053*, a063*, @SP_EVENT_ACT_WAIT, SCROVER
+Sprite = Cast, a013*, #6, a023*, a033*, a043*, a053*, a063*
+Sprite = Hurt, h013*, #4, h023*, h033*, h043*, h053*, h063*, @SP_EVENT_ACT_WAIT, SCROVER
+Sprite = Dead, d013*, #6, !SoundDie, d023*, d033*, d043*, d053*, d063*, SCROVER
+SpriteFile = Wait, 44991_Wait.spr
+SpriteFile = Run, 44991_Run.spr
+SpriteFile = Att, 44991_Att.spr
+SpriteFile = Cast, 44991_Att.spr
+SpriteFile = Hurt, 44991_Hurt.spr
+SpriteFile = Dead, 44991_Dead.spr
+
+[OBJECT]
+Name = P992 - Abyss Fiend
+Sequence = 44992
+Space = 25, 80, 0
+Flags = SP_ATTRIB_DISTURB, SP_ATTRIB_HITTEST, SP_ATTRIB_SHADOW
+Process = SERV_CLASS_PETOBJ
+Directory = \mon\p992\
+Sprite = Wait, w013*, #8, !SoundWait, w023*, w033*, w043*, w053*, w063*
+Sprite = Run, r013*, #7, r023*, r033*, r043*, r053*, r063*
+Sprite = Att, a013*, #6, !SoundAttack, a023*, a033*, a043*, a053*, a063*, @SP_EVENT_ACT_WAIT, SCROVER
+Sprite = Cast, a013*, #6, a023*, a033*, a043*, a053*, a063*
+Sprite = Hurt, h013*, #4, h023*, h033*, h043*, h053*, h063*, @SP_EVENT_ACT_WAIT, SCROVER
+Sprite = Dead, d013*, #6, !SoundDie, d023*, d033*, d043*, d053*, d063*, SCROVER
+SpriteFile = Wait, 44992_Wait.spr
+SpriteFile = Run, 44992_Run.spr
+SpriteFile = Att, 44992_Att.spr
+SpriteFile = Cast, 44992_Att.spr
+SpriteFile = Hurt, 44992_Hurt.spr
+SpriteFile = Dead, 44992_Dead.spr
+
+[OBJECT]
+Name = P993 - Abyss Lord
+Sequence = 44993
+Space = 25, 80, 0
+Flags = SP_ATTRIB_DISTURB, SP_ATTRIB_HITTEST, SP_ATTRIB_SHADOW
+Process = SERV_CLASS_PETOBJ
+Directory = \mon\p993\
+Sprite = Wait, w013*, #8, !SoundWait, w023*, w033*, w043*, w053*, w063*
+Sprite = Run, r013*, #7, r023*, r033*, r043*, r053*, r063*
+Sprite = Att, a013*, #6, !SoundAttack, a023*, a033*, a043*, a053*, a063*, @SP_EVENT_ACT_WAIT, SCROVER
+Sprite = Cast, a013*, #6, a023*, a033*, a043*, a053*, a063*
+Sprite = Hurt, h013*, #4, h023*, h033*, h043*, h053*, h063*, @SP_EVENT_ACT_WAIT, SCROVER
+Sprite = Dead, d013*, #6, !SoundDie, d023*, d033*, d043*, d053*, d063*, SCROVER
+SpriteFile = Wait, 44993_Wait.spr
+SpriteFile = Run, 44993_Run.spr
+SpriteFile = Att, 44993_Att.spr
+SpriteFile = Cast, 44993_Att.spr
+SpriteFile = Hurt, 44993_Hurt.spr
+SpriteFile = Dead, 44993_Dead.spr
+
+; /aolat abismo
