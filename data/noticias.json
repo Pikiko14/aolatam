@@ -1,5 +1,10 @@
 [
  {
+  "fecha": "2026-11-10",
+  "titulo": "Update 0.0.0.86: new pet Abyss",
+  "texto": "Please update to version 0.0.0.86 from AngelsLauncher. A new pet line has arrived: the Abyss Egg hatches into Abyss Cub at level 15, becomes Abyss Fiend with a Medium Blood Certificate (level 35) and Abyss Lord with an Advanced Blood Certificate (level 55). Each stage has its own colors and size."
+ },
+ {
   "fecha": "2026-11-09",
   "titulo": "Charm success chance",
   "texto": "Shining Charm no longer always works. Its chance is 10% at level I, 20% at II, 30% at III, 40% at IV and 50% at V, a bit lower against monsters above your level and a bit higher (up to +10%) against weaker ones. If it fails, the mana is spent and the monster attacks you."
