@@ -153,7 +153,8 @@ function RaidGuiaPagina(i)
     local boton = hijo_guia(59880 + k)
     window.show(boton, q ~= nil)
     if q then
-      window.settitle(boton, (k == i) and ("> " .. q[1] .. " <") or q[1])
+      window.settitle(boton, q[1])
+      window.seticon(boton, (k == i) and 59865 or 59864)     -- la pestana elegida, encendida
     end
   end
   window.settitle(hijo_guia(59886), p[2])

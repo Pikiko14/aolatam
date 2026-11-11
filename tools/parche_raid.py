@@ -501,6 +501,23 @@ G_BANNER = (4, 4, GW - 4, 52)
 G_PAGINA = (4, 82, GW - 4, GH - 32)
 G_RETRATO = (GW - 112, 112, GW - 12, 232)                                     # 100 x 120
 N_LINEAS, ALTO_LINEA = 13, 14
+PESTANA_W, PESTANA_H, ICONO_PESTANA, ICONO_PESTANA_ACTIVA = 78, 20, 59864, 59865
+
+
+def pestana(estado) -> Image.Image:
+    """Una pestana de 78x20: 'n' normal, 'f' con el raton encima, 's' la elegida (brasa encendida)."""
+    w, h = PESTANA_W, PESTANA_H
+    im = Image.new('RGBA', (w, h), (0, 0, 0, 255))
+    d = ImageDraw.Draw(im)
+    arriba, abajo = {'n': ((70, 40, 24), (34, 20, 14)), 'f': ((100, 58, 30), (46, 26, 16)),
+                     's': ((214, 120, 40), (120, 44, 14))}[estado]
+    for y in range(h):
+        v = y / (h - 1)
+        d.line((0, y, w, y), fill=tuple(int(arriba[k] + (abajo[k] - arriba[k]) * v) for k in range(3)) + (255,))
+    borde = (230, 170, 70, 255) if estado == 's' else (150, 96, 40, 255)
+    d.rectangle((0, 0, w - 1, h - 1), outline=borde)
+    d.line((1, 1, w - 2, 1), fill=(255, 220, 140, 255) if estado == 's' else (120, 80, 46, 255))
+    return im
 
 
 def retrato(i) -> Image.Image:
@@ -546,8 +563,16 @@ def bloque_guia() -> str:
     def texto(wid, x, y, w, color):
         return _w('WND_CLASS_STATIC', wid, x, y, w, 14, ' title="" fcolor="%d" font="1"' % color,
                   'wsVisible="" ssVCenter=""')
+    # Pestanas con icono propio de su ancho: el boton del tema (btn111) no se estira y el texto se salia de el.
     for k in range(5):
-        poner(GUIA_PESTANA + k, _boton(GUIA_PESTANA + k, 6 + 82 * k, 58, '', 'OnRaidGuiaPestana%d' % (k + 1), w=78))
+        poner(GUIA_PESTANA + k, _w('WND_CLASS_BUTTON', GUIA_PESTANA + k, 6 + 82 * k, 58, PESTANA_W, PESTANA_H,
+                                   ' fcolor="101" font="1" icon="%d" title=""' % ICONO_PESTANA,
+                                   'wsVisible="" bsHCenter="" bsVCenter="" wsTab=""',
+                                   '        <OnCommand>OnRaidGuiaPestana%d</OnCommand>\n' % (k + 1)))
+    ventanas.append('    <icon id="%d" dir="\\wnd01\\" normal="aolat_raid_tab_n" focus="aolat_raid_tab_f" '
+                    'down="aolat_raid_tab_s" disable="normal" />\n' % ICONO_PESTANA)
+    ventanas.append('    <icon id="%d" dir="\\wnd01\\" normal="aolat_raid_tab_s" focus="aolat_raid_tab_s" '
+                    'down="aolat_raid_tab_s" disable="aolat_raid_tab_s" />\n' % ICONO_PESTANA_ACTIVA)
     poner(GUIA_CERRAR, _boton(GUIA_CERRAR, GW - 74, GH - 26, 'Close', 'OnRaidGuiaCerrar', w=66))
     poner(GUIA_TITULO, texto(GUIA_TITULO, G_PAGINA[0] + 8, G_PAGINA[1] + 5, G_PAGINA[2] - G_PAGINA[0] - 16, 514))
     for k in range(N_LINEAS):
@@ -587,6 +612,8 @@ def main():
     (SALIDA / 'aolat_raid_guia.shp').write_bytes(a_shp(dibujar_guia()))
     for i in range(3):
         (SALIDA / ('aolat_raid_jefe%d.shp' % (i + 1))).write_bytes(a_shp(retrato(i)))
+    for e in 'nfs':
+        (SALIDA / ('aolat_raid_tab_%s.shp' % e)).write_bytes(a_shp(pestana(e)))
     _guardar('wnd03.xml', _al_final(bloque_wnd03() + bloque_panel() + bloque_lista() + bloque_guia()))
     _guardar('wnd01.xml', lambda t: boton_menu(wnd01(t)))
     print('boton %d, ventana %d (%dx%d), panel %d (%dx%d) e iconos listos' % (BOTON_BARRA, VENTANA, RW, RH, PANEL, PW, PH))

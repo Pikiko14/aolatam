@@ -9199,26 +9199,28 @@
         <child>59900</child>
         <child>59902</child>
     </window>
-    <window class="WND_CLASS_BUTTON" id="59881" range="6,58,78,18" fcolor="101" font="1" icon="12006" title="">
+    <window class="WND_CLASS_BUTTON" id="59881" range="6,58,78,20" fcolor="101" font="1" icon="59864" title="">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnRaidGuiaPestana1</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="59882" range="88,58,78,18" fcolor="101" font="1" icon="12006" title="">
+    <window class="WND_CLASS_BUTTON" id="59882" range="88,58,78,20" fcolor="101" font="1" icon="59864" title="">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnRaidGuiaPestana2</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="59883" range="170,58,78,18" fcolor="101" font="1" icon="12006" title="">
+    <window class="WND_CLASS_BUTTON" id="59883" range="170,58,78,20" fcolor="101" font="1" icon="59864" title="">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnRaidGuiaPestana3</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="59884" range="252,58,78,18" fcolor="101" font="1" icon="12006" title="">
+    <window class="WND_CLASS_BUTTON" id="59884" range="252,58,78,20" fcolor="101" font="1" icon="59864" title="">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnRaidGuiaPestana4</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="59885" range="334,58,78,18" fcolor="101" font="1" icon="12006" title="">
+    <window class="WND_CLASS_BUTTON" id="59885" range="334,58,78,20" fcolor="101" font="1" icon="59864" title="">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnRaidGuiaPestana5</OnCommand>
     </window>
+    <icon id="59864" dir="\wnd01\" normal="aolat_raid_tab_n" focus="aolat_raid_tab_f" down="aolat_raid_tab_s" disable="normal" />
+    <icon id="59865" dir="\wnd01\" normal="aolat_raid_tab_s" focus="aolat_raid_tab_s" down="aolat_raid_tab_s" disable="aolat_raid_tab_s" />
     <window class="WND_CLASS_BUTTON" id="59901" range="346,304,66,18" fcolor="101" font="1" icon="12006" title="Close">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnRaidGuiaCerrar</OnCommand>
