@@ -10137,5 +10137,1919 @@
    ]
   ],
   "tabla": 28984
+ },
+ {
+  "id": 89310,
+  "nombre": "Warring Realm Lv50 Swordsman Box",
+  "nivel": 50,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Warring Realm Raid. Open it to get one Lv50 Swordsman item: a class S weapon, shield, cape or accessory, or a piece of Quality armor.",
+  "contenido": [
+   [
+    607,
+    1,
+    20000
+   ],
+   [
+    1616,
+    1,
+    10000
+   ],
+   [
+    1762,
+    1,
+    10000
+   ],
+   [
+    1787,
+    1,
+    10000
+   ],
+   [
+    381,
+    1,
+    6250
+   ],
+   [
+    386,
+    1,
+    6250
+   ],
+   [
+    391,
+    1,
+    6250
+   ],
+   [
+    628,
+    1,
+    6250
+   ],
+   [
+    629,
+    1,
+    6250
+   ],
+   [
+    1412,
+    1,
+    6250
+   ],
+   [
+    1675,
+    1,
+    6250
+   ],
+   [
+    1703,
+    1,
+    6250
+   ]
+  ],
+  "tabla": 28985
+ },
+ {
+  "id": 89311,
+  "nombre": "Warring Realm Lv50 Axeman Box",
+  "nivel": 50,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Warring Realm Raid. Open it to get one Lv50 Axeman item: a class S weapon, shield, cape or accessory, or a piece of Quality armor.",
+  "contenido": [
+   [
+    608,
+    1,
+    20000
+   ],
+   [
+    1616,
+    1,
+    10000
+   ],
+   [
+    1762,
+    1,
+    10000
+   ],
+   [
+    1787,
+    1,
+    10000
+   ],
+   [
+    381,
+    1,
+    6250
+   ],
+   [
+    386,
+    1,
+    6250
+   ],
+   [
+    391,
+    1,
+    6250
+   ],
+   [
+    628,
+    1,
+    6250
+   ],
+   [
+    629,
+    1,
+    6250
+   ],
+   [
+    1412,
+    1,
+    6250
+   ],
+   [
+    1675,
+    1,
+    6250
+   ],
+   [
+    1703,
+    1,
+    6250
+   ]
+  ],
+  "tabla": 28986
+ },
+ {
+  "id": 89312,
+  "nombre": "Warring Realm Lv50 Lancer Box",
+  "nivel": 50,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Warring Realm Raid. Open it to get one Lv50 Lancer item: a class S weapon, shield, cape or accessory, or a piece of Quality armor.",
+  "contenido": [
+   [
+    609,
+    1,
+    20000
+   ],
+   [
+    1616,
+    1,
+    10000
+   ],
+   [
+    1762,
+    1,
+    10000
+   ],
+   [
+    1787,
+    1,
+    10000
+   ],
+   [
+    381,
+    1,
+    6250
+   ],
+   [
+    386,
+    1,
+    6250
+   ],
+   [
+    391,
+    1,
+    6250
+   ],
+   [
+    628,
+    1,
+    6250
+   ],
+   [
+    629,
+    1,
+    6250
+   ],
+   [
+    1412,
+    1,
+    6250
+   ],
+   [
+    1675,
+    1,
+    6250
+   ],
+   [
+    1703,
+    1,
+    6250
+   ]
+  ],
+  "tabla": 28987
+ },
+ {
+  "id": 89313,
+  "nombre": "Warring Realm Lv50 Archer Box",
+  "nivel": 50,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Warring Realm Raid. Open it to get one Lv50 Archer item: a class S weapon, shield, cape or accessory, or a piece of Quality armor.",
+  "contenido": [
+   [
+    590,
+    1,
+    22222
+   ],
+   [
+    1762,
+    1,
+    11111
+   ],
+   [
+    1787,
+    1,
+    11111
+   ],
+   [
+    401,
+    1,
+    6944
+   ],
+   [
+    406,
+    1,
+    6944
+   ],
+   [
+    411,
+    1,
+    6944
+   ],
+   [
+    623,
+    1,
+    6944
+   ],
+   [
+    624,
+    1,
+    6944
+   ],
+   [
+    1411,
+    1,
+    6944
+   ],
+   [
+    1659,
+    1,
+    6944
+   ],
+   [
+    1689,
+    1,
+    6944
+   ]
+  ],
+  "tabla": 28988
+ },
+ {
+  "id": 89314,
+  "nombre": "Warring Realm Lv50 Mage Box",
+  "nivel": 50,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Warring Realm Raid. Open it to get one Lv50 Mage item: a class S weapon, shield, cape or accessory, or a piece of Quality armor.",
+  "contenido": [
+   [
+    612,
+    1,
+    22222
+   ],
+   [
+    1762,
+    1,
+    11111
+   ],
+   [
+    1787,
+    1,
+    11111
+   ],
+   [
+    416,
+    1,
+    6944
+   ],
+   [
+    421,
+    1,
+    6944
+   ],
+   [
+    426,
+    1,
+    6944
+   ],
+   [
+    573,
+    1,
+    6944
+   ],
+   [
+    574,
+    1,
+    6944
+   ],
+   [
+    1413,
+    1,
+    6944
+   ],
+   [
+    1733,
+    1,
+    6944
+   ],
+   [
+    1747,
+    1,
+    6944
+   ]
+  ],
+  "tabla": 28989
+ },
+ {
+  "id": 89315,
+  "nombre": "Warring Realm Lv50 Assassin Box",
+  "nivel": 50,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Warring Realm Raid. Open it to get one Lv50 Assassin item: a class S weapon, shield, cape or accessory, or a piece of Quality armor.",
+  "contenido": [
+   [
+    54148,
+    1,
+    22222
+   ],
+   [
+    1762,
+    1,
+    11111
+   ],
+   [
+    1787,
+    1,
+    11111
+   ],
+   [
+    401,
+    1,
+    6944
+   ],
+   [
+    406,
+    1,
+    6944
+   ],
+   [
+    411,
+    1,
+    6944
+   ],
+   [
+    623,
+    1,
+    6944
+   ],
+   [
+    624,
+    1,
+    6944
+   ],
+   [
+    1411,
+    1,
+    6944
+   ],
+   [
+    1659,
+    1,
+    6944
+   ],
+   [
+    1689,
+    1,
+    6944
+   ]
+  ],
+  "tabla": 28990
+ },
+ {
+  "id": 89316,
+  "nombre": "Warring Realm Lv50 Weapon Box",
+  "nivel": 50,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Warring Realm Raid. Open it to get one class S Lv50 weapon.",
+  "contenido": [
+   [
+    590,
+    1,
+    16667
+   ],
+   [
+    607,
+    1,
+    16667
+   ],
+   [
+    608,
+    1,
+    16667
+   ],
+   [
+    609,
+    1,
+    16667
+   ],
+   [
+    612,
+    1,
+    16667
+   ],
+   [
+    54148,
+    1,
+    16667
+   ]
+  ],
+  "tabla": 28991
+ },
+ {
+  "id": 89317,
+  "nombre": "Warring Realm Lv50 Mount Box",
+  "nivel": 50,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Warring Realm Raid. Open it to get one rare Lv50 mount.",
+  "contenido": [
+   [
+    504,
+    1,
+    5000
+   ],
+   [
+    505,
+    1,
+    5000
+   ],
+   [
+    506,
+    1,
+    5000
+   ],
+   [
+    507,
+    1,
+    5000
+   ],
+   [
+    3722,
+    1,
+    5000
+   ],
+   [
+    3723,
+    1,
+    5000
+   ],
+   [
+    3724,
+    1,
+    5000
+   ],
+   [
+    3725,
+    1,
+    5000
+   ],
+   [
+    3795,
+    1,
+    5000
+   ],
+   [
+    3796,
+    1,
+    5000
+   ],
+   [
+    3799,
+    1,
+    5000
+   ],
+   [
+    3800,
+    1,
+    5000
+   ],
+   [
+    3853,
+    1,
+    5000
+   ],
+   [
+    3854,
+    1,
+    5000
+   ],
+   [
+    3855,
+    1,
+    5000
+   ],
+   [
+    8098,
+    1,
+    5000
+   ],
+   [
+    9100,
+    1,
+    5000
+   ],
+   [
+    9101,
+    1,
+    5000
+   ],
+   [
+    9301,
+    1,
+    5000
+   ],
+   [
+    9302,
+    1,
+    5000
+   ]
+  ],
+  "tabla": 28992
+ },
+ {
+  "id": 89320,
+  "nombre": "Wintry Realm Lv40 Swordsman Box",
+  "nivel": 40,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Wintry Realm Raid. Open it to get one Lv40 Swordsman item: a class S weapon, shield, cape or accessory, or a piece of Quality armor.",
+  "contenido": [
+   [
+    593,
+    1,
+    6667
+   ],
+   [
+    2904,
+    1,
+    6667
+   ],
+   [
+    2905,
+    1,
+    6667
+   ],
+   [
+    631,
+    1,
+    3333
+   ],
+   [
+    2908,
+    1,
+    3333
+   ],
+   [
+    2909,
+    1,
+    3333
+   ],
+   [
+    1760,
+    1,
+    4000
+   ],
+   [
+    1785,
+    1,
+    4000
+   ],
+   [
+    2899,
+    1,
+    4000
+   ],
+   [
+    2900,
+    1,
+    4000
+   ],
+   [
+    2901,
+    1,
+    4000
+   ],
+   [
+    380,
+    1,
+    6250
+   ],
+   [
+    385,
+    1,
+    6250
+   ],
+   [
+    390,
+    1,
+    6250
+   ],
+   [
+    618,
+    1,
+    6250
+   ],
+   [
+    619,
+    1,
+    6250
+   ],
+   [
+    1331,
+    1,
+    6250
+   ],
+   [
+    1673,
+    1,
+    6250
+   ],
+   [
+    1701,
+    1,
+    6250
+   ]
+  ],
+  "tabla": 28993
+ },
+ {
+  "id": 89321,
+  "nombre": "Wintry Realm Lv40 Axeman Box",
+  "nivel": 40,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Wintry Realm Raid. Open it to get one Lv40 Axeman item: a class S weapon, shield, cape or accessory, or a piece of Quality armor.",
+  "contenido": [
+   [
+    594,
+    1,
+    6667
+   ],
+   [
+    2906,
+    1,
+    6667
+   ],
+   [
+    2907,
+    1,
+    6667
+   ],
+   [
+    631,
+    1,
+    3333
+   ],
+   [
+    2908,
+    1,
+    3333
+   ],
+   [
+    2909,
+    1,
+    3333
+   ],
+   [
+    1760,
+    1,
+    4000
+   ],
+   [
+    1785,
+    1,
+    4000
+   ],
+   [
+    2899,
+    1,
+    4000
+   ],
+   [
+    2900,
+    1,
+    4000
+   ],
+   [
+    2901,
+    1,
+    4000
+   ],
+   [
+    380,
+    1,
+    6250
+   ],
+   [
+    385,
+    1,
+    6250
+   ],
+   [
+    390,
+    1,
+    6250
+   ],
+   [
+    618,
+    1,
+    6250
+   ],
+   [
+    619,
+    1,
+    6250
+   ],
+   [
+    1331,
+    1,
+    6250
+   ],
+   [
+    1673,
+    1,
+    6250
+   ],
+   [
+    1701,
+    1,
+    6250
+   ]
+  ],
+  "tabla": 28994
+ },
+ {
+  "id": 89322,
+  "nombre": "Wintry Realm Lv40 Lancer Box",
+  "nivel": 40,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Wintry Realm Raid. Open it to get one Lv40 Lancer item: a class S weapon, shield, cape or accessory, or a piece of Quality armor.",
+  "contenido": [
+   [
+    595,
+    1,
+    10000
+   ],
+   [
+    2910,
+    1,
+    10000
+   ],
+   [
+    631,
+    1,
+    3333
+   ],
+   [
+    2908,
+    1,
+    3333
+   ],
+   [
+    2909,
+    1,
+    3333
+   ],
+   [
+    1760,
+    1,
+    4000
+   ],
+   [
+    1785,
+    1,
+    4000
+   ],
+   [
+    2899,
+    1,
+    4000
+   ],
+   [
+    2900,
+    1,
+    4000
+   ],
+   [
+    2901,
+    1,
+    4000
+   ],
+   [
+    380,
+    1,
+    6250
+   ],
+   [
+    385,
+    1,
+    6250
+   ],
+   [
+    390,
+    1,
+    6250
+   ],
+   [
+    618,
+    1,
+    6250
+   ],
+   [
+    619,
+    1,
+    6250
+   ],
+   [
+    1331,
+    1,
+    6250
+   ],
+   [
+    1673,
+    1,
+    6250
+   ],
+   [
+    1701,
+    1,
+    6250
+   ]
+  ],
+  "tabla": 28995
+ },
+ {
+  "id": 89323,
+  "nombre": "Wintry Realm Lv40 Archer Box",
+  "nivel": 40,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Wintry Realm Raid. Open it to get one Lv40 Archer item: a class S weapon, shield, cape or accessory, or a piece of Quality armor.",
+  "contenido": [
+   [
+    457,
+    1,
+    7407
+   ],
+   [
+    2913,
+    1,
+    7407
+   ],
+   [
+    2914,
+    1,
+    7407
+   ],
+   [
+    1760,
+    1,
+    4444
+   ],
+   [
+    1785,
+    1,
+    4444
+   ],
+   [
+    2899,
+    1,
+    4444
+   ],
+   [
+    2900,
+    1,
+    4444
+   ],
+   [
+    2901,
+    1,
+    4444
+   ],
+   [
+    400,
+    1,
+    6944
+   ],
+   [
+    405,
+    1,
+    6944
+   ],
+   [
+    410,
+    1,
+    6944
+   ],
+   [
+    613,
+    1,
+    6944
+   ],
+   [
+    614,
+    1,
+    6944
+   ],
+   [
+    1217,
+    1,
+    6944
+   ],
+   [
+    1657,
+    1,
+    6944
+   ],
+   [
+    1687,
+    1,
+    6944
+   ]
+  ],
+  "tabla": 28996
+ },
+ {
+  "id": 89324,
+  "nombre": "Wintry Realm Lv40 Mage Box",
+  "nivel": 40,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Wintry Realm Raid. Open it to get one Lv40 Mage item: a class S weapon, shield, cape or accessory, or a piece of Quality armor.",
+  "contenido": [
+   [
+    598,
+    1,
+    7407
+   ],
+   [
+    2911,
+    1,
+    7407
+   ],
+   [
+    2912,
+    1,
+    7407
+   ],
+   [
+    1760,
+    1,
+    4444
+   ],
+   [
+    1785,
+    1,
+    4444
+   ],
+   [
+    2899,
+    1,
+    4444
+   ],
+   [
+    2900,
+    1,
+    4444
+   ],
+   [
+    2901,
+    1,
+    4444
+   ],
+   [
+    199,
+    1,
+    6944
+   ],
+   [
+    200,
+    1,
+    6944
+   ],
+   [
+    415,
+    1,
+    6944
+   ],
+   [
+    420,
+    1,
+    6944
+   ],
+   [
+    425,
+    1,
+    6944
+   ],
+   [
+    1344,
+    1,
+    6944
+   ],
+   [
+    1731,
+    1,
+    6944
+   ],
+   [
+    1745,
+    1,
+    6944
+   ]
+  ],
+  "tabla": 28997
+ },
+ {
+  "id": 89325,
+  "nombre": "Wintry Realm Lv40 Assassin Box",
+  "nivel": 40,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Wintry Realm Raid. Open it to get one Lv40 Assassin item: a class S weapon, shield, cape or accessory, or a piece of Quality armor.",
+  "contenido": [
+   [
+    14544,
+    1,
+    22222
+   ],
+   [
+    1760,
+    1,
+    4444
+   ],
+   [
+    1785,
+    1,
+    4444
+   ],
+   [
+    2899,
+    1,
+    4444
+   ],
+   [
+    2900,
+    1,
+    4444
+   ],
+   [
+    2901,
+    1,
+    4444
+   ],
+   [
+    400,
+    1,
+    6944
+   ],
+   [
+    405,
+    1,
+    6944
+   ],
+   [
+    410,
+    1,
+    6944
+   ],
+   [
+    613,
+    1,
+    6944
+   ],
+   [
+    614,
+    1,
+    6944
+   ],
+   [
+    1217,
+    1,
+    6944
+   ],
+   [
+    1657,
+    1,
+    6944
+   ],
+   [
+    1687,
+    1,
+    6944
+   ]
+  ],
+  "tabla": 28998
+ },
+ {
+  "id": 89326,
+  "nombre": "Wintry Realm Lv40 Weapon Box",
+  "nivel": 40,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Wintry Realm Raid. Open it to get one class S Lv40 weapon.",
+  "contenido": [
+   [
+    457,
+    1,
+    6667
+   ],
+   [
+    593,
+    1,
+    6667
+   ],
+   [
+    594,
+    1,
+    6667
+   ],
+   [
+    595,
+    1,
+    6667
+   ],
+   [
+    598,
+    1,
+    6667
+   ],
+   [
+    2904,
+    1,
+    6667
+   ],
+   [
+    2905,
+    1,
+    6667
+   ],
+   [
+    2906,
+    1,
+    6667
+   ],
+   [
+    2907,
+    1,
+    6667
+   ],
+   [
+    2910,
+    1,
+    6667
+   ],
+   [
+    2911,
+    1,
+    6667
+   ],
+   [
+    2912,
+    1,
+    6667
+   ],
+   [
+    2913,
+    1,
+    6667
+   ],
+   [
+    2914,
+    1,
+    6667
+   ],
+   [
+    14544,
+    1,
+    6667
+   ]
+  ],
+  "tabla": 28999
+ },
+ {
+  "id": 89327,
+  "nombre": "Wintry Realm Lv40 Mount Box",
+  "nivel": 40,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Wintry Realm Raid. Open it to get one rare Lv40 mount.",
+  "contenido": [
+   [
+    367,
+    1,
+    5882
+   ],
+   [
+    368,
+    1,
+    5882
+   ],
+   [
+    500,
+    1,
+    5882
+   ],
+   [
+    501,
+    1,
+    5882
+   ],
+   [
+    502,
+    1,
+    5882
+   ],
+   [
+    503,
+    1,
+    5882
+   ],
+   [
+    805,
+    1,
+    5882
+   ],
+   [
+    3719,
+    1,
+    5882
+   ],
+   [
+    3720,
+    1,
+    5882
+   ],
+   [
+    3721,
+    1,
+    5882
+   ],
+   [
+    3730,
+    1,
+    5882
+   ],
+   [
+    3731,
+    1,
+    5882
+   ],
+   [
+    3793,
+    1,
+    5882
+   ],
+   [
+    7346,
+    1,
+    5882
+   ],
+   [
+    7347,
+    1,
+    5882
+   ],
+   [
+    9299,
+    1,
+    5882
+   ],
+   [
+    9300,
+    1,
+    5882
+   ]
+  ],
+  "tabla": 29000
+ },
+ {
+  "id": 89330,
+  "nombre": "Dragon's Lair Lv30 Swordsman Box",
+  "nivel": 30,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Dragon's Lair Raid. Open it to get one Lv30 Swordsman item: a class S weapon, shield, cape or accessory, or a piece of Quality armor.",
+  "contenido": [
+   [
+    241,
+    1,
+    20000
+   ],
+   [
+    621,
+    1,
+    10000
+   ],
+   [
+    1758,
+    1,
+    10000
+   ],
+   [
+    1783,
+    1,
+    10000
+   ],
+   [
+    379,
+    1,
+    4545
+   ],
+   [
+    384,
+    1,
+    4545
+   ],
+   [
+    389,
+    1,
+    4545
+   ],
+   [
+    475,
+    1,
+    4545
+   ],
+   [
+    476,
+    1,
+    4545
+   ],
+   [
+    1329,
+    1,
+    4545
+   ],
+   [
+    1671,
+    1,
+    4545
+   ],
+   [
+    1699,
+    1,
+    4545
+   ],
+   [
+    2722,
+    1,
+    4545
+   ],
+   [
+    2723,
+    1,
+    4545
+   ],
+   [
+    2724,
+    1,
+    4545
+   ]
+  ],
+  "tabla": 29001
+ },
+ {
+  "id": 89331,
+  "nombre": "Dragon's Lair Lv30 Axeman Box",
+  "nivel": 30,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Dragon's Lair Raid. Open it to get one Lv30 Axeman item: a class S weapon, shield, cape or accessory, or a piece of Quality armor.",
+  "contenido": [
+   [
+    242,
+    1,
+    20000
+   ],
+   [
+    621,
+    1,
+    10000
+   ],
+   [
+    1758,
+    1,
+    10000
+   ],
+   [
+    1783,
+    1,
+    10000
+   ],
+   [
+    379,
+    1,
+    4545
+   ],
+   [
+    384,
+    1,
+    4545
+   ],
+   [
+    389,
+    1,
+    4545
+   ],
+   [
+    475,
+    1,
+    4545
+   ],
+   [
+    476,
+    1,
+    4545
+   ],
+   [
+    1329,
+    1,
+    4545
+   ],
+   [
+    1671,
+    1,
+    4545
+   ],
+   [
+    1699,
+    1,
+    4545
+   ],
+   [
+    2722,
+    1,
+    4545
+   ],
+   [
+    2723,
+    1,
+    4545
+   ],
+   [
+    2724,
+    1,
+    4545
+   ]
+  ],
+  "tabla": 29002
+ },
+ {
+  "id": 89332,
+  "nombre": "Dragon's Lair Lv30 Lancer Box",
+  "nivel": 30,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Dragon's Lair Raid. Open it to get one Lv30 Lancer item: a class S weapon, shield, cape or accessory, or a piece of Quality armor.",
+  "contenido": [
+   [
+    246,
+    1,
+    20000
+   ],
+   [
+    621,
+    1,
+    10000
+   ],
+   [
+    1758,
+    1,
+    10000
+   ],
+   [
+    1783,
+    1,
+    10000
+   ],
+   [
+    379,
+    1,
+    4545
+   ],
+   [
+    384,
+    1,
+    4545
+   ],
+   [
+    389,
+    1,
+    4545
+   ],
+   [
+    475,
+    1,
+    4545
+   ],
+   [
+    476,
+    1,
+    4545
+   ],
+   [
+    1329,
+    1,
+    4545
+   ],
+   [
+    1671,
+    1,
+    4545
+   ],
+   [
+    1699,
+    1,
+    4545
+   ],
+   [
+    2722,
+    1,
+    4545
+   ],
+   [
+    2723,
+    1,
+    4545
+   ],
+   [
+    2724,
+    1,
+    4545
+   ]
+  ],
+  "tabla": 29003
+ },
+ {
+  "id": 89333,
+  "nombre": "Dragon's Lair Lv30 Archer Box",
+  "nivel": 30,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Dragon's Lair Raid. Open it to get one Lv30 Archer item: a class S weapon, shield, cape or accessory, or a piece of Quality armor.",
+  "contenido": [
+   [
+    237,
+    1,
+    22222
+   ],
+   [
+    1758,
+    1,
+    11111
+   ],
+   [
+    1783,
+    1,
+    11111
+   ],
+   [
+    399,
+    1,
+    5051
+   ],
+   [
+    404,
+    1,
+    5051
+   ],
+   [
+    409,
+    1,
+    5051
+   ],
+   [
+    472,
+    1,
+    5051
+   ],
+   [
+    473,
+    1,
+    5051
+   ],
+   [
+    1215,
+    1,
+    5051
+   ],
+   [
+    1655,
+    1,
+    5051
+   ],
+   [
+    1685,
+    1,
+    5051
+   ],
+   [
+    2951,
+    1,
+    5051
+   ],
+   [
+    2952,
+    1,
+    5051
+   ],
+   [
+    2953,
+    1,
+    5051
+   ]
+  ],
+  "tabla": 29004
+ },
+ {
+  "id": 89334,
+  "nombre": "Dragon's Lair Lv30 Mage Box",
+  "nivel": 30,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Dragon's Lair Raid. Open it to get one Lv30 Mage item: a class S weapon, shield, cape or accessory, or a piece of Quality armor.",
+  "contenido": [
+   [
+    247,
+    1,
+    22222
+   ],
+   [
+    1758,
+    1,
+    11111
+   ],
+   [
+    1783,
+    1,
+    11111
+   ],
+   [
+    191,
+    1,
+    5051
+   ],
+   [
+    192,
+    1,
+    5051
+   ],
+   [
+    414,
+    1,
+    5051
+   ],
+   [
+    419,
+    1,
+    5051
+   ],
+   [
+    424,
+    1,
+    5051
+   ],
+   [
+    1342,
+    1,
+    5051
+   ],
+   [
+    1729,
+    1,
+    5051
+   ],
+   [
+    1743,
+    1,
+    5051
+   ],
+   [
+    2716,
+    1,
+    5051
+   ],
+   [
+    2717,
+    1,
+    5051
+   ],
+   [
+    2718,
+    1,
+    5051
+   ]
+  ],
+  "tabla": 29005
+ },
+ {
+  "id": 89335,
+  "nombre": "Dragon's Lair Lv30 Assassin Box",
+  "nivel": 30,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Dragon's Lair Raid. Open it to get one Lv30 Assassin item: a class S weapon, shield, cape or accessory, or a piece of Quality armor.",
+  "contenido": [
+   [
+    13493,
+    1,
+    11111
+   ],
+   [
+    13508,
+    1,
+    11111
+   ],
+   [
+    1758,
+    1,
+    11111
+   ],
+   [
+    1783,
+    1,
+    11111
+   ],
+   [
+    399,
+    1,
+    5051
+   ],
+   [
+    404,
+    1,
+    5051
+   ],
+   [
+    409,
+    1,
+    5051
+   ],
+   [
+    472,
+    1,
+    5051
+   ],
+   [
+    473,
+    1,
+    5051
+   ],
+   [
+    1215,
+    1,
+    5051
+   ],
+   [
+    1655,
+    1,
+    5051
+   ],
+   [
+    1685,
+    1,
+    5051
+   ],
+   [
+    2951,
+    1,
+    5051
+   ],
+   [
+    2952,
+    1,
+    5051
+   ],
+   [
+    2953,
+    1,
+    5051
+   ]
+  ],
+  "tabla": 29006
+ },
+ {
+  "id": 89336,
+  "nombre": "Dragon's Lair Lv30 Weapon Box",
+  "nivel": 30,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Dragon's Lair Raid. Open it to get one class S Lv30 weapon.",
+  "contenido": [
+   [
+    237,
+    1,
+    14286
+   ],
+   [
+    241,
+    1,
+    14286
+   ],
+   [
+    242,
+    1,
+    14286
+   ],
+   [
+    246,
+    1,
+    14286
+   ],
+   [
+    247,
+    1,
+    14286
+   ],
+   [
+    13493,
+    1,
+    14286
+   ],
+   [
+    13508,
+    1,
+    14286
+   ]
+  ],
+  "tabla": 29007
+ },
+ {
+  "id": 89337,
+  "nombre": "Dragon's Lair Lv30 Mount Box",
+  "nivel": 30,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Dragon's Lair Raid. Open it to get one rare Lv30 mount.",
+  "contenido": [
+   [
+    369,
+    1,
+    16667
+   ],
+   [
+    370,
+    1,
+    16667
+   ],
+   [
+    3794,
+    1,
+    16667
+   ],
+   [
+    7344,
+    1,
+    16667
+   ],
+   [
+    7345,
+    1,
+    16667
+   ],
+   [
+    16656,
+    1,
+    16667
+   ]
+  ],
+  "tabla": 29008
  }
 ]

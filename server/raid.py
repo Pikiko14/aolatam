@@ -55,7 +55,8 @@ EFECTO_PORTAL, MAGIA_PORTAL = 45, 1640
 # EL BOTIN (por jugador y jefe, una vez por semana).
 VALES = (20228, 20229, 20230, 20231)     # Lucky Enhanced Pestle / Ride Feed / Piercing Hammer / Hammer Voucher
 MOUNT_COIN = 89073
-CAJA_DE_SKILL = {9: 89300, 10: 89301, 11: 89302, 17: 89303, 8: 89304, 30: 89305}   # arma -> caja de su clase
+CLASE_DE_SKILL = {9: 0, 10: 1, 11: 2, 17: 3, 8: 4, 30: 5}   # arma -> clase (orden de generar_lucky_bags.CLASES)
+CAJA_DE_SKILL = {sid: 89300 + k for sid, k in CLASE_DE_SKILL.items()}   # las de la Flamefang
 CAJA_ARMAS, CAJA_MONTURAS = 89306, 89307
 # por jefe: (vales minimo, maximo), Mount Coins, probabilidad de caja de clase, de armas y de monturas
 BOTIN = (
@@ -70,9 +71,50 @@ SALUDO_LUA = (canal_lua.CARPETA / 'raid_menu.lua').read_text(encoding='utf-8')
 
 # LAS RAIDS DEL LISTADO "AOF Raids" (11/11/2026: "en vez de ser 1 icono por raid, sea un listado de raid ... y se
 # puedan seleccionar ahi las raid a las que quiera ir"). Por ahora una; las siguientes se anaden aqui.
+# 11/11/2026, "necesito crees 3 raid mas una lvl 50, una lvl 40 y una lvl 30": mapas de nivel 400+ con sus monstruos
+# rebajados (tools/generar_raid.py, NUEVAS) y el botin de su nivel: cajas = la primera de las 8 (6 de clase, armas,
+# monturas; tools/generar_lucky_bags.py, cajas_raid).
 CATALOGO = (
-    {'clave': 'flamefang', 'nombre': NOMBRE, 'nivel': NIVEL_MINIMO, 'jugadores': MAX_MIEMBROS},
+    {'clave': 'flamefang', 'nombre': NOMBRE, 'nivel': NIVEL_MINIMO, 'jugadores': MAX_MIEMBROS, 'stage': STAGE,
+     'plantilla': 'raid_flamefang.json', 'cajas': 89300, 'retrato': 1},
+    {'clave': 'warring', 'nombre': 'Warring Realm Raid', 'nivel': 50, 'jugadores': MAX_MIEMBROS, 'stage': 914,
+     'plantilla': 'raid_warring.json', 'cajas': 89310, 'retrato': 4},
+    {'clave': 'wintry', 'nombre': 'Wintry Realm Raid', 'nivel': 40, 'jugadores': MAX_MIEMBROS, 'stage': 915,
+     'plantilla': 'raid_wintry.json', 'cajas': 89320, 'retrato': 7},
+    {'clave': 'dragon', 'nombre': "Dragon's Lair Raid", 'nivel': 30, 'jugadores': MAX_MIEMBROS, 'stage': 916,
+     'plantilla': 'raid_dragon.json', 'cajas': 89330, 'retrato': 10},
 )
+_POR_CLAVE = {d['clave']: d for d in CATALOGO}
+_POR_STAGE = {d['stage']: d for d in CATALOGO}
+STAGES = frozenset(_POR_STAGE)
+
+
+def definicion(clave='flamefang'):
+    return _POR_CLAVE.get(clave) or CATALOGO[0]
+
+
+def es_stage(stage):
+    """El mapa es el de alguna raid."""
+    try:
+        return int(stage or 0) in STAGES
+    except (TypeError, ValueError):
+        return False
+
+
+def _def(r):
+    return definicion((r or {}).get('clave', 'flamefang'))
+
+
+def _stage(r):
+    return _def(r)['stage']
+
+
+def _elegida(ses):
+    """La raid de `ses`: la de su grupo o, sin grupo, la que eligio en el listado."""
+    r = raid_de(ses)
+    if r:
+        return _def(r)
+    return definicion(getattr(ses, 'raid_elegida', 'flamefang'))
 
 # LA GUIA (11/11/2026: "una opcion con las instrucciones de cada raid, mecanicas de la raid y de los jefes"). La ventana
 # (tools/parche_raid.py) tiene 13 lineas por pagina: ANCHO_GUIA letras, o ANCHO_GUIA_JEFE en las paginas con retrato.
@@ -81,7 +123,7 @@ LINEAS_GUIA, ANCHO_GUIA, ANCHO_GUIA_JEFE = 13, 56, 41
 
 
 def _guia_flamefang():
-    mec = datos()['mecanicas']
+    mec = datos('flamefang')['mecanicas']
     la, rz, sa = mec['23940'], mec['23941'], mec['23942']
     lava, garra, aliento = la['lava'], rz['garra'], rz['aliento']
     nova, condena = sa['nova'], sa['condena']
@@ -163,23 +205,119 @@ def _guia_flamefang():
     return paginas
 
 
+def _guia_general(d):
+    """La guia de una de las raids de NUEVAS: las mismas mecanicas que la Flamefang, con sus nombres y numeros."""
+    import app
+    datos_r = datos(d['clave'])
+    zonas = datos_r['zonas']
+    mec = [datos_r['mecanicas'][str(z['jefe'])] for z in zonas]
+    jefes = [app._monstruo_bd(z['jefe'])[0] for z in zonas]
+    t = [m.get('t', {}) for m in mec]
+    a, b, c = mec
+
+    def minutos(seg):
+        return '%d minutes' % (seg // 60) if seg % 60 == 0 else '%d:%02d minutes' % (seg // 60, seg % 60)
+
+    def corto(n):
+        return n.split()[-1][:12]
+    paginas = [
+        ['Overview', 'How the raid works', 0, [
+            'Up to %d players of level %d or higher.' % (MAX_MIEMBROS, d['nivel']),
+            '1. Press AOF Raid, pick %s and press Open.' % d['nombre'],
+            '2. Create a raid. Invite by name, invite your party,',
+            '   or right-click a player and pick Invite to raid.',
+            '3. The leader presses Enter; the rest press Enter too.',
+            '4. Clear the monster packs of the zone: the boss',
+            '   appears when the last one falls.',
+            '5. After a boss dies, a portal takes everyone to the',
+            '   next zone in %d seconds.' % PAUSA_PORTAL,
+            'If the whole raid dies, the boss heals back to full.',
+            'Every boss enrages after a while: damage x%d.' % ENRAGE_MULT,
+            'Bring tanks (Shield), healers (Life) and damage.',
+            'The raid panel shows everyone\'s HP, MP and role.']],
+        [corto(jefes[0]), '%s - %s' % (jefes[0], zonas[0]['nombre']), d['retrato'], [
+            '%s (every %d s)' % (t[0].get('lava', 'lava').upper(), a['lava']['cada']),
+            '%d players are marked. You have %d s to' % (a['lava']['marcados'], a['lava']['aviso']),
+            'move more than %d tiles away: it' % a['lava']['radio'],
+            'deals %d%% of max HP around the spot.' % a['lava']['dano'],
+            'Do not stack on marked players.',
+            '',
+            'SPLIT (at %d%% HP)' % a['adds_al'][0],
+            '%d %s appear. Kill them fast,' % (a['adds'], t[0].get('adds', 'adds')),
+            'they go for the healers.',
+            '',
+            'ENRAGE: %s.' % minutos(a['enrage'])]],
+        [corto(jefes[1]), '%s - %s' % (jefes[1], zonas[1]['nombre']), d['retrato'] + 1, [
+            '%s (every %d s)' % (t[1].get('garra', 'Claw').upper(), b['garra']['cada']),
+            'Hits the tank for 10%% of max HP,',
+            '+%d%% for each stack. Stacks last %d s:' % (b['garra']['mas_por_pila'], b['garra']['dura']),
+            'swap tanks at 2 or 3 stacks.',
+            '',
+            'FRONTAL ATTACK (every %d s)' % b['aliento']['cada'],
+            'The boss %s for %.1f s, then hits' % (t[1].get('aliento', 'inhales'), b['aliento']['aviso']),
+            'a cone %d tiles in front: %d%%.' % (b['aliento']['largo'], b['aliento']['dano']),
+            'Only the tank stays in front.',
+            '',
+            'FURY at %d%% HP: +%d%% damage.' % (b['furia_al'], round((b['furia_velocidad'] - 1) * 100)),
+            'ENRAGE: %s.' % minutos(b['enrage'])]],
+        [corto(jefes[2]), '%s - %s' % (jefes[2], zonas[2]['nombre']), d['retrato'] + 2, [
+            '%s (every %d s)' % (t[2].get('nova', 'Nova').upper(), c['nova']['cada']),
+            'After %d s, %d%% of max HP to everyone.' % (c['nova']['aviso'], c['nova']['dano']),
+            'Healers: top the raid up before it.',
+            '',
+            'PHASE 2 (%d%%): %s. No damage' % (c['fase2_al'], t[2].get('escudo', 'a shield')),
+            'until the %d %s die.' % (c['adds'], t[2].get('adds', 'adds')),
+            '',
+            'PHASE 3 (%d%%): %s (every %d s)' % (c['fase3_al'], t[2].get('condena', 'DOOM').upper(),
+                                               c['condena']['cada']),
+            'The marked player has %d s to run.' % c['condena']['aviso'],
+            'They take 30%%; anyone within %d tiles' % c['condena']['radio'],
+            'of them takes %d%%. Spread out!' % c['condena']['dano'],
+            '',
+            'ENRAGE: %s.' % minutos(c['enrage'])]],
+        ['Loot', 'Loot and weekly lockout', 0, [
+            'Each boss gives loot once a week per character.',
+            'The lockout resets every Monday at 00:00.',
+            '',
+            'Every boss: 2 to 5 Lucky vouchers (Enhanced Pestle,',
+            'Ride Feed, Piercing Hammer, Hammer Voucher) and',
+            '2 to 5 Mount Coins.',
+            '',
+            'A chance of Lv%d boxes: a box for your class' % d['nivel'],
+            '(class S weapon, shield, cape, accessory or armor),',
+            'a weapon box and a mount box (Lv%d mounts).' % d['nivel'],
+            'The chances grow from boss to boss, and the last',
+            'boss always drops at least one box.',
+            'Your class box depends on the weapon you have on.']],
+    ]
+    for _tab, _titulo, _retrato, lineas in paginas:
+        for i, l in enumerate(lineas):
+            lineas[i] = l.replace('%%', '%')
+    return paginas
+
+
 def guia(indice=0):
-    """(titulo, [[pestana, titulo, retrato 0..3, [lineas]]]) de la raid `indice` del CATALOGO."""
-    return '%s Guide' % CATALOGO[indice]['nombre'], _guia_flamefang()
+    """(titulo, [[pestana, titulo, retrato 0..12, [lineas]]]) de la raid `indice` del CATALOGO."""
+    d = CATALOGO[indice]
+    return '%s Guide' % d['nombre'], (_guia_flamefang() if d['clave'] == 'flamefang' else _guia_general(d))
 
 _RAIDS = {}            # id -> dict(id, lider, miembros [char_id], nombres {char_id: nombre}, corrida)
 _DE_QUIEN = {}         # char_id -> id de su raid
 _INVITACIONES = {}     # char_id -> (id de la raid, caduca)
 _NOMBRE_ESCRITO = {}   # char_id -> {trozo: 4 bytes}: el nombre que se escribe en la ventana para invitar
 _SIG = [1]
-_DATOS = None
+_DATOS = {}
 
 
-def datos():
-    global _DATOS
-    if _DATOS is None:
-        _DATOS = json.loads(PLANTILLA.read_text(encoding='utf-8'))
-    return _DATOS
+def datos(clave='flamefang'):
+    """La plantilla de la raid (plantillas/raid_<clave>.json)."""
+    if clave not in _DATOS:
+        _DATOS[clave] = json.loads((PLANTILLA.parent / definicion(clave)['plantilla']).read_text(encoding='utf-8'))
+    return _DATOS[clave]
+
+
+def _datos(r):
+    return datos(_def(r)['clave'])
 
 
 def _cid(ses):
@@ -207,12 +345,13 @@ def _aviso(ses, texto):
 def crear(ses):
     if raid_de(ses):
         return 'You are already in a raid.'
-    if int(getattr(ses.personaje, 'nivel', 0) or 0) < NIVEL_MINIMO:
-        return 'You need level %d to join a raid.' % NIVEL_MINIMO
+    d = _elegida(ses)
+    if int(getattr(ses.personaje, 'nivel', 0) or 0) < d['nivel']:
+        return 'You need level %d to join the %s.' % (d['nivel'], d['nombre'])
     rid = _SIG[0]
     _SIG[0] += 1
     _RAIDS[rid] = {'id': rid, 'lider': _cid(ses), 'miembros': [_cid(ses)], 'nombres': {_cid(ses): _nombre(ses)},
-                   'corrida': None}
+                   'corrida': None, 'clave': d['clave']}
     _DE_QUIEN[_cid(ses)] = rid
     log.info('raid %d creada por %s', rid, _nombre(ses))
     return None
@@ -231,14 +370,14 @@ def invitar(ses, otro):
         return 'You are already in the raid.'
     if raid_de(otro):
         return '%s is already in a raid.' % _nombre(otro)
-    if int(getattr(otro.personaje, 'nivel', 0) or 0) < NIVEL_MINIMO:
-        return '%s needs level %d.' % (_nombre(otro), NIVEL_MINIMO)
+    if int(getattr(otro.personaje, 'nivel', 0) or 0) < _def(r)['nivel']:
+        return '%s needs level %d.' % (_nombre(otro), _def(r)['nivel'])
     if len(r['miembros']) >= MAX_MIEMBROS:
         return 'The raid is full (%d players).' % MAX_MIEMBROS
     _INVITACIONES[_cid(otro)] = (r['id'], time.time() + 120)
     if getattr(otro, 'canal_lua', 0):
         otro.enviar(canal_lua.paquete(_lua()), canal_lua.llamar('RaidInvitacion', _nombre(ses), r['id']))
-    _aviso(otro, '%s invites you to the %s: press Accept in the raid window.' % (_nombre(ses), NOMBRE))
+    _aviso(otro, '%s invites you to the %s: press Accept in the raid window.' % (_nombre(ses), _def(r)['nombre']))
     return None
 
 
@@ -266,7 +405,7 @@ def salir(ses, sesiones=()):
     r['miembros'].remove(cid)
     r['nombres'].pop(cid, None)
     _DE_QUIEN.pop(cid, None)
-    if getattr(getattr(ses, 'personaje', None), 'stage', None) == STAGE:
+    if es_stage(getattr(getattr(ses, 'personaje', None), 'stage', None)):
         _sacar(ses)
     if not r['miembros']:
         _deshacer(r)
@@ -291,7 +430,7 @@ def expulsar(ses, cid, sesiones=()):
     otro = next((s for s in _sesiones_de(r) if _cid(s) == cid), None)
     if otro is not None:
         salir(otro, sesiones)
-        _aviso(otro, 'You have been removed from the %s.' % NOMBRE)
+        _aviso(otro, 'You have been removed from the %s.' % _def(r)['nombre'])
         if getattr(otro, 'canal_lua', 0):
             try:
                 otro.enviar(canal_lua.llamar('RaidPanelCerrar'))
@@ -336,7 +475,7 @@ def _deshacer(r):
 # ------------------------------------------------------------------------------------------------------- la copia
 def _en_la_copia(r):
     """Las sesiones de la raid que estan en su copia del mapa."""
-    return [s for s in _sesiones_de(r) if getattr(getattr(s, 'personaje', None), 'stage', None) == STAGE]
+    return [s for s in _sesiones_de(r) if getattr(getattr(s, 'personaje', None), 'stage', None) == _stage(r)]
 
 
 _CONECTADOS = [[]]      # [la lista de sesiones del servidor (app.Servidor.mundos)]: la pone procesar(), y al ser la
@@ -366,8 +505,8 @@ def entrar(ses, addr='?'):
     r = raid_de(ses)
     if not r:
         return 'Create or join a raid first.'
-    if int(getattr(ses.personaje, 'nivel', 0) or 0) < NIVEL_MINIMO:
-        return 'You need level %d.' % NIVEL_MINIMO
+    if int(getattr(ses.personaje, 'nivel', 0) or 0) < _def(r)['nivel']:
+        return 'You need level %d.' % _def(r)['nivel']
     if getattr(ses, 'muerto', False):
         return 'You cannot enter while dead.'
     c = r.get('corrida')
@@ -377,11 +516,11 @@ def entrar(ses, addr='?'):
         c = r['corrida'] = {'zona': 0, 'vivos': set(), 'poblada': -1, 'jefe': None, 'adds': set(),
                             'inicio': time.time(), 'jefes_muertos': [], 'fin': False}
         log.info('raid %d: %s empieza la corrida', r['id'], _nombre(ses))
-    if c['zona'] >= len(datos()['zonas']):
+    if c['zona'] >= len(_datos(r)['zonas']):
         return 'This raid is already complete. Create a new one next week.'
-    llegada = tuple(datos()['entrada'] if c['zona'] == 0 and not c['jefes_muertos'] else
-                    datos()['zonas'][c['zona']]['inicio'])
-    app._viajar_por_portal(ses, addr, {'destino': STAGE, 'llegada': llegada}, motivo='a la raid')
+    llegada = tuple(_datos(r)['entrada'] if c['zona'] == 0 and not c['jefes_muertos'] else
+                    _datos(r)['zonas'][c['zona']]['inicio'])
+    app._viajar_por_portal(ses, addr, {'destino': _stage(r), 'llegada': llegada}, motivo='a la raid')
     return None
 
 
@@ -394,17 +533,17 @@ def corrida_de(ses):
 def al_entrar(ses, addr='?'):
     """El jugador termino de cargar un mapa. En el de la raid: sin raid o sin corrida, fuera; si no, la zona."""
     p = getattr(ses, 'personaje', None)
-    if not p or getattr(p, 'stage', None) != STAGE:
+    if not p or not es_stage(getattr(p, 'stage', None)):
         return
     r, c = corrida_de(ses)
-    if c is None:
+    if c is None or int(p.stage) != _stage(r):
         _aviso(ses, 'You are not in an active raid.')
         _sacar(ses)
         return
     if c['poblada'] != c['zona']:
         _poblar(ses, r, c)
-    zona = datos()['zonas'][c['zona']]
-    _aviso(ses, '%s - %s (%d/%d)' % (NOMBRE, zona['nombre'], c['zona'] + 1, len(datos()['zonas'])))
+    zona = _datos(r)['zonas'][c['zona']]
+    _aviso(ses, '%s - %s (%d/%d)' % (_def(r)['nombre'], zona['nombre'], c['zona'] + 1, len(_datos(r)['zonas'])))
 
 
 def _nuevo_eid():
@@ -446,7 +585,7 @@ def _mostrar(s, m):
 
 def _poblar(ses, r, c):
     """Los grupos de bichos de la zona de la corrida."""
-    zona = datos()['zonas'][c['zona']]
+    zona = _datos(r)['zonas'][c['zona']]
     c['poblada'] = c['zona']
     c['vivos'] = set()
     for grupo in zona['grupos']:
@@ -460,7 +599,7 @@ def _poblar(ses, r, c):
 
 
 def _sacar_jefe(ses, r, c):
-    zona = datos()['zonas'][c['zona']]
+    zona = _datos(r)['zonas'][c['zona']]
     m = _sacar_bicho(ses, zona['jefe'], zona['casilla_jefe'], r, c)
     if m is None:
         log.warning('raid %d: no salio el jefe %s', r['id'], zona['jefe'])
@@ -493,7 +632,7 @@ def _cartel(r, texto):
 def al_morir(ses, m, addr='?'):
     """Un bicho cayo en la copia de la raid."""
     p = getattr(ses, 'personaje', None)
-    if not p or getattr(p, 'stage', None) != STAGE or getattr(m, 'raid', None) is None:
+    if not p or not es_stage(getattr(p, 'stage', None)) or getattr(m, 'raid', None) is None:
         return
     r = _RAIDS.get(m.raid)
     c = r.get('corrida') if r else None
@@ -523,17 +662,17 @@ def _jefe_muerto(ses, r, c, m):
     _cartel(r, '%s has been defeated! (%d:%02d)' % ((m.nombre,) + divmod(segundos, 60)))
     for s in _en_la_copia(r):
         try:
-            _botin(s, zona_idx)
+            _botin(s, zona_idx, _def(r)['clave'])
         except Exception:
             log.exception('raid: botin de %s', _nombre(s))
     c['zona'] = zona_idx + 1
-    if c['zona'] >= len(datos()['zonas']):
+    if c['zona'] >= len(_datos(r)['zonas']):
         segundos = int(time.time() - c['inicio'])
         _cartel(r, 'The %s is complete! Total time %d:%02d. Leave from the raid window.'
-                % ((NOMBRE,) + divmod(segundos, 60)))
+                % ((_def(r)['nombre'],) + divmod(segundos, 60)))
         log.info('raid %d completa en %ds: %s', r['id'], segundos, ', '.join(r['nombres'].values()))
         return
-    _cartel(r, 'A portal opens to %s in %d seconds...' % (datos()['zonas'][c['zona']]['nombre'], int(PAUSA_PORTAL)))
+    _cartel(r, 'A portal opens to %s in %d seconds...' % (_datos(r)['zonas'][c['zona']]['nombre'], int(PAUSA_PORTAL)))
     try:
         asyncio.get_event_loop().call_later(PAUSA_PORTAL, _siguiente_zona, r, c)
     except RuntimeError:
@@ -545,7 +684,7 @@ def _siguiente_zona(r, c):
     import desplazamientos
     if r.get('corrida') is not c or c.get('fin'):
         return
-    zona = datos()['zonas'][c['zona']]
+    zona = _datos(r)['zonas'][c['zona']]
     gente = _en_la_copia(r)
     for s in gente:
         try:
@@ -558,7 +697,7 @@ def _siguiente_zona(r, c):
     vivos = [s for s in gente if not getattr(s, 'muerto', False)]
     if vivos:
         _poblar(vivos[0], r, c)
-    _cartel(r, '%s - %s (%d/%d)' % (NOMBRE, zona['nombre'], c['zona'] + 1, len(datos()['zonas'])))
+    _cartel(r, '%s - %s (%d/%d)' % (_def(r)['nombre'], zona['nombre'], c['zona'] + 1, len(_datos(r)['zonas'])))
 
 
 def _quitar(r, eid):
@@ -577,10 +716,10 @@ def _quitar(r, eid):
 def antes_de_viajar(ses, stage_destino):
     """Alguien sale de la copia: si ya no queda nadie de la raid dentro, el jefe en pie se recupera."""
     p = getattr(ses, 'personaje', None)
-    if not p or getattr(p, 'stage', None) != STAGE or int(stage_destino) == STAGE:
+    if not p or not es_stage(getattr(p, 'stage', None)):
         return
     r, c = corrida_de(ses)
-    if c is None:
+    if c is None or int(stage_destino) == _stage(r):
         return
     if not [s for s in _en_la_copia(r) if s is not ses] and c.get('jefe') is not None:
         _reiniciar_jefe(r, c, 'Everyone left: %s recovers.')
@@ -696,7 +835,7 @@ def _reiniciar_jefe(r, c, texto):
 
 
 def _sacar_adds(ses, r, c, npc, cuantos):
-    zona = datos()['zonas'][c['zona']]
+    zona = _datos(r)['zonas'][c['zona']]
     casillas = zona.get('casillas_adds') or [zona['casilla_jefe']]
     for k in range(cuantos):
         m = _sacar_bicho(ses, npc, casillas[k % len(casillas)], r, c)
@@ -707,7 +846,7 @@ def _sacar_adds(ses, r, c, npc, cuantos):
 
 async def _mecanicas(ses, r, c, m):
     """El bucle del jefe: mientras viva, sus mecanicas (ver el docstring del modulo)."""
-    mec = datos()['mecanicas'].get(str(m.npc_type), {})
+    mec = _datos(r)['mecanicas'].get(str(m.npc_type), {})
     e = c['jefe_estado']
     e.setdefault('pilas', {})
     while _jefe_vivo(c, m):
@@ -747,6 +886,7 @@ def _toca(e, clave, mec, ahora):
 def _mecanica(ses, r, c, m, mec, e, pct, ahora, vivos):
     if not vivos:
         return
+    t = mec.get('t') or {}            # los nombres de las raids de NUEVAS (sin 't', los de la Flamefang)
     # Infernal Lavamon: charcos de lava y, al 50%, se parte en Lava Blobs.
     if 'lava' in mec and _toca(e, 'lava', mec, ahora):
         k = mec['lava']
@@ -754,30 +894,30 @@ def _mecanica(ses, r, c, m, mec, e, pct, ahora, vivos):
         sitios = [_casilla(s) for s in marcados]
         for s in marcados:
             _marcar(s, k['aviso'])
-            _aviso(s, 'Lava is erupting under you! MOVE!')
-        _cartel(r, '%s spews lava under %s!' % (m.nombre, ', '.join(_nombre(s) for s in marcados)))
+            _aviso(s, '%s is erupting under you! MOVE!' % t.get('lava', 'lava').capitalize())
+        _cartel(r, '%s spews %s under %s!' % (m.nombre, t.get('lava', 'lava'), ', '.join(_nombre(s) for s in marcados)))
         _diferido(k['aviso'], _lava, r, c, m, sitios, k)
     for umbral in mec.get('adds_al', []):
         if pct <= umbral and ('adds', umbral) not in e['hechos']:
             e['hechos'].add(('adds', umbral))
-            _cartel(r, '%s splits apart! Kill the Lava Blobs!' % m.nombre)
-            _sacar_adds(ses, r, c, datos()['zonas'][c['zona']]['adds'], mec.get('adds', 6))
+            _cartel(r, '%s %s! Kill the %s!' % (m.nombre, t.get('parte', 'splits apart'), t.get('adds', 'Lava Blobs')))
+            _sacar_adds(ses, r, c, _datos(r)['zonas'][c['zona']]['adds'], mec.get('adds', 6))
     # Hellfire Razorex: Searing Claw que se acumula en el tanque, aliento frontal y furia.
     if 'garra' in mec and _toca(e, 'garra', mec, ahora):
         k = mec['garra']
-        t = _objetivo(r, m)
-        if t is not None and not getattr(t, 'muerto', False):
-            cid = _cid(t)
+        tanque = _objetivo(r, m)
+        if tanque is not None and not getattr(tanque, 'muerto', False):
+            cid = _cid(tanque)
             pila, hasta = e['pilas'].get(cid, (0, 0))
             pila = pila + 1 if hasta > ahora else 1
             e['pilas'][cid] = (pila, ahora + k['dura'])
-            herir(t, m, min(90, 10 + k['mas_por_pila'] * (pila - 1)))
-            _aviso(t, 'Searing Claw x%d! Another tank should take over.' % pila)
+            herir(tanque, m, min(90, 10 + k['mas_por_pila'] * (pila - 1)))
+            _aviso(tanque, '%s x%d! Another tank should take over.' % ((mec.get('t') or {}).get('garra', 'Searing Claw'), pila))
     if 'aliento' in mec and _toca(e, 'aliento', mec, ahora):
         k = mec['aliento']
-        t = _objetivo(r, m) or random.choice(vivos)
-        _cartel(r, '%s inhales deeply... get out of its front!' % m.nombre)
-        _diferido(k['aviso'], _aliento, r, c, m, _casilla(t), k)
+        blanco = _objetivo(r, m) or random.choice(vivos)
+        _cartel(r, '%s %s... get out of its front!' % (m.nombre, t.get('aliento', 'inhales deeply')))
+        _diferido(k['aviso'], _aliento, r, c, m, _casilla(blanco), k)
     if 'furia_al' in mec and pct <= mec['furia_al'] and 'furia' not in e['hechos']:
         e['hechos'].add('furia')
         m.atk = int(m.atk * mec.get('furia_velocidad', 1.3))
@@ -785,13 +925,14 @@ def _mecanica(ses, r, c, m, mec, e, pct, ahora, vivos):
     # Satrixia: Inferno Nova a todos, escudo de Firal al 66% y Doom al 33%.
     if 'nova' in mec and _toca(e, 'nova', mec, ahora):
         k = mec['nova']
-        _cartel(r, '%s is casting Inferno Nova! Healers, get ready!' % m.nombre)
+        _cartel(r, '%s is casting %s! Healers, get ready!' % (m.nombre, t.get('nova', 'Inferno Nova')))
         _diferido(k['aviso'], _nova, r, c, m, k)
     if 'fase2_al' in mec and pct <= mec['fase2_al'] and 'fase2' not in e['hechos']:
         e['hechos'].add('fase2')
         e['escudo'] = m.hp
-        _cartel(r, '%s raises a shield of fire! Kill her Firals!' % m.nombre)
-        _sacar_adds(ses, r, c, datos()['zonas'][c['zona']]['adds'], mec.get('adds', 8))
+        _cartel(r, '%s raises %s! Kill %s %s!' % (m.nombre, t.get('escudo', 'a shield of fire'), t.get('su', 'her'),
+                                                 t.get('adds', 'Firals')))
+        _sacar_adds(ses, r, c, _datos(r)['zonas'][c['zona']]['adds'], mec.get('adds', 8))
     if e.get('escudo') is not None:
         if c['adds']:
             if m.hp < e['escudo']:
@@ -802,13 +943,13 @@ def _mecanica(ses, r, c, m, mec, e, pct, ahora, vivos):
     if 'fase3_al' in mec and pct <= mec['fase3_al'] and 'fase3' not in e['hechos']:
         e['hechos'].add('fase3')
         e['proximo']['condena'] = ahora + 3
-        _cartel(r, '%s: "Burn, all of you!"' % m.nombre)
+        _cartel(r, '%s: "%s"' % (m.nombre, t.get('grito', 'Burn, all of you!')))
     if 'fase3' in e['hechos'] and 'condena' in mec and _toca(e, 'condena', mec, ahora):
         k = mec['condena']
         s = random.choice(vivos)
         _marcar(s, k['aviso'])
-        _aviso(s, 'You are marked by DOOM! Run away from everyone!')
-        _cartel(r, '%s is marked by Doom! Stay away from %s!' % (_nombre(s), _nombre(s)))
+        _aviso(s, 'You are marked by %s! Run away from everyone!' % t.get('condena', 'DOOM'))
+        _cartel(r, '%s is marked by %s! Stay away from %s!' % (_nombre(s), t.get('condena', 'Doom'), _nombre(s)))
         _diferido(k['aviso'], _condena, r, c, m, s, k)
 
 
@@ -855,7 +996,7 @@ def _condena(r, c, m, marcado, k):
 def semana(ahora=None):
     """El numero de la semana del lockout: cambia el lunes a las 00:00."""
     d = datetime.date.fromtimestamp(ahora or time.time())
-    lunes = d - datetime.timedelta(days=(d.weekday() - datos().get('lockout_dia', 0)) % 7)
+    lunes = d - datetime.timedelta(days=(d.weekday() - datos('flamefang').get('lockout_dia', 0)) % 7)
     return lunes.toordinal()
 
 
@@ -878,14 +1019,19 @@ def _lockout(s):
     return p.raid_lockout
 
 
-def bloqueado(s, zona):
-    return _lockout(s).get(str(zona)) == semana()
+def _clave_lockout(zona, clave):
+    """La Flamefang guarda solo el numero del jefe (como antes de haber varias raids); las demas, 'clave:jefe'."""
+    return str(zona) if clave == 'flamefang' else '%s:%d' % (clave, zona)
 
 
-def _anotar_lockout(s, zona):
+def bloqueado(s, zona, clave='flamefang'):
+    return _lockout(s).get(_clave_lockout(zona, clave)) == semana()
+
+
+def _anotar_lockout(s, zona, clave='flamefang'):
     import cuentas
     lo = _lockout(s)
-    lo[str(zona)] = semana()
+    lo[_clave_lockout(zona, clave)] = semana()
     if getattr(s, 'usuario', None):
         try:
             cuentas._actualizar_personaje(s.usuario, s.personaje.char_id,
@@ -894,16 +1040,19 @@ def _anotar_lockout(s, zona):
             log.exception('raid: no se pudo guardar el lockout de %s', _nombre(s))
 
 
-def caja_de_clase(inventario):
+def caja_de_clase(inventario, clave='flamefang'):
     import clases
+    base = definicion(clave)['cajas']
     for sid in sorted(clases.skills_de_equipo(inventario)):
-        if sid in CAJA_DE_SKILL:
-            return CAJA_DE_SKILL[sid]
+        if sid in CLASE_DE_SKILL:
+            return base + CLASE_DE_SKILL[sid]
     return None
 
 
-def premios(zona, inventario, rng=random):
+def premios(zona, inventario, rng=random, clave='flamefang'):
     """[(item, cantidad)] del botin de un jefe para un jugador."""
+    base = definicion(clave)['cajas']
+    CAJA_ARMAS, CAJA_MONTURAS = base + 6, base + 7      # noqa: N806 (las de esa raid)
     (vmin, vmax), monedas, p_clase, p_armas, p_montura = BOTIN[min(zona, len(BOTIN) - 1)]
     salen = {}
     for _ in range(rng.randint(vmin, vmax)):
@@ -911,7 +1060,7 @@ def premios(zona, inventario, rng=random):
         salen[v] = salen.get(v, 0) + 1
     salen[MOUNT_COIN] = monedas
     cajas = []
-    clase = caja_de_clase(inventario)
+    clase = caja_de_clase(inventario, clave)
     if rng.random() < p_clase:
         cajas.append(clase or CAJA_ARMAS)
     if rng.random() < p_armas:
@@ -925,13 +1074,13 @@ def premios(zona, inventario, rng=random):
     return sorted(salen.items())
 
 
-def _botin(s, zona):
+def _botin(s, zona, clave='flamefang'):
     import app
-    if bloqueado(s, zona):
+    if bloqueado(s, zona, clave):
         _aviso(s, 'You already looted this boss this week. It resets on Monday.')
         return
-    salen = premios(zona, getattr(s, 'inventario', None) or {})
-    _anotar_lockout(s, zona)
+    salen = premios(zona, getattr(s, 'inventario', None) or {}, clave=clave)
+    _anotar_lockout(s, zona, clave)
     app._aplicar_efectos(s, getattr(s, 'addr', '?'), [('dar', salen)], ' por la raid (jefe %d)' % (zona + 1))
     log.info('raid: %s recibe %s (jefe %d)', _nombre(s), salen, zona + 1)
 
@@ -1001,7 +1150,7 @@ def panel_de(r):
                 mana = int(100 * max(0, p.mp) / max(1, int(app._mana_max(p, bolsa=s.inventario))))
             except Exception:
                 mana = 0
-            estado = 'dead' if getattr(s, 'muerto', False) or p.hp <= 0 else ('' if p.stage == STAGE else 'away')
+            estado = 'dead' if getattr(s, 'muerto', False) or p.hp <= 0 else ('' if p.stage == _stage(r) else 'away')
             filas.append([_nombre(s), min(100, vida), min(100, mana), rol_de(p), cid == r['lider'], estado, cid])
         grupos.append(filas)
     return 'Raid (%d/%d)' % (len(r['miembros']), MAX_MIEMBROS), grupos
@@ -1048,20 +1197,21 @@ def estado_para(ses):
     """Lo que pinta la ventana: (titulo, miembros [[nombre, nivel, donde]], soy_lider, jefes [[nombre, estado]],
     hay_corrida, en_raid)."""
     r = raid_de(ses)
-    zonas = datos()['zonas']
+    d = _elegida(ses)
+    zonas = datos(d['clave'])['zonas']
     jefes = []
     for i, z in enumerate(zonas):
         import app
         nombre = app._monstruo_bd(z['jefe'])[0]
         if r and r.get('corrida') and i in r['corrida']['jefes_muertos']:
             estado = 'Defeated'
-        elif bloqueado(ses, i):
+        elif bloqueado(ses, i, d['clave']):
             estado = 'Looted this week'
         else:
             estado = 'Available'
         jefes.append([nombre, estado])
     if not r:
-        return ['No raid', [], False, jefes, False, False]
+        return ['%s - no group' % d['nombre'], [], False, jefes, False, False]
     por_cid = {_cid(s): s for s in _sesiones_de(r)}
     miembros = []
     for cid in r['miembros']:
@@ -1069,9 +1219,9 @@ def estado_para(ses):
         if s is None:
             miembros.append([r['nombres'].get(cid, '?'), 0, 'Offline'])
         else:
-            donde = 'In raid' if s.personaje.stage == STAGE else 'Outside'
+            donde = 'In raid' if s.personaje.stage == _stage(r) else 'Outside'
             miembros.append([_nombre(s), int(s.personaje.nivel), donde + (' (Leader)' if cid == r['lider'] else '')])
-    titulo = '%s - %d/%d players' % (NOMBRE, len(r['miembros']), MAX_MIEMBROS)
+    titulo = '%s - %d/%d players' % (d['nombre'], len(r['miembros']), MAX_MIEMBROS)
     c = r.get('corrida')
     return [titulo, miembros, r['lider'] == _cid(ses), jefes, bool(c and not c.get('fin')), True]
 
@@ -1124,7 +1274,11 @@ def procesar(ses, cuerpo, addr='?', sesiones=None) -> bool:
         return True
     if a == 31:
         if 0 <= int(b) < len(CATALOGO):
-            ses.enviar(*abrir(ses))
+            ses.raid_elegida = CATALOGO[int(b)]['clave']
+            aviso = ''
+            if r and r.get('clave', 'flamefang') != ses.raid_elegida:
+                aviso = 'You are in a %s group: leave it to join another raid.' % _def(r)['nombre']
+            ses.enviar(*abrir(ses, aviso))
             _abrir_panel(ses)
         return True
     if 20 <= a <= 23:
@@ -1160,7 +1314,7 @@ def procesar(ses, cuerpo, addr='?', sesiones=None) -> bool:
         otro = _buscar(nombre)
         motivo = invitar(ses, otro) or 'Invitation sent to %s.' % _nombre(otro)
     elif a == 8:
-        if getattr(ses.personaje, 'stage', None) == STAGE:
+        if es_stage(getattr(ses.personaje, 'stage', None)):
             _sacar(ses)
     ses.enviar(*abrir(ses, motivo or ''))
     _refrescar_ventanas(raid_de(ses) or r, sesiones or ())
@@ -1172,23 +1326,26 @@ def procesar(ses, cuerpo, addr='?', sesiones=None) -> bool:
 
 
 def lista_de_raids(ses):
-    """Las filas del listado: [nombre, nivel, jugadores, jefes, como va esta semana, [[jefe, ready|looted]]]."""
+    """Las filas del listado: [nombre, nivel, jugadores, jefes, como va esta semana, [[jefe, ready|looted]],
+    botin (dos lineas)]."""
     filas = []
     for raid in CATALOGO:
-        jefes = len(datos()['zonas'])
-        libres = sum(1 for i in range(jefes) if not bloqueado(ses, i))
+        clave = raid['clave']
+        jefes = len(datos(clave)['zonas'])
+        libres = sum(1 for i in range(jefes) if not bloqueado(ses, i, clave))
         r = raid_de(ses)
-        if r and r.get('corrida') and not r['corrida'].get('fin'):
+        if r and r.get('clave', 'flamefang') == clave and r.get('corrida') and not r['corrida'].get('fin'):
             estado = 'In progress'
         elif libres == 0:
             estado = 'Locked until Monday'
         else:
             estado = '%d/%d bosses left' % (libres, jefes)
         nombres = []
-        for i, z in enumerate(datos()['zonas']):
+        for i, z in enumerate(datos(clave)['zonas']):
             import app
-            nombres.append([app._monstruo_bd(z['jefe'])[0], 'looted' if bloqueado(ses, i) else 'ready'])
-        filas.append([raid['nombre'], raid['nivel'], '%d max' % raid['jugadores'], jefes, estado, nombres])
+            nombres.append([app._monstruo_bd(z['jefe'])[0], 'looted' if bloqueado(ses, i, clave) else 'ready'])
+        filas.append([raid['nombre'], raid['nivel'], '%d max' % raid['jugadores'], jefes, estado, nombres,
+                      'Loot: level %d class S gear, mounts,' % raid['nivel'], 'mount and gear enhancement boxes.'])
     return filas
 
 

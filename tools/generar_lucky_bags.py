@@ -234,6 +234,49 @@ def cajas_raid(items):
                    'pestana': None, 'cantidades': True,
                    'descripcion': 'Spoils of the Flamefang Raid. Open it to get one class S Lv60 mount.',
                    'contenido': _reparte([(100.0, de(('座騎',), '黃', 60, 60))])})
+    for base, raid, nivel in RAIDS_NUEVAS:
+        salida.extend(cajas_raid_nivel(items, base, raid, nivel))
+    return salida
+
+
+# Las raids de nivel 50, 40 y 30 (server/raid.py CATALOGO, 11/11/2026: "los premios los mismos porfa armas ride y pimp
+# del lvl correspondiente"): las mismas 8 cajas con lo de su nivel. Clase S de ese nivel (si una clase no tiene arma S
+# justo de ese nivel, la de hasta 5 menos); no hay monturas S de nivel 30-50, asi que van las azules (raras) de
+# hasta 9 niveles menos, y nada que pida mas nivel que la raid.
+RAIDS_NUEVAS = ((89310, 'Warring Realm', 50), (89320, 'Wintry Realm', 40), (89330, "Dragon's Lair", 30))
+
+
+def cajas_raid_nivel(items, base, raid, nivel):
+    def de(cats, color, lo, hi, tipo=None):
+        return [int(f['id']) for f in _sin_repetir([f for f in items.values() if f['物品類別'] in cats
+                and f['顏色'] == color and lo <= _n(f['物品等級']) <= hi and _vale(f)
+                and _n(f.get('等級限制') or f['物品等級']) <= nivel
+                and (tipo is None or str(f['技能限制1']) == tipo)])]
+
+    def armas_de(cats):
+        return de(cats, '黃', nivel, nivel) or de(cats, '黃', nivel - 5, nivel)
+    extra = de(('飾品', '披風'), '黃', nivel, nivel) or de(('飾品', '披風'), '黃', nivel - 5, nivel)
+    escudos = de(('盾',), '黃', nivel, nivel) or de(('盾',), '黃', nivel - 5, nivel)
+    salida = []
+    for k, (clase, armas, armadura, escudo) in enumerate(CLASES):
+        grupos = {'arma': armas_de(armas), 'escudo': escudos if escudo else [], 'extra': extra,
+                  'ropa': de(ARMADURA, '藍', nivel - 5, nivel, armadura)}
+        salida.append({'id': base + k, 'nombre': '%s Lv%d %s Box' % (raid, nivel, clase), 'nivel': nivel,
+                       'pestana': None, 'cantidades': True,
+                       'descripcion': 'Spoils of the %s Raid. Open it to get one Lv%d %s item: a class S weapon, '
+                                      'shield, cape or accessory, or a piece of Quality armor.' % (raid, nivel, clase),
+                       'contenido': _reparte([(pct, grupos[que]) for que, pct in REPARTO_CLASE])})
+    armas = sorted({i for c in CLASES for i in armas_de(c[1])})
+    salida.append({'id': base + len(CLASES), 'nombre': '%s Lv%d Weapon Box' % (raid, nivel), 'nivel': nivel,
+                   'pestana': None, 'cantidades': True,
+                   'descripcion': 'Spoils of the %s Raid. Open it to get one class S Lv%d weapon.' % (raid, nivel),
+                   'contenido': _reparte([(100.0, armas)])})
+    todas = [f for f in _monturas(items, nivel - 9, nivel)]
+    raras = [f for f in todas if f['顏色'] == '藍'] or todas
+    salida.append({'id': base + len(CLASES) + 1, 'nombre': '%s Lv%d Mount Box' % (raid, nivel), 'nivel': nivel,
+                   'pestana': None, 'cantidades': True,
+                   'descripcion': 'Spoils of the %s Raid. Open it to get one rare Lv%d mount.' % (raid, nivel),
+                   'contenido': _reparte([(100.0, sorted(int(f['id']) for f in raras))])})
     return salida
 
 

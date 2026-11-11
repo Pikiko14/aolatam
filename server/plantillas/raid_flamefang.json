@@ -1,5 +1,8 @@
 {
  "_nota": "Generado por tools/generar_raid.py; no editar a mano.",
+ "clave": "flamefang",
+ "nombre": "Flamefang Raid",
+ "nivel": 60,
  "stage": 902,
  "entrada": [
   278,

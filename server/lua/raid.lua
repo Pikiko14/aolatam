@@ -26,7 +26,7 @@ end
 
 local function pintar(titulo, miembros, soy_lider, jefes, hay_corrida, en_raid)
   RAID_LIDER = soy_lider and true or false      -- raid_menu.lua: "Invite to raid" en el menu del jugador
-  window.settitle(WND_RAID, "Flamefang Raid")
+  window.settitle(WND_RAID, "AOF Raid")
   window.settitle(hijo(59601), corto(titulo, 52))
   local lista = hijo(59602)
   window.clearlist(lista)

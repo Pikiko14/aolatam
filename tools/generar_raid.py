@@ -20,8 +20,10 @@ import argparse
 import json
 import math
 import pathlib
+import random
 import re
 import sqlite3
+import statistics
 
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
 PLANTILLA = RAIZ / 'server' / 'plantillas' / 'raid_flamefang.json'
@@ -116,18 +118,28 @@ def _fila_db(con, original):
     return cols, dict(zip(cols, fila))
 
 
-def content_db(ruta):
+def todos_los_clones(carpeta=None):
+    """[(numero, original, papel, stats de su papel, hechizos)] de todas las raids: la Flamefang y las de NUEVAS (estas,
+    de su plantilla, para poder rehacer los monstruos en el VPS sin content.db local: --db RUTA --plantillas DIR)."""
+    salida = [(n, o, p, STATS[p], HECHIZOS_POR_PAPEL[p]) for n, o, p in CLONES]
+    carpeta = pathlib.Path(carpeta) if carpeta else RAIZ / 'server' / 'plantillas'
+    for cfg in NUEVAS:
+        d = json.loads((carpeta / cfg['plantilla']).read_text(encoding='utf-8'))
+        salida += [(n, o, p, d['stats'][p], HECHIZOS_POR_PAPEL[p]) for n, o, p in d['clones']]
+    return salida
+
+
+def content_db(ruta, carpeta=None):
     """Los clones en la tabla monster de esa content.db (quita los de antes)."""
     con = sqlite3.connect(ruta)
-    for nuevo, original, papel in CLONES:
+    clones = todos_los_clones(carpeta)
+    for nuevo, original, papel, s, (h1, h2) in clones:
         cols, f = _fila_db(con, original)
-        s = STATS[papel]
         f.update({'id': str(nuevo), 'level': str(s['nivel']), 'hp': str(s['hp']), 'atk_avg': str(s['atk']),
                   'atk_var': str(s['var']), 'def': str(s['df']), 'matk': str(s['matk']), 'mdef': str(s['mdef']),
                   'accuracy': str(s['acc']), 'agility': str(s['agi']), 'exp_value': str(s['exp']), 'crit_rate': '5',
                   'res_lightning': '20', 'res_fire': '40', 'res_ice': '20', 'res_corrosion': '20', 'res_body': '20',
                   'res_mind': '40', 'drop_id': '0'})
-        h1, h2 = HECHIZOS_POR_PAPEL[papel]
         for k, h in (('攻擊法術1', h1), ('攻擊法術2', h2), ('攻擊法術3', h1), ('攻擊法術4', h2)):
             if k in f:
                 f[k] = str(h)
@@ -141,7 +153,7 @@ def content_db(ruta):
                     [f[c] for c in cols])
     con.commit()
     con.close()
-    print('content.db: %d monstruos de la raid en %s' % (len(CLONES), ruta))
+    print('content.db: %d monstruos de las raids en %s' % (len(clones), ruta))
 
 
 def _fila_xml(texto, original):
@@ -157,15 +169,13 @@ def monster_xml():
     nl = '\r\n' if '\r\n' in texto else '\n'
     texto = re.sub(r'[ \t]*<!-- aolat raid -->.*?<!-- /aolat raid -->\r?\n', '', texto, flags=re.S)
     filas = []
-    for nuevo, original, papel in CLONES:
-        s = STATS[papel]
+    for nuevo, original, papel, s, (h1, h2) in todos_los_clones():
         f = _fila_xml(texto, original)
         cambios = {'編號': nuevo, '等級': s['nivel'], 'HP': s['hp'], '平均攻擊': s['atk'], '攻擊變數': s['var'],
                    '防禦': s['df'], '魔攻': s['matk'], '魔防': s['mdef'], '精準': s['acc'], '靈敏': s['agi'],
                    '經驗價值': s['exp'], '掉寶編號': 0}
         for k, v in cambios.items():
             f = re.sub(r'(?<= )%s="[^"]*"' % k, lambda _m, k=k, v=v: '%s="%s"' % (k, v), f, count=1)
-        h1, h2 = HECHIZOS_POR_PAPEL[papel]
         f = re.sub(r' (攻擊法術[1-4]|常駐法術[12]|補血法術[12]|施展機率|腐蝕攻擊|火焰攻擊|雷電攻擊|寒冰攻擊)="[^"]*"', '', f)
         f = f.replace(' 平時音效=', ' 攻擊法術1="%d" 攻擊法術2="%d" 攻擊法術3="%d" 攻擊法術4="%d" 平時音效='
                       % (h1, h2, h1, h2), 1)
@@ -235,20 +245,197 @@ def plantilla():
                 or [z['casilla_jefe']]
         zonas.append({'nombre': z['nombre'], 'inicio': z['inicio'], 'jefe': z['jefe'], 'casilla_jefe': z['casilla_jefe'],
                       'adds': z['adds'], 'casillas_adds': adds, 'grupos': grupos})
-    datos = {'_nota': 'Generado por tools/generar_raid.py; no editar a mano.', 'stage': STAGE, 'entrada': ENTRADA,
+    datos = {'_nota': 'Generado por tools/generar_raid.py; no editar a mano.', 'clave': 'flamefang',
+             'nombre': 'Flamefang Raid', 'nivel': 60, 'stage': STAGE, 'entrada': ENTRADA,
              'zonas': zonas, 'mecanicas': MECANICAS, 'stats': STATS, 'lockout_dia': LOCKOUT_DIA}
     PLANTILLA.write_text(json.dumps(datos, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
     print('plantilla: %s' % ', '.join('%s %d grupos / %d bichos' % (z['nombre'], len(z['grupos']),
                                                                      sum(len(g) for g in z['grupos'])) for z in zonas))
 
 
+# ================================================================================ LAS RAIDS DE NIVEL 50, 40 Y 30
+# 11/11/2026: "necesito crees 3 raid mas una lvl 50, una lvl 40 y una lvl 30 elige mapas de lvl altos y nerfea sus mob
+# para los lvl que te digo, los premios los mismos porfa armas ride y pimp del lvl correspondiente". Mapas de nivel
+# 400+ con tres jefes cada uno, copiados como instancia (tools/subir_mapa.py 914..916 --instancia). Se montan como la
+# Flamefang, con sus stats escalados a su nivel N (stats_de) y las mismas mecanicas por orden (charcos y division, garra y aliento, nova, escudo y condena), con sus textos ('t').
+# Las zonas salen solas: alrededor de cada jefe, los grupos en casillas a las que se llega andando desde el.
+NUEVAS = [
+    dict(clave='warring', nombre='Warring Realm Raid', stage=914, nivel=50, base=23950,
+         poblacion='warring_realm.json', plantilla='raid_warring.json',
+         jefes=[(23437, "Cerberus' Gate"), (23436, "Ares' Battlefield"), (23438, 'Throne of Hades')],
+         adds=(23427, 23362),
+         textos=[{'lava': 'hellfire', 'adds': 'Infernal Guards', 'parte': 'howls and calls its pack'},
+                 {'garra': 'War Strike', 'aliento': 'raises his blade'},
+                 {'nova': 'Soul Reaping', 'escudo': 'a shield of souls', 'adds': 'Undead Knights',
+                  'condena': 'DEATH', 'grito': 'Your souls are mine!', 'su': 'his'}]),
+    dict(clave='wintry', nombre='Wintry Realm Raid', stage=915, nivel=40, base=23966,
+         poblacion='wintry_realm.json', plantilla='raid_wintry.json',
+         jefes=[(23354, 'The Frozen Pass'), (23353, "Leon's Den"), (23355, "Seasonia's Throne")],
+         adds=(23346, 23345),
+         textos=[{'lava': 'frost', 'adds': 'Yetis', 'parte': 'shatters into Yetis'},
+                 {'garra': 'Frost Claw', 'aliento': 'inhales freezing air'},
+                 {'nova': 'Blizzard', 'escudo': 'a shield of ice', 'adds': 'Snow Girls',
+                  'condena': 'FROSTBITE', 'grito': 'Freeze, all of you!', 'su': 'her'}]),
+    dict(clave='dragon', nombre="Dragon's Lair Raid", stage=916, nivel=30, base=23982,
+         poblacion='dragons_lair.json', plantilla='raid_dragon.json',
+         jefes=[(23520, 'Blossom Garden'), (23521, "General's Camp"), (23522, "Watatsumi's Shrine")],
+         adds=(23512, 23513),
+         textos=[{'lava': 'cherry blossoms', 'adds': 'Pastel Snips', 'parte': 'scatters into Pastel Snips'},
+                 {'garra': 'Iaido Cut', 'aliento': 'draws his sword'},
+                 {'nova': 'Tidal Wave', 'escudo': 'a shield of water', 'adds': 'Kitsumengami',
+                  'condena': 'the TIDE MARK', 'grito': 'The sea will take you!', 'su': 'his'}]),
+]
+MAX_TRASH, MAX_ELITES = 8, 3          # ids por raid: base+0..7 normales, +8..10 elites, +11..13 jefes, +14..15 adds
+
+
+def _r(x, paso=1):
+    return max(paso, int(round(x / paso) * paso))
+
+
+def stats_de(nivel):
+    """Los STATS de una raid de nivel `nivel`: los de la Flamefang (nivel 60, ajustados a mano el 11/11/2026) con el
+    ataque, la defensa, la precision y la agilidad en proporcion al nivel, y la vida y la experiencia al cuadrado (la
+    vida de los jugadores tambien crece con el nivel). Las medianas de content.db por nivel no sirven: van a saltos
+    (los de nivel 60 tienen mas vida que los de 80). Los niveles que se ven, como en la Flamefang: +20 y +40."""
+    f = nivel / 60.0
+    st = {}
+    for papel, s in STATS.items():
+        st[papel] = dict(nivel=s['nivel'] - 60 + nivel, var=s['var'],
+                         hp=_r(s['hp'] * f * f, 10000 if papel.startswith('jefe') else 100),
+                         atk=_r(s['atk'] * f), df=_r(s['df'] * f), matk=_r(s['matk'] * f), mdef=_r(s['mdef'] * f),
+                         acc=_r(s['acc'] * f), agi=_r(s['agi'] * f), exp=_r(s['exp'] * f * f, 10))
+    return st
+
+
+def _spawns(cfg):
+    ruta = RAIZ / 'server' / 'plantillas' / cfg['poblacion']
+    return [s for s in json.loads(ruta.read_text(encoding='utf-8'))['spawns'] if s.get('monstruo')]
+
+
+def clones_de(cfg):
+    """[(numero propio, original, papel)] de la raid: los tipos normales y elites del mapa, sus tres jefes y dos adds."""
+    import collections
+    con = sqlite3.connect(RAIZ / 'corpus' / 'content.db')
+    try:
+        info = {int(r[0]): (r[1] or '', int(r[2] or 0)) for r in con.execute('select id, name, hp from monster')}
+    finally:
+        con.close()
+    cuenta = collections.Counter(int(s['npc_type']) for s in _spawns(cfg))
+    jefes = [j for j, _n in cfg['jefes']]
+    tipos = [t for t, n in cuenta.items() if t in info and t not in jefes and n >= 3 and info[t][1] > 1000]
+    hp_normal = statistics.median(info[t][1] for t in tipos if not info[t][0].startswith('E-'))
+    normales = sorted((t for t in tipos if not info[t][0].startswith('E-') and info[t][1] <= 2 * hp_normal
+                       and cuenta[t] >= 10), key=lambda t: (-cuenta[t], t))[:MAX_TRASH]
+    elites = sorted((t for t in tipos if info[t][0].startswith('E-')), key=lambda t: (-cuenta[t], t))[:MAX_ELITES]
+    b = cfg['base']
+    salida = [(b + k, t, 'trash') for k, t in enumerate(normales)]
+    salida += [(b + 8 + k, t, 'elite') for k, t in enumerate(elites)]
+    salida += [(b + 11 + k, t, 'jefe%d' % (k + 1)) for k, t in enumerate(jefes)]
+    salida += [(b + 14 + k, t, 'add') for k, t in enumerate(cfg['adds'])]
+    return salida
+
+
+def _transitable():
+    import sys
+    if str(RAIZ / 'server') not in sys.path:
+        sys.path.insert(0, str(RAIZ / 'server'))
+    import transitable
+    return transitable
+
+
+def _alcanzables(stage, desde, hasta=48):
+    """{casilla: pasos} de las casillas a las que se llega andando desde `desde` (como mucho `hasta` pasos)."""
+    from collections import deque
+    tr = _transitable()
+    dist = {tuple(desde): 0}
+    cola = deque([tuple(desde)])
+    while cola:
+        x, y = cola.popleft()
+        if dist[(x, y)] >= hasta:
+            continue
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)):
+            p = (x + dx, y + dy)
+            if p not in dist and tr.se_pisa(stage, *p):
+                dist[p] = dist[(x, y)] + 1
+                cola.append(p)
+    return dist
+
+
+def _pisable_en(stage, x, y, radio=6):
+    tr = _transitable()
+    cerca = [(math.dist((x, y), (x + dx, y + dy)), x + dx, y + dy)
+             for dx in range(-radio, radio + 1) for dy in range(-radio, radio + 1)
+             if tr.se_pisa(stage, x + dx, y + dy)]
+    return list(min(cerca)[1:]) if cerca else None
+
+
+def plantilla_auto(cfg):
+    rng = random.Random(cfg['stage'])
+    clones = clones_de(cfg)
+    stage = cfg['stage']
+    normales = [n for n, _o, p in clones if p == 'trash']
+    elites = [n for n, _o, p in clones if p == 'elite']
+    jefes = {o: n for n, o, p in clones if p.startswith('jefe')}
+    adds = [n for n, _o, p in clones if p == 'add']
+    posicion = {int(s['npc_type']): s['tile'] for s in _spawns(cfg)}
+    zonas = []
+    for k, (original, nombre) in enumerate(cfg['jefes']):
+        casilla = _pisable_en(stage, *posicion[original])
+        if casilla is None:
+            raise SystemExit('%s: el jefe %d no tiene casilla pisable cerca' % (cfg['clave'], original))
+        dist = _alcanzables(stage, casilla)
+        lejos = max(dist.values())
+        if lejos < 20:
+            raise SystemExit('%s: alrededor de %s solo se anda %d casillas' % (cfg['clave'], nombre, lejos))
+        # La llegada: la casilla mas lejana del jefe (hasta 45 pasos); los grupos, entre ella y el jefe.
+        inicio = max((d, p) for p, d in dist.items() if d <= 45)[1]
+        candidatas = sorted((p for p, d in dist.items() if 9 <= d <= min(lejos, 42)),
+                            key=lambda p: (math.dist(p, inicio), p))
+        centros = []
+        for p in candidatas:
+            if math.dist(p, inicio) >= 5 and all(math.dist(p, c) >= 8 for c in centros):
+                centros.append(p)
+            if len(centros) == 6:
+                break
+        tipos = normales[k::3] or normales
+        grupos = []
+        for g, (cx, cy) in enumerate(centros):
+            libres = sorted(p for p in dist if math.dist(p, (cx, cy)) <= 2.5)
+            rng.shuffle(libres)
+            bichos = [[x, y, tipos[(g + i) % len(tipos)]] for i, (x, y) in enumerate(libres[:POR_GRUPO])]
+            if elites and g % ELITE_CADA == 0 and len(libres) > POR_GRUPO:
+                x, y = libres[POR_GRUPO]
+                bichos.append([x, y, elites[(k + g // ELITE_CADA) % len(elites)]])
+            grupos.append(bichos)
+        casillas_adds = sorted((p for p, d in dist.items() if 3 <= d <= 6), key=lambda p: (dist[p], p))[::3][:12]
+        zonas.append({'nombre': nombre, 'inicio': list(inicio), 'jefe': jefes[original], 'casilla_jefe': casilla,
+                      'adds': adds[0] if k == 0 else (adds[1] if k == 2 else None),
+                      'casillas_adds': [list(p) for p in casillas_adds] or [casilla], 'grupos': grupos})
+    mecanicas = {}
+    for k, z in enumerate(zonas):
+        m = json.loads(json.dumps(MECANICAS[str(23940 + k)]))
+        m['t'] = cfg['textos'][k]
+        mecanicas[str(z['jefe'])] = m
+    datos = {'_nota': 'Generado por tools/generar_raid.py; no editar a mano.', 'clave': cfg['clave'],
+             'nombre': cfg['nombre'], 'nivel': cfg['nivel'], 'stage': stage, 'entrada': zonas[0]['inicio'],
+             'zonas': zonas, 'mecanicas': mecanicas, 'stats': stats_de(cfg['nivel']), 'lockout_dia': LOCKOUT_DIA,
+             'clones': [list(c) for c in clones]}
+    ruta = RAIZ / 'server' / 'plantillas' / cfg['plantilla']
+    ruta.write_text(json.dumps(datos, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
+    print('plantilla %s: %s' % (cfg['plantilla'], ', '.join(
+        '%s %d grupos / %d bichos' % (z['nombre'], len(z['grupos']), sum(len(g) for g in z['grupos'])) for z in zonas)))
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--db', help='solo los monstruos en esa content.db')
+    ap.add_argument('--plantillas', help='con --db: la carpeta de las plantillas raid_*.json (por defecto la del repo)')
     a = ap.parse_args()
     if a.db:
-        content_db(a.db)
+        content_db(a.db, a.plantillas)
         return
+    for cfg in NUEVAS:
+        plantilla_auto(cfg)
     content_db(RAIZ / 'corpus' / 'content.db')
     monster_xml()
     plantilla()

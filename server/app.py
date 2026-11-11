@@ -11000,7 +11000,7 @@ def _eventos_al_pisar(ses, addr, tile, solo_chocar=False):
             efectos = [e for e in efectos if e[0] not in ('viajar', 'ir_a_tag')]
         # La raid (902, copia del Flamefang Sanctum 292): sus eventos de mision y sus tornados no hacen nada; se sale
         # desde la ventana de la raid.
-        if ses.personaje.stage == __import__('raid').STAGE:
+        if __import__('raid').es_stage(ses.personaje.stage):
             efectos = []
         if efectos:
             _aplicar_efectos(ses, addr, efectos, ' al pisar %s' % (tuple(tile),))

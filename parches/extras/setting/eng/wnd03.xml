@@ -9784,5 +9784,14 @@
     <icon id="59861" dir="\wnd01\" normal="aolat_raid_jefe1" focus="normal" down="normal" disable="normal" />
     <icon id="59862" dir="\wnd01\" normal="aolat_raid_jefe2" focus="normal" down="normal" disable="normal" />
     <icon id="59863" dir="\wnd01\" normal="aolat_raid_jefe3" focus="normal" down="normal" disable="normal" />
+    <icon id="60301" dir="\wnd01\" normal="aolat_raid_jefe4" focus="normal" down="normal" disable="normal" />
+    <icon id="60302" dir="\wnd01\" normal="aolat_raid_jefe5" focus="normal" down="normal" disable="normal" />
+    <icon id="60303" dir="\wnd01\" normal="aolat_raid_jefe6" focus="normal" down="normal" disable="normal" />
+    <icon id="60304" dir="\wnd01\" normal="aolat_raid_jefe7" focus="normal" down="normal" disable="normal" />
+    <icon id="60305" dir="\wnd01\" normal="aolat_raid_jefe8" focus="normal" down="normal" disable="normal" />
+    <icon id="60306" dir="\wnd01\" normal="aolat_raid_jefe9" focus="normal" down="normal" disable="normal" />
+    <icon id="60307" dir="\wnd01\" normal="aolat_raid_jefe10" focus="normal" down="normal" disable="normal" />
+    <icon id="60308" dir="\wnd01\" normal="aolat_raid_jefe11" focus="normal" down="normal" disable="normal" />
+    <icon id="60309" dir="\wnd01\" normal="aolat_raid_jefe12" focus="normal" down="normal" disable="normal" />
     <!-- /aolat raid guia -->
 </root>

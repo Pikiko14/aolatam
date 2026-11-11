@@ -577,8 +577,27 @@ def pestana(estado) -> Image.Image:
     return im
 
 
+# Los retratos de la guia (server/raid.py, 'retrato' de cada raid del CATALOGO): 1..3 los de la Flamefang (iconos
+# 59861..59863) y 4..12 los de las raids de nivel 50, 40 y 30 (11/11/2026; iconos 60301..60309): Cerberus, Ares, Hades,
+# Ice Giant Hydea, Mighty Leon, Seasonia, Blossom Hail, General Rizaburo y Watatsumi. Su carpeta es M<sprite-108001>.
+RETRATOS_NUEVOS = (111252, 110931, 111243, 111144, 111143, 111148, 111384, 111385, 111386)
+ICONO_RETRATO_NUEVO = 60300                                                     # + 1..9
+
+
+def _ruta_retrato(i):
+    if i < 3:
+        return JEFES_SPR[(0, 2, 1)[i]][:2]
+    sprite = RETRATOS_NUEVOS[i - 3]
+    return 'M%d' % (sprite - 108001) + chr(92) + str(sprite), 4
+
+
+def icono_retrato(i):
+    """El icono del retrato i (0..11)."""
+    return GUIA_ICONO_RETRATO + 1 + i if i < 3 else ICONO_RETRATO_NUEVO + i - 2
+
+
 def retrato(i) -> Image.Image:
-    """El jefe i (0 Lavamon, 1 Razorex, 2 Satrixia) en un recuadro de brasa de 100x120."""
+    """El jefe i (0..11: Lavamon, Razorex, Satrixia y los de las demas raids) en un recuadro de brasa de 100x120."""
     from PIL import ImageFilter
     w, h = G_RETRATO[2] - G_RETRATO[0], G_RETRATO[3] - G_RETRATO[1]
     im = Image.new('RGBA', (w, h), (0, 0, 0, 255))
@@ -589,7 +608,7 @@ def retrato(i) -> Image.Image:
     glow = Image.new('RGBA', (w, h), (0, 0, 0, 0))
     ImageDraw.Draw(glow).ellipse((-10, h * 0.45, w + 10, h * 1.4), fill=(255, 110, 20, 150))
     im.alpha_composite(glow.filter(ImageFilter.GaussianBlur(12)))
-    ruta, frame, _ = JEFES_SPR[(0, 2, 1)[i]]
+    ruta, frame = _ruta_retrato(i)
     s = _sprite(ruta, frame)
     caja = s.getbbox()
     s = s.crop(caja)
@@ -640,9 +659,9 @@ def bloque_guia() -> str:
     poner(GUIA_FONDO, _w('WND_CLASS_BASE', GUIA_FONDO, 0, 0, GW, GH, ' icon="%d"' % GUIA_ICONO_FONDO))
     ventanas.append('    <icon id="%d" dir="\\wnd01\\" normal="aolat_raid_guia" focus="normal" down="normal" '
                     'disable="normal" />\n' % GUIA_ICONO_FONDO)
-    for i in range(3):
+    for i in range(3 + len(RETRATOS_NUEVOS)):
         ventanas.append('    <icon id="%d" dir="\\wnd01\\" normal="aolat_raid_jefe%d" focus="normal" down="normal" '
-                        'disable="normal" />\n' % (GUIA_ICONO_RETRATO + 1 + i, i + 1))
+                        'disable="normal" />\n' % (icono_retrato(i), i + 1))
     cab = _cabeza_dlg(GUIA, GW, GH, 'Raid Guide', hijos)
     return '    <!-- %s -->\n%s%s    <!-- /%s -->\n' % (MARCA_GUIA, cab, ''.join(ventanas), MARCA_GUIA)
 
@@ -667,7 +686,7 @@ def main():
     (SALIDA / (ARCHIVO_FONDO + '.shp')).write_bytes(a_shp(dibujar_raid()))
     (SALIDA / 'aolat_raid_lista.shp').write_bytes(a_shp(dibujar_lista()))
     (SALIDA / 'aolat_raid_guia.shp').write_bytes(a_shp(dibujar_guia()))
-    for i in range(3):
+    for i in range(3 + len(RETRATOS_NUEVOS)):
         (SALIDA / ('aolat_raid_jefe%d.shp' % (i + 1))).write_bytes(a_shp(retrato(i)))
     for e in 'nfs':
         (SALIDA / ('aolat_raid_tab_%s.shp' % e)).write_bytes(a_shp(pestana(e)))

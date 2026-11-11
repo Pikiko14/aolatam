@@ -94,8 +94,8 @@ local function detalle(i)
       window.settitle(hijo_lista(59679 + k), "")
     end
   end
-  window.settitle(hijo_lista(59683), "Loot: level 60 class S gear, mounts,")
-  window.settitle(hijo_lista(59684), "mount and gear enhancement boxes.")
+  window.settitle(hijo_lista(59683), f[7] or "")
+  window.settitle(hijo_lista(59684), f[8] or "")
   window.settitle(hijo_lista(59673), "Press Open to form or join a raid group.")
 end
 
@@ -135,7 +135,7 @@ end
 
 -- ---------------------------------------------------------------------------------------------- la guia
 -- RaidGuia(titulo, paginas): la ventana 59880 (tools/parche_raid.py). paginas {{pestana, titulo, retrato, {lineas}}};
--- retrato 0 sin retrato, 1..3 el jefe (iconos 59861..59863). Lo manda server/raid.py guia (netcommand2 171, 32, raid).
+-- retrato 0 sin retrato, 1..12 el jefe (iconos 59861..59863 y 60301..60309). Lo manda server/raid.py guia (netcommand2 171, 32, raid).
 WND_RAID_GUIA = WND_RAID_GUIA or 0
 RAID_GUIA = RAID_GUIA or {}
 
@@ -163,7 +163,8 @@ function RaidGuiaPagina(i)
   end
   local retrato = hijo_guia(59900)
   if p[3] and p[3] > 0 then
-    window.seticon(retrato, 59860 + p[3])
+    -- 1..3 los de la Flamefang (59861..59863); 4..12 los de las demas raids (60301..60309, tools/parche_raid.py)
+    window.seticon(retrato, (p[3] <= 3) and (59860 + p[3]) or (60297 + p[3]))
     window.show(retrato, true)
   else
     window.show(retrato, false)

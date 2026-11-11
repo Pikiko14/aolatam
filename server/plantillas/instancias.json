@@ -808,6 +808,30 @@
    "asignacion": "",
    "tope_personas": 0,
    "sin_cambio_de_canal": false
+  },
+  "914": {
+   "nombre": "Warring Realm Raid",
+   "copias": 1,
+   "dinamica": true,
+   "asignacion": "",
+   "tope_personas": 0,
+   "sin_cambio_de_canal": false
+  },
+  "915": {
+   "nombre": "Wintry Realm Raid",
+   "copias": 1,
+   "dinamica": true,
+   "asignacion": "",
+   "tope_personas": 0,
+   "sin_cambio_de_canal": false
+  },
+  "916": {
+   "nombre": "Dragon Lair Raid",
+   "copias": 1,
+   "dinamica": true,
+   "asignacion": "",
+   "tope_personas": 0,
+   "sin_cambio_de_canal": false
   }
  }
 }

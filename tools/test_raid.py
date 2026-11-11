@@ -99,7 +99,8 @@ def test_el_lockout_cambia_el_lunes():
 def test_un_jefe_ya_saqueado_no_da_mas(monkeypatch):
     s = _ses(1)
     s.personaje.raid_lockout = {}
-    monkeypatch.setattr(raid, '_anotar_lockout', lambda s, z: s.personaje.raid_lockout.__setitem__(str(z), raid.semana()))
+    monkeypatch.setattr(raid, '_anotar_lockout', lambda s, z, clave='flamefang': s.personaje.raid_lockout.__setitem__(
+        raid._clave_lockout(z, clave), raid.semana()))
     dados = []
     import app
     monkeypatch.setattr(app, '_aplicar_efectos', lambda s, a, ef, m: dados.append(ef))
@@ -237,3 +238,56 @@ def test_el_panel_lleva_el_char_id_para_el_menu(monkeypatch):
     monkeypatch.setattr(raid, '_vida_max', lambda s: 1000)
     _titulo, grupos = raid.panel_de(raid.raid_de(s))
     assert grupos[0][0][6] == 7
+
+
+# ---------------------------------------------------------------- las raids de nivel 50, 40 y 30 (11/11/2026)
+def test_hay_cuatro_raids_con_su_mapa_y_nivel():
+    assert [d['nivel'] for d in raid.CATALOGO] == [60, 50, 40, 30]
+    assert raid.STAGES == {902, 914, 915, 916}
+    assert raid.es_stage(915) and not raid.es_stage(292)
+
+
+def test_las_raids_nuevas_tienen_tres_zonas_con_bichos_que_existen():
+    import combate
+    for d in raid.CATALOGO[1:]:
+        p = raid.datos(d['clave'])
+        assert p['stage'] == d['stage'] and p['nivel'] == d['nivel'] and len(p['zonas']) == 3
+        vidas = []
+        for z in p['zonas']:
+            jefe = combate._datos(z['jefe'])
+            assert len(z['grupos']) == 6 and jefe['hp'] >= 100000
+            vidas.append(jefe['hp'])
+            assert str(z['jefe']) in p['mecanicas'] and p['mecanicas'][str(z['jefe'])].get('t')
+            for g in z['grupos']:
+                for x, y, npc in g:
+                    assert combate._datos(npc)['hp'] in (p['stats']['trash']['hp'], p['stats']['elite']['hp'])
+        assert vidas == sorted(vidas) and vidas[-1] < 2000000
+
+
+def test_el_lockout_de_cada_raid_va_aparte():
+    s = _ses(1)
+    s.personaje.raid_lockout = {'0': raid.semana()}
+    assert raid.bloqueado(s, 0) and not raid.bloqueado(s, 0, 'warring')
+    s.personaje.raid_lockout['dragon:2'] = raid.semana()
+    assert raid.bloqueado(s, 2, 'dragon') and not raid.bloqueado(s, 2, 'wintry')
+
+
+def test_el_botin_de_cada_raid_es_de_su_nivel():
+    import random as _r
+    for d in raid.CATALOGO:
+        cajas = set()
+        for semilla in range(200):
+            for it, _c in raid.premios(2, {}, _r.Random(semilla), clave=d['clave']):
+                if it >= 89300:
+                    cajas.add(it)
+        assert cajas and all(d['cajas'] <= c <= d['cajas'] + 7 for c in cajas), (d['clave'], cajas)
+
+
+def test_crear_usa_la_raid_elegida():
+    s = _ses(1)
+    s.personaje.nivel = 45
+    s.raid_elegida = 'flamefang'
+    assert raid.crear(s)                                   # nivel 60: no
+    s.raid_elegida = 'wintry'
+    assert raid.crear(s) is None and raid.raid_de(s)['clave'] == 'wintry'
+    _limpiar()

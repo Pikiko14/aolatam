@@ -261,7 +261,7 @@ def _clave_corrida(ses):
     # La raid (raid.py): toda la raid comparte copia, aunque sean varias parties.
     try:
         import raid as _raid
-        if getattr(p, 'stage', 0) == _raid.STAGE:
+        if _raid.es_stage(getattr(p, 'stage', 0)):
             _r = _raid.raid_de(ses)
             if _r:
                 return ('raid', _r['id'])
