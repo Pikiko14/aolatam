@@ -1,5 +1,10 @@
 [
  {
+  "fecha": "2026-11-11",
+  "titulo": "Server performance",
+  "texto": "Server improvements to reduce short freezes: backups and launcher downloads no longer pause the game for everyone, and entering busy towns like the Angel Lyceum is faster."
+ },
+ {
   "fecha": "2026-11-10",
   "titulo": "Update 0.0.0.89: pet evolution tree",
   "texto": "Please update to version 0.0.0.89 from AngelsLauncher. Open your pet info panel and press Evolve to see its whole evolution tree: every form with its picture, level, type, stats and abilities. Click the form you want and press Evolve: your pet grows that way when it has the level (15 / 35 / 55) and the Medium or Advanced Blood Certificate."
