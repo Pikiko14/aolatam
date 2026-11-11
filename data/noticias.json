@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-11",
+    "titulo": "Update 0.0.0.100: compact raid panel",
+    "texto": "Please update to version 0.0.0.100 from AngelsLauncher. The raid panel is now compact: it only takes the space of its members and uses your theme color. Raid leaders can right-click a member in the panel to make them leader or remove them from the raid. Also fixed: after entering a map where someone had a charmed monster, other players could stay visible after leaving, or not show up at all."
+  },
+  {
+    "fecha": "2026-11-11",
     "titulo": "Update 0.0.0.99: Raid Guide tabs",
     "texto": "Please update to version 0.0.0.99 from AngelsLauncher. The Raid Guide tabs have a new look: the names fit inside them and the open tab lights up."
   },
