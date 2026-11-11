@@ -116,7 +116,7 @@ def test_la_plantilla_tiene_tres_zonas_con_bichos_que_existen():
         assert z['grupos'] and combate._datos(z['jefe'])['hp'] >= 1000000
         for g in z['grupos']:
             for x, y, npc in g:
-                assert combate._datos(npc) and combate._datos(npc)['hp'] >= 8000
+                assert combate._datos(npc) and combate._datos(npc)['hp'] >= 5000
 
 
 def test_herir_quita_el_porcentaje_y_mata(monkeypatch):

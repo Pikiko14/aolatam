@@ -41,13 +41,14 @@ STAGE = 902
 # Como con los de nivel 60: stats x1,1 y la vida de raid (unas 4 veces la normal). Los jefes conservan la vida de antes
 # (2,5 / 3,5 / 5 M): con 2400 de defensa los jugadores de nivel 60 les hacen ~2,4 veces menos dano, y por eso el enrage
 # de MECANICAS se doblo.
+# 11/11/2026, "vida normales 5k, elites 10k jefes 1.000.000, 1.500.000 y 2.000.000": solo cambia la vida.
 STATS = {
-    'trash': dict(nivel=80, hp=20000, atk=745, var=5, df=1100, matk=640, mdef=340, acc=435, agi=265, exp=3400),
-    'elite': dict(nivel=80, hp=50000, atk=820, var=5, df=1180, matk=700, mdef=370, acc=455, agi=275, exp=10000),
+    'trash': dict(nivel=80, hp=5000, atk=745, var=5, df=1100, matk=640, mdef=340, acc=435, agi=265, exp=3400),
+    'elite': dict(nivel=80, hp=10000, atk=820, var=5, df=1180, matk=700, mdef=370, acc=455, agi=275, exp=10000),
     'add': dict(nivel=80, hp=12000, atk=720, var=5, df=1050, matk=620, mdef=330, acc=430, agi=260, exp=900),
-    'jefe1': dict(nivel=100, hp=2500000, atk=1400, var=5, df=2400, matk=870, mdef=890, acc=590, agi=360, exp=120000),
-    'jefe2': dict(nivel=100, hp=3500000, atk=1450, var=5, df=2450, matk=890, mdef=900, acc=595, agi=362, exp=160000),
-    'jefe3': dict(nivel=100, hp=5000000, atk=1500, var=5, df=2500, matk=910, mdef=920, acc=600, agi=365, exp=240000),
+    'jefe1': dict(nivel=100, hp=1000000, atk=1400, var=5, df=2400, matk=870, mdef=890, acc=590, agi=360, exp=120000),
+    'jefe2': dict(nivel=100, hp=1500000, atk=1450, var=5, df=2450, matk=890, mdef=900, acc=595, agi=362, exp=160000),
+    'jefe3': dict(nivel=100, hp=2000000, atk=1500, var=5, df=2500, matk=910, mdef=920, acc=600, agi=365, exp=240000),
 }
 # TODOS los hechizos de los clones son de nivel 60: los originales son de nivel 300 (Oath Wrap V 2930, Explosive Shell
 # V 4542, y las elites traian 10840 / 10843 que pegaban 607 y 813) o buffs V (Spike Armor, Armor Break, Deadly
