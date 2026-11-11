@@ -207,3 +207,33 @@ def test_el_boton_guide_manda_la_guia():
     raid.procesar(s, struct.pack('<BII', raid.CMD_RAID, 32, 0))
     assert any(b'RaidGuia' in bytes(x) for x in s.enviados if isinstance(x, (bytes, bytearray)))
     assert 'OnRaidListaGuia' in raid.SALUDO_LUA and 'function RaidGuia(' in raid.SALUDO_LUA
+
+
+def test_el_lider_saca_y_pasa_el_liderazgo_desde_el_panel(monkeypatch):
+    _limpiar()
+    lider, otro, tercero = _ses(1), _ses(2), _ses(3)
+    raid._CONECTADOS[0] = [lider, otro, tercero]
+    monkeypatch.setattr(raid, '_mandar_panel', lambda r, abrir=False: None)
+    monkeypatch.setattr(raid, 'abrir', lambda s, aviso='': [])
+    raid.crear(lider)
+    rid = raid.raid_de(lider)['id']
+    for s in (otro, tercero):
+        raid.invitar(lider, s)
+        raid.aceptar(s, rid)
+    assert 'leader' in raid.expulsar(otro, 3)                                  # solo el lider
+    assert 'Leave' in raid.expulsar(lider, 1)                                  # a si mismo no
+    raid.procesar(lider, struct.pack('<BII', raid.CMD_RAID, 9, 3))
+    assert raid.raid_de(tercero) is None and raid.raid_de(lider)['miembros'] == [1, 2]
+    raid.procesar(lider, struct.pack('<BII', raid.CMD_RAID, 10, 2))
+    assert raid.raid_de(lider)['lider'] == 2
+    assert 'leader' in raid.expulsar(lider, 2)                                 # ya no es el lider
+
+
+def test_el_panel_lleva_el_char_id_para_el_menu(monkeypatch):
+    _limpiar()
+    s = _ses(7, stage=raid.STAGE)
+    raid._CONECTADOS[0] = [s]
+    raid.crear(s)
+    monkeypatch.setattr(raid, '_vida_max', lambda s: 1000)
+    _titulo, grupos = raid.panel_de(raid.raid_de(s))
+    assert grupos[0][0][6] == 7

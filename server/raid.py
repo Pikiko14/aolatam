@@ -276,6 +276,54 @@ def salir(ses, sesiones=()):
     return None
 
 
+def expulsar(ses, cid, sesiones=()):
+    """El lider saca a `cid` de la raid (clic derecho en el panel > Remove from raid)."""
+    r = raid_de(ses)
+    if not r:
+        return 'You are not in a raid.'
+    if r['lider'] != _cid(ses):
+        return 'Only the raid leader can remove players.'
+    if cid == _cid(ses):
+        return 'Use Leave in the raid window to quit the raid.'
+    if cid not in r['miembros']:
+        return 'That player is not in your raid.'
+    nombre = r['nombres'].get(cid, '?')
+    otro = next((s for s in _sesiones_de(r) if _cid(s) == cid), None)
+    if otro is not None:
+        salir(otro, sesiones)
+        _aviso(otro, 'You have been removed from the %s.' % NOMBRE)
+        if getattr(otro, 'canal_lua', 0):
+            try:
+                otro.enviar(canal_lua.llamar('RaidPanelCerrar'))
+                otro.enviar(*abrir(otro))
+            except Exception:
+                pass
+    else:                                            # desconectado: se le quita de la lista sin mas
+        r['miembros'].remove(cid)
+        r['nombres'].pop(cid, None)
+        _DE_QUIEN.pop(cid, None)
+        _refrescar_ventanas(r, sesiones)
+    _mandar_panel(r)
+    _a_todos(r, '%s has been removed from the raid.' % nombre)
+    return None
+
+
+def ascender(ses, cid, sesiones=()):
+    """El lider le pasa el liderazgo a `cid` (clic derecho en el panel > Make leader)."""
+    r = raid_de(ses)
+    if not r:
+        return 'You are not in a raid.'
+    if r['lider'] != _cid(ses):
+        return 'Only the raid leader can do that.'
+    if cid not in r['miembros'] or cid == r['lider']:
+        return None
+    r['lider'] = cid
+    _refrescar_ventanas(r, sesiones)
+    _mandar_panel(r)
+    _a_todos(r, '%s is now the raid leader.' % r['nombres'].get(cid, '?'))
+    return None
+
+
 def _deshacer(r):
     for cid in list(r['miembros']):
         _DE_QUIEN.pop(cid, None)
@@ -425,6 +473,12 @@ def _sacar_jefe(ses, r, c):
         c['tarea'] = asyncio.get_event_loop().create_task(_mecanicas(ses, r, c, m))
     except RuntimeError:
         c['tarea'] = None
+
+
+def _a_todos(r, texto):
+    """Un aviso a toda la raid, este o no en el mapa."""
+    for s in _sesiones_de(r):
+        _aviso(s, texto)
 
 
 def _cartel(r, texto):
@@ -938,7 +992,7 @@ def panel_de(r):
         for cid in g:
             s = por_cid.get(cid)
             if s is None:
-                filas.append([r['nombres'].get(cid, '?'), 0, 0, DANO, cid == r['lider'], 'off'])
+                filas.append([r['nombres'].get(cid, '?'), 0, 0, DANO, cid == r['lider'], 'off', cid])
                 continue
             p = s.personaje
             vida = int(100 * max(0, p.hp) / max(1, _vida_max(s)))
@@ -948,7 +1002,7 @@ def panel_de(r):
             except Exception:
                 mana = 0
             estado = 'dead' if getattr(s, 'muerto', False) or p.hp <= 0 else ('' if p.stage == STAGE else 'away')
-            filas.append([_nombre(s), min(100, vida), min(100, mana), rol_de(p), cid == r['lider'], estado])
+            filas.append([_nombre(s), min(100, vida), min(100, mana), rol_de(p), cid == r['lider'], estado, cid])
         grupos.append(filas)
     return 'Raid (%d/%d)' % (len(r['miembros']), MAX_MIEMBROS), grupos
 
@@ -1046,6 +1100,7 @@ def _buscar(nombre):
 def procesar(ses, cuerpo, addr='?', sesiones=None) -> bool:
     """c2s 0x002F [u8 171][u32 a][u32 b]:
         a=30 abrir el listado AOF Raids; 31 abrir la raid b del listado (CATALOGO); 32 su guia;
+        a=9 sacar de la raid al char_id b; 10 hacerle lider (el menu de clic derecho del panel);
         a=1 abrir la ventana; 2 crear; 3 salir de la raid; 4 invitar a mi party; 5 entrar al mapa;
         6 aceptar la invitacion (b = id de la raid); 7 invitar al nombre escrito; 8 salir del mapa;
         20..23 un trozo del nombre escrito (b = 4 letras)."""
@@ -1077,6 +1132,12 @@ def procesar(ses, cuerpo, addr='?', sesiones=None) -> bool:
         return True
     if a == 2:
         motivo = crear(ses)
+    elif a in (9, 10):
+        # Desde el menu de clic derecho del panel: no abre la ventana de la raid, solo avisa.
+        motivo = expulsar(ses, int(b), sesiones or ()) if a == 9 else ascender(ses, int(b), sesiones or ())
+        if motivo:
+            _aviso(ses, motivo)
+        return True
     elif a == 3:
         motivo = salir(ses, sesiones or ())
     elif a == 4:

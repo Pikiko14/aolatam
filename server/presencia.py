@@ -566,12 +566,7 @@ def entrar(ses, stage):
         _mandar(s, *paquetes_mascota(ses))
 
         # Monstruo encantado de 'ses' hacia 's'
-        m_enc_yo = getattr(ses, 'monstruo_encantado', None)
-        if m_enc_yo and getattr(m_enc_yo, 'vivo', False) and m_enc_yo.hp > 0:
-            m_pkg = _lg._npc_spawn(m_enc_yo.entity_id, m_enc_yo.tipo, m_enc_yo.nombre,
-                                   (m_enc_yo.tile_x, m_enc_yo.tile_y), sprite=m_enc_yo.sprite)
-            m_hp = _cb.atributo(m_enc_yo.entity_id, m_enc_yo.porcentaje, _cb.KIND_HP)
-            _mandar(s, m_pkg, m_hp)
+        _mandar(s, *_paquetes_encantado(ses))
 
         # Presentar a 's' ante 'ses'
         s_spawn = _spawn(s)
@@ -587,12 +582,7 @@ def entrar(ses, stage):
         _mandar(ses, *paquetes_mascota(s))
 
         # Monstruo encantado de 's' hacia 'ses'
-        m_enc = getattr(s, 'monstruo_encantado', None)
-        if m_enc and getattr(m_enc, 'vivo', False) and m_enc.hp > 0:
-            m_pkg = _lg._npc_spawn(m_enc.entity_id, m_enc.tipo, m_enc.nombre,
-                                   (m_enc.tile_x, m_enc.tile_y), sprite=m_enc.sprite)
-            m_hp = _cb.atributo(m_enc.entity_id, m_enc.porcentaje, _cb.KIND_HP)
-            _mandar(ses, m_pkg, m_hp)
+        _mandar(ses, *_paquetes_encantado(s))
 
     if ses not in _POR_MAPA[stage]:
         _POR_MAPA[stage].append(ses)
@@ -607,6 +597,27 @@ def entrar(ses, stage):
     if otros:
         log.info('%s entra al mapa %s, donde ya hay %d',
                  getattr(ses.personaje, 'nombre', '?'), stage, len(otros))
+
+
+def _paquetes_encantado(ses):
+    """El monstruo encantado de `ses` para otro jugador (spawn y vida), o nada.
+
+    Monstruo guarda su tipo en npc_type: con `.tipo` reventaba entrar() a medias,
+    ANTES de apuntar al jugador en _POR_MAPA, y desde entonces no veia a nadie
+    irse ni llegar (los dejaba como fantasmas). Pasaba al entrar a un mapa donde
+    alguien llevaba un monstruo encantado (11/11/2026, Lyceum)."""
+    m = getattr(ses, 'monstruo_encantado', None)
+    if not m or not getattr(m, 'vivo', False) or m.hp <= 0:
+        return []
+    try:
+        import combate as _cb
+        import login as _lg
+        tipo = getattr(m, 'npc_type', None) or getattr(m, 'tipo', 0)
+        return [_lg._npc_spawn(m.entity_id, tipo, m.nombre, (m.tile_x, m.tile_y), sprite=getattr(m, 'sprite', 0)),
+                _cb.atributo(m.entity_id, m.porcentaje, _cb.KIND_HP)]
+    except Exception:
+        log.debug('monstruo encantado de %s', getattr(getattr(ses, 'personaje', None), 'nombre', '?'), exc_info=True)
+        return []
 
 
 @_solo_visible

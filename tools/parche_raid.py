@@ -75,20 +75,36 @@ def fondo(w=None, h=None) -> bytes:
 
 
 # ---------------------------------------------------------------------------------------------- el panel
-# "Podria verse el team asi como si fuera el panel de team pero este seria de raid" (11/11/2026): 4 grupos de 5, cada
-# uno con la corona del lider, su nombre, si esta muerto / fuera / desconectado, su rol (tanque, sanador, dano) y sus
-# barras de vida y mana. Lo rellena RaidPanel de server/lua/raid.lua cada segundo.
+# "Podria verse el team asi como si fuera el panel de team pero este seria de raid" (11/11/2026); "el panel de grupo
+# se ve muy grande, debe ser mas compacto, no desbordar, tener el color del tema, que con click derecho me de la opcion
+# de sacar al personaje" (11/11/2026). 24 filas seguidas (las cabeceras "Group N" ocupan una) que RaidPanel de
+# server/lua/raid.lua rellena de arriba abajo; cada fila trae su franja de fondo con el color del tema, asi las que no
+# se usan no pintan nada y la ventana se encoge a las que hay. Cada fila tiene un boton transparente cuyo clic
+# derecho (OnCommandEx, como el panel de party nativo) abre el menu 60210.
 MARCA_PANEL = 'aolat raid panel'
-PANEL, PW, FILA, CABECERA = 59700, 210, 26, 14
-PANEL_NOMBRE, PANEL_ROL, PANEL_CORONA, PANEL_VIDA, PANEL_MANA, PANEL_ESTADO = 59710, 59730, 59750, 59770, 59790, 59810
-PANEL_GRUPO, PANEL_FONDO, PANEL_ICONO_FONDO = 59830, 59840, 59841
+PANEL, PW, FILA, N_FILAS = 59700, 172, 20, 24
+PANEL_NOMBRE, PANEL_ROL, PANEL_CORONA, PANEL_VIDA, PANEL_MANA = 59940, 59970, 60000, 60030, 60060
+PANEL_ESTADO, PANEL_GRUPO, PANEL_CLIC, PANEL_FRANJA = 60090, 60120, 60150, 60180
+PANEL_ICONO_FRANJA = 59841
+MENU_PANEL, MENU_NOMBRE, MENU_LIDER, MENU_SACAR = 60210, 60211, 60212, 60213
 ICONO_CORONA, ICONO_TANQUE, ICONO_SANADOR, ICONO_DANO = 59850, 59851, 59852, 59853
 BARRA_VIDA, BARRA_MANA = 159, 160          # las barras de vida y mana del jugador (shape/wnd01/w008_03 y _04)
-ALTO_GRUPO = CABECERA + 5 * FILA
-PH = 4 + 4 * ALTO_GRUPO + 4
+PH = 2 + N_FILAS * FILA + 4
+
+
+def franja(w, h) -> bytes:
+    """Una franja del fondo del tema (como fondo(), con borde solo a los lados)."""
+    import fondos_interfaz as fi
+    cab, bpp, _filas, paleta = fi.leer(fi.del_cliente(r'shape\wnd01\w050_01.shp'))
+    liso, borde = struct.pack('<H', COLOR_FONDO), struct.pack('<H', COLOR_BORDE)
+    filas = [[(0, borde + liso * (w - 2) + borde)] for _y in range(h)]
+    cab = list(cab)
+    cab[5] = w
+    return fi.escribir(cab, bpp, filas, paleta)
 
 
 def _icono_pequeno(dibujo) -> bytes:
+
     import mascota_abismo as ma
     k = 4
     im = Image.new('RGBA', (12 * k, 12 * k), (0, 0, 0, 0))
@@ -119,7 +135,7 @@ def iconos_panel():
     for nombre, dibujo in (('aolat_corona', corona), ('aolat_rol_tanque', escudo), ('aolat_rol_sanador', cruz),
                            ('aolat_rol_dano', espada)):
         (SALIDA / (nombre + '.shp')).write_bytes(_icono_pequeno(dibujo))
-    (SALIDA / 'aolat_raid_panel.shp').write_bytes(fondo(PW, PH))
+    (SALIDA / 'aolat_raid_panel.shp').write_bytes(franja(PW, FILA + 4))
 
 
 def bloque_panel() -> str:
@@ -128,35 +144,51 @@ def bloque_panel() -> str:
     def poner(wid, xml):
         hijos.append(wid)
         ventanas.append(xml)
-    filas = []
-    for g in range(4):
-        y0 = 4 + g * ALTO_GRUPO
-        for r in range(5):
-            filas.append((g * 5 + r, y0 + CABECERA + r * FILA))
-    for i, y in filas:
-        poner(PANEL_CORONA + i, _w('WND_CLASS_BUTTON', PANEL_CORONA + i, 6, y + 1, 12, 12, ' icon="%d"' % ICONO_CORONA, ''))
-        poner(PANEL_ROL + i, _w('WND_CLASS_BUTTON', PANEL_ROL + i, PW - 22, y + 1, 12, 12, ' icon="0"', ''))
-        poner(PANEL_NOMBRE + i, _w('WND_CLASS_STATIC', PANEL_NOMBRE + i, 20, y, 120, 14,
-                                   ' title="" fcolor="103" font="1"', 'ssVCenter=""'))
-        poner(PANEL_ESTADO + i, _w('WND_CLASS_STATIC', PANEL_ESTADO + i, 136, y, 50, 14,
-                                   ' title="" fcolor="103" font="1"', 'ssVCenter="" ssRight=""'))
-        poner(PANEL_VIDA + i, _w('WND_CLASS_PROGRESS', PANEL_VIDA + i, 8, y + 15, PW - 16, 4,
+    oculto = 'ssVCenter=""'                    # sin wsVisible: el Lua ensena las filas que usa
+    # El primer hijo queda encima: los botones del clic derecho van primero, las franjas del fondo al final.
+    for i in range(N_FILAS):
+        y = 2 + i * FILA
+        poner(PANEL_CLIC + i, _w('WND_CLASS_BUTTON', PANEL_CLIC + i, 0, y, PW, FILA, ' appdata="%d"' % i, 'wsTab=""',
+                                 '        <OnCommandEx>OnRaidPanelMenu</OnCommandEx>\n'))
+    for i in range(N_FILAS):
+        y = 2 + i * FILA
+        poner(PANEL_CORONA + i, _w('WND_CLASS_BUTTON', PANEL_CORONA + i, 3, y + 1, 12, 12, ' icon="%d"' % ICONO_CORONA, ''))
+        poner(PANEL_ROL + i, _w('WND_CLASS_BUTTON', PANEL_ROL + i, PW - 16, y + 1, 12, 12, ' icon="0"', ''))
+        poner(PANEL_NOMBRE + i, _w('WND_CLASS_STATIC', PANEL_NOMBRE + i, 17, y, 96, 13,
+                                   ' title="" fcolor="103" font="1"', oculto))
+        poner(PANEL_ESTADO + i, _w('WND_CLASS_STATIC', PANEL_ESTADO + i, 110, y, 44, 13,
+                                   ' title="" fcolor="510" font="1"', oculto + ' ssRight=""'))
+        poner(PANEL_GRUPO + i, _w('WND_CLASS_STATIC', PANEL_GRUPO + i, 4, y + 3, PW - 8, 14,
+                                  ' title="" fcolor="514" font="1"', oculto))
+        poner(PANEL_VIDA + i, _w('WND_CLASS_PROGRESS', PANEL_VIDA + i, 4, y + 14, PW - 8, 3,
                                  ' picon="%d"' % BARRA_VIDA, 'psHorizontal=""'))
-        poner(PANEL_MANA + i, _w('WND_CLASS_PROGRESS', PANEL_MANA + i, 8, y + 20, PW - 16, 3,
+        poner(PANEL_MANA + i, _w('WND_CLASS_PROGRESS', PANEL_MANA + i, 4, y + 17, PW - 8, 2,
                                  ' picon="%d"' % BARRA_MANA, 'psHorizontal=""'))
-    for g in range(4):
-        poner(PANEL_GRUPO + g, _texto(PANEL_GRUPO + g, 6, 4 + g * ALTO_GRUPO, PW - 12, 'Group %d' % (g + 1)))
-    poner(PANEL_FONDO, _w('WND_CLASS_BASE', PANEL_FONDO, 0, 0, PW, PH, ' icon="%d"' % PANEL_ICONO_FONDO))
-    for wid, archivo, tema in ((PANEL_ICONO_FONDO, 'aolat_raid_panel', True), (ICONO_CORONA, 'aolat_corona', False),
+    for i in range(N_FILAS):
+        poner(PANEL_FRANJA + i, _w('WND_CLASS_BASE', PANEL_FRANJA + i, 0, i * FILA, PW, FILA + 4,
+                                   ' icon="%d"' % PANEL_ICONO_FRANJA, ''))
+    for wid, archivo, tema in ((PANEL_ICONO_FRANJA, 'aolat_raid_panel', True), (ICONO_CORONA, 'aolat_corona', False),
                                (ICONO_TANQUE, 'aolat_rol_tanque', False), (ICONO_SANADOR, 'aolat_rol_sanador', False),
                                (ICONO_DANO, 'aolat_rol_dano', False)):
         ventanas.append('    <icon id="%d" dir="\\wnd01\\" normal="%s" focus="normal" down="normal" disable="normal">\n'
                         '%s    </icon>\n' % (wid, archivo, '        <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />\n'
                                              if tema else ''))
-    cab = ('    <window class="WND_CLASS_DLG_1" range="0,0,%d,%d" id="%d" title="Raid" fcolor="104" font="1">\n'
-           '        <style wsVisible="" wsMoveable="" />\n%s    </window>\n'
-           % (PW, PH, PANEL, ''.join('        <child>%d</child>\n' % h for h in hijos)))
-    return '    <!-- %s -->\n%s%s    <!-- /%s -->\n' % (MARCA_PANEL, cab, ''.join(ventanas), MARCA_PANEL)
+    cab = _cabeza_dlg(PANEL, PW, PH, 'Raid', hijos)
+    # El menu del clic derecho, como el del jugador (565): el nombre y lo que puede hacer el lider.
+    menu = ('    <window class="WND_CLASS_BASE" id="%d" range="0,0,124,62" fillrange="7, 7,300,100" '
+            'puzzle1="10021" puzzle2="10022" puzzle3="10023" puzzle4="10024" puzzle5="10025" puzzle6="10026" '
+            'puzzle7="10027" puzzle8="10028" puzzle9="10029">\n'
+            '        <style wsVisible="" wsPuzzle="" wsPopup="" wsAutoClose="" />\n'
+            '        <child>%d</child>\n        <child>%d</child>\n        <child>%d</child>\n    </window>\n'
+            % (MENU_PANEL, MENU_NOMBRE, MENU_LIDER, MENU_SACAR)
+            + '    <window class="WND_CLASS_STATIC" id="%d" range="6,7,112,12" title="" fcolor="101" font="1">\n'
+              '        <style wsVisible="" />\n    </window>\n' % MENU_NOMBRE
+            + ''.join('    <window class="WND_CLASS_BUTTON" range="6,%d,112,12" id="%d" fcolor="106" font="1" '
+                      'title="%s">\n        <style wsVisible="" ssVCenter="" wsTab="" />\n'
+                      '        <OnCommand>%s</OnCommand>\n    </window>\n' % (y, wid, t, f)
+                      for y, wid, t, f in ((25, MENU_LIDER, 'Make leader', 'OnRaidPanelLider'),
+                                           (41, MENU_SACAR, 'Remove from raid', 'OnRaidPanelSacar'))))
+    return '    <!-- %s -->\n%s%s%s    <!-- /%s -->\n' % (MARCA_PANEL, cab, ''.join(ventanas), menu, MARCA_PANEL)
 
 
 def _w(clase, wid, x, y, w, h, extra='', estilo='wsVisible=""', cuerpo=''):

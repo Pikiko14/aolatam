@@ -139,11 +139,16 @@ function OnRaidInvitar(dwID, dwCmdID, dwParam, pParam)
   return 1
 end
 
--- EL PANEL (ventana 59700): 4 grupos de 5 como el panel de la party. RaidPanelAbrir() lo crea; RaidPanel(titulo, grupos)
--- lo rellena cada segundo si esta abierto. grupos: 4 listas de {nombre, vida %, mana %, rol (1 tanque, 2 sanador,
--- 3 dano), lider, estado ("dead", "away", "off" o "")}.
+-- EL PANEL (ventana 59700, tools/parche_raid.py): 24 filas seguidas; cada grupo pone una fila "Group N" y luego sus
+-- miembros, y la ventana se encoge a las filas usadas. RaidPanelAbrir() lo crea; RaidPanel(titulo, grupos) lo rellena
+-- cada segundo si esta abierto. grupos: listas de {nombre, vida %, mana %, rol (1 tanque, 2 sanador, 3 dano), lider,
+-- estado ("dead", "away", "off" o ""), char_id}. Clic derecho en un miembro: el menu 60210 (Make leader, Remove).
 WND_RAID_PANEL = WND_RAID_PANEL or 0
+WND_RAID_PANEL_MENU = WND_RAID_PANEL_MENU or 0
+RAID_PANEL = RAID_PANEL or {}
 local ICONO_ROL = {59851, 59852, 59853}
+local N_FILAS, FILA, ANCHO = 24, 20, 172
+local MARCO_X, MARCO_Y, MARCO_ABAJO = 4, 20, 4        -- lo que anade el marco de WND_CLASS_DLG_1
 
 local function hijo_panel(id)
   return window.find(WND_RAID_PANEL, id)
@@ -159,9 +164,38 @@ function RaidPanelAbrir()
     return
   end
   window.move(WND_RAID_PANEL, 4, 120)
-  for i = 0, 19 do
-    window.setrange(hijo_panel(59770 + i), 0, 100)
-    window.setrange(hijo_panel(59790 + i), 0, 100)
+  for i = 0, N_FILAS - 1 do
+    window.setrange(hijo_panel(60030 + i), 0, 100)
+    window.setrange(hijo_panel(60060 + i), 0, 100)
+  end
+end
+
+local function fila(i, m, grupo)
+  local es_miembro = m ~= nil
+  window.show(hijo_panel(60180 + i), true)                     -- la franja del fondo
+  window.show(hijo_panel(60120 + i), grupo ~= nil)
+  window.show(hijo_panel(60150 + i), es_miembro)
+  window.show(hijo_panel(59940 + i), es_miembro)
+  window.show(hijo_panel(60090 + i), es_miembro)
+  window.show(hijo_panel(60030 + i), es_miembro)
+  window.show(hijo_panel(60060 + i), es_miembro)
+  window.show(hijo_panel(59970 + i), es_miembro)
+  window.show(hijo_panel(60000 + i), es_miembro and m[5] and true or false)
+  if grupo then
+    window.settitle(hijo_panel(60120 + i), grupo)
+  end
+  if m then
+    window.settitle(hijo_panel(59940 + i), corto(m[1], 14))
+    window.settitle(hijo_panel(60090 + i), m[6] or "")
+    window.setpos(hijo_panel(60030 + i), m[2])
+    window.setpos(hijo_panel(60060 + i), m[3])
+    window.seticon(hijo_panel(59970 + i), ICONO_ROL[m[4]] or 59853)
+  end
+end
+
+local function vacia(i)
+  for _, base in ipairs({60180, 60120, 60150, 59940, 60090, 60030, 60060, 59970, 60000}) do
+    window.show(hijo_panel(base + i), false)
   end
 end
 
@@ -170,28 +204,75 @@ function RaidPanel(titulo, grupos)
     return
   end
   window.settitle(WND_RAID_PANEL, titulo)
-  for g = 0, 3 do
-    local grupo = grupos[g + 1] or {}
-    window.show(hijo_panel(59830 + g), grupo[1] ~= nil)
-    for r = 0, 4 do
-      local i = g * 5 + r
-      local m = grupo[r + 1]
-      local hay = m and true or false
-      window.show(hijo_panel(59710 + i), hay)
-      window.show(hijo_panel(59810 + i), hay)
-      window.show(hijo_panel(59770 + i), hay)
-      window.show(hijo_panel(59790 + i), hay)
-      window.show(hijo_panel(59750 + i), hay and m[5] and true or false)
-      window.show(hijo_panel(59730 + i), hay)
-      if m then
-        window.settitle(hijo_panel(59710 + i), corto(m[1], 14))
-        window.settitle(hijo_panel(59810 + i), m[6] or "")
-        window.setpos(hijo_panel(59770 + i), m[2])
-        window.setpos(hijo_panel(59790 + i), m[3])
-        window.seticon(hijo_panel(59730 + i), ICONO_ROL[m[4]] or 59853)
+  RAID_PANEL.filas = {}
+  local i = 0
+  for g, grupo in ipairs(grupos or {}) do
+    if grupo[1] and i < N_FILAS then
+      fila(i, nil, "Group " .. tostring(g))
+      i = i + 1
+      for _, m in ipairs(grupo) do
+        if i < N_FILAS then
+          RAID_PANEL.filas[i] = m
+          fila(i, m, nil)
+          i = i + 1
+        end
       end
     end
   end
+  for k = i, N_FILAS - 1 do
+    vacia(k)
+  end
+  local alto = 2 + math.max(i, 1) * FILA + 4
+  window.setwindowsize(WND_RAID_PANEL, ANCHO + 2 * MARCO_X, alto + MARCO_Y + MARCO_ABAJO)
+end
+
+-- Clic derecho en un miembro (OnCommandEx del boton transparente de su fila, appdata = la fila).
+function OnRaidPanelMenu(dwID, dwCmdID, dwParam, pParam)
+  local m = RAID_PANEL.filas and RAID_PANEL.filas[window.getappdata(dwID)]
+  if not m then
+    return 1
+  end
+  RAID_PANEL.menu_cid = m[7]
+  if not window.isexist(WND_RAID_PANEL_MENU) then
+    WND_RAID_PANEL_MENU = window.create(60210, 0, 0, SYSTEM_HANDLER)
+  end
+  if not window.isexist(WND_RAID_PANEL_MENU) then
+    return 1
+  end
+  local x, y = window.getsysmousexy()
+  x, y = x - 10, y + 5
+  if x > SYSTEM_SCREEN_WIDTH - window.width(WND_RAID_PANEL_MENU) then
+    x = SYSTEM_SCREEN_WIDTH - window.width(WND_RAID_PANEL_MENU)
+  end
+  if y > SYSTEM_SCREEN_HEIGHT - window.height(WND_RAID_PANEL_MENU) then
+    y = SYSTEM_SCREEN_HEIGHT - window.height(WND_RAID_PANEL_MENU)
+  end
+  window.move(WND_RAID_PANEL_MENU, x, y)
+  window.setforeground(WND_RAID_PANEL_MENU)
+  window.settitle(window.find(WND_RAID_PANEL_MENU, 60211), corto(m[1], 16))
+  local puede = (RAID_LIDER and not m[5]) and true or false   -- solo el lider, y no sobre si mismo
+  window.enable(window.find(WND_RAID_PANEL_MENU, 60212), puede)
+  window.enable(window.find(WND_RAID_PANEL_MENU, 60213), puede)
+  return 1
+end
+
+local function menu_orden(a)
+  if RAID_PANEL.menu_cid then
+    game.netcommand2(CMD_RAID, a, RAID_PANEL.menu_cid)
+  end
+  if window.isexist(WND_RAID_PANEL_MENU) then
+    window.destroy(WND_RAID_PANEL_MENU)
+  end
+  WND_RAID_PANEL_MENU = 0
+  return 1
+end
+
+function OnRaidPanelLider(dwID, dwCmdID, dwParam, pParam)
+  return menu_orden(10)
+end
+
+function OnRaidPanelSacar(dwID, dwCmdID, dwParam, pParam)
+  return menu_orden(9)
 end
 
 function RaidPanelCerrar()
