@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-11",
+    "titulo": "Monsters chase you further",
+    "texto": "Monsters no longer give up after a few steps. They now follow you up to 30 tiles and only stop after you stay out of reach for 5 seconds. Dungeon monsters can also stray further from their spot before going back."
+  },
+  {
+    "fecha": "2026-11-11",
     "titulo": "Fix: pets and Earth Mage charm",
     "texto": "Your summoned pet is now stored automatically when you die. The monster charmed by an Earth Mage now attacks the monsters you are fighting, and other monsters can fight back and kill it."
   },
