@@ -34,13 +34,20 @@ STAGE = 902
 # "Que los mob tengan stat de lvl 60 plss, estan muy rotos" (11/11/2026): los de nivel 60 de verdad (la mediana de
 # arriba) sin el "un poco mas fuertes" de la primera version (trash 12.000 de vida y 560 de ataque, jefes con 900-1100).
 # Las elites y los jefes solo llevan mas vida; el ataque es el de un nivel 60, poco mas.
+# 11/11/2026, "que los mob y elites tengan hp y stat de mob lvl 80 y los jefes de mob lvl 100 ... los elites sean mas
+# fuertes que los normales lvl 80". Medianas de content.db (monster, id < 23900, nivel +-3):
+#   80 normal: hp 4827, atk 677, def 985, matk 582, mdef 325, acc 422, agi 258
+#  100 jefe:   hp 98860, atk 1349, def 2404, matk 846, mdef 885, acc 587, agi 357
+# Como con los de nivel 60: stats x1,1 y la vida de raid (unas 4 veces la normal). Los jefes conservan la vida de antes
+# (2,5 / 3,5 / 5 M): con 2400 de defensa los jugadores de nivel 60 les hacen ~2,4 veces menos dano, y por eso el enrage
+# de MECANICAS se doblo.
 STATS = {
-    'trash': dict(nivel=60, hp=10000, atk=490, var=25, df=680, matk=440, mdef=258, acc=337, agi=207, exp=850),
-    'elite': dict(nivel=60, hp=25000, atk=520, var=26, df=700, matk=460, mdef=270, acc=345, agi=210, exp=2500),
-    'add': dict(nivel=60, hp=6000, atk=470, var=24, df=650, matk=420, mdef=250, acc=330, agi=200, exp=300),
-    'jefe1': dict(nivel=60, hp=2500000, atk=560, var=28, df=750, matk=500, mdef=300, acc=360, agi=220, exp=60000),
-    'jefe2': dict(nivel=60, hp=3500000, atk=580, var=29, df=760, matk=520, mdef=300, acc=360, agi=220, exp=80000),
-    'jefe3': dict(nivel=60, hp=5000000, atk=600, var=30, df=780, matk=540, mdef=310, acc=370, agi=225, exp=120000),
+    'trash': dict(nivel=80, hp=20000, atk=745, var=5, df=1100, matk=640, mdef=340, acc=435, agi=265, exp=3400),
+    'elite': dict(nivel=80, hp=50000, atk=820, var=5, df=1180, matk=700, mdef=370, acc=455, agi=275, exp=10000),
+    'add': dict(nivel=80, hp=12000, atk=720, var=5, df=1050, matk=620, mdef=330, acc=430, agi=260, exp=900),
+    'jefe1': dict(nivel=100, hp=2500000, atk=1400, var=5, df=2400, matk=870, mdef=890, acc=590, agi=360, exp=120000),
+    'jefe2': dict(nivel=100, hp=3500000, atk=1450, var=5, df=2450, matk=890, mdef=900, acc=595, agi=362, exp=160000),
+    'jefe3': dict(nivel=100, hp=5000000, atk=1500, var=5, df=2500, matk=910, mdef=920, acc=600, agi=365, exp=240000),
 }
 # TODOS los hechizos de los clones son de nivel 60: los originales son de nivel 300 (Oath Wrap V 2930, Explosive Shell
 # V 4542, y las elites traian 10840 / 10843 que pegaban 607 y 813) o buffs V (Spike Armor, Armor Break, Deadly
@@ -79,18 +86,18 @@ RADIO_GRUPO = 7
 # Las mecanicas tipo WoW (server/raid.py). Tiempos en segundos; dano en % de la vida maxima del jugador.
 MECANICAS = {
     '23940': {   # Infernal Lavamon
-        'enrage': 360,
+        'enrage': 720,
         'lava': {'cada': 18, 'marcados': 3, 'aviso': 3.0, 'radio': 2, 'dano': 45},
         'adds_al': [50], 'adds': 6,
     },
     '23941': {   # Hellfire Razorex
-        'enrage': 420,
+        'enrage': 840,
         'garra': {'cada': 10, 'mas_por_pila': 25, 'dura': 20},
         'aliento': {'cada': 22, 'aviso': 2.5, 'largo': 6, 'dano': 60},
         'furia_al': 30, 'furia_velocidad': 1.3,
     },
     '23942': {   # Satrixia
-        'enrage': 540,
+        'enrage': 1080,
         'nova': {'cada': 30, 'aviso': 3.0, 'dano': 35},
         'fase2_al': 66, 'adds': 8,
         'fase3_al': 33,
