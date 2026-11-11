@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-11",
+    "titulo": "Update 0.0.0.109: three new raids",
+    "texto": "Please update to version 0.0.0.109 from AngelsLauncher. Three new raids are open in the AOF Raid list: Warring Realm Raid (level 50: Cerberus, Ares and Hades), Wintry Realm Raid (level 40: Ice Giant Hydea, Mighty Leon and Seasonia) and Dragon's Lair Raid (level 30: Blossom Hail, General Rizaburo and Watatsumi). Each one has its own weekly lockout and drops boxes of its level: class S gear, weapons and rare mounts, plus enhancement vouchers and Mount Coins. Check each Raid Guide for the boss mechanics."
+  },
+  {
+    "fecha": "2026-11-11",
     "titulo": "Fix: Flamefang Raid drops",
     "texto": "Flamefang Raid monsters no longer drop level 80 gear. Their drops are now level 50 to 60 equipment. The update 0.0.0.104 from AngelsLauncher is optional and only brings small data fixes."
   },
