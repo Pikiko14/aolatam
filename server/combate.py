@@ -1159,6 +1159,51 @@ _DROPS_PONDERADOS_JEFES = {
 }
 
 
+# LOS MONSTRUOS DE LAS RAIDS (11/11/2026, "que la raid lvl 60 dropee items lvl 60 max me dropiaron 1 80"): son clones
+# sin tabla de drop y con stats de nivel 80-100, y caian en el cubo de su nivel (equipo de nivel 80). Sueltan lo de los
+# cubos del nivel de su raid y el anterior, sin nada que pida mas nivel que la raid.
+_NIVEL_BOTIN_RAID = None
+
+
+def nivel_botin_raid(npc_type):
+    """El nivel de la raid de ese monstruo (plantillas/raid_*.json), o None si no es de una raid."""
+    global _NIVEL_BOTIN_RAID
+    if _NIVEL_BOTIN_RAID is None:
+        _NIVEL_BOTIN_RAID = {}
+        for f in sorted((pathlib.Path(__file__).parent / 'plantillas').glob('raid_*.json')):
+            try:
+                d = json.loads(f.read_text(encoding='utf-8'))
+                nv = int(d.get('nivel', 60))
+                for z in d.get('zonas', []):
+                    for i in [z.get('jefe'), z.get('adds')] + [b[2] for g in z.get('grupos', []) for b in g]:
+                        if i:
+                            _NIVEL_BOTIN_RAID[int(i)] = nv
+            except Exception:
+                logging.getLogger('combate').exception('no se pudo leer %s', f.name)
+    return _NIVEL_BOTIN_RAID.get(int(npc_type or 0))
+
+
+def _candidatos_raid(nv):
+    por_nv = _cargar_drops_plantilla().get('por_nivel') or {}
+    pares = [(int(p[0]), max(1, int(p[1]))) for b in (nv - 10, nv) for p in (por_nv.get(str(b)) or [])
+             if isinstance(p, (list, tuple)) and len(p) >= 2]
+    if not pares:
+        return []
+    try:
+        con = sqlite3.connect(pathlib.Path(__file__).parent.parent / 'corpus' / 'content.db')
+        try:
+            ids = sorted({i for i, _c in pares})
+            req = {int(r[0]): int(r[2] or r[1] or 0) for r in con.execute(
+                'select id, 物品等級, 等級限制 from item where id in (%s)' % ','.join('?' * len(ids)),
+                [str(i) for i in ids])}
+        finally:
+            con.close()
+    except Exception:
+        logging.getLogger('combate').exception('raid: niveles del botin')
+        return []
+    return [(i, c) for i, c in pares if i in req and req[i] <= nv]
+
+
 def botin_items(npc_type: int, nombre: str = '', nivel: int = 0, buffs=None) -> list:
     """Items que suelta el monstruo de drops_monstruos.json o content.db con multiplicador de drops."""
     global _DROPS_CACHE, _MON_INFO_CACHE, _DROP_OFICIAL_CACHE
@@ -1168,8 +1213,12 @@ def botin_items(npc_type: int, nombre: str = '', nivel: int = 0, buffs=None) -> 
         _pares = [(it, cnt) for it, cnt, _w in _entradas]
         _pesos = [_w for _it, _cnt, _w in _entradas]
         return list(random.choices(_pares, weights=_pesos, k=_tiradas))
+    _nv_raid = nivel_botin_raid(npc_type)
     if npc_type in _DROPS_CACHE:
         candidatos = _DROPS_CACHE[npc_type]
+    elif _nv_raid is not None:
+        candidatos = _DROPS_CACHE[npc_type] = _candidatos_raid(_nv_raid)
+        _DROP_OFICIAL_CACHE[npc_type] = False
     else:
         candidatos = []
         plantilla = _cargar_drops_plantilla()
