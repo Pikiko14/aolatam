@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-11",
+    "titulo": "Update 0.0.0.98: Raid Guide",
+    "texto": "Please update to version 0.0.0.98 from AngelsLauncher. Press Guide in the AOF Raids window or in the Flamefang Raid window to read how the raid works and every boss mechanic: Lavamon's lava eruptions and Lava Blobs, Razorex's Searing Claw and Fire Breath, Satrixia's Inferno Nova, fire shield and Doom, plus the loot and the weekly lockout."
+  },
+  {
+    "fecha": "2026-11-11",
     "titulo": "Update 0.0.0.97: raid windows polish",
     "texto": "Please update to version 0.0.0.97 from AngelsLauncher. The Flamefang Raid window now matches the AOF Raids look, with separate panels for members and bosses and a clear box to invite players by name. Both windows now fit inside their frames, and the raid list shows its entries again."
   },
