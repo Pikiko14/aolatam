@@ -1867,6 +1867,28 @@ def _gm_texto(cuerpo: bytes):
     return None
 
 
+def tomar_comandos_gm(ruta: pathlib.Path) -> str:
+    """El contenido de data/gm.txt, quitandolo de en medio de una vez.
+
+    Se renombra antes de leer: lo que se escriba mientras se procesa cae en un
+    gm.txt nuevo y no se pierde, y nada se lee dos veces.
+    """
+    if not ruta.exists():
+        return ''
+    tomado = ruta.with_name(ruta.name + '.procesando')
+    try:
+        os.replace(ruta, tomado)
+    except OSError:
+        return ''                         # lo tiene abierto quien escribe: al siguiente intento
+    try:
+        return tomado.read_text(encoding='utf-8', errors='replace').lstrip('\ufeff')
+    finally:
+        try:
+            tomado.unlink()
+        except OSError:
+            pass
+
+
 def _gm_parsear(texto: str):
     """('item', id, cantidad), ('help',), ('err', motivo) o None."""
     t = texto.strip()
@@ -23766,12 +23788,7 @@ class Servidor:
         while True:
             await asyncio.sleep(0.5)
             try:
-                if not ruta.exists():
-                    continue
-                texto = ruta.read_text(encoding='utf-8', errors='replace')
-                if not texto.strip():
-                    continue
-                ruta.write_text('', encoding='utf-8')
+                texto = tomar_comandos_gm(ruta)
                 for linea in texto.splitlines():
                     msg = self._gm_ejecutar_linea(linea)
                     if msg:
@@ -23830,8 +23847,6 @@ class Servidor:
             log.warning(f"no se pudo abrir el puerto de archivos {self.fport}: {e}")
         log.info("server.xml del cliente ya apunta aca (ip=127.0.0.1 port=16768)")
         log.info("GM: /item <id> [qty]  /level <n>  /levelall <n>  (also console or data/gm.txt)")
-        tareas.append(gm.consola(self))
-        tareas.append(gm.cola(self))
         tareas.append(__import__('santa_clausula').vigilar())
         tareas.append(_vigilar_eventos_propios())      # reglas de horario del editor
         tareas.append(cuentas.tarea_backup_periodico())
@@ -23860,21 +23875,21 @@ class Servidor:
         # Se agregan los valores POR DEFECTO que trae el binario
         #   dword_91AA6C = 6768   y   dword_91AA80 = 1234
         # mas los puertos de mundo vistos en capturas reales.
-        for pu in (list(range(16760, 16790)) + [1234, 6768, 21237, 21239]
-                   + list(range(24125, 24160)) + list(range(29995, 30012))):
-            if pu in usados:
-                continue
-            try:
-                # Escuchar en TODAS las interfaces, no solo loopback: si el
-                # cliente intenta conectar a la IP de red en vez de a
-                # 127.0.0.1, un senuelo atado solo a loopback no lo ve y el
-                # cliente se queda colgado esperando (que es lo que pasa).
-                sx = await asyncio.start_server(
-                    functools.partial(senuelo, p=pu), '0.0.0.0', pu)
-                tareas.append(sx.serve_forever())
-            except OSError:
-                pass
-        log.info("senuelos abiertos en los puertos vecinos")
+        # Apagados salvo configuracion.PUERTOS_SENUELO, y solo en loopback: en
+        # 0.0.0.0 quedaban ~80 puertos abiertos a internet en el VPS.
+        import configuracion as _cf_sen
+        if getattr(_cf_sen, 'PUERTOS_SENUELO', False):
+            for pu in (list(range(16760, 16790)) + [1234, 6768, 21237, 21239]
+                       + list(range(24125, 24160)) + list(range(29995, 30012))):
+                if pu in usados:
+                    continue
+                try:
+                    sx = await asyncio.start_server(
+                        functools.partial(senuelo, p=pu), '127.0.0.1', pu)
+                    tareas.append(sx.serve_forever())
+                except OSError:
+                    pass
+            log.info("senuelos abiertos en los puertos vecinos (solo 127.0.0.1)")
         log.info("las sesiones se graban en logs/sesiones/ para poder analizarlas")
         # Sincronizar el cliente local (C:\AO\Angels Online):
         #   1. Crea backups .bak de update26.pak, START.EXE y reg.ini si no existen

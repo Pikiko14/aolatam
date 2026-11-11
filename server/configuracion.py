@@ -5,6 +5,7 @@ Aqui puedes cambiar los multiplicadores de experiencia, habilidades y drops
 sin tener que modificar la logica del servidor.
 """
 import datetime
+import os as _os
 
 # Horarios del cliente, interpretados en hora LOCAL del servidor como Totem War.
 # La duracion de Angel Arena es compatibilidad, no un dato oficial verificado.
@@ -819,6 +820,12 @@ MODO_ESTACION = 'navidad'
 # los vecinos del propio repo -- que es lo normal, el cliente al lado del
 # servidor. Dejarla vacia tambien vale.
 RUTA_CLIENTE = r'C:\AO\Angels Online'
+
+# Puertos "senuelo" (app.Servidor.correr): ~80 puertos vecinos que solo
+# anotan quien se conecta. Sirvieron para averiguar a que puerto iba el
+# cliente; ya no hacen falta. Encendidos escuchan SOLO en 127.0.0.1.
+PUERTOS_SENUELO = _os.environ.get('AO_PUERTOS_SENUELO') == '1'
+
 PUERTO_UPDATE_FTP = 2121
 
 # EL PARCHE PARA LOS JUGADORES (server/parche.py). Al arrancar se genera

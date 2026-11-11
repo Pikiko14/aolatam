@@ -4,6 +4,7 @@ Carga datos desde server/plantillas/misiones_completas.json y coordina
 la aceptacion, avance, cacerias, recolecciones, conversaciones,
 guardado y entrega de recompensas para las 1,489 misiones del juego.
 """
+import functools
 import json
 import logging
 import pathlib
@@ -213,6 +214,7 @@ BOSS_NAMES_976_8 = {
 }
 
 
+@functools.lru_cache(maxsize=16384)
 def normalizar_nombre_npc(nom: str) -> str:
     """Normaliza el nombre de un NPC para comparar el del mapa con el de la mision.
 
@@ -515,6 +517,25 @@ def nivel_y_rango_requeridos(qid):
     return int(m.group(1)), int(m.group(2) or 0)
 
 
+_INDICE_NPC = (None, {}, ())
+
+
+def _indice_npc_inicio():
+    """({nombre normalizado: [qids de cada clave]}, [(normalizado, qids)]) de
+    _NPC_INICIO, en su mismo orden. Antes se normalizaban todas las claves en
+    cada consulta, y la marca [!] consulta cada NPC del mapa: 158 ms al entrar
+    al Lyceum."""
+    global _INDICE_NPC
+    if _INDICE_NPC[0] is not _NPC_INICIO:
+        por_norma, todas = {}, []
+        for k_npc, v_qids in (_NPC_INICIO or {}).items():
+            norma = normalizar_nombre_npc(k_npc)
+            por_norma.setdefault(norma, []).append(v_qids)
+            todas.append((norma, v_qids))
+        _INDICE_NPC = (_NPC_INICIO, por_norma, tuple(todas))
+    return _INDICE_NPC[1], _INDICE_NPC[2]
+
+
 def misiones_disponibles_npc(p, npc_nombre: str, stage: int = 0, entidad: int = 0) -> list:
     """Devuelve la lista de IDs de misiones que este NPC puede ofrecer al personaje."""
     _cargar_db()
@@ -539,19 +560,19 @@ def misiones_disponibles_npc(p, npc_nombre: str, stage: int = 0, entidad: int = 
     qids = list(_NPC_INICIO.get(nom_l, []))
     if not qids and norm_l != nom_l:
         qids = list(_NPC_INICIO.get(norm_l, []))
+    por_norma, todas = _indice_npc_inicio()
     # Todas las claves que se quedan en el mismo NPC, no solo la primera:
     # quest.xml pone "BreezeWood Angel" en unas y "Lvl 20, Rank 2 -
     # BreezeWood Angel" en otras (la 558, la del Spy Angel), y con el nombre
     # exacto encontrado ya no se miraban las del prefijo.
-    for k_npc, v_qids in _NPC_INICIO.items():
-        if normalizar_nombre_npc(k_npc) == norm_l:
-            qids += [q for q in v_qids if q not in qids]
+    for v_qids in por_norma.get(norm_l, ()):
+        qids += [q for q in v_qids if q not in qids]
     # Ultimo intento: el NPC es el FINAL del nombre de la mision ("Explorer
     # Nel" en la mision, "Nel" en el mapa). Solo con misiones de ESTE mapa,
     # para no ofrecer las de un NPC del mismo nombre en otro sitio.
     if not qids and stage and len(norm_l) >= 3:
-        for k_npc, v_qids in _NPC_INICIO.items():
-            if normalizar_nombre_npc(k_npc).endswith(' ' + norm_l):
+        for norma_k, v_qids in todas:
+            if norma_k.endswith(' ' + norm_l):
                 qids += [q for q in v_qids if info_mision(q).get('stage_id') == stage]
 
     # Angels' Tutor gestiona sus dialogos y misiones por su propio arbol dedicado

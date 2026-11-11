@@ -963,8 +963,8 @@ def sesion_mundo(serv):
 
 
 def ejecutar_linea(serv, linea: str) -> str:
-    # data/gm.txt lo leen dos colas (esta y app._cola_gm) y gana la que llega primero: el aviso de reinicio tiene
-    # que funcionar en las dos, y sin nadie dentro (ver aviso_reinicio.py).
+    # El servidor lee data/gm.txt con app._cola_gm; esta funcion queda para quien la importe aparte. El aviso de
+    # reinicio funciona sin nadie dentro (ver aviso_reinicio.py).
     partes = linea.strip().lstrip('﻿').lstrip('/').split()
     if partes and partes[0].lower() in ('reinicio', 'restart'):
         import aviso_reinicio
@@ -1064,7 +1064,8 @@ def apply_app_hooks(app_path) -> bool:
             '        if opcode == 0x0002 and ses.rol == \'login\':\n',
             1)
     xml = '        log.info("server.xml del cliente ya apunta aca (ip=127.0.0.1 port=16768)")\n'
-    if 'gm.consola' not in text and xml in text:
+    # Con app._cola_gm ya hay un lector de data/gm.txt: dos a la vez ejecutaban los comandos dos veces.
+    if 'gm.consola' not in text and '_cola_gm' not in text and xml in text:
         text = text.replace(
             xml,
             xml + '        log.info("GM: /item <id> [qty]  /level <n>  /levelall <n>'

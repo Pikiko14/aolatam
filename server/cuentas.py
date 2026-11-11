@@ -10,6 +10,7 @@ Proteccion contra cortes de luz:
   - Mantiene un espejo en data/cuentas.json para compatibilidad e inspeccion manual.
 """
 import atexit
+import functools
 import signal
 import sqlite3
 import json
@@ -393,7 +394,10 @@ async def tarea_backup_periodico(intervalo_segundos=300):
         try:
             await asyncio.sleep(intervalo_segundos)
             if _CAMBIOS_DESDE_BACKUP > 0:
-                hacer_backup(motivo="intervalo_periodico")
+                # En un hilo: copia la base entera y reescribe cuentas.json, y en el
+                # bucle principal paraba el juego (lo anotaba el vigia del bucle).
+                await asyncio.get_running_loop().run_in_executor(
+                    None, functools.partial(hacer_backup, motivo="intervalo_periodico"))
         except asyncio.CancelledError:
             hacer_backup(motivo="cierre_servidor")
             break

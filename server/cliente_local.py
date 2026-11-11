@@ -1508,7 +1508,7 @@ async def _manejar_http_parche(peticion: bytes, writer: asyncio.StreamWriter):
         ruta = linea.split(' ')[1] if ' ' in linea else '/'
     except Exception:
         ruta = '/'
-    contenido = _archivo_de_parche(ruta)
+    contenido = await _archivo_de_parche_async(ruta)
     if contenido is not None:
         cuerpo = contenido
         tipo = (b'text/plain' if ruta.lower().endswith('.ini') else
@@ -1602,7 +1602,7 @@ async def _manejar_ftp(reader: asyncio.StreamReader, writer: asyncio.StreamWrite
                 # dejaba de leer a los 3072 B, con el parche cortado. Se contesta
                 # solo con el archivo pedido y su tamano real.
                 if arg:
-                    _pedido = _archivo_de_parche(arg)
+                    _pedido = await _archivo_de_parche_async(arg)
                     if _pedido is not None:
                         lineas = [(arg.replace('\\', '/').rstrip('/').rsplit('/', 1)[-1], len(_pedido))]
                 writer.write(b"150 Opening ASCII mode data connection for directory list.\r\n")
@@ -1620,13 +1620,13 @@ async def _manejar_ftp(reader: asyncio.StreamReader, writer: asyncio.StreamWrite
                     pass
                 writer.write(b"226 Transfer complete.\r\n")
             elif cmd == 'SIZE':
-                contenido = _archivo_de_parche(arg)
+                contenido = await _archivo_de_parche_async(arg)
                 if contenido is None:
                     writer.write(b"550 File not found.\r\n")
                 else:
                     writer.write(f"213 {len(contenido)}\r\n".encode('ascii'))
             elif cmd == 'RETR':
-                contenido = _archivo_de_parche(arg)
+                contenido = await _archivo_de_parche_async(arg)
                 if contenido is None:
                     writer.write(b"550 File not found.\r\n")
                 else:
@@ -1806,8 +1806,26 @@ LAUNCHER_EXE = 'AngelsLauncher.exe'
 JUEGO_EXE = 'angel.dat'
 
 
-def _manifiesto_launcher() -> bytes:
+# (ruta, mtime_ns, tamano) -> sha256: el manifiesto lo pide cada launcher que se abre, y leer y resumir el exe y el
+# angel.dat cada vez costaba ~140 ms del bucle principal. Solo se recalcula cuando el archivo cambia.
+_SHA_ARCHIVOS = {}
+
+
+def _sha_archivo(ruta: pathlib.Path):
+    """(tamano, sha256) del archivo, recalculado solo si cambio."""
     import hashlib
+    st = ruta.stat()
+    clave = (str(ruta), st.st_mtime_ns, st.st_size)
+    if clave not in _SHA_ARCHIVOS:
+        h = hashlib.sha256()
+        with open(ruta, 'rb') as f:
+            for trozo in iter(lambda: f.read(1 << 20), b''):
+                h.update(trozo)
+        _SHA_ARCHIVOS[clave] = h.hexdigest()
+    return st.st_size, _SHA_ARCHIVOS[clave]
+
+
+def _manifiesto_launcher() -> bytes:
     import parche
     est = parche.estado(parche.DESTINO)
     m = {'version': est.get('version', ''), 'pak': est.get('pak', parche.NOMBRE_PAK),
@@ -1817,13 +1835,19 @@ def _manifiesto_launcher() -> bytes:
          'archivos': sorted(set(est.get('archivos') or []) | {RELLENO[0]})}
     exe = parche.DESTINO / 'launcher_propio' / LAUNCHER_EXE
     if exe.is_file():
-        datos = exe.read_bytes()
-        m['launcher'] = {'archivo': LAUNCHER_EXE, 'bytes': len(datos), 'sha256': hashlib.sha256(datos).hexdigest()}
+        n, sha = _sha_archivo(exe)
+        m['launcher'] = {'archivo': LAUNCHER_EXE, 'bytes': n, 'sha256': sha}
     juego = parche.DESTINO / 'juego' / JUEGO_EXE
     if juego.is_file():
-        datos = juego.read_bytes()
-        m['juego'] = {'archivo': JUEGO_EXE, 'bytes': len(datos), 'sha256': hashlib.sha256(datos).hexdigest()}
+        n, sha = _sha_archivo(juego)
+        m['juego'] = {'archivo': JUEGO_EXE, 'bytes': n, 'sha256': sha}
     return json.dumps(m, ensure_ascii=False).encode('utf-8')
+
+
+async def _archivo_de_parche_async(ruta: str):
+    """_archivo_de_parche en un hilo aparte: lee archivos de hasta 26 MB, arma paks y resume hashes, y en el hilo
+    principal congelaba el juego a todos mientras alguien abria el launcher."""
+    return await asyncio.get_running_loop().run_in_executor(None, _archivo_de_parche, ruta)
 
 
 def _archivo_de_parche(ruta: str):

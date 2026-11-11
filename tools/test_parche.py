@@ -32,6 +32,7 @@ def test_se_reparte_lo_que_difiere_del_bak(tmp_path, monkeypatch):
     parche.escribir_pak(pak.with_name('update26.pak.bak'), original)
     parche.escribir_pak(pak, cambiado)
     monkeypatch.setattr(cliente_local, 'indice_paks', lambda ruta: {n: pak for n in cambiado})
+    monkeypatch.setattr(parche, 'DESTINO', tmp_path / 'parches')      # sin los parches/extras reales
     assert parche.cambios_del_cliente(tmp_path) == {'SETTING\\ENG\\ITEM.XML': b'cambiado'}
 
 
@@ -68,7 +69,7 @@ def test_el_ftp_anuncia_y_entrega_el_parche(servidor):
     ini = []
     ftp.retrbinary('RETR update3.ini', ini.append)
     texto = b''.join(ini).decode('ascii')
-    assert 'GameVer = 8.5.1.1' in texto and 'GameURL = update27.pak' in texto
+    assert 'GameVer = 0.0.0.1' in texto and 'GameURL = u0001' in texto
     pak = []
     ftp.retrbinary('RETR update27.pak', pak.append)
     assert b''.join(pak) == (destino / 'update27.pak').read_bytes()
