@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-11",
+    "titulo": "Update 0.0.0.97: raid windows polish",
+    "texto": "Please update to version 0.0.0.97 from AngelsLauncher. The Flamefang Raid window now matches the AOF Raids look, with separate panels for members and bosses and a clear box to invite players by name. Both windows now fit inside their frames, and the raid list shows its entries again."
+  },
+  {
+    "fecha": "2026-11-11",
     "titulo": "Update 0.0.0.96: new AOF Raids window",
     "texto": "Please update to version 0.0.0.96 from AngelsLauncher. The AOF Raids window has a new look: a Flamefang banner with its three bosses, the raid list on the left and the details on the right (level, players, bosses you can still loot this week and rewards)."
   },
