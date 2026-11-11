@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-11",
+    "titulo": "Update 0.0.0.96: new AOF Raids window",
+    "texto": "Please update to version 0.0.0.96 from AngelsLauncher. The AOF Raids window has a new look: a Flamefang banner with its three bosses, the raid list on the left and the details on the right (level, players, bosses you can still loot this week and rewards)."
+  },
+  {
+    "fecha": "2026-11-11",
     "titulo": "Update 0.0.0.95: Flamefang Raid",
     "texto": "Please update to version 0.0.0.95 from AngelsLauncher. New raid for up to 20 level 60 players: press the AOF Raid button on the action bar to see the raid list, create a raid and invite players by name, with your party, or by right-clicking them. Defeat Lavamon, Razorex and Satrixia, each with their own mechanics, for level 60 class S gear vouchers, mount coins, mount boxes and skill boxes. A raid panel shows every member's health, mana and role. Bosses can be looted once per week (resets on Monday)."
   },
