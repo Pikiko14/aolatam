@@ -8494,6 +8494,31 @@ def _alma_a_los_demas(ses):
                 _s_al.volcar()
 
 
+REAPLICAR_MUERTE_CADA = 10.0
+
+
+def _muerto_quieto(ses, addr=''):
+    """Un muerto (no un alma) que pide andar se queda donde murio ("me mataron y puedo caminar", 11/11/2026, en la raid
+    y fuera). El cliente a veces se queda de pie con la ventana de muerte abierta -- montado se ve siempre -- y dejaba
+    andar. Como con el puesto de venta: se acepta el paso (0x006D) y se le devuelve a su casilla (0x0005); y cada
+    REAPLICAR_MUERTE_CADA segundos como mucho se le repite la muerte para que el cliente lo vuelva a tumbar."""
+    import combate as _cb_mq
+    p = ses.personaje
+    ack = Msg.registry[(0x006D, 's2c', '*')]
+    move = Msg.registry[(0x0005, 's2c', '*')]
+    tx, ty = int(p.tile_x or 0) * 32, int(p.tile_y or 0) * 32
+    pkts = [ack.build(), move.build(entity_id=p.entity_id, cur_x=tx, cur_y=ty, dst_x=tx, dst_y=ty,
+                                    speed=_velocidad_de(ses))]
+    ahora = time.time()
+    if ahora - float(getattr(ses, '_muerte_reaplicada', 0) or 0) >= REAPLICAR_MUERTE_CADA:
+        ses._muerte_reaplicada = ahora
+        p.hp = 0
+        _asesino = int(next(iter(getattr(ses, 'monstruos', None) or {}), 0))
+        pkts += [_cb_mq.ataque(p.entity_id, _asesino, 0, _cb_mq.TIPO_MUERTE), _cb_mq.atributo(p.entity_id, 0, _cb_mq.KIND_HP)]
+        log.info('[%s] %s esta muerto: no anda, se queda en (%d,%d)', addr, p.nombre, p.tile_x, p.tile_y)
+    (getattr(ses, 'enviar_sin_espejo', None) or ses.enviar)(*pkts)
+
+
 def _reaplicar_muerte(ses):
     """Al terminar de cargar un mapa, el que esta muerto lo sigue estando en su cliente y en el de los demas.
 
@@ -23344,6 +23369,10 @@ class Servidor:
                 # Acknowledge the old request without moving back across a
                 # local blink, including empty-path "I'm stuck" reports.
                 ses.enviar(Msg.registry[(0x006D,'s2c','*')].build())
+                return
+            if (getattr(ses, 'muerto', False) and not getattr(ses, 'fantasma', False)
+                    and getattr(ses, 'personaje', None)):
+                _muerto_quieto(ses, addr)
                 return
             ses.ultimo_movimiento = time.time()
             if getattr(ses, 'puesto', None):
