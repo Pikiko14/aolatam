@@ -1,6 +1,11 @@
 [
  {
   "fecha": "2026-11-10",
+  "titulo": "Update 0.0.0.89: pet evolution tree",
+  "texto": "Please update to version 0.0.0.89 from AngelsLauncher. Open your pet info panel and press Evolve to see its whole evolution tree: every form with its picture, level, type, stats and abilities. Click the form you want and press Evolve: your pet grows that way when it has the level (15 / 35 / 55) and the Medium or Advanced Blood Certificate."
+ },
+ {
+  "fecha": "2026-11-10",
   "titulo": "Update 0.0.0.86: new pet Abyss",
   "texto": "Please update to version 0.0.0.86 from AngelsLauncher. A new pet line has arrived: the Abyss Egg hatches into Abyss Cub at level 15, becomes Abyss Fiend with a Medium Blood Certificate (level 35) and Abyss Lord with an Advanced Blood Certificate (level 55). Each stage has its own colors and size."
  },
