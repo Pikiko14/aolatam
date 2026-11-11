@@ -2671,7 +2671,7 @@ PROB_PASEO = 0.055
 
 # Hasta cuantas casillas te persigue un monstruo al que le pegaste. Son
 # PASIVOS: no agroan por cercania, solo si los atacas.
-RANGO_PERDER_AGRO = 18
+RANGO_PERDER_AGRO = 30
 
 # Oro base que suelta un monstruo, antes del multiplicador del servidor.
 TASA_ORO_BASE = 5

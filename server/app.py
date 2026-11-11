@@ -7017,7 +7017,10 @@ RADIO_TORNADO = 2
 # que guardan. En instancia pasean poco y, si se alejan de su casilla mas de
 # CORREA_INSTANCIA o pierden el agro, vuelven andando a ella.
 PASEO_INSTANCIA = 3
-CORREA_INSTANCIA = 14
+CORREA_INSTANCIA = 25
+# "los mob solo me persiguen ciertos pasos y luego se van" (11/11/2026): soltaban en cuanto te sacaban 18 casillas, y
+# en montura eso es un momento. Ahora solo sueltan si siguen fuera de alcance GRACIA_AGRO segundos seguidos.
+GRACIA_AGRO = 5.0
 
 
 def _volver_a_casa(ses, m, ahora):
@@ -13896,8 +13899,14 @@ class Servidor:
                                     # mob te persigan por todo el mapa, a veces te dejan de seguir"; la correa de 14
                                     # casillas los mandaba a casa a media persecucion).
                                     _sin_correa = int(ses.personaje.stage) == __import__('instancia_oscura').STAGE
-                                    if not _sin_correa and (d_targ > _cb.RANGO_PERDER_AGRO
-                                                            or (_en_inst and _d_casa > CORREA_INSTANCIA)):
+                                    _fuera = not _sin_correa and (d_targ > _cb.RANGO_PERDER_AGRO
+                                                                  or (_en_inst and _d_casa > CORREA_INSTANCIA))
+                                    if not _fuera:
+                                        m.fuera_de_alcance_desde = None
+                                    elif getattr(m, 'fuera_de_alcance_desde', None) is None:
+                                        m.fuera_de_alcance_desde = ahora
+                                    if _fuera and ahora - m.fuera_de_alcance_desde >= GRACIA_AGRO:
+                                        m.fuera_de_alcance_desde = None
                                         m.en_combate_con = None
                                         log.debug(f"[{addr}] {m.nombre} pierde el agro a {d_targ} casillas")
                                         if _en_inst:
@@ -13932,7 +13941,8 @@ class Servidor:
                                                 suyo = _cb.dano_recibido(m.pegar(), def_targ, elem_atk=elem_tot, elem_def=0)
                                             elif (getattr(ses, 'monstruo_encantado', None) is not None
                                                   and targ_eid == ses.monstruo_encantado.entity_id):
-                                                suyo = _cb.dano_recibido(m.pegar(), int(getattr(ses.monstruo_encantado, 'defensa', 100) or 100))
+                                                def_targ = int(getattr(ses.monstruo_encantado, 'defensa', 100) or 100)
+                                                suyo = _cb.dano_recibido(m.pegar(), def_targ)
                                             else:
                                                 def_targ = 100
                                                 suyo = _cb.dano_recibido(m.pegar(), def_targ)
