@@ -8520,7 +8520,7 @@
     </icon>
     <!-- /aolat arbol -->
     <!-- aolat raid ventana -->
-    <window class="WND_CLASS_DLG_1" range="0,0,360,344" id="59600" title="Flamefang Raid" fcolor="104" font="1">
+    <window class="WND_CLASS_DLG_1" range="0,0,380,380" id="59600" title="Flamefang Raid" fcolor="104" font="1">
         <style wsVisible="" wsMoveable="" />
         <child>59607</child>
         <child>59608</child>
@@ -8537,57 +8537,55 @@
         <child>59613</child>
         <child>59614</child>
     </window>
-    <window class="WND_CLASS_BUTTON" id="59607" range="136,268,55,18" fcolor="101" font="1" icon="12006" title="Invite">
+    <window class="WND_CLASS_BUTTON" id="59607" range="240,289,60,18" fcolor="101" font="1" icon="12006" title="Invite">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnRaidInvitar</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="59608" range="8,292,60,18" fcolor="101" font="1" icon="12006" title="Create">
+    <window class="WND_CLASS_BUTTON" id="59608" range="8,318,60,18" fcolor="101" font="1" icon="12006" title="Create">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnRaidCrear</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="59609" range="72,292,80,18" fcolor="101" font="1" icon="12006" title="Invite party">
+    <window class="WND_CLASS_BUTTON" id="59609" range="72,318,80,18" fcolor="101" font="1" icon="12006" title="Invite party">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnRaidParty</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="59610" range="156,292,60,18" fcolor="101" font="1" icon="12006" title="Enter">
+    <window class="WND_CLASS_BUTTON" id="59610" range="156,318,60,18" fcolor="101" font="1" icon="12006" title="Enter">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnRaidEntrar</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="59611" range="220,292,64,18" fcolor="101" font="1" icon="12006" title="Exit map">
+    <window class="WND_CLASS_BUTTON" id="59611" range="220,318,64,18" fcolor="101" font="1" icon="12006" title="Exit map">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnRaidSalirMapa</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="59612" range="290,292,60,18" fcolor="101" font="1" icon="12006" title="Accept">
+    <window class="WND_CLASS_BUTTON" id="59612" range="290,318,74,18" fcolor="101" font="1" icon="12006" title="Accept">
         <style bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnRaidAceptar</OnCommand>
     </window>
-    <window class="WND_CLASS_EDIT" id="59606" range="8,270,120,14" fcolor="103" font="1" tpos="1,0" limit="16">
+    <window class="WND_CLASS_EDIT" id="59606" range="96,291,134,14" fcolor="103" font="1" tpos="1,0" limit="16">
         <style wsVisible="" esVCenter="" wsTab="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="59601" range="8,4,344,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59601" range="84,60,276,14" title="" fcolor="513" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_LIST" id="59602" range="6,22,348,186" cols="3" rows="11" gapx="2" gapy="1" tpos="1,1" fcolor="103" font="1">
+    <window class="WND_CLASS_LIST" id="59602" range="8,80,356,120" cols="3" rows="8" gapx="2" gapy="1" tpos="3,1" fcolor="103" font="1">
         <style wsVisible="" lsVCenter="" lsReport="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="59603" range="8,214,344,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59603" range="26,231,332,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="59604" range="8,230,344,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59604" range="26,248,332,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="59605" range="8,246,344,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59605" range="26,265,332,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="59613" range="8,320,344,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59613" range="8,338,356,14" title="" fcolor="513" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_BASE" id="59614" range="0,0,360,344" icon="59615">
+    <window class="WND_CLASS_BASE" id="59614" range="0,0,372,356" icon="59615">
         <style wsVisible="" />
     </window>
-    <icon id="59615" dir="\wnd01\" normal="aolat_raid_fondo" focus="normal" down="normal" disable="normal">
-        <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />
-    </icon>
+    <icon id="59615" dir="\wnd01\" normal="aolat_raid_fondo" focus="normal" down="normal" disable="normal" />
     <!-- /aolat raid ventana -->
     <!-- aolat raid panel -->
     <window class="WND_CLASS_DLG_1" range="0,0,210,584" id="59700" title="Raid" fcolor="104" font="1">
@@ -9106,7 +9104,7 @@
     </icon>
     <!-- /aolat raid panel -->
     <!-- aolat raid lista -->
-    <window class="WND_CLASS_DLG_1" range="0,0,400,300" id="59670" title="AOF Raids" fcolor="104" font="1">
+    <window class="WND_CLASS_DLG_1" range="0,0,408,328" id="59670" title="AOF Raids" fcolor="104" font="1">
         <style wsVisible="" wsMoveable="" />
         <child>59672</child>
         <child>59671</child>
@@ -9122,12 +9120,12 @@
         <child>59673</child>
         <child>59674</child>
     </window>
-    <window class="WND_CLASS_BUTTON" id="59672" range="326,270,66,18" fcolor="101" font="1" icon="12006" title="Open">
+    <window class="WND_CLASS_BUTTON" id="59672" range="326,274,66,18" fcolor="101" font="1" icon="12006" title="Open">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnRaidListaAbrir</OnCommand>
     </window>
-    <window class="WND_CLASS_LIST" id="59671" range="8,138,120,120" cols="1" rows="7" gapx="0" gapy="2" tpos="3,2" fcolor="103" font="1">
-        <style wsVisible="" lsVCenter="" wsTab="" />
+    <window class="WND_CLASS_LIST" id="59671" range="8,138,120,128" cols="1" rows="7" gapx="0" gapy="2" tpos="3,2" fcolor="103" font="1">
+        <style wsVisible="" lsVCenter="" lsReport="" wsTab="" />
         <OnCommand>OnRaidListaFila</OnCommand>
     </window>
     <window class="WND_CLASS_STATIC" id="59676" range="146,119,242,14" title="" fcolor="514" font="1">
@@ -9151,16 +9149,16 @@
     <window class="WND_CLASS_STATIC" id="59682" range="152,220,236,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="59683" range="146,241,242,14" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="59683" range="146,240,242,14" title="" fcolor="510" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="59684" range="146,254,242,14" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="59684" range="146,253,242,14" title="" fcolor="510" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="59673" range="10,273,308,14" title="" fcolor="513" font="1">
+    <window class="WND_CLASS_STATIC" id="59673" range="10,278,308,14" title="" fcolor="513" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_BASE" id="59674" range="0,0,400,300" icon="59675">
+    <window class="WND_CLASS_BASE" id="59674" range="0,0,400,304" icon="59675">
         <style wsVisible="" />
     </window>
     <icon id="59675" dir="\wnd01\" normal="aolat_raid_lista" focus="normal" down="normal" disable="normal" />
