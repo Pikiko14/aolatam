@@ -88,7 +88,9 @@ PANEL_ESTADO, PANEL_GRUPO, PANEL_CLIC, PANEL_FRANJA = 60090, 60120, 60150, 60180
 PANEL_ICONO_FRANJA = 59841
 MENU_PANEL, MENU_NOMBRE, MENU_LIDER, MENU_SACAR = 60210, 60211, 60212, 60213
 ICONO_CORONA, ICONO_TANQUE, ICONO_SANADOR, ICONO_DANO = 59850, 59851, 59852, 59853
-BARRA_VIDA, BARRA_MANA = 159, 160          # las barras de vida y mana del jugador (shape/wnd01/w008_03 y _04)
+# Barras propias: las del jugador (159 es la de EXP, rosa; 160 la de vida) miden 100x10 y pisaban la fila de abajo.
+BARRA_VIDA, BARRA_MANA, BARRA_PISTA, PANEL_PISTA = 59866, 59867, 59868, 60240
+BARRA_W = PW - 8
 PH = 2 + N_FILAS * FILA + 4
 
 
@@ -136,6 +138,24 @@ def iconos_panel():
                            ('aolat_rol_dano', espada)):
         (SALIDA / (nombre + '.shp')).write_bytes(_icono_pequeno(dibujo))
     (SALIDA / 'aolat_raid_panel.shp').write_bytes(franja(PW, FILA + 4))
+    for nombre, im in barras().items():
+        (SALIDA / (nombre + '.shp')).write_bytes(a_shp(im))
+
+
+def barras() -> dict:
+    """La vida (roja, 3 px), el mana (azul, 2 px) y la pista oscura que va detras de las dos (6 px)."""
+    def degradado(h, arriba, abajo):
+        im = Image.new('RGBA', (BARRA_W, h), (0, 0, 0, 255))
+        d = ImageDraw.Draw(im)
+        for y in range(h):
+            v = y / max(1, h - 1)
+            d.line((0, y, BARRA_W, y), fill=tuple(int(arriba[k] + (abajo[k] - arriba[k]) * v) for k in range(3)) + (255,))
+        return im
+    pista = Image.new('RGBA', (BARRA_W, 6), (16, 10, 8, 255))
+    ImageDraw.Draw(pista).line((0, 3, BARRA_W, 3), fill=(4, 2, 2, 255))
+    return {'aolat_barra_hp': degradado(3, (255, 96, 80), (180, 24, 20)),
+            'aolat_barra_mp': degradado(2, (110, 170, 255), (40, 90, 220)),
+            'aolat_barra_pista': pista}
 
 
 def bloque_panel() -> str:
@@ -154,22 +174,27 @@ def bloque_panel() -> str:
         y = 2 + i * FILA
         poner(PANEL_CORONA + i, _w('WND_CLASS_BUTTON', PANEL_CORONA + i, 3, y + 1, 12, 12, ' icon="%d"' % ICONO_CORONA, ''))
         poner(PANEL_ROL + i, _w('WND_CLASS_BUTTON', PANEL_ROL + i, PW - 16, y + 1, 12, 12, ' icon="0"', ''))
-        poner(PANEL_NOMBRE + i, _w('WND_CLASS_STATIC', PANEL_NOMBRE + i, 17, y, 96, 13,
+        poner(PANEL_NOMBRE + i, _w('WND_CLASS_STATIC', PANEL_NOMBRE + i, 17, y, 92, 12,
                                    ' title="" fcolor="103" font="1"', oculto))
-        poner(PANEL_ESTADO + i, _w('WND_CLASS_STATIC', PANEL_ESTADO + i, 110, y, 44, 13,
+        poner(PANEL_ESTADO + i, _w('WND_CLASS_STATIC', PANEL_ESTADO + i, 110, y, 42, 12,
                                    ' title="" fcolor="510" font="1"', oculto + ' ssRight=""'))
         poner(PANEL_GRUPO + i, _w('WND_CLASS_STATIC', PANEL_GRUPO + i, 4, y + 3, PW - 8, 14,
                                   ' title="" fcolor="514" font="1"', oculto))
-        poner(PANEL_VIDA + i, _w('WND_CLASS_PROGRESS', PANEL_VIDA + i, 4, y + 14, PW - 8, 3,
+        # Nombre en y..y+12; vida y+13..15, una raya oscura, mana y+17..18; la fila siguiente empieza en y+20.
+        poner(PANEL_VIDA + i, _w('WND_CLASS_PROGRESS', PANEL_VIDA + i, 4, y + 13, BARRA_W, 3,
                                  ' picon="%d"' % BARRA_VIDA, 'psHorizontal=""'))
-        poner(PANEL_MANA + i, _w('WND_CLASS_PROGRESS', PANEL_MANA + i, 4, y + 17, PW - 8, 2,
+        poner(PANEL_MANA + i, _w('WND_CLASS_PROGRESS', PANEL_MANA + i, 4, y + 17, BARRA_W, 2,
                                  ' picon="%d"' % BARRA_MANA, 'psHorizontal=""'))
+    for i in range(N_FILAS):                   # la pista, debajo de las barras
+        poner(PANEL_PISTA + i, _w('WND_CLASS_BASE', PANEL_PISTA + i, 4, 2 + i * FILA + 13, BARRA_W, 6,
+                                  ' icon="%d"' % BARRA_PISTA, ''))
     for i in range(N_FILAS):
         poner(PANEL_FRANJA + i, _w('WND_CLASS_BASE', PANEL_FRANJA + i, 0, i * FILA, PW, FILA + 4,
                                    ' icon="%d"' % PANEL_ICONO_FRANJA, ''))
     for wid, archivo, tema in ((PANEL_ICONO_FRANJA, 'aolat_raid_panel', True), (ICONO_CORONA, 'aolat_corona', False),
                                (ICONO_TANQUE, 'aolat_rol_tanque', False), (ICONO_SANADOR, 'aolat_rol_sanador', False),
-                               (ICONO_DANO, 'aolat_rol_dano', False)):
+                               (ICONO_DANO, 'aolat_rol_dano', False), (BARRA_VIDA, 'aolat_barra_hp', False),
+                               (BARRA_MANA, 'aolat_barra_mp', False), (BARRA_PISTA, 'aolat_barra_pista', False)):
         ventanas.append('    <icon id="%d" dir="\\wnd01\\" normal="%s" focus="normal" down="normal" disable="normal">\n'
                         '%s    </icon>\n' % (wid, archivo, '        <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />\n'
                                              if tema else ''))

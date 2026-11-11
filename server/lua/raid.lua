@@ -179,6 +179,7 @@ local function fila(i, m, grupo)
   window.show(hijo_panel(60090 + i), es_miembro)
   window.show(hijo_panel(60030 + i), es_miembro)
   window.show(hijo_panel(60060 + i), es_miembro)
+  window.show(hijo_panel(60240 + i), es_miembro)              -- la pista oscura de las barras
   window.show(hijo_panel(59970 + i), es_miembro)
   window.show(hijo_panel(60000 + i), es_miembro and m[5] and true or false)
   if grupo then
@@ -194,7 +195,7 @@ local function fila(i, m, grupo)
 end
 
 local function vacia(i)
-  for _, base in ipairs({60180, 60120, 60150, 59940, 60090, 60030, 60060, 59970, 60000}) do
+  for _, base in ipairs({60180, 60120, 60150, 59940, 60090, 60030, 60060, 60240, 59970, 60000}) do
     window.show(hijo_panel(base + i), false)
   end
 end

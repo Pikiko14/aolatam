@@ -184,15 +184,19 @@ def iniciar_burbuja(ses, bid, entrada):
                 or abs(float((actual or {}).get('fin', 0)) - fin) > 1):
             return
         try:
-            # Solo la fase 0x80 con anim=2, como los procs (app._ejecutar_proc_subhechizo), que si se ven sin la fase 0x00.
-            (getattr(ses, 'enviar_sin_espejo', None) or ses.enviar)(
-                combate.efecto_magia_self_fin(p.entity_id, EFECTO_BURBUJA, bid))
+            # 11/11/2026, "sigo sin ver el efecto del powershield": la fase 0x80 sola no la pintaba. Van las dos fases,
+            # con lanzador 0 (+2) y el jugador como objetivo (+6): asi el cliente crea la esfera sobre el sin que el
+            # personaje repita el gesto de lanzar cada BURBUJA_CADA segundos.
+            def fases(eid):
+                return [combate.efecto_magia_self_inicio(0, EFECTO_BURBUJA, bid, cast_time=0, objetivo=eid),
+                        combate.efecto_magia_self_fin(0, EFECTO_BURBUJA, bid, objetivo=eid)]
+            (getattr(ses, 'enviar_sin_espejo', None) or ses.enviar)(*fases(p.entity_id))
             pub = presencia.entidad_de(ses)
             stage = presencia.clave_de_mapa(ses, p.stage)
-            pk = combate.efecto_magia_self_fin(pub, EFECTO_BURBUJA, bid)
+            pks = fases(pub)
             for s in presencia._vivas(stage):
                 if s is not ses:
-                    presencia._mandar(s, pk)
+                    presencia._mandar(s, *pks)
         except Exception:
             log.exception('burbuja del Power Shield')
         try:

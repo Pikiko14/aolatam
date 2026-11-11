@@ -1404,6 +1404,9 @@ def encontrar_sub_combate(mid: int, d: dict, tabla: dict):
 # cast time a 1 seg"); venian con 前置時間 2000. Los cinco rangos de cada uno: Angel's Light y Aurora Trap (Life), Strong
 # Acid Rain y Hell Flame (Wraith), Thunder Scope y Fire Trap (Chaos), Lull Thorn y Canker Moss (Earth). El cliente lo ve
 # en su magic.xml (cliente_local._parchear_cast_rapido_xml_bytes).
+# El Power Shield dura 30 s y no 5 minutos ("que dure 30 seg", 11/11/2026). Solo el que se llama asi: Daimon, Sacred y
+# Seraphim Shield comparten su 魔法狀態 (法力護盾). El magic.xml del parche lleva el mismo 持續時間 para el cliente.
+DURACION_POWER_SHIELD = 30
 CAST_RAPIDO_MS = 1000
 CAST_RAPIDO = frozenset((14, 30, 48, 66, 84, 17, 36, 54, 72, 90,            # Angel's Light, Aurora Trap
                          116, 128, 145, 162, 179, 118, 135, 152, 169, 186,  # Strong Acid Rain, Hell Flame
@@ -1489,6 +1492,8 @@ def datos_magia(magic_id: int) -> dict:
             res['hp'] = _num(d.get('hp') if d.get('hp') is not None else d.get('HP'), 0)
             res['cd_ms'] = _num(d.get('後置時間'), 1000)
             dur_val = _num(d.get('持續時間'), 0)
+            if d.get('魔法狀態') == '法力護盾' and str(d.get('名稱') or '').startswith('Power Shield'):
+                dur_val = DURACION_POWER_SHIELD
             res['dur_ms'] = dur_val * 1000 if dur_val > 0 else 0
             res['cast_time'] = _num(d.get('前置時間'), 100)
             if magic_id in CAST_RAPIDO:

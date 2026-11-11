@@ -8787,6 +8787,30 @@
         <child>60143</child>
         <child>60053</child>
         <child>60083</child>
+        <child>60240</child>
+        <child>60241</child>
+        <child>60242</child>
+        <child>60243</child>
+        <child>60244</child>
+        <child>60245</child>
+        <child>60246</child>
+        <child>60247</child>
+        <child>60248</child>
+        <child>60249</child>
+        <child>60250</child>
+        <child>60251</child>
+        <child>60252</child>
+        <child>60253</child>
+        <child>60254</child>
+        <child>60255</child>
+        <child>60256</child>
+        <child>60257</child>
+        <child>60258</child>
+        <child>60259</child>
+        <child>60260</child>
+        <child>60261</child>
+        <child>60262</child>
+        <child>60263</child>
         <child>60180</child>
         <child>60181</child>
         <child>60182</child>
@@ -8914,19 +8938,19 @@
     <window class="WND_CLASS_BUTTON" id="59970" range="156,3,12,12" icon="0">
         <style  />
     </window>
-    <window class="WND_CLASS_STATIC" id="59940" range="17,2,96,13" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59940" range="17,2,92,12" title="" fcolor="103" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="60090" range="110,2,44,13" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="60090" range="110,2,42,12" title="" fcolor="510" font="1">
         <style ssVCenter="" ssRight="" />
     </window>
     <window class="WND_CLASS_STATIC" id="60120" range="4,5,164,14" title="" fcolor="514" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60030" range="4,16,164,3" picon="159">
+    <window class="WND_CLASS_PROGRESS" id="60030" range="4,15,164,3" picon="59866">
         <style psHorizontal="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60060" range="4,19,164,2" picon="160">
+    <window class="WND_CLASS_PROGRESS" id="60060" range="4,19,164,2" picon="59867">
         <style psHorizontal="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="60001" range="3,23,12,12" icon="59850">
@@ -8935,19 +8959,19 @@
     <window class="WND_CLASS_BUTTON" id="59971" range="156,23,12,12" icon="0">
         <style  />
     </window>
-    <window class="WND_CLASS_STATIC" id="59941" range="17,22,96,13" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59941" range="17,22,92,12" title="" fcolor="103" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="60091" range="110,22,44,13" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="60091" range="110,22,42,12" title="" fcolor="510" font="1">
         <style ssVCenter="" ssRight="" />
     </window>
     <window class="WND_CLASS_STATIC" id="60121" range="4,25,164,14" title="" fcolor="514" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60031" range="4,36,164,3" picon="159">
+    <window class="WND_CLASS_PROGRESS" id="60031" range="4,35,164,3" picon="59866">
         <style psHorizontal="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60061" range="4,39,164,2" picon="160">
+    <window class="WND_CLASS_PROGRESS" id="60061" range="4,39,164,2" picon="59867">
         <style psHorizontal="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="60002" range="3,43,12,12" icon="59850">
@@ -8956,19 +8980,19 @@
     <window class="WND_CLASS_BUTTON" id="59972" range="156,43,12,12" icon="0">
         <style  />
     </window>
-    <window class="WND_CLASS_STATIC" id="59942" range="17,42,96,13" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59942" range="17,42,92,12" title="" fcolor="103" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="60092" range="110,42,44,13" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="60092" range="110,42,42,12" title="" fcolor="510" font="1">
         <style ssVCenter="" ssRight="" />
     </window>
     <window class="WND_CLASS_STATIC" id="60122" range="4,45,164,14" title="" fcolor="514" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60032" range="4,56,164,3" picon="159">
+    <window class="WND_CLASS_PROGRESS" id="60032" range="4,55,164,3" picon="59866">
         <style psHorizontal="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60062" range="4,59,164,2" picon="160">
+    <window class="WND_CLASS_PROGRESS" id="60062" range="4,59,164,2" picon="59867">
         <style psHorizontal="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="60003" range="3,63,12,12" icon="59850">
@@ -8977,19 +9001,19 @@
     <window class="WND_CLASS_BUTTON" id="59973" range="156,63,12,12" icon="0">
         <style  />
     </window>
-    <window class="WND_CLASS_STATIC" id="59943" range="17,62,96,13" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59943" range="17,62,92,12" title="" fcolor="103" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="60093" range="110,62,44,13" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="60093" range="110,62,42,12" title="" fcolor="510" font="1">
         <style ssVCenter="" ssRight="" />
     </window>
     <window class="WND_CLASS_STATIC" id="60123" range="4,65,164,14" title="" fcolor="514" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60033" range="4,76,164,3" picon="159">
+    <window class="WND_CLASS_PROGRESS" id="60033" range="4,75,164,3" picon="59866">
         <style psHorizontal="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60063" range="4,79,164,2" picon="160">
+    <window class="WND_CLASS_PROGRESS" id="60063" range="4,79,164,2" picon="59867">
         <style psHorizontal="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="60004" range="3,83,12,12" icon="59850">
@@ -8998,19 +9022,19 @@
     <window class="WND_CLASS_BUTTON" id="59974" range="156,83,12,12" icon="0">
         <style  />
     </window>
-    <window class="WND_CLASS_STATIC" id="59944" range="17,82,96,13" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59944" range="17,82,92,12" title="" fcolor="103" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="60094" range="110,82,44,13" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="60094" range="110,82,42,12" title="" fcolor="510" font="1">
         <style ssVCenter="" ssRight="" />
     </window>
     <window class="WND_CLASS_STATIC" id="60124" range="4,85,164,14" title="" fcolor="514" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60034" range="4,96,164,3" picon="159">
+    <window class="WND_CLASS_PROGRESS" id="60034" range="4,95,164,3" picon="59866">
         <style psHorizontal="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60064" range="4,99,164,2" picon="160">
+    <window class="WND_CLASS_PROGRESS" id="60064" range="4,99,164,2" picon="59867">
         <style psHorizontal="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="60005" range="3,103,12,12" icon="59850">
@@ -9019,19 +9043,19 @@
     <window class="WND_CLASS_BUTTON" id="59975" range="156,103,12,12" icon="0">
         <style  />
     </window>
-    <window class="WND_CLASS_STATIC" id="59945" range="17,102,96,13" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59945" range="17,102,92,12" title="" fcolor="103" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="60095" range="110,102,44,13" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="60095" range="110,102,42,12" title="" fcolor="510" font="1">
         <style ssVCenter="" ssRight="" />
     </window>
     <window class="WND_CLASS_STATIC" id="60125" range="4,105,164,14" title="" fcolor="514" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60035" range="4,116,164,3" picon="159">
+    <window class="WND_CLASS_PROGRESS" id="60035" range="4,115,164,3" picon="59866">
         <style psHorizontal="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60065" range="4,119,164,2" picon="160">
+    <window class="WND_CLASS_PROGRESS" id="60065" range="4,119,164,2" picon="59867">
         <style psHorizontal="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="60006" range="3,123,12,12" icon="59850">
@@ -9040,19 +9064,19 @@
     <window class="WND_CLASS_BUTTON" id="59976" range="156,123,12,12" icon="0">
         <style  />
     </window>
-    <window class="WND_CLASS_STATIC" id="59946" range="17,122,96,13" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59946" range="17,122,92,12" title="" fcolor="103" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="60096" range="110,122,44,13" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="60096" range="110,122,42,12" title="" fcolor="510" font="1">
         <style ssVCenter="" ssRight="" />
     </window>
     <window class="WND_CLASS_STATIC" id="60126" range="4,125,164,14" title="" fcolor="514" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60036" range="4,136,164,3" picon="159">
+    <window class="WND_CLASS_PROGRESS" id="60036" range="4,135,164,3" picon="59866">
         <style psHorizontal="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60066" range="4,139,164,2" picon="160">
+    <window class="WND_CLASS_PROGRESS" id="60066" range="4,139,164,2" picon="59867">
         <style psHorizontal="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="60007" range="3,143,12,12" icon="59850">
@@ -9061,19 +9085,19 @@
     <window class="WND_CLASS_BUTTON" id="59977" range="156,143,12,12" icon="0">
         <style  />
     </window>
-    <window class="WND_CLASS_STATIC" id="59947" range="17,142,96,13" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59947" range="17,142,92,12" title="" fcolor="103" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="60097" range="110,142,44,13" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="60097" range="110,142,42,12" title="" fcolor="510" font="1">
         <style ssVCenter="" ssRight="" />
     </window>
     <window class="WND_CLASS_STATIC" id="60127" range="4,145,164,14" title="" fcolor="514" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60037" range="4,156,164,3" picon="159">
+    <window class="WND_CLASS_PROGRESS" id="60037" range="4,155,164,3" picon="59866">
         <style psHorizontal="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60067" range="4,159,164,2" picon="160">
+    <window class="WND_CLASS_PROGRESS" id="60067" range="4,159,164,2" picon="59867">
         <style psHorizontal="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="60008" range="3,163,12,12" icon="59850">
@@ -9082,19 +9106,19 @@
     <window class="WND_CLASS_BUTTON" id="59978" range="156,163,12,12" icon="0">
         <style  />
     </window>
-    <window class="WND_CLASS_STATIC" id="59948" range="17,162,96,13" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59948" range="17,162,92,12" title="" fcolor="103" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="60098" range="110,162,44,13" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="60098" range="110,162,42,12" title="" fcolor="510" font="1">
         <style ssVCenter="" ssRight="" />
     </window>
     <window class="WND_CLASS_STATIC" id="60128" range="4,165,164,14" title="" fcolor="514" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60038" range="4,176,164,3" picon="159">
+    <window class="WND_CLASS_PROGRESS" id="60038" range="4,175,164,3" picon="59866">
         <style psHorizontal="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60068" range="4,179,164,2" picon="160">
+    <window class="WND_CLASS_PROGRESS" id="60068" range="4,179,164,2" picon="59867">
         <style psHorizontal="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="60009" range="3,183,12,12" icon="59850">
@@ -9103,19 +9127,19 @@
     <window class="WND_CLASS_BUTTON" id="59979" range="156,183,12,12" icon="0">
         <style  />
     </window>
-    <window class="WND_CLASS_STATIC" id="59949" range="17,182,96,13" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59949" range="17,182,92,12" title="" fcolor="103" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="60099" range="110,182,44,13" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="60099" range="110,182,42,12" title="" fcolor="510" font="1">
         <style ssVCenter="" ssRight="" />
     </window>
     <window class="WND_CLASS_STATIC" id="60129" range="4,185,164,14" title="" fcolor="514" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60039" range="4,196,164,3" picon="159">
+    <window class="WND_CLASS_PROGRESS" id="60039" range="4,195,164,3" picon="59866">
         <style psHorizontal="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60069" range="4,199,164,2" picon="160">
+    <window class="WND_CLASS_PROGRESS" id="60069" range="4,199,164,2" picon="59867">
         <style psHorizontal="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="60010" range="3,203,12,12" icon="59850">
@@ -9124,19 +9148,19 @@
     <window class="WND_CLASS_BUTTON" id="59980" range="156,203,12,12" icon="0">
         <style  />
     </window>
-    <window class="WND_CLASS_STATIC" id="59950" range="17,202,96,13" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59950" range="17,202,92,12" title="" fcolor="103" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="60100" range="110,202,44,13" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="60100" range="110,202,42,12" title="" fcolor="510" font="1">
         <style ssVCenter="" ssRight="" />
     </window>
     <window class="WND_CLASS_STATIC" id="60130" range="4,205,164,14" title="" fcolor="514" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60040" range="4,216,164,3" picon="159">
+    <window class="WND_CLASS_PROGRESS" id="60040" range="4,215,164,3" picon="59866">
         <style psHorizontal="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60070" range="4,219,164,2" picon="160">
+    <window class="WND_CLASS_PROGRESS" id="60070" range="4,219,164,2" picon="59867">
         <style psHorizontal="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="60011" range="3,223,12,12" icon="59850">
@@ -9145,19 +9169,19 @@
     <window class="WND_CLASS_BUTTON" id="59981" range="156,223,12,12" icon="0">
         <style  />
     </window>
-    <window class="WND_CLASS_STATIC" id="59951" range="17,222,96,13" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59951" range="17,222,92,12" title="" fcolor="103" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="60101" range="110,222,44,13" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="60101" range="110,222,42,12" title="" fcolor="510" font="1">
         <style ssVCenter="" ssRight="" />
     </window>
     <window class="WND_CLASS_STATIC" id="60131" range="4,225,164,14" title="" fcolor="514" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60041" range="4,236,164,3" picon="159">
+    <window class="WND_CLASS_PROGRESS" id="60041" range="4,235,164,3" picon="59866">
         <style psHorizontal="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60071" range="4,239,164,2" picon="160">
+    <window class="WND_CLASS_PROGRESS" id="60071" range="4,239,164,2" picon="59867">
         <style psHorizontal="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="60012" range="3,243,12,12" icon="59850">
@@ -9166,19 +9190,19 @@
     <window class="WND_CLASS_BUTTON" id="59982" range="156,243,12,12" icon="0">
         <style  />
     </window>
-    <window class="WND_CLASS_STATIC" id="59952" range="17,242,96,13" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59952" range="17,242,92,12" title="" fcolor="103" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="60102" range="110,242,44,13" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="60102" range="110,242,42,12" title="" fcolor="510" font="1">
         <style ssVCenter="" ssRight="" />
     </window>
     <window class="WND_CLASS_STATIC" id="60132" range="4,245,164,14" title="" fcolor="514" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60042" range="4,256,164,3" picon="159">
+    <window class="WND_CLASS_PROGRESS" id="60042" range="4,255,164,3" picon="59866">
         <style psHorizontal="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60072" range="4,259,164,2" picon="160">
+    <window class="WND_CLASS_PROGRESS" id="60072" range="4,259,164,2" picon="59867">
         <style psHorizontal="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="60013" range="3,263,12,12" icon="59850">
@@ -9187,19 +9211,19 @@
     <window class="WND_CLASS_BUTTON" id="59983" range="156,263,12,12" icon="0">
         <style  />
     </window>
-    <window class="WND_CLASS_STATIC" id="59953" range="17,262,96,13" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59953" range="17,262,92,12" title="" fcolor="103" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="60103" range="110,262,44,13" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="60103" range="110,262,42,12" title="" fcolor="510" font="1">
         <style ssVCenter="" ssRight="" />
     </window>
     <window class="WND_CLASS_STATIC" id="60133" range="4,265,164,14" title="" fcolor="514" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60043" range="4,276,164,3" picon="159">
+    <window class="WND_CLASS_PROGRESS" id="60043" range="4,275,164,3" picon="59866">
         <style psHorizontal="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60073" range="4,279,164,2" picon="160">
+    <window class="WND_CLASS_PROGRESS" id="60073" range="4,279,164,2" picon="59867">
         <style psHorizontal="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="60014" range="3,283,12,12" icon="59850">
@@ -9208,19 +9232,19 @@
     <window class="WND_CLASS_BUTTON" id="59984" range="156,283,12,12" icon="0">
         <style  />
     </window>
-    <window class="WND_CLASS_STATIC" id="59954" range="17,282,96,13" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59954" range="17,282,92,12" title="" fcolor="103" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="60104" range="110,282,44,13" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="60104" range="110,282,42,12" title="" fcolor="510" font="1">
         <style ssVCenter="" ssRight="" />
     </window>
     <window class="WND_CLASS_STATIC" id="60134" range="4,285,164,14" title="" fcolor="514" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60044" range="4,296,164,3" picon="159">
+    <window class="WND_CLASS_PROGRESS" id="60044" range="4,295,164,3" picon="59866">
         <style psHorizontal="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60074" range="4,299,164,2" picon="160">
+    <window class="WND_CLASS_PROGRESS" id="60074" range="4,299,164,2" picon="59867">
         <style psHorizontal="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="60015" range="3,303,12,12" icon="59850">
@@ -9229,19 +9253,19 @@
     <window class="WND_CLASS_BUTTON" id="59985" range="156,303,12,12" icon="0">
         <style  />
     </window>
-    <window class="WND_CLASS_STATIC" id="59955" range="17,302,96,13" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59955" range="17,302,92,12" title="" fcolor="103" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="60105" range="110,302,44,13" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="60105" range="110,302,42,12" title="" fcolor="510" font="1">
         <style ssVCenter="" ssRight="" />
     </window>
     <window class="WND_CLASS_STATIC" id="60135" range="4,305,164,14" title="" fcolor="514" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60045" range="4,316,164,3" picon="159">
+    <window class="WND_CLASS_PROGRESS" id="60045" range="4,315,164,3" picon="59866">
         <style psHorizontal="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60075" range="4,319,164,2" picon="160">
+    <window class="WND_CLASS_PROGRESS" id="60075" range="4,319,164,2" picon="59867">
         <style psHorizontal="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="60016" range="3,323,12,12" icon="59850">
@@ -9250,19 +9274,19 @@
     <window class="WND_CLASS_BUTTON" id="59986" range="156,323,12,12" icon="0">
         <style  />
     </window>
-    <window class="WND_CLASS_STATIC" id="59956" range="17,322,96,13" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59956" range="17,322,92,12" title="" fcolor="103" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="60106" range="110,322,44,13" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="60106" range="110,322,42,12" title="" fcolor="510" font="1">
         <style ssVCenter="" ssRight="" />
     </window>
     <window class="WND_CLASS_STATIC" id="60136" range="4,325,164,14" title="" fcolor="514" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60046" range="4,336,164,3" picon="159">
+    <window class="WND_CLASS_PROGRESS" id="60046" range="4,335,164,3" picon="59866">
         <style psHorizontal="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60076" range="4,339,164,2" picon="160">
+    <window class="WND_CLASS_PROGRESS" id="60076" range="4,339,164,2" picon="59867">
         <style psHorizontal="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="60017" range="3,343,12,12" icon="59850">
@@ -9271,19 +9295,19 @@
     <window class="WND_CLASS_BUTTON" id="59987" range="156,343,12,12" icon="0">
         <style  />
     </window>
-    <window class="WND_CLASS_STATIC" id="59957" range="17,342,96,13" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59957" range="17,342,92,12" title="" fcolor="103" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="60107" range="110,342,44,13" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="60107" range="110,342,42,12" title="" fcolor="510" font="1">
         <style ssVCenter="" ssRight="" />
     </window>
     <window class="WND_CLASS_STATIC" id="60137" range="4,345,164,14" title="" fcolor="514" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60047" range="4,356,164,3" picon="159">
+    <window class="WND_CLASS_PROGRESS" id="60047" range="4,355,164,3" picon="59866">
         <style psHorizontal="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60077" range="4,359,164,2" picon="160">
+    <window class="WND_CLASS_PROGRESS" id="60077" range="4,359,164,2" picon="59867">
         <style psHorizontal="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="60018" range="3,363,12,12" icon="59850">
@@ -9292,19 +9316,19 @@
     <window class="WND_CLASS_BUTTON" id="59988" range="156,363,12,12" icon="0">
         <style  />
     </window>
-    <window class="WND_CLASS_STATIC" id="59958" range="17,362,96,13" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59958" range="17,362,92,12" title="" fcolor="103" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="60108" range="110,362,44,13" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="60108" range="110,362,42,12" title="" fcolor="510" font="1">
         <style ssVCenter="" ssRight="" />
     </window>
     <window class="WND_CLASS_STATIC" id="60138" range="4,365,164,14" title="" fcolor="514" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60048" range="4,376,164,3" picon="159">
+    <window class="WND_CLASS_PROGRESS" id="60048" range="4,375,164,3" picon="59866">
         <style psHorizontal="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60078" range="4,379,164,2" picon="160">
+    <window class="WND_CLASS_PROGRESS" id="60078" range="4,379,164,2" picon="59867">
         <style psHorizontal="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="60019" range="3,383,12,12" icon="59850">
@@ -9313,19 +9337,19 @@
     <window class="WND_CLASS_BUTTON" id="59989" range="156,383,12,12" icon="0">
         <style  />
     </window>
-    <window class="WND_CLASS_STATIC" id="59959" range="17,382,96,13" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59959" range="17,382,92,12" title="" fcolor="103" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="60109" range="110,382,44,13" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="60109" range="110,382,42,12" title="" fcolor="510" font="1">
         <style ssVCenter="" ssRight="" />
     </window>
     <window class="WND_CLASS_STATIC" id="60139" range="4,385,164,14" title="" fcolor="514" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60049" range="4,396,164,3" picon="159">
+    <window class="WND_CLASS_PROGRESS" id="60049" range="4,395,164,3" picon="59866">
         <style psHorizontal="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60079" range="4,399,164,2" picon="160">
+    <window class="WND_CLASS_PROGRESS" id="60079" range="4,399,164,2" picon="59867">
         <style psHorizontal="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="60020" range="3,403,12,12" icon="59850">
@@ -9334,19 +9358,19 @@
     <window class="WND_CLASS_BUTTON" id="59990" range="156,403,12,12" icon="0">
         <style  />
     </window>
-    <window class="WND_CLASS_STATIC" id="59960" range="17,402,96,13" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59960" range="17,402,92,12" title="" fcolor="103" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="60110" range="110,402,44,13" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="60110" range="110,402,42,12" title="" fcolor="510" font="1">
         <style ssVCenter="" ssRight="" />
     </window>
     <window class="WND_CLASS_STATIC" id="60140" range="4,405,164,14" title="" fcolor="514" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60050" range="4,416,164,3" picon="159">
+    <window class="WND_CLASS_PROGRESS" id="60050" range="4,415,164,3" picon="59866">
         <style psHorizontal="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60080" range="4,419,164,2" picon="160">
+    <window class="WND_CLASS_PROGRESS" id="60080" range="4,419,164,2" picon="59867">
         <style psHorizontal="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="60021" range="3,423,12,12" icon="59850">
@@ -9355,19 +9379,19 @@
     <window class="WND_CLASS_BUTTON" id="59991" range="156,423,12,12" icon="0">
         <style  />
     </window>
-    <window class="WND_CLASS_STATIC" id="59961" range="17,422,96,13" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59961" range="17,422,92,12" title="" fcolor="103" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="60111" range="110,422,44,13" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="60111" range="110,422,42,12" title="" fcolor="510" font="1">
         <style ssVCenter="" ssRight="" />
     </window>
     <window class="WND_CLASS_STATIC" id="60141" range="4,425,164,14" title="" fcolor="514" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60051" range="4,436,164,3" picon="159">
+    <window class="WND_CLASS_PROGRESS" id="60051" range="4,435,164,3" picon="59866">
         <style psHorizontal="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60081" range="4,439,164,2" picon="160">
+    <window class="WND_CLASS_PROGRESS" id="60081" range="4,439,164,2" picon="59867">
         <style psHorizontal="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="60022" range="3,443,12,12" icon="59850">
@@ -9376,19 +9400,19 @@
     <window class="WND_CLASS_BUTTON" id="59992" range="156,443,12,12" icon="0">
         <style  />
     </window>
-    <window class="WND_CLASS_STATIC" id="59962" range="17,442,96,13" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59962" range="17,442,92,12" title="" fcolor="103" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="60112" range="110,442,44,13" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="60112" range="110,442,42,12" title="" fcolor="510" font="1">
         <style ssVCenter="" ssRight="" />
     </window>
     <window class="WND_CLASS_STATIC" id="60142" range="4,445,164,14" title="" fcolor="514" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60052" range="4,456,164,3" picon="159">
+    <window class="WND_CLASS_PROGRESS" id="60052" range="4,455,164,3" picon="59866">
         <style psHorizontal="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60082" range="4,459,164,2" picon="160">
+    <window class="WND_CLASS_PROGRESS" id="60082" range="4,459,164,2" picon="59867">
         <style psHorizontal="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="60023" range="3,463,12,12" icon="59850">
@@ -9397,20 +9421,92 @@
     <window class="WND_CLASS_BUTTON" id="59993" range="156,463,12,12" icon="0">
         <style  />
     </window>
-    <window class="WND_CLASS_STATIC" id="59963" range="17,462,96,13" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59963" range="17,462,92,12" title="" fcolor="103" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="60113" range="110,462,44,13" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="60113" range="110,462,42,12" title="" fcolor="510" font="1">
         <style ssVCenter="" ssRight="" />
     </window>
     <window class="WND_CLASS_STATIC" id="60143" range="4,465,164,14" title="" fcolor="514" font="1">
         <style ssVCenter="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60053" range="4,476,164,3" picon="159">
+    <window class="WND_CLASS_PROGRESS" id="60053" range="4,475,164,3" picon="59866">
         <style psHorizontal="" />
     </window>
-    <window class="WND_CLASS_PROGRESS" id="60083" range="4,479,164,2" picon="160">
+    <window class="WND_CLASS_PROGRESS" id="60083" range="4,479,164,2" picon="59867">
         <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_BASE" id="60240" range="4,15,164,6" icon="59868">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BASE" id="60241" range="4,35,164,6" icon="59868">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BASE" id="60242" range="4,55,164,6" icon="59868">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BASE" id="60243" range="4,75,164,6" icon="59868">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BASE" id="60244" range="4,95,164,6" icon="59868">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BASE" id="60245" range="4,115,164,6" icon="59868">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BASE" id="60246" range="4,135,164,6" icon="59868">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BASE" id="60247" range="4,155,164,6" icon="59868">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BASE" id="60248" range="4,175,164,6" icon="59868">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BASE" id="60249" range="4,195,164,6" icon="59868">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BASE" id="60250" range="4,215,164,6" icon="59868">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BASE" id="60251" range="4,235,164,6" icon="59868">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BASE" id="60252" range="4,255,164,6" icon="59868">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BASE" id="60253" range="4,275,164,6" icon="59868">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BASE" id="60254" range="4,295,164,6" icon="59868">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BASE" id="60255" range="4,315,164,6" icon="59868">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BASE" id="60256" range="4,335,164,6" icon="59868">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BASE" id="60257" range="4,355,164,6" icon="59868">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BASE" id="60258" range="4,375,164,6" icon="59868">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BASE" id="60259" range="4,395,164,6" icon="59868">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BASE" id="60260" range="4,415,164,6" icon="59868">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BASE" id="60261" range="4,435,164,6" icon="59868">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BASE" id="60262" range="4,455,164,6" icon="59868">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BASE" id="60263" range="4,475,164,6" icon="59868">
+        <style  />
     </window>
     <window class="WND_CLASS_BASE" id="60180" range="0,0,172,24" icon="59841">
         <style  />
@@ -9494,6 +9590,12 @@
     <icon id="59852" dir="\wnd01\" normal="aolat_rol_sanador" focus="normal" down="normal" disable="normal">
     </icon>
     <icon id="59853" dir="\wnd01\" normal="aolat_rol_dano" focus="normal" down="normal" disable="normal">
+    </icon>
+    <icon id="59866" dir="\wnd01\" normal="aolat_barra_hp" focus="normal" down="normal" disable="normal">
+    </icon>
+    <icon id="59867" dir="\wnd01\" normal="aolat_barra_mp" focus="normal" down="normal" disable="normal">
+    </icon>
+    <icon id="59868" dir="\wnd01\" normal="aolat_barra_pista" focus="normal" down="normal" disable="normal">
     </icon>
     <window class="WND_CLASS_BASE" id="60210" range="0,0,124,62" fillrange="7, 7,300,100" puzzle1="10021" puzzle2="10022" puzzle3="10023" puzzle4="10024" puzzle5="10025" puzzle6="10026" puzzle7="10027" puzzle8="10028" puzzle9="10029">
         <style wsVisible="" wsPuzzle="" wsPopup="" wsAutoClose="" />
