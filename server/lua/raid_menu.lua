@@ -132,3 +132,80 @@ function OnRaidListaAbrir(dwID, dwCmdID, dwParam, pParam)
   end
   return 1
 end
+
+-- ---------------------------------------------------------------------------------------------- la guia
+-- RaidGuia(titulo, paginas): la ventana 59880 (tools/parche_raid.py). paginas {{pestana, titulo, retrato, {lineas}}};
+-- retrato 0 sin retrato, 1..3 el jefe (iconos 59861..59863). Lo manda server/raid.py guia (netcommand2 171, 32, raid).
+WND_RAID_GUIA = WND_RAID_GUIA or 0
+RAID_GUIA = RAID_GUIA or {}
+
+local function hijo_guia(id)
+  return window.find(WND_RAID_GUIA, id)
+end
+
+function RaidGuiaPagina(i)
+  local p = RAID_GUIA.paginas and RAID_GUIA.paginas[i]
+  if not p or not window.isexist(WND_RAID_GUIA) then
+    return
+  end
+  for k = 1, 5 do
+    local q = RAID_GUIA.paginas[k]
+    local boton = hijo_guia(59880 + k)
+    window.show(boton, q ~= nil)
+    if q then
+      window.settitle(boton, (k == i) and ("> " .. q[1] .. " <") or q[1])
+    end
+  end
+  window.settitle(hijo_guia(59886), p[2])
+  for k = 0, 12 do
+    window.settitle(hijo_guia(59887 + k), (p[4] and p[4][k + 1]) or "")
+  end
+  local retrato = hijo_guia(59900)
+  if p[3] and p[3] > 0 then
+    window.seticon(retrato, 59860 + p[3])
+    window.show(retrato, true)
+  else
+    window.show(retrato, false)
+  end
+end
+
+function RaidGuia(titulo, paginas)
+  RAID_GUIA.paginas = paginas
+  if window.isexist(WND_RAID_GUIA) then
+    window.setforeground(WND_RAID_GUIA)
+  else
+    WND_RAID_GUIA = window.create(59880, 0, 0, SYSTEM_HANDLER)
+    if not window.isexist(WND_RAID_GUIA) then
+      return
+    end
+    window.move(WND_RAID_GUIA, SYSTEM_SCREEN_WIDTH / 2 - 214, SYSTEM_SCREEN_HEIGHT / 2 - 177)
+  end
+  window.settitle(WND_RAID_GUIA, titulo)
+  RaidGuiaPagina(1)
+end
+
+function OnRaidGuiaPestana1(dwID, dwCmdID, dwParam, pParam) RaidGuiaPagina(1) return 1 end
+function OnRaidGuiaPestana2(dwID, dwCmdID, dwParam, pParam) RaidGuiaPagina(2) return 1 end
+function OnRaidGuiaPestana3(dwID, dwCmdID, dwParam, pParam) RaidGuiaPagina(3) return 1 end
+function OnRaidGuiaPestana4(dwID, dwCmdID, dwParam, pParam) RaidGuiaPagina(4) return 1 end
+function OnRaidGuiaPestana5(dwID, dwCmdID, dwParam, pParam) RaidGuiaPagina(5) return 1 end
+
+function OnRaidGuiaCerrar(dwID, dwCmdID, dwParam, pParam)
+  if window.isexist(WND_RAID_GUIA) then
+    window.destroy(WND_RAID_GUIA)
+  end
+  WND_RAID_GUIA = 0
+  return 1
+end
+
+-- "Guide" en AOF Raids (la raid elegida) y en la ventana de la raid (Flamefang, la 0 del catalogo).
+function OnRaidListaGuia(dwID, dwCmdID, dwParam, pParam)
+  local sel = RAID_LISTA.sel or 1
+  game.netcommand2(CMD_RAID, 32, sel - 1)
+  return 1
+end
+
+function OnRaidGuia(dwID, dwCmdID, dwParam, pParam)
+  game.netcommand2(CMD_RAID, 32, 0)
+  return 1
+end

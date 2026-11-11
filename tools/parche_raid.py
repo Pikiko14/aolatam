@@ -186,6 +186,7 @@ def bloque_wnd03() -> str:
                   'wsVisible="" ssVCenter=""')
     fila = 318
     poner(INVITAR, _boton(INVITAR, R_INVITAR[2] + 6, R_INVITAR[1] - 1, 'Invite', 'OnRaidInvitar', w=60))
+    poner(GUIA_RAID, _boton(GUIA_RAID, R_INVITAR[2] + 70, R_INVITAR[1] - 1, 'Guide', 'OnRaidGuia', w=60))
     poner(CREAR, _boton(CREAR, 8, fila, 'Create', 'OnRaidCrear', w=60))
     poner(PARTY, _boton(PARTY, 72, fila, 'Invite party', 'OnRaidParty', w=80))
     poner(ENTRAR, _boton(ENTRAR, 156, fila, 'Enter', 'OnRaidEntrar', w=60))
@@ -215,7 +216,7 @@ def _guardar(nombre, cambio):
     texto = crudo.decode('utf-8-sig')
     nl = '\r\n' if '\r\n' in texto else '\n'
     texto = texto.replace('\r\n', '\n')
-    for marca in (MARCA, MARCA_PANEL, MARCA_LISTA):
+    for marca in (MARCA, MARCA_PANEL, MARCA_LISTA, MARCA_GUIA):
         texto = re.sub(r'[ \t]*<!-- %s -->.*?<!-- /%s -->\r?\n' % (marca, marca), '', texto, flags=re.S)
     texto = re.sub(r'\n[ \t]*<child>(%d|%d)</child>' % (BOTON_BARRA, BOTON_MENU), '', texto)
     texto = cambio(texto).replace('\n', nl)
@@ -463,6 +464,7 @@ def bloque_lista() -> str:
         return _w('WND_CLASS_STATIC', wid, x, y, w, 14, ' title="" fcolor="%d" font="1"' % color,
                   'wsVisible="" ssVCenter=""')
     poner(LISTA_ABRIR, _boton(LISTA_ABRIR, LW - 74, LH - 30, 'Open', 'OnRaidListaAbrir', w=66))
+    poner(GUIA_LISTA, _boton(GUIA_LISTA, LW - 144, LH - 30, 'Guide', 'OnRaidListaGuia', w=66))
     poner(LISTA_FILAS, _w('WND_CLASS_LIST', LISTA_FILAS, PANEL_IZQ[0] + 4, PANEL_IZQ[1] + 24,
                           PANEL_IZQ[2] - PANEL_IZQ[0] - 8, PANEL_IZQ[3] - PANEL_IZQ[1] - 28,
                           ' cols="1" rows="7" gapx="0" gapy="2" tpos="3,2" fcolor="103" font="1"',
@@ -486,6 +488,83 @@ def bloque_lista() -> str:
     return '    <!-- %s -->\n%s%s    <!-- /%s -->\n' % (MARCA_LISTA, cab, ''.join(ventanas), MARCA_LISTA)
 
 
+# ---------------------------------------------------------------------------------------------- la guia
+# "Una opcion con las instrucciones de cada raid, mecanicas de la raid y de los jefes" (11/11/2026). Pestanas arriba
+# (Overview, un jefe cada una, Loot), el titulo de la pagina, 13 lineas y, en las de los jefes, su retrato. El texto lo
+# manda el servidor (server/raid.py guia) y lo pinta RaidGuia de server/lua/raid_menu.lua.
+MARCA_GUIA = 'aolat raid guia'
+GUIA, GW, GH = 59880, 420, 330
+GUIA_PESTANA, GUIA_TITULO, GUIA_LINEA, GUIA_RETRATO, GUIA_CERRAR = 59881, 59886, 59887, 59900, 59901
+GUIA_FONDO, GUIA_ICONO_FONDO, GUIA_ICONO_RETRATO = 59902, 59903, 59860      # retratos 59861..59863
+GUIA_RAID, GUIA_LISTA = 59616, 59685                                          # los botones "Guide"
+G_BANNER = (4, 4, GW - 4, 52)
+G_PAGINA = (4, 82, GW - 4, GH - 32)
+G_RETRATO = (GW - 112, 112, GW - 12, 232)                                     # 100 x 120
+N_LINEAS, ALTO_LINEA = 13, 14
+
+
+def retrato(i) -> Image.Image:
+    """El jefe i (0 Lavamon, 1 Razorex, 2 Satrixia) en un recuadro de brasa de 100x120."""
+    from PIL import ImageFilter
+    w, h = G_RETRATO[2] - G_RETRATO[0], G_RETRATO[3] - G_RETRATO[1]
+    im = Image.new('RGBA', (w, h), (0, 0, 0, 255))
+    d = ImageDraw.Draw(im)
+    for y in range(h):
+        v = y / h
+        d.line((0, y, w, y), fill=(int(30 + 120 * v ** 2), int(8 + 30 * v ** 3), 10, 255))
+    glow = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    ImageDraw.Draw(glow).ellipse((-10, h * 0.45, w + 10, h * 1.4), fill=(255, 110, 20, 150))
+    im.alpha_composite(glow.filter(ImageFilter.GaussianBlur(12)))
+    ruta, frame, _ = JEFES_SPR[(0, 2, 1)[i]]
+    s = _sprite(ruta, frame)
+    caja = s.getbbox()
+    s = s.crop(caja)
+    k = min((w - 6) / s.width, (h - 6) / s.height)
+    s = s.resize((max(1, int(s.width * k)), max(1, int(s.height * k))), Image.LANCZOS)
+    im.alpha_composite(s, ((w - s.width) // 2, h - s.height - 2))
+    d.rectangle((0, 0, w - 1, h - 1), outline=(176, 120, 48, 255))
+    return im
+
+
+def dibujar_guia() -> Image.Image:
+    im, d = _lienzo(GW, GH)
+    im.alpha_composite(_banner(G_BANNER[2] - G_BANNER[0], G_BANNER[3] - G_BANNER[1], grande=False), G_BANNER[:2])
+    d.rectangle(G_BANNER, outline=(150, 96, 40, 255))
+    _caja(d, G_PAGINA)
+    d.line((G_PAGINA[0] + 6, G_PAGINA[1] + 22, G_PAGINA[2] - 6, G_PAGINA[1] + 22), fill=(90, 54, 26, 255))
+    _marco(d, GW, GH)
+    return im
+
+
+def bloque_guia() -> str:
+    hijos, ventanas = [], []
+
+    def poner(wid, xml):
+        hijos.append(wid)
+        ventanas.append(xml)
+
+    def texto(wid, x, y, w, color):
+        return _w('WND_CLASS_STATIC', wid, x, y, w, 14, ' title="" fcolor="%d" font="1"' % color,
+                  'wsVisible="" ssVCenter=""')
+    for k in range(5):
+        poner(GUIA_PESTANA + k, _boton(GUIA_PESTANA + k, 6 + 82 * k, 58, '', 'OnRaidGuiaPestana%d' % (k + 1), w=78))
+    poner(GUIA_CERRAR, _boton(GUIA_CERRAR, GW - 74, GH - 26, 'Close', 'OnRaidGuiaCerrar', w=66))
+    poner(GUIA_TITULO, texto(GUIA_TITULO, G_PAGINA[0] + 8, G_PAGINA[1] + 5, G_PAGINA[2] - G_PAGINA[0] - 16, 514))
+    for k in range(N_LINEAS):
+        poner(GUIA_LINEA + k, texto(GUIA_LINEA + k, G_PAGINA[0] + 8, G_PAGINA[1] + 28 + ALTO_LINEA * k,
+                                    G_PAGINA[2] - G_PAGINA[0] - 16, 103))
+    poner(GUIA_RETRATO, _w('WND_CLASS_BASE', GUIA_RETRATO, G_RETRATO[0], G_RETRATO[1], G_RETRATO[2] - G_RETRATO[0],
+                           G_RETRATO[3] - G_RETRATO[1], ' icon="%d"' % (GUIA_ICONO_RETRATO + 1)))
+    poner(GUIA_FONDO, _w('WND_CLASS_BASE', GUIA_FONDO, 0, 0, GW, GH, ' icon="%d"' % GUIA_ICONO_FONDO))
+    ventanas.append('    <icon id="%d" dir="\\wnd01\\" normal="aolat_raid_guia" focus="normal" down="normal" '
+                    'disable="normal" />\n' % GUIA_ICONO_FONDO)
+    for i in range(3):
+        ventanas.append('    <icon id="%d" dir="\\wnd01\\" normal="aolat_raid_jefe%d" focus="normal" down="normal" '
+                        'disable="normal" />\n' % (GUIA_ICONO_RETRATO + 1 + i, i + 1))
+    cab = _cabeza_dlg(GUIA, GW, GH, 'Raid Guide', hijos)
+    return '    <!-- %s -->\n%s%s    <!-- /%s -->\n' % (MARCA_GUIA, cab, ''.join(ventanas), MARCA_GUIA)
+
+
 def boton_menu(texto):
     """'Invite to raid' en el menu del jugador (565), oculto: el Lua lo ensena al lider de una raid."""
     m = re.search(r'<window [^>]*\bid="%d"[^>]*>\s*<style[^>]*/>' % MENU_JUGADOR, texto)
@@ -505,7 +584,10 @@ def main():
     iconos_panel()
     (SALIDA / (ARCHIVO_FONDO + '.shp')).write_bytes(a_shp(dibujar_raid()))
     (SALIDA / 'aolat_raid_lista.shp').write_bytes(a_shp(dibujar_lista()))
-    _guardar('wnd03.xml', _al_final(bloque_wnd03() + bloque_panel() + bloque_lista()))
+    (SALIDA / 'aolat_raid_guia.shp').write_bytes(a_shp(dibujar_guia()))
+    for i in range(3):
+        (SALIDA / ('aolat_raid_jefe%d.shp' % (i + 1))).write_bytes(a_shp(retrato(i)))
+    _guardar('wnd03.xml', _al_final(bloque_wnd03() + bloque_panel() + bloque_lista() + bloque_guia()))
     _guardar('wnd01.xml', lambda t: boton_menu(wnd01(t)))
     print('boton %d, ventana %d (%dx%d), panel %d (%dx%d) e iconos listos' % (BOTON_BARRA, VENTANA, RW, RH, PANEL, PW, PH))
 

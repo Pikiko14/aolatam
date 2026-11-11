@@ -74,6 +74,99 @@ CATALOGO = (
     {'clave': 'flamefang', 'nombre': NOMBRE, 'nivel': NIVEL_MINIMO, 'jugadores': MAX_MIEMBROS},
 )
 
+# LA GUIA (11/11/2026: "una opcion con las instrucciones de cada raid, mecanicas de la raid y de los jefes"). La ventana
+# (tools/parche_raid.py) tiene 13 lineas por pagina: ANCHO_GUIA letras, o ANCHO_GUIA_JEFE en las paginas con retrato.
+# Los numeros de los jefes salen de raid_flamefang.json, asi la guia no se queda atras si se retocan.
+LINEAS_GUIA, ANCHO_GUIA, ANCHO_GUIA_JEFE = 13, 56, 41
+
+
+def _guia_flamefang():
+    mec = datos()['mecanicas']
+    la, rz, sa = mec['23940'], mec['23941'], mec['23942']
+    lava, garra, aliento = la['lava'], rz['garra'], rz['aliento']
+    nova, condena = sa['nova'], sa['condena']
+
+    def minutos(seg):
+        return '%d minutes' % (seg // 60) if seg % 60 == 0 else '%d:%02d minutes' % (seg // 60, seg % 60)
+    paginas = [
+        ['Overview', 'How the raid works', 0, [
+            'Up to %d players of level %d or higher.' % (MAX_MIEMBROS, NIVEL_MINIMO),
+            '1. Press AOF Raid, pick %s and press Open.' % NOMBRE,
+            '2. Create a raid. Invite by name, invite your party,',
+            '   or right-click a player and pick Invite to raid.',
+            '3. The leader presses Enter; the rest press Enter too.',
+            '4. Clear the monster packs of the zone: the boss',
+            '   appears when the last one falls.',
+            '5. After a boss dies, a portal takes everyone to the',
+            '   next zone in %d seconds.' % PAUSA_PORTAL,
+            'If the whole raid dies, the boss heals back to full.',
+            'Every boss enrages after a while: damage x%d.' % ENRAGE_MULT,
+            'Bring tanks (Shield), healers (Life) and damage.',
+            'The raid panel shows everyone\'s HP, MP and role.']],
+        ['Lavamon', 'Infernal Lavamon - The Ember Gate', 1, [
+            'LAVA ERUPTION (every %d s)' % lava['cada'],
+            '%d players are marked. You have %d s to' % (lava['marcados'], lava['aviso']),
+            'move more than %d tiles away: the lava' % lava['radio'],
+            'deals %d%% of max HP around the spot.' % lava['dano'],
+            'Do not stack on marked players.',
+            '',
+            'SPLIT (at %d%% HP)' % la['adds_al'][0],
+            '%d Lava Blobs appear. Kill them fast,' % la['adds'],
+            'they go for the healers.',
+            '',
+            'ENRAGE: %s.' % minutos(la['enrage'])]],
+        ['Razorex', 'Hellfire Razorex - The Burning Hall', 2, [
+            'SEARING CLAW (every %d s)' % garra['cada'],
+            'Hits his target for 10%% of max HP,',
+            '+%d%% for each stack. Stacks last %d s:' % (garra['mas_por_pila'], garra['dura']),
+            'swap tanks at 2 or 3 stacks.',
+            '',
+            'FIRE BREATH (every %d s)' % aliento['cada'],
+            'He inhales for %.1f s, then burns a' % aliento['aviso'],
+            'cone %d tiles in front of him: %d%%.' % (aliento['largo'], aliento['dano']),
+            'Only the tank stays in front.',
+            '',
+            'FURY at %d%% HP: +%d%% damage.' % (rz['furia_al'], round((rz['furia_velocidad'] - 1) * 100)),
+            'ENRAGE: %s.' % minutos(rz['enrage'])]],
+        ['Satrixia', "Satrixia - Satrixia's Throne", 3, [
+            'INFERNO NOVA (every %d s)' % nova['cada'],
+            'After %d s, %d%% of max HP to everyone.' % (nova['aviso'], nova['dano']),
+            'Healers: top the raid up before it.',
+            '',
+            'PHASE 2 (%d%%): a fire shield. She takes' % sa['fase2_al'],
+            'no damage until her %d Firals die.' % sa['adds'],
+            '',
+            'PHASE 3 (%d%%): DOOM (every %d s)' % (sa['fase3_al'], condena['cada']),
+            'The marked player has %d s to run.' % condena['aviso'],
+            'They take 30%%; anyone within %d tiles' % condena['radio'],
+            'of them takes %d%%. Spread out!' % condena['dano'],
+            '',
+            'ENRAGE: %s.' % minutos(sa['enrage'])]],
+        ['Loot', 'Loot and weekly lockout', 0, [
+            'Each boss gives loot once a week per character.',
+            'The lockout resets every Monday at 00:00.',
+            '',
+            'Every boss: 2 to 5 Lucky vouchers (Enhanced Pestle,',
+            'Ride Feed, Piercing Hammer, Hammer Voucher) and',
+            '2 to 5 Mount Coins.',
+            '',
+            'A chance of Flamefang Lv60 boxes: a box for your class',
+            '(class S weapon, shield, cape, accessory or armor),',
+            'a weapon box and a mount box (class S Lv60 mounts).',
+            'The chances grow from boss to boss, and Satrixia',
+            'always drops at least one box.',
+            'Your class box depends on the weapon you have on.']],
+    ]
+    for _tab, _titulo, retrato, lineas in paginas:
+        for i, l in enumerate(lineas):
+            lineas[i] = l.replace('%%', '%')
+    return paginas
+
+
+def guia(indice=0):
+    """(titulo, [[pestana, titulo, retrato 0..3, [lineas]]]) de la raid `indice` del CATALOGO."""
+    return '%s Guide' % CATALOGO[indice]['nombre'], _guia_flamefang()
+
 _RAIDS = {}            # id -> dict(id, lider, miembros [char_id], nombres {char_id: nombre}, corrida)
 _DE_QUIEN = {}         # char_id -> id de su raid
 _INVITACIONES = {}     # char_id -> (id de la raid, caduca)
@@ -952,7 +1045,7 @@ def _buscar(nombre):
 
 def procesar(ses, cuerpo, addr='?', sesiones=None) -> bool:
     """c2s 0x002F [u8 171][u32 a][u32 b]:
-        a=30 abrir el listado AOF Raids; 31 abrir la raid b del listado (CATALOGO);
+        a=30 abrir el listado AOF Raids; 31 abrir la raid b del listado (CATALOGO); 32 su guia;
         a=1 abrir la ventana; 2 crear; 3 salir de la raid; 4 invitar a mi party; 5 entrar al mapa;
         6 aceptar la invitacion (b = id de la raid); 7 invitar al nombre escrito; 8 salir del mapa;
         20..23 un trozo del nombre escrito (b = 4 letras)."""
@@ -969,6 +1062,10 @@ def procesar(ses, cuerpo, addr='?', sesiones=None) -> bool:
         return True
     if a == 30:
         ses.enviar(canal_lua.paquete(SALUDO_LUA), canal_lua.llamar('RaidListaAbrir', lista_de_raids(ses)))
+        return True
+    if a == 32:
+        if 0 <= int(b) < len(CATALOGO):
+            ses.enviar(canal_lua.paquete(SALUDO_LUA), canal_lua.llamar('RaidGuia', *guia(int(b))))
         return True
     if a == 31:
         if 0 <= int(b) < len(CATALOGO):

@@ -187,3 +187,23 @@ def test_el_listado_aof_raids_y_el_saludo(monkeypatch):
     assert raid.lista_de_raids(s)[0][5][0] == ['Jefe 23940', 'looted']
     # El boton de la barra abre el listado, y el menu del jugador se envuelve para "Invite to raid".
     assert 'netcommand2(CMD_RAID, 30, 0)' in raid.SALUDO_LUA and 'OnClickChatOption' in raid.SALUDO_LUA
+
+
+def test_la_guia_cabe_en_la_ventana_y_dice_los_numeros_del_json():
+    titulo, paginas = raid.guia(0)
+    assert titulo == raid.NOMBRE + ' Guide' and len(paginas) == 5
+    for _tab, _titulo, retrato, lineas in paginas:
+        ancho = raid.ANCHO_GUIA_JEFE if retrato else raid.ANCHO_GUIA
+        assert len(lineas) <= raid.LINEAS_GUIA and all(len(l) <= ancho and '%%' not in l for l in lineas)
+    mec = raid.datos()['mecanicas']
+    texto = '\n'.join(sum((p[3] for p in paginas), []))
+    assert 'every %d s' % mec['23940']['lava']['cada'] in texto
+    assert 'her %d Firals' % mec['23942']['adds'] in texto
+    assert [p[2] for p in paginas] == [0, 1, 2, 3, 0]
+
+
+def test_el_boton_guide_manda_la_guia():
+    s = _ses(1)
+    raid.procesar(s, struct.pack('<BII', raid.CMD_RAID, 32, 0))
+    assert any(b'RaidGuia' in bytes(x) for x in s.enviados if isinstance(x, (bytes, bytearray)))
+    assert 'OnRaidListaGuia' in raid.SALUDO_LUA and 'function RaidGuia(' in raid.SALUDO_LUA
