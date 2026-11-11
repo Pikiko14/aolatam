@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-11",
+    "titulo": "Fix: pets and Earth Mage charm",
+    "texto": "Your summoned pet is now stored automatically when you die. The monster charmed by an Earth Mage now attacks the monsters you are fighting, and other monsters can fight back and kill it."
+  },
+  {
+    "fecha": "2026-11-11",
     "titulo": "Fix: no walking while dead",
     "texto": "Dead characters can no longer walk around while the death window is open (it happened mostly while riding a mount). Souls can still move as before."
   },
