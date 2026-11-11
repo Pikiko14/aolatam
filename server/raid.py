@@ -1014,7 +1014,7 @@ def procesar(ses, cuerpo, addr='?', sesiones=None) -> bool:
 
 
 def lista_de_raids(ses):
-    """Las filas del listado: [nombre, nivel, jugadores, jefes, como va esta semana]."""
+    """Las filas del listado: [nombre, nivel, jugadores, jefes, como va esta semana, [[jefe, ready|looted]]]."""
     filas = []
     for raid in CATALOGO:
         jefes = len(datos()['zonas'])
@@ -1026,7 +1026,11 @@ def lista_de_raids(ses):
             estado = 'Locked until Monday'
         else:
             estado = '%d/%d bosses left' % (libres, jefes)
-        filas.append([raid['nombre'], raid['nivel'], '%d max' % raid['jugadores'], jefes, estado])
+        nombres = []
+        for i, z in enumerate(datos()['zonas']):
+            import app
+            nombres.append([app._monstruo_bd(z['jefe'])[0], 'looted' if bloqueado(ses, i) else 'ready'])
+        filas.append([raid['nombre'], raid['nivel'], '%d max' % raid['jugadores'], jefes, estado, nombres])
     return filas
 
 

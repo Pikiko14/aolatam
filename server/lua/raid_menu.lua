@@ -69,9 +69,34 @@ function OnClickChatOptionRaid(dwID, dwCmdID, dwParam, pParam)
 end
 
 -- ---------------------------------------------------------------------------------------------- AOF Raids
--- RaidListaAbrir(filas): filas {{nombre, nivel, jugadores, jefes, estado}}, una por raid.
+-- RaidListaAbrir(filas): filas {{nombre, nivel, jugadores, jefes, estado, {{jefe, "ready"|"looted"}}}}, una por raid.
+-- La lista de la izquierda solo lleva los nombres; los detalles de la elegida van a la derecha (59676..59684).
 local function hijo_lista(id)
   return window.find(WND_RAID_LISTA, id)
+end
+
+local function detalle(i)
+  local f = RAID_LISTA.filas and RAID_LISTA.filas[i]
+  if not f then
+    return
+  end
+  RAID_LISTA.sel = i
+  window.settitle(hijo_lista(59676), f[1])
+  window.settitle(hijo_lista(59677), "Level " .. tostring(f[2]) .. "+   Players: " .. tostring(f[3]))
+  window.settitle(hijo_lista(59678), "This week: " .. tostring(f[5]))
+  window.settitle(hijo_lista(59679), "Bosses")
+  for k = 1, 3 do
+    local j = f[6] and f[6][k]
+    if j then
+      local marca = (j[2] == "looted") and "  (looted)" or ""
+      window.settitle(hijo_lista(59679 + k), tostring(k) .. ". " .. j[1] .. marca)
+    else
+      window.settitle(hijo_lista(59679 + k), "")
+    end
+  end
+  window.settitle(hijo_lista(59683), "Loot: level 60 class S gear, mounts,")
+  window.settitle(hijo_lista(59684), "mount and gear enhancement boxes.")
+  window.settitle(hijo_lista(59673), "Press Open to form or join a raid group.")
 end
 
 function RaidListaAbrir(filas)
@@ -84,30 +109,19 @@ function RaidListaAbrir(filas)
     if not window.isexist(WND_RAID_LISTA) then
       return
     end
-    window.move(WND_RAID_LISTA, SYSTEM_SCREEN_WIDTH / 2 - 165, SYSTEM_SCREEN_HEIGHT / 2 - 100)
+    window.move(WND_RAID_LISTA, SYSTEM_SCREEN_WIDTH / 2 - 200, SYSTEM_SCREEN_HEIGHT / 2 - 150)
   end
   local lista = hijo_lista(59671)
   window.clearlist(lista)
-  window.insertitemstr(lista, "Raid", 0)
-  window.setsubitemstr(lista, 0, 0, "Level", 0)
-  window.setsubitemstr(lista, 0, 1, "Players", 0)
-  window.setsubitemstr(lista, 0, 2, "This week", 0)
   for i, f in ipairs(filas or {}) do
     window.insertitemstr(lista, f[1], 0)
-    window.setsubitemstr(lista, i, 0, tostring(f[2]), 0)
-    window.setsubitemstr(lista, i, 1, tostring(f[3]), 0)
-    window.setsubitemstr(lista, i, 2, f[5], 0)
   end
   window.settitle(hijo_lista(59672), "Open")
-  window.settitle(hijo_lista(59673), "Pick a raid and press Open.")
+  detalle(1)
 end
 
 function OnRaidListaFila(dwID, dwCmdID, dwParam, pParam)
-  local f = RAID_LISTA.filas and RAID_LISTA.filas[dwParam]       -- la fila 0 es la cabecera
-  if f then
-    RAID_LISTA.sel = dwParam
-    window.settitle(hijo_lista(59673), f[1] .. ": " .. tostring(f[4]) .. " bosses, level " .. tostring(f[2]) .. ".")
-  end
+  detalle((dwParam or 0) + 1)                                     -- las filas cuentan desde 0
   return 1
 end
 

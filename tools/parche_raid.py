@@ -247,9 +247,146 @@ def wnd01(texto):
 # "Que se pueda invitar al dar click derecho a 1 personaje, si la persona es lider de la raid ... tambien que en vez de
 # ser 1 icono por raid, sea un listado de raid, ese nuevo icono de acciones sea AOF raid" (11/11/2026).
 MARCA_LISTA = 'aolat raid lista'
-LISTA_RAIDS, LW, LH = 59670, 330, 200
+LISTA_RAIDS, LW, LH = 59670, 400, 300
 LISTA_FILAS, LISTA_ABRIR, LISTA_ESTADO, LISTA_FONDO, LISTA_ICONO_FONDO = 59671, 59672, 59673, 59674, 59675
+# "Que se vea mas bonito" (11/11/2026): un banner con los tres jefes, la lista solo con los nombres (las columnas del
+# cliente son todas del mismo ancho y el nombre se comia el nivel) y los detalles de la raid elegida a la derecha.
+LISTA_NOMBRE, LISTA_NIVEL, LISTA_SEMANA, LISTA_JEFES, LISTA_BOTIN = 59676, 59677, 59678, 59679, 59683  # 59679..82, 83..84
+BANNER = (4, 4, 396, 108)
+PANEL_IZQ, PANEL_DER = (4, 114, 132, 262), (138, 114, 396, 262)
+X_DETALLE = PANEL_DER[0] + 8
 MENU_JUGADOR, BOTON_MENU = 565, 59660     # el menu de clic derecho sobre un jugador (chat.lua OnClickChatOption)
+# Lavamon, Satrixia (delante) y Razorex: (shape\mon\..._Wait.spr, frame de frente, escala).
+JEFES_SPR = ((r'M2085\110086', 4, 0.33), (r'M2086\110087', 0, 0.36), (r'M2084\110085', 4, 0.30))
+
+
+def _sprite(ruta, frame):
+    """Un frame del _Wait.spr de un monstruo como RGBA. Los TLHS de tipo 4 (Satrixia) llevan ARGB4444, no paleta."""
+    import fondos_interfaz as fi
+    import spr_ewsp
+    d = fi.del_cliente('shape\\mon\\%s_Wait.spr' % ruta)
+    _o, o_t, tam = struct.unpack_from('<3I', d, 80 + 12 * frame)
+    b = d[o_t:o_t + tam]
+    c = struct.unpack_from('<4s19I', b, 0)
+    if c[2] != 4:
+        return spr_ewsp.leer(d)[0][frame][0]
+    w, h = c[5], c[6]
+    im = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    px = im.load()
+    for y in range(h):
+        p = struct.unpack_from('<I', b, 80 + 4 * y)[0]
+        while True:
+            cnt, x, src = struct.unpack_from('<HHI', b, p)
+            p += 8
+            if x == 0xFFFF:
+                break
+            for j in range(cnt):
+                v = struct.unpack_from('<H', b, src + 2 * j)[0]
+                px[x + j, y] = (((v >> 8) & 15) * 17, ((v >> 4) & 15) * 17, (v & 15) * 17, (v >> 12) * 17)
+    return im
+
+
+def _fuente(nombre, tam):
+    from PIL import ImageFont
+    try:
+        return ImageFont.truetype('C:/Windows/Fonts/' + nombre, tam)
+    except OSError:
+        return ImageFont.load_default()
+
+
+def _texto_dorado(lienzo, xy, texto, fuente, arriba=(255, 236, 150), abajo=(255, 146, 30)):
+    """Texto con degradado dorado, sombra difuminada y contorno oscuro."""
+    from PIL import ImageFilter
+    w, h = lienzo.size
+    sombra = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    ImageDraw.Draw(sombra).text(xy, texto, font=fuente, fill=(0, 0, 0, 255), stroke_width=3, stroke_fill=(0, 0, 0, 255))
+    lienzo.alpha_composite(sombra.filter(ImageFilter.GaussianBlur(2)))
+    ImageDraw.Draw(lienzo).text(xy, texto, font=fuente, fill=(70, 20, 6, 255), stroke_width=1,
+                                stroke_fill=(70, 20, 6, 255))
+    x0, y0, x1, y1 = ImageDraw.Draw(lienzo).textbbox(xy, texto, font=fuente)
+    oro = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    od = ImageDraw.Draw(oro)
+    for y in range(y0, y1 + 1):
+        v = (y - y0) / max(1, y1 - y0)
+        od.line((0, y, w, y), fill=tuple(int(arriba[k] + (abajo[k] - arriba[k]) * v) for k in range(3)) + (255,))
+    mascara = Image.new('L', (w, h), 0)
+    ImageDraw.Draw(mascara).text(xy, texto, font=fuente, fill=255)
+    capa = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    capa.paste(oro, (0, 0), mascara)
+    lienzo.alpha_composite(capa)
+
+
+def _banner() -> Image.Image:
+    import random
+    from PIL import ImageFilter
+    bw, bh = BANNER[2] - BANNER[0], BANNER[3] - BANNER[1]
+    ban = Image.new('RGBA', (bw, bh), (0, 0, 0, 255))
+    bd = ImageDraw.Draw(ban)
+    for y in range(bh):                                         # de noche arriba a brasa abajo
+        v = y / bh
+        bd.line((0, y, bw, y), fill=(int(36 + 110 * v ** 2), int(8 + 34 * v ** 3), int(12 + 2 * v), 255))
+    glow = Image.new('RGBA', (bw, bh), (0, 0, 0, 0))
+    gd = ImageDraw.Draw(glow)
+    gd.ellipse((bw * 0.42, bh * 0.30, bw * 1.08, bh * 1.7), fill=(255, 110, 20, 160))
+    gd.ellipse((-60, bh * 0.70, bw * 0.45, bh * 1.6), fill=(190, 50, 10, 110))
+    ban.alpha_composite(glow.filter(ImageFilter.GaussianBlur(18)))
+    rnd = random.Random(902)
+    for _ in range(80):                                         # ascuas
+        x, y, r = rnd.uniform(0, bw), rnd.uniform(0, bh), rnd.choice((1, 1, 1, 2))
+        c = rnd.choice(((255, 210, 90), (255, 150, 40), (255, 90, 30)))
+        bd.ellipse((x, y, x + r, y + r), fill=c + (255,))
+    xs = (bw - 152, bw - 94, bw - 36)
+    orden = ((0, False), (2, False), (1, True))                 # Satrixia la ultima, por delante
+    for i, delante in orden:
+        ruta, frame, escala = JEFES_SPR[i]
+        s = _sprite(ruta, frame)
+        s = s.resize((max(1, int(s.width * escala)), max(1, int(s.height * escala))), Image.LANCZOS)
+        if not delante:                                         # los de los lados un poco en penumbra
+            oscuro = Image.new('RGBA', s.size, (20, 6, 4, 0))
+            oscuro.putalpha(s.getchannel('A').point(lambda a: a // 5))
+            s = Image.alpha_composite(s, oscuro)
+        x, y = int(xs[i] - s.width / 2), bh - s.height + (8 if delante else 4)
+        if y < 0:
+            s, y = s.crop((0, -y, s.width, s.height)), 0
+        ban.alpha_composite(s, (x, y))
+    _texto_dorado(ban, (14, 12), 'FLAMEFANG', _fuente('georgiab.ttf', 30))
+    _texto_dorado(ban, (16, 48), 'R A I D', _fuente('georgiab.ttf', 15), (255, 214, 150), (230, 120, 40))
+    d = ImageDraw.Draw(ban)
+    d.line((16, 72, 160, 72), fill=(200, 140, 60, 255))
+    d.line((16, 73, 160, 73), fill=(80, 30, 10, 255))
+    f = _fuente('trebucbd.ttf', 11)
+    d.text((16, 79), 'Level 60  \u2022  20 players  \u2022  3 bosses', font=f, fill=(0, 0, 0, 255), stroke_width=2,
+           stroke_fill=(0, 0, 0, 255))
+    d.text((16, 79), 'Level 60  \u2022  20 players  \u2022  3 bosses', font=f, fill=(255, 226, 180, 255))
+    return ban
+
+
+def _caja(d, caja, relleno=(14, 9, 8, 255), borde=(110, 66, 30, 255), brillo=(44, 28, 18, 255)):
+    x0, y0, x1, y1 = caja
+    d.rectangle(caja, fill=relleno, outline=borde)
+    d.line((x0 + 1, y0 + 1, x1 - 1, y0 + 1), fill=brillo)
+
+
+def dibujar_lista() -> Image.Image:
+    """El fondo de AOF Raids, opaco: marco dorado, el banner de Flamefang y los dos paneles."""
+    im = Image.new('RGBA', (LW, LH), (22, 14, 12, 255))
+    d = ImageDraw.Draw(im)
+    for y in range(LH):
+        v = y / LH
+        d.line((0, y, LW, y), fill=(int(36 - 16 * v), int(22 - 10 * v), int(17 - 8 * v), 255))
+    im.alpha_composite(_banner(), BANNER[:2])
+    d.rectangle(BANNER, outline=(150, 96, 40, 255))
+    _caja(d, PANEL_IZQ)
+    _caja(d, PANEL_DER)
+    f = _fuente('trebucbd.ttf', 11)
+    d.text((PANEL_IZQ[0] + 8, PANEL_IZQ[1] + 4), 'RAIDS', font=f, fill=(214, 160, 70, 255))
+    linea = (90, 54, 26, 255)
+    d.line((PANEL_IZQ[0] + 6, PANEL_IZQ[1] + 20, PANEL_IZQ[2] - 6, PANEL_IZQ[1] + 20), fill=linea)
+    d.line((X_DETALLE, PANEL_DER[1] + 55, PANEL_DER[2] - 8, PANEL_DER[1] + 55), fill=linea)
+    d.line((X_DETALLE, PANEL_DER[1] + 123, PANEL_DER[2] - 8, PANEL_DER[1] + 123), fill=linea)
+    d.rectangle((0, 0, LW - 1, LH - 1), outline=(176, 120, 48, 255))
+    d.rectangle((1, 1, LW - 2, LH - 2), outline=(60, 34, 16, 255))
+    return im
 
 
 def bloque_lista() -> str:
@@ -258,15 +395,29 @@ def bloque_lista() -> str:
     def poner(wid, xml):
         hijos.append(wid)
         ventanas.append(xml)
-    poner(LISTA_ABRIR, _boton(LISTA_ABRIR, LW - 64, LH - 26, 'Open', 'OnRaidListaAbrir'))
-    poner(LISTA_FILAS, _w('WND_CLASS_LIST', LISTA_FILAS, 6, 6, LW - 12, LH - 56,
-                          ' cols="4" rows="8" gapx="2" gapy="1" tpos="1,1" fcolor="103" font="1"',
-                          'wsVisible="" lsVCenter="" lsReport="" wsTab=""', '        <OnCommand>OnRaidListaFila</OnCommand>\n'))
-    poner(LISTA_ESTADO, _texto(LISTA_ESTADO, 8, LH - 46, LW - 16))
+
+    def texto(wid, x, y, w, color):
+        return _w('WND_CLASS_STATIC', wid, x, y, w, 14, ' title="" fcolor="%d" font="1"' % color,
+                  'wsVisible="" ssVCenter=""')
+    poner(LISTA_ABRIR, _boton(LISTA_ABRIR, LW - 74, LH - 30, 'Open', 'OnRaidListaAbrir', w=66))
+    poner(LISTA_FILAS, _w('WND_CLASS_LIST', LISTA_FILAS, PANEL_IZQ[0] + 4, PANEL_IZQ[1] + 24,
+                          PANEL_IZQ[2] - PANEL_IZQ[0] - 8, PANEL_IZQ[3] - PANEL_IZQ[1] - 28,
+                          ' cols="1" rows="7" gapx="0" gapy="2" tpos="3,2" fcolor="103" font="1"',
+                          'wsVisible="" lsVCenter="" wsTab=""', '        <OnCommand>OnRaidListaFila</OnCommand>\n'))
+    ancho = PANEL_DER[2] - X_DETALLE - 8
+    y = PANEL_DER[1] + 5
+    poner(LISTA_NOMBRE, texto(LISTA_NOMBRE, X_DETALLE, y, ancho, 514))
+    poner(LISTA_NIVEL, texto(LISTA_NIVEL, X_DETALLE, y + 17, ancho, 103))
+    poner(LISTA_SEMANA, texto(LISTA_SEMANA, X_DETALLE, y + 32, ancho, 511))
+    poner(LISTA_JEFES, texto(LISTA_JEFES, X_DETALLE, y + 55, ancho, 513))
+    for k in range(3):
+        poner(LISTA_JEFES + 1 + k, texto(LISTA_JEFES + 1 + k, X_DETALLE + 6, y + 71 + 15 * k, ancho - 6, 103))
+    poner(LISTA_BOTIN, texto(LISTA_BOTIN, X_DETALLE, y + 122, ancho, 510))
+    poner(LISTA_BOTIN + 1, texto(LISTA_BOTIN + 1, X_DETALLE, y + 122 + 13, ancho, 510))
+    poner(LISTA_ESTADO, texto(LISTA_ESTADO, 10, LH - 27, LW - 92, 513))
     poner(LISTA_FONDO, _w('WND_CLASS_BASE', LISTA_FONDO, 0, 0, LW, LH, ' icon="%d"' % LISTA_ICONO_FONDO))
     ventanas.append('    <icon id="%d" dir="\\wnd01\\" normal="aolat_raid_lista" focus="normal" down="normal" '
-                    'disable="normal">\n        <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />\n    </icon>\n'
-                    % LISTA_ICONO_FONDO)
+                    'disable="normal" />\n' % LISTA_ICONO_FONDO)
     cab = ('    <window class="WND_CLASS_DLG_1" range="0,0,%d,%d" id="%d" title="AOF Raids" fcolor="104" font="1">\n'
            '        <style wsVisible="" wsMoveable="" />\n%s    </window>\n'
            % (LW, LH, LISTA_RAIDS, ''.join('        <child>%d</child>\n' % h for h in hijos)))
@@ -291,7 +442,7 @@ def main():
     iconos()
     iconos_panel()
     (SALIDA / (ARCHIVO_FONDO + '.shp')).write_bytes(fondo())
-    (SALIDA / 'aolat_raid_lista.shp').write_bytes(fondo(LW, LH))
+    (SALIDA / 'aolat_raid_lista.shp').write_bytes(a_shp(dibujar_lista()))
     _guardar('wnd03.xml', _al_final(bloque_wnd03() + bloque_panel() + bloque_lista()))
     _guardar('wnd01.xml', lambda t: boton_menu(wnd01(t)))
     print('boton %d, ventana %d (%dx%d), panel %d (%dx%d) e iconos listos' % (BOTON_BARRA, VENTANA, W, H, PANEL, PW, PH))

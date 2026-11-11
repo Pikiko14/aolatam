@@ -174,7 +174,9 @@ def test_panel_por_parties_con_rol_vida_y_estado(monkeypatch):
     assert sueltos['P3'][5] == 'dead' and sueltos['P4'][5] == 'away' and sueltos['P1'][1] == 100
 
 
-def test_el_listado_aof_raids_y_el_saludo():
+def test_el_listado_aof_raids_y_el_saludo(monkeypatch):
+    import app
+    monkeypatch.setattr(app, '_monstruo_bd', lambda npc: ('Jefe %d' % npc,))
     _limpiar()
     s = _ses(1)
     s.personaje.raid_lockout = {}
@@ -182,5 +184,6 @@ def test_el_listado_aof_raids_y_el_saludo():
     assert filas[0][0] == raid.NOMBRE and filas[0][1] == 60 and filas[0][4] == '3/3 bosses left'
     s.personaje.raid_lockout = {str(i): raid.semana() for i in range(3)}
     assert raid.lista_de_raids(s)[0][4] == 'Locked until Monday'
+    assert raid.lista_de_raids(s)[0][5][0] == ['Jefe 23940', 'looted']
     # El boton de la barra abre el listado, y el menu del jugador se envuelve para "Invite to raid".
     assert 'netcommand2(CMD_RAID, 30, 0)' in raid.SALUDO_LUA and 'OnClickChatOption' in raid.SALUDO_LUA

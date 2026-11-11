@@ -9106,29 +9106,63 @@
     </icon>
     <!-- /aolat raid panel -->
     <!-- aolat raid lista -->
-    <window class="WND_CLASS_DLG_1" range="0,0,330,200" id="59670" title="AOF Raids" fcolor="104" font="1">
+    <window class="WND_CLASS_DLG_1" range="0,0,400,300" id="59670" title="AOF Raids" fcolor="104" font="1">
         <style wsVisible="" wsMoveable="" />
         <child>59672</child>
         <child>59671</child>
+        <child>59676</child>
+        <child>59677</child>
+        <child>59678</child>
+        <child>59679</child>
+        <child>59680</child>
+        <child>59681</child>
+        <child>59682</child>
+        <child>59683</child>
+        <child>59684</child>
         <child>59673</child>
         <child>59674</child>
     </window>
-    <window class="WND_CLASS_BUTTON" id="59672" range="266,174,55,18" fcolor="101" font="1" icon="12006" title="Open">
+    <window class="WND_CLASS_BUTTON" id="59672" range="326,270,66,18" fcolor="101" font="1" icon="12006" title="Open">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnRaidListaAbrir</OnCommand>
     </window>
-    <window class="WND_CLASS_LIST" id="59671" range="6,6,318,144" cols="4" rows="8" gapx="2" gapy="1" tpos="1,1" fcolor="103" font="1">
-        <style wsVisible="" lsVCenter="" lsReport="" wsTab="" />
+    <window class="WND_CLASS_LIST" id="59671" range="8,138,120,120" cols="1" rows="7" gapx="0" gapy="2" tpos="3,2" fcolor="103" font="1">
+        <style wsVisible="" lsVCenter="" wsTab="" />
         <OnCommand>OnRaidListaFila</OnCommand>
     </window>
-    <window class="WND_CLASS_STATIC" id="59673" range="8,154,314,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59676" range="146,119,242,14" title="" fcolor="514" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_BASE" id="59674" range="0,0,330,200" icon="59675">
+    <window class="WND_CLASS_STATIC" id="59677" range="146,136,242,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59678" range="146,151,242,14" title="" fcolor="511" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59679" range="146,174,242,14" title="" fcolor="513" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59680" range="152,190,236,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59681" range="152,205,236,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59682" range="152,220,236,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59683" range="146,241,242,14" title="" fcolor="510" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59684" range="146,254,242,14" title="" fcolor="510" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59673" range="10,273,308,14" title="" fcolor="513" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BASE" id="59674" range="0,0,400,300" icon="59675">
         <style wsVisible="" />
     </window>
-    <icon id="59675" dir="\wnd01\" normal="aolat_raid_lista" focus="normal" down="normal" disable="normal">
-        <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />
-    </icon>
+    <icon id="59675" dir="\wnd01\" normal="aolat_raid_lista" focus="normal" down="normal" disable="normal" />
     <!-- /aolat raid lista -->
 </root>
