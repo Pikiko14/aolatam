@@ -187,6 +187,7 @@ def bolsas():
     for k, gacha in enumerate(gachas(items)):
         salida.append(dict({'id': ID_GACHA + k}, **gacha))
     salida.extend(cajas_santa(items))
+    salida.extend(cajas_raid(items))
     return salida
 
 
@@ -204,6 +205,39 @@ def _reparte(grupos):
     llenos = [(pct, ids) for pct, ids in grupos if ids]
     total = sum(pct for pct, _ids in llenos) or 1
     return [[i, 1, max(1, int(round(pct * 100000 / total / len(ids))))] for pct, ids in llenos for i in ids]
+
+
+def cajas_raid(items):
+    """Las cajas del botin de la raid Flamefang (server/raid.py, 11/11/2026: "que de items lvl 60 clase S, rides"): las
+    mismas que las de Santa Clausula con su nombre y una mas, la de Assassin. Una por clase (su arma S, escudo S si
+    usa, capas y accesorios S y la armadura Good de su tipo de 55-60), la de armas S y la de monturas S de nivel 60."""
+    def de(cats, color, lo, hi, tipo=None):
+        return [int(f['id']) for f in _sin_repetir([f for f in items.values() if f['物品類別'] in cats
+                and f['顏色'] == color and lo <= _n(f['物品等級']) <= hi and _vale(f)
+                and (tipo is None or str(f['技能限制1']) == tipo)])]
+    extra = de(('飾品', '披風'), '黃', 60, 60)
+    salida = []
+    for k, (clase, armas, armadura, escudo) in enumerate(CLASES):
+        grupos = {'arma': de(armas, '黃', 60, 60), 'escudo': de(('盾',), '黃', 60, 60) if escudo else [],
+                  'extra': extra, 'ropa': de(ARMADURA, '藍', 55, 60, armadura)}
+        salida.append({'id': ID_RAID + k, 'nombre': 'Flamefang Lv60 %s Box' % clase, 'nivel': 60, 'pestana': None,
+                       'cantidades': True,
+                       'descripcion': 'Spoils of the Flamefang Raid. Open it to get one Lv60 %s item: a class S '
+                                      'weapon, shield, cape or accessory, or a piece of Quality armor.' % clase,
+                       'contenido': _reparte([(pct, grupos[que]) for que, pct in REPARTO_CLASE])})
+    armas = sorted({i for c in CLASES for i in de(c[1], '黃', 60, 60)})
+    salida.append({'id': ID_RAID + len(CLASES), 'nombre': 'Flamefang Lv60 Weapon Box', 'nivel': 60, 'pestana': None,
+                   'cantidades': True,
+                   'descripcion': 'Spoils of the Flamefang Raid. Open it to get one class S Lv60 weapon.',
+                   'contenido': _reparte([(100.0, armas)])})
+    salida.append({'id': ID_RAID + len(CLASES) + 1, 'nombre': 'Flamefang Lv60 Mount Box', 'nivel': 60,
+                   'pestana': None, 'cantidades': True,
+                   'descripcion': 'Spoils of the Flamefang Raid. Open it to get one class S Lv60 mount.',
+                   'contenido': _reparte([(100.0, de(('座騎',), '黃', 60, 60))])})
+    return salida
+
+
+ID_RAID = 89300                       # 89300..89305 de clase (orden de CLASES), 89306 armas, 89307 monturas
 
 
 def cajas_santa(items):

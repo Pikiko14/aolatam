@@ -3656,6 +3656,11 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
         __import__('torre_babel').al_morir(ses, m, addr)
     except Exception:
         log.exception('Torre de Babel: al morir el jefe')
+    # La raid Flamefang: trash, adds y jefes (raid.py)
+    try:
+        __import__('raid').al_morir(ses, m, addr)
+    except Exception:
+        log.exception('raid: al morir un bicho')
 
     # El ranking de dano de los jefes, a todos los de la sala (contador_dano.py)
     try:
@@ -4862,6 +4867,7 @@ def _sincronizar_cambio_mapa(ses, stage_id: int, x: int = None, y: int = None):
     __import__('league_war').before_travel(ses,stage_id)
     __import__('competiciones').antes_de_viajar(ses, stage_id)
     __import__('torre_babel').antes_de_viajar(ses, stage_id)
+    __import__('raid').antes_de_viajar(ses, stage_id)
     p.stage = stage_id
     if x is not None and y is not None:
         p.tile_x, p.tile_y = x, y
@@ -10908,6 +10914,10 @@ def _eventos_al_pisar(ses, addr, tile, solo_chocar=False):
         # Alli los pisos solo se recorren con el TP de la torre (torre_babel.subir).
         if _por_t or ses.personaje.stage == __import__('torre_babel').STAGE:
             efectos = [e for e in efectos if e[0] not in ('viajar', 'ir_a_tag')]
+        # La raid (902, copia del Flamefang Sanctum 292): sus eventos de mision y sus tornados no hacen nada; se sale
+        # desde la ventana de la raid.
+        if ses.personaje.stage == __import__('raid').STAGE:
+            efectos = []
         if efectos:
             _aplicar_efectos(ses, addr, efectos, ' al pisar %s' % (tuple(tile),))
     except Exception:
@@ -11616,6 +11626,7 @@ class Servidor:
         self.desconocidos = collections.Counter()
         self.sesiones = 0
         self.mundos = []          # sesiones de mundo vivas, para el GM
+        __import__('raid')._CONECTADOS[0] = self.mundos      # la raid busca ahi a sus miembros
         # Single account owner; one-use, 30-second login -> world handoff.
         # Legacy client identifies this handoff by IP, not a session token.
         from accesos import Accesos
@@ -12073,6 +12084,10 @@ class Servidor:
                 __import__('torre_babel').al_desconectar(ses)     # antes de salir de presencia: cuenta la copia
             except Exception:
                 log.exception('Torre de Babel: al desconectar')
+            try:
+                __import__('raid').al_desconectar(ses)
+            except Exception:
+                log.exception('raid: al desconectar')
             try:
                 import presencia as _pres
                 _pres.salir(ses)
@@ -13117,6 +13132,10 @@ class Servidor:
                 __import__('torre_babel').al_entrar(ses, addr)
             except Exception:
                 log.exception('Torre de Babel: al entrar')
+            try:
+                __import__('raid').al_entrar(ses, addr)
+            except Exception:
+                log.exception('raid: al entrar')
             bars, max_pts = _max_sp_info(p)
             # Ver arriba: empieza a cero, no al maximo.
             # El SP viene del personaje guardado. Empieza a cero solo la
@@ -17336,6 +17355,10 @@ class Servidor:
             except Exception:
                 log.exception('Torre de Babel: al entrar')
             try:
+                __import__('raid').al_entrar(ses, addr)
+            except Exception:
+                log.exception('raid: al entrar')
+            try:
                 _tw_al_entrar(ses)
             except Exception:
                 log.exception('Totem War al entrar')
@@ -18148,6 +18171,8 @@ class Servidor:
             if __import__('medidor_dano').procesar(ses, cuerpo):       # el contador de dano (168)
                 return
             if __import__('torre_babel').procesar(ses, cuerpo, addr):  # la Torre de Babel (169)
+                return
+            if __import__('raid').procesar(ses, cuerpo, addr, getattr(self, 'mundos', None)):  # la raid (171)
                 return
             if __import__('arbol_mascotas').procesar(ses, cuerpo, addr):  # el arbol de evolucion de la mascota (170)
                 return

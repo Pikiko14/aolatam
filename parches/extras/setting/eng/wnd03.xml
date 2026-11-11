@@ -8519,4 +8519,616 @@
         <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />
     </icon>
     <!-- /aolat arbol -->
+    <!-- aolat raid ventana -->
+    <window class="WND_CLASS_DLG_1" range="0,0,360,344" id="59600" title="Flamefang Raid" fcolor="104" font="1">
+        <style wsVisible="" wsMoveable="" />
+        <child>59607</child>
+        <child>59608</child>
+        <child>59609</child>
+        <child>59610</child>
+        <child>59611</child>
+        <child>59612</child>
+        <child>59606</child>
+        <child>59601</child>
+        <child>59602</child>
+        <child>59603</child>
+        <child>59604</child>
+        <child>59605</child>
+        <child>59613</child>
+        <child>59614</child>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59607" range="136,268,55,18" fcolor="101" font="1" icon="12006" title="Invite">
+        <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
+        <OnCommand>OnRaidInvitar</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59608" range="8,292,60,18" fcolor="101" font="1" icon="12006" title="Create">
+        <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
+        <OnCommand>OnRaidCrear</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59609" range="72,292,80,18" fcolor="101" font="1" icon="12006" title="Invite party">
+        <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
+        <OnCommand>OnRaidParty</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59610" range="156,292,60,18" fcolor="101" font="1" icon="12006" title="Enter">
+        <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
+        <OnCommand>OnRaidEntrar</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59611" range="220,292,64,18" fcolor="101" font="1" icon="12006" title="Exit map">
+        <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
+        <OnCommand>OnRaidSalirMapa</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59612" range="290,292,60,18" fcolor="101" font="1" icon="12006" title="Accept">
+        <style bsHCenter="" bsVCenter="" wsTab="" />
+        <OnCommand>OnRaidAceptar</OnCommand>
+    </window>
+    <window class="WND_CLASS_EDIT" id="59606" range="8,270,120,14" fcolor="103" font="1" tpos="1,0" limit="16">
+        <style wsVisible="" esVCenter="" wsTab="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59601" range="8,4,344,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_LIST" id="59602" range="6,22,348,186" cols="3" rows="11" gapx="2" gapy="1" tpos="1,1" fcolor="103" font="1">
+        <style wsVisible="" lsVCenter="" lsReport="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59603" range="8,214,344,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59604" range="8,230,344,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59605" range="8,246,344,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59613" range="8,320,344,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BASE" id="59614" range="0,0,360,344" icon="59615">
+        <style wsVisible="" />
+    </window>
+    <icon id="59615" dir="\wnd01\" normal="aolat_raid_fondo" focus="normal" down="normal" disable="normal">
+        <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />
+    </icon>
+    <!-- /aolat raid ventana -->
+    <!-- aolat raid panel -->
+    <window class="WND_CLASS_DLG_1" range="0,0,210,584" id="59700" title="Raid" fcolor="104" font="1">
+        <style wsVisible="" wsMoveable="" />
+        <child>59750</child>
+        <child>59730</child>
+        <child>59710</child>
+        <child>59810</child>
+        <child>59770</child>
+        <child>59790</child>
+        <child>59751</child>
+        <child>59731</child>
+        <child>59711</child>
+        <child>59811</child>
+        <child>59771</child>
+        <child>59791</child>
+        <child>59752</child>
+        <child>59732</child>
+        <child>59712</child>
+        <child>59812</child>
+        <child>59772</child>
+        <child>59792</child>
+        <child>59753</child>
+        <child>59733</child>
+        <child>59713</child>
+        <child>59813</child>
+        <child>59773</child>
+        <child>59793</child>
+        <child>59754</child>
+        <child>59734</child>
+        <child>59714</child>
+        <child>59814</child>
+        <child>59774</child>
+        <child>59794</child>
+        <child>59755</child>
+        <child>59735</child>
+        <child>59715</child>
+        <child>59815</child>
+        <child>59775</child>
+        <child>59795</child>
+        <child>59756</child>
+        <child>59736</child>
+        <child>59716</child>
+        <child>59816</child>
+        <child>59776</child>
+        <child>59796</child>
+        <child>59757</child>
+        <child>59737</child>
+        <child>59717</child>
+        <child>59817</child>
+        <child>59777</child>
+        <child>59797</child>
+        <child>59758</child>
+        <child>59738</child>
+        <child>59718</child>
+        <child>59818</child>
+        <child>59778</child>
+        <child>59798</child>
+        <child>59759</child>
+        <child>59739</child>
+        <child>59719</child>
+        <child>59819</child>
+        <child>59779</child>
+        <child>59799</child>
+        <child>59760</child>
+        <child>59740</child>
+        <child>59720</child>
+        <child>59820</child>
+        <child>59780</child>
+        <child>59800</child>
+        <child>59761</child>
+        <child>59741</child>
+        <child>59721</child>
+        <child>59821</child>
+        <child>59781</child>
+        <child>59801</child>
+        <child>59762</child>
+        <child>59742</child>
+        <child>59722</child>
+        <child>59822</child>
+        <child>59782</child>
+        <child>59802</child>
+        <child>59763</child>
+        <child>59743</child>
+        <child>59723</child>
+        <child>59823</child>
+        <child>59783</child>
+        <child>59803</child>
+        <child>59764</child>
+        <child>59744</child>
+        <child>59724</child>
+        <child>59824</child>
+        <child>59784</child>
+        <child>59804</child>
+        <child>59765</child>
+        <child>59745</child>
+        <child>59725</child>
+        <child>59825</child>
+        <child>59785</child>
+        <child>59805</child>
+        <child>59766</child>
+        <child>59746</child>
+        <child>59726</child>
+        <child>59826</child>
+        <child>59786</child>
+        <child>59806</child>
+        <child>59767</child>
+        <child>59747</child>
+        <child>59727</child>
+        <child>59827</child>
+        <child>59787</child>
+        <child>59807</child>
+        <child>59768</child>
+        <child>59748</child>
+        <child>59728</child>
+        <child>59828</child>
+        <child>59788</child>
+        <child>59808</child>
+        <child>59769</child>
+        <child>59749</child>
+        <child>59729</child>
+        <child>59829</child>
+        <child>59789</child>
+        <child>59809</child>
+        <child>59830</child>
+        <child>59831</child>
+        <child>59832</child>
+        <child>59833</child>
+        <child>59840</child>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59750" range="6,19,12,12" icon="59850">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59730" range="188,19,12,12" icon="0">
+        <style  />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59710" range="20,18,120,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59810" range="136,18,50,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59770" range="8,33,194,4" picon="159">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59790" range="8,38,194,3" picon="160">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59751" range="6,45,12,12" icon="59850">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59731" range="188,45,12,12" icon="0">
+        <style  />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59711" range="20,44,120,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59811" range="136,44,50,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59771" range="8,59,194,4" picon="159">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59791" range="8,64,194,3" picon="160">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59752" range="6,71,12,12" icon="59850">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59732" range="188,71,12,12" icon="0">
+        <style  />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59712" range="20,70,120,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59812" range="136,70,50,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59772" range="8,85,194,4" picon="159">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59792" range="8,90,194,3" picon="160">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59753" range="6,97,12,12" icon="59850">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59733" range="188,97,12,12" icon="0">
+        <style  />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59713" range="20,96,120,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59813" range="136,96,50,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59773" range="8,111,194,4" picon="159">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59793" range="8,116,194,3" picon="160">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59754" range="6,123,12,12" icon="59850">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59734" range="188,123,12,12" icon="0">
+        <style  />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59714" range="20,122,120,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59814" range="136,122,50,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59774" range="8,137,194,4" picon="159">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59794" range="8,142,194,3" picon="160">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59755" range="6,163,12,12" icon="59850">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59735" range="188,163,12,12" icon="0">
+        <style  />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59715" range="20,162,120,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59815" range="136,162,50,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59775" range="8,177,194,4" picon="159">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59795" range="8,182,194,3" picon="160">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59756" range="6,189,12,12" icon="59850">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59736" range="188,189,12,12" icon="0">
+        <style  />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59716" range="20,188,120,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59816" range="136,188,50,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59776" range="8,203,194,4" picon="159">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59796" range="8,208,194,3" picon="160">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59757" range="6,215,12,12" icon="59850">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59737" range="188,215,12,12" icon="0">
+        <style  />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59717" range="20,214,120,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59817" range="136,214,50,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59777" range="8,229,194,4" picon="159">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59797" range="8,234,194,3" picon="160">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59758" range="6,241,12,12" icon="59850">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59738" range="188,241,12,12" icon="0">
+        <style  />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59718" range="20,240,120,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59818" range="136,240,50,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59778" range="8,255,194,4" picon="159">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59798" range="8,260,194,3" picon="160">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59759" range="6,267,12,12" icon="59850">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59739" range="188,267,12,12" icon="0">
+        <style  />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59719" range="20,266,120,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59819" range="136,266,50,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59779" range="8,281,194,4" picon="159">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59799" range="8,286,194,3" picon="160">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59760" range="6,307,12,12" icon="59850">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59740" range="188,307,12,12" icon="0">
+        <style  />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59720" range="20,306,120,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59820" range="136,306,50,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59780" range="8,321,194,4" picon="159">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59800" range="8,326,194,3" picon="160">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59761" range="6,333,12,12" icon="59850">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59741" range="188,333,12,12" icon="0">
+        <style  />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59721" range="20,332,120,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59821" range="136,332,50,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59781" range="8,347,194,4" picon="159">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59801" range="8,352,194,3" picon="160">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59762" range="6,359,12,12" icon="59850">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59742" range="188,359,12,12" icon="0">
+        <style  />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59722" range="20,358,120,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59822" range="136,358,50,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59782" range="8,373,194,4" picon="159">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59802" range="8,378,194,3" picon="160">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59763" range="6,385,12,12" icon="59850">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59743" range="188,385,12,12" icon="0">
+        <style  />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59723" range="20,384,120,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59823" range="136,384,50,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59783" range="8,399,194,4" picon="159">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59803" range="8,404,194,3" picon="160">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59764" range="6,411,12,12" icon="59850">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59744" range="188,411,12,12" icon="0">
+        <style  />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59724" range="20,410,120,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59824" range="136,410,50,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59784" range="8,425,194,4" picon="159">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59804" range="8,430,194,3" picon="160">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59765" range="6,451,12,12" icon="59850">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59745" range="188,451,12,12" icon="0">
+        <style  />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59725" range="20,450,120,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59825" range="136,450,50,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59785" range="8,465,194,4" picon="159">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59805" range="8,470,194,3" picon="160">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59766" range="6,477,12,12" icon="59850">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59746" range="188,477,12,12" icon="0">
+        <style  />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59726" range="20,476,120,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59826" range="136,476,50,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59786" range="8,491,194,4" picon="159">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59806" range="8,496,194,3" picon="160">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59767" range="6,503,12,12" icon="59850">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59747" range="188,503,12,12" icon="0">
+        <style  />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59727" range="20,502,120,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59827" range="136,502,50,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59787" range="8,517,194,4" picon="159">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59807" range="8,522,194,3" picon="160">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59768" range="6,529,12,12" icon="59850">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59748" range="188,529,12,12" icon="0">
+        <style  />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59728" range="20,528,120,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59828" range="136,528,50,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59788" range="8,543,194,4" picon="159">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59808" range="8,548,194,3" picon="160">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59769" range="6,555,12,12" icon="59850">
+        <style  />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59749" range="188,555,12,12" icon="0">
+        <style  />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59729" range="20,554,120,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59829" range="136,554,50,14" title="" fcolor="103" font="1">
+        <style ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59789" range="8,569,194,4" picon="159">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="59809" range="8,574,194,3" picon="160">
+        <style psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59830" range="6,4,198,14" title="Group 1" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59831" range="6,148,198,14" title="Group 2" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59832" range="6,292,198,14" title="Group 3" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59833" range="6,436,198,14" title="Group 4" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BASE" id="59840" range="0,0,210,584" icon="59841">
+        <style wsVisible="" />
+    </window>
+    <icon id="59841" dir="\wnd01\" normal="aolat_raid_panel" focus="normal" down="normal" disable="normal">
+        <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />
+    </icon>
+    <icon id="59850" dir="\wnd01\" normal="aolat_corona" focus="normal" down="normal" disable="normal">
+    </icon>
+    <icon id="59851" dir="\wnd01\" normal="aolat_rol_tanque" focus="normal" down="normal" disable="normal">
+    </icon>
+    <icon id="59852" dir="\wnd01\" normal="aolat_rol_sanador" focus="normal" down="normal" disable="normal">
+    </icon>
+    <icon id="59853" dir="\wnd01\" normal="aolat_rol_dano" focus="normal" down="normal" disable="normal">
+    </icon>
+    <!-- /aolat raid panel -->
+    <!-- aolat raid lista -->
+    <window class="WND_CLASS_DLG_1" range="0,0,330,200" id="59670" title="AOF Raids" fcolor="104" font="1">
+        <style wsVisible="" wsMoveable="" />
+        <child>59672</child>
+        <child>59671</child>
+        <child>59673</child>
+        <child>59674</child>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59672" range="266,174,55,18" fcolor="101" font="1" icon="12006" title="Open">
+        <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
+        <OnCommand>OnRaidListaAbrir</OnCommand>
+    </window>
+    <window class="WND_CLASS_LIST" id="59671" range="6,6,318,144" cols="4" rows="8" gapx="2" gapy="1" tpos="1,1" fcolor="103" font="1">
+        <style wsVisible="" lsVCenter="" lsReport="" wsTab="" />
+        <OnCommand>OnRaidListaFila</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="59673" range="8,154,314,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BASE" id="59674" range="0,0,330,200" icon="59675">
+        <style wsVisible="" />
+    </window>
+    <icon id="59675" dir="\wnd01\" normal="aolat_raid_lista" focus="normal" down="normal" disable="normal">
+        <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />
+    </icon>
+    <!-- /aolat raid lista -->
 </root>

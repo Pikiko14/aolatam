@@ -192,6 +192,7 @@
 	    <child>16199</child>
 		<child>50001</child>
 		<child>59003</child>
+		<child>59004</child>
 		<child>59002</child>
 		<child>59001</child>
         <child>12600</child>
@@ -2831,6 +2832,7 @@
     <!-- 對話選項 -->
     <window class="WND_CLASS_BASE" id="565" range="100,100,160,130" fillrange="7, 7,300,100" puzzle1="10021" puzzle2="10022" puzzle3="10023" puzzle4="10024" puzzle5="10025" puzzle6="10026" puzzle7="10027" puzzle8="10028" puzzle9="10029">
         <style wsVisible="" wsPuzzle="" wsPopup="" wsAutoClose="" />
+        <child>59660</child>
         <child>566</child>
         <child>567</child>
         <child>568</child>
@@ -6219,4 +6221,17 @@
         <OnCommand>OnCommandArbol</OnCommand>
     </window>
     <!-- /aolat arbol -->
+    <!-- aolat raid ventana -->
+    <window class="WND_CLASS_BUTTON" range="213,-127,40,56" id="59004" icon="59004" tooltip="10043" tooltext="AOF Raid">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnCommandRaid</OnCommand>
+    </window>
+    <icon id="59004" dir="\wnd01\" normal="aolat_rd_n" focus="aolat_rd_f" down="aolat_rd_n" disable="normal" />
+    <!-- /aolat raid ventana -->
+    <!-- aolat raid lista -->
+    <window class="WND_CLASS_BUTTON" range="2,159,110,12" id="59660" fcolor="106" font="1" title="Invite to raid">
+        <style ssVCenter="" ssHCenter="" wsTab="" />
+        <OnCommand>OnClickChatOptionRaid</OnCommand>
+    </window>
+    <!-- /aolat raid lista -->
 </root>

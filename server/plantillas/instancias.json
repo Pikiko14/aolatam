@@ -800,6 +800,14 @@
    "asignacion": "",
    "tope_personas": 0,
    "sin_cambio_de_canal": false
+  },
+  "902": {
+   "nombre": "Flamefang Raid",
+   "copias": 1,
+   "dinamica": true,
+   "asignacion": "",
+   "tope_personas": 0,
+   "sin_cambio_de_canal": false
   }
  }
 }

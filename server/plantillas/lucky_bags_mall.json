@@ -9544,5 +9544,598 @@
    ]
   ],
   "tabla": 28976
+ },
+ {
+  "id": 89300,
+  "nombre": "Flamefang Lv60 Swordsman Box",
+  "nivel": 60,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Flamefang Raid. Open it to get one Lv60 Swordsman item: a class S weapon, shield, cape or accessory, or a piece of Quality armor.",
+  "contenido": [
+   [
+    1196,
+    1,
+    20000
+   ],
+   [
+    1618,
+    1,
+    5000
+   ],
+   [
+    7014,
+    1,
+    5000
+   ],
+   [
+    1764,
+    1,
+    5000
+   ],
+   [
+    1789,
+    1,
+    5000
+   ],
+   [
+    6024,
+    1,
+    5000
+   ],
+   [
+    6080,
+    1,
+    5000
+   ],
+   [
+    382,
+    1,
+    6250
+   ],
+   [
+    387,
+    1,
+    6250
+   ],
+   [
+    392,
+    1,
+    6250
+   ],
+   [
+    1415,
+    1,
+    6250
+   ],
+   [
+    1625,
+    1,
+    6250
+   ],
+   [
+    1639,
+    1,
+    6250
+   ],
+   [
+    1677,
+    1,
+    6250
+   ],
+   [
+    1705,
+    1,
+    6250
+   ]
+  ],
+  "tabla": 28977
+ },
+ {
+  "id": 89301,
+  "nombre": "Flamefang Lv60 Axeman Box",
+  "nivel": 60,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Flamefang Raid. Open it to get one Lv60 Axeman item: a class S weapon, shield, cape or accessory, or a piece of Quality armor.",
+  "contenido": [
+   [
+    1598,
+    1,
+    20000
+   ],
+   [
+    1618,
+    1,
+    5000
+   ],
+   [
+    7014,
+    1,
+    5000
+   ],
+   [
+    1764,
+    1,
+    5000
+   ],
+   [
+    1789,
+    1,
+    5000
+   ],
+   [
+    6024,
+    1,
+    5000
+   ],
+   [
+    6080,
+    1,
+    5000
+   ],
+   [
+    382,
+    1,
+    6250
+   ],
+   [
+    387,
+    1,
+    6250
+   ],
+   [
+    392,
+    1,
+    6250
+   ],
+   [
+    1415,
+    1,
+    6250
+   ],
+   [
+    1625,
+    1,
+    6250
+   ],
+   [
+    1639,
+    1,
+    6250
+   ],
+   [
+    1677,
+    1,
+    6250
+   ],
+   [
+    1705,
+    1,
+    6250
+   ]
+  ],
+  "tabla": 28978
+ },
+ {
+  "id": 89302,
+  "nombre": "Flamefang Lv60 Lancer Box",
+  "nivel": 60,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Flamefang Raid. Open it to get one Lv60 Lancer item: a class S weapon, shield, cape or accessory, or a piece of Quality armor.",
+  "contenido": [
+   [
+    1606,
+    1,
+    20000
+   ],
+   [
+    1618,
+    1,
+    5000
+   ],
+   [
+    7014,
+    1,
+    5000
+   ],
+   [
+    1764,
+    1,
+    5000
+   ],
+   [
+    1789,
+    1,
+    5000
+   ],
+   [
+    6024,
+    1,
+    5000
+   ],
+   [
+    6080,
+    1,
+    5000
+   ],
+   [
+    382,
+    1,
+    6250
+   ],
+   [
+    387,
+    1,
+    6250
+   ],
+   [
+    392,
+    1,
+    6250
+   ],
+   [
+    1415,
+    1,
+    6250
+   ],
+   [
+    1625,
+    1,
+    6250
+   ],
+   [
+    1639,
+    1,
+    6250
+   ],
+   [
+    1677,
+    1,
+    6250
+   ],
+   [
+    1705,
+    1,
+    6250
+   ]
+  ],
+  "tabla": 28979
+ },
+ {
+  "id": 89303,
+  "nombre": "Flamefang Lv60 Archer Box",
+  "nivel": 60,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Flamefang Raid. Open it to get one Lv60 Archer item: a class S weapon, shield, cape or accessory, or a piece of Quality armor.",
+  "contenido": [
+   [
+    597,
+    1,
+    22222
+   ],
+   [
+    1764,
+    1,
+    5556
+   ],
+   [
+    1789,
+    1,
+    5556
+   ],
+   [
+    6024,
+    1,
+    5556
+   ],
+   [
+    6080,
+    1,
+    5556
+   ],
+   [
+    402,
+    1,
+    6944
+   ],
+   [
+    407,
+    1,
+    6944
+   ],
+   [
+    412,
+    1,
+    6944
+   ],
+   [
+    1414,
+    1,
+    6944
+   ],
+   [
+    1626,
+    1,
+    6944
+   ],
+   [
+    1640,
+    1,
+    6944
+   ],
+   [
+    1661,
+    1,
+    6944
+   ],
+   [
+    1691,
+    1,
+    6944
+   ]
+  ],
+  "tabla": 28980
+ },
+ {
+  "id": 89304,
+  "nombre": "Flamefang Lv60 Mage Box",
+  "nivel": 60,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Flamefang Raid. Open it to get one Lv60 Mage item: a class S weapon, shield, cape or accessory, or a piece of Quality armor.",
+  "contenido": [
+   [
+    1775,
+    1,
+    22222
+   ],
+   [
+    1764,
+    1,
+    5556
+   ],
+   [
+    1789,
+    1,
+    5556
+   ],
+   [
+    6024,
+    1,
+    5556
+   ],
+   [
+    6080,
+    1,
+    5556
+   ],
+   [
+    417,
+    1,
+    6944
+   ],
+   [
+    422,
+    1,
+    6944
+   ],
+   [
+    427,
+    1,
+    6944
+   ],
+   [
+    1416,
+    1,
+    6944
+   ],
+   [
+    1713,
+    1,
+    6944
+   ],
+   [
+    1720,
+    1,
+    6944
+   ],
+   [
+    1735,
+    1,
+    6944
+   ],
+   [
+    1749,
+    1,
+    6944
+   ]
+  ],
+  "tabla": 28981
+ },
+ {
+  "id": 89305,
+  "nombre": "Flamefang Lv60 Assassin Box",
+  "nivel": 60,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Flamefang Raid. Open it to get one Lv60 Assassin item: a class S weapon, shield, cape or accessory, or a piece of Quality armor.",
+  "contenido": [
+   [
+    13505,
+    1,
+    22222
+   ],
+   [
+    1764,
+    1,
+    5556
+   ],
+   [
+    1789,
+    1,
+    5556
+   ],
+   [
+    6024,
+    1,
+    5556
+   ],
+   [
+    6080,
+    1,
+    5556
+   ],
+   [
+    402,
+    1,
+    6944
+   ],
+   [
+    407,
+    1,
+    6944
+   ],
+   [
+    412,
+    1,
+    6944
+   ],
+   [
+    1414,
+    1,
+    6944
+   ],
+   [
+    1626,
+    1,
+    6944
+   ],
+   [
+    1640,
+    1,
+    6944
+   ],
+   [
+    1661,
+    1,
+    6944
+   ],
+   [
+    1691,
+    1,
+    6944
+   ]
+  ],
+  "tabla": 28982
+ },
+ {
+  "id": 89306,
+  "nombre": "Flamefang Lv60 Weapon Box",
+  "nivel": 60,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Flamefang Raid. Open it to get one class S Lv60 weapon.",
+  "contenido": [
+   [
+    597,
+    1,
+    16667
+   ],
+   [
+    1196,
+    1,
+    16667
+   ],
+   [
+    1598,
+    1,
+    16667
+   ],
+   [
+    1606,
+    1,
+    16667
+   ],
+   [
+    1775,
+    1,
+    16667
+   ],
+   [
+    13505,
+    1,
+    16667
+   ]
+  ],
+  "tabla": 28983
+ },
+ {
+  "id": 89307,
+  "nombre": "Flamefang Lv60 Mount Box",
+  "nivel": 60,
+  "pestana": null,
+  "cantidades": true,
+  "descripcion": "Spoils of the Flamefang Raid. Open it to get one class S Lv60 mount.",
+  "contenido": [
+   [
+    4909,
+    1,
+    9091
+   ],
+   [
+    4911,
+    1,
+    9091
+   ],
+   [
+    4912,
+    1,
+    9091
+   ],
+   [
+    4913,
+    1,
+    9091
+   ],
+   [
+    5128,
+    1,
+    9091
+   ],
+   [
+    5129,
+    1,
+    9091
+   ],
+   [
+    5684,
+    1,
+    9091
+   ],
+   [
+    6087,
+    1,
+    9091
+   ],
+   [
+    6088,
+    1,
+    9091
+   ],
+   [
+    6472,
+    1,
+    9091
+   ],
+   [
+    7212,
+    1,
+    9091
+   ]
+  ],
+  "tabla": 28984
  }
 ]

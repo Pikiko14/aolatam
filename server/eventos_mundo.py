@@ -258,6 +258,15 @@ def _clave_corrida(ses):
     p=getattr(ses,'personaje',None)
     if getattr(p,'stage',0) in (217,332):
         return ('solo',(getattr(ses,'usuario','').casefold(),p.char_id))
+    # La raid (raid.py): toda la raid comparte copia, aunque sean varias parties.
+    try:
+        import raid as _raid
+        if getattr(p, 'stage', 0) == _raid.STAGE:
+            _r = _raid.raid_de(ses)
+            if _r:
+                return ('raid', _r['id'])
+    except Exception:
+        pass
     try:
         import equipos as _eq
         cid = _eq._char_id(ses)
@@ -276,6 +285,12 @@ def _olvidar_corridas_de_grupos_deshechos():
         return
     for k in [k for k in _CORRIDAS if k[0] == 'equipo' and k[1] not in _eq._GRUPOS]:
         _CORRIDAS.pop(k, None)
+    try:
+        import raid as _raid
+        for k in [k for k in _CORRIDAS if k[0] == 'raid' and k[1] not in _raid._RAIDS]:
+            _CORRIDAS.pop(k, None)
+    except Exception:
+        pass
 
 
 def corrida_de(ses, grupo):
