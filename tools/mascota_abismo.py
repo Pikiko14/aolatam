@@ -199,9 +199,14 @@ def frames_del_huevo(etapa) -> dict:
     return {anim: [poses[anim][p] for p in range(POSES) for _d in HOJAS] for anim in ANIMS}
 
 
+_PLANTILLAS = {}
+
+
 def _tlhs_suelto(im: Image.Image, plantilla: str, ox: int, oy: int) -> bytes:
     """Una imagen como .shp de 8 bits con paleta propia, con la cabecera de `plantilla` (un retrato o un icono)."""
-    cab, bpp, _filas, _pal = fi.leer(fi.del_cliente(plantilla))
+    if plantilla not in _PLANTILLAS:          # del_cliente lee todos los paks: una vez por plantilla, no por imagen
+        _PLANTILLAS[plantilla] = fi.leer(fi.del_cliente(plantilla))
+    cab, bpp, _filas, _pal = _PLANTILLAS[plantilla]
     q = im.convert('RGB').quantize(colors=256, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
     pal = q.getpalette()[:768]
     pal += [0] * (768 - len(pal))

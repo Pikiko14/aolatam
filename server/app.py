@@ -8794,6 +8794,69 @@ def _soltar_encantado(ses, nuevo=None):
     log.info('encanto sobre %s soltado: solo uno a la vez', getattr(viejo, 'nombre', '?'))
 
 
+def _pet_tras_evolucion(ses, f_pet, mensaje, ranura_gastada=None):
+    """Lo que sigue a una evolucion ya hecha en la ficha (mascotas.evolucionar): gasta una unidad de la casilla
+    `ranura_gastada` (el certificado; None si no se gasta nada), guarda, refresca y, si esta fuera, la vuelve a sacar
+    con su forma nueva. Lo usan el certificado y el boton Evolve del arbol de evolucion (arbol_mascotas.py)."""
+    import clases as _clcert
+    import combate as _cbcert
+    import mascotas as _mscert
+    cid = ses.personaje.char_id
+    if ranura_gastada is not None:
+        _queda = ses.cantidades.get(ranura_gastada, 1) - 1
+        if _queda > 0:
+            ses.cantidades[ranura_gastada] = _queda
+        else:
+            ses.inventario.pop(ranura_gastada, None)
+            ses.cantidades.pop(ranura_gastada, None)
+
+    _r_pet_c = f_pet.get('ranura')
+    if _r_pet_c is not None and getattr(ses.personaje, 'mascotas', None) is not None:
+        ses.personaje.mascotas[str(_r_pet_c)] = f_pet
+    _guardar_bolsa(ses, cid)
+    if getattr(ses, 'usuario', None):
+        cuentas.guardar_mascota(ses.usuario, cid, f_pet, getattr(ses.personaje, 'mascotas', None))
+
+    salida_cert = list(_refrescar(ses, [r for r in (ranura_gastada, _r_pet_c) if r is not None]))
+    if f_pet.get('fuera') and f_pet.get('entidad'):
+        salida_cert.append(_mscert.armar(f_pet))
+    salida_cert.append(_clcert.aviso(mensaje, tipo=7, msg_id=_clcert.MSG_TEXTO))
+
+    pet_eid = getattr(ses, 'pet_entity_id', None) or f_pet.get('entidad')
+    if pet_eid and f_pet.get('fuera'):
+        yo = ses.personaje.entity_id
+        salida_cert.extend([
+            _mscert.quitar(int(pet_eid)),
+            _mscert.enlazar(yo, 0)
+        ])
+        new_eid = _pet_siguiente_entidad(ses)
+        f_pet['entidad'] = new_eid
+        ses.pet_entity_id = new_eid
+        _est = dict(f_pet)
+        _ptile = getattr(ses, 'pet_tile', [ses.personaje.tile_x, ses.personaje.tile_y])
+        _est.update({
+            'entidad': new_eid,
+            'x': _ptile[0],
+            'y': _ptile[1],
+            'dueno': yo,
+            'dueno_nombre': ses.personaje.nombre,
+            'tipo': f_pet.get('tipo', 0)
+        })
+        salida_cert.extend([
+            _mscert.entidad_mundo(_pet_plantilla(), _est),
+            _mscert.enlazar(yo, new_eid),
+            _mscert.armar(f_pet),
+            _cbcert.atributo(new_eid, _mscert.hp_eff(f_pet), _cbcert.KIND_HP),
+        ])
+        if int(f_pet.get('saciedad', 0)) > 100:
+            salida_cert.append(struct.pack('<HIBBII', 0x001D, new_eid, 1, 4, 3796,
+                                           max(60000, (int(f_pet['saciedad']) - 100) * 60000)))
+
+    ses.enviar(*salida_cert)
+    if pet_eid and f_pet.get('fuera'):
+        _pet_avisar_reaparicion(ses, pet_eid)
+
+
 ESPERA_ORDENAR = 2.0
 
 
@@ -18064,6 +18127,8 @@ class Servidor:
                 return
             if __import__('torre_babel').procesar(ses, cuerpo, addr):  # la Torre de Babel (169)
                 return
+            if __import__('arbol_mascotas').procesar(ses, cuerpo, addr):  # el arbol de evolucion de la mascota (170)
+                return
             if __import__('item_mall').procesar(ses,opcode,cuerpo):
                 return
             if __import__('salon').procesar(ses, cuerpo):
@@ -19836,58 +19901,7 @@ class Servidor:
                     ses.enviar(_clcert.aviso(_msg_evo, tipo=0))
                     return
 
-                # Consumir 1 certificado
-                _queda = ses.cantidades.get(ranura, 1) - 1
-                if _queda > 0:
-                    ses.cantidades[ranura] = _queda
-                else:
-                    ses.inventario.pop(ranura, None)
-                    ses.cantidades.pop(ranura, None)
-
-                _r_pet_c = _f_pet.get('ranura')
-                if _r_pet_c is not None and getattr(ses.personaje, 'mascotas', None) is not None:
-                    ses.personaje.mascotas[str(_r_pet_c)] = _f_pet
-                _guardar_bolsa(ses, cid)
-                if getattr(ses, 'usuario', None):
-                    cuentas.guardar_mascota(ses.usuario, cid, _f_pet, getattr(ses.personaje, 'mascotas', None))
-
-                salida_cert = list(_refrescar(ses, [ranura, _r_pet_c]))
-                if _f_pet.get('fuera') and _f_pet.get('entidad'):
-                    salida_cert.append(_mscert.armar(_f_pet))
-                salida_cert.append(_clcert.aviso(_msg_evo, tipo=7, msg_id=_clcert.MSG_TEXTO))
-
-                pet_eid = getattr(ses, 'pet_entity_id', None) or _f_pet.get('entidad')
-                if pet_eid and _f_pet.get('fuera'):
-                    yo = ses.personaje.entity_id
-                    salida_cert.extend([
-                        _mscert.quitar(int(pet_eid)),
-                        _mscert.enlazar(yo, 0)
-                    ])
-                    new_eid = _pet_siguiente_entidad(ses)
-                    _f_pet['entidad'] = new_eid
-                    ses.pet_entity_id = new_eid
-                    _est = dict(_f_pet)
-                    _ptile = getattr(ses, 'pet_tile', [ses.personaje.tile_x, ses.personaje.tile_y])
-                    _est.update({
-                        'entidad': new_eid,
-                        'x': _ptile[0],
-                        'y': _ptile[1],
-                        'dueno': yo,
-                        'dueno_nombre': ses.personaje.nombre,
-                        'tipo': _f_pet.get('tipo', 0)
-                    })
-                    salida_cert.extend([
-                        _mscert.entidad_mundo(_pet_plantilla(), _est),
-                        _mscert.enlazar(yo, new_eid),
-                        _mscert.armar(_f_pet),
-                        _cbcert.atributo(new_eid, _mscert.hp_eff(_f_pet), _cbcert.KIND_HP),
-                    ])
-                    if int(_f_pet.get('saciedad', 0)) > 100:
-                        salida_cert.append(struct.pack('<HIBBII', 0x001D, new_eid, 1, 4, 3796, max(60000, (int(_f_pet['saciedad']) - 100) * 60000)))
-
-                ses.enviar(*salida_cert)
-                if pet_eid and _f_pet.get('fuera'):
-                    _pet_avisar_reaparicion(ses, pet_eid)
+                _pet_tras_evolucion(ses, _f_pet, _msg_evo, ranura_gastada=ranura)
                 log.info(f"[{addr}] mascota evoluciono con certificado etapa {_cert_etapa}: {_f_pet.get('nombre')}")
                 return
 

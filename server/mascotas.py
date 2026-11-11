@@ -1371,6 +1371,14 @@ def rama_por_crianza(ficha: dict):
     el contador de crianza a la vista, asi que el sentido de la comparacion
     es lo unico de aqui que no esta comprobado del todo.
     """
+    # La forma elegida en el arbol de evolucion (arbol_mascotas.py): 'ruta' son los ids de pet.xml del camino hasta
+    # ella. Manda sobre todo lo demas mientras la siguiente forma este en el camino.
+    ruta = [int(x) for x in (ficha.get('ruta') or [])]
+    mean, nice = ramas_de(ficha.get('sprite'))
+    if mean and int(mean) in ruta:
+        return RAMA_MEAN_NOMBRE
+    if nice and int(nice) in ruta:
+        return RAMA_NICE_NOMBRE
     # /pet path stores the branch by hand. While it is set it wins over the
     # raise score, because the raise window never reports which scene came up.
     forzada = ficha.get('rama')

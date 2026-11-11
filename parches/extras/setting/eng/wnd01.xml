@@ -3800,6 +3800,7 @@
     <!-- 寵物介面 -->
     <window class="WND_CLASS_BASE" range="100,100,1,1" id="878">
         <style wsVisible="" wsMoveable="" />
+        <child>59399</child>
 		<child>16119</child>
         <child>879</child>
         <child>880</child>
@@ -6212,4 +6213,10 @@
     <window id="59070" derive="59060" />
     <window id="59071" derive="59060" />
     <window id="59072" derive="59060" />
+    <!-- aolat arbol -->
+    <window class="WND_CLASS_BUTTON" id="59399" range="72,293,55,18" fcolor="101" font="1" icon="12006" title="Evolve" tooltip="10040" tooltext="Evolution tree of your pet">
+        <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
+        <OnCommand>OnCommandArbol</OnCommand>
+    </window>
+    <!-- /aolat arbol -->
 </root>
