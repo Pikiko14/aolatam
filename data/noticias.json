@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-11",
+    "titulo": "Fix: no walking while dead",
+    "texto": "Dead characters can no longer walk around while the death window is open (it happened mostly while riding a mount). Souls can still move as before."
+  },
+  {
+    "fecha": "2026-11-11",
     "titulo": "Update 0.0.0.102: Flamefang Raid is harder",
     "texto": "Please update to version 0.0.0.102 from AngelsLauncher. Flamefang Raid monsters now have level 80 stats, elites are tougher than regular level 80 monsters, and Lavamon, Razorex and Satrixia now have level 100 stats. To keep the fights winnable, the enrage timers are now 12, 14 and 18 minutes. Check the Raid Guide for the details."
   },
