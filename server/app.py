@@ -8434,6 +8434,58 @@ def _pergamino_revivir(item_id):
     return _PERGAMINOS_REVIVIR[item_id]
 
 
+RADIO_ENCANTADO = 10       # casillas alrededor del encantado en las que busca a quien pelea con su dueno
+
+
+def _objetivo_del_encantado(ses, enc, yo):
+    """A por quien va el monstruo encantado de `ses` sin orden: el bicho que el dueno tiene apuntado o, si no, el mas
+    cercano que pelea con el dueno (o con el propio encantado). Nunca otro encantado."""
+    bichos = getattr(ses, 'monstruos', None) or {}
+
+    def vale(b):
+        return (b is not None and b is not enc and getattr(b, 'vivo', False) and b.hp > 0
+                and not getattr(b, 'encantado', False)
+                and max(abs(b.tile_x - enc.tile_x), abs(b.tile_y - enc.tile_y)) <= RADIO_ENCANTADO)
+    apuntado = bichos.get(getattr(ses, 'objetivo_actual', None))
+    if vale(apuntado):
+        return apuntado
+    peleando = [b for b in bichos.values()
+                if vale(b) and getattr(b, 'en_combate_con', None) in (yo, enc.entity_id)]
+    if not peleando:
+        return None
+    return min(peleando, key=lambda b: max(abs(b.tile_x - enc.tile_x), abs(b.tile_y - enc.tile_y)))
+
+
+def _golpe_al_encantado(ses, m, enc, dano, atk_id, ef_atk, yo, addr=''):
+    """Un monstruo `m` le pega al encantado `enc` del jugador. Si lo tumba muere como cualquier bicho (y el que pegaba
+    vuelve a por el dueno)."""
+    import combate as _cb
+    dano = max(1, int(dano))
+    enc.registrar_dano(min(enc.hp, dano), es_pet=False)
+    enc.hp = max(0, enc.hp - dano)
+    ses.enviar_inmediato(
+        *_fx_golpe_mob(m.entity_id, enc.entity_id, dano, atk_id, ef_atk),
+        _cb.numero_flotante(enc.entity_id, dano),
+        _cb.atributo(enc.entity_id, enc.porcentaje if enc.hp > 0 else 0))
+    if enc.hp <= 0:
+        m.en_combate_con = yo
+        _procesar_muerte_monstruo(ses, enc, yo, addr, espera=0.1)
+
+
+def _guardar_mascota_al_morir(ses):
+    """Si muere el dueno, la mascota que tenga fuera se guarda ("si muero y tengo 1 pet afuera se debe guardar",
+    11/11/2026; antes seguia peleando sola junto al cadaver). Como el boton de guardarla (_pet_alternar), sin tocar su
+    vida: no muere ella, solo vuelve a su ranura."""
+    p = getattr(ses, 'personaje', None)
+    if p is None or not getattr(ses, 'pet_entity_id', None):
+        return
+    for _r, f in list((getattr(p, 'mascotas', None) or {}).items()):
+        if isinstance(f, dict) and f.get('fuera') and f.get('ranura') is not None:
+            _pet_alternar(ses, 'muerte', f['ranura'])
+            log.info('%s muere: se guarda su mascota %s', p.nombre, f.get('nombre'))
+            return
+
+
 def _quitar_buffs_al_morir(ses):
     """Al morir se caen los buffs que no llevan 死亡不消失 en magic.xml, la transformacion la primera.
 
@@ -8445,6 +8497,10 @@ def _quitar_buffs_al_morir(ses):
         __import__('trade_routes').soltar(ses)          # la carga de Trade Routes cae al suelo
     except Exception:
         log.exception('trade routes: soltar al morir')
+    try:
+        _guardar_mascota_al_morir(ses)
+    except Exception:
+        log.exception('guardar la mascota al morir')
     p = getattr(ses, 'personaje', None)
     if p is None or not getattr(p, 'buffs', None):
         return
@@ -13635,6 +13691,13 @@ class Servidor:
                                     if ch_targ and (not getattr(ch_targ, 'vivo', False) or ch_targ.hp <= 0 or getattr(ch_targ, 'encantado', False)):
                                         m.charmed_objetivo = None
                                         ch_targ = None
+                                    if ch_targ is None:
+                                        # "El enchanted de earth mage no ataca a los mob que yo ataco" (11/11/2026): solo
+                                        # tomaba objetivo con el golpe basico o una habilidad a un bicho; con las de area
+                                        # se quedaba mirando. Ahora va a por el que yo apunto o, si no, el mas cercano que
+                                        # pelea conmigo.
+                                        ch_targ = _objetivo_del_encantado(ses, m, yo)
+                                        m.charmed_objetivo = ch_targ
 
                                     if ch_targ:
                                         dtx = abs(m.tile_x - ch_targ.tile_x)
@@ -13670,6 +13733,9 @@ class Servidor:
                                                         _cb.numero_flotante(ch_targ.entity_id, dano_ch),
                                                         _cb.atributo(ch_targ.entity_id, ch_targ.porcentaje)
                                                     )
+                                                    # "Los mob normales deberian poder atacarlo a el" (11/11/2026): el
+                                                    # golpeado le devuelve el golpe al encantado.
+                                                    ch_targ.en_combate_con = m.entity_id
                                         else:
                                             if ahora >= getattr(m, 'proximo_paso', 0):
                                                 dx = ch_targ.tile_x - m.tile_x
@@ -13864,6 +13930,9 @@ class Servidor:
                                                     def_targ = int(round(def_targ * 1.4))
                                                 elem_tot = getattr(m, 'thnd_atk', 0) + getattr(m, 'fire_atk', 0) + getattr(m, 'ice_atk', 0) + getattr(m, 'rotten_atk', 0)
                                                 suyo = _cb.dano_recibido(m.pegar(), def_targ, elem_atk=elem_tot, elem_def=0)
+                                            elif (getattr(ses, 'monstruo_encantado', None) is not None
+                                                  and targ_eid == ses.monstruo_encantado.entity_id):
+                                                suyo = _cb.dano_recibido(m.pegar(), int(getattr(ses.monstruo_encantado, 'defensa', 100) or 100))
                                             else:
                                                 def_targ = 100
                                                 suyo = _cb.dano_recibido(m.pegar(), def_targ)
@@ -14051,6 +14120,9 @@ class Servidor:
                                                         _pr_inv2_dead.notificar_invocacion_despawn(ses, teid)
                                                         ses.invocacion2 = None
                                                         m.en_combate_con = yo
+                                                elif (getattr(ses, 'monstruo_encantado', None) is not None
+                                                      and teid == ses.monstruo_encantado.entity_id):
+                                                    _golpe_al_encantado(ses, m, ses.monstruo_encantado, suyo, atk_id, ef_atk, yo, addr)
 
                                             try:
                                                 asyncio.get_event_loop().call_later(
