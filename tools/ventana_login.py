@@ -113,15 +113,20 @@ def boton(estado, texto='') -> Image.Image:
         cy = BOTON_H // 2
         d.polygon(((cx, cy - 4), (cx + 3, cy), (cx, cy + 4), (cx - 3, cy)), fill=(150, 230, 255, 255), outline=ORO)
     if texto:
+        # Nitido (12/11/2026, "que se vean mas nitidos los botones"): letra recta sin suavizado (pixel exacto, sin
+        # medios tonos que la paleta del juego emborrona) con un contorno oscuro de 1 px.
         from PIL import ImageFont
         try:
-            f = ImageFont.truetype('georgiab.ttf', 11)
+            f = ImageFont.truetype('tahomabd.ttf', 11)
         except OSError:
             f = ImageFont.load_default()
-        ancho = d.textlength(texto, font=f)
-        x, y = (BOTON_W - ancho) / 2, (BOTON_H - 13) / 2 + (1 if estado == 's' else 0)
-        d.text((x + 1, y + 1), texto, font=f, fill=(6, 16, 60, 255))
-        d.text((x, y), texto, font=f, fill=(255, 246, 214, 255))
+        d.fontmode = '1'
+        caja = d.textbbox((0, 0), texto, font=f)
+        x = (BOTON_W - (caja[2] - caja[0])) // 2 - caja[0]
+        y = (BOTON_H - (caja[3] - caja[1])) // 2 - caja[1] + (1 if estado == 's' else 0)
+        for dx, dy in ((-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (1, -1), (-1, 1), (1, 1)):
+            d.text((x + dx, y + dy), texto, font=f, fill=(6, 16, 60, 255))
+        d.text((x, y), texto, font=f, fill=(255, 250, 230, 255))
     return im
 
 
