@@ -14180,6 +14180,32 @@ class Servidor:
                                 continue
                             if ahora < getattr(m, 'proximo_paso', 0):
                                 continue
+                            # LAS PATRULLAS de las raids (raid.py, 11/11/2026): van de punto en punto de su ruta por
+                            # donde se anda, y su casa va con ellas (la correa y la vuelta a casa no las devuelven).
+                            _ruta = getattr(m, 'ruta', None)
+                            if _ruta:
+                                _wx, _wy = _ruta[m.ruta_i % len(_ruta)]
+                                if max(abs(m.tile_x - _wx), abs(m.tile_y - _wy)) <= 1:
+                                    m.ruta_i += 1
+                                    m.proximo_paso = ahora + random.uniform(1.0, 2.5)
+                                    continue
+                                _nx, _ny = _transitable.avanzar(_mapa_de_paso(m, ses.personaje.stage),
+                                                                (m.tile_x, m.tile_y), (_wx, _wy), 3)
+                                if (_nx, _ny) == (m.tile_x, m.tile_y):
+                                    m.ruta_i += 1
+                                    m.proximo_paso = ahora + 1.0
+                                    continue
+                                _pasos = max(abs(_nx - m.tile_x), abs(_ny - m.tile_y)) or 1
+                                _spd = m.move_speed or _cb.VELOCIDAD_PASEO
+                                m.proximo_paso = ahora + _cb.segundos_de_tramo(_pasos, _spd)
+                                m.llega_paseo = m.proximo_paso
+                                cur_x, cur_y = m.tile_x * 32, m.tile_y * 32
+                                m.tile_x, m.tile_y = _nx, _ny
+                                m.tile[0], m.tile[1] = _nx, _ny
+                                m.spawn_x, m.spawn_y = _nx, _ny
+                                ses.enviar(MOVE.build(entity_id=m.entity_id, cur_x=cur_x, cur_y=cur_y,
+                                                      dst_x=_nx * 32, dst_y=_ny * 32, speed=_spd))
+                                continue
                             _n = _cb.PASO_PASEO_MAX
                             dx = random.randint(-_n, _n)
                             dy = random.randint(-_n, _n)

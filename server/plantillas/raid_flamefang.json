@@ -204,7 +204,109 @@
       23911
      ]
     ]
-   ]
+   ],
+   "patrullas": [
+    {
+     "bichos": [
+      [
+       249,
+       47,
+       23910
+      ],
+      [
+       248,
+       48,
+       23911
+      ],
+      [
+       248,
+       47,
+       23910
+      ]
+     ],
+     "ruta": [
+      [
+       248,
+       46
+      ],
+      [
+       229,
+       65
+      ],
+      [
+       242,
+       84
+      ],
+      [
+       229,
+       65
+      ]
+     ]
+    },
+    {
+     "bichos": [
+      [
+       251,
+       93,
+       23911
+      ],
+      [
+       250,
+       94,
+       23910
+      ],
+      [
+       251,
+       92,
+       23911
+      ]
+     ],
+     "ruta": [
+      [
+       250,
+       92
+      ],
+      [
+       267,
+       111
+      ],
+      [
+       270,
+       130
+      ],
+      [
+       267,
+       111
+      ]
+     ]
+    }
+   ],
+   "puzle": {
+    "tipo": "placas",
+    "casillas": [
+     [
+      251,
+      159
+     ],
+     [
+      253,
+      152
+     ],
+     [
+      238,
+      147
+     ],
+     [
+      246,
+      160
+     ]
+    ],
+    "segundos": 3
+   },
+   "ambiente": {
+    "entrar": "Heat rises from the cracked stone. The Ember Gate burns ahead.",
+    "cerca": "The ground trembles: something huge stirs in the lava."
+   }
   },
   {
    "nombre": "The Burning Hall",
@@ -367,7 +469,104 @@
       23915
      ]
     ]
-   ]
+   ],
+   "patrullas": [
+    {
+     "bichos": [
+      [
+       197,
+       76,
+       23913
+      ],
+      [
+       194,
+       76,
+       23914
+      ],
+      [
+       195,
+       78,
+       23915
+      ]
+     ],
+     "ruta": [
+      [
+       195,
+       76
+      ],
+      [
+       185,
+       86
+      ],
+      [
+       175,
+       96
+      ],
+      [
+       185,
+       86
+      ]
+     ]
+    },
+    {
+     "bichos": [
+      [
+       176,
+       101,
+       23914
+      ],
+      [
+       177,
+       98,
+       23915
+      ],
+      [
+       175,
+       100,
+       23913
+      ]
+     ],
+     "ruta": [
+      [
+       177,
+       100
+      ],
+      [
+       187,
+       110
+      ],
+      [
+       190,
+       120
+      ],
+      [
+       187,
+       110
+      ]
+     ]
+    }
+   ],
+   "puzle": {
+    "tipo": "antorcha",
+    "origen": [
+     180,
+     103
+    ],
+    "destino": [
+     196,
+     140
+    ],
+    "entregas": 2,
+    "segundos": 45,
+    "acosadores": [
+     23913,
+     23914
+    ]
+   },
+   "ambiente": {
+    "entrar": "Ash falls like snow over The Burning Hall.",
+    "cerca": "A roar shakes the hall. Razorex smells you."
+   }
   },
   {
    "nombre": "Satrixia's Throne",
@@ -563,7 +762,109 @@
       23917
      ]
     ]
-   ]
+   ],
+   "patrullas": [
+    {
+     "bichos": [
+      [
+       80,
+       128,
+       23917
+      ],
+      [
+       79,
+       128,
+       23918
+      ],
+      [
+       81,
+       128,
+       23919
+      ]
+     ],
+     "ruta": [
+      [
+       79,
+       128
+      ],
+      [
+       85,
+       135
+      ],
+      [
+       88,
+       142
+      ],
+      [
+       85,
+       135
+      ]
+     ]
+    },
+    {
+     "bichos": [
+      [
+       89,
+       145,
+       23918
+      ],
+      [
+       88,
+       145,
+       23919
+      ],
+      [
+       88,
+       146,
+       23917
+      ]
+     ],
+     "ruta": [
+      [
+       87,
+       145
+      ],
+      [
+       80,
+       149
+      ],
+      [
+       73,
+       152
+      ],
+      [
+       80,
+       149
+      ]
+     ]
+    }
+   ],
+   "puzle": {
+    "tipo": "sellos",
+    "casillas": [
+     [
+      73,
+      147
+     ],
+     [
+      79,
+      164
+     ],
+     [
+      56,
+      143
+     ]
+    ],
+    "guardianes": [
+     23874,
+     23875,
+     23876
+    ]
+   },
+   "ambiente": {
+    "entrar": "Satrixia's Throne glows red. Her servants watch from the flames.",
+    "cerca": "Satrixia laughs: \"Come closer, little ones.\""
+   }
   }
  ],
  "mecanicas": {
@@ -687,6 +988,30 @@
    "acc": 600,
    "agi": 365,
    "exp": 240000
+  },
+  "pilar": {
+   "nivel": 80,
+   "hp": 15000,
+   "atk": 1,
+   "var": 5,
+   "df": 1100,
+   "matk": 1,
+   "mdef": 340,
+   "acc": 435,
+   "agi": 265,
+   "exp": 500
+  },
+  "guardian": {
+   "nivel": 90,
+   "hp": 60000,
+   "atk": 880,
+   "var": 5,
+   "df": 1300,
+   "matk": 760,
+   "mdef": 420,
+   "acc": 480,
+   "agi": 290,
+   "exp": 30000
   }
  },
  "lockout_dia": 0

@@ -122,6 +122,31 @@ def _elegida(ses):
 LINEAS_GUIA, ANCHO_GUIA, ANCHO_GUIA_JEFE = 13, 56, 41
 
 
+# Lo que explica la guia de cada puzle (server/raid_puzles.py): dos lineas de ANCHO_GUIA letras como mucho.
+TEXTO_PUZLE = {
+    'placas': ('LIGHT ALTARS', ['Stand on every Light Altar at the same time for',
+                                '3 s, one player each (fewer if fewer are alive).']),
+    'totems': ('PILLARS', ['Bring the 4 pillars down in the order the clues',
+                           'give. Wrong order: they rise again and hurt all.']),
+    'sellos': ('SEALS', ['Kill the guardian next to each of the 3 Hell',
+                         'Altars: each one that falls breaks its seal.']),
+    'antorcha': ('FLAME', ['Wait by the Flame Altar to take the flame and run',
+                           'it to the Fire Altar in 45 s. Twice. Protect it!']),
+}
+
+
+def _pagina_puzles(clave):
+    """La pestana 'Puzzles' de la guia: el puzle que abre la barrera de cada jefe."""
+    lineas = ['Before each boss a barrier of light blocks the way.']
+    for k, z in enumerate(datos(clave)['zonas']):
+        tipo = (z.get('puzle') or {}).get('tipo')
+        if not tipo:
+            continue
+        titulo, texto = TEXTO_PUZLE[tipo]
+        lineas += ['%d. %s - %s' % (k + 1, titulo, z['nombre'])] + texto + ['']
+    return ['Puzzles', 'The barriers and how to open them', 0, lineas[:13]]
+
+
 def _guia_flamefang():
     mec = datos('flamefang')['mecanicas']
     la, rz, sa = mec['23940'], mec['23941'], mec['23942']
@@ -184,6 +209,7 @@ def _guia_flamefang():
             'of them takes %d%%. Spread out!' % condena['dano'],
             '',
             'ENRAGE: %s.' % minutos(sa['enrage'])]],
+        _pagina_puzles('flamefang'),
         ['Loot', 'Loot and weekly lockout', 0, [
             'Each boss gives loot once a week per character.',
             'The lockout resets every Monday at 00:00.',
@@ -223,7 +249,7 @@ def _guia_general(d):
     paginas = [
         ['Overview', 'How the raid works', 0, [
             'Up to %d players of level %d or higher.' % (MAX_MIEMBROS, d['nivel']),
-            '1. Press AOF Raid, pick %s and press Open.' % d['nombre'],
+            '1. Open AOF Raid, pick %s, press Open.' % d['nombre'],
             '2. Create a raid. Invite by name, invite your party,',
             '   or right-click a player and pick Invite to raid.',
             '3. The leader presses Enter; the rest press Enter too.',
@@ -254,9 +280,9 @@ def _guia_general(d):
             'swap tanks at 2 or 3 stacks.',
             '',
             'FRONTAL ATTACK (every %d s)' % b['aliento']['cada'],
-            'The boss %s for %.1f s, then hits' % (t[1].get('aliento', 'inhales'), b['aliento']['aviso']),
-            'a cone %d tiles in front: %d%%.' % (b['aliento']['largo'], b['aliento']['dano']),
-            'Only the tank stays in front.',
+            'He %s for %.1f s,' % (t[1].get('aliento', 'inhales'), b['aliento']['aviso']),
+            'then hits a cone %d tiles in front' % b['aliento']['largo'],
+            'for %d%%. Only the tank stays in front.' % b['aliento']['dano'],
             '',
             'FURY at %d%% HP: +%d%% damage.' % (b['furia_al'], round((b['furia_velocidad'] - 1) * 100)),
             'ENRAGE: %s.' % minutos(b['enrage'])]],
@@ -265,9 +291,8 @@ def _guia_general(d):
             'After %d s, %d%% of max HP to everyone.' % (c['nova']['aviso'], c['nova']['dano']),
             'Healers: top the raid up before it.',
             '',
-            'PHASE 2 (%d%%): %s. No damage' % (c['fase2_al'], t[2].get('escudo', 'a shield')),
-            'until the %d %s die.' % (c['adds'], t[2].get('adds', 'adds')),
-            '',
+            'PHASE 2 (%d%%): %s.' % (c['fase2_al'], t[2].get('escudo', 'a shield')),
+            'No damage until the %d %s die.' % (c['adds'], t[2].get('adds', 'adds')),
             'PHASE 3 (%d%%): %s (every %d s)' % (c['fase3_al'], t[2].get('condena', 'DOOM').upper(),
                                                c['condena']['cada']),
             'The marked player has %d s to run.' % c['condena']['aviso'],
@@ -275,6 +300,7 @@ def _guia_general(d):
             'of them takes %d%%. Spread out!' % c['condena']['dano'],
             '',
             'ENRAGE: %s.' % minutos(c['enrage'])]],
+        _pagina_puzles(d['clave']),
         ['Loot', 'Loot and weekly lockout', 0, [
             'Each boss gives loot once a week per character.',
             'The lockout resets every Monday at 00:00.',
@@ -468,6 +494,10 @@ def _deshacer(r):
         _DE_QUIEN.pop(cid, None)
     _RAIDS.pop(r['id'], None)
     if r.get('corrida'):
+        try:
+            __import__('raid_puzles').terminar(r, r['corrida'])
+        except Exception:
+            log.exception('raid: puzle al deshacer')
         r['corrida']['fin'] = True
     log.info('raid %d deshecha', r['id'])
 
@@ -542,6 +572,11 @@ def al_entrar(ses, addr='?'):
         return
     if c['poblada'] != c['zona']:
         _poblar(ses, r, c)
+    else:
+        import raid_puzles
+        marcas = raid_puzles.paquetes(c)
+        if marcas:
+            (getattr(ses, 'enviar_sin_espejo', None) or ses.enviar)(*marcas)
     zona = _datos(r)['zonas'][c['zona']]
     _aviso(ses, '%s - %s (%d/%d)' % (_def(r)['nombre'], zona['nombre'], c['zona'] + 1, len(_datos(r)['zonas'])))
 
@@ -593,8 +628,49 @@ def _poblar(ses, r, c):
             m = _sacar_bicho(ses, npc, (x, y), r, c)
             if m is not None:
                 c['vivos'].add(m.entity_id)
+    # Las patrullas (11/11/2026, "mas contenido por zona"): van y vuelven por el camino (app, el paseo con m.ruta).
+    for j, patrulla in enumerate(zona.get('patrullas') or []):
+        for i, (x, y, npc) in enumerate(patrulla['bichos']):
+            m = _sacar_bicho(ses, npc, (x, y), r, c)
+            if m is not None:
+                m.ruta = [tuple(q) for q in patrulla['ruta']]
+                m.ruta_i = 1
+                c['vivos'].add(m.entity_id)
     log.info('raid %d: zona %d (%s) con %d bichos', r['id'], c['zona'], zona['nombre'], len(c['vivos']))
+    ambiente = zona.get('ambiente') or {}
+    if ambiente.get('entrar'):
+        _cartel(r, ambiente['entrar'])
+    c['cerca_dicho'] = c['zona'] if not ambiente.get('cerca') else None
+    try:
+        asyncio.get_event_loop().create_task(_vigilar_cerca(r, c, c['zona']))
+    except RuntimeError:
+        pass
     if not c['vivos']:
+        _tras_los_bichos(ses, r, c)
+
+
+RADIO_CERCA = 16
+
+
+async def _vigilar_cerca(r, c, zona_idx):
+    """La ambientacion: la primera vez que alguien se acerca al sitio del jefe, su texto."""
+    while r.get('corrida') is c and not c.get('fin') and c['zona'] == zona_idx and c.get('cerca_dicho') != zona_idx:
+        await asyncio.sleep(1.0)
+        try:
+            zona = _datos(r)['zonas'][zona_idx]
+            if any(math.dist(_casilla(s), tuple(zona['casilla_jefe'])) <= RADIO_CERCA for s in _en_la_copia(r)):
+                c['cerca_dicho'] = zona_idx
+                _cartel(r, zona['ambiente']['cerca'])
+        except Exception:
+            log.exception('raid: ambiente')
+            return
+
+
+def _tras_los_bichos(ses, r, c):
+    """Muertos los grupos de la zona: su puzle (raid_puzles) y, resuelto, el jefe; sin puzle, el jefe ya."""
+    import raid_puzles
+    zona = _datos(r)['zonas'][c['zona']]
+    if not raid_puzles.empezar(ses, r, c, zona):
         _sacar_jefe(ses, r, c)
 
 
@@ -640,10 +716,13 @@ def al_morir(ses, m, addr='?'):
         return
     eid = int(m.entity_id)
     c['adds'].discard(eid)
+    import raid_puzles
+    if raid_puzles.al_morir(ses, r, c, m):
+        return
     if eid in c['vivos']:
         c['vivos'].discard(eid)
         if not c['vivos'] and c['jefe'] is None:
-            _sacar_jefe(ses, r, c)
+            _tras_los_bichos(ses, r, c)
         elif len(c['vivos']) in (10, 5):
             _cartel(r, '%d enemies remain before the guardian appears.' % len(c['vivos']))
         return
@@ -1226,15 +1305,22 @@ def estado_para(ses):
     return [titulo, miembros, r['lider'] == _cid(ses), jefes, bool(c and not c.get('fin')), True]
 
 
+def indice(d):
+    """La posicion de la raid en el CATALOGO: la de su banner (tools/parche_raid.py, TEMAS)."""
+    return CATALOGO.index(d)
+
+
 def abrir(ses, aviso=''):
-    return [canal_lua.paquete(_lua()), canal_lua.llamar('RaidAbrir', *(estado_para(ses) + [aviso]))]
+    return [canal_lua.paquete(_lua()), canal_lua.llamar('RaidAbrir', *(estado_para(ses) + [aviso])),
+            canal_lua.llamar('RaidImagen', indice(_elegida(ses)))]
 
 
 def _refrescar_ventanas(r, sesiones=()):
     for s in _sesiones_de(r) if r else []:
         if getattr(s, 'canal_lua', 0):
             try:
-                s.enviar(canal_lua.llamar('RaidRefrescar', *estado_para(s)))
+                s.enviar(canal_lua.llamar('RaidRefrescar', *estado_para(s)),
+                         canal_lua.llamar('RaidImagen', indice(_elegida(s))))
             except Exception:
                 pass
 
@@ -1269,8 +1355,11 @@ def procesar(ses, cuerpo, addr='?', sesiones=None) -> bool:
         ses.enviar(canal_lua.paquete(SALUDO_LUA), canal_lua.llamar('RaidListaAbrir', lista_de_raids(ses)))
         return True
     if a == 32:
+        if int(b) == 99:                                   # el boton Guide de la ventana de la raid: la suya
+            b = indice(_elegida(ses))
         if 0 <= int(b) < len(CATALOGO):
-            ses.enviar(canal_lua.paquete(SALUDO_LUA), canal_lua.llamar('RaidGuia', *guia(int(b))))
+            ses.enviar(canal_lua.paquete(SALUDO_LUA), canal_lua.llamar('RaidGuia', *guia(int(b))),
+                       canal_lua.llamar('RaidGuiaImagen', int(b)))
         return True
     if a == 31:
         if 0 <= int(b) < len(CATALOGO):
@@ -1345,7 +1434,8 @@ def lista_de_raids(ses):
             import app
             nombres.append([app._monstruo_bd(z['jefe'])[0], 'looted' if bloqueado(ses, i, clave) else 'ready'])
         filas.append([raid['nombre'], raid['nivel'], '%d max' % raid['jugadores'], jefes, estado, nombres,
-                      'Loot: level %d class S gear, mounts,' % raid['nivel'], 'mount and gear enhancement boxes.'])
+                      'Loot: level %d class S gear, mounts,' % raid['nivel'], 'mount and gear enhancement boxes.',
+                      indice(raid)])
     return filas
 
 

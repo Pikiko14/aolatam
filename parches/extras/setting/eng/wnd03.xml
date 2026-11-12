@@ -8536,6 +8536,7 @@
         <child>59604</child>
         <child>59605</child>
         <child>59613</child>
+        <child>60321</child>
         <child>59614</child>
     </window>
     <window class="WND_CLASS_BUTTON" id="59607" range="240,289,60,18" fcolor="101" font="1" icon="12006" title="Invite">
@@ -8587,6 +8588,13 @@
     <window class="WND_CLASS_STATIC" id="59613" range="8,338,356,14" title="" fcolor="513" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
+    <window class="WND_CLASS_BASE" id="60321" range="4,4,364,48" icon="60334">
+        <style wsVisible="" />
+    </window>
+    <icon id="60334" dir="\wnd01\" normal="aolat_raid_banr0" focus="normal" down="normal" disable="normal" />
+    <icon id="60335" dir="\wnd01\" normal="aolat_raid_banr1" focus="normal" down="normal" disable="normal" />
+    <icon id="60336" dir="\wnd01\" normal="aolat_raid_banr2" focus="normal" down="normal" disable="normal" />
+    <icon id="60337" dir="\wnd01\" normal="aolat_raid_banr3" focus="normal" down="normal" disable="normal" />
     <window class="WND_CLASS_BASE" id="59614" range="0,0,372,356" icon="59615">
         <style wsVisible="" />
     </window>
@@ -9631,6 +9639,7 @@
         <child>59683</child>
         <child>59684</child>
         <child>59673</child>
+        <child>60320</child>
         <child>59674</child>
     </window>
     <window class="WND_CLASS_BUTTON" id="59672" range="326,274,66,18" fcolor="101" font="1" icon="12006" title="Open">
@@ -9675,6 +9684,13 @@
     <window class="WND_CLASS_STATIC" id="59673" range="10,278,308,14" title="" fcolor="513" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
+    <window class="WND_CLASS_BASE" id="60320" range="4,4,392,104" icon="60330">
+        <style wsVisible="" />
+    </window>
+    <icon id="60330" dir="\wnd01\" normal="aolat_raid_ban0" focus="normal" down="normal" disable="normal" />
+    <icon id="60331" dir="\wnd01\" normal="aolat_raid_ban1" focus="normal" down="normal" disable="normal" />
+    <icon id="60332" dir="\wnd01\" normal="aolat_raid_ban2" focus="normal" down="normal" disable="normal" />
+    <icon id="60333" dir="\wnd01\" normal="aolat_raid_ban3" focus="normal" down="normal" disable="normal" />
     <window class="WND_CLASS_BASE" id="59674" range="0,0,400,304" icon="59675">
         <style wsVisible="" />
     </window>
@@ -9688,6 +9704,7 @@
         <child>59883</child>
         <child>59884</child>
         <child>59885</child>
+        <child>60323</child>
         <child>59901</child>
         <child>59886</child>
         <child>59887</child>
@@ -9704,27 +9721,32 @@
         <child>59898</child>
         <child>59899</child>
         <child>59900</child>
+        <child>60322</child>
         <child>59902</child>
     </window>
-    <window class="WND_CLASS_BUTTON" id="59881" range="6,58,78,20" fcolor="101" font="1" icon="59864" title="">
+    <window class="WND_CLASS_BUTTON" id="59881" range="6,58,66,20" fcolor="101" font="1" icon="59864" title="">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnRaidGuiaPestana1</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="59882" range="88,58,78,20" fcolor="101" font="1" icon="59864" title="">
+    <window class="WND_CLASS_BUTTON" id="59882" range="75,58,66,20" fcolor="101" font="1" icon="59864" title="">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnRaidGuiaPestana2</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="59883" range="170,58,78,20" fcolor="101" font="1" icon="59864" title="">
+    <window class="WND_CLASS_BUTTON" id="59883" range="144,58,66,20" fcolor="101" font="1" icon="59864" title="">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnRaidGuiaPestana3</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="59884" range="252,58,78,20" fcolor="101" font="1" icon="59864" title="">
+    <window class="WND_CLASS_BUTTON" id="59884" range="213,58,66,20" fcolor="101" font="1" icon="59864" title="">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnRaidGuiaPestana4</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="59885" range="334,58,78,20" fcolor="101" font="1" icon="59864" title="">
+    <window class="WND_CLASS_BUTTON" id="59885" range="282,58,66,20" fcolor="101" font="1" icon="59864" title="">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnRaidGuiaPestana5</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="60323" range="351,58,66,20" fcolor="101" font="1" icon="59864" title="">
+        <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
+        <OnCommand>OnRaidGuiaPestana6</OnCommand>
     </window>
     <icon id="59864" dir="\wnd01\" normal="aolat_raid_tab_n" focus="aolat_raid_tab_f" down="aolat_raid_tab_s" disable="normal" />
     <icon id="59865" dir="\wnd01\" normal="aolat_raid_tab_s" focus="aolat_raid_tab_s" down="aolat_raid_tab_s" disable="aolat_raid_tab_s" />
@@ -9777,6 +9799,13 @@
     <window class="WND_CLASS_BASE" id="59900" range="308,112,100,120" icon="59861">
         <style wsVisible="" />
     </window>
+    <window class="WND_CLASS_BASE" id="60322" range="4,4,412,48" icon="60338">
+        <style wsVisible="" />
+    </window>
+    <icon id="60338" dir="\wnd01\" normal="aolat_raid_bang0" focus="normal" down="normal" disable="normal" />
+    <icon id="60339" dir="\wnd01\" normal="aolat_raid_bang1" focus="normal" down="normal" disable="normal" />
+    <icon id="60340" dir="\wnd01\" normal="aolat_raid_bang2" focus="normal" down="normal" disable="normal" />
+    <icon id="60341" dir="\wnd01\" normal="aolat_raid_bang3" focus="normal" down="normal" disable="normal" />
     <window class="WND_CLASS_BASE" id="59902" range="0,0,420,330" icon="59903">
         <style wsVisible="" />
     </window>

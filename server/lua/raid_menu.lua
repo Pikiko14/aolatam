@@ -81,6 +81,7 @@ local function detalle(i)
     return
   end
   RAID_LISTA.sel = i
+  window.seticon(hijo_lista(60320), 60330 + (f[9] or 0))         -- el banner de esa raid (tools/parche_raid.py)
   window.settitle(hijo_lista(59676), f[1])
   window.settitle(hijo_lista(59677), "Level " .. tostring(f[2]) .. "+   Players: " .. tostring(f[3]))
   window.settitle(hijo_lista(59678), "This week: " .. tostring(f[5]))
@@ -148,9 +149,10 @@ function RaidGuiaPagina(i)
   if not p or not window.isexist(WND_RAID_GUIA) then
     return
   end
-  for k = 1, 5 do
+  local pestanas = {59881, 59882, 59883, 59884, 59885, 60323}     -- tools/parche_raid.py PESTANAS_GUIA
+  for k = 1, 6 do
     local q = RAID_GUIA.paginas[k]
-    local boton = hijo_guia(59880 + k)
+    local boton = hijo_guia(pestanas[k])
     window.show(boton, q ~= nil)
     if q then
       window.settitle(boton, q[1])
@@ -168,6 +170,13 @@ function RaidGuiaPagina(i)
     window.show(retrato, true)
   else
     window.show(retrato, false)
+  end
+end
+
+-- El banner de la guia: el de la raid i (0..3, orden del CATALOGO de server/raid.py).
+function RaidGuiaImagen(i)
+  if window.isexist(WND_RAID_GUIA) then
+    window.seticon(hijo_guia(60322), 60338 + (i or 0))
   end
 end
 
@@ -191,6 +200,7 @@ function OnRaidGuiaPestana2(dwID, dwCmdID, dwParam, pParam) RaidGuiaPagina(2) re
 function OnRaidGuiaPestana3(dwID, dwCmdID, dwParam, pParam) RaidGuiaPagina(3) return 1 end
 function OnRaidGuiaPestana4(dwID, dwCmdID, dwParam, pParam) RaidGuiaPagina(4) return 1 end
 function OnRaidGuiaPestana5(dwID, dwCmdID, dwParam, pParam) RaidGuiaPagina(5) return 1 end
+function OnRaidGuiaPestana6(dwID, dwCmdID, dwParam, pParam) RaidGuiaPagina(6) return 1 end
 
 function OnRaidGuiaCerrar(dwID, dwCmdID, dwParam, pParam)
   if window.isexist(WND_RAID_GUIA) then
@@ -208,6 +218,6 @@ function OnRaidListaGuia(dwID, dwCmdID, dwParam, pParam)
 end
 
 function OnRaidGuia(dwID, dwCmdID, dwParam, pParam)
-  game.netcommand2(CMD_RAID, 32, 0)
+  game.netcommand2(CMD_RAID, 32, 99)                  -- 99: la de la ventana (la raid del grupo o la elegida)
   return 1
 end

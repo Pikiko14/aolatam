@@ -51,12 +51,16 @@ STATS = {
     'jefe1': dict(nivel=100, hp=1000000, atk=1400, var=5, df=2400, matk=870, mdef=890, acc=590, agi=360, exp=120000),
     'jefe2': dict(nivel=100, hp=1500000, atk=1450, var=5, df=2450, matk=890, mdef=900, acc=595, agi=362, exp=160000),
     'jefe3': dict(nivel=100, hp=2000000, atk=1500, var=5, df=2500, matk=910, mdef=920, acc=600, agi=365, exp=240000),
+    # Los de los puzles (11/11/2026): los pilares de los totems (no pegan) y los guardianes de los sellos (minijefes).
+    'pilar': dict(nivel=80, hp=15000, atk=1, var=5, df=1100, matk=1, mdef=340, acc=435, agi=265, exp=500),
+    'guardian': dict(nivel=90, hp=60000, atk=880, var=5, df=1300, matk=760, mdef=420, acc=480, agi=290, exp=30000),
 }
 # TODOS los hechizos de los clones son de nivel 60: los originales son de nivel 300 (Oath Wrap V 2930, Explosive Shell
 # V 4542, y las elites traian 10840 / 10843 que pegaban 607 y 813) o buffs V (Spike Armor, Armor Break, Deadly
 # Sweep...). Fuego: Phoenix Fire I (212, 132 de dano), Fireball Hit IV (258) y III (241).
 HECHIZOS_POR_PAPEL = {'trash': (212, 258), 'elite': (212, 241), 'add': (241, 258),
-                      'jefe1': (212, 258), 'jefe2': (258, 241), 'jefe3': (212, 241)}
+                      'jefe1': (212, 258), 'jefe2': (258, 241), 'jefe3': (212, 241),
+                      'pilar': (0, 0), 'guardian': (258, 241)}
 VELOCIDAD_ATAQUE, VELOCIDAD = 70, 90        # los de nivel 60 (los jefes del 292 iban a 120 y 150)
 
 # (numero propio, original del 292, papel)
@@ -69,7 +73,53 @@ CLONES = [
     (23940, 17660, 'jefe1'), (23941, 17659, 'jefe2'), (23942, 17661, 'jefe3'),
     (23943, 17662, 'add'), (23944, 17663, 'add'),
 ]
-DE_ORIGINAL = {o: n for n, o, _p in CLONES}
+
+# LOS PUZLES (11/11/2026: "que tengas uno que otro puzzle"; server/raid_puzles.py). Uno antes de cada jefe, rotando los
+# cuatro tipos para que cada raid tenga tres distintos:
+#   placas    casillas marcadas (altares de luz) con un jugador encima de cada una a la vez;
+#   totems    cuatro pilares de colores que hay que matar en el orden que dan las pistas (si se falla, reviven);
+#   sellos    tres sellos (altares del infierno), cada uno con un guardian: los minijefes del mapa;
+#   antorcha  llevar la llama del altar de salida al de llegada antes de que se apague, mientras salen bichos.
+PUZLES = {'flamefang': ('placas', 'antorcha', 'sellos'), 'warring': ('sellos', 'totems', 'placas'),
+          'wintry': ('antorcha', 'placas', 'totems'), 'dragon': ('totems', 'sellos', 'antorcha')}
+PUZLE_BASE = {'flamefang': 23870, 'warring': 23877, 'wintry': 23884, 'dragon': 23891}   # +0..3 pilares, +4..6 guardianes
+PILARES = ((855, 'Crimson Pillar'), (946, 'Golden Pillar'), (18699, 'Jade Pillar'), (20701, 'Azure Pillar'))
+GUARDIANES = {'flamefang': (17656, 17658, 17657), 'warring': (23433, 23434, 23435),
+              'wintry': (23350, 23351, 23352), 'dragon': (23517, 23518, 23519)}
+
+
+def clones_puzle(clave):
+    b = PUZLE_BASE[clave]
+    return ([(b + k, o, 'pilar') for k, (o, _n) in enumerate(PILARES)]
+            + [(b + 4 + k, o, 'guardian') for k, o in enumerate(GUARDIANES[clave])])
+
+
+def nombres_puzle(clave):
+    return {b: n for b, (_o, n) in zip(range(PUZLE_BASE[clave], PUZLE_BASE[clave] + 4), PILARES)}
+
+
+CLONES += clones_puzle('flamefang')
+NOMBRES = nombres_puzle('flamefang')          # los pilares llevan nombre propio (su color: las pistas lo usan)
+DE_ORIGINAL = {o: n for n, o, p in CLONES if p not in ('pilar', 'guardian')}
+
+# LA AMBIENTACION: lo que sale al entrar en cada zona y al acercarse a su jefe por primera vez.
+AMBIENTE = {
+    'flamefang': (("Heat rises from the cracked stone. The Ember Gate burns ahead.",
+                   "The ground trembles: something huge stirs in the lava."),
+                  ("Ash falls like snow over The Burning Hall.", "A roar shakes the hall. Razorex smells you."),
+                  ("Satrixia's Throne glows red. Her servants watch from the flames.",
+                   "Satrixia laughs: \"Come closer, little ones.\"")),
+    'warring': (("Chains rattle at Cerberus' Gate. Three heads are waiting.",
+                 "You hear three growls at once. Cerberus is near."),
+                ("Banners of a forgotten war cover Ares' Battlefield.", "Steel clashes in the distance. Ares is ready."),
+                ("Souls drift towards the Throne of Hades.", "A cold voice whispers your names.")),
+    'wintry': (("A freezing wind blows through The Frozen Pass.", "The ice cracks under the steps of a giant."),
+               ("Paw prints the size of a shield lead into Leon's Den.", "A deep growl echoes in the den."),
+               ("Snowflakes dance around Seasonia's Throne.", "The air freezes: Seasonia turns towards you.")),
+    'dragon': (("Cherry petals fall over the Blossom Garden.", "The petals swirl. Blossom Hail is near."),
+               ("War drums beat in the General's Camp.", "General Rizaburo draws his blade."),
+               ("Waves crash against Watatsumi's Shrine.", "The sea rises. Watatsumi has awakened.")),
+}
 
 # Las zonas, por donde caen las casillas del 292: la entrada arriba a la derecha, el Infernal Lavamon abajo a la
 # derecha, el Hellfire Razorex en el centro y Satrixia abajo a la izquierda.
@@ -121,11 +171,12 @@ def _fila_db(con, original):
 def todos_los_clones(carpeta=None):
     """[(numero, original, papel, stats de su papel, hechizos)] de todas las raids: la Flamefang y las de NUEVAS (estas,
     de su plantilla, para poder rehacer los monstruos en el VPS sin content.db local: --db RUTA --plantillas DIR)."""
-    salida = [(n, o, p, STATS[p], HECHIZOS_POR_PAPEL[p]) for n, o, p in CLONES]
+    salida = [(n, o, p, STATS[p], HECHIZOS_POR_PAPEL[p], NOMBRES.get(n)) for n, o, p in CLONES]
     carpeta = pathlib.Path(carpeta) if carpeta else RAIZ / 'server' / 'plantillas'
     for cfg in NUEVAS:
         d = json.loads((carpeta / cfg['plantilla']).read_text(encoding='utf-8'))
-        salida += [(n, o, p, d['stats'][p], HECHIZOS_POR_PAPEL[p]) for n, o, p in d['clones']]
+        nombres = {int(k): v for k, v in (d.get('nombres') or {}).items()}
+        salida += [(n, o, p, d['stats'][p], HECHIZOS_POR_PAPEL[p], nombres.get(n)) for n, o, p in d['clones']]
     return salida
 
 
@@ -133,8 +184,10 @@ def content_db(ruta, carpeta=None):
     """Los clones en la tabla monster de esa content.db (quita los de antes)."""
     con = sqlite3.connect(ruta)
     clones = todos_los_clones(carpeta)
-    for nuevo, original, papel, s, (h1, h2) in clones:
+    for nuevo, original, papel, s, (h1, h2), nombre in clones:
         cols, f = _fila_db(con, original)
+        if nombre:
+            f['name'] = nombre
         f.update({'id': str(nuevo), 'level': str(s['nivel']), 'hp': str(s['hp']), 'atk_avg': str(s['atk']),
                   'atk_var': str(s['var']), 'def': str(s['df']), 'matk': str(s['matk']), 'mdef': str(s['mdef']),
                   'accuracy': str(s['acc']), 'agility': str(s['agi']), 'exp_value': str(s['exp']), 'crit_rate': '5',
@@ -143,7 +196,7 @@ def content_db(ruta, carpeta=None):
         for k, h in (('攻擊法術1', h1), ('攻擊法術2', h2), ('攻擊法術3', h1), ('攻擊法術4', h2)):
             if k in f:
                 f[k] = str(h)
-        f.update({'atk_speed': str(VELOCIDAD_ATAQUE), 'move_speed': str(VELOCIDAD)})
+        f.update({'atk_speed': str(VELOCIDAD_ATAQUE), 'move_speed': str(0 if papel == 'pilar' else VELOCIDAD)})
         for k in ('腐蝕攻擊', '火焰攻擊', '雷電攻擊', '寒冰攻擊', '特殊怪傷害調整', '召喚怪物', '常駐法術1', '常駐法術2',
                   '補血法術1', '補血法術2', '施展機率'):
             if k in f:
@@ -169,8 +222,10 @@ def monster_xml():
     nl = '\r\n' if '\r\n' in texto else '\n'
     texto = re.sub(r'[ \t]*<!-- aolat raid -->.*?<!-- /aolat raid -->\r?\n', '', texto, flags=re.S)
     filas = []
-    for nuevo, original, papel, s, (h1, h2) in todos_los_clones():
+    for nuevo, original, papel, s, (h1, h2), nombre in todos_los_clones():
         f = _fila_xml(texto, original)
+        if nombre:
+            f = re.sub(r'(?<= )名稱="[^"]*"', lambda _m: '名稱="%s"' % nombre, f, count=1)
         cambios = {'編號': nuevo, '等級': s['nivel'], 'HP': s['hp'], '平均攻擊': s['atk'], '攻擊變數': s['var'],
                    '防禦': s['df'], '魔攻': s['matk'], '魔防': s['mdef'], '精準': s['acc'], '靈敏': s['agi'],
                    '經驗價值': s['exp'], '掉寶編號': 0}
@@ -243,8 +298,11 @@ def plantilla():
         if z['adds']:
             adds = [list(s['tile']) for s in spawns if math.dist(s['tile'], z['casilla_jefe']) <= 10][:12] \
                 or [z['casilla_jefe']]
-        zonas.append({'nombre': z['nombre'], 'inicio': z['inicio'], 'jefe': z['jefe'], 'casilla_jefe': z['casilla_jefe'],
-                      'adds': z['adds'], 'casillas_adds': adds, 'grupos': grupos})
+        zona = {'nombre': z['nombre'], 'inicio': z['inicio'], 'jefe': z['jefe'], 'casilla_jefe': z['casilla_jefe'],
+                'adds': z['adds'], 'casillas_adds': adds, 'grupos': grupos}
+        tipos = sorted({b[2] for g in grupos for b in g if 23910 <= b[2] < 23930})
+        zona.update(extras_zona(STAGE, 'flamefang', len(zonas), zona, tipos, random.Random(STAGE + len(zonas))))
+        zonas.append(zona)
     datos = {'_nota': 'Generado por tools/generar_raid.py; no editar a mano.', 'clave': 'flamefang',
              'nombre': 'Flamefang Raid', 'nivel': 60, 'stage': STAGE, 'entrada': ENTRADA,
              'zonas': zonas, 'mecanicas': MECANICAS, 'stats': STATS, 'lockout_dia': LOCKOUT_DIA}
@@ -369,9 +427,70 @@ def _pisable_en(stage, x, y, radio=6):
     return list(min(cerca)[1:]) if cerca else None
 
 
+RECORRIDO = 62          # pasos de la llegada al jefe, como mucho
+GRUPOS_ZONA = 8
+PATRULLAS, POR_PATRULLA = 2, 3
+
+
+def _camino(dist, desde):
+    """Las casillas de `desde` al jefe (dist: pasos hasta el), bajando siempre."""
+    p, salida = tuple(desde), [tuple(desde)]
+    while dist.get(p, 0) > 0:
+        p = min(((p[0] + dx, p[1] + dy) for dx in (-1, 0, 1) for dy in (-1, 0, 1) if (dx, dy) != (0, 0)
+                 and (p[0] + dx, p[1] + dy) in dist), key=lambda q: (dist[q], q))
+        salida.append(p)
+    return salida
+
+
+def _repartidas(casillas, cuantas, separacion, rng):
+    libres = sorted(casillas)
+    rng.shuffle(libres)
+    elegidas = []
+    for q in libres:
+        if all(math.dist(q, e) >= separacion for e in elegidas):
+            elegidas.append(q)
+        if len(elegidas) == cuantas:
+            break
+    return [list(q) for q in elegidas]
+
+
+def extras_zona(stage, clave, k, zona, tipos, rng, dist=None):
+    """Lo que se anadio el 11/11/2026 a cada zona: patrullas que van y vuelven por el camino, el puzle de antes del
+    jefe (con sus casillas) y los textos de ambientacion."""
+    dist = dist or _alcanzables(stage, zona['casilla_jefe'], hasta=130)
+    inicio = tuple(zona['inicio']) if tuple(zona['inicio']) in dist else min(
+        dist, key=lambda q: math.dist(q, zona['inicio']))
+    camino = _camino(dist, inicio)
+    n = len(camino)
+    patrullas = []
+    for j in range(PATRULLAS):
+        tramo = camino[int(n * (0.15 + 0.35 * j)): int(n * (0.45 + 0.35 * j))] or camino
+        ruta = [list(tramo[0]), list(tramo[len(tramo) // 2]), list(tramo[-1]), list(tramo[len(tramo) // 2])]
+        sitio = [q for q in dist if math.dist(q, tramo[0]) <= 2]
+        rng.shuffle(sitio)
+        patrullas.append({'bichos': [[x, y, tipos[(i + j) % len(tipos)]] for i, (x, y) in enumerate(sitio[:POR_PATRULLA])],
+                          'ruta': ruta})
+    tipo = PUZLES[clave][k]
+    b = PUZLE_BASE[clave]
+    entre = lambda lo, hi: [q for q, d in dist.items() if lo <= d <= hi]      # noqa: E731
+    if tipo == 'placas':
+        puzle = {'tipo': tipo, 'casillas': _repartidas(entre(6, 10), 4, 5, rng), 'segundos': 3}
+    elif tipo == 'totems':
+        puzle = {'tipo': tipo, 'casillas': _repartidas(entre(5, 9), 4, 4, rng), 'pilares': [b + i for i in range(4)]}
+    elif tipo == 'sellos':
+        puzle = {'tipo': tipo, 'casillas': _repartidas(entre(10, 24), 3, 8, rng),
+                 'guardianes': [b + 4 + i for i in range(3)]}
+    else:
+        origen = camino[max(0, n - 32)] if n > 32 else camino[0]
+        puzle = {'tipo': tipo, 'origen': list(origen), 'destino': _repartidas(entre(6, 8), 1, 1, rng)[0],
+                 'entregas': 2, 'segundos': 45, 'acosadores': tipos[:2]}
+    intro, cerca = AMBIENTE[clave][k]
+    return {'patrullas': patrullas, 'puzle': puzle, 'ambiente': {'entrar': intro, 'cerca': cerca}}
+
+
 def plantilla_auto(cfg):
     rng = random.Random(cfg['stage'])
-    clones = clones_de(cfg)
+    clones = clones_de(cfg) + clones_puzle(cfg['clave'])
     stage = cfg['stage']
     normales = [n for n, _o, p in clones if p == 'trash']
     elites = [n for n, _o, p in clones if p == 'elite']
@@ -383,20 +502,19 @@ def plantilla_auto(cfg):
         casilla = _pisable_en(stage, *posicion[original])
         if casilla is None:
             raise SystemExit('%s: el jefe %d no tiene casilla pisable cerca' % (cfg['clave'], original))
-        dist = _alcanzables(stage, casilla)
+        dist = _alcanzables(stage, casilla, hasta=RECORRIDO + 5)
         lejos = max(dist.values())
         if lejos < 20:
             raise SystemExit('%s: alrededor de %s solo se anda %d casillas' % (cfg['clave'], nombre, lejos))
-        # La llegada: la casilla mas lejana del jefe (hasta 45 pasos); los grupos, entre ella y el jefe.
-        inicio = max((d, p) for p, d in dist.items() if d <= 45)[1]
-        candidatas = sorted((p for p, d in dist.items() if 9 <= d <= min(lejos, 42)),
-                            key=lambda p: (math.dist(p, inicio), p))
+        # "Recorrido mas largo" (11/11/2026): la llegada, la casilla mas lejana del jefe (hasta RECORRIDO pasos); los
+        # grupos, repartidos a lo largo del camino de ella al jefe, un poco a los lados.
+        inicio = max((d, p) for p, d in dist.items() if d <= RECORRIDO)[1]
+        camino = _camino(dist, inicio)
         centros = []
-        for p in candidatas:
-            if math.dist(p, inicio) >= 5 and all(math.dist(p, c) >= 8 for c in centros):
-                centros.append(p)
-            if len(centros) == 6:
-                break
+        for g in range(GRUPOS_ZONA):
+            base = camino[int(6 + (len(camino) - 16) * g / max(1, GRUPOS_ZONA - 1))]
+            cerca = [q for q in dist if math.dist(q, base) <= 3 and dist[q] >= 9]
+            centros.append(rng.choice(sorted(cerca)) if cerca else base)
         tipos = normales[k::3] or normales
         grupos = []
         for g, (cx, cy) in enumerate(centros):
@@ -408,9 +526,11 @@ def plantilla_auto(cfg):
                 bichos.append([x, y, elites[(k + g // ELITE_CADA) % len(elites)]])
             grupos.append(bichos)
         casillas_adds = sorted((p for p, d in dist.items() if 3 <= d <= 6), key=lambda p: (dist[p], p))[::3][:12]
-        zonas.append({'nombre': nombre, 'inicio': list(inicio), 'jefe': jefes[original], 'casilla_jefe': casilla,
-                      'adds': adds[0] if k == 0 else (adds[1] if k == 2 else None),
-                      'casillas_adds': [list(p) for p in casillas_adds] or [casilla], 'grupos': grupos})
+        zona = {'nombre': nombre, 'inicio': list(inicio), 'jefe': jefes[original], 'casilla_jefe': casilla,
+                'adds': adds[0] if k == 0 else (adds[1] if k == 2 else None),
+                'casillas_adds': [list(p) for p in casillas_adds] or [casilla], 'grupos': grupos}
+        zona.update(extras_zona(stage, cfg['clave'], k, zona, tipos, rng, dist))
+        zonas.append(zona)
     mecanicas = {}
     for k, z in enumerate(zonas):
         m = json.loads(json.dumps(MECANICAS[str(23940 + k)]))
@@ -419,7 +539,7 @@ def plantilla_auto(cfg):
     datos = {'_nota': 'Generado por tools/generar_raid.py; no editar a mano.', 'clave': cfg['clave'],
              'nombre': cfg['nombre'], 'nivel': cfg['nivel'], 'stage': stage, 'entrada': zonas[0]['inicio'],
              'zonas': zonas, 'mecanicas': mecanicas, 'stats': stats_de(cfg['nivel']), 'lockout_dia': LOCKOUT_DIA,
-             'clones': [list(c) for c in clones]}
+             'clones': [list(c) for c in clones], 'nombres': {str(k): v for k, v in nombres_puzle(cfg['clave']).items()}}
     ruta = RAIZ / 'server' / 'plantillas' / cfg['plantilla']
     ruta.write_text(json.dumps(datos, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
     print('plantilla %s: %s' % (cfg['plantilla'], ', '.join(

@@ -77,6 +77,13 @@ function RaidAbrir(titulo, miembros, soy_lider, jefes, hay_corrida, en_raid, avi
   end
 end
 
+-- El banner de la ventana: el de la raid i (0..3, orden del CATALOGO de server/raid.py).
+function RaidImagen(i)
+  if window.isexist(WND_RAID) then
+    window.seticon(hijo(60321), 60334 + (i or 0))
+  end
+end
+
 function RaidRefrescar(titulo, miembros, soy_lider, jefes, hay_corrida, en_raid)
   RAID_LIDER = soy_lider and true or false
   if window.isexist(WND_RAID) then

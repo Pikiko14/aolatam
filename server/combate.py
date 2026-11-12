@@ -1175,7 +1175,11 @@ def nivel_botin_raid(npc_type):
                 d = json.loads(f.read_text(encoding='utf-8'))
                 nv = int(d.get('nivel', 60))
                 for z in d.get('zonas', []):
-                    for i in [z.get('jefe'), z.get('adds')] + [b[2] for g in z.get('grupos', []) for b in g]:
+                    pz = z.get('puzle') or {}
+                    for i in ([z.get('jefe'), z.get('adds')] + [b[2] for g in z.get('grupos', []) for b in g]
+                              + [b[2] for pt in z.get('patrullas', []) for b in pt.get('bichos', [])]
+                              + list(pz.get('pilares', [])) + list(pz.get('guardianes', []))
+                              + list(pz.get('acosadores', []))):
                         if i:
                             _NIVEL_BOTIN_RAID[int(i)] = nv
             except Exception:

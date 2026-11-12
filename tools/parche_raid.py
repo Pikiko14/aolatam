@@ -259,6 +259,10 @@ def bloque_wnd03() -> str:
     for k in range(3):
         poner(JEFES + k, texto(JEFES + k, 26, R_JEFES[1] + 23 + 17 * k, RW - 40))
     poner(ESTADO, texto(ESTADO, 8, RH - 18, RW - 16, 513))
+    poner(BANNER_RAID, _w('WND_CLASS_BASE', BANNER_RAID, R_BANNER[0], R_BANNER[1], R_BANNER[2] - R_BANNER[0], R_BANNER[3] - R_BANNER[1], ' icon="%d"' % ICONO_BANNER_RAID))
+    for t in range(N_TEMAS):
+        ventanas.append('    <icon id="%d" dir="%swnd01%s" normal="aolat_raid_banr%d" focus="normal" down="normal" '
+                        'disable="normal" />\n' % (ICONO_BANNER_RAID + t, chr(92), chr(92), t))
     poner(FONDO, _w('WND_CLASS_BASE', FONDO, 0, 0, RW, RH, ' icon="%d"' % ICONO_FONDO))
     ventanas.append('    <icon id="%d" dir="\\wnd01\\" normal="%s" focus="normal" down="normal" disable="normal" />\n'
                     % (ICONO_FONDO, ARCHIVO_FONDO))
@@ -313,6 +317,10 @@ LISTA_FILAS, LISTA_ABRIR, LISTA_ESTADO, LISTA_FONDO, LISTA_ICONO_FONDO = 59671, 
 # cliente son todas del mismo ancho y el nombre se comia el nivel) y los detalles de la raid elegida a la derecha.
 LISTA_NOMBRE, LISTA_NIVEL, LISTA_SEMANA, LISTA_JEFES, LISTA_BOTIN = 59676, 59677, 59678, 59679, 59683  # 59679..82, 83..84
 BANNER = (4, 4, 396, 108)
+# Los banners por raid, encima del fondo: una ventana en cada sitio y un icono por raid (RaidImagen, RaidGuiaImagen y el
+# detalle de AOF Raids en server/lua).
+BANNER_LISTA, BANNER_RAID, BANNER_GUIA = 60320, 60321, 60322
+ICONO_BANNER_LISTA, ICONO_BANNER_RAID, ICONO_BANNER_GUIA = 60330, 60334, 60338        # + 0..3
 PANEL_IZQ, PANEL_DER = (4, 114, 132, 270), (138, 114, 396, 270)
 X_DETALLE = PANEL_DER[0] + 8
 MENU_JUGADOR, BOTON_MENU = 565, 59660     # el menu de clic derecho sobre un jugador (chat.lua OnClickChatOption)
@@ -376,35 +384,65 @@ def _texto_dorado(lienzo, xy, texto, fuente, arriba=(255, 236, 150), abajo=(255,
     lienzo.alpha_composite(capa)
 
 
-def _banner(bw=None, bh=None, grande=True) -> Image.Image:
-    """El banner de Flamefang. grande: el de AOF Raids (titulo en dos lineas y la linea de datos); si no, una franja
-    con el titulo en una linea y los jefes mas pequenos (la ventana de la raid)."""
+# 11/11/2026, "que cambie la imagen de la pestana cuando selecciono la raid que quiero": un banner por raid (el orden del
+# CATALOGO de server/raid.py), con su cielo, su resplandor, sus chispas y sus tres jefes (el del medio, por delante).
+TEMAS = (
+    dict(titulo='FLAMEFANG', nivel=60, cielo=((36, 8, 12), (146, 42, 14)), brillo=((255, 110, 20), (190, 50, 10)),
+         chispas=((255, 210, 90), (255, 150, 40), (255, 90, 30)), jefes=None),
+    dict(titulo='WARRING REALM', nivel=50, cielo=((18, 6, 26), (120, 18, 44)), brillo=((210, 40, 90), (110, 30, 160)),
+         chispas=((230, 140, 255), (255, 90, 130), (170, 70, 220)), jefes=(111252, 111243, 110931)),
+    dict(titulo='WINTRY REALM', nivel=40, cielo=((6, 12, 40), (70, 130, 190)), brillo=((150, 215, 255), (60, 110, 200)),
+         chispas=((255, 255, 255), (210, 235, 255), (160, 205, 255)), jefes=(111144, 111148, 111143)),
+    dict(titulo="DRAGON'S LAIR", nivel=30, cielo=((32, 10, 44), (196, 84, 118)), brillo=((255, 150, 190), (180, 60, 140)),
+         chispas=((255, 205, 225), (255, 160, 200), (255, 235, 245)), jefes=(111384, 111386, 111385)),
+)
+N_TEMAS = len(TEMAS)
+
+
+def _jefe_banner(tema, i, k, bh):
+    """(imagen, delante) del jefe i del banner del tema, ya a su tamano."""
+    if tema['jefes'] is None:
+        ruta, frame, escala = JEFES_SPR[i]
+        s = _sprite(ruta, frame)
+        escala *= k
+    else:
+        sprite = tema['jefes'][i]
+        s = _sprite('M%d' % (sprite - 108001) + chr(92) + str(sprite), 4)
+        s = s.crop(s.getbbox())
+        escala = bh * (1.02 if i == 1 else 0.86) / s.height
+        escala = min(escala, (120 if i == 1 else 80) * k / s.width)        # que no tapen el titulo
+    return s.resize((max(1, int(s.width * escala)), max(1, int(s.height * escala))), Image.LANCZOS)
+
+
+def _banner(bw=None, bh=None, grande=True, tema=0) -> Image.Image:
+    """El banner de la raid `tema` (TEMAS). grande: el de AOF Raids (titulo en dos lineas y la linea de datos); si no,
+    una franja con el titulo en una linea y los jefes mas pequenos (la ventana de la raid y la guia)."""
     import random
     from PIL import ImageFilter
+    t = TEMAS[tema]
     bw, bh = bw or BANNER[2] - BANNER[0], bh or BANNER[3] - BANNER[1]
     ban = Image.new('RGBA', (bw, bh), (0, 0, 0, 255))
     bd = ImageDraw.Draw(ban)
-    for y in range(bh):                                         # de noche arriba a brasa abajo
+    (r0, g0, b0), (r1, g1, b1) = t['cielo']
+    for y in range(bh):                                         # de noche arriba al color de la raid abajo
         v = y / bh
-        bd.line((0, y, bw, y), fill=(int(36 + 110 * v ** 2), int(8 + 34 * v ** 3), int(12 + 2 * v), 255))
+        bd.line((0, y, bw, y), fill=(int(r0 + (r1 - r0) * v ** 2), int(g0 + (g1 - g0) * v ** 3),
+                                     int(b0 + (b1 - b0) * v), 255))
     glow = Image.new('RGBA', (bw, bh), (0, 0, 0, 0))
     gd = ImageDraw.Draw(glow)
-    gd.ellipse((bw * 0.42, bh * 0.30, bw * 1.08, bh * 1.7), fill=(255, 110, 20, 160))
-    gd.ellipse((-60, bh * 0.70, bw * 0.45, bh * 1.6), fill=(190, 50, 10, 110))
+    gd.ellipse((bw * 0.42, bh * 0.30, bw * 1.08, bh * 1.7), fill=t['brillo'][0] + (160,))
+    gd.ellipse((-60, bh * 0.70, bw * 0.45, bh * 1.6), fill=t['brillo'][1] + (110,))
     ban.alpha_composite(glow.filter(ImageFilter.GaussianBlur(18)))
     rnd = random.Random(902)
     for _ in range(80):                                         # ascuas
         x, y, r = rnd.uniform(0, bw), rnd.uniform(0, bh), rnd.choice((1, 1, 1, 2))
-        c = rnd.choice(((255, 210, 90), (255, 150, 40), (255, 90, 30)))
+        c = rnd.choice(t['chispas'])
         bd.ellipse((x, y, x + r, y + r), fill=c + (255,))
     k = 1.0 if grande else 0.62
     xs = (bw - 152 * k, bw - 94 * k, bw - 36 * k)
-    orden = ((0, False), (2, False), (1, True))                 # Satrixia la ultima, por delante
+    orden = ((0, False), (2, False), (1, True))                 # el del medio el ultimo, por delante
     for i, delante in orden:
-        ruta, frame, escala = JEFES_SPR[i]
-        escala *= k
-        s = _sprite(ruta, frame)
-        s = s.resize((max(1, int(s.width * escala)), max(1, int(s.height * escala))), Image.LANCZOS)
+        s = _jefe_banner(t, i, k, bh)
         if not delante:                                         # los de los lados un poco en penumbra
             oscuro = Image.new('RGBA', s.size, (20, 6, 4, 0))
             oscuro.putalpha(s.getchannel('A').point(lambda a: a // 5))
@@ -414,17 +452,24 @@ def _banner(bw=None, bh=None, grande=True) -> Image.Image:
             s, y = s.crop((0, -y, s.width, s.height)), 0
         ban.alpha_composite(s, (x, y))
     if not grande:
-        _texto_dorado(ban, (12, (bh - 24) // 2), 'FLAMEFANG RAID', _fuente('georgiab.ttf', 21))
+        titulo = t['titulo'] + ' RAID'
+        tam = 21
+        while tam > 12 and _fuente('georgiab.ttf', tam).getlength(titulo) > bw - 200 * k - 12:
+            tam -= 1
+        _texto_dorado(ban, (12, (bh - tam - 3) // 2), titulo, _fuente('georgiab.ttf', tam))
         return ban
-    _texto_dorado(ban, (14, 12), 'FLAMEFANG', _fuente('georgiab.ttf', 30))
+    tam = 30
+    while tam > 16 and _fuente('georgiab.ttf', tam).getlength(t['titulo']) > bw - 200:
+        tam -= 1
+    _texto_dorado(ban, (14, 12 + (30 - tam) // 2), t['titulo'], _fuente('georgiab.ttf', tam))
     _texto_dorado(ban, (16, 48), 'R A I D', _fuente('georgiab.ttf', 15), (255, 214, 150), (230, 120, 40))
     d = ImageDraw.Draw(ban)
     d.line((16, 72, 160, 72), fill=(200, 140, 60, 255))
     d.line((16, 73, 160, 73), fill=(80, 30, 10, 255))
     f = _fuente('trebucbd.ttf', 11)
-    d.text((16, 79), 'Level 60  \u2022  20 players  \u2022  3 bosses', font=f, fill=(0, 0, 0, 255), stroke_width=2,
-           stroke_fill=(0, 0, 0, 255))
-    d.text((16, 79), 'Level 60  \u2022  20 players  \u2022  3 bosses', font=f, fill=(255, 226, 180, 255))
+    datos = 'Level %d  \u2022  20 players  \u2022  3 bosses' % t['nivel']
+    d.text((16, 79), datos, font=f, fill=(0, 0, 0, 255), stroke_width=2, stroke_fill=(0, 0, 0, 255))
+    d.text((16, 79), datos, font=f, fill=(255, 226, 180, 255))
     return ban
 
 
@@ -538,6 +583,10 @@ def bloque_lista() -> str:
     poner(LISTA_BOTIN, texto(LISTA_BOTIN, X_DETALLE, y + 121, ancho, 510))
     poner(LISTA_BOTIN + 1, texto(LISTA_BOTIN + 1, X_DETALLE, y + 121 + 13, ancho, 510))
     poner(LISTA_ESTADO, texto(LISTA_ESTADO, 10, LH - 26, LW - 92, 513))
+    poner(BANNER_LISTA, _w('WND_CLASS_BASE', BANNER_LISTA, BANNER[0], BANNER[1], BANNER[2] - BANNER[0], BANNER[3] - BANNER[1], ' icon="%d"' % ICONO_BANNER_LISTA))
+    for t in range(N_TEMAS):
+        ventanas.append('    <icon id="%d" dir="%swnd01%s" normal="aolat_raid_ban%d" focus="normal" down="normal" '
+                        'disable="normal" />\n' % (ICONO_BANNER_LISTA + t, chr(92), chr(92), t))
     poner(LISTA_FONDO, _w('WND_CLASS_BASE', LISTA_FONDO, 0, 0, LW, LH, ' icon="%d"' % LISTA_ICONO_FONDO))
     ventanas.append('    <icon id="%d" dir="\\wnd01\\" normal="aolat_raid_lista" focus="normal" down="normal" '
                     'disable="normal" />\n' % LISTA_ICONO_FONDO)
@@ -558,7 +607,9 @@ G_BANNER = (4, 4, GW - 4, 52)
 G_PAGINA = (4, 82, GW - 4, GH - 32)
 G_RETRATO = (GW - 112, 112, GW - 12, 232)                                     # 100 x 120
 N_LINEAS, ALTO_LINEA = 13, 14
-PESTANA_W, PESTANA_H, ICONO_PESTANA, ICONO_PESTANA_ACTIVA = 78, 20, 59864, 59865
+# Seis pestanas (11/11/2026: la de los puzles): la sexta no cabe en 59881..59885 (el 59886 es el titulo).
+PESTANA_W, PESTANA_H, ICONO_PESTANA, ICONO_PESTANA_ACTIVA = 66, 20, 59864, 59865
+PESTANAS_GUIA = (59881, 59882, 59883, 59884, 59885, 60323)
 
 
 def pestana(estado) -> Image.Image:
@@ -640,8 +691,8 @@ def bloque_guia() -> str:
         return _w('WND_CLASS_STATIC', wid, x, y, w, 14, ' title="" fcolor="%d" font="1"' % color,
                   'wsVisible="" ssVCenter=""')
     # Pestanas con icono propio de su ancho: el boton del tema (btn111) no se estira y el texto se salia de el.
-    for k in range(5):
-        poner(GUIA_PESTANA + k, _w('WND_CLASS_BUTTON', GUIA_PESTANA + k, 6 + 82 * k, 58, PESTANA_W, PESTANA_H,
+    for k, wid in enumerate(PESTANAS_GUIA):
+        poner(wid, _w('WND_CLASS_BUTTON', wid, 6 + 69 * k, 58, PESTANA_W, PESTANA_H,
                                    ' fcolor="101" font="1" icon="%d" title=""' % ICONO_PESTANA,
                                    'wsVisible="" bsHCenter="" bsVCenter="" wsTab=""',
                                    '        <OnCommand>OnRaidGuiaPestana%d</OnCommand>\n' % (k + 1)))
@@ -656,6 +707,10 @@ def bloque_guia() -> str:
                                     G_PAGINA[2] - G_PAGINA[0] - 16, 103))
     poner(GUIA_RETRATO, _w('WND_CLASS_BASE', GUIA_RETRATO, G_RETRATO[0], G_RETRATO[1], G_RETRATO[2] - G_RETRATO[0],
                            G_RETRATO[3] - G_RETRATO[1], ' icon="%d"' % (GUIA_ICONO_RETRATO + 1)))
+    poner(BANNER_GUIA, _w('WND_CLASS_BASE', BANNER_GUIA, G_BANNER[0], G_BANNER[1], G_BANNER[2] - G_BANNER[0], G_BANNER[3] - G_BANNER[1], ' icon="%d"' % ICONO_BANNER_GUIA))
+    for t in range(N_TEMAS):
+        ventanas.append('    <icon id="%d" dir="%swnd01%s" normal="aolat_raid_bang%d" focus="normal" down="normal" '
+                        'disable="normal" />\n' % (ICONO_BANNER_GUIA + t, chr(92), chr(92), t))
     poner(GUIA_FONDO, _w('WND_CLASS_BASE', GUIA_FONDO, 0, 0, GW, GH, ' icon="%d"' % GUIA_ICONO_FONDO))
     ventanas.append('    <icon id="%d" dir="\\wnd01\\" normal="aolat_raid_guia" focus="normal" down="normal" '
                     'disable="normal" />\n' % GUIA_ICONO_FONDO)
@@ -690,6 +745,11 @@ def main():
         (SALIDA / ('aolat_raid_jefe%d.shp' % (i + 1))).write_bytes(a_shp(retrato(i)))
     for e in 'nfs':
         (SALIDA / ('aolat_raid_tab_%s.shp' % e)).write_bytes(a_shp(pestana(e)))
+    for t in range(N_TEMAS):
+        (SALIDA / ('aolat_raid_ban%d.shp' % t)).write_bytes(a_shp(_banner(tema=t)))
+        for archivo, caja in (('aolat_raid_banr%d', R_BANNER), ('aolat_raid_bang%d', G_BANNER)):
+            (SALIDA / ((archivo % t) + '.shp')).write_bytes(
+                a_shp(_banner(caja[2] - caja[0], caja[3] - caja[1], grande=False, tema=t)))
     _guardar('wnd03.xml', _al_final(bloque_wnd03() + bloque_panel() + bloque_lista() + bloque_guia()))
     _guardar('wnd01.xml', lambda t: boton_menu(wnd01(t)))
     print('boton %d, ventana %d (%dx%d), panel %d (%dx%d) e iconos listos' % (BOTON_BARRA, VENTANA, RW, RH, PANEL, PW, PH))

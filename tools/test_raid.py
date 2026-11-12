@@ -192,15 +192,17 @@ def test_el_listado_aof_raids_y_el_saludo(monkeypatch):
 
 def test_la_guia_cabe_en_la_ventana_y_dice_los_numeros_del_json():
     titulo, paginas = raid.guia(0)
-    assert titulo == raid.NOMBRE + ' Guide' and len(paginas) == 5
-    for _tab, _titulo, retrato, lineas in paginas:
-        ancho = raid.ANCHO_GUIA_JEFE if retrato else raid.ANCHO_GUIA
-        assert len(lineas) <= raid.LINEAS_GUIA and all(len(l) <= ancho and '%%' not in l for l in lineas)
+    assert titulo == raid.NOMBRE + ' Guide' and len(paginas) == 6
+    for i in range(len(raid.CATALOGO)):
+        for _tab, _titulo, retrato, lineas in raid.guia(i)[1]:
+            ancho = raid.ANCHO_GUIA_JEFE if retrato else raid.ANCHO_GUIA
+            assert len(lineas) <= raid.LINEAS_GUIA, (i, _tab)
+            assert all(len(l) <= ancho and '%%' not in l for l in lineas), (i, _tab, [l for l in lineas if len(l) > ancho])
     mec = raid.datos()['mecanicas']
     texto = '\n'.join(sum((p[3] for p in paginas), []))
     assert 'every %d s' % mec['23940']['lava']['cada'] in texto
     assert 'her %d Firals' % mec['23942']['adds'] in texto
-    assert [p[2] for p in paginas] == [0, 1, 2, 3, 0]
+    assert [p[2] for p in paginas] == [0, 1, 2, 3, 0, 0]
 
 
 def test_el_boton_guide_manda_la_guia():
@@ -255,7 +257,7 @@ def test_las_raids_nuevas_tienen_tres_zonas_con_bichos_que_existen():
         vidas = []
         for z in p['zonas']:
             jefe = combate._datos(z['jefe'])
-            assert len(z['grupos']) == 6 and jefe['hp'] >= 100000
+            assert len(z['grupos']) == 8 and jefe['hp'] >= 100000
             vidas.append(jefe['hp'])
             assert str(z['jefe']) in p['mecanicas'] and p['mecanicas'][str(z['jefe'])].get('t')
             for g in z['grupos']:
