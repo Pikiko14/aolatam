@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-12",
+    "titulo": "Update 0.0.0.124: login, channels and Abyss Taurus",
+    "texto": "Please update to version 0.0.0.124 from AngelsLauncher. The login window has more room and a visible Save box for your account, the channel window has a new design centered under the emblem and shows the channel you pick, and the Abyss Taurus now stands on the ground with its rider seated on its back."
+  },
+  {
+    "fecha": "2026-11-12",
     "titulo": "Update 0.0.0.119: sharper login buttons",
     "texto": "Please update to version 0.0.0.119 from AngelsLauncher. The Login and Exit buttons now have sharper, easier to read text."
   },
