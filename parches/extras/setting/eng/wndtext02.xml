@@ -1,0 +1,1467 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<root>
+	<window id="1001" title="5 in a row"/>
+	<window id="1031" tooltext="PageUp"/>
+	<window id="1032" tooltext="PageDown"/>
+	<window id="1035" tooltext="Enter the game"/>
+	<window id="1036" tooltext="Quit from the game"/>
+	<window id="1037" title="1/5"/>
+	<window id="1041" title="5in arow"/>
+	<window id="1042" title="Two players will respectively lay white discs or black discs one by one. Whoever lays down 5 in a row first is the winner."/>
+	<window id="1043" title="Introduction"/>
+	<window id="1044" title="1. Players will lay down discs turn by turn. The player with the black discs goes first."/>
+	<window id="1045" title="2. Click anywhere on the board and then left click it to lay down disc."/>
+	<window id="1002" title="5 in a row"/>
+	<window id="1033" tooltext="PageUp"/>
+	<window id="1034" tooltext="PageDown"/>
+	<window id="1038" title="2/5"/>
+	<window id="1046" title="The first one lays 5 discs in a horizontal,&#xA;vertical, or diagonal row wins."/>
+	<window id="1047"/>
+	<window id="1048"/>
+	<window id="1049"/>
+	<window id="1050" title="Horizontal"/>
+	<window id="1051" title="Vertical"/>
+	<window id="1052" title="Diagonal"/>
+	<window id="1003" title="5 in a row"/>
+	<window id="1075" tooltext="PageUp"/>
+	<window id="1076" tooltext="PageDown"/>
+	<window id="1039" title="3/5"/>
+	<window id="1053" title="Introduction"/>
+	<window id="1054" title="1.&quot;3 Free&quot;: 3 discs in a row without rival's&#xA;block. It's closed to victory if you makes&#xA;&quot;4 More&quot;."/>
+	<window id="1055" title="2. &quot;4 more&quot;: 4 discs in a row without&#xA;rival's block. Victory is yours."/>
+	<window id="1056"/>
+	<window id="1057"/>
+	<window id="1058" title="3 Free"/>
+	<window id="1059" title="4 More"/>
+	<window id="1004" title="5 in a row"/>
+	<window id="1077" tooltext="PageUp"/>
+	<window id="1078" tooltext="PageDown"/>
+	<window id="1040" title="4/5"/>
+	<window id="1060" title="3. &quot;Poor 4&quot;: 4 discs in a row with one side&#xA;blocked. You may still win if the rival&#xA;doesn't notice."/>
+	<window id="1061"/>
+	<window id="1062" title="Poor 4"/>
+	<window id="1005" title="5 in a row"/>
+	<window id="1079" tooltext="PageUp"/>
+	<window id="1080" tooltext="PageDown"/>
+	<window id="1063" title="Action Commands"/>
+	<window id="1064" title="1. move: Move the cursor on the board to choose placement location"/>
+	<window id="1065" title="2. lay: Left click to lay down a disc."/>
+	<window id="1066" title="3. yeild: You can end the present game by clicking yeild."/>
+	<window id="1067"/>
+	<window id="1068" title="5/5"/>
+	<window id="1011" title="5 in a row"/>
+	<window id="1012"/>
+	<window id="1013" tooltext="Yield"/>
+	<window id="1014"/>
+	<window id="1015" title="W    L    D"/>
+	<window id="1016"/>
+	<window id="1017" title="W    L    D"/>
+	<window id="1018"/>
+	<window id="1019"/>
+	<window id="1020"/>
+	<window id="1021" title="00"/>
+	<window id="1022" title="00"/>
+	<window id="1023" title="00"/>
+	<window id="1024" title="00"/>
+	<window id="1025" title="00"/>
+	<window id="1026" title="00"/>
+	<window id="1028"/>
+	<window id="1029"/>
+	<window id="1071"/>
+	<window id="1072"/>
+	<window id="1073"/>
+	<window id="1091"/>
+	<window id="1092" title="Want to quit?"/>
+	<window id="1093"/>
+	<window id="1094"/>
+	<window id="1202"/>
+	<window id="1203" title="Chat room name"/>
+	<window id="1204" title="RoomHead"/>
+	<window id="1205" title="qty."/>
+	<window id="1207" title="New"/>
+	<window id="1208" title="Add"/>
+	<window id="1209" title="Refresh"/>
+	<window id="1213"/>
+	<window id="1212"/>
+	<window id="1220"/>
+	<window id="1221" title="Enter the room name"/>
+	<window id="1222"/>
+	<window id="1223"/>
+	<window id="1224"/>
+	<window id="1230" title="Chat room"/>
+	<window id="1231" title="Head"/>
+	<window id="1232" title="Kick"/>
+	<window id="1233" title="Send"/>
+	<window id="1234" title="Name"/>
+	<window id="1235" title="Head"/>
+	<window id="1237"/>
+	<window id="1238"/>
+	<window id="1239"/>
+	<window id="1240"/>
+	<window id="1241"/>
+	<window id="1242"/>
+	<window id="1243"/>
+	<window id="1244" tooltext="Chat Room"/>
+	<window id="1245"/>
+	<window id="9001" title="Big-2"/>
+	<window id="9091" tooltext="PageUp"/>
+	<window id="9092" tooltext="PageDown"/>
+	<window id="9095" tooltext="Enter the game"/>
+	<window id="9096" tooltext="Quit from the game"/>
+	<window id="9097" title="1/6"/>
+	<window id="9101" title="Big-2"/>
+	<window id="9102" title="Big-2 is a popular card game. The biggest number in the game is 2."/>
+	<window id="9103" title="There can be 2-4 players playing at the same time. It is simple. You need to play a bigger number card than the last player. Whoever lays out all their cards will be the winner."/>
+	<window id="9002" title="Big-2"/>
+	<window id="9093" tooltext="PageUp"/>
+	<window id="9094" tooltext="PageDown"/>
+	<window id="9098" title="2/6"/>
+	<window id="9104" title="Introduction"/>
+	<window id="9105" title="1. The player has a club  3 goes first and&#xA;then others follow counter-clockwise."/>
+	<window id="9106" title="2. You should play the same type of cards when it is your turn."/>
+	<window id="9107" title="3. Yours must be bigger than the last card."/>
+	<window id="9108" title="4. the number order is:&#xA;2&gt;A&gt;K&gt;Q&gt;J&gt;10&gt;9&gt;8&gt;7&gt;6&gt;5&gt;4&gt;3"/>
+	<window id="9109" title="5. If the number of cards are same, it is according to the type of the cards."/>
+	<window id="9110" title="6. type of card order is: Spade  &gt;Heart  &gt;Diamond  &gt;Club"/>
+	<window id="9111" title="7. If your card is not bigger than your target, you have to give up the game."/>
+	<window id="9112"/>
+	<window id="9143"/>
+	<window id="9144"/>
+	<window id="9145"/>
+	<window id="9146"/>
+	<window id="9003" title="Big-2"/>
+	<window id="9099" tooltext="PageUp"/>
+	<window id="9100" tooltext="PageDown"/>
+	<window id="9114" title="3/6"/>
+	<window id="9115" title="Card Introduction"/>
+	<window id="9116" title="1. Single card: According to the number or the type"/>
+	<window id="9117" title="2. A Pair: Two card of the same number. According to the number or the suit"/>
+	<window id="9118" title="3. Straight: 5 cards with&#xA;continual Num. Compare by&#xA;the biggest card."/>
+	<window id="9119"/>
+	<window id="9147"/>
+	<window id="9148"/>
+	<window id="9149"/>
+	<window id="9150"/>
+	<window id="9151"/>
+	<window id="9152"/>
+	<window id="9153"/>
+	<window id="9004" title="Big-2"/>
+	<window id="9120" tooltext="PageUp"/>
+	<window id="9121" tooltext="PageDown"/>
+	<window id="9122" title="4/6"/>
+	<window id="9123" title="4. Full House: 5 cards. [3&#xA;cards of same number] &amp; [a&#xA;pair]. Compare by 3 cards."/>
+	<window id="9124" title="5. 4 of a kind. [4 cards of&#xA;same number] &amp; a [single&#xA;card]. Compare by 4 cards."/>
+	<window id="9125" title="6.Straight Flush: 5 cards of&#xA;continual num and same tpye.&#xA;Compare by the biggest card."/>
+	<window id="9126"/>
+	<window id="9154"/>
+	<window id="9155"/>
+	<window id="9156"/>
+	<window id="9157"/>
+	<window id="9158"/>
+	<window id="9159"/>
+	<window id="9160"/>
+	<window id="9161"/>
+	<window id="9162"/>
+	<window id="9163"/>
+	<window id="9164"/>
+	<window id="9165"/>
+	<window id="9166"/>
+	<window id="9167"/>
+	<window id="9005" title="Big-2"/>
+	<window id="9129" tooltext="PageUp"/>
+	<window id="9130" tooltext="PageDown"/>
+	<window id="9131" title="5/6"/>
+	<window id="9132" title="Introduction"/>
+	<window id="9133" title="1. Choose: Click to raise&#xA;cards you want, such as the&#xA;diamond Q in the picture."/>
+	<window id="9134" title="2. Cancel: Click the raised&#xA;card to cancel it. such as&#xA;Diamond Q in the picture."/>
+	<window id="9135"/>
+	<window id="9168"/>
+	<window id="9169"/>
+	<window id="9170"/>
+	<window id="9171"/>
+	<window id="9172"/>
+	<window id="9173"/>
+	<window id="9174"/>
+	<window id="9175"/>
+	<window id="9176"/>
+	<window id="9006" title="Big-2"/>
+	<window id="9137" tooltext="PageUp"/>
+	<window id="9138" tooltext="PageDown"/>
+	<window id="9139" title="6/6"/>
+	<window id="9140" title="3. Play: Click [Play] to&#xA;play the card you chose,&#xA;such as in picture A."/>
+	<window id="9141" title="4. Pass: Click [Pass] to&#xA;give up once, such as in&#xA;picture B."/>
+	<window id="9142"/>
+	<window id="9011" title="Big Two"/>
+	<window id="9012"/>
+	<window id="9013" tooltext="Play a card"/>
+	<window id="9014" tooltext="Pass"/>
+	<window id="9015"/>
+	<window id="9016"/>
+	<window id="9020"/>
+	<window id="9021"/>
+	<window id="9022"/>
+	<window id="9023"/>
+	<window id="9024"/>
+	<window id="9025"/>
+	<window id="9026"/>
+	<window id="9027"/>
+	<window id="9028"/>
+	<window id="9029"/>
+	<window id="9030"/>
+	<window id="9031"/>
+	<window id="9032"/>
+	<window id="9033"/>
+	<window id="9034"/>
+	<window id="9035"/>
+	<window id="9036"/>
+	<window id="9037"/>
+	<window id="9038"/>
+	<window id="9039"/>
+	<window id="9040"/>
+	<window id="9041"/>
+	<window id="9042"/>
+	<window id="9043"/>
+	<window id="9044"/>
+	<window id="9045"/>
+	<window id="9046" title="Rank"/>
+	<window id="9047" title="Player name"/>
+	<window id="9048" title="Score"/>
+	<window id="9049" title="Total Score"/>
+	<window id="9050"/>
+	<window id="9051"/>
+	<window id="9052"/>
+	<window id="9053"/>
+	<window id="9054"/>
+	<window id="9055"/>
+	<window id="9056"/>
+	<window id="9057"/>
+	<window id="9058"/>
+	<window id="9059"/>
+	<window id="9060"/>
+	<window id="9061"/>
+	<window id="9062"/>
+	<window id="9063"/>
+	<window id="9064"/>
+	<window id="9065"/>
+	<window id="9071"/>
+	<window id="9072"/>
+	<window id="9073"/>
+	<window id="9074"/>
+	<window id="2301" title="Friend"/>
+	<window id="2316" title="Friend"/>
+	<window id="2317" title="Black's"/>
+	<window id="2318" title="Mail"/>
+	<window id="1201" title="Chatr"/>
+	<window id="12231" title="Game"/>
+	<window id="2319"/>
+	<window id="2320"/>
+	<window id="2321"/>
+	<window id="1200"/>
+	<window id="12230"/>
+	<window id="2302"/>
+	<window id="2304" tooltext="Add friends"/>
+	<window id="2305" tooltext="Add groups"/>
+	<window id="2306" tooltext="Delete groups"/>
+	<window id="2307" tooltext="Rename groups"/>
+	<window id="2308" tooltext="Add friends"/>
+	<window id="2309" tooltext="Delete friends"/>
+	<window id="2310" tooltext="Change groups"/>
+	<window id="2311" tooltext="Whisper"/>
+	<window id="2312" tooltext="Instant communication"/>
+	<window id="2314"/>
+	<window id="2315" title="DIYgroup"/>
+	<window id="2383"/>
+	<window id="2330"/>
+	<window id="2331"/>
+	<window id="2332"/>
+	<window id="2333"/>
+	<window id="2334"/>
+	<window id="2335"/>
+	<window id="2388"/>
+	<window id="2303"/>
+	<window id="2322" tooltext="Add"/>
+	<window id="2323" tooltext="Delete"/>
+	<window id="2324" tooltext="PageUp"/>
+	<window id="2325" tooltext="PageDown"/>
+	<window id="2326" tooltext="PageUp"/>
+	<window id="2327" tooltext="PageDown"/>
+	<window id="2328" title="Pal list"/>
+	<window id="2329" title="Darklist"/>
+	<window id="2336"/>
+	<window id="2337"/>
+	<window id="2338" title="1"/>
+	<window id="2339" title="1"/>
+	<window id="2351"/>
+	<window id="2352" title="Name"/>
+	<window id="2353"/>
+	<window id="2354"/>
+	<window id="2355"/>
+	<window id="2356"/>
+	<window id="2357"/>
+	<window id="2358"/>
+	<window id="2359"/>
+	<window id="2360"/>
+	<window id="2361" title="Groups"/>
+	<window id="2362"/>
+	<window id="2363"/>
+	<window id="2364" title="Rename"/>
+	<window id="2365"/>
+	<window id="2366"/>
+	<window id="2367" title="Change"/>
+	<window id="2368"/>
+	<window id="2369"/>
+	<window id="2370"/>
+	<window id="2371"/>
+	<window id="2372"/>
+	<window id="2373"/>
+	<window id="2374"/>
+	<window id="2375"/>
+	<window id="2376"/>
+	<window id="2378"/>
+	<window id="2379"/>
+	<window id="2380"/>
+	<window id="2381"/>
+	<window id="2382"/>
+	<window id="2385"/>
+	<window id="2386"/>
+	<window id="2387"/>
+	<window id="2389"/>
+	<window id="2390"/>
+	<window id="2391" title="Whisper"/>
+	<window id="2392" title="Team up [share]"/>
+	<window id="2393" title="Team up [alone]"/>
+	<window id="2394" title="Add members"/>
+	<window id="12232"/>
+	<window id="12233"/>
+	<window id="12234"/>
+	<window id="12237" title="Name"/>
+	<window id="12238" title="Title"/>
+	<window id="12239" title="Gender"/>
+	<window id="12240" tooltext="Directly invite players"/>
+	<window id="12241" tooltext="Invite players on the list"/>
+	<window id="12242" tooltext="Refurbish the player list"/>
+	<window id="12243"/>
+	<window id="12244"/>
+	<window id="2501" title="Set PIN"/>
+	<window id="2502" title="Change PIN"/>
+	<window id="2503" title="Delete PIN"/>
+	<window id="2504"/>
+	<window id="2500"/>
+	<window id="2505"/>
+	<window id="2506"/>
+	<window id="2507"/>
+	<window id="2508"/>
+	<window id="2751" title="Password"/>
+	<window id="2752" title="Enter PIN(6-20)"/>
+	<window id="2753" title="Confirm"/>
+	<window id="2509"/>
+	<window id="2510"/>
+	<window id="2511"/>
+	<window id="2512"/>
+	<window id="2513"/>
+	<window id="2514"/>
+	<window id="2754" title="Current PIN"/>
+	<window id="2755" title="Enter PIN(6-20)"/>
+	<window id="2756" title="Confirm"/>
+	<window id="2515"/>
+	<window id="2743" title="Enter PIN(6-20)"/>
+	<window id="2516"/>
+	<window id="2517"/>
+	<window id="2518"/>
+	<window id="2519"/>
+	<window id="2520"/>
+	<window id="2521"/>
+	<window id="2522"/>
+	<window id="2523" tooltext="Quit from the game"/>
+	<window id="2524"/>
+	<window id="2525" title="Warning: The character will be deleted after 24 hours. Are you sure you want to delete it?"/>
+	<window id="2526"/>
+	<window id="2527"/>
+	<window id="2528"/>
+	<window id="2531"/>
+	<window id="2699"/>
+	<window id="2695"/>
+	<window id="2696"/>
+	<window id="2697"/>
+	<window id="2698"/>
+	<window id="2691" title="Capacity [Normal]"/>
+	<window id="2692" title="Capacity [Moderate]"/>
+	<window id="2693" title="Capacity [Crowded]"/>
+	<window id="2694" title="Capacity [Full]"/>
+	<window id="2532"/>
+	<window id="2533"/>
+	<window id="2534"/>
+	<window id="2535"/>
+	<window id="2536"/>
+	<window id="2545"/>
+	<window id="2546"/>
+	<window id="2547"/>
+	<window id="2748"/>
+	<window id="2749"/>
+	<window id="2750"/>
+	<window id="2548" title="Character Info"/>
+	<window id="2549"/>
+	<window id="2550" title="01"/>
+	<window id="2551"/>
+	<window id="2552" title="01"/>
+	<window id="2553"/>
+	<window id="2554" title="Capricorn"/>
+	<window id="2555" title="A"/>
+	<window id="2556"/>
+	<window id="2560"/>
+	<window id="2561"/>
+	<window id="2562"/>
+	<window id="2557"/>
+	<window id="2558"/>
+	<window id="2559"/>
+	<window id="2566" title="Character Shape"/>
+	<window id="2567"/>
+	<window id="2568"/>
+	<window id="2569"/>
+	<window id="2570"/>
+	<window id="2571"/>
+	<window id="2572"/>
+	<window id="2573"/>
+	<window id="2574"/>
+	<window id="2781"/>
+	<window id="2782"/>
+	<window id="2575"/>
+	<window id="2576"/>
+	<window id="2579"/>
+	<window id="2580"/>
+	<window id="2581"/>
+	<window id="2582" title="Gender"/>
+	<window id="2583" title="Hair"/>
+	<window id="2584" title="Hair Color"/>
+	<window id="2585" title="Stature"/>
+	<window id="2586" title="Complexion"/>
+	<window id="2587"/>
+	<window id="2588"/>
+	<window id="2589"/>
+	<window id="2591"/>
+	<window id="2577" tooltext="PageUp"/>
+	<window id="2578" tooltext="Next"/>
+	<window id="2592" title="Required"/>
+	<window id="2593" title="Name"/>
+	<window id="2594" title="Birth"/>
+	<window id="2595" title="Sign"/>
+	<window id="2596" title="B. T."/>
+	<window id="2597" title="Optional"/>
+	<window id="2598" title="Place"/>
+	<window id="2599" title="Job"/>
+	<window id="2600" title="Face"/>
+	<window id="2601" title="Pty"/>
+	<window id="2602" title="D"/>
+	<window id="2603" title="M"/>
+	<window id="2604" title="Dear Angels, the data here can help you to know more about your friends in the Angel world."/>
+	<window id="2605"/>
+	<window id="2606"/>
+	<window id="2607"/>
+	<window id="2608"/>
+	<window id="2609"/>
+	<window id="2610"/>
+	<window id="2611"/>
+	<window id="2612"/>
+	<window id="2537"/>
+	<window id="2538"/>
+	<window id="2539"/>
+	<window id="2540"/>
+	<window id="2541"/>
+	<window id="2542"/>
+	<window id="2543"/>
+	<window id="2544"/>
+	<window id="2744"/>
+	<window id="2745"/>
+	<window id="2746"/>
+	<window id="2747"/>
+	<window id="2613"/>
+	<window id="2563" tooltext="Last step"/>
+	<window id="2564" tooltext="Finish"/>
+	<window id="2700"/>
+	<window id="2529" title="Angels Online Forever"/>
+	<window id="2614" title="Please choose the server"/>
+	<window id="2615" tooltext="Enter the game"/>
+	<window id="2616" tooltext="Quit from the game"/>
+	<window id="2617"/>
+	<window id="2530" title="Choose game branch"/>
+	<window id="2701" title="ID"/>
+	<window id="2702"/>
+	<window id="2703" title="PW"/>
+	<window id="2704"/>
+	<window id="2705" tooltext="Enter the game"/>
+	<window id="2706"/>
+	<window id="2707"/>
+	<window id="2565"/>
+	<window id="2708" title="Enter game"/>
+	<window id="2709" title="Create a Chct."/>
+	<window id="2710" title="Delete a Chct."/>
+	<window id="2711" title="Recover"/>
+	<window id="2712" tooltext="Return"/>
+	<window id="2713" title="Angel Lyceum ID Card"/>
+	<window id="2716"/>
+	<window id="2719"/>
+	<window id="2722"/>
+	<window id="2725" tooltext="1..."/>
+	<window id="2728"/>
+	<window id="2731" title="Set" tooltext="Set pictures"/>
+	<window id="2734" title="Face" tooltext="can upload bmp, jpg, tga,png and so on"/>
+	<window id="2740"/>
+	<window id="2714" title="Angel Lyceum ID Card"/>
+	<window id="2717"/>
+	<window id="2720"/>
+	<window id="2723"/>
+	<window id="2726" tooltext="1..."/>
+	<window id="2729"/>
+	<window id="2732" title="Set" tooltext="Set pictures"/>
+	<window id="2735" title="Face" tooltext="can upload bmp, jpg, tga,png and so on"/>
+	<window id="2741"/>
+	<window id="2715" title="Angel Lyceum ID Card"/>
+	<window id="2718"/>
+	<window id="2721"/>
+	<window id="2724"/>
+	<window id="2727" tooltext="..."/>
+	<window id="2730"/>
+	<window id="2733" title="Set" tooltext="Set pictures"/>
+	<window id="2736" title="Face" tooltext="can upload bmp, jpg, tga,png and so on"/>
+	<window id="2742"/>
+	<window id="2757" title="Title Job   HP   MP   Sign"/>
+	<window id="2758" title="Title Job   HP   MP   Sign"/>
+	<window id="2759" title="Title Job   HP   MP   Sign"/>
+	<window id="2760" title="B.T."/>
+	<window id="2761" title="B.T."/>
+	<window id="2762" title="B.T."/>
+	<window id="2763"/>
+	<window id="2764"/>
+	<window id="2765"/>
+	<window id="2766"/>
+	<window id="2767"/>
+	<window id="2768"/>
+	<window id="2769"/>
+	<window id="2770"/>
+	<window id="2771"/>
+	<window id="2772"/>
+	<window id="2773"/>
+	<window id="2774"/>
+	<window id="2775"/>
+	<window id="2776"/>
+	<window id="2777"/>
+	<window id="2778"/>
+	<window id="2779"/>
+	<window id="2780"/>
+	<window id="2783" title="Change name" tooltext="Character name unavailable."/>
+	<window id="2784" title="Change name" tooltext="Character name unavailable."/>
+	<window id="2785" title="Change name" tooltext="Character name unavailable."/>
+	<window id="2786" title="Edit guild name" tooltext="Guild name unavailable."/>
+	<window id="2787" title="Edit guild name" tooltext="Guild name unavailable."/>
+	<window id="2788" title="Edit guild name" tooltext="Guild name unavailable."/>
+	<window id="2789"/>
+	<window id="2790"/>
+	<window id="2791"/>
+	<window id="2792"/>
+	<window id="2793"/>
+	<window id="2794" title="Enter new character name:"/>
+	<window id="2795" title="Enter PIN:"/>
+	<window id="14775"/>
+	<window id="2796"/>
+	<window id="2797"/>
+	<window id="2798"/>
+	<window id="2799"/>
+	<window id="14776" title="Enter new Guild name:"/>
+	<window id="14777" title="Enter PIN:"/>
+	<window id="14778" title="Original Guild name:"/>
+	<window id="14779" title="XXX"/>
+	<window id="2800" title="Manufacture"/>
+	<window id="2801"/>
+	<window id="2805"/>
+	<window id="2806"/>
+	<window id="2807" tooltext="Begin to manufacture"/>
+	<window id="2808" tooltext="Stop manufacturing"/>
+	<window id="2809" tooltext="Delete"/>
+	<window id="2810" title="Recipe"/>
+	<window id="2811" title="Procedure"/>
+	<window id="2812" title="or"/>
+	<window id="2813" title="or"/>
+	<window id="2814"/>
+	<window id="2815"/>
+	<window id="2816"/>
+	<window id="2817"/>
+	<window id="2818" title="qty."/>
+	<window id="2819"/>
+	<window id="2820"/>
+	<window id="2821" title="Result:"/>
+	<window id="2822" title="Add"/>
+	<window id="2823"/>
+	<window id="2824"/>
+	<window id="2825"/>
+	<window id="2826"/>
+	<window id="2827"/>
+	<window id="2828"/>
+	<window id="2829"/>
+	<window id="2830"/>
+	<window id="2840"/>
+	<window id="2831"/>
+	<window id="2832"/>
+	<window id="2833" title="Material:"/>
+	<window id="2834"/>
+	<window id="2835"/>
+	<window id="2836"/>
+	<window id="2837" title="Do you want to stop ?"/>
+	<window id="2838"/>
+	<window id="2839"/>
+	<window id="2841"/>
+	<window id="2842"/>
+	<window id="2843" title="Max"/>
+	<window id="2872"/>
+	<window id="2873"/>
+	<window id="2874" title="Manufacturing"/>
+	<window id="2802"/>
+	<window id="2850"/>
+	<window id="2851"/>
+	<window id="2852"/>
+	<window id="2853"/>
+	<window id="2854"/>
+	<window id="2855"/>
+	<window id="2856"/>
+	<window id="2900" title="Repair"/>
+	<window id="2901"/>
+	<window id="2902"/>
+	<window id="2903" title="Have money"/>
+	<window id="2904" title="Repair fee"/>
+	<window id="2905" tooltext="repair the target equipment"/>
+	<window id="2906" tooltext="repair the present equipment"/>
+	<window id="2910" title="Instant communication"/>
+	<window id="2911" title="Invite"/>
+	<window id="2912" title="Send"/>
+	<window id="2913"/>
+	<window id="2914"/>
+	<window id="2915"/>
+	<window id="2916"/>
+	<window id="2917"/>
+	<window id="2918"/>
+	<window id="2930" tooltext="Instant communication"/>
+	<window id="2931"/>
+	<window id="2932" tooltext="Add"/>
+	<window id="2933" tooltext="Delete"/>
+	<window id="2934" tooltext="Confirm"/>
+	<window id="2935" tooltext="Cancel"/>
+	<window id="2936" title="Contact"/>
+	<window id="2937" title="Invite"/>
+	<window id="2938"/>
+	<window id="2939"/>
+	<window id="2940"/>
+	<window id="2941"/>
+	<window id="2942" title="Friend"/>
+	<window id="2943" title="League"/>
+	<window id="2950"/>
+	<window id="2951" title="Please read the agreement"/>
+	<window id="2952" title="Agree"/>
+	<window id="2953" title="Disagree"/>
+	<window id="2954" title="Do you accept this agreement? The game will end if you choose [disagree]. You should choose [Agree] to continue your game."/>
+	<window id="2955"/>
+	<window id="2956"/>
+	<window id="2957"/>
+	<window id="2958"/>
+	<window id="2959"/>
+	<window id="2960"/>
+	<window id="2961" title="You are sure to use:"/>
+	<window id="2962" title="It will cover the original effect."/>
+	<window id="2963" title="Pet revival"/>
+	<window id="2964"/>
+	<window id="2965"/>
+	<window id="2966"/>
+	<window id="2967"/>
+	<window id="2968" tooltext="Revive the target pet"/>
+	<window id="2969" tooltext="Revive all pets"/>
+	<window id="2970"/>
+	<window id="2971"/>
+	<window id="2972"/>
+	<window id="2973"/>
+	<window id="2974"/>
+	<window id="2975"/>
+	<window id="2976"/>
+	<window id="2977"/>
+	<window id="14000"/>
+	<window id="14001" title="Auto-use" tooltext="Open HP Automonitor"/>
+	<window id="14002" title="HP Below"/>
+	<window id="14003"/>
+	<window id="14004" title="%"/>
+	<window id="14005" title="Use spell/item"/>
+	<window id="14121"/>
+	<window id="14008" title="HP Below"/>
+	<window id="14009"/>
+	<window id="14010" title="%"/>
+	<window id="14011" title="Use spell/item"/>
+	<window id="14122"/>
+	<window id="14014" title="HP Below"/>
+	<window id="14015"/>
+	<window id="14016" title="%"/>
+	<window id="14017" title="Use spell/item"/>
+	<window id="14123"/>
+	<window id="14030" title="Auto-use" tooltext="Open MP Automonitor"/>
+	<window id="14031" title="MP Below"/>
+	<window id="14032"/>
+	<window id="14033" title="%"/>
+	<window id="14034" title="Use spell/item"/>
+	<window id="14124"/>
+	<window id="14037" title="MP Below"/>
+	<window id="14038"/>
+	<window id="14039" title="%"/>
+	<window id="14040" title="Use spell/item"/>
+	<window id="14125"/>
+	<window id="14041" title="SP Below"/>
+	<window id="14042"/>
+	<window id="14043" title="%"/>
+	<window id="14044" title="Use spell/item:"/>
+	<window id="14129"/>
+	<window id="14051" title="Auto-use assistant spell or item" tooltext="Open Assistant Skill Auto-use"/>
+	<window id="14052" title="Spell"/>
+	<window id="14053" title="Target"/>
+	<window id="14060"/>
+	<window id="14061"/>
+	<window id="14070" title="Spell"/>
+	<window id="14126"/>
+	<window id="14072" tooltext="Add (Save) Assistant Skill"/>
+	<window id="14073" tooltext="Delete Assistant Skill"/>
+	<window id="14074" title="Target"/>
+	<window id="14075" title="Self" tooltext="Assistant Skill Includes Self"/>
+	<window id="14076" title="Teammate" tooltext="Assistant Skill Includes Team-mate"/>
+	<window id="14077" title="Own Pet" tooltext="Assistant Skill Includes Own Pet"/>
+	<window id="14078" title="Mate's Pet" tooltext="Assistant Skill Includes Team-mate's Pet"/>
+	<window id="14090" title="Repeat Training Skill" tooltext="Open Repeatable Training Skill at Original Spot (Note: It will affect fighting monsters)"/>
+	<window id="14091" title="Spell 1"/>
+	<window id="14092" title="Supply Conditions" tooltext="The supply conditions will be counted when you are training your skills."/>
+	<window id="14127"/>
+	<window id="14093" title="Spell 2"/>
+	<window id="14128"/>
+	<window id="14100" title="Auto-revive when killed" tooltext="Open Auto-revive"/>
+	<window id="14101" title="Method :"/>
+	<window id="14102"/>
+	<window id="14104"/>
+	<window id="14110" title="Auto-revive others" tooltext="Open Auto-revive Others"/>
+	<window id="14111" title="Target :"/>
+	<window id="14112"/>
+	<window id="14114"/>
+	<window id="14116" title="Auto-Answer when revived" tooltext="Agree or reject automatically when revived"/>
+	<window id="14117" title="Agree"/>
+	<window id="14118" title="Reject"/>
+	<window id="14200" title="Angel Baby"/>
+	<window id="14210" title="Combat"/>
+	<window id="14211" title="Assist"/>
+	<window id="14212" title="Pet"/>
+	<window id="14213" title="Gather"/>
+	<window id="14214" title="Supply"/>
+	<window id="14215" title="Others"/>
+	<window id="14216" title="Mall"/>
+	<window id="14218" title="Log"/>
+	<window id="14219" title="Enable Angel Baby" tooltext="Open or close angel's guardian [Alt+D]"/>
+	<window id="14220" tooltext="Close window"/>
+	<window id="14221"/>
+	<window id="14300"/>
+	<window id="14301"/>
+	<window id="14302"/>
+	<window id="14303" title="Log"/>
+	<window id="14304" tooltext="Clear Log"/>
+	<window id="14310"/>
+	<window id="14311" title="Gather" tooltext="Set gathering center and close auto-gathering  (It will close auto-attack)"/>
+	<window id="14312" title="Area     slots" tooltext="Set scope for searching monsters"/>
+	<window id="14313"/>
+	<window id="14314" title="Set" tooltext="Set center point for searching"/>
+	<window id="14315" title="Check" tooltext="Display search scope"/>
+	<window id="14320" title="Appointed resource" tooltext="Gather appointed resource"/>
+	<window id="14321" title="Target resource list" tooltext="Appointed resource list"/>
+	<window id="14322" title="Surrounding resource list" tooltext="Surrounding resource list"/>
+	<window id="14323"/>
+	<window id="14324"/>
+	<window id="14325"/>
+	<window id="14326"/>
+	<window id="14327" tooltext="Add to appointed resource list"/>
+	<window id="14328" tooltext="Delete from appointed resource list"/>
+	<window id="14329" title="Name" tooltext="Auto-input appointed resource"/>
+	<window id="14330"/>
+	<window id="14331" title="Add to" tooltext="Add to individual appointed resource"/>
+	<window id="14332" title="Update" tooltext="Update surrounding resource list"/>
+	<window id="14490"/>
+	<window id="14491" title="Add to Card Book?"/>
+	<window id="14492"/>
+	<window id="14493"/>
+	<window id="14500" title="Card Book"/>
+	<window id="14511" title="Card Set"/>
+	<window id="14512" title="Card List"/>
+	<window id="14513" title="Intro"/>
+	<window id="14520"/>
+	<window id="14521" title="Set Card"/>
+	<window id="14522" title="Change"/>
+	<window id="14523" title="Type"/>
+	<window id="14524" title="Finish"/>
+	<window id="14530"/>
+	<window id="14531"/>
+	<window id="14532" title="Set card prompt"/>
+	<window id="14600"/>
+	<window id="14601"/>
+	<window id="14602"/>
+	<window id="14603"/>
+	<window id="14604"/>
+	<window id="14605"/>
+	<window id="14606"/>
+	<window id="14607" title="No."/>
+	<window id="14608" title="Name"/>
+	<window id="14609" title="Type"/>
+	<window id="14610" title="Grade"/>
+	<window id="14620"/>
+	<window id="14621"/>
+	<window id="14622" title="Card prompt"/>
+	<window id="14630"/>
+	<window id="14631" title="一二三四五六七八九十一二三四五六"/>
+	<window id="14632" title="No."/>
+	<window id="14633" title="0000"/>
+	<window id="14634" title="一二三四五六七八九十一二三四五一二三四五六七八九十一二三四五一二三四五六七八九十一二三四五一二三四五六七八九十一二三四五"/>
+	<window id="14636"/>
+	<window id="14637"/>
+	<window id="14638"/>
+	<window id="14639"/>
+	<window id="14640"/>
+	<window id="14641"/>
+	<window id="14642"/>
+	<window id="14650"/>
+	<window id="14651" title="一二三四五六七八九十一二三四五六"/>
+	<window id="14652" title="Can exchange:"/>
+	<window id="14653"/>
+	<window id="14654"/>
+	<window id="14655"/>
+	<window id="14656" title="0"/>
+	<window id="14657" title="0"/>
+	<window id="14658" title="0"/>
+	<window id="14659" title="(All of them)"/>
+	<window id="14660" title="Exchange"/>
+	<window id="14690"/>
+	<window id="14691" title="/c#00F7FF[Card Book Introduction]/c*\n&#xA;1.Right clicking on a card adds it in card book. The card that is already in the book cannot be added in the book again. \n&#xA;2.Pressing [/c#EEFF33Alt+C/c*] opens the card book the view the cards in it. \n&#xA;3.A card book includes /c#EEFF33Card Set/c* and /c#EEFF33Card List/c*. /c#EEFF33Cards Set/c* is displayed in order for easy viewing cards and rewards. /c#EEFF33Card list/c* is displaying all cards for searching the needed card easily.\n&#xA;4.Below the card list is /c#EEFF33the prompt of getting a card /c*and/c#EEFF33 easy instruction of set card/c*.\n&#xA;\n/c#00F7FF[Card Interface Introduction]/c* (Refer to the picture at the right)\n&#xA;1./c#00F7FFCard number/c*: Each card has an unique number for easy search and taxis.\n&#xA;2./c#00F7FFCard name/c*: the name of a card.\n&#xA;3./c#00F7FFStar grade/c*: Star grade tells the card's level, value and the difficulty level to be obtained. /c#EEFF33Star grade colors/c* include /c#EEFF33white/c*,/c#EEFF33 blue/c* and /c#EEFF33golden/c*. Examples: /c#EEFF33...&lt;4 white stars &lt; 5 white stars &lt; 1 blue star &lt; 2 blue stars &lt;...&lt; 5 blue stars &lt; 1 golden star &lt; 2 golden stars &lt;.../c*.\n&#xA;4./c#00F7FFCard title picture/c*: The card title picture is corresponding to its name.\n&#xA;5./c#00F7FFCard color/c*: There are four types of cards with four colors corresponding to them. They are: /c#EEFF33Monster/c*-&gt;/c#EEFF33red/c*, /c#EEFF33Boss/c*-&gt;/c#EEFF33black/c*, /c#EEFF33Scene/c*-&gt;/c#EEFF33green/c*, /c#EEFF33Equipment/c*-&gt;/c#EEFF33white/c*.\n&#xA;6./c#00F7FFCard instruction/c*: The brief introduction to the card.\n&#xA;\n/c#00F7FF[Card Set Interface Introduction]/c*\n&#xA;1.The way to gain rewards: Getting the whole set card. Below are the two ways: /c#EEFF33One of them/c* means one item can be selected from the following items. /c#EEFF33All of them/c* means all the rewards are given to the angels who gathered all the required cards.\n&#xA;2.[/c#EEFF33Exchange/c*] button: As long as you gather the whole set card, you can press the button to get extra reward. If the rewards are optional, you should select one first.\n&#xA;3.Rewards for set card: At the bottom of the set card instruction tells the rewards for gathering the whole set card. But the rewards can be gained only once."/>
+	<window id="14692"/>
+	<window id="14700" title="XXXX's card Book"/>
+	<window id="14701" title="Card Set"/>
+	<window id="14702" title="Card List"/>
+	<window id="14710"/>
+	<window id="14711" title="Card Set"/>
+	<window id="14720"/>
+	<window id="14721"/>
+	<window id="14730"/>
+	<window id="14731" title="No."/>
+	<window id="14732" title="Name"/>
+	<window id="14740"/>
+	<window id="14741"/>
+	<window id="14770" title="Fashion/Card Bag"/>
+	<window id="14771" title="Fashion"/>
+	<window id="14772" title="Card"/>
+	<window id="19006" title="Bubble"/>
+	<window id="19013" title="1 / 2"/>
+	<window id="19014"/>
+	<window id="19015"/>
+	<window id="14780"/>
+	<window id="14781" title="1 / 4"/>
+	<window id="14782"/>
+	<window id="14783"/>
+	<window id="14786"/>
+	<window id="14800"/>
+	<window id="14801"/>
+	<window id="14802"/>
+	<window id="14803"/>
+	<window id="14804"/>
+	<window id="14805"/>
+	<window id="14806"/>
+	<window id="14807"/>
+	<window id="14808"/>
+	<window id="14809"/>
+	<window id="14810"/>
+	<window id="14811"/>
+	<window id="14812"/>
+	<window id="14813"/>
+	<window id="14814"/>
+	<window id="14815"/>
+	<window id="14816"/>
+	<window id="14817"/>
+	<window id="14818"/>
+	<window id="14819"/>
+	<window id="14820"/>
+	<window id="14821"/>
+	<window id="14822"/>
+	<window id="14823"/>
+	<window id="14824"/>
+	<window id="14787"/>
+	<window id="14825"/>
+	<window id="14826"/>
+	<window id="14827"/>
+	<window id="14828"/>
+	<window id="14829"/>
+	<window id="14830"/>
+	<window id="14831"/>
+	<window id="14832"/>
+	<window id="14833"/>
+	<window id="14834"/>
+	<window id="14835"/>
+	<window id="14836"/>
+	<window id="14837"/>
+	<window id="14838"/>
+	<window id="14839"/>
+	<window id="14840"/>
+	<window id="14841"/>
+	<window id="14842"/>
+	<window id="14843"/>
+	<window id="14844"/>
+	<window id="14845"/>
+	<window id="14846"/>
+	<window id="14847"/>
+	<window id="14848"/>
+	<window id="14849"/>
+	<window id="14788"/>
+	<window id="14850"/>
+	<window id="14851"/>
+	<window id="14852"/>
+	<window id="14853"/>
+	<window id="14854"/>
+	<window id="14855"/>
+	<window id="14856"/>
+	<window id="14857"/>
+	<window id="14858"/>
+	<window id="14859"/>
+	<window id="14860"/>
+	<window id="14861"/>
+	<window id="14862"/>
+	<window id="14863"/>
+	<window id="14864"/>
+	<window id="14865"/>
+	<window id="14866"/>
+	<window id="14867"/>
+	<window id="14868"/>
+	<window id="14869"/>
+	<window id="14870"/>
+	<window id="14871"/>
+	<window id="14872"/>
+	<window id="14873"/>
+	<window id="14874"/>
+	<window id="14789"/>
+	<window id="14875"/>
+	<window id="14876"/>
+	<window id="14877"/>
+	<window id="14878"/>
+	<window id="14879"/>
+	<window id="14880"/>
+	<window id="14881"/>
+	<window id="14882"/>
+	<window id="14883"/>
+	<window id="14884"/>
+	<window id="14885"/>
+	<window id="14886"/>
+	<window id="14887"/>
+	<window id="14888"/>
+	<window id="14889"/>
+	<window id="14890"/>
+	<window id="14891"/>
+	<window id="14892"/>
+	<window id="14893"/>
+	<window id="14894"/>
+	<window id="14895"/>
+	<window id="14896"/>
+	<window id="14897"/>
+	<window id="14898"/>
+	<window id="14899"/>
+	<window id="14790"/>
+	<window id="14791" title="1 / 4"/>
+	<window id="14792"/>
+	<window id="14793"/>
+	<window id="14796"/>
+	<window id="14900"/>
+	<window id="14901"/>
+	<window id="14902"/>
+	<window id="14903"/>
+	<window id="14904"/>
+	<window id="14905"/>
+	<window id="14906"/>
+	<window id="14907"/>
+	<window id="14908"/>
+	<window id="14909"/>
+	<window id="14910"/>
+	<window id="14911"/>
+	<window id="14912"/>
+	<window id="14913"/>
+	<window id="14914"/>
+	<window id="14915"/>
+	<window id="14916"/>
+	<window id="14917"/>
+	<window id="14918"/>
+	<window id="14919"/>
+	<window id="14920"/>
+	<window id="14921"/>
+	<window id="14922"/>
+	<window id="14923"/>
+	<window id="14924"/>
+	<window id="14797"/>
+	<window id="14925"/>
+	<window id="14926"/>
+	<window id="14927"/>
+	<window id="14928"/>
+	<window id="14929"/>
+	<window id="14930"/>
+	<window id="14931"/>
+	<window id="14932"/>
+	<window id="14933"/>
+	<window id="14934"/>
+	<window id="14935"/>
+	<window id="14936"/>
+	<window id="14937"/>
+	<window id="14938"/>
+	<window id="14939"/>
+	<window id="14940"/>
+	<window id="14941"/>
+	<window id="14942"/>
+	<window id="14943"/>
+	<window id="14944"/>
+	<window id="14945"/>
+	<window id="14946"/>
+	<window id="14947"/>
+	<window id="14948"/>
+	<window id="14949"/>
+	<window id="14798"/>
+	<window id="14950"/>
+	<window id="14951"/>
+	<window id="14952"/>
+	<window id="14953"/>
+	<window id="14954"/>
+	<window id="14955"/>
+	<window id="14956"/>
+	<window id="14957"/>
+	<window id="14958"/>
+	<window id="14959"/>
+	<window id="14960"/>
+	<window id="14961"/>
+	<window id="14962"/>
+	<window id="14963"/>
+	<window id="14964"/>
+	<window id="14965"/>
+	<window id="14966"/>
+	<window id="14967"/>
+	<window id="14968"/>
+	<window id="14969"/>
+	<window id="14970"/>
+	<window id="14971"/>
+	<window id="14972"/>
+	<window id="14973"/>
+	<window id="14974"/>
+	<window id="14799"/>
+	<window id="14975"/>
+	<window id="14976"/>
+	<window id="14977"/>
+	<window id="14978"/>
+	<window id="14979"/>
+	<window id="14980"/>
+	<window id="14981"/>
+	<window id="14982"/>
+	<window id="14983"/>
+	<window id="14984"/>
+	<window id="14985"/>
+	<window id="14986"/>
+	<window id="14987"/>
+	<window id="14988"/>
+	<window id="14989"/>
+	<window id="14990"/>
+	<window id="14991"/>
+	<window id="14992"/>
+	<window id="14993"/>
+	<window id="14994"/>
+	<window id="14995"/>
+	<window id="14996"/>
+	<window id="14997"/>
+	<window id="14998"/>
+	<window id="14999"/>
+	<window id="19007"/>
+	<window id="19008" title="1 / 2"/>
+	<window id="19009"/>
+	<window id="19010"/>
+	<window id="19011"/>
+	<window id="19111"/>
+	<window id="19112"/>
+	<window id="19113"/>
+	<window id="19114"/>
+	<window id="19115"/>
+	<window id="19116"/>
+	<window id="19117"/>
+	<window id="19118"/>
+	<window id="19119"/>
+	<window id="19120"/>
+	<window id="19121"/>
+	<window id="19122"/>
+	<window id="19123"/>
+	<window id="19124"/>
+	<window id="19125"/>
+	<window id="19126"/>
+	<window id="19127"/>
+	<window id="19128"/>
+	<window id="19129"/>
+	<window id="19130"/>
+	<window id="19131"/>
+	<window id="19132"/>
+	<window id="19133"/>
+	<window id="19134"/>
+	<window id="19135"/>
+	<window id="19012"/>
+	<window id="19136"/>
+	<window id="19137"/>
+	<window id="19138"/>
+	<window id="19139"/>
+	<window id="19140"/>
+	<window id="19141"/>
+	<window id="19142"/>
+	<window id="19143"/>
+	<window id="19144"/>
+	<window id="19145"/>
+	<window id="19146"/>
+	<window id="19147"/>
+	<window id="19148"/>
+	<window id="19149"/>
+	<window id="19150"/>
+	<window id="19151"/>
+	<window id="19152"/>
+	<window id="19153"/>
+	<window id="19154"/>
+	<window id="19155"/>
+	<window id="19156"/>
+	<window id="19157"/>
+	<window id="19158"/>
+	<window id="19159"/>
+	<window id="19160"/>
+	<window id="26001"/>
+	<window id="26002"/>
+	<window id="26003" tooltext="啟動/停止 發射小鋼珠"/>
+	<window id="26005" title="01" tooltext="機台編號"/>
+	<window id="26006" title="轉動：" tooltext="上次中獎到目前為止水果盤的轉動次數"/>
+	<window id="26007" title="總轉動：" tooltext="本次遊戲的水果盤總轉動次數"/>
+	<window id="26008" title="0" tooltext="上次中獎到目前為止水果盤的轉動次數"/>
+	<window id="26009" title="0" tooltext="本次遊戲的水果盤總轉動次數"/>
+	<window id="26010" tooltext="返回大廳"/>
+	<window id="26011"/>
+	<window id="26012" title="確定停止遊戲?"/>
+	<window id="26013"/>
+	<window id="26014"/>
+	<window id="26015"/>
+	<window id="26016" title="確定關閉柏青哥?"/>
+	<window id="26017"/>
+	<window id="26018"/>
+	<window id="26071" title="操作提示"/>
+	<window id="26072"/>
+	<window id="26073"/>
+	<window id="26074"/>
+	<window id="26081" title="天使柏青哥"/>
+	<window id="26082" title="30"/>
+	<window id="26083"/>
+	<window id="26084"/>
+	<window id="26085" tooltext="必進"/>
+	<window id="26086" tooltext="必不進"/>
+	<window id="26087" title="12345678"/>
+	<window id="26088" title="12345678"/>
+	<window id="26089" title="12345678"/>
+	<window id="26090" title="ball start:"/>
+	<window id="26091" title="update:"/>
+	<window id="26092" title="ball now:"/>
+	<window id="26100" title="天使柏青哥"/>
+	<window id="26101" tooltext="柏青哥[Alt+K]"/>
+	<window id="26105"/>
+	<window id="26106"/>
+	<window id="26107" tooltext="還原柏青哥視窗"/>
+	<window id="26110"/>
+	<window id="26111"/>
+	<window id="26120"/>
+	<window id="26123" title="持有鋼珠數："/>
+	<window id="26124" title="本次獲得鋼珠："/>
+	<window id="26125" title="累績中獎次數："/>
+	<window id="26126" title="本次中獎次數："/>
+	<window id="26127" title="連線彩金："/>
+	<window id="26133" title="1234567890"/>
+	<window id="26134" title="1234567"/>
+	<window id="26135" title="1234567890"/>
+	<window id="26136" title="1234567890"/>
+	<window id="26137" title="1234567890"/>
+	<window id="26138"/>
+	<window id="26139" tooltext="縮小柏青哥視窗"/>
+	<window id="26140"/>
+	<window id="26141"/>
+	<window id="26142"/>
+	<window id="26143" tooltext="更新大廳"/>
+	<window id="26144" title="店舖列表"/>
+	<window id="26150"/>
+	<window id="26201"/>
+	<window id="26202"/>
+	<window id="26203"/>
+	<window id="26204"/>
+	<window id="26205"/>
+	<window id="26206"/>
+	<window id="26207"/>
+	<window id="26208"/>
+	<window id="26209"/>
+	<window id="26210"/>
+	<window id="26211"/>
+	<window id="26212"/>
+	<window id="26213"/>
+	<window id="26214"/>
+	<window id="26215"/>
+	<window id="26216"/>
+	<window id="26217"/>
+	<window id="26218"/>
+	<window id="26219"/>
+	<window id="26220"/>
+	<window id="26221"/>
+	<window id="26222"/>
+	<window id="26223"/>
+	<window id="26224"/>
+	<window id="26225"/>
+	<window id="26226"/>
+	<window id="26227"/>
+	<window id="26228"/>
+	<window id="26229"/>
+	<window id="26230"/>
+	<window id="26231"/>
+	<window id="26232"/>
+	<window id="26233"/>
+	<window id="26234"/>
+	<window id="26235"/>
+	<window id="26236"/>
+	<window id="26237"/>
+	<window id="26238"/>
+	<window id="26239"/>
+	<window id="26240"/>
+	<window id="26241"/>
+	<window id="26242"/>
+	<window id="26243"/>
+	<window id="26244"/>
+	<window id="26245"/>
+	<window id="26246"/>
+	<window id="26247"/>
+	<window id="26248"/>
+	<window id="26249"/>
+	<window id="26250"/>
+	<window id="26251"/>
+	<window id="26252"/>
+	<window id="26253"/>
+	<window id="26254"/>
+	<window id="26255"/>
+	<window id="26256"/>
+	<window id="26257"/>
+	<window id="26258"/>
+	<window id="26259"/>
+	<window id="26260"/>
+	<window id="26301" title="名字12345678"/>
+	<window id="26302" title="名字12345678"/>
+	<window id="26303" title="名字12345678"/>
+	<window id="26304" title="名字12345678"/>
+	<window id="26305" title="名字12345678"/>
+	<window id="26306" title="名字12345678"/>
+	<window id="26307" title="名字12345678"/>
+	<window id="26308" title="名字12345678"/>
+	<window id="26309" title="名字12345678"/>
+	<window id="26310" title="名字12345678"/>
+	<window id="26311" title="名字12345678"/>
+	<window id="26312" title="名字12345678"/>
+	<window id="26313" title="名字12345678"/>
+	<window id="26314" title="名字12345678"/>
+	<window id="26315" title="名字12345678"/>
+	<window id="26316" title="名字12345678"/>
+	<window id="26317" title="名字12345678"/>
+	<window id="26318" title="名字12345678"/>
+	<window id="26319" title="名字12345678"/>
+	<window id="26320" title="名字12345678"/>
+	<window id="26321" title="名字12345678"/>
+	<window id="26322" title="名字12345678"/>
+	<window id="26323" title="名字12345678"/>
+	<window id="26324" title="名字12345678"/>
+	<window id="26325" title="名字12345678"/>
+	<window id="26326" title="名字12345678"/>
+	<window id="26327" title="名字12345678"/>
+	<window id="26328" title="名字12345678"/>
+	<window id="26329" title="名字12345678"/>
+	<window id="26330" title="名字12345678"/>
+	<window id="26331" title="名字12345678"/>
+	<window id="26332" title="名字12345678"/>
+	<window id="26333" title="名字12345678"/>
+	<window id="26334" title="名字12345678"/>
+	<window id="26335" title="名字12345678"/>
+	<window id="26336" title="名字12345678"/>
+	<window id="26337" title="名字12345678"/>
+	<window id="26338" title="名字12345678"/>
+	<window id="26339" title="名字12345678"/>
+	<window id="26340" title="名字12345678"/>
+	<window id="26341" title="名字12345678"/>
+	<window id="26342" title="名字12345678"/>
+	<window id="26343" title="名字12345678"/>
+	<window id="26344" title="名字12345678"/>
+	<window id="26345" title="名字12345678"/>
+	<window id="26346" title="名字12345678"/>
+	<window id="26347" title="名字12345678"/>
+	<window id="26348" title="名字12345678"/>
+	<window id="26349" title="名字12345678"/>
+	<window id="26350" title="名字12345678"/>
+	<window id="26351" title="名字12345678"/>
+	<window id="26352" title="名字12345678"/>
+	<window id="26353" title="名字12345678"/>
+	<window id="26354" title="名字12345678"/>
+	<window id="26355" title="名字12345678"/>
+	<window id="26356" title="名字12345678"/>
+	<window id="26357" title="名字12345678"/>
+	<window id="26358" title="名字12345678"/>
+	<window id="26359" title="名字12345678"/>
+	<window id="26360" title="名字12345678"/>
+	<window id="26401"/>
+	<window id="26402"/>
+	<window id="26403"/>
+	<window id="26404"/>
+	<window id="26405"/>
+	<window id="26406"/>
+	<window id="26407"/>
+	<window id="26408"/>
+	<window id="26409"/>
+	<window id="26410"/>
+	<window id="26411"/>
+	<window id="26412"/>
+	<window id="26413"/>
+	<window id="26414"/>
+	<window id="26415"/>
+	<window id="26416"/>
+	<window id="26417"/>
+	<window id="26418"/>
+	<window id="26419"/>
+	<window id="26420"/>
+	<window id="26421"/>
+	<window id="26422"/>
+	<window id="26423"/>
+	<window id="26424"/>
+	<window id="26425"/>
+	<window id="26426"/>
+	<window id="26427"/>
+	<window id="26428"/>
+	<window id="26429"/>
+	<window id="26430"/>
+	<window id="26431"/>
+	<window id="26432"/>
+	<window id="26433"/>
+	<window id="26434"/>
+	<window id="26435"/>
+	<window id="26436"/>
+	<window id="26437"/>
+	<window id="26438"/>
+	<window id="26439"/>
+	<window id="26440"/>
+	<window id="26441"/>
+	<window id="26442"/>
+	<window id="26443"/>
+	<window id="26444"/>
+	<window id="26445"/>
+	<window id="26446"/>
+	<window id="26447"/>
+	<window id="26448"/>
+	<window id="26449"/>
+	<window id="26450"/>
+	<window id="26451"/>
+	<window id="26452"/>
+	<window id="26453"/>
+	<window id="26454"/>
+	<window id="26455"/>
+	<window id="26456"/>
+	<window id="26457"/>
+	<window id="26458"/>
+	<window id="26459"/>
+	<window id="26460"/>
+	<window id="26752"/>
+	<window id="26753"/>
+	<window id="26754"/>
+	<window id="26755"/>
+	<window id="26756"/>
+	<window id="26757"/>
+	<window id="26758"/>
+	<window id="26759"/>
+	<window id="26760"/>
+	<window id="26761"/>
+	<window id="26762"/>
+	<window id="26763"/>
+	<window id="26764"/>
+	<window id="26765"/>
+	<window id="26766"/>
+	<window id="26767"/>
+	<window id="26768"/>
+	<window id="26769"/>
+	<window id="26770"/>
+	<window id="26771"/>
+	<window id="26772"/>
+	<window id="26773"/>
+	<window id="26774"/>
+	<window id="26775"/>
+	<window id="26776"/>
+	<window id="26777"/>
+	<window id="26778"/>
+	<window id="26779"/>
+	<window id="26780"/>
+	<window id="26781"/>
+	<window id="26782"/>
+	<window id="26800"/>
+	<window id="26801" title="玩家："/>
+	<window id="26802" title="聽牌次數："/>
+	<window id="26803" title="中獎次數："/>
+	<window id="26804" title="確變中獎次數："/>
+	<window id="26805"/>
+	<window id="26811" title="1234567890"/>
+	<window id="26812" title="1234567"/>
+	<window id="26813" title="1234567890"/>
+	<window id="26814" title="1234567890"/>
+	<window id="26815"/>
+	<window id="26820"/>
+	<window id="26821" tooltext="開始玩！"/>
+	<window id="26822" tooltext="柏青哥兌獎商店"/>
+	<window id="26823" tooltext="說明"/>
+	<window id="26824" tooltext="回到店舖選擇介面"/>
+	<window id="26825" tooltext="按下這個鈕，每天可以有一次機會把鋼珠補到500顆哦"/>
+	<window id="26900" title="天使柏青哥兌獎商店"/>
+	<window id="26901"/>
+	<window id="26902"/>
+	<window id="26904"/>
+	<window id="26905"/>
+	<window id="26903"/>
+	<window id="26906" title="/c#00F7FF【天使柏青哥兌獎商店說明】/c*\n 1.天使柏青哥兌獎商店內所販售的商品，必須藉由「/c#EEFF33小鋼珠/c*」來進行交易。\n 2.可透過商城或柏青哥遊戲購買小鋼珠使用。\n 3.小鋼珠無法藉由/c#EEFF33交易/c*或者/c#EEFF33轉讓/c*給其他角色，僅能夠給角色本身使用。\n\n/c#00F7FF【兌獎商店介面操作方法】/c*\n 1.點選柏青哥介面右方的/c#EEFF33柏青哥兌獎商店/c*按紐即可開啟介面。\n 2.商品陳列分類共分為/c#EEFF33功能類、特殊類、福袋類、寵物類、裝扮機甲、傢俱類/c*。\n 3.每次只能以一種商品為單位進行交易。\n 4./c#00F7FF購買：/c*挑選商品後，點擊介面下方「/c#EEFF33兌換/c*」按鈕，系統會再次進行確認。再次確定後，將會消耗指   定的小鋼珠，商品將會放置到「/c#EEFF33自己的背包欄位/c*」內，但必須確定身上的/c#EEFF33負重/c*以及多   餘/c#EEFF33空間/c*是否足夠。\n"/>
+	<window id="26911" title="功能類"/>
+	<window id="26912" title="特殊類"/>
+	<window id="26913" title="藥水類"/>
+	<window id="26914" title="機甲坐騎"/>
+	<window id="26915" title="妝扮類"/>
+	<window id="26916" title="寵物類"/>
+	<window id="26917"/>
+	<window id="26918"/>
+	<window id="26919" title="說明"/>
+	<window id="26931"/>
+	<window id="26932"/>
+	<window id="26933"/>
+	<window id="26934"/>
+	<window id="26935"/>
+	<window id="26936"/>
+	<window id="26937" title="刪除"/>
+	<window id="26941" title="購買"/>
+	<window id="26942" title="送禮"/>
+	<window id="26943" title="兌換"/>
+	<window id="26951" title="小鋼珠："/>
+	<window id="26952" title="現有道具"/>
+	<window id="26953" title="置物櫃"/>
+	<window id="26954" title="0"/>
+	<window id="26955" title="Excharge"/>
+	<window id="26961"/>
+	<window id="26962"/>
+	<window id="26963"/>
+	<window id="26964" title="試穿展示區"/>
+	<window id="26965" title="試穿"/>
+	<window id="26966" title="復原"/>
+	<window id="26967"/>
+	<window id="26968"/>
+	<window id="26969"/>
+	<window id="26970"/>
+	<window id="26971" title="確定購買此商品？"/>
+	<window id="26972"/>
+	<window id="26973"/>
+	<window id="26974"/>
+	<window id="26975" title="此功能尚未開放。"/>
+	<window id="26976"/>
+	<window id="26977"/>
+	<window id="26978" title="請先點選一樣商品。"/>
+	<window id="26979"/>
+</root>
