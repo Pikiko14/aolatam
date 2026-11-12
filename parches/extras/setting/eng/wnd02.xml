@@ -1839,50 +1839,50 @@
         <!-- 取消 -->
     </window>
     <!-- 記憶帳號 按鈕 -->
-    <window class="WND_CLASS_BUTTON" range="152,216,14,14" id="2528">
+    <window class="WND_CLASS_BUTTON" range="153,208,14,14" id="2528">
         <style wsVisible="" wsTab="" />
     </window>
     <!-- 分流列表 -->
-    <window class="WND_CLASS_LIST" range="21,2,158,170" id="2531" fcolor="103" bcolor="3082" font="1" cols="1" rows="9" gapx="1" gapy="2" tpos="1,1">
+    <window class="WND_CLASS_LIST" range="34,46,254,95" id="2531" fcolor="103" font="1" cols="1" rows="5" gapx="1" gapy="2" tpos="1,1">
         <style wsVisible="" lsVScroll="" lsHCenter="" lsVCenter="" lsCheck="" lsSCheck="" lsKeyEvent="" wsTab="" />
     </window>
-    <window class="WND_CLASS_LIST" range="2,2,18,170" id="2699" cols="1" rows="9" gapx="1" gapy="2">
+    <window class="WND_CLASS_LIST" range="12,46,18,95" id="2699" cols="1" rows="5" gapx="1" gapy="2">
         <style wsVisible="" lsVScroll="" lsHCenter="" lsVCenter="" />
     </window>
-    <window class="WND_CLASS_BASE" range="2,173,18,18" id="2695" icon="2695">
+    <window class="WND_CLASS_BASE" range="10,152,18,18" id="2695" icon="2695">
         <!-- 綠 -->
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_BASE" range="2,192,18,18" id="2696" icon="2696">
+    <window class="WND_CLASS_BASE" range="80,152,18,18" id="2696" icon="2696">
         <!-- 黃 -->
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_BASE" range="2,211,18,18" id="2697" icon="2697">
+    <window class="WND_CLASS_BASE" range="158,152,18,18" id="2697" icon="2697">
         <!-- 紅 -->
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_BASE" range="2,230,18,18" id="2698" icon="2698">
+    <window class="WND_CLASS_BASE" range="236,152,18,18" id="2698" icon="2698">
         <!-- 紫 -->
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="2691" range="21,173,158,18" fcolor="103" font="1" title="Capacity [Normal]  ">
+    <window class="WND_CLASS_STATIC" id="2691" range="30,152,52,18" fcolor="103" font="1" title="Normal">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="2692" range="21,192,158,18" fcolor="103" font="1" title="Capacity [Moderate]">
+    <window class="WND_CLASS_STATIC" id="2692" range="100,152,52,18" fcolor="103" font="1" title="Moderate">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="2693" range="21,211,158,18" fcolor="103" font="1" title="Capacity [Crowded] ">
+    <window class="WND_CLASS_STATIC" id="2693" range="178,152,52,18" fcolor="103" font="1" title="Crowded">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="2694" range="21,230,158,18" fcolor="103" font="1" title="Capacity [Full]    ">
+    <window class="WND_CLASS_STATIC" id="2694" range="256,152,52,18" fcolor="103" font="1" title="Full">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
     </window>
     <!-- 確定 按鈕 -->
-    <window class="WND_CLASS_BUTTON" range="113,254,26,18" id="2532" icon="1072">
+    <window class="WND_CLASS_BUTTON" range="154,174,66,18" id="2532" icon="60462">
         <style wsVisible="" wsTab="" />
     </window>
     <!-- 取消 按鈕 -->
-    <window class="WND_CLASS_BUTTON" range="147,254,26,18" id="2533" icon="1073">
+    <window class="WND_CLASS_BUTTON" range="226,174,66,18" id="2533" icon="60463">
         <style wsVisible="" wsTab="" />
     </window>
     <window class="WND_CLASS_BUTTON" range="0,0,181,402" id="2534" icon="0" check="2534">
@@ -2360,7 +2360,7 @@
     <window class="WND_CLASS_LIST" range="2,2,177,207" id="2617" fcolor="103" bcolor="3082" font="1" cols="2" rows="11" gapx="5" gapy="3" tpos="1,1">
         <style wsVisible="" lsVScroll="" lsHCenter="" lsVCenter="" lsCheck="" lsSCheck="" lsKeyEvent="" wsTab="" />
     </window>
-    <window class="WND_CLASS_DLG_1" range="0,0,189,299" id="2530" title="Choose game branch" fcolor="104" font="1" icon="2530">
+    <window class="WND_CLASS_DLG_1" range="0,0,308,220" id="2530" title="Angels Online Forever" fcolor="104" font="1" icon="2530">
         <style gsNoClose="" gsNoHelp="" gsNoLock="" />
         <child>2531</child>
         <child>2532</child>
@@ -2376,26 +2376,24 @@
         <child>2699</child>
         <!--<child>2580</child>標題-->
     </window>
-    <icon id="2530" dir="\log\" normal="w038_22" focus="normal" down="normal" disable="normal">
-        <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />
-    </icon>
-    <window class="WND_CLASS_STATIC" range="9,219,1,1" id="2701" fcolor="103" font="1" title="ID">
+    <icon id="2530" dir="\log\" normal="w038_22" focus="normal" down="normal" disable="normal" />
+    <window class="WND_CLASS_STATIC" range="9,211,1,1" id="2701" fcolor="103" font="1" title="ID">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_EDIT" range="37,217,113,14" workrange="2,0,109,14" id="2702" fcolor="103" font="1" limit="20">
+    <window class="WND_CLASS_EDIT" range="37,209,113,14" workrange="2,0,109,14" id="2702" fcolor="103" font="1" limit="20">
         <style wsVisible="" esVCenter="" wsTabstop="" esCanPaste="" wsTab="" />
     </window>
-    <window class="WND_CLASS_STATIC" range="9,237,1,1" id="2703" fcolor="103" font="1" title="PW">
+    <window class="WND_CLASS_STATIC" range="9,229,1,1" id="2703" fcolor="103" font="1" title="PW">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_EDIT" range="37,235,113,14" workrange="2,0,109,14" id="2704" fcolor="103" font="1" limit="20">
+    <window class="WND_CLASS_EDIT" range="37,227,113,14" workrange="2,0,109,14" id="2704" fcolor="103" font="1" limit="20">
         <style wsVisible="" esVCenter="" wsTabstop="" esPassword="" esCanPaste="" wsTab="" />
     </window>
     <window class="WND_CLASS_BUTTON" range="22,254,66,18" id="2705" icon="60460" tooltip="10040" tooltext="Enter the game">
         <style wsVisible="" wsTab="" />
         <!-- 進入遊戲 -->
     </window>
-    <window class="WND_CLASS_LIST" range="2,2,177,207" id="2706" fcolor="103" font="1" cols="2" rows="11" gapx="5" gapy="3" tpos="1,1">
+    <window class="WND_CLASS_LIST" range="2,2,177,199" id="2706" fcolor="103" font="1" cols="2" rows="11" gapx="5" gapy="3" tpos="1,1">
         <style wsVisible="" lsVScroll="" lsHCenter="" lsVCenter="" lsCheck="" lsSCheck="" lsKeyEvent="" wsTab="" />
     </window>
     <window class="WND_CLASS_BASE" range="0,0,1,1" id="2707">
@@ -6808,5 +6806,7 @@
     <!-- aolat login -->
     <icon id="60460" dir="\wnd01\" normal="aolat_login_login_n" focus="aolat_login_login_f" down="aolat_login_login_s" disable="aolat_login_login_n" />
     <icon id="60461" dir="\wnd01\" normal="aolat_login_exit_n" focus="aolat_login_exit_f" down="aolat_login_exit_s" disable="aolat_login_exit_n" />
+    <icon id="60462" dir="\wnd01\" normal="aolat_login_enter_n" focus="aolat_login_enter_f" down="aolat_login_enter_s" disable="aolat_login_enter_n" />
+    <icon id="60463" dir="\wnd01\" normal="aolat_login_back_n" focus="aolat_login_back_f" down="aolat_login_back_s" disable="aolat_login_back_n" />
     <!-- /aolat login -->
 </root>

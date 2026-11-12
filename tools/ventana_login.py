@@ -33,10 +33,17 @@ EXTRAS = RAIZ / 'parches' / 'extras'
 LOG = EXTRAS / 'shape' / 'log'
 WND01 = EXTRAS / 'shape' / 'wnd01'
 W, H = 181, 275
-LISTA = (2, 2, 179, 209)                 # la 2706 (2,2,177,207)
-
-
-ID, PW = (37, 217, 150, 231), (37, 235, 150, 249)
+# 12/11/2026, "deja un poco de margin-top entre los botones y el password y que se vea el checkbox de guardar
+# usuario": la lista 8 px mas corta y la cuenta 8 px mas arriba, para que entre PW y los botones quede aire; y la
+# casilla de recordar la cuenta (2528) con su recuadro y el rotulo "Save" debajo.
+SUBE = 8
+LISTA = (2, 2, 179, 209 - SUBE)          # la 2706 (2,2,177,207 - SUBE)
+ID, PW = (37, 217 - SUBE, 150, 231 - SUBE), (37, 235 - SUBE, 150, 249 - SUBE)
+CASILLA = (153, 216 - SUBE, 14)          # la 2528: x, y, lado
+CUENTA = (3, 212 - SUBE, W - 3, 252 - SUBE)
+# Las ventanas que se mueven (id: x, y, ancho, alto)
+MOVER = {2706: (2, 2, 177, 207 - SUBE), 2701: (9, 219 - SUBE, 1, 1), 2702: (37, 217 - SUBE, 113, 14),
+         2703: (9, 237 - SUBE, 1, 1), 2704: (37, 235 - SUBE, 113, 14), 2528: (CASILLA[0], CASILLA[1], 14, 14)}
 BOTON_W, BOTON_H = 66, 18
 # El juego no pinta el titulo de estos dos botones: el texto va dibujado en su icono (uno por boton).
 BOTONES = {2705: (22, 254, 'Login', 60460), 2523: (94, 254, 'Exit', 60461)}
@@ -83,14 +90,40 @@ def fondo() -> Image.Image:
     im.alpha_composite(emblema, ((x0 + x1 - lado) // 2, y1 - emblema.height - 18))
     d = ImageDraw.Draw(im)
     # la zona de la cuenta: una franja con borde de oro, y ID / PW como casillas hundidas
-    d.rounded_rectangle((3, 212, W - 3, 252), radius=5, fill=(14, 28, 74, 255), outline=ORO_OSCURO)
+    d.rounded_rectangle(CUENTA, radius=5, fill=(14, 28, 74, 255), outline=ORO_OSCURO)
     for (a, b, c, e) in (ID, PW):
         d.rectangle((a - 1, b - 1, c + 1, e + 1), fill=(4, 8, 26, 255), outline=ORO)
         d.line((a, b, c, b), fill=(0, 0, 10, 255))
+    # la casilla de recordar la cuenta: hundida con borde de oro (el tic lo pinta el juego) y "Save" debajo
+    cx, cy, lado = CASILLA
+    d.rectangle((cx - 1, cy - 1, cx + lado, cy + lado), fill=(4, 8, 26, 255), outline=ORO)
+    _rotulo(d, 'Save', cx + lado // 2, PW[1] + 1)
+    # la franja de los botones
+    d.line((8, 252 - 1, W - 9, 252 - 1), fill=ORO_OSCURO)
     # el marco de oro de todo el panel, doble
     d.rectangle((0, 0, W - 1, H - 1), outline=ORO)
     d.rectangle((1, 1, W - 2, H - 2), outline=ORO_OSCURO)
     return im
+
+
+def _letra(tam=9):
+    from PIL import ImageFont
+    try:
+        return ImageFont.truetype('tahomabd.ttf', tam)
+    except OSError:
+        return ImageFont.load_default()
+
+
+def _rotulo(d, texto, cx, y, color=(238, 210, 140, 255), tam=9):
+    """Texto nitido (sin suavizado) centrado en cx, con contorno oscuro."""
+    d.fontmode = '1'
+    f = _letra(tam)
+    caja = d.textbbox((0, 0), texto, font=f)
+    x = cx - (caja[2] - caja[0]) // 2 - caja[0]
+    y -= caja[1]
+    for dx, dy in ((-1, 0), (1, 0), (0, -1), (0, 1)):
+        d.text((x + dx, y + dy), texto, font=f, fill=(4, 8, 26, 255))
+    d.text((x, y), texto, font=f, fill=color)
 
 
 def boton(estado, texto='') -> Image.Image:
@@ -127,6 +160,67 @@ def boton(estado, texto='') -> Image.Image:
         for dx, dy in ((-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (1, -1), (-1, 1), (1, 1)):
             d.text((x + dx, y + dy), texto, font=f, fill=(6, 16, 60, 255))
         d.text((x, y), texto, font=f, fill=(255, 250, 230, 255))
+    return im
+
+
+# EL SELECTOR DE CANAL (12/11/2026, "rehaz el selector de canal siguiendo la linea grafica nueva" y luego "plantea otro
+# diseno y distribucion"): la 2530 de wnd02.xml, "Choose game branch". Era una columna alta (181x275) con la lista y la
+# leyenda apiladas; ahora es una tarjeta apaisada de CW x CH:
+#   arriba, una cabecera con el emblema pequeno y "Select your channel";
+#   en medio, los canales en filas anchas: la columna de estado 2699 y la lista 2531, de FILAS_CANAL filas;
+#   abajo, la leyenda de capacidad en una linea (cuadros 2695..2698 y textos 2691..2694, "Normal"...) y los botones
+#   2532 (Enter) y 2533 (Back) a la derecha.
+# Su interior es el icono 2530 (log/w038_22), sin el tinte del tema.
+CW, CH = 300, 196
+FILA_CANAL, FILAS_CANAL = 19, 5
+CABECERA_CANAL = (0, 0, CW, 38)
+CANAL_MARCO = (6, 42, CW - 6, 42 + 8 + FILA_CANAL * FILAS_CANAL)            # 6,42 .. 294,145
+CANAL_ESTADO = (12, 46, 18, FILA_CANAL * FILAS_CANAL)
+CANAL_LISTA = (34, 46, CW - 46, FILA_CANAL * FILAS_CANAL)
+LEYENDA_Y = 152
+LEYENDA = ((2695, 2691, 'Normal'), (2696, 2692, 'Moderate'), (2697, 2693, 'Crowded'), (2698, 2694, 'Full'))
+LEYENDA_X = (10, 80, 158, 236)                                              # donde va cada cuadro
+BOTONES_CANAL = {2532: (CW - 146, 174, 'Enter', 60462), 2533: (CW - 74, 174, 'Back', 60463)}
+TITULO_CANAL = 'Angels Online Forever'
+# El rango de la ventana: el interior mas lo que pone el marco de WND_CLASS_DLG_1 (como 181x275 -> 189x299).
+RANGO_CANAL = (CW + 8, CH + 24)
+
+
+def fondo_canal() -> Image.Image:
+    im = _degradado(CW, CH, (26, 52, 128), NOCHE_HONDA)
+    brillo = Image.new('RGBA', (CW, CH), (0, 0, 0, 0))
+    ImageDraw.Draw(brillo).ellipse((-60, -70, CW + 60, 70), fill=(110, 180, 255, 90))
+    im.alpha_composite(brillo.filter(ImageFilter.GaussianBlur(16)))
+    d = ImageDraw.Draw(im)
+    rnd = random.Random(2530)
+    for _ in range(60):
+        x, y = rnd.uniform(0, CW), rnd.uniform(0, 38)
+        d.point((x, y), fill=rnd.choice(((255, 236, 180), (210, 230, 255))) + (rnd.randint(120, 255),))
+    # la cabecera: emblema pequeno a la izquierda y el titulo en oro, con una linea de oro debajo
+    emblema = Image.open(RAIZ / 'launcher' / 'emblema.png').convert('RGBA')
+    emblema = emblema.resize((32, round(emblema.height * 32 / emblema.width)), Image.LANCZOS)
+    im.alpha_composite(emblema, (8, 3))
+    d = ImageDraw.Draw(im)
+    _rotulo(d, 'Select your channel', 170, 9, color=(255, 226, 140, 255), tam=13)
+    _rotulo(d, 'Pick a channel to enter the world', 170, 25, color=(190, 210, 255, 255), tam=9)
+    d.line((48, 37, CW - 8, 37), fill=ORO_OSCURO)
+    # los canales: un recuadro hundido con una franja por fila y la columna de estado separada
+    x0, y0, x1, y1 = CANAL_MARCO
+    d.rounded_rectangle((x0, y0, x1, y1), radius=6, fill=NOCHE_HONDA + (245,), outline=ORO_OSCURO)
+    ex, ey, ew, _eh = CANAL_ESTADO
+    for k in range(FILAS_CANAL):
+        y = ey + k * FILA_CANAL
+        color = (16, 32, 80, 255) if k % 2 == 0 else (10, 22, 60, 255)
+        d.rounded_rectangle((ex - 2, y, x1 - 6, y + FILA_CANAL - 2), radius=3, fill=color)
+    d.line((ex + ew + 2, y0 + 5, ex + ew + 2, y1 - 5), fill=(50, 84, 160, 255))
+    # la leyenda: cuatro casillas con el cuadro de color (lo pinta el juego) en su hueco con borde de oro
+    d.rounded_rectangle((6, LEYENDA_Y - 4, CW - 6, LEYENDA_Y + 18 + 2), radius=5, fill=(14, 28, 74, 255),
+                        outline=ORO_OSCURO)
+    for x in LEYENDA_X:
+        d.rectangle((x - 1, LEYENDA_Y - 1, x + 18, LEYENDA_Y + 18), outline=ORO)
+    # la franja de los botones
+    d.rectangle((0, 0, CW - 1, CH - 1), outline=ORO)
+    d.rectangle((1, 1, CW - 2, CH - 2), outline=ORO_OSCURO)
     return im
 
 
@@ -168,6 +262,41 @@ def wnd02():
         tag = re.sub(r'range="[^"]*"', 'range="%d,%d,%d,%d"' % (x, y, BOTON_W, BOTON_H), m.group(0), count=1)
         tag = re.sub(r'icon="\d+"', 'icon="%d"' % icono, tag, count=1)
         texto = texto[:m.start()] + tag + texto[m.end():]
+    # lo que sube para dejar aire sobre los botones
+    for wid, caja in MOVER.items():
+        m = _ventana(texto, wid)
+        tag = re.sub(r'range="[^"]*"', 'range="%d,%d,%d,%d"' % caja, m.group(0), count=1)
+        texto = texto[:m.start()] + tag + texto[m.end():]
+    # EL SELECTOR DE CANAL: interior sin tinte, lista sin fondo, botones con su icono y su titulo
+    m = re.search(r'(<icon id="2530" [^>]*>)\s*<attrib [^>]*/>\s*(</icon>)', texto)
+    if m:
+        texto = texto[:m.start()] + m.group(1).rstrip('>') + ' />' + texto[m.end():]
+    m = _ventana(texto, 2531)
+    texto = texto[:m.start()] + re.sub(r' bcolor="\d+"', '', m.group(0)) + texto[m.end():]
+    for wid, (x, y, _titulo, icono) in BOTONES_CANAL.items():
+        m = _ventana(texto, wid)
+        tag = re.sub(r'range="[^"]*"', 'range="%d,%d,%d,%d"' % (x, y, BOTON_W, BOTON_H), m.group(0), count=1)
+        tag = re.sub(r'icon="\d+"', 'icon="%d"' % icono, tag, count=1)
+        texto = texto[:m.start()] + tag + texto[m.end():]
+    m = _ventana(texto, 2530)
+    tag = re.sub(r'title="[^"]*"', 'title="%s"' % TITULO_CANAL, m.group(0))
+    tag = re.sub(r'range="[^"]*"', 'range="0,0,%d,%d"' % RANGO_CANAL, tag, count=1)
+    texto = texto[:m.start()] + tag + texto[m.end():]
+    # la distribucion nueva: estado y lista de FILAS_CANAL filas, y la leyenda en una linea
+    for wid, caja in ((2699, CANAL_ESTADO), (2531, CANAL_LISTA)):
+        m = _ventana(texto, wid)
+        tag = re.sub(r'range="[^"]*"', 'range="%d,%d,%d,%d"' % caja, m.group(0), count=1)
+        tag = re.sub(r'rows="\d+"', 'rows="%d"' % FILAS_CANAL, tag, count=1)
+        texto = texto[:m.start()] + tag + texto[m.end():]
+    for (cuadro, rotulo, nombre), x in zip(LEYENDA, LEYENDA_X):
+        m = _ventana(texto, cuadro)
+        texto = texto[:m.start()] + re.sub(r'range="[^"]*"', 'range="%d,%d,18,18"' % (x, LEYENDA_Y), m.group(0),
+                                           count=1) + texto[m.end():]
+        m = _ventana(texto, rotulo)
+        tag = re.sub(r'range="[^"]*"', 'range="%d,%d,%d,18"' % (x + 20, LEYENDA_Y, 52), m.group(0), count=1)
+        tag = re.sub(r'title="[^"]*"', 'title="%s"' % nombre, tag, count=1)
+        tag = tag.replace(' ssHCenter=""', '')
+        texto = texto[:m.start()] + tag + texto[m.end():]
     # las casillas de ID y PW con texto claro (el 105 es oscuro: estaba pensado para la casilla clara de antes)
     for wid in (2702, 2704):
         m = _ventana(texto, wid)
@@ -175,7 +304,7 @@ def wnd02():
     m = _ventana(texto, 2529)
     texto = texto[:m.start()] + re.sub(r'title="[^"]*"', 'title="%s"' % TITULO, m.group(0)) + texto[m.end():]
     iconos = '    <!-- %s -->%s' % (MARCA, nl)
-    for _x, _y, titulo, icono in BOTONES.values():
+    for _x, _y, titulo, icono in list(BOTONES.values()) + list(BOTONES_CANAL.values()):
         a = 'aolat_login_%s_' % titulo.lower()
         iconos += ('    <icon id="%d" dir="\\wnd01\\" normal="%sn" focus="%sf" down="%ss" disable="%sn" />%s'
                    % (icono, a, a, a, a, nl))
@@ -188,6 +317,10 @@ def wnd02():
 def wndtext02():
     texto, bom, _nl = _base(r'setting\eng\wndtext02.xml')
     texto = re.sub(r'<window id="2529" title="[^"]*"/>', '<window id="2529" title="%s"/>' % TITULO, texto)
+    texto = re.sub(r'<window id="2530" title="[^"]*"/>', '<window id="2530" title="%s"/>' % TITULO_CANAL, texto)
+    for _cuadro, rotulo, nombre in LEYENDA:
+        texto = re.sub(r'<window id="%d" title="[^"]*"/>' % rotulo, '<window id="%d" title="%s"/>' % (rotulo, nombre),
+                       texto)
     _guardar(r'setting\eng\wndtext02.xml', texto, bom)
 
 
@@ -195,7 +328,8 @@ def main():
     LOG.mkdir(parents=True, exist_ok=True)
     WND01.mkdir(parents=True, exist_ok=True)
     (LOG / 'w038_03.shp').write_bytes(a_shp(fondo()))
-    for _x, _y, titulo, _icono in BOTONES.values():
+    (LOG / 'w038_22.shp').write_bytes(a_shp(fondo_canal()))
+    for _x, _y, titulo, _icono in list(BOTONES.values()) + list(BOTONES_CANAL.values()):
         for e in 'nfs':
             (WND01 / ('aolat_login_%s_%s.shp' % (titulo.lower(), e))).write_bytes(a_shp(boton(e, titulo)))
     for viejo in WND01.glob('aolat_login_btn_*.shp'):

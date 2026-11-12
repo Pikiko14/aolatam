@@ -113,8 +113,28 @@ def frames():
                 pie_y = max(p[1][1] + p[0].height for p in propias)
                 im = im.resize((max(1, round(im.width * ESCALA)), max(1, round(im.height * ESCALA))), Image.LANCZOS)
                 lista.append((im, (round((pie_x - x) * ESCALA), round((pie_y - y) * ESCALA))))
+        # "Parece que esta flotando" (12/11/2026): el ancla de una montura NO va en los cascos. En el caballo blanco
+        # (h001) el dibujo baja PIES_BAJO_EL_ANCLA px por debajo del ancla segun la direccion (de espaldas y de frente
+        # mas). Con el ancla en los cascos el toro quedaba ~15 px por encima del suelo. Se corre cada direccion para
+        # que sus pies queden igual que los del caballo.
+        for c in range(COLUMNAS):
+            mios = [lista[k] for k in range(c, len(lista), COLUMNAS)]
+            bajo = max(_suelo(im) - oy for im, (_ox, oy) in mios)
+            delta = PIES_BAJO_EL_ANCLA[c] - bajo
+            for k in range(c, len(lista), COLUMNAS):
+                im, (ox, oy) = lista[k]
+                lista[k] = (im, (ox, oy - delta))
         salida[anim] = lista
     return salida
+
+
+PIES_BAJO_EL_ANCLA = (13, 12, 7, 14, 16)       # h001 (1201_Wait), por direccion: espalda .. frente
+
+
+def _suelo(im):
+    """La fila mas baja con dibujo (sin el halo casi transparente)."""
+    caja = im.getchannel('A').point(lambda a: 255 if a > 40 else 0).getbbox()
+    return caja[3] if caja else im.height
 
 
 def icono() -> bytes:

@@ -384,10 +384,10 @@
 	<window id="2696"/>
 	<window id="2697"/>
 	<window id="2698"/>
-	<window id="2691" title="Capacity [Normal]"/>
-	<window id="2692" title="Capacity [Moderate]"/>
-	<window id="2693" title="Capacity [Crowded]"/>
-	<window id="2694" title="Capacity [Full]"/>
+	<window id="2691" title="Normal"/>
+	<window id="2692" title="Moderate"/>
+	<window id="2693" title="Crowded"/>
+	<window id="2694" title="Full"/>
 	<window id="2532"/>
 	<window id="2533"/>
 	<window id="2534"/>
@@ -483,7 +483,7 @@
 	<window id="2615" tooltext="Enter the game"/>
 	<window id="2616" tooltext="Quit from the game"/>
 	<window id="2617"/>
-	<window id="2530" title="Choose game branch"/>
+	<window id="2530" title="Angels Online Forever"/>
 	<window id="2701" title="ID"/>
 	<window id="2702"/>
 	<window id="2703" title="PW"/>
