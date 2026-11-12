@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-11",
+    "titulo": "Update 0.0.0.114: raid ranking and Abyss Taurus",
+    "texto": "Please update to version 0.0.0.114 from AngelsLauncher. Each raid now has a Ranking with the fastest clears: it shows the leader, and you can hover a row to see every member. When the last boss falls, a portal to the city opens. If you disconnect, you leave your raid group. New mount: the Abyss Taurus, a level 60 armored bull with top speed. Satrixia in the Flamefang Raid has a 3% chance to drop it."
+  },
+  {
+    "fecha": "2026-11-11",
     "titulo": "Update 0.0.0.110: raid puzzles",
     "texto": "Please update to version 0.0.0.110 from AngelsLauncher. Every raid now has a puzzle before each boss: a barrier of light only falls when you stand on the Light Altars together, bring down the pillars in the order the clues give, defeat the seal guardians or carry the flame to the Fire Altar. Zones are longer, with more packs and patrols, and the raid maps have no minimap or scene map. Each raid has its own banner, and the Raid Guide has a new Puzzles tab."
   },
