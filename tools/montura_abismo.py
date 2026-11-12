@@ -1,8 +1,9 @@
 """La montura Abyss Taurus (11/11/2026): "podriamos crear una nueva montura??", un toro alado de la hoja del usuario.
 
-LO QUE ES UNA MONTURA EN EL CLIENTE. El objeto (item.xml, 物品類別 座騎) lleva un 原型外觀 N, y el cliente dibuja el
-objeto de char.obd con Sequence = 1200 + N: el caballo blanco (White Horse, 原型外觀 1) es el 1201 de \\chr\\h001\\, con
-dos animaciones (Wait 3 poses, Run 6 poses) x 5 direcciones en <sequence>_Wait.spr y _Run.spr, frames hw013.. y
+LO QUE ES UNA MONTURA EN EL CLIENTE. El objeto (item.xml, 物品類別 座騎) lleva un 原型外觀 N: la entrada N (desde 1)
+de la lista <騎乘 號碼=... 高度=...> de setting/chardef.xml, que da el objeto de char.obd (Sequence) y la altura a la que
+va el jinete. NO es 1200 + N: asi salio con el 714 un robot gato (el 67042 de esa lista, 11/11/2026). El caballo blanco
+(White Horse, 原型外觀 1) es la primera: el 1201 de \\chr\\h001\\, altura 0, con dos animaciones (Wait 3 poses, Run 6 poses) x 5 direcciones en <sequence>_Wait.spr y _Run.spr, frames hw013.. y
 hr013.. (h montado, w/r, pose, direccion 3 espalda .. 7 frente; la derecha va en espejo). El jinete NO esta en la
 montura: cada pieza de su equipo tiene sus frames de montado (el sprite +5000: 36001 frente a 31001 a pie) y el cliente
 los pone encima, en el mismo punto de los pies. Por eso la montura tiene que tener la altura de lomo de un caballo.
@@ -16,6 +17,7 @@ Deja:
   parches/extras/shape/chr/h714/1914_{Wait,Run}.spr     los sprites
   parches/extras/shape/item/i9301.shp                   el icono (36x36)
   parches/extras/setting/char.obd                       el objeto 1914 (como el H001)
+  parches/extras/setting/chardef.xml                    su <騎乘> al final de la lista: el 原型外觀 ASPECTO
   parches/extras/setting/itemicon4.xml                  el icono 59301
   parches/extras/setting/eng/item.xml                   la fila del objeto 83301
 y con --db RUTA mete el objeto en esa content.db. Nivel 60, la velocidad de las mas rapidas (move_speed 70) y los
@@ -40,9 +42,10 @@ import spr_ewsp  # noqa: E402
 
 HOJA = RAIZ / 'docs' / 'sprites_montura' / 'abyss_taurus' / 'hoja.webp'
 EXTRAS = RAIZ / 'parches' / 'extras'
-ASPECTO = 714
-SEQUENCE = 1200 + ASPECTO
-CARPETA = 'h%03d' % ASPECTO
+SEQUENCE = 1914                    # el objeto de char.obd (libre en char*.obd)
+CARPETA = 'h714'                   # su carpeta de sprites (libre en los paks)
+ASPECTO = 1548                     # su <騎乘> en chardef.xml: la lista del cliente trae 1547 y va la siguiente
+ALTURA = 0                         # el 高度 del jinete: el del caballo blanco, con la misma altura de lomo
 ITEM = 83301
 ICONO, ARCHIVO_ICONO = 59301, 'i9301'
 NOMBRE = 'Abyss Taurus'
@@ -51,7 +54,7 @@ FILAS, COLUMNAS = 9, 5
 POSES = {'run': range(0, 6), 'wait': range(6, 9)}
 MARCA_INI, MARCA_FIN = 'aolat abyss taurus', '/aolat abyss taurus'
 STATS = dict(平均攻擊=55, 防禦=55, 魔攻=55, 魔防=55, 精準=8, 靈敏=16, 移動速度=70)
-DESCRIPCION = ('A winged bull born in the abyss beneath Flamefang. Only raiders who defeat Satrixia '
+DESCRIPCION = ('An armored bull born in the abyss beneath Flamefang. Only raiders who defeat Satrixia '
                'have been able to tame it.')
 
 
@@ -139,6 +142,19 @@ def char_obd():
     ma._guardar(r'setting\char.obd', texto.rstrip() + nl + nl + bloque, bom, latin=True)
 
 
+def chardef_xml():
+    """Su <騎乘> justo detras del ultimo de la lista: el cliente los cuenta en orden y el 原型外觀 es esa cuenta."""
+    texto, bom, nl = ma._texto_base(r'setting\chardef.xml')
+    texto = ma._sin_bloque(texto, '<!-- %s -->' % MARCA_INI, '<!-- %s -->' % MARCA_FIN)
+    filas = list(re.finditer(r'<騎乘 [^>]*/>[^\n]*\n?', texto))
+    if len(filas) + 1 != ASPECTO:
+        raise SystemExit('chardef.xml trae %d monturas: el aspecto seria %d, no %d' % (len(filas), len(filas) + 1, ASPECTO))
+    fin = filas[-1].end()
+    bloque = ('\t<!-- %s -->%s\t<騎乘 號碼="%d" 高度="%d" 層級="DOLL_LAYER_RIDE" 種類="0"/>%s\t<!-- %s -->%s'
+              % (MARCA_INI, nl, SEQUENCE, ALTURA, nl, MARCA_FIN, nl))
+    ma._guardar(r'setting\chardef.xml', texto[:fin] + bloque + texto[fin:], bom)
+
+
 def _xml_con(relativa, lineas, cierre='</'):
     texto, bom, nl = ma._texto_base(relativa)
     texto = ma._sin_bloque(texto, '<!-- %s -->' % MARCA_INI, '<!-- %s -->' % MARCA_FIN)
@@ -193,6 +209,7 @@ def main():
     (EXTRAS / 'shape' / 'item').mkdir(parents=True, exist_ok=True)
     (EXTRAS / 'shape' / 'item' / ('%s.shp' % ARCHIVO_ICONO)).write_bytes(icono())
     char_obd()
+    chardef_xml()
     _xml_con(r'setting\itemicon4.xml', ['<icon id="%d" dir="\\item\\" normal="%s" focus="normal" down="normal" '
                                         'disable="normal"/>' % (ICONO, ARCHIVO_ICONO)])
     _xml_con(r'setting\eng\item.xml', [fila_item()])
