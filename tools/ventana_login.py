@@ -108,6 +108,19 @@ def fondo() -> Image.Image:
     return im
 
 
+def celdas() -> Image.Image:
+    """La textura de las celdas de las listas (su bcolor): azul noche con un brillo suave arriba. Transparente no
+    sirve: el juego marca la fila elegida tinendo esta textura, y sin textura no se distinguia ("no se distingue el
+    canal seleccionado", 12/11/2026)."""
+    im = _degradado(265, 235, (24, 46, 112), (12, 24, 66))
+    d = ImageDraw.Draw(im)
+    rnd = random.Random(60464)
+    for _ in range(90):
+        x, y = rnd.uniform(0, 265), rnd.uniform(0, 235)
+        d.point((x, y), fill=(120, 150, 220, 255))
+    return im
+
+
 def _letra(tam=9):
     from PIL import ImageFont
     try:
@@ -282,7 +295,9 @@ def wnd02():
         texto = texto[:m.start()] + tag + texto[m.end():]
     m = _ventana(texto, 2530)
     tag = re.sub(r'title="[^"]*"', 'title="%s"' % TITULO_CANAL, m.group(0))
-    tag = re.sub(r'range="[^"]*"', 'range="0,0,%d,%d"' % RANGO_CANAL, tag, count=1)
+    # "sigue sin estar centrado contra el logo": el juego la pone por su esquina, como la de 189 de ancho; el x
+    # negativo la centra (lo mismo hace el acuerdo original: 328 de ancho y range="-69,0,...").
+    tag = re.sub(r'range="[^"]*"', 'range="%d,0,%d,%d"' % (((189 - RANGO_CANAL[0]) // 2,) + RANGO_CANAL), tag, count=1)
     texto = texto[:m.start()] + tag + texto[m.end():]
     # la distribucion nueva: estado y lista de FILAS_CANAL filas, y la leyenda en una linea
     for wid, caja in ((2699, CANAL_ESTADO), (2531, CANAL_LISTA)):
@@ -333,7 +348,7 @@ def main():
     WND01.mkdir(parents=True, exist_ok=True)
     (LOG / 'w038_03.shp').write_bytes(a_shp(fondo()))
     (LOG / 'w038_22.shp').write_bytes(a_shp(fondo_canal()))
-    (WND01 / (ARCHIVO_CELDAS + '.shp')).write_bytes(a_shp(Image.new('RGBA', (265, 235), (0, 0, 0, 0))))
+    (WND01 / (ARCHIVO_CELDAS + '.shp')).write_bytes(a_shp(celdas()))
     for _x, _y, titulo, _icono in list(BOTONES.values()) + list(BOTONES_CANAL.values()):
         for e in 'nfs':
             (WND01 / ('aolat_login_%s_%s.shp' % (titulo.lower(), e))).write_bytes(a_shp(boton(e, titulo)))
