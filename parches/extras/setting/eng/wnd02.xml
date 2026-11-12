@@ -1816,7 +1816,7 @@
     <icon id="2504" dir="\log\" normal="w038_20" focus="normal" down="normal" disable="normal" />
     <!-- Edit 白色橫條 -->
     <!-- 離開游戲 按鈕 -->
-    <window class="WND_CLASS_BUTTON" range="94,254,66,18" id="2523" icon="60461" tooltip="10040" tooltext="Quit from the game">
+    <window class="WND_CLASS_BUTTON" range="101,254,66,18" id="2523" icon="60461" tooltip="10040" tooltext="Quit from the game">
         <style wsVisible="" wsTab="" />
     </window>
     <!-- 警告刪除角色 視窗 -->
@@ -1843,7 +1843,7 @@
         <style wsVisible="" wsTab="" />
     </window>
     <!-- 分流列表 -->
-    <window class="WND_CLASS_LIST" range="34,46,254,95" id="2531" fcolor="103" font="1" cols="1" rows="5" gapx="1" gapy="2" tpos="1,1">
+    <window class="WND_CLASS_LIST" range="34,46,254,95" id="2531" fcolor="103" bcolor="60464" font="1" cols="1" rows="5" gapx="1" gapy="2" tpos="1,1">
         <style wsVisible="" lsVScroll="" lsHCenter="" lsVCenter="" lsCheck="" lsSCheck="" lsKeyEvent="" wsTab="" />
     </window>
     <window class="WND_CLASS_LIST" range="12,46,18,95" id="2699" cols="1" rows="5" gapx="1" gapy="2">
@@ -1878,11 +1878,11 @@
         <style wsVisible="" ssHCenter="" ssVCenter="" />
     </window>
     <!-- 確定 按鈕 -->
-    <window class="WND_CLASS_BUTTON" range="154,174,66,18" id="2532" icon="60462">
+    <window class="WND_CLASS_BUTTON" range="136,174,66,18" id="2532" icon="60462">
         <style wsVisible="" wsTab="" />
     </window>
     <!-- 取消 按鈕 -->
-    <window class="WND_CLASS_BUTTON" range="226,174,66,18" id="2533" icon="60463">
+    <window class="WND_CLASS_BUTTON" range="222,174,66,18" id="2533" icon="60463">
         <style wsVisible="" wsTab="" />
     </window>
     <window class="WND_CLASS_BUTTON" range="0,0,181,402" id="2534" icon="0" check="2534">
@@ -2389,11 +2389,11 @@
     <window class="WND_CLASS_EDIT" range="37,227,113,14" workrange="2,0,109,14" id="2704" fcolor="103" font="1" limit="20">
         <style wsVisible="" esVCenter="" wsTabstop="" esPassword="" esCanPaste="" wsTab="" />
     </window>
-    <window class="WND_CLASS_BUTTON" range="22,254,66,18" id="2705" icon="60460" tooltip="10040" tooltext="Enter the game">
+    <window class="WND_CLASS_BUTTON" range="14,254,66,18" id="2705" icon="60460" tooltip="10040" tooltext="Enter the game">
         <style wsVisible="" wsTab="" />
         <!-- 進入遊戲 -->
     </window>
-    <window class="WND_CLASS_LIST" range="2,2,177,199" id="2706" fcolor="103" font="1" cols="2" rows="11" gapx="5" gapy="3" tpos="1,1">
+    <window class="WND_CLASS_LIST" range="2,2,177,199" id="2706" fcolor="103" bcolor="60464" font="1" cols="2" rows="11" gapx="5" gapy="3" tpos="1,1">
         <style wsVisible="" lsVScroll="" lsHCenter="" lsVCenter="" lsCheck="" lsSCheck="" lsKeyEvent="" wsTab="" />
     </window>
     <window class="WND_CLASS_BASE" range="0,0,1,1" id="2707">
@@ -6808,5 +6808,6 @@
     <icon id="60461" dir="\wnd01\" normal="aolat_login_exit_n" focus="aolat_login_exit_f" down="aolat_login_exit_s" disable="aolat_login_exit_n" />
     <icon id="60462" dir="\wnd01\" normal="aolat_login_enter_n" focus="aolat_login_enter_f" down="aolat_login_enter_s" disable="aolat_login_enter_n" />
     <icon id="60463" dir="\wnd01\" normal="aolat_login_back_n" focus="aolat_login_back_f" down="aolat_login_back_s" disable="aolat_login_back_n" />
+    <icon id="60464" dir="\wnd01\" normal="aolat_login_celdas" focus="normal" down="normal" disable="normal" />
     <!-- /aolat login -->
 </root>

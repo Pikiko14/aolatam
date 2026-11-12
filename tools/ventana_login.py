@@ -46,8 +46,10 @@ MOVER = {2706: (2, 2, 177, 207 - SUBE), 2701: (9, 219 - SUBE, 1, 1), 2702: (37, 
          2703: (9, 237 - SUBE, 1, 1), 2704: (37, 235 - SUBE, 113, 14), 2528: (CASILLA[0], CASILLA[1], 14, 14)}
 BOTON_W, BOTON_H = 66, 18
 # El juego no pinta el titulo de estos dos botones: el texto va dibujado en su icono (uno por boton).
-BOTONES = {2705: (22, 254, 'Login', 60460), 2523: (94, 254, 'Exit', 60461)}
+BOTONES = {2705: (14, 254, 'Login', 60460), 2523: (101, 254, 'Exit', 60461)}
 TITULO = 'Angels Online Forever'
+# La textura de las celdas de las listas (bcolor): transparente, del tamano de la del cliente (wnd01/w012_1, 265x235).
+ICONO_CELDAS, ARCHIVO_CELDAS = 60464, 'aolat_login_celdas'
 MARCA = 'aolat login'
 
 ORO = (238, 196, 92)
@@ -180,7 +182,7 @@ CANAL_LISTA = (34, 46, CW - 46, FILA_CANAL * FILAS_CANAL)
 LEYENDA_Y = 152
 LEYENDA = ((2695, 2691, 'Normal'), (2696, 2692, 'Moderate'), (2697, 2693, 'Crowded'), (2698, 2694, 'Full'))
 LEYENDA_X = (10, 80, 158, 236)                                              # donde va cada cuadro
-BOTONES_CANAL = {2532: (CW - 146, 174, 'Enter', 60462), 2533: (CW - 74, 174, 'Back', 60463)}
+BOTONES_CANAL = {2532: (CW - 164, 174, 'Enter', 60462), 2533: (CW - 78, 174, 'Back', 60463)}
 TITULO_CANAL = 'Angels Online Forever'
 # El rango de la ventana: el interior mas lo que pone el marco de WND_CLASS_DLG_1 (como 181x275 -> 189x299).
 RANGO_CANAL = (CW + 8, CH + 24)
@@ -255,7 +257,7 @@ def wnd02():
         texto = texto[:m.start()] + m.group(1).rstrip('>') + ' />' + texto[m.end():]
     # la lista sin su fondo
     m = _ventana(texto, 2706)
-    texto = texto[:m.start()] + re.sub(r' bcolor="\d+"', '', m.group(0)) + texto[m.end():]
+    texto = texto[:m.start()] + re.sub(r' bcolor="\d+"', ' bcolor="%d"' % ICONO_CELDAS, m.group(0)) + texto[m.end():]
     # los botones: solo otro sitio, otro tamano y su icono (lo demas, tooltips incluidos, como en el original)
     for wid, (x, y, _titulo, icono) in BOTONES.items():
         m = _ventana(texto, wid)
@@ -272,7 +274,7 @@ def wnd02():
     if m:
         texto = texto[:m.start()] + m.group(1).rstrip('>') + ' />' + texto[m.end():]
     m = _ventana(texto, 2531)
-    texto = texto[:m.start()] + re.sub(r' bcolor="\d+"', '', m.group(0)) + texto[m.end():]
+    texto = texto[:m.start()] + re.sub(r' bcolor="\d+"', ' bcolor="%d"' % ICONO_CELDAS, m.group(0)) + texto[m.end():]
     for wid, (x, y, _titulo, icono) in BOTONES_CANAL.items():
         m = _ventana(texto, wid)
         tag = re.sub(r'range="[^"]*"', 'range="%d,%d,%d,%d"' % (x, y, BOTON_W, BOTON_H), m.group(0), count=1)
@@ -308,6 +310,8 @@ def wnd02():
         a = 'aolat_login_%s_' % titulo.lower()
         iconos += ('    <icon id="%d" dir="\\wnd01\\" normal="%sn" focus="%sf" down="%ss" disable="%sn" />%s'
                    % (icono, a, a, a, a, nl))
+    iconos += ('    <icon id="%d" dir="\\wnd01\\" normal="%s" focus="normal" down="normal" disable="normal" />%s'
+               % (ICONO_CELDAS, ARCHIVO_CELDAS, nl))
     iconos += '    <!-- /%s -->%s' % (MARCA, nl)
     fin = texto.rindex('</')
     texto = texto[:fin] + iconos + texto[fin:]
@@ -329,6 +333,7 @@ def main():
     WND01.mkdir(parents=True, exist_ok=True)
     (LOG / 'w038_03.shp').write_bytes(a_shp(fondo()))
     (LOG / 'w038_22.shp').write_bytes(a_shp(fondo_canal()))
+    (WND01 / (ARCHIVO_CELDAS + '.shp')).write_bytes(a_shp(Image.new('RGBA', (265, 235), (0, 0, 0, 0))))
     for _x, _y, titulo, _icono in list(BOTONES.values()) + list(BOTONES_CANAL.values()):
         for e in 'nfs':
             (WND01 / ('aolat_login_%s_%s.shp' % (titulo.lower(), e))).write_bytes(a_shp(boton(e, titulo)))
