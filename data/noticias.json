@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-12",
+    "titulo": "Update 0.0.0.119: sharper login buttons",
+    "texto": "Please update to version 0.0.0.119 from AngelsLauncher. The Login and Exit buttons now have sharper, easier to read text."
+  },
+  {
+    "fecha": "2026-11-12",
     "titulo": "Update 0.0.0.118: new login window",
     "texto": "Please update to version 0.0.0.118 from AngelsLauncher. The server and login window has a new night-blue and gold design, and the game now shows the new emblem as its icon on the taskbar. The character selection crash is fixed."
   },
