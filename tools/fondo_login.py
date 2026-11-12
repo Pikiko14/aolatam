@@ -17,7 +17,8 @@ from PIL import Image
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(RAIZ / 'tools' / 'editor_mapas'))
 
-ORIGEN = RAIZ / 'tools' / 'originales' / 'fondo_login.png'
+# 12/11/2026, "aca igual cambia el logo y la imagen de fondo": la misma imagen que el launcher (launcher/arte).
+ORIGEN = RAIZ / 'launcher' / 'arte' / 'cielo.webp'
 SALIDA = RAIZ / 'parches' / 'extras' / 'shape' / 'log' / 'w038_01.shp'
 ANCHO, ALTO = 1573, 768
 ARRIBA = 0.25           # de lo que sobra en alto, esta parte se quita de arriba y el resto de abajo
@@ -27,8 +28,24 @@ def _a565(r, g, b):
     return (r >> 3) << 11 | (g >> 2) << 5 | (b >> 3)
 
 
+def _a_la_derecha(im: Image.Image) -> Image.Image:
+    """12/11/2026: la imagen del cielo es menos ancha que el fondo (1573) y el juego en 1024 solo ensena el centro
+    (x 274..1298): escalada para cubrir, las chicas de la izquierda quedaban fuera. Va a toda la altura, pegada a la
+    derecha, y el hueco de la izquierda se rellena con su borde en espejo y difuminado."""
+    from PIL import ImageFilter
+    im = im.resize((round(im.width * ALTO / im.height), ALTO), Image.LANCZOS)
+    x = ANCHO - im.width
+    lienzo = Image.new('RGB', (ANCHO, ALTO))
+    espejo = im.crop((0, 0, x, ALTO)).transpose(Image.FLIP_LEFT_RIGHT).filter(ImageFilter.GaussianBlur(6))
+    lienzo.paste(espejo, (0, 0))
+    lienzo.paste(im, (x, 0))
+    return lienzo
+
+
 def cubrir(im: Image.Image) -> Image.Image:
     im = im.convert('RGB')
+    if im.width * ALTO / im.height < ANCHO:
+        return _a_la_derecha(im)
     k = max(ANCHO / im.width, ALTO / im.height)
     im = im.resize((round(im.width * k), round(im.height * k)), Image.LANCZOS)
     x = (im.width - ANCHO) // 2

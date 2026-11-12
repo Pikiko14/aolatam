@@ -29,7 +29,7 @@ SALIDA = RAIZ / 'parches' / 'launcher_propio'
 EXE = 'AngelsLauncher.exe'
 FRAMEWORK = pathlib.Path(os.environ.get('WINDIR', r'C:\Windows')) / 'Microsoft.NET' / 'Framework64' / 'v4.0.30319'
 # Sube este numero al cambiar el launcher: los jugadores lo reciben solos (por el sha256, no por el numero).
-VERSION_LAUNCHER = '1.0.4'               # 1.0.4: pone en server.xml la IP del servidor (ip y fip) para mudar de VPS (04/11/2026)
+VERSION_LAUNCHER = '1.0.5'               # 1.0.5: imagen del cielo y emblema nuevo (12/11/2026). 1.0.4: pone en server.xml la IP del servidor (ip y fip) para mudar de VPS (04/11/2026)
 # El nombre del servidor que pinta el cliente (server.xml, 名稱): el launcher lo pone al lanzar el juego.
 NOMBRE_SERVIDOR = 'AOF'
 

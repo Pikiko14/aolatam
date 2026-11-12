@@ -23,7 +23,8 @@ RAIZ = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(RAIZ / 'tools'))
 from icono_subasta import a_shp
 
-ORIGEN = RAIZ / 'tools' / 'originales' / 'logo_forever.png'
+# 12/11/2026: el emblema redondo del launcher (launcher/emblema.png, ya con su canal alfa).
+ORIGEN = RAIZ / 'launcher' / 'emblema.png'
 SALIDA = RAIZ / 'parches' / 'extras' / 'shape' / 'log'
 LOGOS = {'w038_02': ((435, 212), True), 'w038_13': ((225, 108), False)}   # tamano y si va anclado en su centro
 
@@ -91,7 +92,11 @@ def encajar(im: Image.Image, tam) -> Image.Image:
 
 
 def main():
-    limpio = quitar_fondo(Image.open(ORIGEN))
+    im = Image.open(ORIGEN)
+    if im.mode == 'RGBA' and im.getchannel('A').getextrema()[0] < 255:
+        limpio = im.crop(im.getbbox())            # ya trae transparencia: no hay cuadriculado que quitar
+    else:
+        limpio = quitar_fondo(im)
     SALIDA.mkdir(parents=True, exist_ok=True)
     for nombre, (tam, centrado) in LOGOS.items():
         datos = bytearray(a_shp(encajar(limpio, tam)))

@@ -21,9 +21,14 @@ namespace AngelsLauncher
         static readonly Color Oro = Color.FromArgb(255, 205, 96);
         static readonly Color OroOscuro = Color.FromArgb(232, 128, 44);
         static readonly Color TextoSuave = Color.FromArgb(214, 214, 236);
+        // Los del emblema (12/11/2026, "que los botones sean tambien fantasiosos"): azul cielo, azul hondo y gema.
+        static readonly Color AzulCielo = Color.FromArgb(92, 178, 255);
+        static readonly Color AzulHondo = Color.FromArgb(22, 58, 168);
+        static readonly Color Gema = Color.FromArgb(120, 220, 255);
+        static readonly Color OroClaro = Color.FromArgb(255, 238, 170);
 
         // ---- zonas
-        Rectangle rCerrar, rMinimizar, rJugar, rReparar, rCarpeta, rNoticias, rBarra;
+        Rectangle rCerrar, rMinimizar, rJugar, rReparar, rCarpeta, rNoticias, rVersiones, rBarra;
 
         // ---- estado (lo tocan el hilo de trabajo y el de la ventana: se lee y escribe con lock)
         readonly object cerrojo = new object();
@@ -57,10 +62,13 @@ namespace AngelsLauncher
 
             rCerrar = new Rectangle(Width - 46, 14, 30, 30);
             rMinimizar = new Rectangle(Width - 84, 14, 30, 30);
-            rNoticias = new Rectangle(40, 40, 500, 418);
-            rJugar = new Rectangle(640, 330, 300, 78);
-            rReparar = new Rectangle(640, 420, 144, 38);
-            rCarpeta = new Rectangle(796, 420, 144, 38);
+            // 12/11/2026: con la imagen del cielo los personajes van a la izquierda y todo esto en una columna a la
+            // derecha, bajo los botones de la ventana; el emblema esta en fondo.jpg arriba a la izquierda.
+            rNoticias = new Rectangle(600, 56, 340, 226);
+            rVersiones = new Rectangle(600, 290, 340, 36);
+            rJugar = new Rectangle(600, 336, 340, 72);
+            rReparar = new Rectangle(600, 418, 164, 38);
+            rCarpeta = new Rectangle(776, 418, 164, 38);
             rBarra = new Rectangle(40, 520, 900, 12);
 
             for (int i = 0; i < 45; i++) particulas.Add(NuevaParticula(true));
@@ -264,8 +272,8 @@ namespace AngelsLauncher
             Barra(g, est, prog, fallo);
         }
 
-        // La imagen de fondo (fondo.jpg, metida en el exe al compilar) con sombras para que se lean el titulo, las
-        // noticias y la barra: oscura a la izquierda y abajo, y limpia en el centro, donde estan los personajes.
+        // La imagen de fondo (fondo.jpg, metida en el exe al compilar) con sombras para que se lean las noticias y la
+        // barra: oscura a la derecha (la columna) y abajo, y limpia a la izquierda, donde estan los personajes.
         Bitmap ComponerFondo()
         {
             var bmp = new Bitmap(Width, Height);
@@ -288,9 +296,9 @@ namespace AngelsLauncher
                 else
                     using (var b = new LinearGradientBrush(todo, CieloArriba, CieloAbajo, 90f))
                         g.FillRectangle(b, todo);
-                var izquierda = new Rectangle(0, 0, (int)(Width * 0.66), Height);
-                using (var b = new LinearGradientBrush(izquierda, Color.FromArgb(150, 8, 12, 36), Color.FromArgb(0, 8, 12, 36), 0f))
-                    g.FillRectangle(b, izquierda);
+                var derecha = new Rectangle(540, 0, Width - 540, Height);
+                using (var b = new LinearGradientBrush(derecha, Color.FromArgb(0, 8, 12, 36), Color.FromArgb(120, 8, 12, 36), 0f))
+                    g.FillRectangle(b, new Rectangle(derecha.X + 1, 0, derecha.Width, Height));
                                 var abajo = new Rectangle(0, Height - 150, Width, 150);
                 using (var b = new LinearGradientBrush(abajo, Color.FromArgb(0, 10, 8, 26), Color.FromArgb(225, 10, 8, 26), 90f))
                     g.FillRectangle(b, new Rectangle(abajo.X, abajo.Y + 1, abajo.Width, abajo.Height));
@@ -360,8 +368,8 @@ namespace AngelsLauncher
         {
             using (var camino = Redondeado(rNoticias, 14))
             {
-                using (var b = new SolidBrush(Color.FromArgb(120, 8, 10, 30))) g.FillPath(b, camino);
-                using (var pen = new Pen(Color.FromArgb(60, 255, 255, 255))) g.DrawPath(pen, camino);
+                using (var b = new SolidBrush(Color.FromArgb(165, 8, 10, 30))) g.FillPath(b, camino);
+                using (var pen = new Pen(Color.FromArgb(110, 255, 214, 130))) g.DrawPath(pen, camino);
             }
             using (var f = new Font("Segoe UI", 11, FontStyle.Bold))
             using (var b = new SolidBrush(Oro))
@@ -399,42 +407,36 @@ namespace AngelsLauncher
 
         void PanelDerecho(Graphics g, string vServ, string vLoc, bool ok, bool ocupado)
         {
-            // fondo translucido para que las versiones se lean sobre la imagen
-            using (var camino = Redondeado(new Rectangle(624, 252, 332, 64), 14))
+            // las dos versiones en una linea, en su franja translucida para que se lean sobre la imagen
+            using (var camino = Redondeado(rVersiones, 12))
             {
-                using (var b = new SolidBrush(Color.FromArgb(150, 10, 10, 32))) g.FillPath(b, camino);
-                using (var pen = new Pen(Color.FromArgb(60, 255, 255, 255))) g.DrawPath(pen, camino);
+                using (var b = new SolidBrush(Color.FromArgb(165, 10, 10, 32))) g.FillPath(b, camino);
+                using (var pen = new Pen(Color.FromArgb(70, 255, 255, 255))) g.DrawPath(pen, camino);
             }
-            using (var f = new Font("Segoe UI", 10))
-            using (var fB = new Font("Segoe UI", 10, FontStyle.Bold))
+            using (var f = new Font("Segoe UI", 9))
+            using (var fB = new Font("Segoe UI", 9.5f, FontStyle.Bold))
             using (var b = new SolidBrush(TextoSuave))
             using (var bB = new SolidBrush(Color.White))
             {
-                g.DrawString("Versión del servidor", f, b, 640, 262);
-                g.DrawString(vServ.Length > 0 ? vServ : "--", fB, bB, 640, 282);
-                g.DrawString("Versión instalada", f, b, 800, 262);
-                g.DrawString(vLoc.Length > 0 ? vLoc : "--", fB, bB, 800, 282);
+                int y = rVersiones.Y + 9;
+                g.DrawString("Servidor", f, b, rVersiones.X + 14, y);
+                g.DrawString(vServ.Length > 0 ? vServ : "--", fB, bB, rVersiones.X + 72, y - 1);
+                g.DrawString("Instalada", f, b, rVersiones.X + 178, y);
+                g.DrawString(vLoc.Length > 0 ? vLoc : "--", fB, bB, rVersiones.X + 240, y - 1);
             }
 
             bool activo = ok && !ocupado;
             bool encima = sobre == "jugar" && activo;
-            using (var camino = Redondeado(rJugar, 16))
-            {
-                Color a = activo ? (encima ? Color.FromArgb(255, 222, 130) : Oro) : Color.FromArgb(120, 120, 140);
-                Color c = activo ? (encima ? Color.FromArgb(246, 150, 60) : OroOscuro) : Color.FromArgb(80, 80, 100);
-                if (activo)
-                    Resplandor(g, new RectangleF(rJugar.X - 30, rJugar.Y - 24, rJugar.Width + 60, rJugar.Height + 48),
-                               Color.FromArgb(encima ? 120 : 70, Oro));
-                using (var br = new LinearGradientBrush(rJugar, a, c, 90f)) g.FillPath(br, camino);
-                using (var pen = new Pen(Color.FromArgb(160, 255, 255, 255), 1.5f)) g.DrawPath(pen, camino);
-            }
-            using (var f = new Font("Segoe UI", 24, FontStyle.Bold))
+            BotonFantasia(g, rJugar, 18, activo, encima, true);
+            using (var f = new Font("Georgia", 22, FontStyle.Bold))
             using (var sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
             {
-                using (var sombra = new SolidBrush(Color.FromArgb(70, 60, 20, 0)))
-                    g.DrawString(ocupado ? "ESPERA..." : "JUGAR", f, sombra, new RectangleF(rJugar.X, rJugar.Y + 2, rJugar.Width, rJugar.Height), sf);
-                using (var b = new SolidBrush(Color.White))
-                    g.DrawString(ocupado ? "ESPERA..." : "JUGAR", f, b, rJugar, sf);
+                string t = ocupado ? "ESPERA..." : "J U G A R";
+                var rt = new RectangleF(rJugar.X, rJugar.Y + 1, rJugar.Width, rJugar.Height);
+                using (var sombra = new SolidBrush(Color.FromArgb(150, 8, 20, 70)))
+                    g.DrawString(t, f, sombra, new RectangleF(rt.X + 1.5f, rt.Y + 2.5f, rt.Width, rt.Height), sf);
+                using (var b = new LinearGradientBrush(rJugar, Color.White, activo ? OroClaro : Color.FromArgb(200, 200, 215), 90f))
+                    g.DrawString(t, f, b, rt, sf);
             }
             BotonChico(g, rReparar, "Reparar", "reparar", !ocupado);
             BotonChico(g, rCarpeta, "Carpeta", "carpeta", true);
@@ -442,17 +444,90 @@ namespace AngelsLauncher
 
         void BotonChico(Graphics g, Rectangle r, string texto, string cual, bool activo)
         {
-            using (var camino = Redondeado(r, 10))
-            {
-                // oscuro como los paneles: sobre la imagen un boton blanco translucido no se leia
-                int a = !activo ? 110 : (sobre == cual ? 215 : 170);
-                using (var b = new SolidBrush(Color.FromArgb(a, 12, 10, 34))) g.FillPath(b, camino);
-                using (var pen = new Pen(Color.FromArgb(activo ? (sobre == cual ? 220 : 130) : 50, 255, 255, 255))) g.DrawPath(pen, camino);
-            }
-            using (var f = new Font("Segoe UI", 10, FontStyle.Bold))
+            BotonFantasia(g, r, 10, activo, activo && sobre == cual, false);
+            using (var f = new Font("Georgia", 10, FontStyle.Bold))
             using (var sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
-            using (var b = new SolidBrush(Color.FromArgb(activo ? 255 : 120, 255, 255, 255)))
-                g.DrawString(texto, f, b, r, sf);
+            {
+                using (var sombra = new SolidBrush(Color.FromArgb(160, 6, 14, 50)))
+                    g.DrawString(texto, f, sombra, new RectangleF(r.X + 1, r.Y + 2, r.Width, r.Height), sf);
+                using (var b = new SolidBrush(activo ? OroClaro : Color.FromArgb(150, 220, 220, 230)))
+                    g.DrawString(texto, f, b, r, sf);
+            }
+        }
+
+        // Un boton de fantasia, a juego con el emblema: cristal azul (cielo arriba, hondo abajo, oscuro el chico), marco
+        // de oro doble, una gema en cada punta y un brillo que lo cruza de vez en cuando. Apagado, todo en gris.
+        void BotonFantasia(Graphics g, Rectangle r, int radio, bool activo, bool encima, bool grande)
+        {
+            Color arriba = !activo ? Color.FromArgb(120, 124, 140) : grande ? (encima ? Color.FromArgb(140, 205, 255) : AzulCielo)
+                                                                             : Color.FromArgb(encima ? 230 : 200, 40, 74, 160);
+            Color abajo = !activo ? Color.FromArgb(70, 72, 90) : grande ? (encima ? Color.FromArgb(40, 90, 210) : AzulHondo)
+                                                                         : Color.FromArgb(encima ? 240 : 215, 12, 22, 70);
+            if (activo && grande)
+                Resplandor(g, new RectangleF(r.X - 34, r.Y - 26, r.Width + 68, r.Height + 52),
+                           Color.FromArgb(encima ? 130 : 80, AzulCielo));
+            using (var camino = Redondeado(r, radio))
+            {
+                using (var br = new LinearGradientBrush(r, arriba, abajo, 90f)) g.FillPath(br, camino);
+                // el reflejo de cristal de la mitad de arriba
+                var brillo = new Rectangle(r.X + 3, r.Y + 2, r.Width - 6, r.Height / 2);
+                using (var cb = Redondeado(brillo, Math.Max(4, radio - 3)))
+                using (var br = new LinearGradientBrush(brillo, Color.FromArgb(activo ? 95 : 40, 255, 255, 255),
+                                                        Color.FromArgb(0, 255, 255, 255), 90f))
+                    g.FillPath(br, cb);
+                // un destello que cruza el boton cada pocos segundos
+                if (activo)
+                {
+                    double ciclo = (tiempo * (grande ? 0.35 : 0.25) + (r.X % 97) / 97.0) % 1.0;
+                    if (ciclo < 0.35)
+                    {
+                        float x = r.X - 60 + (float)(ciclo / 0.35) * (r.Width + 120);
+                        var antes = g.Clip;
+                        g.SetClip(camino, CombineMode.Intersect);
+                        using (var franja = new GraphicsPath())
+                        {
+                            franja.AddPolygon(new[] { new PointF(x, r.Bottom), new PointF(x + 24, r.Y),
+                                                      new PointF(x + 46, r.Y), new PointF(x + 22, r.Bottom) });
+                            using (var b = new SolidBrush(Color.FromArgb(70, 255, 255, 255))) g.FillPath(b, franja);
+                        }
+                        g.Clip = antes;
+                    }
+                }
+                // marco de oro: el de fuera grueso y otro fino por dentro
+                using (var br = new LinearGradientBrush(r, activo ? OroClaro : Color.FromArgb(190, 190, 200),
+                                                        activo ? OroOscuro : Color.FromArgb(110, 110, 125), 90f))
+                using (var pen = new Pen(br, grande ? 3f : 2f))
+                    g.DrawPath(pen, camino);
+            }
+            var dentro = Rectangle.Inflate(r, grande ? -6 : -4, grande ? -6 : -4);
+            using (var camino = Redondeado(dentro, Math.Max(3, radio - 5)))
+            using (var pen = new Pen(Color.FromArgb(activo ? 150 : 70, 255, 230, 160), 1f))
+                g.DrawPath(pen, camino);
+            // las gemas de las puntas, como las del emblema
+            float rg = grande ? 9f : 5f;
+            Gema4(g, r.X + (grande ? 2 : 1), r.Y + r.Height / 2f, rg, activo, encima);
+            Gema4(g, r.Right - (grande ? 2 : 1), r.Y + r.Height / 2f, rg, activo, encima);
+        }
+
+        void Gema4(Graphics g, float cx, float cy, float rr, bool activo, bool encima)
+        {
+            var puntas = new[] { new PointF(cx, cy - rr * 1.35f), new PointF(cx + rr, cy), new PointF(cx, cy + rr * 1.35f),
+                                 new PointF(cx - rr, cy) };
+            if (activo)
+                Resplandor(g, new RectangleF(cx - rr * 2.6f, cy - rr * 2.6f, rr * 5.2f, rr * 5.2f),
+                           Color.FromArgb(encima ? 170 : 110, Gema));
+            using (var camino = new GraphicsPath())
+            {
+                camino.AddPolygon(puntas);
+                using (var b = new PathGradientBrush(camino))
+                {
+                    b.CenterColor = activo ? Color.White : Color.FromArgb(220, 220, 230);
+                    b.SurroundColors = new[] { activo ? Gema : Color.FromArgb(150, 150, 165), activo ? Color.FromArgb(40, 110, 230) : Color.FromArgb(110, 110, 125),
+                                               activo ? Color.FromArgb(20, 60, 170) : Color.FromArgb(90, 90, 105), activo ? Gema : Color.FromArgb(150, 150, 165) };
+                    g.FillPath(b, camino);
+                }
+                using (var pen = new Pen(activo ? Oro : Color.FromArgb(170, 170, 180), rr > 6 ? 2f : 1.4f)) g.DrawPath(pen, camino);
+            }
         }
 
         void Barra(Graphics g, string est, double prog, bool fallo)
@@ -470,14 +545,14 @@ namespace AngelsLauncher
                 float x = rBarra.X + (float)((Math.Sin(tiempo * 2.2) + 1) / 2) * (rBarra.Width - ancho);
                 var r = new Rectangle((int)x, rBarra.Y, (int)ancho, rBarra.Height);
                 using (var camino = Redondeado(r, 6))
-                using (var br = new LinearGradientBrush(r, Rosa, Oro, 0f))
+                using (var br = new LinearGradientBrush(r, AzulCielo, Oro, 0f))
                     g.FillPath(br, camino);
             }
             else if (prog > 0)
             {
                 var r = new Rectangle(rBarra.X, rBarra.Y, Math.Max(12, (int)(rBarra.Width * Math.Min(1, prog))), rBarra.Height);
                 using (var camino = Redondeado(r, 6))
-                using (var br = new LinearGradientBrush(new Rectangle(rBarra.X, rBarra.Y, rBarra.Width, rBarra.Height), Rosa, Oro, 0f))
+                using (var br = new LinearGradientBrush(new Rectangle(rBarra.X, rBarra.Y, rBarra.Width, rBarra.Height), AzulCielo, Oro, 0f))
                     g.FillPath(br, camino);
                 using (var f = new Font("Segoe UI", 10, FontStyle.Bold))
                 using (var b = new SolidBrush(Color.White))
