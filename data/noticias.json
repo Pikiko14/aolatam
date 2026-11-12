@@ -1,5 +1,10 @@
 [
   {
+    "fecha": "2026-11-12",
+    "titulo": "New launcher and login screen",
+    "texto": "AngelsLauncher updates itself to version 1.0.5 with a brand new look: the floating sky islands, the new Angels Online Forever emblem and new buttons. Update to 0.0.0.116 to get the same art on the login screen and the new game icon. The agreement window no longer appears: the game goes straight to the login."
+  },
+  {
     "fecha": "2026-11-11",
     "titulo": "Update 0.0.0.115: Abyss Taurus fix",
     "texto": "Please update to version 0.0.0.115 from AngelsLauncher. The Abyss Taurus mount now shows its armored bull look correctly."
