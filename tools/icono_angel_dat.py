@@ -1,5 +1,8 @@
 """Pone el icono del launcher (launcher/icono.ico) en angel.dat, el exe del juego (31/10/2026).
 
+OJO (12/11/2026): con el angel.dat que lleva secciones propias (.aolat*) detras de .rsrc NO sirve: UpdateResource las
+corre y el juego se cierra. Para ese usar tools/icono_angel_dat_en_sitio.py, que cambia los PNG sin mover nada.
+
 angel.dat viene comprimido con UPX: cambiarle el icono asi como viene lo rompe (0xc0000005 al arrancar). Primero se
 descomprime con UPX (https://github.com/upx/upx/releases, upx-4.2.4-win64.zip; no esta en el repo) y despues se
 reemplaza su grupo de iconos (101). Queda de 5,8 MB en vez de 1,7 MB, y probado: el juego entra y se juega igual.

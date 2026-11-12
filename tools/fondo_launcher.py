@@ -4,7 +4,7 @@
 (launcher/arte/cielo.webp) recortada a la proporcion de la ventana (980x580, al doble: el exe la escala) y el emblema
 redondo (launcher/emblema.png, sin el fondo de cuadros que traia pintado) arriba a la izquierda, sobre el arbol. Los
 personajes de la imagen quedan a la izquierda y las noticias, las versiones y JUGAR en una columna a la derecha
-(launcher/Ventana.cs). El icono (launcher/icono.ico) es el emblema en todos los tamanos; tools/icono_angel_dat.py lo
+(launcher/Ventana.cs). El icono (launcher/icono.ico) es el emblema en todos los tamanos; tools/icono_angel_dat_en_sitio.py lo
 pone tambien en angel.dat, el juego, para que se vea en la barra de tareas.
 
     python tools/fondo_launcher.py launcher/arte/cielo.webp launcher/emblema.png launcher/fondo.jpg launcher/icono.ico
