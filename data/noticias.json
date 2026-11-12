@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-11",
+    "titulo": "Update 0.0.0.110: raid puzzles",
+    "texto": "Please update to version 0.0.0.110 from AngelsLauncher. Every raid now has a puzzle before each boss: a barrier of light only falls when you stand on the Light Altars together, bring down the pillars in the order the clues give, defeat the seal guardians or carry the flame to the Fire Altar. Zones are longer, with more packs and patrols, and the raid maps have no minimap or scene map. Each raid has its own banner, and the Raid Guide has a new Puzzles tab."
+  },
+  {
+    "fecha": "2026-11-11",
     "titulo": "Update 0.0.0.109: three new raids",
     "texto": "Please update to version 0.0.0.109 from AngelsLauncher. Three new raids are open in the AOF Raid list: Warring Realm Raid (level 50: Cerberus, Ares and Hades), Wintry Realm Raid (level 40: Ice Giant Hydea, Mighty Leon and Seasonia) and Dragon's Lair Raid (level 30: Blossom Hail, General Rizaburo and Watatsumi). Each one has its own weekly lockout and drops boxes of its level: class S gear, weapons and rare mounts, plus enhancement vouchers and Mount Coins. Check each Raid Guide for the boss mechanics."
   },
