@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-11",
+    "titulo": "Update 0.0.0.115: Abyss Taurus fix",
+    "texto": "Please update to version 0.0.0.115 from AngelsLauncher. The Abyss Taurus mount now shows its armored bull look correctly."
+  },
+  {
+    "fecha": "2026-11-11",
     "titulo": "Update 0.0.0.114: raid ranking and Abyss Taurus",
     "texto": "Please update to version 0.0.0.114 from AngelsLauncher. Each raid now has a Ranking with the fastest clears: it shows the leader, and you can hover a row to see every member. When the last boss falls, a portal to the city opens. If you disconnect, you leave your raid group. New mount: the Abyss Taurus, a level 60 armored bull with top speed. Satrixia in the Flamefang Raid has a 3% chance to drop it."
   },
