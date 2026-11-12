@@ -186,7 +186,7 @@ def boton(estado, texto='') -> Image.Image:
 #   abajo, la leyenda de capacidad en una linea (cuadros 2695..2698 y textos 2691..2694, "Normal"...) y los botones
 #   2532 (Enter) y 2533 (Back) a la derecha.
 # Su interior es el icono 2530 (log/w038_22), sin el tinte del tema.
-CW, CH = 300, 196
+CW, CH = 300, 204                       # 8 px mas: margen sobre los botones ("los botones tengan algo de margin top")
 FILA_CANAL, FILAS_CANAL = 19, 5
 CABECERA_CANAL = (0, 0, CW, 38)
 CANAL_MARCO = (6, 42, CW - 6, 42 + 8 + FILA_CANAL * FILAS_CANAL)            # 6,42 .. 294,145
@@ -195,7 +195,7 @@ CANAL_LISTA = (34, 46, CW - 46, FILA_CANAL * FILAS_CANAL)
 LEYENDA_Y = 152
 LEYENDA = ((2695, 2691, 'Normal'), (2696, 2692, 'Moderate'), (2697, 2693, 'Crowded'), (2698, 2694, 'Full'))
 LEYENDA_X = (10, 80, 158, 236)                                              # donde va cada cuadro
-BOTONES_CANAL = {2532: (CW - 164, 174, 'Enter', 60462), 2533: (CW - 78, 174, 'Back', 60463)}
+BOTONES_CANAL = {2532: (CW - 164, 180, 'Enter', 60462), 2533: (CW - 78, 180, 'Back', 60463)}
 TITULO_CANAL = 'Angels Online Forever'
 # El rango de la ventana: el interior mas lo que pone el marco de WND_CLASS_DLG_1 (como 181x275 -> 189x299).
 RANGO_CANAL = (CW + 8, CH + 24)

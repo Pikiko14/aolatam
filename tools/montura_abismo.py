@@ -45,8 +45,9 @@ EXTRAS = RAIZ / 'parches' / 'extras'
 SEQUENCE = 1914                    # el objeto de char.obd (libre en char*.obd)
 CARPETA = 'h714'                   # su carpeta de sprites (libre en los paks)
 ASPECTO = 1548                     # su <騎乘> en chardef.xml: la lista del cliente trae 1547 y va la siguiente
-ALTURA = -17                       # el 高度 del jinete: al apoyar el toro en el suelo (PIES_BAJO_EL_ANCLA) bajo
-                                   # ~17 px y el jinete quedaba en el aire ("no esta sentado", 12/11/2026)
+ALTURA = 5                         # el 高度 del jinete (negativo lo baja): medido en vertical sobre el ancla, el lomo
+                                   # del toro queda igual o 3-7 px mas alto que el del caballo. Con -17 se hundia en
+                                   # el toro ("parece que estoy en medio de la montura", 12/11/2026).
 ITEM = 83301
 ICONO, ARCHIVO_ICONO = 59301, 'i9301'
 NOMBRE = 'Abyss Taurus'
