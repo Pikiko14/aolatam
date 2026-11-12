@@ -330,3 +330,22 @@ def test_satrixia_puede_soltar_la_abyss_taurus():
     assert 20 < sum(1 for x in salen if x) < 110               # ~3%
     assert not any(dict(raid.premios(1, {}, _r.Random(s), clave='flamefang')).get(83301) for s in range(500))
     assert not any(dict(raid.premios(2, {}, _r.Random(s), clave='wintry')).get(83301) for s in range(500))
+
+
+def test_las_monturas_nuevas_salen_del_jefe_final_al_10_por_ciento():
+    import random as _r
+    for clave, items in (('flamefang', (83302, 83303)), ('warring', (83304, 83305))):
+        for it in items:
+            n = sum(1 for s in range(3000) if dict(raid.premios(2, {}, _r.Random(s), clave=clave)).get(it))
+            assert 220 < n < 380, (clave, it, n)                 # ~10%
+            assert not any(dict(raid.premios(1, {}, _r.Random(s), clave=clave)).get(it) for s in range(300))
+    for clave in ('wintry', 'dragon'):
+        assert not any(i in dict(raid.premios(2, {}, _r.Random(s), clave=clave))
+                       for s in range(300) for i in range(83301, 83306))
+
+
+def test_las_monturas_existen_en_content_db():
+    import sqlite3
+    con = sqlite3.connect(str(RAIZ / 'corpus' / 'content.db'))
+    filas = dict(con.execute('select id, 基本名稱 from item where id between 83301 and 83305').fetchall())
+    assert set(int(k) for k in filas) == {83301, 83302, 83303, 83304, 83305}

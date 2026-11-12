@@ -398861,7 +398861,7 @@ Sprite = Cast, hm013*, #6, hm023*, hm033*
 Sprite = Hurt, hh013*, #4, hh023*, hh023*, @SP_EVENT_ACT_WAIT, SCROVER
 Sprite = Dead, hd013*, #6, hd023*, hd033*, hd043*, hd053*, hd063*, SCROVER
 
-; aolat abyss taurus
+; aolat monturas
 [OBJECT]
 Name = H714 Abyss Taurus
 Sequence = 1914
@@ -398871,4 +398871,40 @@ Sprite = Run, hr013*, #7, !CharSmokeTwo, hr023*, hr033*, hr043*, hr053*, hr063*
 SpriteFile = Wait, 1914_Wait.spr
 SpriteFile = Run, 1914_Run.spr
 
-; /aolat abyss taurus
+[OBJECT]
+Name = H715 Blazemane Lion
+Sequence = 1915
+Directory = \chr\h715\
+Sprite = Wait, hw013*, #12, hw023*, hw033*, hw023*
+Sprite = Run, hr013*, #7, !CharSmokeTwo, hr023*, hr033*, hr043*, hr053*
+SpriteFile = Wait, 1915_Wait.spr
+SpriteFile = Run, 1915_Run.spr
+
+[OBJECT]
+Name = H716 Coral Fortress Turtle
+Sequence = 1916
+Directory = \chr\h716\
+Sprite = Wait, hw013*, #12, hw023*, hw033*, hw023*
+Sprite = Run, hr013*, #7, !CharSmokeTwo, hr023*, hr033*, hr043*, hr053*
+SpriteFile = Wait, 1916_Wait.spr
+SpriteFile = Run, 1916_Run.spr
+
+[OBJECT]
+Name = H717 Frostcrown Ram
+Sequence = 1917
+Directory = \chr\h717\
+Sprite = Wait, hw013*, #12, hw023*, hw033*, hw023*
+Sprite = Run, hr013*, #7, !CharSmokeTwo, hr023*, hr033*, hr043*, hr053*
+SpriteFile = Wait, 1917_Wait.spr
+SpriteFile = Run, 1917_Run.spr
+
+[OBJECT]
+Name = H718 Aurora Stag
+Sequence = 1918
+Directory = \chr\h718\
+Sprite = Wait, hw013*, #12, hw023*, hw033*, hw023*
+Sprite = Run, hr013*, #7, !CharSmokeTwo, hr023*, hr033*, hr043*, hr053*
+SpriteFile = Wait, 1918_Wait.spr
+SpriteFile = Run, 1918_Run.spr
+
+; /aolat monturas

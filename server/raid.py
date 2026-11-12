@@ -60,7 +60,12 @@ CAJA_DE_SKILL = {sid: 89300 + k for sid, k in CLASE_DE_SKILL.items()}   # las de
 CAJA_ARMAS, CAJA_MONTURAS = 89306, 89307
 # La montura de la raid (11/11/2026, la Abyss Taurus de tools/montura_abismo.py, "drop de raid"): la suelta el ultimo
 # jefe de esa raid, con esa probabilidad, a cada jugador que tenga su botin esa semana.
-MONTURA_RAID = {'flamefang': (83301, 0.03)}
+# 12/11/2026, "agregaremos estas 4 monturas como premios en la raid lvl 50 y 60, 2 y 2, que tengan 10% de darla el
+# jefe final": cada una tira por su cuenta (tools/montura_abismo.py).
+MONTURA_RAID = {'flamefang': ((83301, 0.03), (83302, 0.10), (83303, 0.10)),     # Abyss Taurus, Blazemane Lion, Coral
+                'warring': ((83304, 0.10), (83305, 0.10))}                         # Frostcrown Ram, Aurora Stag
+NOMBRES_MONTURA = {83301: 'Abyss Taurus', 83302: 'Blazemane Lion', 83303: 'Coral Fortress Turtle',
+                   83304: 'Frostcrown Ram', 83305: 'Aurora Stag'}
 # por jefe: (vales minimo, maximo), Mount Coins, probabilidad de caja de clase, de armas y de monturas
 BOTIN = (
     ((2, 3), 2, 0.25, 0.10, 0.08),
@@ -225,13 +230,22 @@ def _guia_flamefang():
             'a weapon box and a mount box (class S Lv60 mounts).',
             'The chances grow from boss to boss, and Satrixia',
             'always drops at least one box.',
-            'Satrixia may also drop the Abyss Taurus mount (3%).',
-            'Your class box depends on the weapon you have on.']],
+            'Satrixia mounts: Blazemane Lion and Coral Fortress',
+            'Turtle (10% each), Abyss Taurus (3%).']],
     ]
     for _tab, _titulo, retrato, lineas in paginas:
         for i, l in enumerate(lineas):
             lineas[i] = l.replace('%%', '%')
     return paginas
+
+
+def _lineas_monturas(clave):
+    """Las monturas del jefe final de esa raid (MONTURA_RAID), para la pagina Loot de la guia."""
+    m = MONTURA_RAID.get(clave)
+    if not m:
+        return ['Your class box depends on the weapon you have on.']
+    partes = ['%s (%d%%)' % (NOMBRES_MONTURA.get(i, i), round(p * 100)) for i, p in m]
+    return ['Last boss mounts: ' + partes[0] + ',', 'and ' + ', '.join(partes[1:]) + '.']
 
 
 def _guia_general(d):
@@ -307,7 +321,6 @@ def _guia_general(d):
         ['Loot', 'Loot and weekly lockout', 0, [
             'Each boss gives loot once a week per character.',
             'The lockout resets every Monday at 00:00.',
-            '',
             'Every boss: 2 to 5 Lucky vouchers (Enhanced Pestle,',
             'Ride Feed, Piercing Hammer, Hammer Voucher) and',
             '2 to 5 Mount Coins.',
@@ -317,7 +330,7 @@ def _guia_general(d):
             'a weapon box and a mount box (Lv%d mounts).' % d['nivel'],
             'The chances grow from boss to boss, and the last',
             'boss always drops at least one box.',
-            'Your class box depends on the weapon you have on.']],
+            ] + _lineas_monturas(d['clave'])],
     ]
     for _tab, _titulo, _retrato, lineas in paginas:
         for i, l in enumerate(lineas):
@@ -1251,9 +1264,10 @@ def premios(zona, inventario, rng=random, clave='flamefang'):
         cajas.append(rng.choice([clase or CAJA_ARMAS, CAJA_ARMAS, CAJA_MONTURAS]))
     for k in cajas:
         salen[k] = salen.get(k, 0) + 1
-    montura = MONTURA_RAID.get(clave)
-    if montura and zona >= len(BOTIN) - 1 and rng.random() < montura[1]:
-        salen[montura[0]] = 1
+    if zona >= len(BOTIN) - 1:
+        for item, prob in MONTURA_RAID.get(clave, ()):
+            if rng.random() < prob:
+                salen[item] = 1
     return sorted(salen.items())
 
 
