@@ -97,7 +97,7 @@ local function detalle(i)
   end
   window.settitle(hijo_lista(59683), f[7] or "")
   window.settitle(hijo_lista(59684), f[8] or "")
-  window.settitle(hijo_lista(59673), "Press Open to form or join a raid group.")
+  window.settitle(hijo_lista(59673), "Pick a raid and Open.")     -- corto: a su derecha van Ranking, Guide y Open
 end
 
 function RaidListaAbrir(filas)
@@ -207,6 +207,57 @@ function OnRaidGuiaCerrar(dwID, dwCmdID, dwParam, pParam)
     window.destroy(WND_RAID_GUIA)
   end
   WND_RAID_GUIA = 0
+  return 1
+end
+
+-- ---------------------------------------------------------------------------------------------- el ranking
+-- RaidRanking(titulo, filas, imagen): la ventana 60350 (tools/parche_raid.py). filas {{puesto, lider, tiempo, fecha,
+-- miembros}}, las mas rapidas primero; al pasar el raton por una fila salen todos sus miembros. Lo manda server/raid.py
+-- (netcommand2 171, 33, raid).
+WND_RAID_RANKING = WND_RAID_RANKING or 0
+
+local function hijo_ranking(id)
+  return window.find(WND_RAID_RANKING, id)
+end
+
+function RaidRanking(titulo, filas, imagen)
+  if window.isexist(WND_RAID_RANKING) then
+    window.setforeground(WND_RAID_RANKING)
+  else
+    WND_RAID_RANKING = window.create(60350, 0, 0, SYSTEM_HANDLER)
+    if not window.isexist(WND_RAID_RANKING) then
+      return
+    end
+    window.move(WND_RAID_RANKING, SYSTEM_SCREEN_WIDTH / 2 - 214, SYSTEM_SCREEN_HEIGHT / 2 - 170)
+  end
+  window.settitle(WND_RAID_RANKING, "Raid Ranking")
+  window.seticon(hijo_ranking(60351), 60338 + (imagen or 0))
+  window.settitle(hijo_ranking(60352), titulo)
+  window.show(hijo_ranking(60354), not (filas and filas[1]))
+  for i = 0, 9 do
+    local f = filas and filas[i + 1]
+    window.settitle(hijo_ranking(60360 + i), f and (tostring(f[1]) .. ".  " .. f[2]) or "")
+    window.settitle(hijo_ranking(60370 + i), f and f[3] or "")
+    window.settitle(hijo_ranking(60380 + i), f and f[4] or "")
+    local boton = hijo_ranking(60390 + i)
+    window.show(boton, f ~= nil)
+    if f then
+      window.settooltiptext(boton, "Members: " .. (f[5] or ""))
+    end
+  end
+end
+
+function OnRaidRankingCerrar(dwID, dwCmdID, dwParam, pParam)
+  if window.isexist(WND_RAID_RANKING) then
+    window.destroy(WND_RAID_RANKING)
+  end
+  WND_RAID_RANKING = 0
+  return 1
+end
+
+function OnRaidListaRanking(dwID, dwCmdID, dwParam, pParam)
+  local sel = RAID_LISTA.sel or 1
+  game.netcommand2(CMD_RAID, 33, sel - 1)
   return 1
 end
 

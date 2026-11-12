@@ -245,9 +245,9 @@ def bloque_wnd03() -> str:
     poner(INVITAR, _boton(INVITAR, R_INVITAR[2] + 6, R_INVITAR[1] - 1, 'Invite', 'OnRaidInvitar', w=60))
     poner(GUIA_RAID, _boton(GUIA_RAID, R_INVITAR[2] + 70, R_INVITAR[1] - 1, 'Guide', 'OnRaidGuia', w=60))
     poner(CREAR, _boton(CREAR, 8, fila, 'Create', 'OnRaidCrear', w=60))
-    poner(PARTY, _boton(PARTY, 72, fila, 'Invite party', 'OnRaidParty', w=80))
+    poner(PARTY, _boton(PARTY, 72, fila, 'Invite', 'OnRaidParty', w=80))
     poner(ENTRAR, _boton(ENTRAR, 156, fila, 'Enter', 'OnRaidEntrar', w=60))
-    poner(SALIR_MAPA, _boton(SALIR_MAPA, 220, fila, 'Exit map', 'OnRaidSalirMapa', w=64))
+    poner(SALIR_MAPA, _boton(SALIR_MAPA, 220, fila, 'Exit', 'OnRaidSalirMapa', w=64))
     poner(ACEPTAR, _boton(ACEPTAR, 290, fila, 'Accept', 'OnRaidAceptar', w=74, visible=False))
     poner(NOMBRE, _w('WND_CLASS_EDIT', NOMBRE, R_INVITAR[0] + 4, R_INVITAR[1] + 1, R_INVITAR[2] - R_INVITAR[0] - 8, 14,
                      ' fcolor="103" font="1" tpos="1,0" limit="16"', 'wsVisible="" esVCenter="" wsTab=""'))
@@ -277,7 +277,7 @@ def _guardar(nombre, cambio):
     texto = crudo.decode('utf-8-sig')
     nl = '\r\n' if '\r\n' in texto else '\n'
     texto = texto.replace('\r\n', '\n')
-    for marca in (MARCA, MARCA_PANEL, MARCA_LISTA, MARCA_GUIA):
+    for marca in (MARCA, MARCA_PANEL, MARCA_LISTA, MARCA_GUIA, MARCA_RANKING):
         texto = re.sub(r'[ \t]*<!-- %s -->.*?<!-- /%s -->\r?\n' % (marca, marca), '', texto, flags=re.S)
     texto = re.sub(r'\n[ \t]*<child>(%d|%d)</child>' % (BOTON_BARRA, BOTON_MENU), '', texto)
     texto = cambio(texto).replace('\n', nl)
@@ -567,6 +567,7 @@ def bloque_lista() -> str:
                   'wsVisible="" ssVCenter=""')
     poner(LISTA_ABRIR, _boton(LISTA_ABRIR, LW - 74, LH - 30, 'Open', 'OnRaidListaAbrir', w=66))
     poner(GUIA_LISTA, _boton(GUIA_LISTA, LW - 144, LH - 30, 'Guide', 'OnRaidListaGuia', w=66))
+    poner(RANKING_LISTA, _boton(RANKING_LISTA, LW - 214, LH - 30, 'Ranking', 'OnRaidListaRanking', w=66))
     poner(LISTA_FILAS, _w('WND_CLASS_LIST', LISTA_FILAS, PANEL_IZQ[0] + 4, PANEL_IZQ[1] + 24,
                           PANEL_IZQ[2] - PANEL_IZQ[0] - 8, PANEL_IZQ[3] - PANEL_IZQ[1] - 28,
                           ' cols="1" rows="7" gapx="0" gapy="2" tpos="3,2" fcolor="103" font="1"',
@@ -582,7 +583,7 @@ def bloque_lista() -> str:
         poner(LISTA_JEFES + 1 + k, texto(LISTA_JEFES + 1 + k, X_DETALLE + 6, y + 71 + 15 * k, ancho - 6, 103))
     poner(LISTA_BOTIN, texto(LISTA_BOTIN, X_DETALLE, y + 121, ancho, 510))
     poner(LISTA_BOTIN + 1, texto(LISTA_BOTIN + 1, X_DETALLE, y + 121 + 13, ancho, 510))
-    poner(LISTA_ESTADO, texto(LISTA_ESTADO, 10, LH - 26, LW - 92, 513))
+    poner(LISTA_ESTADO, texto(LISTA_ESTADO, 10, LH - 26, LW - 232, 513))
     poner(BANNER_LISTA, _w('WND_CLASS_BASE', BANNER_LISTA, BANNER[0], BANNER[1], BANNER[2] - BANNER[0], BANNER[3] - BANNER[1], ' icon="%d"' % ICONO_BANNER_LISTA))
     for t in range(N_TEMAS):
         ventanas.append('    <icon id="%d" dir="%swnd01%s" normal="aolat_raid_ban%d" focus="normal" down="normal" '
@@ -599,6 +600,16 @@ def bloque_lista() -> str:
 # (Overview, un jefe cada una, Loot), el titulo de la pagina, 13 lineas y, en las de los jefes, su retrato. El texto lo
 # manda el servidor (server/raid.py guia) y lo pinta RaidGuia de server/lua/raid_menu.lua.
 MARCA_GUIA = 'aolat raid guia'
+MARCA_RANKING = 'aolat raid ranking'
+# EL RANKING (11/11/2026): las 10 raids mas rapidas de cada una (server/raid.py filas_ranking, lua RaidRanking). Mismo
+# ancho que la guia para usar sus banners (ICONO_BANNER_GUIA). Cada fila: puesto y lider, tiempo y fecha, y encima un
+# boton transparente cuyo tooltip lleva a todos los miembros.
+RANKING, KW, KH = 60350, 420, 316
+RANKING_LISTA = 60349                     # el boton "Ranking" de AOF Raids
+K_BANNER, K_TITULO, K_CABECERA, K_VACIO, K_CERRAR, K_FONDO, K_ICONO_FONDO = (60351, 60352, 60353, 60354, 60355,
+                                                                            60356, 60357)
+K_LIDER, K_TIEMPO, K_FECHA, K_CLIC = 60360, 60370, 60380, 60390
+K_TABLA = (4, 74, KW - 4, KH - 32)
 GUIA, GW, GH = 59880, 420, 330
 GUIA_PESTANA, GUIA_TITULO, GUIA_LINEA, GUIA_RETRATO, GUIA_CERRAR = 59881, 59886, 59887, 59900, 59901
 GUIA_FONDO, GUIA_ICONO_FONDO, GUIA_ICONO_RETRATO = 59902, 59903, 59860      # retratos 59861..59863
@@ -735,6 +746,53 @@ def boton_menu(texto):
     return _al_final(boton)(texto)
 
 
+def dibujar_ranking() -> Image.Image:
+    im, d = _lienzo(KW, KH)
+    d.rectangle(G_BANNER, outline=(150, 96, 40, 255))
+    _caja(d, K_TABLA)
+    linea = (90, 54, 26, 255)
+    d.line((K_TABLA[0] + 6, K_TABLA[1] + 22, K_TABLA[2] - 6, K_TABLA[1] + 22), fill=linea)
+    for i in range(1, 10, 2):                                   # franjas alternas
+        y = K_TABLA[1] + 26 + 20 * i
+        d.rectangle((K_TABLA[0] + 4, y - 1, K_TABLA[2] - 4, y + 17), fill=(26, 17, 12, 255))
+    _marco(d, KW, KH)
+    return im
+
+
+def bloque_ranking() -> str:
+    hijos, ventanas = [], []
+
+    def poner(wid, xml):
+        hijos.append(wid)
+        ventanas.append(xml)
+
+    def texto(wid, x, y, w, color=103, titulo=''):
+        return _w('WND_CLASS_STATIC', wid, x, y, w, 14, ' title="%s" fcolor="%d" font="1"' % (titulo, color),
+                  'wsVisible="" ssVCenter=""')
+    for i in range(10):                                         # encima de todo: el raton
+        y = K_TABLA[1] + 26 + 20 * i
+        poner(K_CLIC + i, _w('WND_CLASS_BUTTON', K_CLIC + i, K_TABLA[0] + 4, y - 1, K_TABLA[2] - K_TABLA[0] - 8, 18,
+                             ' appdata="%d"' % i, 'wsVisible="" wsTab=""'))
+    poner(K_CERRAR, _boton(K_CERRAR, KW - 74, KH - 26, 'Close', 'OnRaidRankingCerrar', w=66))
+    poner(K_TITULO, texto(K_TITULO, 10, 56, KW - 20, 514))
+    poner(K_CABECERA, texto(K_CABECERA, K_TABLA[0] + 8, K_TABLA[1] + 5, 200, 510, '#   Leader'))
+    poner(K_CABECERA + 100, texto(K_CABECERA + 100, 250, K_TABLA[1] + 5, 70, 510, 'Time'))
+    poner(K_CABECERA + 101, texto(K_CABECERA + 101, 330, K_TABLA[1] + 5, 70, 510, 'Date'))
+    poner(K_VACIO, texto(K_VACIO, K_TABLA[0] + 12, K_TABLA[1] + 30, 300, 103, 'Nobody has cleared this raid yet.'))
+    for i in range(10):
+        y = K_TABLA[1] + 26 + 20 * i
+        poner(K_LIDER + i, texto(K_LIDER + i, K_TABLA[0] + 8, y, 230, 514 if i == 0 else 103))
+        poner(K_TIEMPO + i, texto(K_TIEMPO + i, 250, y, 70))
+        poner(K_FECHA + i, texto(K_FECHA + i, 330, y, 70))
+    poner(K_BANNER, _w('WND_CLASS_BASE', K_BANNER, G_BANNER[0], G_BANNER[1], G_BANNER[2] - G_BANNER[0],
+                       G_BANNER[3] - G_BANNER[1], ' icon="%d"' % ICONO_BANNER_GUIA))
+    poner(K_FONDO, _w('WND_CLASS_BASE', K_FONDO, 0, 0, KW, KH, ' icon="%d"' % K_ICONO_FONDO))
+    ventanas.append('    <icon id="%d" dir="%swnd01%s" normal="aolat_raid_ranking" focus="normal" down="normal" '
+                    'disable="normal" />\n' % (K_ICONO_FONDO, chr(92), chr(92)))
+    cab = _cabeza_dlg(RANKING, KW, KH, 'Raid Ranking', hijos)
+    return '    <!-- %s -->\n%s%s    <!-- /%s -->\n' % (MARCA_RANKING, cab, ''.join(ventanas), MARCA_RANKING)
+
+
 def main():
     iconos()
     iconos_panel()
@@ -750,7 +808,9 @@ def main():
         for archivo, caja in (('aolat_raid_banr%d', R_BANNER), ('aolat_raid_bang%d', G_BANNER)):
             (SALIDA / ((archivo % t) + '.shp')).write_bytes(
                 a_shp(_banner(caja[2] - caja[0], caja[3] - caja[1], grande=False, tema=t)))
-    _guardar('wnd03.xml', _al_final(bloque_wnd03() + bloque_panel() + bloque_lista() + bloque_guia()))
+    (SALIDA / 'aolat_raid_ranking.shp').write_bytes(a_shp(dibujar_ranking()))
+    _guardar('wnd03.xml', _al_final(bloque_wnd03() + bloque_panel() + bloque_lista() + bloque_guia()
+                                    + bloque_ranking()))
     _guardar('wnd01.xml', lambda t: boton_menu(wnd01(t)))
     print('boton %d, ventana %d (%dx%d), panel %d (%dx%d) e iconos listos' % (BOTON_BARRA, VENTANA, RW, RH, PANEL, PW, PH))
 

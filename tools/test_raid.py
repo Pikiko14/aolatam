@@ -293,3 +293,40 @@ def test_crear_usa_la_raid_elegida():
     s.raid_elegida = 'wintry'
     assert raid.crear(s) is None and raid.raid_de(s)['clave'] == 'wintry'
     _limpiar()
+
+
+# ---------------------------------------------------------------- ajustes del 11/11/2026: desconexion y ranking
+def test_desconectarse_saca_del_grupo_y_pasa_el_liderato():
+    _limpiar()
+    a, b = _ses(1), _ses(2)
+    raid.crear(a)
+    r = raid.raid_de(a)
+    r['miembros'].append(2)
+    r['nombres'][2] = 'P2'
+    raid._DE_QUIEN[2] = r['id']
+    raid._dejar_grupo(a)
+    assert raid.raid_de(a) is None and r['lider'] == 2 and r['miembros'] == [2]
+    raid._dejar_grupo(b)
+    assert r['id'] not in raid._RAIDS
+    _limpiar()
+
+
+def test_el_ranking_guarda_los_mas_rapidos(tmp_path, monkeypatch):
+    monkeypatch.setattr(raid, 'RANKING', tmp_path / 'raid_ranking.json')
+    assert raid.anotar_ranking('wintry', 1500, 'Lento', ['Lento', 'B']) == 1
+    assert raid.anotar_ranking('wintry', 900, 'Rapido', ['Rapido', 'C', 'D']) == 1
+    for k in range(10):
+        raid.anotar_ranking('wintry', 1000 + k, 'L%d' % k, ['L%d' % k])
+    assert raid.anotar_ranking('wintry', 5000, 'Tarde', ['Tarde']) is None
+    filas = raid.filas_ranking('wintry')
+    assert len(filas) == raid.TOP_RANKING and filas[0][1] == 'Rapido' and filas[0][2] == '15:00'
+    assert filas[0][4] == 'Rapido, C, D' and raid.filas_ranking('dragon') == []
+    assert raid._reloj(3725) == '1:02:05'
+
+
+def test_satrixia_puede_soltar_la_abyss_taurus():
+    import random as _r
+    salen = [dict(raid.premios(2, {}, _r.Random(s), clave='flamefang')).get(83301) for s in range(2000)]
+    assert 20 < sum(1 for x in salen if x) < 110               # ~3%
+    assert not any(dict(raid.premios(1, {}, _r.Random(s), clave='flamefang')).get(83301) for s in range(500))
+    assert not any(dict(raid.premios(2, {}, _r.Random(s), clave='wintry')).get(83301) for s in range(500))

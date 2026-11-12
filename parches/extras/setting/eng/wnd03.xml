@@ -8551,7 +8551,7 @@
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnRaidCrear</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="59609" range="72,318,80,18" fcolor="101" font="1" icon="12006" title="Invite party">
+    <window class="WND_CLASS_BUTTON" id="59609" range="72,318,80,18" fcolor="101" font="1" icon="12006" title="Invite">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnRaidParty</OnCommand>
     </window>
@@ -8559,7 +8559,7 @@
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnRaidEntrar</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="59611" range="220,318,64,18" fcolor="101" font="1" icon="12006" title="Exit map">
+    <window class="WND_CLASS_BUTTON" id="59611" range="220,318,64,18" fcolor="101" font="1" icon="12006" title="Exit">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnRaidSalirMapa</OnCommand>
     </window>
@@ -9628,6 +9628,7 @@
         <style wsVisible="" wsMoveable="" />
         <child>59672</child>
         <child>59685</child>
+        <child>60349</child>
         <child>59671</child>
         <child>59676</child>
         <child>59677</child>
@@ -9649,6 +9650,10 @@
     <window class="WND_CLASS_BUTTON" id="59685" range="256,274,66,18" fcolor="101" font="1" icon="12006" title="Guide">
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnRaidListaGuia</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="60349" range="186,274,66,18" fcolor="101" font="1" icon="12006" title="Ranking">
+        <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
+        <OnCommand>OnRaidListaRanking</OnCommand>
     </window>
     <window class="WND_CLASS_LIST" id="59671" range="8,138,120,128" cols="1" rows="7" gapx="0" gapy="2" tpos="3,2" fcolor="103" font="1">
         <style wsVisible="" lsVCenter="" lsReport="" wsTab="" />
@@ -9681,7 +9686,7 @@
     <window class="WND_CLASS_STATIC" id="59684" range="146,253,242,14" title="" fcolor="510" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="59673" range="10,278,308,14" title="" fcolor="513" font="1">
+    <window class="WND_CLASS_STATIC" id="59673" range="10,278,168,14" title="" fcolor="513" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
     <window class="WND_CLASS_BASE" id="60320" range="4,4,392,104" icon="60330">
@@ -9823,4 +9828,203 @@
     <icon id="60308" dir="\wnd01\" normal="aolat_raid_jefe11" focus="normal" down="normal" disable="normal" />
     <icon id="60309" dir="\wnd01\" normal="aolat_raid_jefe12" focus="normal" down="normal" disable="normal" />
     <!-- /aolat raid guia -->
+    <!-- aolat raid ranking -->
+    <window class="WND_CLASS_DLG_1" range="0,0,428,340" id="60350" title="Raid Ranking" fcolor="104" font="1">
+        <style wsVisible="" wsMoveable="" />
+        <child>60390</child>
+        <child>60391</child>
+        <child>60392</child>
+        <child>60393</child>
+        <child>60394</child>
+        <child>60395</child>
+        <child>60396</child>
+        <child>60397</child>
+        <child>60398</child>
+        <child>60399</child>
+        <child>60355</child>
+        <child>60352</child>
+        <child>60353</child>
+        <child>60453</child>
+        <child>60454</child>
+        <child>60354</child>
+        <child>60360</child>
+        <child>60370</child>
+        <child>60380</child>
+        <child>60361</child>
+        <child>60371</child>
+        <child>60381</child>
+        <child>60362</child>
+        <child>60372</child>
+        <child>60382</child>
+        <child>60363</child>
+        <child>60373</child>
+        <child>60383</child>
+        <child>60364</child>
+        <child>60374</child>
+        <child>60384</child>
+        <child>60365</child>
+        <child>60375</child>
+        <child>60385</child>
+        <child>60366</child>
+        <child>60376</child>
+        <child>60386</child>
+        <child>60367</child>
+        <child>60377</child>
+        <child>60387</child>
+        <child>60368</child>
+        <child>60378</child>
+        <child>60388</child>
+        <child>60369</child>
+        <child>60379</child>
+        <child>60389</child>
+        <child>60351</child>
+        <child>60356</child>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="60390" range="8,99,404,18" appdata="0">
+        <style wsVisible="" wsTab="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="60391" range="8,119,404,18" appdata="1">
+        <style wsVisible="" wsTab="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="60392" range="8,139,404,18" appdata="2">
+        <style wsVisible="" wsTab="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="60393" range="8,159,404,18" appdata="3">
+        <style wsVisible="" wsTab="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="60394" range="8,179,404,18" appdata="4">
+        <style wsVisible="" wsTab="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="60395" range="8,199,404,18" appdata="5">
+        <style wsVisible="" wsTab="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="60396" range="8,219,404,18" appdata="6">
+        <style wsVisible="" wsTab="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="60397" range="8,239,404,18" appdata="7">
+        <style wsVisible="" wsTab="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="60398" range="8,259,404,18" appdata="8">
+        <style wsVisible="" wsTab="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="60399" range="8,279,404,18" appdata="9">
+        <style wsVisible="" wsTab="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="60355" range="346,290,66,18" fcolor="101" font="1" icon="12006" title="Close">
+        <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
+        <OnCommand>OnRaidRankingCerrar</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="60352" range="10,56,400,14" title="" fcolor="514" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60353" range="12,79,200,14" title="#   Leader" fcolor="510" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60453" range="250,79,70,14" title="Time" fcolor="510" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60454" range="330,79,70,14" title="Date" fcolor="510" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60354" range="16,104,300,14" title="Nobody has cleared this raid yet." fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60360" range="12,100,230,14" title="" fcolor="514" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60370" range="250,100,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60380" range="330,100,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60361" range="12,120,230,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60371" range="250,120,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60381" range="330,120,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60362" range="12,140,230,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60372" range="250,140,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60382" range="330,140,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60363" range="12,160,230,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60373" range="250,160,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60383" range="330,160,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60364" range="12,180,230,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60374" range="250,180,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60384" range="330,180,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60365" range="12,200,230,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60375" range="250,200,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60385" range="330,200,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60366" range="12,220,230,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60376" range="250,220,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60386" range="330,220,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60367" range="12,240,230,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60377" range="250,240,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60387" range="330,240,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60368" range="12,260,230,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60378" range="250,260,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60388" range="330,260,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60369" range="12,280,230,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60379" range="250,280,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="60389" range="330,280,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BASE" id="60351" range="4,4,412,48" icon="60338">
+        <style wsVisible="" />
+    </window>
+    <window class="WND_CLASS_BASE" id="60356" range="0,0,420,316" icon="60357">
+        <style wsVisible="" />
+    </window>
+    <icon id="60357" dir="\wnd01\" normal="aolat_raid_ranking" focus="normal" down="normal" disable="normal" />
+    <!-- /aolat raid ranking -->
 </root>

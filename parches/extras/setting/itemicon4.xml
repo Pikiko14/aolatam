@@ -11329,4 +11329,7 @@
 						<!-- aolat abismo -->
 	<icon id="59300" dir="\item\" normal="i9300" focus="normal" down="normal" disable="normal"/>
 	<!-- /aolat abismo -->
+				<!-- aolat abyss taurus -->
+	<icon id="59301" dir="\item\" normal="i9301" focus="normal" down="normal" disable="normal"/>
+	<!-- /aolat abyss taurus -->
 </root>

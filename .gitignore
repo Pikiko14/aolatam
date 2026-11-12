@@ -73,3 +73,5 @@ tools/editor_mapas/dcdump/
 tools/editor_mapas/__pycache__/
 data/subastas.db
 data/subastas.db-*
+data/raid_ranking.json
+data/raid_ranking.tmp

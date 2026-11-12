@@ -110,20 +110,23 @@ def _tlhs(im, ox, oy, q, k):
     return cab + bytes(tabla) + bytes(tb) + bytes(pix)
 
 
-def escribir(frames, anim: str, k: int = 10466) -> bytes:
+def escribir(frames, anim: str, k: int = 10466, prefijo: str = '') -> bytes:
     """frames: [(imagen RGBA, (ox, oy))] en el orden del juego (pose*5 + direccion)."""
     n = len(frames)
     pal, q = paleta_de([(im, o, None) for im, o in frames])
-    letra = LETRAS[anim]
+    letra = prefijo + LETRAS[anim]          # 'h' en las monturas: hw013.SHP, hr013.SHP (char.obd)
     tlhs = [_tlhs(im, ox, oy, q, k) for im, (ox, oy) in frames]
     off_pal = 80 + 12 * n
     off_nom = off_pal + 512
-    off_t = off_nom + 9 * n
-    cab = struct.pack('<4s7I', b'EWSP', 768, n, 80, off_pal, off_nom, 9 * n, 0).ljust(80, b'\0')
+    # Cada nombre con su cero al final: 9 bytes en los monstruos (w013.SHP) y 10 en las monturas (hw013.SHP, como el
+    # 1201_Wait.spr del caballo). Con 9 los de montura iban pegados sin el cero y el cliente se cerraba (11/11/2026).
+    hueco = len(letra) + 8
+    off_t = off_nom + hueco * n
+    cab = struct.pack('<4s7I', b'EWSP', 768, n, 80, off_pal, off_nom, hueco * n, 0).ljust(80, b'\0')
     tabla = bytearray()
     pos = off_t
     for i, t in enumerate(tlhs):
-        tabla += struct.pack('<3I', off_nom + 9 * i, pos, len(t))
+        tabla += struct.pack('<3I', off_nom + hueco * i, pos, len(t))
         pos += len(t)
     paleta = bytearray(struct.pack('<H', 0))
     for r, g, b in pal:
@@ -132,5 +135,5 @@ def escribir(frames, anim: str, k: int = 10466) -> bytes:
     nombres = bytearray()
     for i in range(n):
         pose, dirn = divmod(i, 5)
-        nombres += ('%s0%d%d.SHP' % (letra, pose + 1, dirn + 3)).encode('latin-1').ljust(9, b'\0')
+        nombres += ('%s0%d%d.SHP' % (letra, pose + 1, dirn + 3)).encode('latin-1').ljust(hueco, b'\0')
     return bytes(cab) + bytes(tabla) + paleta + bytes(nombres) + b''.join(tlhs)

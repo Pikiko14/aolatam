@@ -58,6 +58,9 @@ MOUNT_COIN = 89073
 CLASE_DE_SKILL = {9: 0, 10: 1, 11: 2, 17: 3, 8: 4, 30: 5}   # arma -> clase (orden de generar_lucky_bags.CLASES)
 CAJA_DE_SKILL = {sid: 89300 + k for sid, k in CLASE_DE_SKILL.items()}   # las de la Flamefang
 CAJA_ARMAS, CAJA_MONTURAS = 89306, 89307
+# La montura de la raid (11/11/2026, la Abyss Taurus de tools/montura_abismo.py, "drop de raid"): la suelta el ultimo
+# jefe de esa raid, con esa probabilidad, a cada jugador que tenga su botin esa semana.
+MONTURA_RAID = {'flamefang': (83301, 0.03)}
 # por jefe: (vales minimo, maximo), Mount Coins, probabilidad de caja de clase, de armas y de monturas
 BOTIN = (
     ((2, 3), 2, 0.25, 0.10, 0.08),
@@ -213,7 +216,6 @@ def _guia_flamefang():
         ['Loot', 'Loot and weekly lockout', 0, [
             'Each boss gives loot once a week per character.',
             'The lockout resets every Monday at 00:00.',
-            '',
             'Every boss: 2 to 5 Lucky vouchers (Enhanced Pestle,',
             'Ride Feed, Piercing Hammer, Hammer Voucher) and',
             '2 to 5 Mount Coins.',
@@ -223,6 +225,7 @@ def _guia_flamefang():
             'a weapon box and a mount box (class S Lv60 mounts).',
             'The chances grow from boss to boss, and Satrixia',
             'always drops at least one box.',
+            'Satrixia may also drop the Abyss Taurus mount (3%).',
             'Your class box depends on the weapon you have on.']],
     ]
     for _tab, _titulo, retrato, lineas in paginas:
@@ -747,15 +750,89 @@ def _jefe_muerto(ses, r, c, m):
     c['zona'] = zona_idx + 1
     if c['zona'] >= len(_datos(r)['zonas']):
         segundos = int(time.time() - c['inicio'])
-        _cartel(r, 'The %s is complete! Total time %d:%02d. Leave from the raid window.'
-                % ((_def(r)['nombre'],) + divmod(segundos, 60)))
+        _cartel(r, 'The %s is complete! Total time %s.' % (_def(r)['nombre'], _reloj(segundos)))
         log.info('raid %d completa en %ds: %s', r['id'], segundos, ', '.join(r['nombres'].values()))
+        try:
+            puesto = anotar_ranking(_def(r)['clave'], segundos, r['nombres'].get(r['lider'], '?'),
+                                    [r['nombres'][cid] for cid in r['miembros'] if cid in r['nombres']])
+            if puesto:
+                _cartel(r, 'New record! Your raid is #%d in the %s ranking.' % (puesto, _def(r)['nombre']))
+        except Exception:
+            log.exception('raid: ranking')
+        _portal_final(ses, r, m)
         return
     _cartel(r, 'A portal opens to %s in %d seconds...' % (_datos(r)['zonas'][c['zona']]['nombre'], int(PAUSA_PORTAL)))
     try:
         asyncio.get_event_loop().call_later(PAUSA_PORTAL, _siguiente_zona, r, c)
     except RuntimeError:
         _siguiente_zona(r, c)
+
+
+MINUTOS_PORTAL_FINAL = 5
+
+
+def _portal_final(ses, r, m):
+    """11/11/2026, "al matar el ultimo jefe salga un teleport a la ciudad": un portal donde cayo, a SALIDA."""
+    import eventos_propios
+    gente = _en_la_copia(r) or [ses]
+    sala = eventos_propios.sala_de(gente[0])
+    eid = eventos_propios.abrir_portal(_stage(r), (m.tile_x, m.tile_y), SALIDA[0], SALIDA[1],
+                                       MINUTOS_PORTAL_FINAL * 60, sala=sala)
+    pk = eventos_propios.paquete_portal(eid)
+    for s in gente:
+        try:
+            (getattr(s, 'enviar_sin_espejo', None) or s.enviar)(pk)
+        except Exception:
+            pass
+    _cartel(r, 'A portal to the city opens where %s fell (%d minutes).' % (m.nombre, MINUTOS_PORTAL_FINAL))
+
+
+def _reloj(segundos):
+    h, resto = divmod(int(segundos), 3600)
+    return ('%d:%02d:%02d' % ((h,) + divmod(resto, 60))) if h else '%d:%02d' % divmod(resto, 60)
+
+
+# EL RANKING (11/11/2026: "un ranking por raid donde salgan las personas que las han completado mas rapidas, salga el
+# leader de la party y al pasar el mouse salgan todos los miembros"): los TOP_RANKING tiempos de cada raid en
+# data/raid_ranking.json ({clave: [{segundos, lider, miembros, fecha}]}), la ventana 60350 (tools/parche_raid.py).
+TOP_RANKING = 10
+RANKING = pathlib.Path(__file__).resolve().parent.parent / 'data' / 'raid_ranking.json'
+
+
+def ranking(clave):
+    try:
+        return list(json.loads(RANKING.read_text(encoding='utf-8')).get(clave) or [])
+    except (OSError, ValueError):
+        return []
+
+
+def anotar_ranking(clave, segundos, lider, miembros, ahora=None):
+    """Anota una raid completada; devuelve su puesto (1..TOP_RANKING) o None si no entra."""
+    try:
+        todo = json.loads(RANKING.read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        todo = {}
+    fila = {'segundos': int(segundos), 'lider': lider, 'miembros': list(miembros),
+            'fecha': datetime.date.fromtimestamp(ahora or time.time()).isoformat()}
+    lista = sorted((todo.get(clave) or []) + [fila], key=lambda f: f['segundos'])[:TOP_RANKING]
+    if fila not in lista:
+        return None
+    todo[clave] = lista
+    RANKING.parent.mkdir(parents=True, exist_ok=True)
+    tmp = RANKING.with_suffix('.tmp')
+    tmp.write_text(json.dumps(todo, ensure_ascii=False, indent=1), encoding='utf-8')
+    tmp.replace(RANKING)
+    return lista.index(fila) + 1
+
+
+def filas_ranking(clave):
+    """[[puesto, lider, tiempo, fecha, miembros separados por comas]] para RaidRanking (lua/raid_menu.lua)."""
+    salida = []
+    for i, f in enumerate(ranking(clave)):
+        d = f.get('fecha', '')
+        salida.append([i + 1, f.get('lider', '?'), _reloj(f.get('segundos', 0)),
+                       '%s/%s' % (d[8:10], d[5:7]) if len(d) >= 10 else d, ', '.join(f.get('miembros') or [])])
+    return salida
 
 
 def _siguiente_zona(r, c):
@@ -806,6 +883,30 @@ def antes_de_viajar(ses, stage_destino):
 
 def al_desconectar(ses):
     antes_de_viajar(ses, 0)
+    _dejar_grupo(ses)
+
+
+def _dejar_grupo(ses):
+    """11/11/2026, "si me desconecto y vuelvo a entrar me saque de la raid porque en teoria estoy sin team": al
+    desconectarse sale del grupo (el liderato pasa al siguiente). Al volver ya no tiene raid y, si aparece en su mapa,
+    al_entrar lo saca a la ciudad."""
+    r = raid_de(ses)
+    if not r:
+        return
+    cid = _cid(ses)
+    if cid in r['miembros']:
+        r['miembros'].remove(cid)
+    r['nombres'].pop(cid, None)
+    _DE_QUIEN.pop(cid, None)
+    _INVITACIONES.pop(cid, None)
+    log.info('%s se desconecta y sale de la raid %d', _nombre(ses), r['id'])
+    if not r['miembros']:
+        _deshacer(r)
+        return
+    if r['lider'] == cid:
+        r['lider'] = r['miembros'][0]
+    _a_todos(r, '%s disconnected and left the raid.' % _nombre(ses))
+    _refrescar_ventanas(r)
 
 
 # ------------------------------------------------------------------------------------------------------- mecanicas
@@ -1150,6 +1251,9 @@ def premios(zona, inventario, rng=random, clave='flamefang'):
         cajas.append(rng.choice([clase or CAJA_ARMAS, CAJA_ARMAS, CAJA_MONTURAS]))
     for k in cajas:
         salen[k] = salen.get(k, 0) + 1
+    montura = MONTURA_RAID.get(clave)
+    if montura and zona >= len(BOTIN) - 1 and rng.random() < montura[1]:
+        salen[montura[0]] = 1
     return sorted(salen.items())
 
 
@@ -1335,7 +1439,7 @@ def _buscar(nombre):
 
 def procesar(ses, cuerpo, addr='?', sesiones=None) -> bool:
     """c2s 0x002F [u8 171][u32 a][u32 b]:
-        a=30 abrir el listado AOF Raids; 31 abrir la raid b del listado (CATALOGO); 32 su guia;
+        a=30 abrir el listado AOF Raids; 31 abrir la raid b del listado (CATALOGO); 32 su guia; 33 su ranking;
         a=9 sacar de la raid al char_id b; 10 hacerle lider (el menu de clic derecho del panel);
         a=1 abrir la ventana; 2 crear; 3 salir de la raid; 4 invitar a mi party; 5 entrar al mapa;
         6 aceptar la invitacion (b = id de la raid); 7 invitar al nombre escrito; 8 salir del mapa;
@@ -1369,6 +1473,15 @@ def procesar(ses, cuerpo, addr='?', sesiones=None) -> bool:
                 aviso = 'You are in a %s group: leave it to join another raid.' % _def(r)['nombre']
             ses.enviar(*abrir(ses, aviso))
             _abrir_panel(ses)
+        return True
+    if a == 33:
+        if int(b) == 99:
+            b = indice(_elegida(ses))
+        if 0 <= int(b) < len(CATALOGO):
+            d = CATALOGO[int(b)]
+            ses.enviar(canal_lua.paquete(SALUDO_LUA),
+                       canal_lua.llamar('RaidRanking', '%s - fastest clears' % d['nombre'], filas_ranking(d['clave']),
+                                        int(b)))
         return True
     if 20 <= a <= 23:
         _NOMBRE_ESCRITO.setdefault(_cid(ses), {})[a - 20] = struct.pack('<I', b)
