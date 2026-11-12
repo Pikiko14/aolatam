@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-12",
+    "titulo": "Update 0.0.0.131: four new raid mounts",
+    "texto": "Please update to version 0.0.0.131 from AngelsLauncher. Four new mounts can drop from raid final bosses, 10% each: Satrixia in the Flamefang Raid drops the Blazemane Lion and the Coral Fortress Turtle (level 60), and Hades in the Warring Realm Raid drops the Frostcrown Ram and the Aurora Stag (level 50). The Abyss Taurus now stands still while idle and its rider sits right on its back."
+  },
+  {
+    "fecha": "2026-11-12",
     "titulo": "Update 0.0.0.124: login, channels and Abyss Taurus",
     "texto": "Please update to version 0.0.0.124 from AngelsLauncher. The login window has more room and a visible Save box for your account, the channel window has a new design centered under the emblem and shows the channel you pick, and the Abyss Taurus now stands on the ground with its rider seated on its back."
   },
