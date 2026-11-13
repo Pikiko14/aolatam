@@ -117,7 +117,8 @@ MEDIDOR = (
 )
 
 # La Torre de Babel (server/torre_babel.py, server/lua/torre.lua): texto, pestanas Solo/Party, el ranking (11 filas:
-# la cabecera y el top 10) y el boton de entrar con su rotulo.
+# la cabecera y el top 10) y el boton de entrar con su rotulo. Ya no se pone: desde el 13/11/2026 la ventana es la de
+# tools/ventana_torre.py (ver generar).
 TORRE_ID = 59020
 TORRE = (
     '<window class="WND_CLASS_DLG_1" range="0,0,300,270" id="59020" title="Tower of Babel" fcolor="104" font="1">',
@@ -249,9 +250,9 @@ def generar(texto: str) -> str:
     if 'id="%d"' % MEDIDOR_ID not in salida:
         m = re.search(r'[ \t]*<window [^>]*\bid="3501"[^>]*>[\s\S]*?</window>', salida)
         salida = salida[:m.end()] + ''.join(nl + sangria + linea for linea in MEDIDOR) + salida[m.end():]
-    if 'id="%d"' % TORRE_ID not in salida:
-        m = re.search(r'[ \t]*<window [^>]*\bid="3501"[^>]*>[\s\S]*?</window>', salida)
-        salida = salida[:m.end()] + ''.join(nl + sangria + linea for linea in TORRE) + salida[m.end():]
+    # La Torre de Babel: la ventana moderna de tools/ventana_torre.py (13/11/2026), que sustituye a TORRE.
+    import ventana_torre
+    salida = ventana_torre.wnd03(salida)
     # La pestana ELEGIDA con el color del tema: el game no trae un icono asi (el 2734 solo lo pone al pulsar), y se
     # define aqui con la imagen de pulsado y el atributo de tema.
     if '<icon id="%d"' % ICONO_PESTANA_ELEGIDA not in salida:

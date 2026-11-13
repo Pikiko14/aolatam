@@ -371,3 +371,24 @@ def test_los_jefes_no_se_repiten():
     pisos = tb.pisos()
     assert len(pisos) == 60
     assert len({p['nombre'] for p in pisos}) == 60 and len({p['npc_type'] for p in pisos}) == 60
+
+
+def test_la_ventana_moderna_tiene_su_fondo_detras_y_los_ids_del_lua():
+    """La ventana de tools/ventana_torre.py (13/11/2026): el fondo propio es la ULTIMA hija (el juego pinta de la
+    ultima a la primera), se puede poner dos veces sin repetirse y todo lo que usa torre.lua existe."""
+    import re
+    sys.path.insert(0, str(RAIZ / 'tools'))
+    import ventana_torre as vt
+    vieja = ('<root>\n    <window class="WND_CLASS_DLG_1" range="0,0,300,270" id="59020" title="x">\n'
+             '        <child>59021</child>\n    </window>\n    <window class="WND_CLASS_STATIC" id="59021" '
+             'range="0,0,1,1">\n        <style wsVisible="" />\n    </window>\n</root>\n')
+    una = vt.wnd03(vieja)
+    assert vt.wnd03(una) == una and una.count('id="59020"') == 1 and una.count('id="59021"') == 1
+    hijos = [int(h) for h in re.findall(r'<child>(\d+)</child>', una)]
+    assert hijos[-1] == vt.FONDO and hijos[:vt.N_FILAS] == [vt.CLIC + i for i in range(vt.N_FILAS)]
+    lua = (RAIZ / 'server' / 'lua' / 'torre.lua').read_text(encoding='utf-8')
+    definidos = {int(i) for i in re.findall(r'<(?:window|icon) [^>]*\bid="(\d+)"', una)}
+    usados = {int(n) for n in re.findall(r'\b(59\d{3}|6\d{4})\b', lua) if int(n) != 59020}
+    usados |= {n + i for n in (vt.PUESTO, vt.NOMBRES, vt.NPISOS, vt.TIEMPO, vt.CLIC) for i in range(vt.N_FILAS)}
+    assert usados <= definidos, sorted(usados - definidos)
+    assert set(vt.piezas()) >= {'aolat_torre_fondo', 'aolat_torre_entrar_n', 'aolat_torre_salir_s'}

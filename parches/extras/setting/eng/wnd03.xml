@@ -2306,40 +2306,6 @@
     <icon id="59030" dir="\log\" normal="btn140_d" focus="normal" down="normal" disable="normal">
         <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />
     </icon>
-    <window class="WND_CLASS_DLG_1" range="0,0,300,270" id="59020" title="Tower of Babel" fcolor="104" font="1">
-        <style wsVisible="" wsMoveable="" />
-        <child>59021</child>
-        <child>59022</child>
-        <child>59023</child>
-        <child>59024</child>
-        <child>59025</child>
-        <child>59026</child>
-        <child>59027</child>
-    </window>
-    <window class="WND_CLASS_STATIC" id="59021" range="8,4,284,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_BUTTON" id="59022" range="8,22,32,17" title="Solo" fcolor="103" font="1" icon="59030">
-        <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
-        <OnCommand>OnTorreSolo</OnCommand>
-    </window>
-    <window class="WND_CLASS_BUTTON" id="59023" range="44,22,32,17" title="Party" fcolor="103" font="1" icon="2734">
-        <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
-        <OnCommand>OnTorreParty</OnCommand>
-    </window>
-    <window class="WND_CLASS_LIST" id="59024" range="6,42,288,190" cols="3" rows="11" gapx="2" gapy="1" tpos="1,1" fcolor="103" font="1">
-        <style wsVisible="" lsVCenter="" lsReport="" />
-    </window>
-    <window class="WND_CLASS_BUTTON" id="59025" range="266,240,26,18" icon="1154" tooltip="10040" tooltext="Enter the Tower of Babel">
-        <style wsVisible="" wsTab="" />
-        <OnCommand>OnTorreEntrar</OnCommand>
-    </window>
-    <window class="WND_CLASS_STATIC" id="59026" range="8,224,284,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="59027" range="170,242,92,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" ssRight="" />
-    </window>
     <window class="WND_CLASS_DLG_1" range="0,0,236,196" id="59010" title="Damage" fcolor="104" font="1">
         <style wsVisible="" wsMoveable="" />
         <child>59011</child>
@@ -10027,4 +9993,259 @@
     </window>
     <icon id="60357" dir="\wnd01\" normal="aolat_raid_ranking" focus="normal" down="normal" disable="normal" />
     <!-- /aolat raid ranking -->
+    <!-- aolat torre ventana -->
+    <color id="61070" normal="125,211,252" focus="125,211,252" down="125,211,252" disable="125,211,252"/>
+    <color id="61071" normal="148,163,184" focus="148,163,184" down="148,163,184" disable="148,163,184"/>
+    <color id="61072" normal="214,140,72" focus="214,140,72" down="214,140,72" disable="214,140,72"/>
+    <window class="WND_CLASS_DLG_1" range="0,0,348,370" id="59020" title="Tower of Babel" fcolor="104" font="1">
+        <style wsVisible="" wsMoveable="" />
+        <child>61050</child>
+        <child>61051</child>
+        <child>61052</child>
+        <child>61053</child>
+        <child>61054</child>
+        <child>61055</child>
+        <child>61056</child>
+        <child>61057</child>
+        <child>61058</child>
+        <child>61059</child>
+        <child>59022</child>
+        <child>59023</child>
+        <child>59025</child>
+        <child>59021</child>
+        <child>59028</child>
+        <child>59024</child>
+        <child>59027</child>
+        <child>59026</child>
+        <child>61010</child>
+        <child>61020</child>
+        <child>61030</child>
+        <child>61040</child>
+        <child>61011</child>
+        <child>61021</child>
+        <child>61031</child>
+        <child>61041</child>
+        <child>61012</child>
+        <child>61022</child>
+        <child>61032</child>
+        <child>61042</child>
+        <child>61013</child>
+        <child>61023</child>
+        <child>61033</child>
+        <child>61043</child>
+        <child>61014</child>
+        <child>61024</child>
+        <child>61034</child>
+        <child>61044</child>
+        <child>61015</child>
+        <child>61025</child>
+        <child>61035</child>
+        <child>61045</child>
+        <child>61016</child>
+        <child>61026</child>
+        <child>61036</child>
+        <child>61046</child>
+        <child>61017</child>
+        <child>61027</child>
+        <child>61037</child>
+        <child>61047</child>
+        <child>61018</child>
+        <child>61028</child>
+        <child>61038</child>
+        <child>61048</child>
+        <child>61019</child>
+        <child>61029</child>
+        <child>61039</child>
+        <child>61049</child>
+        <child>61001</child>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61050" range="9,163,322,14" appdata="0">
+        <style wsTab="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61051" range="9,177,322,14" appdata="1">
+        <style wsTab="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61052" range="9,191,322,14" appdata="2">
+        <style wsTab="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61053" range="9,205,322,14" appdata="3">
+        <style wsTab="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61054" range="9,219,322,14" appdata="4">
+        <style wsTab="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61055" range="9,233,322,14" appdata="5">
+        <style wsTab="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61056" range="9,247,322,14" appdata="6">
+        <style wsTab="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61057" range="9,261,322,14" appdata="7">
+        <style wsTab="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61058" range="9,275,322,14" appdata="8">
+        <style wsTab="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61059" range="9,289,322,14" appdata="9">
+        <style wsTab="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59022" range="8,76,96,22" title="" fcolor="103" font="1" icon="61063">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnTorreSolo</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59023" range="106,76,96,22" title="" fcolor="103" font="1" icon="61064">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnTorreParty</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59025" range="236,312,96,26" title="" icon="61066" tooltip="10040" tooltext="Enter the Tower of Babel">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnTorreEntrar</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="59021" range="14,42,200,14" title="" fcolor="61070" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59028" range="10,105,320,14" title="" fcolor="61071" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59024" range="12,130,220,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59027" range="12,206,316,14" title="No climbs yet. Be the first!" fcolor="61071" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59026" range="10,318,218,14" title="" fcolor="513" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61010" range="12,164,22,14" title="" fcolor="514" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61020" range="36,164,176,14" title="" fcolor="514" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61030" range="218,164,48,14" title="" fcolor="61070" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61040" range="274,164,56,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61011" range="12,178,22,14" title="" fcolor="510" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61021" range="36,178,176,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61031" range="218,178,48,14" title="" fcolor="61070" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61041" range="274,178,56,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61012" range="12,192,22,14" title="" fcolor="61072" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61022" range="36,192,176,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61032" range="218,192,48,14" title="" fcolor="61070" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61042" range="274,192,56,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61013" range="12,206,22,14" title="" fcolor="61071" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61023" range="36,206,176,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61033" range="218,206,48,14" title="" fcolor="61070" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61043" range="274,206,56,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61014" range="12,220,22,14" title="" fcolor="61071" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61024" range="36,220,176,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61034" range="218,220,48,14" title="" fcolor="61070" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61044" range="274,220,56,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61015" range="12,234,22,14" title="" fcolor="61071" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61025" range="36,234,176,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61035" range="218,234,48,14" title="" fcolor="61070" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61045" range="274,234,56,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61016" range="12,248,22,14" title="" fcolor="61071" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61026" range="36,248,176,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61036" range="218,248,48,14" title="" fcolor="61070" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61046" range="274,248,56,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61017" range="12,262,22,14" title="" fcolor="61071" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61027" range="36,262,176,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61037" range="218,262,48,14" title="" fcolor="61070" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61047" range="274,262,56,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61018" range="12,276,22,14" title="" fcolor="61071" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61028" range="36,276,176,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61038" range="218,276,48,14" title="" fcolor="61070" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61048" range="274,276,56,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61019" range="12,290,22,14" title="" fcolor="61071" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61029" range="36,290,176,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61039" range="218,290,48,14" title="" fcolor="61070" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61049" range="274,290,56,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BASE" id="61001" range="0,0,340,346" icon="61060">
+        <style wsVisible="" />
+    </window>
+    <icon id="61060" dir="\wnd01\" normal="aolat_torre_fondo" focus="normal" down="normal" disable="normal" />
+    <icon id="61062" dir="\wnd01\" normal="aolat_torre_solo_n" focus="aolat_torre_solo_f" down="aolat_torre_solo_s" disable="normal" />
+    <icon id="61063" dir="\wnd01\" normal="aolat_torre_solo_s" focus="aolat_torre_solo_s" down="aolat_torre_solo_s" disable="normal" />
+    <icon id="61064" dir="\wnd01\" normal="aolat_torre_party_n" focus="aolat_torre_party_f" down="aolat_torre_party_s" disable="normal" />
+    <icon id="61065" dir="\wnd01\" normal="aolat_torre_party_s" focus="aolat_torre_party_s" down="aolat_torre_party_s" disable="normal" />
+    <icon id="61066" dir="\wnd01\" normal="aolat_torre_entrar_n" focus="aolat_torre_entrar_f" down="aolat_torre_entrar_s" disable="normal" />
+    <icon id="61067" dir="\wnd01\" normal="aolat_torre_unirse_n" focus="aolat_torre_unirse_f" down="aolat_torre_unirse_s" disable="normal" />
+    <icon id="61068" dir="\wnd01\" normal="aolat_torre_salir_n" focus="aolat_torre_salir_f" down="aolat_torre_salir_s" disable="normal" />
+    <!-- /aolat torre ventana -->
 </root>
