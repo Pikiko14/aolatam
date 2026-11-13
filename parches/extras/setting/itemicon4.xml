@@ -11332,7 +11332,7 @@
 																	<!-- aolat icono gacha -->
 	<icon id="59310" dir="\item\" normal="i9310" focus="normal" down="normal" disable="normal"/>
 	<!-- /aolat icono gacha -->
-									<!-- aolat monturas -->
+												<!-- aolat monturas -->
 	<icon id="59301" dir="\item\" normal="i9301" focus="normal" down="normal" disable="normal"/>
 	<icon id="59302" dir="\item\" normal="i9302" focus="normal" down="normal" disable="normal"/>
 	<icon id="59303" dir="\item\" normal="i9303" focus="normal" down="normal" disable="normal"/>

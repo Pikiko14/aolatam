@@ -398899,11 +398899,11 @@ SpriteFile = Wait, 1917_Wait.spr
 SpriteFile = Run, 1917_Run.spr
 
 [OBJECT]
-Name = H718 Aurora Stag
+Name = H718 Celestial Lion
 Sequence = 1918
 Directory = \chr\h718\
 Sprite = Wait, hw013*, #12, hw023*, hw033*, hw023*
-Sprite = Run, hr013*, #7, !CharSmokeTwo, hr023*, hr033*, hr043*, hr053*
+Sprite = Run, hr013*, #7, !CharSmokeTwo, hr023*, hr033*, hr043*, hr053*, hr063*
 SpriteFile = Wait, 1918_Wait.spr
 SpriteFile = Run, 1918_Run.spr
 

@@ -577,6 +577,43 @@ def _asegurar_bak(ruta: pathlib.Path) -> pathlib.Path:
     return bak
 
 
+def _monturas_reemplazadas() -> dict:
+    """{item: {atributo: valor}} de server/plantillas/monturas_reemplazadas.json (tools/montura_abismo.py): monturas
+    del juego con otro aspecto y otros datos (el Celestial Draco con el leon celestial, 13/11/2026)."""
+    try:
+        return json.loads((pathlib.Path(__file__).parent / 'plantillas' / 'monturas_reemplazadas.json')
+                          .read_text(encoding='utf-8'))
+    except Exception:
+        return {}
+
+
+def _parchear_monturas_reemplazadas_xml_bytes(xml_bytes: bytes) -> bytes:
+    """Reescribe en un item*.xml los atributos de las monturas de _monturas_reemplazadas."""
+    datos = _monturas_reemplazadas()
+    if not datos:
+        return xml_bytes
+    txt = xml_bytes.decode('utf-8', errors='ignore')
+    cambio = False
+    for iid, attrs in datos.items():
+        m = re.search(r'<道具 編號="%s"[^>]*/>' % iid, txt)
+        if not m:
+            continue
+        fila = m.group(0)
+        for k, v in attrs.items():
+            if v is None:                       # quitar ese atributo (los bonos del original)
+                fila = re.sub(r'\s%s="[^"]*"' % re.escape(k), '', fila, count=1)
+                continue
+            v = str(v).replace('"', "'")
+            if re.search(r'\s%s="[^"]*"' % re.escape(k), fila):
+                fila = re.sub(r'(\s%s=)"[^"]*"' % re.escape(k), lambda mm: '%s"%s"' % (mm.group(1), v), fila, count=1)
+            else:
+                fila = fila[:-2].rstrip() + ' %s="%s" />' % (k, v)
+        if fila != m.group(0):
+            txt = txt[:m.start()] + fila + txt[m.end():]
+            cambio = True
+    return txt.encode('utf-8') if cambio else xml_bytes
+
+
 def _parchear_item9_xml_bytes(xml_bytes: bytes) -> bytes:
     """Inserta en item9.xml los items propios que falten (83266 Rank Promotion Medal y la
     caja de nivel 55 de Dark Cavern)."""
@@ -1253,6 +1290,7 @@ def aplicar_modo_estacion(modo: str = None) -> str:
         raw_item = _parchear_venta_por_nivel_xml_bytes(raw_item)
         raw_item = _parchear_descripciones_xml_bytes(raw_item)
         raw_item = _parchear_apilables_xml_bytes(raw_item, apilables)
+        raw_item = _parchear_monturas_reemplazadas_xml_bytes(raw_item)
         if pak_item == pak26:
             reemplazos[ruta_pak] = raw_item
         else:

@@ -63,9 +63,9 @@ CAJA_ARMAS, CAJA_MONTURAS = 89306, 89307
 # 12/11/2026, "agregaremos estas 4 monturas como premios en la raid lvl 50 y 60, 2 y 2, que tengan 10% de darla el
 # jefe final": cada una tira por su cuenta (tools/montura_abismo.py).
 MONTURA_RAID = {'flamefang': ((83301, 0.03), (83302, 0.10), (83303, 0.10)),     # Abyss Taurus, Blazemane Lion, Coral
-                'warring': ((83304, 0.10), (83305, 0.10))}                         # Frostcrown Ram, Aurora Stag
+                'warring': ((83304, 0.10), (83305, 0.10))}                         # Frostcrown Ram, Celestial Lion
 NOMBRES_MONTURA = {83301: 'Abyss Taurus', 83302: 'Blazemane Lion', 83303: 'Coral Fortress Turtle',
-                   83304: 'Frostcrown Ram', 83305: 'Aurora Stag'}
+                   83304: 'Frostcrown Ram', 83305: 'Celestial Lion'}
 # por jefe: (vales minimo, maximo), Mount Coins, probabilidad de caja de clase, de armas y de monturas
 BOTIN = (
     ((2, 3), 2, 0.25, 0.10, 0.08),

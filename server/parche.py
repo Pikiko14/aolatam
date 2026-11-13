@@ -34,7 +34,9 @@ ESTADO = 'version.json'
 VERSION_BASE = '0.0.0'
 VERSION_INICIAL = 0
 # Archivos que se quitan A PROPOSITO del parche (si no, generar() los arrastra del parche anterior): 'SETTING\ENG\X.XML'.
-QUITAR_DEL_PARCHE = frozenset()
+# 13/11/2026: los sprites e icono del Celestial Draco que al final no fue (el leon celestial es el ciervo, 83305).
+QUITAR_DEL_PARCHE = frozenset({r'SHAPE\CHR\H720\1920_RUN.SPR', r'SHAPE\CHR\H720\1920_WAIT.SPR',
+                               r'SHAPE\ITEM\I9307.SHP'})
 
 # Campos fijos de cada entrada del directorio, copiados de update26.pak.
 _FIRMA_ENTRADA = 0x0201444F      # 'OD\x01\x02'

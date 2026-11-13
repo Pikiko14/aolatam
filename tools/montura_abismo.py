@@ -82,10 +82,15 @@ MONTURAS = [
          altura=0, stats=S50, hoja='carnero/hoja.png', descarga='carnero', tipo='ocho',
          filas=((9, 10), (7, 8), (5, 6), (3, 4), (1, 2)), espejo=(False,) * 5,
          descripcion='A ram crowned with ice from the Warring Realm.'),
-    dict(clave='stag', nombre='Aurora Stag', item=83305, icono=59305, sequence=1918, carpeta='h718', nivel=50,
-         altura=-14, stats=S50, hoja='ciervo/hoja.png', descarga='ciervo', tipo='ocho',
-         filas=((9, 9), (7, 7), (5, 6), (3, 4), (1, 2)), espejo=(False,) * 5,
-         descripcion='A stag whose antlers shine like the aurora.'),
+    # 13/11/2026, "cambialo por esta montura ... me referia al ciervo que agregamos ayer": el Aurora Stag (83305) pasa
+    # a ser el Celestial Lion, con la hoja del leon celestial (6 fotogramas, como el Undead Lion King); mismo objeto,
+    # mismas stats y mismo drop (Hades, 10%). La hoja del ciervo queda en ciervo/hoja.png.
+    dict(clave='stag', nombre='Celestial Lion', item=83305, icono=59305, sequence=1918, carpeta='h718', nivel=50,
+         altura=0, stats=S50, hoja='leon_celestial/hoja.png', descarga='leon_celestial', tipo='ocho',
+         filas=((9, 10), (7, 8), (5, 6), (3, 4), (1, 2)), espejo=(False,) * 5,
+         escala_dir=(0.88, 1, 1, 1, 0.88), espera_fija=True, cuadricula=(6, 10), carrera=6, carrera_por_cuerpo=True,
+         descripcion='A celestial lion crowned with a golden halo, said to guard the gates of heaven. Hades of the '
+                     'Warring Realm keeps it chained.'),
     # 13/11/2026: no la suelta ninguna raid; se canjea por 1000 Mount Coin en Event Overview > Exchange > Ride and
     # Robots (exchange.xml, receta 19261 del grupo 538). nivel = sus stats (70); nivel_uso = el que pide (60).
     dict(clave='lionking', nombre='Undead Lion King', item=83306, icono=59306, sequence=1919, carpeta='h719', nivel=70,
@@ -243,12 +248,68 @@ def _tam(im) -> float:
     return float(np.sqrt((np.array(im.getchannel('A')) > 40).sum()))
 
 
+def _grupos(valores, k):
+    """Indices de k grupos de valores 1D, partiendo por los k-1 huecos mas grandes."""
+    orden = sorted(range(len(valores)), key=lambda i: valores[i])
+    huecos = sorted(range(1, len(orden)), key=lambda n: valores[orden[n]] - valores[orden[n - 1]])[-(k - 1):]
+    grupo, g = {}, 0
+    for n, i in enumerate(orden):
+        if n in huecos:
+            g += 1
+        grupo[i] = g
+    return grupo
+
+
 def filas_rejilla_exacta(m):
-    """Hojas en cuadricula (m['cuadricula'] = (columnas, filas)): [fila] -> [imagenes]. Cada mancha va a la celda de su
-    centro (como celdas_rejilla del toro): cortar por el borde de la celda partia los sprites que se salen de ella y
-    colaba la corona del fotograma de abajo (la hoja de 6 del leon). Fuera las motas sueltas."""
+    """Hojas de m['cuadricula'] = (columnas, filas) sprites: [fila] -> [imagenes]. Los centros de filas y columnas salen
+    de los sprites sueltos (por los huecos mas grandes entre sus centros); cada mancha va entera a la casilla de su
+    centro, y las que juntan dos sprites que se tocan se parten por el borde entre casillas. Cortar por celdas iguales
+    o agrupar por altura fallaba en las hojas cuyos sprites no van centrados en celdas iguales."""
+    from scipy import ndimage
+    im = _sin_fondo(_hoja(m))
     columnas, nfilas = m['cuadricula']
-    return [[im for im, _xy in fila] for fila in celdas_rejilla(m, nfilas, columnas)]
+    mascara = im[:, :, 3] > 20
+    etiquetas, n = ndimage.label(mascara, structure=np.ones((3, 3)))
+    tam = np.array(ndimage.sum(mascara, etiquetas, range(1, n + 1)))
+    centros = ndimage.center_of_mass(mascara, etiquetas, range(1, n + 1))
+    grandes = [i for i in range(n) if tam[i] >= 500]
+    mediana = float(np.median([tam[i] for i in grandes]))
+    sueltos = [i for i in grandes if tam[i] < 1.6 * mediana]
+
+    def centros_de(valores, k):
+        g = _grupos(valores, k)
+        return sorted(float(np.mean([v for i, v in enumerate(valores) if g[i] == q])) for q in range(k))
+    cy = centros_de([centros[i][0] for i in sueltos], nfilas)
+    cx = centros_de([centros[i][1] for i in sueltos], columnas)
+    corte_y = [(a + b) / 2 for a, b in zip(cy, cy[1:])]
+    corte_x = [(a + b) / 2 for a, b in zip(cx, cx[1:])]
+    casilla = np.zeros(mascara.shape + (2,), int)
+    casilla[:, :, 0] = np.searchsorted(corte_y, np.arange(mascara.shape[0]))[:, None]
+    casilla[:, :, 1] = np.searchsorted(corte_x, np.arange(mascara.shape[1]))[None, :]
+    duena = np.full(mascara.shape, -1)
+    for i in range(n):
+        if tam[i] < 15:
+            continue
+        sitio = etiquetas == i + 1
+        if tam[i] >= 1.6 * mediana:                      # dos sprites pegados: cada pixel a su casilla
+            duena[sitio] = casilla[sitio][:, 0] * columnas + casilla[sitio][:, 1]
+        else:
+            f = int(np.searchsorted(corte_y, centros[i][0]))
+            c = int(np.searchsorted(corte_x, centros[i][1]))
+            duena[sitio] = f * columnas + c
+    tabla = []
+    for f in range(nfilas):
+        fila = []
+        for c in range(columnas):
+            mm = duena == f * columnas + c
+            ys, xs = np.where(mm)
+            if not len(ys):
+                raise SystemExit('la casilla %d,%d de la hoja esta vacia' % (f + 1, c + 1))
+            trozo = im[ys.min():ys.max() + 1, xs.min():xs.max() + 1].copy()
+            trozo[~mm[ys.min():ys.max() + 1, xs.min():xs.max() + 1]] = 0
+            fila.append(Image.fromarray(trozo, 'RGBA'))
+        tabla.append(fila)
+    return tabla
 
 
 def frames_ocho(m):
@@ -440,6 +501,26 @@ def fila_item(m) -> str:
                                               stats, m['descripcion']))
 
 
+REEMPLAZADAS = RAIZ / 'server' / 'plantillas' / 'monturas_reemplazadas.json'
+
+
+def _atributos(m) -> dict:
+    """Lo que cambia en la fila del objeto del juego que reemplaza (los mismos atributos que fila_item)."""
+    d = {'原型介面': str(m['icono']), '原型外觀': str(aspecto(m)), '物品等級': str(m['nivel']),
+         '等級限制': str(m.get('nivel_uso', m['nivel'])), '說明定義': m['descripcion']}
+    d.update({k: str(v) for k, v in m['stats'].items()})
+    d.update({k: None for k in m.get('quitar', ())})          # None: fuera ese atributo
+    return d
+
+
+def reemplazadas_json():
+    """{item: {atributo: valor}} de las monturas que reescriben un objeto del juego (cliente_local las aplica a
+    item*.xml del cliente y del parche)."""
+    import json
+    datos = {str(m['item']): _atributos(m) for m in MONTURAS if m.get('reemplaza')}
+    REEMPLAZADAS.write_text(json.dumps(datos, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
+
+
 def content_db(ruta):
     """Los objetos en la tabla item de content.db: copias de la Flame Eagle (5128) con lo suyo."""
     con = sqlite3.connect(ruta)
@@ -447,7 +528,20 @@ def content_db(ruta):
     base = dict(zip(cols, con.execute("select * from item where id='5128'").fetchone()))
     nombres = {'平均攻擊': ('atk_avg', 'atk'), '防禦': ('def',), '魔攻': ('matk',), '魔防': ('mdef',),
                '精準': ('accuracy',), '靈敏': ('agility',)}
-    for m in MONTURAS:
+    for m in [x for x in MONTURAS if x.get('reemplaza')]:
+        cambios = dict(_atributos(m))
+        cambios['move_speed'] = str(m['stats']['移動速度'])
+        cambios.update({'hp': None, 'mp': None} if m.get('quitar') else {})
+        for k, v in m['stats'].items():
+            for col in nombres.get(k, ()):
+                cambios[col] = str(v)
+        for tabla in [r[0] for r in con.execute("select name from sqlite_master where type='table' and name like 'item%'")]:
+            cols_t = [c[1] for c in con.execute('pragma table_info(%s)' % tabla)]
+            puestos = {k: v for k, v in cambios.items() if k in cols_t}
+            if puestos:
+                con.execute('update %s set %s where id=?' % (tabla, ', '.join('"%s"=?' % k for k in puestos)),
+                            list(puestos.values()) + [str(m['item'])])
+    for m in [x for x in MONTURAS if not x.get('reemplaza')]:
         fila = dict(base)
         fila.update({'id': str(m['item']), '原型介面': str(m['icono']), '原型外觀': str(aspecto(m)),
                      '基本名稱': m['nombre'], '原型名稱': None, 'move_speed': str(m['stats']['移動速度'])})
@@ -519,7 +613,8 @@ def main():
     chardef_xml(alturas)
     _xml_con(r'setting\itemicon4.xml', ['<icon id="%d" dir="\\item\\" normal="i%d" focus="normal" down="normal" '
                                         'disable="normal"/>' % (m['icono'], m['icono'] - 50000) for m in MONTURAS])
-    _xml_con(r'setting\eng\item.xml', [fila_item(m) for m in MONTURAS])
+    _xml_con(r'setting\eng\item.xml', [fila_item(m) for m in MONTURAS if not m.get('reemplaza')])
+    reemplazadas_json()
     exchange_xml()
     content_db(RAIZ / 'corpus' / 'content.db')
 

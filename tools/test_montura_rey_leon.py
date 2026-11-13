@@ -32,3 +32,17 @@ def test_se_canjea_por_1000_mount_coin():
     from house_services import xml_rows
     assert str(xml_rows('exchange.xml')[19261]['群組']) == '538'
     assert app._obtener_receta_exchange(19261) == {'id': 19261, 'materiales': [(89073, 1000)], 'premios': [(LEON, 1)]}
+
+
+def test_el_ciervo_es_el_leon_celestial():
+    # 13/11/2026: el Aurora Stag (83305) pasa a ser el Celestial Lion con la hoja del leon celestial; el Celestial Draco
+    # del juego (65659) se queda como estaba.
+    import json
+    import raid
+    m = next(x for x in mb.MONTURAS if x['item'] == 83305)
+    assert m['nombre'] == 'Celestial Lion' and m['hoja'] == 'leon_celestial/hoja.png' and m['carrera'] == 6
+    assert raid.NOMBRES_MONTURA[83305] == 'Celestial Lion' and (83305, 0.10) in raid.MONTURA_RAID['warring']
+    assert all(i != 65659 for i, _p in raid.MONTURA_RAID['flamefang'])
+    assert not any(x['item'] == 65659 for x in mb.MONTURAS)
+    datos = json.loads((RAIZ / 'server' / 'plantillas' / 'monturas_reemplazadas.json').read_text(encoding='utf-8'))
+    assert '65659' not in datos
