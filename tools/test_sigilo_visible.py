@@ -1,5 +1,6 @@
 """Sneak vuelve transparente al asesino: 0x0185 con el bit 潛行 (0x40 de la palabra alta), a el y a los demas del mapa;
-romperlo o caducar lo quita, y quien llega despues tambien lo recibe (07/11/2026: "el sneak no me vuelve invisible")."""
+romperlo o caducar lo quita, y quien llega despues tambien lo recibe (07/11/2026: "el sneak no me vuelve invisible").
+Y solo al acabar sus 3 s de casteo (13/11/2026)."""
 import pathlib
 import struct
 import sys
@@ -29,8 +30,8 @@ def _sigilos(paquetes):
 
 def test_sneak_manda_el_bit_y_romperlo_lo_quita(monkeypatch):
     pend = []
-    monkeypatch.setattr(app.asyncio, 'get_event_loop', lambda: NS(call_later=lambda t, f: pend.append(f),
-                                                              call_soon=lambda f: pend.append(f)))
+    monkeypatch.setattr(app.asyncio, 'get_event_loop', lambda: NS(call_later=lambda t, f: pend.append((t, f)),
+                                                              call_soon=lambda f: pend.append((0, f))))
     monkeypatch.setattr(app, '_otorgar_skill_exp', lambda *a, **kw: [])
     monkeypatch.setattr(app, '_stats_ses', lambda *a: b'')
     monkeypatch.setattr(app, '_receptores_de_buff', lambda *a: ([], True))
@@ -41,6 +42,12 @@ def test_sneak_manda_el_bit_y_romperlo_lo_quita(monkeypatch):
     a._mapa_presencia = b._mapa_presencia = 41
     srv = app.Servidor.__new__(app.Servidor)
     srv.manejar(a, 0x0006, None, None, 't', struct.pack('<HI', SNEAK, a.personaje.entity_id))
+    # 13/11/2026, "el sneak me vuelve invisible de una vez, debe esperar 3 seg": nada hasta acabar el casteo
+    assert not app._sigilo_activo(a)
+    assert not _sigilos(a_ve) and not _sigilos(b_ve)
+    assert pend and min(t for t, _f in pend) >= 2.9
+    for _t, f in list(pend):
+        f()
     assert app._sigilo_activo(a)
     assert (a.personaje.entity_id, 0, 0x40) in _sigilos(a_ve)                  # el, con su id
     assert (presencia.entidad_de(a), 0, 0x40) in _sigilos(b_ve)               # los demas, con el publico

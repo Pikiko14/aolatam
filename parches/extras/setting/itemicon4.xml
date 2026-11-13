@@ -11336,4 +11336,7 @@
 	<icon id="59304" dir="\item\" normal="i9304" focus="normal" down="normal" disable="normal"/>
 	<icon id="59305" dir="\item\" normal="i9305" focus="normal" down="normal" disable="normal"/>
 	<!-- /aolat monturas -->
+		<!-- aolat icono gacha -->
+	<icon id="59310" dir="\item\" normal="i9310" focus="normal" down="normal" disable="normal"/>
+	<!-- /aolat icono gacha -->
 </root>

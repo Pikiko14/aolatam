@@ -379,7 +379,7 @@ def bolsa_de_monturas(items, lo, hi):
 # se venden en el Item Mall. Si a un hueco le falta una version, su parte se reparte entre las que hay.
 NIVELES_GACHA = (10, 20, 30, 40, 50, 60)
 ID_GACHA = 89150
-ICONO_GACHA = 5172                  # el de la Summer Wear Gachapon (63839)
+ICONO_GACHA = 59310                 # la capsula roja (tools/icono_gacha.py)
 REPARTO_GACHA = ((None, 91.2), ('藍', 8.0), ('黃', 0.8))       # normal, Quality, la mejor
 ARMAS_GACHA = ('劍', '刀', '斧', '錘', '槍', '弓箭', '彈弓', '杖', '影刃')
 ARMADURAS_GACHA = (('Light', '32'), ('Heavy', '33'), ('Robe', '34'))

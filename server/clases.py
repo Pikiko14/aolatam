@@ -594,7 +594,7 @@ def regalo(ids):
     # Clases de productor: reciben el Freshman Cask, el ride robot basico (ranura montura 10)
     # 14 es Assassin (class.xml), no un productor: le daban el robot de montura al elegirla (07/11/2026).
     CLASES_PROD = {10, 11, 12, 13, 15, 19, 20}
-    if any(i in SKILLS_PRODUCCION for i in skill_ids) or class_id(skill_ids) in CLASES_PROD:
+    if any(i in SKILLS_OFICIO for i in skill_ids) or class_id(skill_ids) in CLASES_PROD:
         salida.append((10, CASK_PRODUCTOR))
 
     return salida
@@ -1140,7 +1140,13 @@ CAJAS_MAGO = [1952, 1953, 1955]
 CAJAS_ARQUERO = [1944, 1945, 1947]
 GROWTH_BOX = 20103
 SKILLS_ARQUERO = {17, 18, 19}          # arco y punteria
-SKILLS_PRODUCCION = set(range(20, 32))  # recoleccion y oficios
+# Recoleccion y oficios: 20..29 y Cook (31). El 30 es ShadowBlade, el arma del Assassin: con range(20, 32) el
+# asesino contaba como productor y le daban el FreshmanCask ("sigue dando ese robot al seleccionar asesino", 13/11/2026).
+SKILLS_PRODUCCION = set(range(20, 30)) | {31}
+# Los oficios y los robots (Mechanism, Drive, Weapon, Armor, Sew, Technics, Cook): los que dan el FreshmanCask. La
+# recoleccion (Collect, Fishing, Dig, Lumber) sola no: la llevan tambien clases de combate como el Assassin, y las
+# de solo recoleccion (Miner 19, Producer 20) ya lo reciben por su clase.
+SKILLS_OFICIO = {24, 25, 26, 27, 28, 29, 31}
 
 
 def cajas_de(ids):
@@ -1162,7 +1168,7 @@ def premio_final(ids):
     skill_ids = [s[0] if isinstance(s, (list, tuple)) else int(s) for s in (ids or [])]
     # 14 es Assassin (class.xml), no un productor: le daban el robot de montura al elegirla (07/11/2026).
     CLASES_PROD = {10, 11, 12, 13, 15, 19, 20}
-    if any(i in SKILLS_PRODUCCION for i in skill_ids) or class_id(skill_ids) in CLASES_PROD:
+    if any(i in SKILLS_OFICIO for i in skill_ids) or class_id(skill_ids) in CLASES_PROD:
         salida.append((10, CASK_PRODUCTOR))
     # Sin cajas: ni la Lv 1-10 Growth Box ("que no me de mas esto") ni las de clase, Newborn, Newbie y Risk Gift Box
     # ("quitas estos box tambien"), 03/11/2026. Quedan los zapatos, los guantes y la herramienta del productor.

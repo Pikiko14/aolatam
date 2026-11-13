@@ -231,6 +231,14 @@ class TestProducers(unittest.TestCase):
         swordsman_premio = dict(clases.premio_final([9, 14, 12, 13, 15, 16]))
         self.assertNotIn(10, swordsman_premio)
 
+    def test_assassin_no_robot(self):
+        # 13/11/2026, "sigue dando ese robot al seleccionar asesino": las del Assassin del cliente (ShadowBlade, Grapple,
+        # Reserve, Avatar, Assault, Mantle y la recoleccion Collect/Fishing/Dig) no son de productor
+        asesino = [30, 13, 15, 35, 36, 32, 20, 21, 22]
+        self.assertEqual(clases.class_id(asesino), 14)
+        self.assertNotIn(584, [item for _slot, item in clases.regalo(asesino)])
+        self.assertNotIn(10, dict(clases.premio_final(asesino)))
+
     def test_tutorial_quit_option_5011_warps_to_lyceum(self):
         import dialogos
         # Character in Guide Palace (51), talks to Raphael (19) and selects "Yes." to quit tutorial

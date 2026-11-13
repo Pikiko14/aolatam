@@ -5747,7 +5747,7 @@
   "nivel": 10,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 10,
    "tipo": "weapon"
@@ -5868,7 +5868,7 @@
   "nivel": 10,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 10,
    "tipo": "cape"
@@ -5909,7 +5909,7 @@
   "nivel": 10,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 10,
    "tipo": "accessory"
@@ -5965,7 +5965,7 @@
   "nivel": 10,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 10,
    "tipo": "armor_light"
@@ -6041,7 +6041,7 @@
   "nivel": 10,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 10,
    "tipo": "armor_heavy"
@@ -6117,7 +6117,7 @@
   "nivel": 10,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 10,
    "tipo": "armor_robe"
@@ -6193,7 +6193,7 @@
   "nivel": 10,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 10,
    "tipo": "gem"
@@ -6299,7 +6299,7 @@
   "nivel": 20,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 20,
    "tipo": "weapon"
@@ -6425,7 +6425,7 @@
   "nivel": 20,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 20,
    "tipo": "cape"
@@ -6466,7 +6466,7 @@
   "nivel": 20,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 20,
    "tipo": "accessory"
@@ -6517,7 +6517,7 @@
   "nivel": 20,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 20,
    "tipo": "armor_light"
@@ -6593,7 +6593,7 @@
   "nivel": 20,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 20,
    "tipo": "armor_heavy"
@@ -6669,7 +6669,7 @@
   "nivel": 20,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 20,
    "tipo": "armor_robe"
@@ -6745,7 +6745,7 @@
   "nivel": 20,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 20,
    "tipo": "gem"
@@ -6851,7 +6851,7 @@
   "nivel": 30,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 30,
    "tipo": "weapon"
@@ -6957,7 +6957,7 @@
   "nivel": 30,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 30,
    "tipo": "cape"
@@ -7013,7 +7013,7 @@
   "nivel": 30,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 30,
    "tipo": "accessory"
@@ -7064,7 +7064,7 @@
   "nivel": 30,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 30,
    "tipo": "armor_light"
@@ -7140,7 +7140,7 @@
   "nivel": 30,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 30,
    "tipo": "armor_heavy"
@@ -7216,7 +7216,7 @@
   "nivel": 30,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 30,
    "tipo": "armor_robe"
@@ -7292,7 +7292,7 @@
   "nivel": 30,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 30,
    "tipo": "gem"
@@ -7398,7 +7398,7 @@
   "nivel": 40,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 40,
    "tipo": "weapon"
@@ -7519,7 +7519,7 @@
   "nivel": 40,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 40,
    "tipo": "cape"
@@ -7570,7 +7570,7 @@
   "nivel": 40,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 40,
    "tipo": "accessory"
@@ -7621,7 +7621,7 @@
   "nivel": 40,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 40,
    "tipo": "armor_light"
@@ -7697,7 +7697,7 @@
   "nivel": 40,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 40,
    "tipo": "armor_heavy"
@@ -7773,7 +7773,7 @@
   "nivel": 40,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 40,
    "tipo": "armor_robe"
@@ -7849,7 +7849,7 @@
   "nivel": 40,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 40,
    "tipo": "gem"
@@ -7955,7 +7955,7 @@
   "nivel": 50,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 50,
    "tipo": "weapon"
@@ -8061,7 +8061,7 @@
   "nivel": 50,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 50,
    "tipo": "cape"
@@ -8102,7 +8102,7 @@
   "nivel": 50,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 50,
    "tipo": "accessory"
@@ -8143,7 +8143,7 @@
   "nivel": 50,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 50,
    "tipo": "armor_light"
@@ -8219,7 +8219,7 @@
   "nivel": 50,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 50,
    "tipo": "armor_heavy"
@@ -8295,7 +8295,7 @@
   "nivel": 50,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 50,
    "tipo": "armor_robe"
@@ -8371,7 +8371,7 @@
   "nivel": 50,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 50,
    "tipo": "gem"
@@ -8477,7 +8477,7 @@
   "nivel": 60,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 60,
    "tipo": "weapon"
@@ -8613,7 +8613,7 @@
   "nivel": 60,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 60,
    "tipo": "cape"
@@ -8659,7 +8659,7 @@
   "nivel": 60,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 60,
    "tipo": "accessory"
@@ -8705,7 +8705,7 @@
   "nivel": 60,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 60,
    "tipo": "armor_light"
@@ -8781,7 +8781,7 @@
   "nivel": 60,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 60,
    "tipo": "armor_heavy"
@@ -8857,7 +8857,7 @@
   "nivel": 60,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 60,
    "tipo": "armor_robe"
@@ -8933,7 +8933,7 @@
   "nivel": 60,
   "pestana": null,
   "cantidades": true,
-  "icono": 5172,
+  "icono": 59310,
   "gacha": {
    "nivel": 60,
    "tipo": "gem"

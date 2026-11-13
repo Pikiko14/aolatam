@@ -390,7 +390,9 @@ def calcular_class_id(skill_ids) -> int:
     if 28 in ids:  return 12  # Tailor
     if 31 in ids:  return 15  # Chef
     if 29 in ids:  return 13  # Technician (Craft)
-    if 30 in ids and not (tiene_arma or tiene_magia): return 14  # Alchemist
+    # ShadowBlade (30) es el Assassin (14 en class.xml). Mantle (32, armadura ligera) va en tiene_arma, pero el asesino
+    # tambien la lleva: contandola, el asesino caia en Miner (19) por Dig y recibia el robot (13/11/2026).
+    if 30 in ids and not (ids & {9, 10, 11} or tiene_magia): return 14  # Assassin
 
     # Clases hibridas (magia + armas/arco)
     if tiene_magia and tiene_arco:

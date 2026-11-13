@@ -16417,6 +16417,10 @@ class Servidor:
                             ses.enviar_inmediato(*pkgs_buff)
 
                         _ret_buff = max(0.14, min(1.0, cast_time / 1000.0))
+                        if mag.get('sigilo'):
+                            # Sneak tarda su casteo entero (3 s) en hacer efecto; el tope de 1 s de los demas buffs
+                            # lo dejaba casi instantaneo ("el sneak me vuelve invisible de una vez", 13/11/2026).
+                            _ret_buff = max(0.14, cast_time / 1000.0)
                         asyncio.get_event_loop().call_later(_ret_buff, _fin_buff)
 
                         if getattr(ses, 'usuario', None):
@@ -16426,15 +16430,19 @@ class Servidor:
                                                      ses.personaje.habilidades,
                                                      hp_max=ses.personaje.hp_max, mp_max=ses.personaje.mp_max, sp=getattr(ses, "sp", None), buffs=getattr(ses.personaje, "buffs", None) if ses.personaje else None)
                         log.info(f"[{addr}] buff {tipo} ({mag.get('nombre')}) ejecutado (efecto {ef}, dur={dur_ms}ms, cd={cd_ms}ms)")
-                        # Sneak: entra en sigilo lo que dure el buff, con su esquiva.
+                        # Sneak: entra en sigilo lo que dure el buff, con su esquiva, AL ACABAR EL CASTEO (a la vez
+                        # que _fin_buff); antes entraba en el acto. Si muere o sale del juego mientras castea, no entra.
                         if mag.get('sigilo') and dur_ms > 0:
-                            ses.sigilo_hasta = time.time() + dur_ms / 1000.0
-                            ses.sigilo_mid = tipo
-                            ses.sigilo_esquiva = int(mag.get('esquiva_fis') or 0)
-                            _avisar_sigilo(ses, True)
-                            _programar_fin_sigilo(ses, addr)
-                            log.info(f"[{addr}] entra en sigilo {dur_ms // 1000}s "
-                                     f"(esquiva {ses.sigilo_esquiva}%)")
+                            def _entrar_sigilo(mid=tipo, esquiva=int(mag.get('esquiva_fis') or 0)):
+                                if not ses.personaje or getattr(ses, 'muerto', False):
+                                    return
+                                ses.sigilo_hasta = time.time() + dur_ms / 1000.0
+                                ses.sigilo_mid = mid
+                                ses.sigilo_esquiva = esquiva
+                                _avisar_sigilo(ses, True)
+                                _programar_fin_sigilo(ses, addr)
+                                log.info(f"[{addr}] entra en sigilo {dur_ms // 1000}s (esquiva {esquiva}%)")
+                            asyncio.get_event_loop().call_later(_ret_buff, _entrar_sigilo)
                     return
                 log.debug(f"[{addr}] ataque a la entidad {objetivo}: no es un monstruo conocido")
                 return
