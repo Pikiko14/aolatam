@@ -1843,46 +1843,46 @@
         <style wsVisible="" wsTab="" />
     </window>
     <!-- 分流列表 -->
-    <window class="WND_CLASS_LIST" range="34,46,254,95" id="2531" fcolor="103" bcolor="60464" font="1" cols="1" rows="5" gapx="1" gapy="2" tpos="1,1">
+    <window class="WND_CLASS_LIST" range="34,46,194,95" id="2531" fcolor="103" bcolor="60464" font="1" cols="1" rows="5" gapx="1" gapy="2" tpos="1,1">
         <style wsVisible="" lsVScroll="" lsHCenter="" lsVCenter="" lsCheck="" lsSCheck="" lsKeyEvent="" wsTab="" />
     </window>
     <window class="WND_CLASS_LIST" range="12,46,18,95" id="2699" cols="1" rows="5" gapx="1" gapy="2">
         <style wsVisible="" lsVScroll="" lsHCenter="" lsVCenter="" />
     </window>
-    <window class="WND_CLASS_BASE" range="10,152,18,18" id="2695" icon="2695">
+    <window class="WND_CLASS_BASE" range="16,154,18,18" id="2695" icon="2695">
         <!-- 綠 -->
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_BASE" range="80,152,18,18" id="2696" icon="2696">
+    <window class="WND_CLASS_BASE" range="128,154,18,18" id="2696" icon="2696">
         <!-- 黃 -->
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_BASE" range="158,152,18,18" id="2697" icon="2697">
+    <window class="WND_CLASS_BASE" range="16,177,18,18" id="2697" icon="2697">
         <!-- 紅 -->
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_BASE" range="236,152,18,18" id="2698" icon="2698">
+    <window class="WND_CLASS_BASE" range="128,177,18,18" id="2698" icon="2698">
         <!-- 紫 -->
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="2691" range="30,152,52,18" fcolor="103" font="1" title="Normal">
+    <window class="WND_CLASS_STATIC" id="2691" range="38,154,70,18" fcolor="103" font="1" title="Normal">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="2692" range="100,152,52,18" fcolor="103" font="1" title="Moderate">
+    <window class="WND_CLASS_STATIC" id="2692" range="150,154,70,18" fcolor="103" font="1" title="Moderate">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="2693" range="178,152,52,18" fcolor="103" font="1" title="Crowded">
+    <window class="WND_CLASS_STATIC" id="2693" range="38,177,70,18" fcolor="103" font="1" title="Crowded">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="2694" range="256,152,52,18" fcolor="103" font="1" title="Full">
+    <window class="WND_CLASS_STATIC" id="2694" range="150,177,70,18" fcolor="103" font="1" title="Full">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
     </window>
     <!-- 確定 按鈕 -->
-    <window class="WND_CLASS_BUTTON" range="136,180,66,18" id="2532" icon="60462">
+    <window class="WND_CLASS_BUTTON" range="48,206,66,18" id="2532" icon="60462">
         <style wsVisible="" wsTab="" />
     </window>
     <!-- 取消 按鈕 -->
-    <window class="WND_CLASS_BUTTON" range="222,180,66,18" id="2533" icon="60463">
+    <window class="WND_CLASS_BUTTON" range="126,206,66,18" id="2533" icon="60463">
         <style wsVisible="" wsTab="" />
     </window>
     <window class="WND_CLASS_BUTTON" range="0,0,189,426" id="2534" icon="0" check="2534">
@@ -1958,41 +1958,39 @@
         <child>2612</child>
         <child>2613</child>
     </window>
-    <icon id="2548" dir="\log\" normal="w038_23" focus="normal" down="normal" disable="normal">
-        <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />
-    </icon>
-    <window class="WND_CLASS_EDIT" id="2549" range="48,30,88,14" fcolor="105" font="1" tpos="1,1" limit="16">
+    <icon id="2548" dir="\log\" normal="w038_23" focus="normal" down="normal" disable="normal" />
+    <window class="WND_CLASS_EDIT" id="2549" range="48,30,88,14" fcolor="103" font="1" tpos="1,1" limit="16">
         <style wsVisible="" esCanPaste="" wsTab="" />
         <!-- 名字 -->
     </window>
-    <window class="WND_CLASS_STATIC" id="2550" range="48,51,1,1" fcolor="105" font="1" title="01">
+    <window class="WND_CLASS_STATIC" id="2550" range="50,51,1,1" fcolor="103" font="1" title="01">
         <style wsVisible="" />
         <!-- 生日　月 -->
     </window>
-    <window class="WND_CLASS_BUTTON" id="2551" range="77,50,14,14" icon="2551">
+    <window class="WND_CLASS_BUTTON" id="2551" range="76,50,14,14" icon="2551">
         <style wsVisible="" wsTab="" />
         <!-- 生日　月 -->
     </window>
     <icon id="2551" dir="\log\" normal="btn137_n" focus="btn137_f" down="btn137_d" disable="normal">
         <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />
     </icon>
-    <window class="WND_CLASS_STATIC" id="2552" range="96,51,1,1" fcolor="105" font="1" title="01">
+    <window class="WND_CLASS_STATIC" id="2552" range="98,51,1,1" fcolor="103" font="1" title="01">
         <style wsVisible="" />
         <!-- 生日　日 -->
     </window>
-    <window class="WND_CLASS_BUTTON" id="2553" range="125,50,14,14" icon="2551">
+    <window class="WND_CLASS_BUTTON" id="2553" range="124,50,14,14" icon="2551">
         <style wsVisible="" wsTab="" />
         <!-- 生日　日 -->
     </window>
-    <window class="WND_CLASS_STATIC" id="2554" range="48,71,70,14" fcolor="105" font="1" title="Capricorn">
+    <window class="WND_CLASS_STATIC" id="2554" range="50,71,70,14" fcolor="103" font="1" title="Capricorn">
         <style wsVisible="" />
         <!-- 星座 -->
     </window>
-    <window class="WND_CLASS_STATIC" id="2555" range="48,91,1,1" fcolor="105" font="1" title="A">
+    <window class="WND_CLASS_STATIC" id="2555" range="50,91,1,1" fcolor="103" font="1" title="A">
         <style wsVisible="" />
         <!-- 血型 -->
     </window>
-    <window class="WND_CLASS_BUTTON" id="2556" range="125,90,14,14" icon="2551">
+    <window class="WND_CLASS_BUTTON" id="2556" range="126,90,14,14" icon="2551">
         <style wsVisible="" wsTab="" />
         <!-- 血型 -->
     </window>
@@ -2046,14 +2044,12 @@
         <child>2589</child>
         <child>2591</child>
     </window>
-    <icon id="2566" dir="\log\" normal="w038_17" focus="normal" down="normal" disable="normal">
-        <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />
-    </icon>
-    <window class="WND_CLASS_BUTTON" range="42,15,37,17" id="2567" icon="2567" check="2568">
+    <icon id="2566" dir="\log\" normal="w038_17" focus="normal" down="normal" disable="normal" />
+    <window class="WND_CLASS_BUTTON" range="52,24,37,17" id="2567" icon="2567" check="2568">
         <style wsVisible="" bsCheck="" wsTab="" />
         <!-- 男生 -->
     </window>
-    <window class="WND_CLASS_BUTTON" range="85,15,37,17" id="2568" icon="2570" check="2573">
+    <window class="WND_CLASS_BUTTON" range="90,24,37,17" id="2568" icon="2570" check="2573">
         <style wsVisible="" bsCheck="" wsTab="" />
         <!-- 女生 -->
     </window>
@@ -2069,52 +2065,52 @@
     <icon id="2573" dir="\log\" normal="btn128_d" focus="normal" down="normal" disable="normal">
         <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />
     </icon>
-    <window class="WND_CLASS_BUTTON" id="2569" range="142,36,14,14" icon="2569">
+    <window class="WND_CLASS_BUTTON" id="2569" range="145,44,14,14" icon="2569">
         <style wsVisible="" wsTab="" />
         <!-- < -->
     </window>
     <icon id="2569" dir="\log\" normal="btn134_n" focus="btn134_f" down="btn134_d" disable="normal">
         <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />
     </icon>
-    <window class="WND_CLASS_STATIC" id="2570" range="157,36,50,14" fcolor="105" font="1">
+    <window class="WND_CLASS_STATIC" id="2570" range="159,44,50,14" fcolor="103" font="1">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
         <!-- 身高 -->
     </window>
-    <window class="WND_CLASS_BUTTON" id="2571" range="208,36,14,14" icon="2571">
+    <window class="WND_CLASS_BUTTON" id="2571" range="209,44,14,14" icon="2571">
         <style wsVisible="" wsTab="" />
         <!-- > -->
     </window>
     <icon id="2571" dir="\log\" normal="btn133_n" focus="btn133_f" down="btn133_d" disable="normal">
         <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />
     </icon>
-    <window class="WND_CLASS_BUTTON" id="2572" range="39,223,14,14" icon="2569">
+    <window class="WND_CLASS_BUTTON" id="2572" range="28,200,14,14" icon="2569">
         <style wsVisible="" wsTab="" />
         <!-- < -->
     </window>
-    <window class="WND_CLASS_STATIC" id="2573" range="54,223,50,14" fcolor="105" font="1">
+    <window class="WND_CLASS_STATIC" id="2573" range="43,200,50,14" fcolor="103" font="1">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
         <!-- 髮型 -->
     </window>
-    <window class="WND_CLASS_BUTTON" id="2574" range="105,223,14,14" icon="2571">
+    <window class="WND_CLASS_BUTTON" id="2574" range="94,200,14,14" icon="2571">
         <style wsVisible="" wsTab="" />
         <!-- > -->
     </window>
     <icon id="2781" dir="\wnd01\" normal="w038_33" focus="normal" down="normal" disable="normal" />
-    <window class="WND_CLASS_BASE" id="2781" range="246,30,1" icon="2781">
+    <window class="WND_CLASS_BASE" id="2781" range="246,31,1" icon="2781">
         <!-- 選色1 -->
         <style wsVisible="" />
     </window>
     <icon id="2782" dir="\wnd01\" normal="w038_34" focus="normal" down="normal" disable="normal" />
-    <window class="WND_CLASS_BASE" id="2782" range="246,165,1,1" icon="2782">
+    <window class="WND_CLASS_BASE" id="2782" range="246,161,1,1" icon="2782">
         <!-- 選色2 -->
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_LIST" id="2575" range="245,29,226,96" cols="9" rows="4" gapx="8" gapy="8">
+    <window class="WND_CLASS_LIST" id="2575" range="246,30,226,96" cols="9" rows="4" gapx="8" gapy="8">
         <style wsVisible="" lsVScroll="" lsCheck="" lsSCheck="" wsTab="" />
         <!-- 髮色 -->
     </window>
     <icon id="2575" dir="\log\" normal="w038_27" focus="normal" down="normal" disable="normal" />
-    <window class="WND_CLASS_LIST" id="2576" range="245,164,226,70" cols="9" rows="3" gapx="8" gapy="8">
+    <window class="WND_CLASS_LIST" id="2576" range="246,160,226,70" cols="9" rows="3" gapx="8" gapy="8">
         <style wsVisible="" lsVScroll="" lsCheck="" lsSCheck="" wsTab="" />
         <!-- 膚色 -->
     </window>
@@ -2129,36 +2125,36 @@
         <style wsVisible="" />
     </window>
     <icon id="2580" dir="\log\" normal="nullshp" focus="normal" down="normal" disable="normal" />
-    <window class="WND_CLASS_LIST" id="2581" range="13,74,106,142" cols="3" rows="4" gapx="2" gapy="2">
+    <window class="WND_CLASS_LIST" id="2581" range="15,48,106,142" cols="3" rows="4" gapx="2" gapy="2">
         <!-- 髮型 -->
         <style wsVisible="" lsVScroll="" lsCheck="" lsSCheck="" wsTab="" />
     </window>
     <icon id="2581" dir="\log\" normal="w038_28" focus="normal" down="normal" disable="normal" />
-    <window class="WND_CLASS_STATIC" id="2582" range="6,18,1,1" fcolor="103" font="1" title="Gender">
+    <window class="WND_CLASS_STATIC" id="2582" range="13,26,1,1" fcolor="103" font="1" title="Gender">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="2583" range="55,44,1,1" fcolor="103" font="1" title="Hair">
-        <style wsVisible="" />
+    <window class="WND_CLASS_STATIC" id="2583" range="1,1,1,1" fcolor="103" font="1" title="Hair">
+        <style />
     </window>
-    <window class="WND_CLASS_STATIC" id="2584" range="327,10,1,1" fcolor="103" font="1" title="Hair Color">
-        <style wsVisible="" />
+    <window class="WND_CLASS_STATIC" id="2584" range="1,1,1,1" fcolor="103" font="1" title="Hair Color">
+        <style />
     </window>
-    <window class="WND_CLASS_STATIC" id="2585" range="162,22,1,1" fcolor="103" font="1" title="Stature">
-        <style wsVisible="" />
+    <window class="WND_CLASS_STATIC" id="2585" range="1,1,1,1" fcolor="103" font="1" title="Stature">
+        <style />
     </window>
-    <window class="WND_CLASS_STATIC" id="2586" range="327,143,1,1" fcolor="103" font="1" title="Complexion">
-        <style wsVisible="" />
+    <window class="WND_CLASS_STATIC" id="2586" range="1,1,1,1" fcolor="103" font="1" title="Complexion">
+        <style />
     </window>
-    <window class="WND_CLASS_BASE" id="2587" range="15,76,102,138">
+    <window class="WND_CLASS_BASE" id="2587" range="17,50,102,138">
         <style wsVisible="" />
     </window>
     <icon id="2586" dir="\log\" normal="w038_18" focus="normal" down="normal" disable="normal" />
     <icon id="2587" dir="\log\" normal="w038_19" focus="normal" down="normal" disable="normal" />
-    <window class="WND_CLASS_BUTTON" id="2588" range="142,220,37,17" icon="2588">
+    <window class="WND_CLASS_BUTTON" id="2588" range="145,220,37,17" icon="2588">
         <style wsVisible="" wsTab="" />
         <!-- 左旋轉 -->
     </window>
-    <window class="WND_CLASS_BUTTON" id="2589" range="184,220,37,17" icon="2589">
+    <window class="WND_CLASS_BUTTON" id="2589" range="187,220,37,17" icon="2589">
         <style wsVisible="" wsTab="" />
         <!-- 右旋轉 -->
     </window>
@@ -2184,7 +2180,7 @@
     </window>
     <icon id="2578" dir="\log\" normal="btn139_n" focus="btn139_f" down="btn139_d" disable="normal" />
     <window class="WND_CLASS_STATIC" id="2592" range="57,11,1,1" fcolor="103" font="1" title="Required">
-        <style wsVisible="" />
+        <style />
     </window>
     <window class="WND_CLASS_STATIC" id="2593" range="13,31,1,1" fcolor="103" font="1" title="Name">
         <style wsVisible="" />
@@ -2199,58 +2195,58 @@
         <style wsVisible="" />
     </window>
     <window class="WND_CLASS_STATIC" id="2597" range="57,119,1,1" fcolor="103" font="1" title="Optional">
+        <style />
+    </window>
+    <window class="WND_CLASS_STATIC" id="2598" range="13,141,1,1" fcolor="103" font="1" title="Place">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="2598" range="13,139,1,1" fcolor="103" font="1" title="Place">
+    <window class="WND_CLASS_STATIC" id="2599" range="13,161,1,1" fcolor="103" font="1" title="Job">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="2599" range="13,159,1,1" fcolor="103" font="1" title="Job">
+    <window class="WND_CLASS_STATIC" id="2600" range="13,181,1,1" fcolor="103" font="1" title="Face">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="2600" range="13,179,1,1" fcolor="103" font="1" title="Face">
+    <window class="WND_CLASS_STATIC" id="2601" range="13,201,1,1" fcolor="103" font="1" title="Pty">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="2601" range="13,199,1,1" fcolor="103" font="1" title="Pty">
+    <window class="WND_CLASS_STATIC" id="2602" range="112,51,1,1" fcolor="103" font="1" title="D">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="2602" range="111,51,1,1" fcolor="103" font="1" title="D">
+    <window class="WND_CLASS_STATIC" id="2603" range="64,51,1,1" fcolor="103" font="1" title="M">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="2603" range="63,51,1,1" fcolor="103" font="1" title="M">
+    <window class="WND_CLASS_MSTATIC" id="2604" range="180,26,168,68" fcolor="103" font="1" title="Dear Angels, the data here can help you to know more about your friends in the Angel world." lines="5" words="28">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_MSTATIC" id="2604" range="174,24,168,68" fcolor="103" font="1" title="Dear Angels, the data here can help you to know more about your friends in the Angel world." lines="5" words="28">
-        <style wsVisible="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="2605" range="48,139,1,1" fcolor="105" font="1">
+    <window class="WND_CLASS_STATIC" id="2605" range="50,141,1,1" fcolor="103" font="1">
         <style wsVisible="" />
         <!-- 居住 -->
     </window>
-    <window class="WND_CLASS_BUTTON" id="2606" range="125,138,14,14" icon="2551">
+    <window class="WND_CLASS_BUTTON" id="2606" range="126,140,14,14" icon="2551">
         <style wsVisible="" wsTab="" />
         <!-- 居住 -->
     </window>
-    <window class="WND_CLASS_STATIC" id="2607" range="48,159,1,1" fcolor="105" font="1">
+    <window class="WND_CLASS_STATIC" id="2607" range="50,161,1,1" fcolor="103" font="1">
         <style wsVisible="" />
         <!-- 身份 -->
     </window>
-    <window class="WND_CLASS_BUTTON" id="2608" range="125,158,14,14" icon="2551">
+    <window class="WND_CLASS_BUTTON" id="2608" range="126,160,14,14" icon="2551">
         <style wsVisible="" wsTab="" />
         <!-- 身份 -->
     </window>
-    <window class="WND_CLASS_STATIC" id="2609" range="48,179,1,1" fcolor="105" font="1">
+    <window class="WND_CLASS_STATIC" id="2609" range="50,181,1,1" fcolor="103" font="1">
         <style wsVisible="" />
         <!-- 外型 -->
     </window>
-    <window class="WND_CLASS_BUTTON" id="2610" range="125,178,14,14" icon="2551">
+    <window class="WND_CLASS_BUTTON" id="2610" range="126,180,14,14" icon="2551">
         <style wsVisible="" wsTab="" />
         <!-- 外型 -->
     </window>
-    <window class="WND_CLASS_STATIC" id="2611" range="48,199,1,1" fcolor="105" font="1">
+    <window class="WND_CLASS_STATIC" id="2611" range="50,201,1,1" fcolor="103" font="1">
         <style wsVisible="" />
         <!-- 個性 -->
     </window>
-    <window class="WND_CLASS_BUTTON" id="2612" range="125,198,14,14" icon="2551">
+    <window class="WND_CLASS_BUTTON" id="2612" range="126,200,14,14" icon="2551">
         <style wsVisible="" wsTab="" />
         <!-- 個性 -->
     </window>
@@ -2360,7 +2356,7 @@
     <window class="WND_CLASS_LIST" range="2,2,177,207" id="2617" fcolor="103" bcolor="3082" font="1" cols="2" rows="11" gapx="5" gapy="3" tpos="1,1">
         <style wsVisible="" lsVScroll="" lsHCenter="" lsVCenter="" lsCheck="" lsSCheck="" lsKeyEvent="" wsTab="" />
     </window>
-    <window class="WND_CLASS_DLG_1" range="-60,0,308,228" id="2530" title="Angels Online Forever" fcolor="104" font="1" icon="2530">
+    <window class="WND_CLASS_DLG_1" range="-30,0,248,254" id="2530" title="Angels Online Forever" fcolor="104" font="1" icon="2530">
         <style gsNoClose="" gsNoHelp="" gsNoLock="" />
         <child>2531</child>
         <child>2532</child>
@@ -6810,6 +6806,7 @@
     <icon id="60462" dir="\wnd01\" normal="aolat_login_enter_n" focus="aolat_login_enter_f" down="aolat_login_enter_s" disable="aolat_login_enter_n" />
     <icon id="60463" dir="\wnd01\" normal="aolat_login_back_n" focus="aolat_login_back_f" down="aolat_login_back_s" disable="aolat_login_back_n" />
     <icon id="60464" dir="\wnd01\" normal="aolat_login_celdas" focus="normal" down="normal" disable="normal" />
+    <color id="60464" normal="255,255,255, 0" focus="110,200,255, 1" down="255,196,60, 1" disable="255,255,255, 0" />
     <!-- /aolat login -->
     <!-- aolat seleccion -->
     <icon id="60465" dir="\log\" normal="aolat_sel_ficha" focus="normal" down="normal" disable="normal" />

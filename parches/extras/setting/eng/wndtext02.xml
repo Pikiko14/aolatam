@@ -431,22 +431,22 @@
 	<window id="2580"/>
 	<window id="2581"/>
 	<window id="2582" title="Gender"/>
-	<window id="2583" title="Hair"/>
-	<window id="2584" title="Hair Color"/>
-	<window id="2585" title="Stature"/>
-	<window id="2586" title="Complexion"/>
+	<window id="2583" title=""/>
+	<window id="2584" title=""/>
+	<window id="2585" title=""/>
+	<window id="2586" title=""/>
 	<window id="2587"/>
 	<window id="2588"/>
 	<window id="2589"/>
 	<window id="2591"/>
 	<window id="2577" tooltext="PageUp"/>
 	<window id="2578" tooltext="Next"/>
-	<window id="2592" title="Required"/>
+	<window id="2592" title=""/>
 	<window id="2593" title="Name"/>
 	<window id="2594" title="Birth"/>
 	<window id="2595" title="Sign"/>
 	<window id="2596" title="B. T."/>
-	<window id="2597" title="Optional"/>
+	<window id="2597" title=""/>
 	<window id="2598" title="Place"/>
 	<window id="2599" title="Job"/>
 	<window id="2600" title="Face"/>

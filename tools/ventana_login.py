@@ -51,6 +51,7 @@ TITULO = 'Angels Online Forever'
 # La textura de las celdas de las listas (bcolor): transparente, del tamano de la del cliente (wnd01/w012_1, 265x235).
 ICONO_CELDAS, ARCHIVO_CELDAS = 60464, 'aolat_login_celdas'
 MARCA = 'aolat login'
+COLOR_CELDAS = 'normal="255,255,255, 0" focus="110,200,255, 1" down="255,196,60, 1" disable="255,255,255, 0"'
 
 ORO = (238, 196, 92)
 ORO_OSCURO = (150, 100, 34)
@@ -186,16 +187,18 @@ def boton(estado, texto='') -> Image.Image:
 #   abajo, la leyenda de capacidad en una linea (cuadros 2695..2698 y textos 2691..2694, "Normal"...) y los botones
 #   2532 (Enter) y 2533 (Back) a la derecha.
 # Su interior es el icono 2530 (log/w038_22), sin el tinte del tema.
-CW, CH = 300, 204                       # 8 px mas: margen sobre los botones ("los botones tengan algo de margin top")
+# 13/11/2026, "que sea menos ancha y que tenga algun efecto para saber que canal elijo": 240 de ancho, la leyenda en
+# dos filas de dos y los botones centrados debajo; la fila elegida se tine de oro (COLOR_CELDAS).
+CW, CH = 240, 230
 FILA_CANAL, FILAS_CANAL = 19, 5
 CABECERA_CANAL = (0, 0, CW, 38)
 CANAL_MARCO = (6, 42, CW - 6, 42 + 8 + FILA_CANAL * FILAS_CANAL)            # 6,42 .. 294,145
 CANAL_ESTADO = (12, 46, 18, FILA_CANAL * FILAS_CANAL)
 CANAL_LISTA = (34, 46, CW - 46, FILA_CANAL * FILAS_CANAL)
-LEYENDA_Y = 152
+LEYENDA_Y = 154                                                             # primera fila; la segunda, +23
 LEYENDA = ((2695, 2691, 'Normal'), (2696, 2692, 'Moderate'), (2697, 2693, 'Crowded'), (2698, 2694, 'Full'))
-LEYENDA_X = (10, 80, 158, 236)                                              # donde va cada cuadro
-BOTONES_CANAL = {2532: (CW - 164, 180, 'Enter', 60462), 2533: (CW - 78, 180, 'Back', 60463)}
+LEYENDA_XY = ((16, LEYENDA_Y), (128, LEYENDA_Y), (16, LEYENDA_Y + 23), (128, LEYENDA_Y + 23))   # cada cuadro
+BOTONES_CANAL = {2532: (CW // 2 - 72, 206, 'Enter', 60462), 2533: (CW // 2 + 6, 206, 'Back', 60463)}
 TITULO_CANAL = 'Angels Online Forever'
 # El rango de la ventana: el interior mas lo que pone el marco de WND_CLASS_DLG_1 (como 181x275 -> 189x299).
 RANGO_CANAL = (CW + 8, CH + 24)
@@ -216,8 +219,8 @@ def fondo_canal() -> Image.Image:
     emblema = emblema.resize((32, round(emblema.height * 32 / emblema.width)), Image.LANCZOS)
     im.alpha_composite(emblema, (8, 3))
     d = ImageDraw.Draw(im)
-    _rotulo(d, 'Select your channel', 170, 9, color=(255, 226, 140, 255), tam=13)
-    _rotulo(d, 'Pick a channel to enter the world', 170, 25, color=(190, 210, 255, 255), tam=9)
+    _rotulo(d, 'Select your channel', (44 + CW) // 2, 9, color=(255, 226, 140, 255), tam=13)
+    _rotulo(d, 'Pick a channel to enter the world', (44 + CW) // 2, 25, color=(190, 210, 255, 255), tam=9)
     d.line((48, 37, CW - 8, 37), fill=ORO_OSCURO)
     # los canales: un recuadro hundido con una franja por fila y la columna de estado separada
     x0, y0, x1, y1 = CANAL_MARCO
@@ -229,10 +232,10 @@ def fondo_canal() -> Image.Image:
         d.rounded_rectangle((ex - 2, y, x1 - 6, y + FILA_CANAL - 2), radius=3, fill=color)
     d.line((ex + ew + 2, y0 + 5, ex + ew + 2, y1 - 5), fill=(50, 84, 160, 255))
     # la leyenda: cuatro casillas con el cuadro de color (lo pinta el juego) en su hueco con borde de oro
-    d.rounded_rectangle((6, LEYENDA_Y - 4, CW - 6, LEYENDA_Y + 18 + 2), radius=5, fill=(14, 28, 74, 255),
+    d.rounded_rectangle((6, LEYENDA_Y - 5, CW - 6, LEYENDA_Y + 23 + 18 + 4), radius=5, fill=(14, 28, 74, 255),
                         outline=ORO_OSCURO)
-    for x in LEYENDA_X:
-        d.rectangle((x - 1, LEYENDA_Y - 1, x + 18, LEYENDA_Y + 18), outline=ORO)
+    for x, y in LEYENDA_XY:
+        d.rectangle((x - 1, y - 1, x + 18, y + 18), outline=ORO)
     # la franja de los botones
     d.rectangle((0, 0, CW - 1, CH - 1), outline=ORO)
     d.rectangle((1, 1, CW - 2, CH - 2), outline=ORO_OSCURO)
@@ -305,12 +308,12 @@ def wnd02():
         tag = re.sub(r'range="[^"]*"', 'range="%d,%d,%d,%d"' % caja, m.group(0), count=1)
         tag = re.sub(r'rows="\d+"', 'rows="%d"' % FILAS_CANAL, tag, count=1)
         texto = texto[:m.start()] + tag + texto[m.end():]
-    for (cuadro, rotulo, nombre), x in zip(LEYENDA, LEYENDA_X):
+    for (cuadro, rotulo, nombre), (x, y) in zip(LEYENDA, LEYENDA_XY):
         m = _ventana(texto, cuadro)
-        texto = texto[:m.start()] + re.sub(r'range="[^"]*"', 'range="%d,%d,18,18"' % (x, LEYENDA_Y), m.group(0),
+        texto = texto[:m.start()] + re.sub(r'range="[^"]*"', 'range="%d,%d,18,18"' % (x, y), m.group(0),
                                            count=1) + texto[m.end():]
         m = _ventana(texto, rotulo)
-        tag = re.sub(r'range="[^"]*"', 'range="%d,%d,%d,18"' % (x + 20, LEYENDA_Y, 52), m.group(0), count=1)
+        tag = re.sub(r'range="[^"]*"', 'range="%d,%d,%d,18"' % (x + 22, y, 70), m.group(0), count=1)
         tag = re.sub(r'title="[^"]*"', 'title="%s"' % nombre, tag, count=1)
         tag = tag.replace(' ssHCenter=""', '')
         texto = texto[:m.start()] + tag + texto[m.end():]
@@ -327,11 +330,16 @@ def wnd02():
                    % (icono, a, a, a, a, nl))
     iconos += ('    <icon id="%d" dir="\\wnd01\\" normal="%s" focus="normal" down="normal" disable="normal" />%s'
                % (ICONO_CELDAS, ARCHIVO_CELDAS, nl))
+    # El tinte de las filas, con el mismo id que la textura (como el 3082 de wnd03: icono y color): sin tinte en
+    # reposo, cian con el raton encima y oro la elegida.
+    iconos += '    <color id="%d" %s />%s' % (ICONO_CELDAS, COLOR_CELDAS, nl)
     iconos += '    <!-- /%s -->%s' % (MARCA, nl)
     fin = texto.rindex('</')
     texto = texto[:fin] + iconos + texto[fin:]
     import seleccion_personaje  # la pantalla de seleccion de personaje (12/11/2026)
     texto = seleccion_personaje.wnd02(texto, nl)
+    import creacion_personaje  # la creacion de personaje (13/11/2026)
+    texto = creacion_personaje.wnd02(texto, nl)
     _guardar(r'setting\eng\wnd02.xml', texto, bom)
 
 
@@ -344,6 +352,7 @@ def wndtext02():
                        texto)
     import seleccion_personaje
     texto = seleccion_personaje.wndtext02(texto)
+    texto = __import__('creacion_personaje').wndtext02(texto)
     _guardar(r'setting\eng\wndtext02.xml', texto, bom)
 
 
@@ -360,6 +369,7 @@ def main():
         viejo.unlink()
     import seleccion_personaje
     seleccion_personaje.dibujar()
+    __import__('creacion_personaje').dibujar()
     wnd02()
     wndtext02()
     print('ventana de login y seleccion de personaje listas')
