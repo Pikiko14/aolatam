@@ -247,3 +247,14 @@ def test_lyceum_has_astral_party_chatbubble_and_fashionable_npcs(world):
     answer(s, 0); assert s._lyceum_exchange == 559
     click(s, 71410007); answer(s, 1); answer(s, 1); assert s._lyceum_exchange == 570
 
+
+
+def test_event_overview_exchange_does_not_need_fashionable(world):
+    # 13/11/2026, "no me deja cambiar la holiday pd": Event Overview > Exchange abre el grupo 622 (Winter Holiday PD)
+    # sin NPC; recent_mall no debe pedir estar junto a Fashionable, el canje sigue por el 0x0160 generico.
+    s=world.player(items={20:82665});s.cantidades[20]=20;s.personaje.stage=41
+    s.personaje.tile_x,s.personaje.tile_y=30,30
+    s._grupo_event_overview=622
+    assert rm.canjear(s,22492,1) is False
+    del s._grupo_event_overview
+    assert rm.canjear(s,22492,1)              # sin abrirlo desde Event Overview sigue siendo de Fashionable

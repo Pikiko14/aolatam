@@ -2,46 +2,78 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<!-- Bilingue: el ingles va en el HTML y el espanol en data-es / data-es-<atributo>; i18n.js los cambia con el boton del menu. -->
+<!-- Bilingue: el ingles va en el HTML y el espanol en data-es / data-es-<atributo>; i18n.js los cambia con las banderas.
+     Marca nueva (13/11/2026): el cielo y el emblema del launcher 1.0.5, azul real, oro y celeste. -->
 <title data-es="Angels Online Forever — Tu aventura comienza aquí">Angels Online Forever — Your adventure starts here</title>
 <meta name="description" content="Create your account, download the launcher and relive the magic of Angels Online." data-es-content="Crea tu cuenta, descarga el launcher y vuelve a vivir la magia de Angels Online.">
-<meta name="theme-color" content="#0a143e">
+<meta name="theme-color" content="#0b1d55">
+<meta property="og:title" content="Angels Online Forever">
+<meta property="og:description" content="A world of magic. Your own legend.">
+<meta property="og:image" content="assets/cielo-900.webp">
 <link rel="icon" type="image/png" href="favicon.png">
-<link rel="stylesheet" href="styles.css?v=20261104e">
-<link rel="stylesheet" href="cuenta.css?v=20261104e">
-<script src="i18n.js?v=20261104e" defer></script><script src="config.js?v=20261104e" defer></script><script src="news.js?v=20261104e" defer></script><script src="app.js?v=20261104e" defer></script><script src="cuenta.js?v=20261104e" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap">
+<link rel="preload" as="image" href="assets/cielo.webp" imagesrcset="assets/cielo-900.webp 900w, assets/cielo.webp 1672w" imagesizes="100vw">
+<link rel="stylesheet" href="styles.css?v=20261113c">
+<link rel="stylesheet" href="cuenta.css?v=20261113c">
+<script src="i18n.js?v=20261113c" defer></script><script src="config.js?v=20261113c" defer></script><script src="news.js?v=20261113c" defer></script><script src="app.js?v=20261113c" defer></script><script src="cuenta.js?v=20261113c" defer></script>
 </head>
-<body>
+<body class="inicio">
 <div class="petalos" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
 
-<header class="cabecera">
-  <a class="marca" href="#arriba"><img src="assets/logo-forever-sm.webp" width="240" height="126" alt="Angels Online Forever"></a>
-  <nav aria-label="Sections" data-es-aria-label="Secciones">
-    <a href="#noticias" data-es="Noticias">News</a><a href="#descargas" data-es="Descargas">Downloads</a><a href="#como-empezar" data-es="Cómo empezar">Getting started</a><a href="#mundo" data-es="El mundo">The world</a><a href="#preguntas" data-es="Preguntas">FAQ</a>
-    <a class="nav-cta" href="#crear-cuenta" data-es="Crear cuenta">Create account</a>
+<header class="cabecera" id="cabecera">
+  <a class="marca" href="#arriba" aria-label="Angels Online Forever"><img src="assets/emblema-112.webp" width="56" height="56" alt=""><span class="marca-texto">Angels Online <b>Forever</b></span></a>
+  <button class="menu-boton" id="menu-boton" type="button" aria-expanded="false" aria-controls="menu" aria-label="Menu" data-es-aria-label="Menú"><span></span><span></span><span></span></button>
+  <nav id="menu" aria-label="Sections" data-es-aria-label="Secciones">
+    <a href="#noticias" data-es="Noticias">News</a><a href="#descargas" data-es="Descargas">Downloads</a><a href="#mundo" data-es="El mundo">The world</a><a href="#preguntas" data-es="Preguntas">FAQ</a>
     <a href="panel/" data-es="Mi cuenta">My account</a>
+    <a class="nav-cta" href="#crear-cuenta" data-es="Crear cuenta">Create account</a>
     <span class="lang-flags"></span>
   </nav>
 </header>
 
 <main id="arriba">
+<!-- PORTADA: el cielo del launcher a pantalla completa, el emblema y el logo sobre el cielo -->
 <section class="portada" aria-labelledby="titulo-portada">
-  <img class="portada-arte" src="assets/angels-online-01.jpg" alt="The heroes and pets of Angels Online in front of the academy" data-es-alt="Los héroes y mascotas de Angels Online frente a la academia">
+  <img class="portada-arte" src="assets/cielo.webp" srcset="assets/cielo-900.webp 900w, assets/cielo.webp 1672w" sizes="100vw"
+       alt="The heroes of Angels Online look out over floating islands in the sky" data-es-alt="Los héroes de Angels Online miran las islas flotantes del cielo" fetchpriority="high">
   <div class="portada-velo"></div>
   <div class="portada-texto">
-    <img class="portada-logo" src="assets/logo-forever.webp" width="760" height="398" alt="Angels Online Forever" fetchpriority="high">
-    <p class="etiqueta" data-es="✦ BIENVENIDO A ANGELS ONLINE FOREVER">✦ WELCOME TO ANGELS ONLINE FOREVER</p>
-    <h1 id="titulo-portada" data-es="Un mundo de magia.&lt;br&gt;Tu propia &lt;em&gt;leyenda.&lt;/em&gt;">A world of magic.<br>Your own <em>legend.</em></h1>
-    <p class="intro" data-es="Reúne a tus amigos, adopta compañeros adorables y descubre un universo lleno de academias, criaturas y caminos por explorar.">Gather your friends, adopt adorable companions and discover a universe full of academies, creatures and paths to explore.</p>
-    <div class="botones">
-      <a class="boton boton-principal" href="#crear-cuenta" data-es="Crear mi cuenta">Create my account</a>
-      <a class="boton boton-suave" href="#descargas" data-es="Descargar el juego">Download the game</a>
+    <div class="portada-marca">
+      <img class="portada-emblema" src="assets/emblema.webp" width="480" height="484" alt="">
+      <p class="portada-nombre">Angels Online <span>Forever</span></p>
     </div>
+    <h1 id="titulo-portada" data-es="Un mundo de magia. &lt;em&gt;Tu propia leyenda.&lt;/em&gt;">A world of magic. <em>Your own legend.</em></h1>
+    <p class="intro" data-es="Reúne a tus amigos, adopta compañeros adorables y descubre un reino de islas en el cielo, academias, raids y criaturas por explorar.">Gather your friends, adopt adorable companions and discover a kingdom of sky islands, academies, raids and creatures to explore.</p>
+    <div class="botones">
+      <a class="boton boton-principal" href="#crear-cuenta"><span data-es="Crear mi cuenta">Create my account</span></a>
+      <a class="boton boton-suave" href="#descargas"><span data-es="Descargar el juego">Download the game</span></a>
+    </div>
+    <ul class="portada-datos" aria-label="Server" data-es-aria-label="Servidor">
+      <li id="dato-version-caja" hidden><b id="dato-version">—</b><span data-es="versión del juego">game version</span></li>
+      <li><b>4</b><span data-es="raids con ranking">raids with ranking</span></li>
+      <li><b data-es="Gratis">Free</b><span data-es="para siempre">forever</span></li>
+    </ul>
   </div>
+  <a class="portada-bajar" href="#empezar" aria-label="Scroll down" data-es-aria-label="Bajar"></a>
 </section>
 
+<!-- EMPEZAR: los tres pasos de un vistazo -->
+<section class="seccion empezar" id="empezar" aria-labelledby="titulo-empezar">
+  <div class="encabezado">
+    <span class="etiqueta" data-es="TU VIAJE EMPIEZA AQUÍ">YOUR JOURNEY STARTS HERE</span>
+    <h2 id="titulo-empezar" data-es="A jugar en &lt;em&gt;tres pasos.&lt;/em&gt;">Play in <em>three steps.</em></h2>
+  </div>
+  <ol class="pasos" id="como-empezar">
+    <li><span class="numero">1</span><h3 data-es="Crea tu cuenta">Create your account</h3><p data-es="Elige tu usuario y tu contraseña aquí mismo. Es gratis.">Choose your username and password right here. It's free.</p><a href="#crear-cuenta" data-es="Crear cuenta →">Create account →</a></li>
+    <li><span class="numero">2</span><h3 data-es="Descarga el juego">Download the game</h3><p data-es="Descomprime el cliente en una carpeta, por ejemplo &lt;code&gt;C:\AngelsOnline&lt;/code&gt;, y pon el launcher junto a &lt;code&gt;angel.dat&lt;/code&gt;.">Unzip the client into a folder, for example <code>C:\AngelsOnline</code>, and put the launcher next to <code>angel.dat</code>.</p><a href="#descargas" data-es="Descargas →">Downloads →</a></li>
+    <li><span class="numero">3</span><h3 data-es="¡A jugar!">Play!</h3><p data-es="Abre el launcher: actualiza el juego solo. Pulsa &lt;b&gt;Jugar&lt;/b&gt; y entra con tu cuenta.">Open the launcher: it updates the game on its own. Press <b>Play</b> and log in with your account.</p><a href="#preguntas" data-es="¿Dudas? →">Questions? →</a></li>
+  </ol>
+</section>
+
+<!-- PASO 1: la cuenta -->
 <section class="seccion" id="crear-cuenta" aria-labelledby="titulo-cuenta">
-  <div class="tarjeta cuenta">
+  <div class="tarjeta cuenta adornada">
     <div class="cuenta-texto">
       <span class="etiqueta" data-es="PASO 1 · TU CUENTA">STEP 1 · YOUR ACCOUNT</span>
       <h2 id="titulo-cuenta" data-es="Crea tu &lt;em&gt;cuenta.&lt;/em&gt;">Create your <em>account.</em></h2>
@@ -51,6 +83,7 @@
         <li data-es="Solo letras, números y guion bajo.">Letters, numbers and underscores only.</li>
         <li data-es="La contraseña: de 4 a 16 caracteres, sin espacios ni acentos.">Password: 4 to 16 characters, no spaces or accented letters.</li>
       </ul>
+      <img class="cuenta-emblema" src="assets/emblema.webp" width="480" height="484" alt="" loading="lazy">
     </div>
     <form id="account-form" class="account-form" novalidate>
       <label for="account-username" data-es="Nombre de usuario">Username</label>
@@ -66,6 +99,7 @@
   </div>
 </section>
 
+<!-- PASO 2: descargas -->
 <section class="seccion" id="descargas" aria-labelledby="titulo-descargas">
   <div class="encabezado">
     <span class="etiqueta" data-es="PASO 2 · DESCARGAS">STEP 2 · DOWNLOADS</span>
@@ -73,58 +107,90 @@
     <p data-es="Descarga el cliente una vez y usa nuestro launcher: se encarga de mantener el juego al día.">Download the client once and use our launcher: it keeps the game up to date.</p>
   </div>
   <div class="descargas">
-    <article class="tarjeta descarga menta">
+    <article class="tarjeta descarga adornada">
       <span class="sello" data-es="Necesario">Required</span>
-      <div class="icono-descarga" aria-hidden="true">📦</div>
+      <div class="icono-descarga" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v11m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></div>
       <h3 data-es="Cliente completo">Full client</h3>
       <p data-es="El juego entero, listo para descomprimir. Solo hace falta descargarlo una vez.">The whole game, ready to unzip. You only need to download it once.</p>
       <button class="boton boton-principal" id="download-game" type="button" aria-describedby="download-status" data-es="Descargar cliente">Download client</button>
       <p id="download-status" class="estado-descarga" role="status" aria-live="polite"></p>
     </article>
-    <article class="tarjeta descarga rosa">
+    <article class="tarjeta descarga adornada destacada">
       <span class="sello" data-es="Recomendado">Recommended</span>
-      <div class="icono-descarga" aria-hidden="true">🪽</div>
+      <div class="icono-descarga" aria-hidden="true"><img src="assets/emblema.webp" alt="" width="48" height="48" loading="lazy"></div>
       <h3>Angels Online Launcher</h3>
       <p data-es="Actualiza el juego automáticamente, muestra las noticias y abre el juego con un clic. Se actualiza solo.">Updates the game automatically, shows the news and starts the game in one click. It updates itself.</p>
       <button class="boton boton-principal" id="download-launcher" type="button" aria-describedby="launcher-status" data-es="Descargar launcher">Download launcher</button>
       <p id="launcher-status" class="estado-descarga" role="status" aria-live="polite"></p>
     </article>
   </div>
-  <ol class="pasos" id="como-empezar">
-    <li><span class="numero">1</span><h3 data-es="Crea tu cuenta">Create your account</h3><p data-es="Elige tu usuario y tu contraseña en esta página.">Choose your username and password on this page.</p></li>
-    <li><span class="numero">2</span><h3 data-es="Descarga el cliente">Download the client</h3><p data-es="Descomprímelo en una carpeta, por ejemplo &lt;code&gt;C:\AngelsOnline&lt;/code&gt;.">Unzip it into a folder, for example <code>C:\AngelsOnline</code>.</p></li>
-    <li><span class="numero">3</span><h3 data-es="Pon el launcher">Add the launcher</h3><p data-es="Copia &lt;code&gt;AngelsLauncher.exe&lt;/code&gt; dentro de esa carpeta, junto a &lt;code&gt;angel.dat&lt;/code&gt;, y ábrelo.">Copy <code>AngelsLauncher.exe</code> into that folder, next to <code>angel.dat</code>, and open it.</p></li>
-    <li><span class="numero">4</span><h3 data-es="¡A jugar!">Play!</h3><p data-es="Pulsa &lt;b&gt;JUGAR&lt;/b&gt; y entra con el usuario y la contraseña de tu cuenta.">Press <b>PLAY</b> and log in with your account's username and password.</p></li>
-  </ol>
-  <p class="nota-suave" data-es="Si Windows muestra «Windows protegió su PC» al abrir el launcher, pulsa &lt;b&gt;Más información&lt;/b&gt; → &lt;b&gt;Ejecutar de todas formas&lt;/b&gt;. Es normal en programas nuevos sin firma.">If Windows shows "Windows protected your PC" when you open the launcher, click <b>More info</b> → <b>Run anyway</b>. This is normal for new, unsigned programs.</p>
+  <p class="nota-suave" data-es="Windows 10 y 11, sin instalar nada más. Si Windows muestra «Windows protegió su PC» al abrir el launcher, pulsa &lt;b&gt;Más información&lt;/b&gt; → &lt;b&gt;Ejecutar de todas formas&lt;/b&gt;: es normal en programas nuevos sin firma.">Windows 10 and 11, nothing else to install. If Windows shows "Windows protected your PC" when you open the launcher, click <b>More info</b> → <b>Run anyway</b>: this is normal for new, unsigned programs.</p>
 </section>
 
+<!-- NOTICIAS: las del launcher (GET /api/cuenta/estado) y las de news.js -->
 <section class="seccion" id="noticias" aria-labelledby="titulo-noticias">
   <div class="encabezado">
-    <span class="etiqueta" data-es="EL HERALDO DE LA ACADEMIA">THE ACADEMY HERALD</span>
+    <span class="etiqueta" data-es="EL HERALDO DEL CIELO">THE SKY HERALD</span>
     <h2 id="titulo-noticias" data-es="Noticias del &lt;em&gt;reino.&lt;/em&gt;">News from the <em>realm.</em></h2>
-    <p data-es="Actualizaciones, eventos y avisos del servidor.">Updates, events and server announcements.</p>
+    <p data-es="Actualizaciones, eventos y avisos del servidor: las mismas que ves en el launcher.">Updates, events and server announcements: the same ones you see in the launcher.</p>
   </div>
   <div id="news-list" class="news-list"></div>
+  <div class="news-mas"><button id="news-more" class="boton boton-suave" type="button" hidden data-es="Ver más noticias">See more news</button></div>
   <noscript><p class="nota-suave">Enable JavaScript to see the server news. · Activa JavaScript para ver las noticias del servidor.</p></noscript>
 </section>
 
+<!-- EL MUNDO -->
 <section class="seccion" id="mundo" aria-labelledby="titulo-mundo">
   <div class="encabezado">
     <span class="etiqueta" data-es="REDESCUBRE LA FANTASÍA">REDISCOVER THE FANTASY</span>
-    <h2 id="titulo-mundo" data-es="Hay mundos que nunca dejas de &lt;em&gt;recordar.&lt;/em&gt;">Some worlds you never stop <em>remembering.</em></h2>
+    <h2 id="titulo-mundo" data-es="Un reino entre las &lt;em&gt;nubes.&lt;/em&gt;">A kingdom above the <em>clouds.</em></h2>
   </div>
-  <div class="galeria">
-    <article class="tarjeta personaje lila"><img src="assets/angels-online-02.jpg" alt="Blue-haired knight in silver armor" data-es-alt="Caballero de cabello azul con armadura plateada" loading="lazy"><div><span class="etiqueta" data-es="VALOR">COURAGE</span><h3 data-es="El espíritu del caballero">The knight's spirit</h3><p data-es="Dar el primer paso y seguir adelante junto a tus compañeros.">Taking the first step and moving forward alongside your companions.</p></div></article>
-    <article class="tarjeta personaje rosa"><img src="assets/angels-online-05.jpg" alt="Violet-haired mage surrounded by magical light" data-es-alt="Maga de cabello violeta rodeada de luz mágica" loading="lazy"><div><span class="etiqueta" data-es="MAGIA">MAGIC</span><h3 data-es="La curiosidad de la maga">The mage's curiosity</h3><p data-es="Ver posibilidades donde otros ven misterios.">Seeing possibilities where others see mysteries.</p></div></article>
-    <article class="tarjeta personaje cielo"><img src="assets/angels-online-03.jpg" alt="Pink-haired character in a fantasy meadow" data-es-alt="Personaje de cabello rosa en una pradera de fantasía" loading="lazy"><div><span class="etiqueta" data-es="LIBERTAD">FREEDOM</span><h3 data-es="El alma del aventurero">The adventurer's soul</h3><p data-es="Elegir un nuevo horizonte y disfrutar del camino.">Choosing a new horizon and enjoying the journey.</p></div></article>
-  </div>
-  <div class="tarjeta franja durazno">
-    <img src="assets/angels-online-04.jpg" alt="A big yellow-eyed robot next to characters and small pets" data-es-alt="Un gran robot de ojos amarillos junto a personajes y pequeñas mascotas" loading="lazy">
-    <div><span class="etiqueta" data-es="LA MAGIA DE LA COMPAÑÍA">THE MAGIC OF COMPANIONSHIP</span><h3 data-es="Pequeños amigos, &lt;em&gt;grandes historias.&lt;/em&gt;">Little friends, <em>big stories.</em></h3><p data-es="Mascotas, robots y criaturas encantadoras te acompañan en cada aventura. Críalos, equípalos y hazlos evolucionar.">Pets, robots and charming creatures join you on every adventure. Raise them, equip them and help them evolve.</p></div>
+  <div class="mundo">
+    <article class="tarjeta rasgo grande">
+      <img src="assets/angels-online-02.jpg" alt="Blue-haired knight in silver armor" data-es-alt="Caballero de cabello azul con armadura plateada" loading="lazy">
+      <div>
+        <span class="etiqueta" data-es="RAIDS">RAIDS</span>
+        <h3 data-es="Cuatro raids, &lt;em&gt;un ranking.&lt;/em&gt;">Four raids, <em>one ranking.</em></h3>
+        <p data-es="Flamefang (nivel 60), Warring Realm (50), Wintry Realm (40) y Dragon's Lair (30). Puzzles antes de cada jefe, botín de tu nivel y un ranking con los grupos más rápidos.">Flamefang (level 60), Warring Realm (50), Wintry Realm (40) and Dragon's Lair (30). Puzzles before every boss, loot of your level and a ranking of the fastest parties.</p>
+        <ul class="chips"><li>Lv 30</li><li>Lv 40</li><li>Lv 50</li><li>Lv 60</li></ul>
+      </div>
+    </article>
+    <article class="tarjeta rasgo">
+      <img src="assets/angels-online-04.jpg" alt="A big yellow-eyed robot next to characters and small pets" data-es-alt="Un gran robot de ojos amarillos junto a personajes y pequeñas mascotas" loading="lazy">
+      <div>
+        <span class="etiqueta" data-es="MONTURAS">MOUNTS</span>
+        <h3 data-es="Monturas de leyenda">Legendary mounts</h3>
+        <p data-es="Abyss Taurus, Blazemane Lion, Coral Fortress Turtle, Frostcrown Ram y Aurora Stag: solo los sueltan los jefes finales de las raids.">Abyss Taurus, Blazemane Lion, Coral Fortress Turtle, Frostcrown Ram and Aurora Stag: only raid final bosses drop them.</p>
+      </div>
+    </article>
+    <article class="tarjeta rasgo">
+      <img src="assets/angels-online-05.jpg" alt="Violet-haired mage surrounded by magical light" data-es-alt="Maga de cabello violeta rodeada de luz mágica" loading="lazy">
+      <div>
+        <span class="etiqueta" data-es="CLASES">CLASSES</span>
+        <h3 data-es="Combina tus habilidades">Mix your skills</h3>
+        <p data-es="Espadachín, mago, arquero, asesino, artesano… Elige tus habilidades y forja tu propio estilo.">Swordsman, mage, archer, assassin, craftsman… Pick your skills and forge your own style.</p>
+      </div>
+    </article>
+    <article class="tarjeta rasgo">
+      <img src="assets/angels-online-03.jpg" alt="Pink-haired character in a fantasy meadow" data-es-alt="Personaje de cabello rosa en una pradera de fantasía" loading="lazy">
+      <div>
+        <span class="etiqueta" data-es="BOTÍN">LOOT</span>
+        <h3 data-es="Gear Gachas por todas partes">Gear Gachas everywhere</h3>
+        <p data-es="Cada monstruo de nivel 10 o más puede soltar una Gear Gacha de su nivel: armas, armaduras, capas, accesorios y gemas.">Every level 10+ monster can drop a Gear Gacha of its level: weapons, armor, capes, accessories and gems.</p>
+      </div>
+    </article>
+    <article class="tarjeta rasgo">
+      <img src="assets/angels-online-08.jpg" alt="Friends and pets on an adventure" data-es-alt="Amigos y mascotas de aventura" loading="lazy">
+      <div>
+        <span class="etiqueta" data-es="COMPAÑÍA">COMPANIONSHIP</span>
+        <h3 data-es="Pequeños amigos, grandes historias">Little friends, big stories</h3>
+        <p data-es="Mascotas, robots y criaturas encantadoras te acompañan. Críalos, equípalos y hazlos evolucionar.">Pets, robots and charming creatures join you. Raise them, equip them and help them evolve.</p>
+      </div>
+    </article>
   </div>
 </section>
 
+<!-- PREGUNTAS -->
 <section class="seccion" id="preguntas" aria-labelledby="titulo-preguntas">
   <div class="encabezado">
     <span class="etiqueta" data-es="EL PERGAMINO DEL VIAJERO">THE TRAVELER'S SCROLL</span>
@@ -135,19 +201,32 @@
     <details><summary data-es="¿Dónde pongo mi contraseña?">Where do I set my password?</summary><p data-es="Al crear tu cuenta en esta página. Es la misma con la que entras al juego. Guárdala bien: no la podemos recuperar.">When you create your account on this page. It's the same one you use to log in to the game. Keep it safe: we can't recover it.</p></details>
     <details><summary data-es="¿Qué descargo?">What do I download?</summary><p data-es="El cliente completo (una sola vez) y el launcher. El launcher va dentro de la carpeta del juego y lo mantiene actualizado.">The full client (just once) and the launcher. The launcher goes inside the game folder and keeps it up to date.</p></details>
     <details><summary data-es="¿Tengo que descargar el cliente en cada actualización?">Do I have to download the client again for every update?</summary><p data-es="No. El launcher descarga solo lo que cambió y verifica que llegue completo.">No. The launcher downloads only what changed and checks that it arrived complete.</p></details>
+    <details><summary data-es="¿Dónde veo mis personajes?">Where can I see my characters?</summary><p data-es="En &lt;a href=&quot;panel/&quot;&gt;Mi cuenta&lt;/a&gt;, con el mismo usuario y contraseña del juego.">In <a href="panel/">My account</a>, with the same username and password you use in the game.</p></details>
     <details><summary data-es="¿Necesito instalar algo más?">Do I need to install anything else?</summary><p data-es="No. Funciona en Windows 10 y 11 sin instalar nada adicional.">No. It works on Windows 10 and 11 without installing anything extra.</p></details>
     <details><summary data-es="¿Es la web oficial de Angels Online?">Is this the official Angels Online website?</summary><p data-es="No. Es una web de comunidad para este servidor, sin afiliación con el editor del juego.">No. It's a community website for this server, not affiliated with the game's publisher.</p></details>
   </div>
 </section>
 
-<section class="despedida">
-  <img src="assets/angels-online-07.jpg" alt="Friends gathered in the academy square" data-es-alt="Amigos reunidos en la plaza de la academia" loading="lazy">
-  <div class="despedida-texto"><span class="etiqueta" data-es="NOS VEMOS EN LA ACADEMIA">SEE YOU AT THE ACADEMY</span><h2 data-es="La mejor parte del viaje es con &lt;em&gt;quién lo compartes.&lt;/em&gt;">The best part of the journey is <em>who you share it with.</em></h2><a class="boton boton-principal" href="#crear-cuenta" data-es="Crear mi cuenta">Create my account</a></div>
+<!-- DESPEDIDA -->
+<section class="despedida" aria-labelledby="titulo-despedida">
+  <img src="assets/cielo-900.webp" alt="" loading="lazy">
+  <div class="despedida-texto">
+    <img class="despedida-emblema" src="assets/emblema.webp" width="480" height="484" alt="" loading="lazy">
+    <span class="etiqueta" data-es="NOS VEMOS EN EL CIELO">SEE YOU IN THE SKY</span>
+    <h2 id="titulo-despedida" data-es="La mejor parte del viaje es con &lt;em&gt;quién lo compartes.&lt;/em&gt;">The best part of the journey is <em>who you share it with.</em></h2>
+    <div class="botones centro">
+      <a class="boton boton-principal" href="#crear-cuenta" data-es="Crear mi cuenta">Create my account</a>
+      <a class="boton boton-suave" href="#descargas" data-es="Descargar el juego">Download the game</a>
+    </div>
+  </div>
 </section>
 </main>
 
 <footer class="pie">
-  <div class="marca"><img src="assets/logo-forever-sm.webp" width="240" height="126" alt="Angels Online Forever" loading="lazy"></div>
+  <div class="marca"><img src="assets/emblema-112.webp" width="56" height="56" alt=""><span class="marca-texto">Angels Online <b>Forever</b></span></div>
+  <nav class="pie-enlaces" aria-label="Footer" data-es-aria-label="Pie">
+    <a href="#noticias" data-es="Noticias">News</a><a href="#descargas" data-es="Descargas">Downloads</a><a href="panel/" data-es="Mi cuenta">My account</a><a href="#preguntas" data-es="Preguntas">FAQ</a>
+  </nav>
   <p data-es="Un mundo de fantasía por descubrir.">A fantasy world waiting to be discovered.</p>
   <small data-es="Sitio de comunidad · No afiliado al editor del juego.">Community website · Not affiliated with the game's publisher.</small>
 </footer>

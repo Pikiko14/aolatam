@@ -9,6 +9,7 @@ Expone, solo en 127.0.0.1 (nginx hace de proxy_pass en /api/cuenta/*):
 
     GET  /api/cuenta/disponible?usuario=X[&lang=es]      -> {"disponible": true/false, "motivo": "..."}
     POST /api/cuenta/registrar {"usuario": X, "password": P, "confirmar": P[, "lang": "es"]}  -> {"ok": true/false, "mensaje": "..."}
+    GET  /api/cuenta/estado                              -> {"version": "0.0.0.N", "noticias": [{fecha, titulo, texto}]}
 
 La web es bilingue (tools/web_sitio/i18n.js): los mensajes salen en ingles, o en espanol con lang=es.
 
@@ -77,6 +78,29 @@ def _validar_contrasena(pw: str, confirmar: str, lang: str = 'en'):
     return None
 
 
+
+RAIZ = pathlib.Path(__file__).resolve().parent.parent
+NOTICIAS_PUBLICAS = 8
+
+
+def estado_publico() -> dict:
+    """Para la portada de la web (13/11/2026): la version del parche y las ultimas noticias del launcher
+    (data/noticias.json, las mismas que salen en AngelsLauncher), para que la web no tenga que copiarlas a mano.
+    GET /api/cuenta/estado (va por el proxy_pass de /api/cuenta/ que ya tiene nginx)."""
+    salida = {'version': '', 'noticias': []}
+    try:
+        salida['version'] = str(json.loads((RAIZ / 'parches' / 'version.json').read_text(encoding='utf-8')).get('version') or '')
+    except (OSError, ValueError):
+        pass
+    try:
+        noticias = json.loads((RAIZ / 'data' / 'noticias.json').read_text(encoding='utf-8'))
+        salida['noticias'] = [{'fecha': str(n.get('fecha') or ''), 'titulo': str(n.get('titulo') or ''),
+                               'texto': str(n.get('texto') or '')}
+                              for n in noticias[:NOTICIAS_PUBLICAS] if isinstance(n, dict)]
+    except (OSError, ValueError):
+        pass
+    return salida
+
 class Handler(BaseHTTPRequestHandler):
     server_version = 'AngelsOnlineWebRegistro/1.0'
 
@@ -109,6 +133,8 @@ class Handler(BaseHTTPRequestHandler):
         ruta = urlsplit(self.path)
         if ruta.path.startswith('/api/panel/'):
             return panel_web.atender(self, 'GET', ruta.path, parse_qs(ruta.query))
+        if ruta.path == '/api/cuenta/estado':
+            return self._json(200, estado_publico())
         if ruta.path != '/api/cuenta/disponible':
             return self._json(404, {'error': 'no encontrado'})
         consulta = parse_qs(ruta.query)

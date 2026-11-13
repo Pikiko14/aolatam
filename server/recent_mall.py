@@ -241,6 +241,8 @@ def canjear(ses,recipe_id,times):
     group=str(row.get('\u7fa4\u7d44') or '')
     owner=datos()['exchange_owners'].get(group)
     if not owner:return False
+    # Abierto desde Event Overview > Exchange (app.py, accion 73): no hace falta su NPC (13/11/2026).
+    if group.isdigit() and getattr(ses,'_grupo_event_overview',None)==int(group):return False
     if (not cerca(ses,owner) or getattr(ses,'_lyceum_exchange',None)!=int(group)
             or getattr(ses,'_recent_mall_npc',None)!=owner):
         _aviso(ses,'Open this exchange at %s first.'%owner);return True

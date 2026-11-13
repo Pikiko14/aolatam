@@ -40,9 +40,15 @@ document.addEventListener('langchange', () => {
 });
 
 // Noticias. Renderizado seguro: los textos nunca se interpretan como HTML. Se repintan al cambiar de idioma.
+// Son las de news.js mas las del launcher (data/noticias.json, GET /api/cuenta/estado, 13/11/2026): asi cada subida
+// sale aqui sola. Se ven NOTICIAS_VISIBLES; el resto, con "Ver mas noticias".
+const NOTICIAS_VISIBLES = 6;
 const newsList = document.getElementById('news-list');
+const newsMore = document.getElementById('news-more');
+let mostrarTodas = false;
 const entries = Array.isArray(window.SERVER_NEWS) ? [...window.SERVER_NEWS] : [];
-entries.sort((a, b) => String(b.date).localeCompare(String(a.date)));
+function ordenarNoticias() { entries.sort((a, b) => String(b.date).localeCompare(String(a.date))); }
+ordenarNoticias();
 function newsElement(tag, className, text) {
   const element = document.createElement(tag);
   element.className = className;
@@ -57,9 +63,9 @@ function pintarNoticias() {
                                                       'Aún no hay noticias publicadas. Vuelve pronto para descubrir las novedades.')));
     return;
   }
-  entries.forEach(entry => {
+  entries.forEach((entry, i) => {
     const texto = es && entry.es ? {...entry, ...entry.es} : entry;
-    const article = newsElement('article', 'news-entry', '');
+    const article = newsElement('article', 'news-entry' + (!mostrarTodas && i >= NOTICIAS_VISIBLES ? ' oculta' : ''), '');
     const meta = newsElement('div', 'news-meta', '');
     const time = newsElement('time', '', '');
     const date = new Date(`${entry.date}T12:00:00Z`);
@@ -77,6 +83,44 @@ function pintarNoticias() {
     }
     newsList.append(article);
   });
+  if (newsMore) newsMore.hidden = mostrarTodas || entries.length <= NOTICIAS_VISIBLES;
 }
 pintarNoticias();
 document.addEventListener('langchange', pintarNoticias);
+if (newsMore) newsMore.addEventListener('click', () => { mostrarTodas = true; pintarNoticias(); });
+
+// La version del juego y las noticias del launcher. Sin la API (abierta como archivo, o caida) se queda lo de news.js.
+fetch('/api/cuenta/estado').then(r => (r.ok ? r.json() : null)).then(estado => {
+  if (!estado) return;
+  const version = document.getElementById('dato-version');
+  if (version && estado.version) version.textContent = estado.version.replace(/^0\.0\.0\./, 'v');
+  if (version && estado.version) document.getElementById('dato-version-caja').hidden = false;
+  const ya = new Set(entries.map(e => e.title));
+  (estado.noticias || []).forEach(n => {
+    if (!n.titulo || ya.has(n.titulo)) return;
+    const m = /^(Update|Fix|Hotfix)\b/i.exec(n.titulo);
+    entries.push({date: n.fecha, category: m ? m[1] : 'News', title: n.titulo, summary: n.texto,
+                  es: {category: m ? ({update: 'Actualización', fix: 'Arreglo', hotfix: 'Arreglo'})[m[1].toLowerCase()] : 'Noticias'}});
+  });
+  ordenarNoticias();
+  pintarNoticias();
+}).catch(() => {});
+
+// Cabecera: solida al bajar de la portada, y el menu de movil.
+const cabecera = document.getElementById('cabecera');
+if (cabecera) {
+  const solida = () => cabecera.classList.toggle('solida', window.scrollY > 60);
+  solida();
+  window.addEventListener('scroll', solida, {passive: true});
+  const boton = document.getElementById('menu-boton');
+  const menu = document.getElementById('menu');
+  if (boton && menu) {
+    const cerrar = () => { menu.classList.remove('abierto'); boton.setAttribute('aria-expanded', 'false'); };
+    boton.addEventListener('click', () => {
+      const abierto = menu.classList.toggle('abierto');
+      boton.setAttribute('aria-expanded', String(abierto));
+    });
+    menu.addEventListener('click', e => { if (e.target.closest('a')) cerrar(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrar(); });
+  }
+}
