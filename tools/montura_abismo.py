@@ -291,8 +291,26 @@ def filas_rejilla_exacta(m):
         if tam[i] < 15:
             continue
         sitio = etiquetas == i + 1
-        if tam[i] >= 1.6 * mediana:                      # dos sprites pegados: cada pixel a su casilla
-            duena[sitio] = casilla[sitio][:, 0] * columnas + casilla[sitio][:, 1]
+        if tam[i] >= 1.6 * mediana:
+            # Dos sprites pegados (la cola de uno toca al otro): partirlos por el borde de la casilla cortaba la cola
+            # en recto y su punta se iba con el vecino ("se ven ciertos pixeles perdidos en el leon", 13/11/2026).
+            # Se encoge la mancha hasta que se parte en nucleos y cada pixel va al nucleo mas cercano.
+            semillas = sitio
+            for _vez in range(25):
+                semillas = ndimage.binary_erosion(semillas)
+                partes, k = ndimage.label(semillas, structure=np.ones((3, 3)))
+                if k >= 2:
+                    break
+            if k >= 2:
+                _d, (iy, ix) = ndimage.distance_transform_edt(partes == 0, return_indices=True)
+                nucleo = partes[iy, ix]
+                for q in range(1, k + 1):
+                    cy_q, cx_q = ndimage.center_of_mass(partes == q)
+                    f = int(np.searchsorted(corte_y, cy_q))
+                    c = int(np.searchsorted(corte_x, cx_q))
+                    duena[sitio & (nucleo == q)] = f * columnas + c
+            else:
+                duena[sitio] = casilla[sitio][:, 0] * columnas + casilla[sitio][:, 1]
         else:
             f = int(np.searchsorted(corte_y, centros[i][0]))
             c = int(np.searchsorted(corte_x, centros[i][1]))
