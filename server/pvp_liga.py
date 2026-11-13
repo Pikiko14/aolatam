@@ -595,6 +595,8 @@ def _aplicar(ses, otro, dano, es_crit, con_efecto, tipo, efecto, magia, *, orige
         dano = 0                                   # Shield Wall: inmune al dano fisico y magico mientras dura
     dano = __import__('avatar_clones').absorber(otro,dano)
     q.hp = max(0, q.hp - dano)
+    combate.acumular(q.buffs, 'recibido', dano)               # Rage Armor del que recibe
+    combate.acumular(p.buffs, 'hecho', dano)                  # Spear Trap del que pega
     # Hurt Recovery / Agonizing Regen (被爆擊回血): un critico recibido devuelve al momento ese % del dano.
     cura = combate.cura_por_critico(dano, q.buffs) if (es_crit and q.hp) else 0
     if cura:

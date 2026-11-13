@@ -204,6 +204,8 @@ def _datos(npc_type: int):
                     'ice_prob': _n(d.get('寒冰機率')),
                     'rotten_atk': _n(d.get('腐蝕攻擊')),
                     'rotten_prob': _n(d.get('腐蝕機率')),
+                    'nivel': _n(d.get('level')),
+                    'inmune_empuje': d.get('免疫震退') == '是',     # no le mueven los empujes ni las atracciones
                 }
     return _MON.get(npc_type)
 
@@ -553,6 +555,104 @@ def es_debuff_recibido(b) -> bool:
     return isinstance(b, dict) and bool(b.get('debuff_pvp') or b.get('control_pvp') or b.get('es_debuff_recibido'))
 
 
+def acumular(buffs, lado: str, cantidad: int, ahora=None) -> int:
+    """Rage Armor ('recibido') / Spear Trap ('hecho'): suma `cantidad` a los buffs vivos que acumulan ese lado."""
+    if cantidad <= 0:
+        return 0
+    n = 0
+    for b in _buffs_vivos(buffs, ahora):
+        if _dato_buff(b, 'acumula', '') == lado:
+            b['acumulado'] = int(b.get('acumulado') or 0) + int(cantidad)
+            n += 1
+    return n
+
+
+def reparto_acumulado(total: int, mag: dict, objetivos: int) -> list:
+    """El dano que suelta cada objetivo al acabar Rage Armor / Spear Trap: el acumulado por su %, repartido a partes
+    iguales (Rage Armor) o entero a cada uno (Spear Trap), con el tope por objetivo del hijo."""
+    if total <= 0 or objetivos <= 0:
+        return []
+    suelto = total * int(mag.get('acumula_pct') or 50) / 100.0
+    cada = suelto / objetivos if mag.get('acumula') == 'recibido' else suelto
+    tope = int(mag.get('acumula_tope') or 0)
+    cada = int(round(min(cada, tope) if tope > 0 else cada))
+    return [max(1, cada)] * objetivos
+
+
+def refuerzo_senuelo(mid_buff: int) -> dict:
+    """Lo que el buff 仇恨加成 (1272.., 7906.., 8658.., 8748.., 4661.., 8808..) le da al senuelo: ataque, ataque
+    magico, defensas planas y la cura total de sus tics."""
+    d = _magic_xml().get(int(mid_buff or 0)) or {}
+
+    def _n(k):
+        try:
+            return int(float(d.get(k) or 0))
+        except (TypeError, ValueError):
+            return 0
+    cura = 0
+    if d.get('HP定義') == '數值' and _n('HP') > 0:
+        cura = _n('HP') * max(1, _n('持續時間') // max(1, _n('作用間隔') or _n('持續時間') or 1))
+    return {'atk': _n('攻擊'), 'matk': _n('魔攻'), 'defensa': _n('防禦'), 'mdef': _n('魔防'), 'cura': cura,
+            'atk_pct': _n('物理傷害')}                        # Murder Contract: +20% de dano
+
+
+EMPUJE_CASILLAS = 2            # "May knock target back 2 squares" (Death Chop); lo que dice el resto si lo dice
+VELOCIDAD_EMPUJE = 400         # el 0x0005 del empuje/atraccion: rapido, que se vea como un golpe y no como un paseo
+_RE_EMPUJE = re.compile(r'repuls|knock|push|repel|blow[s]? (?:away|back)')
+_DESPLAZA_CACHE = {}
+
+
+def desplazamiento(mid: int):
+    """{'modo': 'empuja'|'atrae', 'casillas', 'prob'} de una habilidad de ataque, o None.
+
+    Empujan: Basic/Advanced/Great Attack, Smite, Fist Flash, Kami Terror, Polar Starburst, Earth Anger, Berserk Cry,
+    Divine Roar, Power Chop, TNT Arrow, Point of Convergence, Tempest Assault, Death Chop, Shockwave...
+    Atraen ("pull"): Berserker's Fury y Whirlfire (formula 41, 動態參數1 % de que pase), Toma Tornado, Spinning Axe."""
+    mid = int(mid or 0)
+    if mid in _DESPLAZA_CACHE:
+        return _DESPLAZA_CACHE[mid]
+    d = _magic_xml().get(mid) or {}
+    desc = str(d.get('說明') or '').lower()
+    res = None
+    if d.get('攻擊型') == '是' and desc:
+        if re.search(r'\bpull', desc):
+            prob = 100
+            if str(d.get('公式') or '') == '41':
+                try:
+                    prob = int(float(d.get('動態參數1') or 100)) or 100
+                except (TypeError, ValueError):
+                    prob = 100
+            res = {'modo': 'atrae', 'casillas': 0, 'prob': min(100, prob)}
+        elif _RE_EMPUJE.search(desc):
+            m = re.search(r'(?:back|away)\s*(\d+)\s*(?:squares|grids|tiles)', desc)
+            res = {'modo': 'empuja', 'casillas': int(m.group(1)) if m else EMPUJE_CASILLAS,
+                   'prob': 50 if re.search(r'\bmay knock|chance (?:of|to) (?:knock|repuls|push)', desc) else 100}
+    _DESPLAZA_CACHE[mid] = res
+    return res
+
+
+def destino_desplazamiento(des: dict, jugador, monstruo, se_pisa) -> tuple:
+    """La casilla a la que va el monstruo: hacia atras desde el jugador (empuje) o a su lado (atraccion), casilla a
+    casilla y parando antes de la primera que no se pisa (paredes, agua)."""
+    jx, jy = jugador
+    x, y = monstruo
+    dx = (x > jx) - (x < jx)
+    dy = (y > jy) - (y < jy)
+    if des['modo'] == 'empuja':
+        if not dx and not dy:
+            dx = 1
+        pasos = des['casillas']
+    else:
+        dx, dy = -dx, -dy
+        pasos = max(0, max(abs(x - jx), abs(y - jy)) - 1)        # hasta quedar pegado
+    for _ in range(pasos):
+        nx, ny = x + dx, y + dy
+        if not se_pisa(nx, ny):
+            break
+        x, y = nx, ny
+    return x, y
+
+
 def velocidad_buff(b, en_sigilo: bool) -> float:
     """La velocidad que da un buff: Quick Step / Focus / Super Speed (瞬步) dan mas en sigilo (動態參數2)."""
     mag = b.get('mag') if isinstance(b.get('mag'), dict) else {}
@@ -729,6 +829,8 @@ class Monstruo:
         self.ice_prob = d.get('ice_prob', 0)
         self.rotten_atk = d.get('rotten_atk', 0)
         self.rotten_prob = d.get('rotten_prob', 0)
+        self.nivel = d.get('nivel', 0)
+        self.inmune_empuje = bool(d.get('inmune_empuje'))
         self.captura_fallida_en = None
 
     def registrar_dano(self, cantidad: int, es_pet: bool = False):
@@ -2026,6 +2128,25 @@ def datos_magia(magic_id: int) -> dict:
                 res['mp_a_hp_pct'] = _p1                       # Rejuvenation: el % del MP gastado vuelve como HP
             elif _est == '物法傷抵銷' and 'immune' in desc_l:
                 res['inmune_dano'] = True                      # Shield Wall: inmune al dano fisico y magico
+            if res['formula'] == 22 and _est in ('累積被攻擊傷害', '累積傷害'):
+                # Rage Armor (累積被攻擊傷害: el dano RECIBIDO) y Spear Trap (累積傷害: el dano HECHO) lo juntan mientras
+                # duran y al acabar su hijo (動態參數2: 5996 / 4896, con 範圍) lo suelta alrededor al 動態參數3 %. El
+                # 動態參數1 del hijo es el tope por objetivo. Rage Armor lo reparte "equally"; Spear Trap a cada uno.
+                _hijo_ac = _magic_xml().get(_p2) or {}
+                res['acumula'] = 'recibido' if _est == '累積被攻擊傷害' else 'hecho'
+                res['acumula_pct'] = _num(d.get('動態參數3'), 50) or 50
+                res['acumula_hijo'] = _p2
+                res['acumula_radio'] = _num(_hijo_ac.get('範圍'), 5) or 5
+                res['acumula_tope'] = _num(_hijo_ac.get('動態參數1'), 0)
+                res['acumula_efecto'] = _num(_hijo_ac.get('特效編號'), 0) or res['efecto']
+            _hijo_ag = _magic_xml().get(_num(d.get('動態參數3'), 0)) or {}
+            if res['formula'] in (23, 46) and _hijo_ag.get('魔法狀態') == '仇恨加成':
+                # Transfer Bargain, Sacred Pact, Death Pact, Murder Contract (23: la invocacion) e Illusion Strength,
+                # Illusionist (46: los dobles): el hijo 動態參數3 (仇恨加成) refuerza al senuelo y los enemigos le
+                # atacan a el mientras dura.
+                res['agro_senuelo'] = True
+                res['agro_buff'] = _num(d.get('動態參數3'), 0)
+                res['agro_dur_ms'] = _num(_hijo_ag.get('持續時間'), 30) * 1000
             if res['formula'] == 37:
                 # Exorshield / Barrier of Justice: quita los debuffs y da inmunidad a ellos (動態參數1 % de que
                 # no entre cada uno) mientras dura.
@@ -2494,7 +2615,7 @@ def separacion_aoe(combo) -> float:
     return max(0.06, min(sep, DURACION_RAFAGA_AOE / max(1, golpes - 1)))
 
 
-def cura_por_tics(magic_id: int):
+def cura_por_tics(magic_id: int, _profundidad: int = 0):
     """Tics de HP/MP de una habilidad con duracion e intervalo.
 
     Injury Cure I (603) es 對象="自己" HP="15" 作用間隔="5" 持續時間="11":
@@ -2513,6 +2634,13 @@ def cura_por_tics(magic_id: int):
     intervalo = _n(d.get('作用間隔'))
     dur = _n(d.get('持續時間'))
     if (hp <= 0 and mp <= 0) or intervalo <= 0 or dur <= 0:
+        # LA REGENERACION VA EN EL HIJO (13/11/2026): Rejuvenation (5746..5750 -> 7937..7941, "HP regeneration
+        # speed is also increased"), Limit Breaker (13355.. -> 13485..), Keen Recovery... la encadenan al 100% por
+        # 轉嫁法術 a un hechizo oculto con HP y 作用間隔. Sin esto solo quedaba el icono.
+        hijo = _n(d.get('轉嫁法術'))
+        if (hijo and hijo != int(magic_id) and _n(d.get('轉嫁機率'), 100) >= 100
+                and d.get('攻擊型') != '是' and not _profundidad):
+            return cura_por_tics(hijo, _profundidad=1)
         return None
     # El primer tic es al lanzarla: en 11 s con intervalo de 5 caben
     # tres (0, 5 y 10), no dos.

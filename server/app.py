@@ -11024,6 +11024,155 @@ def _limpiar_debuffs(ses):
     return quitar
 
 
+def _liberar_acumulado(ses, tipo, entrada):
+    """Rage Armor / Spear Trap (formula 22): al acabar, lo acumulado sale contra los monstruos de alrededor."""
+    import combate as _cb_a
+    p = getattr(ses, 'personaje', None)
+    if not p or getattr(ses, 'muerto', False) or entrada.get('liberado'):
+        return []
+    entrada['liberado'] = True
+    mag = entrada.get('mag') or entrada
+    total = int(entrada.get('acumulado') or 0)
+    radio = int(mag.get('acumula_radio') or 5)
+    cerca = [b for b in (getattr(ses, 'monstruos', None) or {}).values()
+             if getattr(b, 'vivo', False) and b.hp > 0
+             and max(abs(b.tile_x - p.tile_x), abs(b.tile_y - p.tile_y)) <= radio]
+    golpes = _cb_a.reparto_acumulado(total, mag, len(cerca))
+    if not golpes:
+        return []
+    yo, hijo = p.entity_id, int(mag.get('acumula_hijo') or tipo)
+    ef = int(mag.get('acumula_efecto') or 0)
+    pkgs = [_cb_a.efecto_magia_self_inicio(yo, ef, hijo), _cb_a.efecto_magia_self_fin(yo, ef, hijo)] if ef else []
+    muertos = []
+    for b, d in zip(cerca, golpes):
+        d = b.recibir_extra(d)
+        pkgs += [_cb_a.numero_flotante(b.entity_id, d), _cb_a.atributo(b.entity_id, b.porcentaje)]
+        if b.hp <= 0:
+            muertos.append(b)
+    ses.enviar_inmediato(*pkgs)
+    for b in muertos:
+        _procesar_muerte_monstruo(ses, b, yo, getattr(ses, 'addr', None), espera=0.1)
+    log.info('%s suelta %s: %d acumulado -> %s a %d monstruos', p.nombre, mag.get('nombre'), total,
+             golpes[0], len(golpes))
+    return golpes
+
+
+def _desplazar(ses, m, tipo):
+    """Empuje o atraccion de la habilidad `tipo` sobre el monstruo `m` (combate.desplazamiento). No mueve a los
+    jefes, a los 免疫震退 ni a los que siguen vivos fuera de la tirada; la atraccion no puede con 20 niveles de mas."""
+    import combate as _cb_d
+    des = _cb_d.desplazamiento(tipo)
+    p = getattr(ses, 'personaje', None)
+    if (not des or not p or not getattr(m, 'vivo', False) or m.hp <= 0
+            or getattr(m, 'inmune_empuje', False) or _cb_d.es_jefe(getattr(m, 'npc_type', 0) or 0)
+            or getattr(m, 'es_estatico', False)):
+        return None
+    if des['modo'] == 'atrae' and int(getattr(m, 'nivel', 0) or 0) - int(getattr(p, 'nivel', 0) or 0) >= 20:
+        return None
+    if random.random() * 100 >= des['prob']:
+        return None
+    stage = _mapa_de_paso(m, p.stage)
+    conocido = _transitable.conocido(stage)
+    dest = _cb_d.destino_desplazamiento(des, (p.tile_x, p.tile_y), (m.tile_x, m.tile_y),
+                                        lambda x, y: _transitable.se_pisa(stage, x, y) if conocido else True)
+    if dest == (m.tile_x, m.tile_y):
+        return None
+    try:
+        MOVE_D = Msg.registry[(0x0005, 's2c', '*')]
+        ses.enviar(MOVE_D.build(entity_id=m.entity_id, cur_x=m.tile_x * 32, cur_y=m.tile_y * 32,
+                                dst_x=dest[0] * 32, dst_y=dest[1] * 32, speed=_cb_d.VELOCIDAD_EMPUJE))
+    except Exception:
+        log.debug('no se pudo mandar el empuje', exc_info=True)
+    pasos = max(abs(m.tile_x - dest[0]), abs(m.tile_y - dest[1]))
+    m.tile_x, m.tile_y = dest
+    try:
+        m.tile[0], m.tile[1] = dest
+    except Exception:
+        pass
+    m.proximo_paso = time.time() + _cb_d.segundos_de_tramo(pasos, _cb_d.VELOCIDAD_EMPUJE)
+    return dest
+
+
+RETRASO_EMPUJE = 0.35          # que el golpe se vea antes de que el bicho salga despedido
+
+
+def _desplazar_luego(ses, m, tipo):
+    """_desplazar tras el golpe (el 0x0005 adelantaba al numero de dano)."""
+    import combate as _cb_d
+    if tipo == _cb_d.ATAQUE_NORMAL or not _cb_d.desplazamiento(tipo):
+        return
+    try:
+        asyncio.get_event_loop().call_later(RETRASO_EMPUJE, _desplazar, ses, m, tipo)
+    except Exception:
+        _desplazar(ses, m, tipo)
+
+
+def _senuelos(ses):
+    """Las invocaciones y el doble vivos del jugador: a quien pueden mandar el agro las formulas 23 y 46."""
+    ahora = time.time()
+    res = []
+    for inv in (getattr(ses, 'invocacion', None), getattr(ses, 'invocacion2', None), getattr(ses, 'avatar_clon', None)):
+        if isinstance(inv, dict) and inv.get('hp', 1) > 0 and (not inv.get('expira') or inv['expira'] > ahora):
+            res.append(inv)
+    return res
+
+
+def _senuelo_activo(ses, ahora=None):
+    """El entity_id al que va el agro (Transfer Bargain, Sacred Pact, Illusion Strength...), o None."""
+    ag = getattr(ses, 'agro_senuelo', None)
+    if not ag or ag['hasta'] <= (ahora or time.time()):
+        return None
+    return ag['eid'] if any(i.get('entity_id') == ag['eid'] for i in _senuelos(ses)) else None
+
+
+def _transferir_agro(ses, mag):
+    """Formulas 23 / 46: el buff 仇恨加成 al senuelo (cura, +ataque, +defensa) y los enemigos pasan a atacarle."""
+    import combate as _cb_g
+    p = getattr(ses, 'personaje', None)
+    sen = _senuelos(ses)
+    if not p or not sen:
+        return None
+    inv = sen[0]
+    dur = max(1000, int(mag.get('agro_dur_ms') or 30000)) / 1000.0
+    ref = _cb_g.refuerzo_senuelo(mag.get('agro_buff'))
+    previo = inv.pop('_refuerzo_agro', None)          # relanzarlo no acumula
+    if previo:
+        for k, v in previo.items():
+            if k in inv:
+                inv[k] -= v
+    suma = {}
+    for k in ('atk', 'matk', 'defensa', 'def', 'mdef'):
+        extra = ref.get('defensa' if k == 'def' else k, 0)
+        if k == 'atk' and ref.get('atk_pct'):
+            extra += int(inv.get('atk', 0) * ref['atk_pct'] / 100)
+        if extra and k in inv:
+            inv[k] += extra
+            suma[k] = extra
+    inv['_refuerzo_agro'] = suma
+    if ref.get('cura') and inv.get('hp_max'):
+        inv['hp'] = min(inv['hp_max'], inv.get('hp', 0) + ref['cura'])
+        ses.enviar(_cb_g.atributo(inv['entity_id'], int(100 * inv['hp'] / max(1, inv['hp_max'])), _cb_g.KIND_HP))
+    if mag.get('agro_buff'):
+        ses.enviar(struct.pack('<HIBBII', 0x001D, inv['entity_id'], 1, 4, int(mag['agro_buff']), int(dur * 1000)))
+    ses.agro_senuelo = {'eid': inv['entity_id'], 'hasta': time.time() + dur}
+    yo = p.entity_id
+    for m in (getattr(ses, 'monstruos', None) or {}).values():
+        if getattr(m, 'vivo', False) and getattr(m, 'en_combate_con', None) == yo:
+            m.en_combate_con = inv['entity_id']
+
+    def _fin(inv=inv, suma=suma):
+        if inv.get('_refuerzo_agro') is suma:
+            for k, v in inv.pop('_refuerzo_agro').items():
+                if k in inv:
+                    inv[k] -= v
+    try:
+        asyncio.get_event_loop().call_later(dur, _fin)
+    except Exception:
+        pass
+    log.info('%s: %s manda el agro a %s (%s, %.0f s)', p.nombre, mag.get('nombre'), inv.get('nombre'), suma, dur)
+    return inv['entity_id']
+
+
 def _buff_a_otro(s, tipo, entrada, dur_ms, mag, lanzador=None, ef=0):
     """Pone el buff a otro jugador: su icono, su ficha y su caducidad.
 
@@ -14060,6 +14209,11 @@ class Servidor:
                                 if ahora >= getattr(m, 'proximo_paso', 0):
                                     _volver_a_casa(ses, m, ahora)
                                 continue
+                            # Formulas 23 / 46 (Sacred Pact, Illusionist...): mientras duran, lo que viene a por mi va
+                            # a por el senuelo.
+                            _sen_ag = _senuelo_activo(ses, ahora)
+                            if _sen_ag is not None and getattr(m, 'en_combate_con', None) == yo:
+                                m.en_combate_con = _sen_ag
                             # 1. Monstruo en combate (jugador, mascota, invocacion o charmed)
                             targ_eid = getattr(m, 'en_combate_con', None)
                             if targ_eid is not None:
@@ -14080,6 +14234,12 @@ class Servidor:
                                     itile = [ses.invocacion2.get('tile_x', p.tile_x), ses.invocacion2.get('tile_y', p.tile_y)]
                                     targ_x, targ_y = itile[0], itile[1]
                                     targ_valido = (ses.invocacion2.get('hp', 1) > 0)
+                                elif getattr(ses, 'avatar_clon', None) and targ_eid == ses.avatar_clon.get('entity_id'):
+                                    # El doble (Illusion Strength / Illusionist le mandan el agro).
+                                    targ_x = ses.avatar_clon.get('tile_x', p.tile_x)
+                                    targ_y = ses.avatar_clon.get('tile_y', p.tile_y)
+                                    targ_valido = (ses.avatar_clon.get('hp', 1) > 0
+                                                   and ses.avatar_clon.get('expira', ahora + 1) > ahora)
                                 elif getattr(ses, 'monstruo_encantado', None) and targ_eid == ses.monstruo_encantado.entity_id:
                                     targ_x, targ_y = ses.monstruo_encantado.tile_x, ses.monstruo_encantado.tile_y
                                     targ_valido = getattr(ses.monstruo_encantado, 'vivo', False)
@@ -14140,7 +14300,9 @@ class Servidor:
                                                 def_targ = int(getattr(ses.monstruo_encantado, 'defensa', 100) or 100)
                                                 suyo = _cb.dano_recibido(m.pegar(), def_targ)
                                             else:
-                                                def_targ = 100
+                                                # Invocacion o doble: su defensa (la sube el 仇恨加成 de Sacred Pact...).
+                                                _sen_d = next((i for i in _senuelos(ses) if i.get('entity_id') == targ_eid), None)
+                                                def_targ = int((_sen_d or {}).get('defensa') or 100)
                                                 suyo = _cb.dano_recibido(m.pegar(), def_targ)
                                             # En sigilo se esquiva: Sneak V da
                                             # un 75% (物理迴避). Un golpe esquivado
@@ -14266,6 +14428,7 @@ class Servidor:
                                                     ), None)
 
                                                     suyo = __import__('avatar_clones').absorber(ses,suyo)
+                                                    _cb.acumular(pj.buffs, 'recibido', suyo)                        # Rage Armor
                                                     pj.hp = max(0, pj.hp - suyo)
                                                     pkgs_imp_yo = [
                                                         _cb.numero_de_dano(m.entity_id, yo, suyo, ataque=atk_id, efecto=ef_atk),
@@ -14346,6 +14509,18 @@ class Servidor:
                                                         import presencia as _pr_inv2_dead
                                                         _pr_inv2_dead.notificar_invocacion_despawn(ses, teid)
                                                         ses.invocacion2 = None
+                                                        m.en_combate_con = yo
+                                                elif getattr(ses, 'avatar_clon', None) and teid == ses.avatar_clon.get('entity_id'):
+                                                    _clon = ses.avatar_clon
+                                                    _clon['hp'] = max(0, _clon.get('hp', 1) - suyo)
+                                                    ses.enviar_inmediato(
+                                                        *_fx_golpe_mob(m.entity_id, teid, suyo, atk_id, ef_atk),
+                                                        _cb.numero_flotante(teid, suyo),
+                                                        _cb.atributo(teid, int(100 * _clon['hp'] / max(1, _clon.get('hp_max', 1))), _cb.KIND_HP))
+                                                    if _clon['hp'] <= 0:
+                                                        ses.enviar_inmediato(_cb.despawn_monstruo(teid))
+                                                        __import__('presencia').notificar_invocacion_despawn(ses, teid)
+                                                        ses.avatar_clon = None
                                                         m.en_combate_con = yo
                                                 elif (getattr(ses, 'monstruo_encantado', None) is not None
                                                       and teid == ses.monstruo_encantado.entity_id):
@@ -15927,6 +16102,8 @@ class Servidor:
                                 es_crit = (random.random() < crit_prob)
                                 mult_crit = 1.5 if es_crit else 1.0
                                 dano = b_primero.recibir(ataque, es_magico=is_magic_skill, mult=mult_spell * mult_crit, var_pct=var_pct)
+                                _cb.acumular(getattr(ses.personaje, 'buffs', None), 'hecho', dano)     # Spear Trap
+                                _desplazar_luego(ses, b_primero, tipo)                 # empuje / atraccion
                                 pkg_debuff = []
                                 if _ef2 and random.randint(1, 100) <= _ef2.get('prob', 100):
                                     b_primero.aplicar_efecto(_ef2)
@@ -15980,6 +16157,8 @@ class Servidor:
                                 es_crit = (random.random() < crit_prob)
                                 mult_crit = 1.5 if es_crit else 1.0
                                 dano = b.recibir(ataque, es_magico=is_magic_skill, mult=mult_spell * mult_crit, var_pct=var_pct)
+                                _cb.acumular(getattr(ses.personaje, 'buffs', None), 'hecho', dano)     # Spear Trap
+                                _desplazar_luego(ses, b, tipo)                 # empuje / atraccion
                                 pkg_debuff = []
                                 if _ef2 and random.randint(1, 100) <= _ef2.get('prob', 100):
                                     b.aplicar_efecto(_ef2)
@@ -16034,6 +16213,8 @@ class Servidor:
                                 es_crit = (random.random() < crit_prob)
                                 mult_crit = 1.5 if es_crit else 1.0
                                 dano = b.recibir(ataque, es_magico=is_magic_skill, mult=mult_spell * mult_crit, var_pct=var_pct)
+                                _cb.acumular(getattr(ses.personaje, 'buffs', None), 'hecho', dano)     # Spear Trap
+                                _desplazar_luego(ses, b, tipo)                 # empuje / atraccion
                                 pkg_debuff = []
                                 if _ef2 and random.randint(1, 100) <= _ef2.get('prob', 100):
                                     b.aplicar_efecto(_ef2)
@@ -16526,7 +16707,15 @@ class Servidor:
                             elif _a_mi_b and not _cb.solo_da_sp(mag):     # Bloody Storm: sube el SP y ya
                                 if mag.get('limpia_debuffs'):
                                     _limpiar_debuffs(ses)          # Exorshield / Barrier of Justice
+                                if mag.get('agro_senuelo'):
+                                    _transferir_agro(ses, mag)     # Transfer Bargain, Sacred Pact, Illusionist...
                                 ses.personaje.buffs[tipo] = buff_entry
+                                if mag.get('acumula'):             # Rage Armor / Spear Trap: suelta al acabar
+                                    try:
+                                        asyncio.get_event_loop().call_later(
+                                            buff_dur_s, _liberar_acumulado, ses, tipo, buff_entry)
+                                    except Exception:
+                                        pass
                                 # Power Shield: su burbuja, mientras dure (avatar_clones.iniciar_burbuja).
                                 if (_cb._magic_xml().get(int(tipo)) or {}).get('魔法狀態') == '法力護盾':
                                     __import__('avatar_clones').iniciar_burbuja(ses, tipo, buff_entry)
@@ -17246,6 +17435,9 @@ class Servidor:
             if is_magic_skill and dano > 0 and m.hp > 0:
                 # Arcane Fire / Ice Age / Lightning Seal: el elemento va en el mismo numero.
                 dano += m.recibir_extra(_cb.dano_elemental_extra(dano, buffs_activos, m))
+            _cb.acumular(buffs_activos, 'hecho', dano)                       # Spear Trap
+            if dano > 0:
+                _desplazar_luego(ses, m, tipo)                               # empuje / atraccion
             if tipo != _cb.ATAQUE_NORMAL:
                 log.info(f"[{addr}] habilidad {tipo} ({'magica' if is_magic_skill else 'fisica'}): "
                          f"{'Spl Atk' if is_magic_skill else 'R.Atk'} {total_atk} * mult {mult_spell:.3f}"

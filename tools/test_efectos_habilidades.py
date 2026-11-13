@@ -168,3 +168,84 @@ def test_thors_hammer_paraliza_y_el_buff_de_ataque_es_del_lanzador():
     assert ef['estado'] == 'paralizado' and not ef['sub_debuff']
     assert ef['buff_lanzador'] == 13001 and ef['buff_lanzador_prob'] == 60
     assert combate.datos_magia(13001)['atk_bonus'] == 200
+
+
+# ---- Lo que quedaba de la auditoria #10 ----
+def test_rejuvenation_y_limit_breaker_regeneran_por_su_hijo():
+    assert combate.cura_por_tics(5750) == {'hp': 1420, 'mp': 0, 'intervalo': 5, 'dur_ms': 30000, 'tics': 7}
+    assert combate.cura_por_tics(13359)['hp'] == 4000                           # Limit Breaker V
+    assert combate.cura_por_tics(16468) is None                                 # resurreccion al 95%: no
+    assert combate.cura_por_tics(603)['hp'] == 15                               # Injury Cure, como siempre
+
+
+def test_rage_armor_y_spear_trap_acumulan_y_sueltan():
+    ra, st = _buff(5640), _buff(5660)                                           # Rage Armor V, Spear Trap V (80%)
+    buffs = {5640: ra, 5660: st}
+    combate.acumular(buffs, 'recibido', 1000)
+    combate.acumular(buffs, 'hecho', 3000)
+    assert ra['acumulado'] == 1000 and st['acumulado'] == 3000
+    assert combate.reparto_acumulado(1000, ra['mag'], 4) == [200] * 4          # Rage Armor: a partes iguales
+    assert combate.reparto_acumulado(3000, st['mag'], 2) == [2400, 2400]       # Spear Trap: a cada uno
+    assert combate.reparto_acumulado(10 ** 6, ra['mag'], 1) == [10000]        # tope del hijo 5996
+
+
+def test_rage_armor_suelta_contra_los_de_alrededor(monkeypatch):
+    from types import SimpleNamespace as NS
+    import app
+    cerca, lejos = _bicho(), combate.Monstruo(2, 1, 'Lejos', (40, 40))
+    monkeypatch.setattr(app, '_procesar_muerte_monstruo', lambda *a, **k: None)
+    env = []
+    ses = NS(personaje=NS(entity_id=1, tile_x=11, tile_y=10, nombre='a'), monstruos={1: cerca, 2: lejos},
+             enviar_inmediato=lambda *x: env.extend(x))
+    ra = _buff(5640)
+    ra['acumulado'] = 100
+    hp = cerca.hp
+    assert app._liberar_acumulado(ses, 5640, ra) == [80]
+    assert cerca.hp == max(0, hp - 80) and lejos.hp == lejos.hp_max and env
+    assert app._liberar_acumulado(ses, 5640, ra) == []                         # una sola vez
+
+
+def test_sacred_pact_manda_el_agro_a_la_invocacion(monkeypatch):
+    from types import SimpleNamespace as NS
+    import app
+    m = _bicho()
+    m.en_combate_con = 1
+    inv = {'entity_id': 9000, 'nombre': 'Minion', 'hp': 10, 'hp_max': 50000, 'atk': 100, 'def': 30, 'defensa': 30}
+    ses = NS(personaje=NS(entity_id=1, nombre='a'), invocacion=inv, invocacion2=None, avatar_clon=None,
+             monstruos={1: m}, enviar=lambda *x: None)
+    mag = combate.datos_magia(5145)                                             # Sacred Pact V -> 7910
+    assert mag['agro_senuelo'] and mag['agro_buff'] == 7910
+    assert app._transferir_agro(ses, mag) == 9000
+    assert m.en_combate_con == 9000 and app._senuelo_activo(ses) == 9000
+    assert inv['defensa'] == 4530 and inv['hp'] == 50000
+    app._transferir_agro(ses, mag)                                              # relanzarlo no acumula
+    assert inv['defensa'] == 4530
+    inv['hp'] = 0
+    assert app._senuelo_activo(ses) is None                                     # muerto el senuelo, vuelve a mi
+
+
+def test_empujes_y_atracciones():
+    assert combate.desplazamiento(801)['modo'] == 'empuja'                       # Basic Attack I
+    assert combate.desplazamiento(20738)['casillas'] == 10                      # Shockwave
+    assert combate.desplazamiento(5630) == {'modo': 'atrae', 'casillas': 0, 'prob': 45}   # Berserker's Fury V
+    assert combate.desplazamiento(301) is None and combate.desplazamiento(combate.ATAQUE_NORMAL) is None
+    libre = lambda x, y: True
+    emp, atr = combate.desplazamiento(801), combate.desplazamiento(13785)
+    assert combate.destino_desplazamiento(emp, (10, 10), (11, 10), libre) == (13, 10)
+    assert combate.destino_desplazamiento(atr, (10, 10), (15, 14), libre) == (11, 10)        # pegado
+    pared = lambda x, y: x < 12                                                 # pared en x = 12
+    assert combate.destino_desplazamiento(emp, (10, 10), (11, 10), pared) == (11, 10)
+
+
+def test_el_empuje_mueve_al_bicho_y_no_al_jefe(monkeypatch):
+    from types import SimpleNamespace as NS
+    import app
+    monkeypatch.setattr(app.random, 'random', lambda: 0.0)
+    env = []
+    ses = NS(personaje=NS(entity_id=1, tile_x=10, tile_y=10, stage=0, nivel=100), enviar=lambda *x: env.extend(x))
+    m = combate.Monstruo(5, 1, 'Dummy', (11, 10))
+    monkeypatch.setattr(app, '_mapa_de_paso', lambda m, st: 0)
+    monkeypatch.setattr(app._transitable, 'conocido', lambda st: False)
+    assert app._desplazar(ses, m, 801) == (13, 10) and (m.tile_x, m.tile_y) == (13, 10) and env
+    m.inmune_empuje = True
+    assert app._desplazar(ses, m, 801) is None
