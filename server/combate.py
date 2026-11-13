@@ -3016,6 +3016,22 @@ def retraso_golpe(buffs=None, habilidades=None) -> float:
 
 RETRASO_SEGUNDA_MANO = 0.70
 
+# 13/11/2026, "el pk5 no esta centrado": las habilidades 射出型 (Panther Killing, alcance 12) mandan un proyectil que
+# cruza la pantalla, y el cliente pinta el estallido al llegar la fase 0x80 donde este el proyectil en ese momento. Se
+# mandaba siempre al acabar el cast (300 ms) y a media distancia la pantera aun no habia llegado: el estallido salia
+# entre el lanzador y el objetivo. Se le suma lo que tarda en llegar, por casilla de distancia.
+VIAJE_PROYECTIL_POR_CASILLA = 0.06
+VIAJE_PROYECTIL_MAXIMO = 0.9
+
+
+def viaje_proyectil(magic_id: int, desde, hasta) -> float:
+    """Los segundos que tarda en llegar el proyectil de una habilidad 射出型 de `desde` a `hasta` (casillas), o 0."""
+    d = _magic_xml().get(int(magic_id or 0)) or {}
+    if str(d.get('射出型') or '') != '是' or not desde or not hasta:
+        return 0.0
+    casillas = max(abs(int(desde[0]) - int(hasta[0])), abs(int(desde[1]) - int(hasta[1])))
+    return min(VIAJE_PROYECTIL_MAXIMO, casillas * VIAJE_PROYECTIL_POR_CASILLA)
+
 
 ANIM_GOLPE = 1480
 # Animacion del 0x000A de cada monstruo al pegar, medida en Celestia

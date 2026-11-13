@@ -17408,7 +17408,8 @@ class Servidor:
             try:
                 bucle = asyncio.get_event_loop()
                 if tipo != _cb.ATAQUE_NORMAL:
-                    _ret = max(0.1, cast_time / 1000.0)
+                    _ret = max(0.1, cast_time / 1000.0) + _cb.viaje_proyectil(
+                        tipo, (ses.personaje.tile_x, ses.personaje.tile_y), (m.tile_x, m.tile_y))
                 else:
                     _ret = _cb.retraso_golpe(buffs_activos,
                                              getattr(ses.personaje, 'habilidades', None))
