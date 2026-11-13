@@ -1669,16 +1669,16 @@
     </window>
     <icon id="12244" dir="\wnd01\" normal="btn168_n" focus="btn168_f" down="btn168_d" disable="normal" />
     <!-- 設定保護密碼 按鈕 -->
-    <window class="WND_CLASS_BUTTON" id="2501" range="11,77,98,17" fcolor="103" font="1" icon="2501" title="Set PIN" tpos="0,3">
+    <window class="WND_CLASS_BUTTON" id="2501" range="320,7,98,17" fcolor="103" font="1" icon="2501" title="Set PIN" tpos="0,3">
         <style wsVisible="" bsHCenter="" wsTab="" />
     </window>
     <icon id="2501" dir="\log\" normal="nullshp" focus="aolat_sel_opcion_f" down="aolat_sel_opcion_s" disable="normal" />
     <!-- 修改保護密碼 按鈕 -->
-    <window class="WND_CLASS_BUTTON" id="2502" range="11,77,98,17" fcolor="103" font="1" icon="2501" title="Change PIN" tpos="0,3">
+    <window class="WND_CLASS_BUTTON" id="2502" range="320,7,98,17" fcolor="103" font="1" icon="2501" title="Change PIN" tpos="0,3">
         <style bsHCenter="" wsTab="" />
     </window>
     <!-- 刪除保護密碼 按鈕 -->
-    <window class="WND_CLASS_BUTTON" id="2503" range="11,96,98,17" fcolor="103" font="1" icon="2501" title="Delete PIN" tpos="0,3">
+    <window class="WND_CLASS_BUTTON" id="2503" range="424,7,98,17" fcolor="103" font="1" icon="2501" title="Delete PIN" tpos="0,3">
         <style wsVisible="" bsHCenter="" wsTab="" />
     </window>
     <!-- 設定保護密碼 視窗 -->
@@ -1885,15 +1885,15 @@
     <window class="WND_CLASS_BUTTON" range="222,180,66,18" id="2533" icon="60463">
         <style wsVisible="" wsTab="" />
     </window>
-    <window class="WND_CLASS_BUTTON" range="0,0,181,402" id="2534" icon="0" check="2534">
+    <window class="WND_CLASS_BUTTON" range="0,0,189,426" id="2534" icon="0" check="2534">
         <style wsVisible="" bsCheck="" bsKeyEvent="" wsTab="" />
         <!-- 角色一 -->
     </window>
-    <window class="WND_CLASS_BUTTON" range="0,0,181,402" id="2535" icon="0" check="2534">
+    <window class="WND_CLASS_BUTTON" range="0,0,189,426" id="2535" icon="0" check="2534">
         <style wsVisible="" bsCheck="" bsKeyEvent="" wsTab="" />
         <!-- 角色二 -->
     </window>
-    <window class="WND_CLASS_BUTTON" range="0,0,181,402" id="2536" icon="0" check="2534">
+    <window class="WND_CLASS_BUTTON" range="0,0,189,426" id="2536" icon="0" check="2534">
         <style wsVisible="" bsCheck="" bsKeyEvent="" wsTab="" />
         <!-- 角色三 -->
     </window>
@@ -2405,7 +2405,7 @@
         <child>2566</child>
         <!-- 創角 一-->
     </window>
-    <window class="WND_CLASS_BASE" id="2565" range="0,0,120,143" icon="2565">
+    <window class="WND_CLASS_BASE" id="2565" range="0,0,580,30" icon="2565">
         <style wsVisible="" />
         <child>2708</child>
         <child>2709</child>
@@ -2420,19 +2420,19 @@
         <child>2715</child>
     </window>
     <icon id="2565" dir="\log\" normal="aolat_sel_menu" focus="normal" down="normal" disable="normal" />
-    <window class="WND_CLASS_BUTTON" id="2708" range="11,20,98,17" fcolor="103" font="1" icon="2501" title="Enter game" tpos="0,3">
+    <window class="WND_CLASS_BUTTON" id="2708" range="8,7,98,17" fcolor="103" font="1" icon="2501" title="Enter game" tpos="0,3">
         <style wsVisible="" bsHCenter="" wsTab="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="2709" range="11,39,98,17" fcolor="103" font="1" icon="2501" title="Create a Chct." tpos="0,3">
+    <window class="WND_CLASS_BUTTON" id="2709" range="112,7,98,17" fcolor="103" font="1" icon="2501" title="Create a Chct." tpos="0,3">
         <style wsVisible="" bsHCenter="" wsTab="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="2710" range="11,58,98,17" fcolor="103" font="1" icon="2501" title="Delete a Chct." tpos="0,3">
+    <window class="WND_CLASS_BUTTON" id="2710" range="216,7,98,17" fcolor="103" font="1" icon="2501" title="Delete a Chct." tpos="0,3">
         <style wsVisible="" bsHCenter="" wsTab="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="2711" range="11,58,98,17" fcolor="103" font="1" icon="2501" title="Recover" tpos="0,3">
+    <window class="WND_CLASS_BUTTON" id="2711" range="216,7,98,17" fcolor="103" font="1" icon="2501" title="Recover" tpos="0,3">
         <style bsHCenter="" wsTab="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="2712" range="46,117,26,18" icon="60466" tooltip="10040" tooltext="Return">
+    <window class="WND_CLASS_BUTTON" id="2712" range="540,6,26,18" icon="60466" tooltip="10040" tooltext="Return">
         <style wsVisible="" bsHCenter="" wsTab="" />
     </window>
     <icon id="2695" dir="\log\" normal="w038_37" focus="normal" down="normal" disable="normal" />
@@ -2460,7 +2460,7 @@
     <icon id="2705" dir="\log\" normal="w038_08" focus="normal" down="normal" disable="normal">
         <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />
     </icon>
-    <window class="WND_CLASS_DLG_1" range="0,0,189,426" id="2713" title="Adventurer" fcolor="104" font="1">
+    <window class="WND_CLASS_BASE" range="0,0,189,426" id="2713" title="Adventurer" fcolor="104" font="1" icon="60465">
         <style wsVisible="" gsNoClose="" gsNoHelp="" gsNoLock="" />
         <child>2731</child>
         <child>2734</child>
@@ -2484,40 +2484,39 @@
         <child>2772</child>
         <child>2775</child>
         <child>2778</child>
-        <child>60470</child>
     </window>
-    <window class="WND_CLASS_STATIC" range="16,74,149,14" id="2716" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="14,100,161,14" id="2716" fcolor="103" font="1">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
         <!-- name -->
     </window>
-    <window class="WND_CLASS_STATIC" range="70,10,64,14" id="2719" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="78,36,62,14" id="2719" fcolor="103" font="1">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
         <!-- LV -->
     </window>
-    <window class="WND_CLASS_STATIC" range="70,28,64,14" id="2722" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="78,54,62,14" id="2722" fcolor="103" font="1">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
         <!-- 陣營-->
     </window>
-    <window class="WND_CLASS_BUTTON" range="16,92,149,14" id="2725" fcolor="103" font="1" tooltip="10040" tooltext="1...">
+    <window class="WND_CLASS_BUTTON" range="14,117,161,14" id="2725" fcolor="103" font="1" tooltip="10040" tooltext="1...">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
         <!-- Place -->
     </window>
-    <window class="WND_CLASS_BASE" range="6,6,60,60" id="2728" icon="2728" />
+    <window class="WND_CLASS_BASE" range="12,30,60,60" id="2728" icon="2728" />
     <!-- 照片框 -->
     <icon id="2728" dir="\log\" normal="aolat_sel_retrato" focus="normal" down="normal" disable="normal" />
-    <window class="WND_CLASS_BUTTON" range="70,48,31,17" id="2731" icon="2734" title="Set" fcolor="104" font="1" tooltip="10040" tooltext="Set pictures">
+    <window class="WND_CLASS_BUTTON" range="78,72,31,17" id="2731" icon="2734" title="Set" fcolor="104" font="1" tooltip="10040" tooltext="Set pictures">
         <style wsVisible="" ssHCenter="" ssVCenter="" wsTab="" />
     </window>
-    <window class="WND_CLASS_BUTTON" range="103,48,31,17" id="2734" icon="2734" title="Face" fcolor="104" font="1" tooltip="10040" tooltext="can upload bmp, jpg, tga,png and so on">
+    <window class="WND_CLASS_BUTTON" range="111,72,31,17" id="2734" icon="2734" title="Face" fcolor="104" font="1" tooltip="10040" tooltext="can upload bmp, jpg, tga,png and so on">
         <style wsVisible="" ssHCenter="" ssVCenter="" wsTab="" />
     </window>
     <icon id="2734" dir="\log\" normal="aolat_sel_mini_n" focus="aolat_sel_mini_f" down="aolat_sel_mini_s" disable="normal" />
     <!-- 2737 -->
-    <window class="WND_CLASS_BASE" id="2740" range="11,11,50,50">
+    <window class="WND_CLASS_BASE" id="2740" range="17,35,50,50">
         <!-- 大頭照 -->
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_DLG_1" range="0,0,189,426" id="2714" title="Adventurer" fcolor="104" font="1">
+    <window class="WND_CLASS_BASE" range="0,0,189,426" id="2714" title="Adventurer" fcolor="104" font="1" icon="60465">
         <style wsVisible="" gsNoClose="" gsNoHelp="" gsNoLock="" />
         <child>2732</child>
         <child>2735</child>
@@ -2541,38 +2540,37 @@
         <child>2773</child>
         <child>2776</child>
         <child>2779</child>
-        <child>60471</child>
     </window>
-    <window class="WND_CLASS_STATIC" range="16,74,149,14" id="2717" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="14,100,161,14" id="2717" fcolor="103" font="1">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
         <!-- name -->
     </window>
-    <window class="WND_CLASS_STATIC" range="70,10,64,14" id="2720" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="78,36,62,14" id="2720" fcolor="103" font="1">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
         <!-- LV -->
     </window>
-    <window class="WND_CLASS_STATIC" range="70,28,64,14" id="2723" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="78,54,62,14" id="2723" fcolor="103" font="1">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
         <!-- 陣營-->
     </window>
-    <window class="WND_CLASS_BUTTON" range="16,92,149,14" id="2726" fcolor="103" font="1" tooltip="10040" tooltext="1...">
+    <window class="WND_CLASS_BUTTON" range="14,117,161,14" id="2726" fcolor="103" font="1" tooltip="10040" tooltext="1...">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
         <!-- Place -->
     </window>
-    <window class="WND_CLASS_BUTTON" range="6,6,60,60" id="2729" icon="2728" />
+    <window class="WND_CLASS_BUTTON" range="12,30,60,60" id="2729" icon="2728" />
     <!-- 照片框 -->
-    <window class="WND_CLASS_BUTTON" range="70,48,31,17" id="2732" icon="2734" title="Set" fcolor="104" font="1" tooltip="10040" tooltext="Set pictures">
+    <window class="WND_CLASS_BUTTON" range="78,72,31,17" id="2732" icon="2734" title="Set" fcolor="104" font="1" tooltip="10040" tooltext="Set pictures">
         <style wsVisible="" ssHCenter="" ssVCenter="" wsTab="" />
     </window>
-    <window class="WND_CLASS_BUTTON" range="103,48,31,17" id="2735" icon="2734" title="Face" fcolor="104" font="1" tooltip="10040" tooltext="can upload bmp, jpg, tga,png and so on">
+    <window class="WND_CLASS_BUTTON" range="111,72,31,17" id="2735" icon="2734" title="Face" fcolor="104" font="1" tooltip="10040" tooltext="can upload bmp, jpg, tga,png and so on">
         <style wsVisible="" ssHCenter="" ssVCenter="" wsTab="" />
     </window>
     <!-- 2738 -->
-    <window class="WND_CLASS_BASE" id="2741" range="11,11,50,50">
+    <window class="WND_CLASS_BASE" id="2741" range="17,35,50,50">
         <!-- 大頭照 -->
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_DLG_1" range="0,0,189,426" id="2715" title="Adventurer" fcolor="104" font="1">
+    <window class="WND_CLASS_BASE" range="0,0,189,426" id="2715" title="Adventurer" fcolor="104" font="1" icon="60465">
         <style wsVisible="" gsNoClose="" gsNoHelp="" gsNoLock="" />
         <child>2733</child>
         <!-- 預設 -->
@@ -2600,113 +2598,112 @@
         <child>2774</child>
         <child>2777</child>
         <child>2780</child>
-        <child>60472</child>
     </window>
-    <window class="WND_CLASS_STATIC" range="16,74,149,14" id="2718" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="14,100,161,14" id="2718" fcolor="103" font="1">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
         <!-- name -->
     </window>
-    <window class="WND_CLASS_STATIC" range="70,10,64,14" id="2721" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="78,36,62,14" id="2721" fcolor="103" font="1">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
         <!-- LV -->
     </window>
-    <window class="WND_CLASS_STATIC" range="70,28,64,14" id="2724" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="78,54,62,14" id="2724" fcolor="103" font="1">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
         <!-- 陣營-->
     </window>
-    <window class="WND_CLASS_BUTTON" range="16,92,149,14" id="2727" fcolor="103" font="1" tooltip="10040" tooltext="...">
+    <window class="WND_CLASS_BUTTON" range="14,117,161,14" id="2727" fcolor="103" font="1" tooltip="10040" tooltext="...">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
         <!-- Place -->
     </window>
-    <window class="WND_CLASS_BUTTON" range="6,6,60,60" id="2730" icon="2728" />
+    <window class="WND_CLASS_BUTTON" range="12,30,60,60" id="2730" icon="2728" />
     <!-- 照片 -->
-    <window class="WND_CLASS_BUTTON" range="70,48,31,17" id="2733" icon="2734" title="Set" fcolor="104" font="1" tooltip="10040" tooltext="Set pictures">
+    <window class="WND_CLASS_BUTTON" range="78,72,31,17" id="2733" icon="2734" title="Set" fcolor="104" font="1" tooltip="10040" tooltext="Set pictures">
         <style wsVisible="" ssHCenter="" ssVCenter="" wsTab="" />
     </window>
-    <window class="WND_CLASS_BUTTON" range="103,48,31,17" id="2736" icon="2734" title="Face" fcolor="104" font="1" tooltip="10040" tooltext="can upload bmp, jpg, tga,png and so on">
+    <window class="WND_CLASS_BUTTON" range="111,72,31,17" id="2736" icon="2734" title="Face" fcolor="104" font="1" tooltip="10040" tooltext="can upload bmp, jpg, tga,png and so on">
         <style wsVisible="" ssHCenter="" ssVCenter="" wsTab="" />
     </window>
     <!-- 2739 -->
-    <window class="WND_CLASS_BASE" id="2742" range="11,11,50,50">
+    <window class="WND_CLASS_BASE" id="2742" range="17,35,50,50">
         <!-- 大頭照 -->
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_MSTATIC" id="2757" range="12,112,24,74" fcolor="103" font="1" title="Title Job   HP   MP   Sign" lines="5" words="6">
+    <window class="WND_CLASS_MSTATIC" id="2757" range="14,138,24,74" fcolor="103" font="1" title="Title Job   HP   MP   Sign" lines="5" words="6">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_MSTATIC" id="2758" range="12,112,24,74" fcolor="103" font="1" title="Title Job   HP   MP   Sign" lines="5" words="6">
+    <window class="WND_CLASS_MSTATIC" id="2758" range="14,138,24,74" fcolor="103" font="1" title="Title Job   HP   MP   Sign" lines="5" words="6">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_MSTATIC" id="2759" range="12,112,24,74" fcolor="103" font="1" title="Title Job   HP   MP   Sign" lines="5" words="6">
+    <window class="WND_CLASS_MSTATIC" id="2759" range="14,138,24,74" fcolor="103" font="1" title="Title Job   HP   MP   Sign" lines="5" words="6">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" range="100,169,1,1" id="2760" fcolor="103" font="1" title="B.T.">
+    <window class="WND_CLASS_STATIC" range="104,195,1,1" id="2760" fcolor="103" font="1" title="B.T.">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" range="100,169,1,1" id="2761" fcolor="103" font="1" title="B.T.">
+    <window class="WND_CLASS_STATIC" range="104,195,1,1" id="2761" fcolor="103" font="1" title="B.T.">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" range="100,169,1,1" id="2762" fcolor="103" font="1" title="B.T.">
+    <window class="WND_CLASS_STATIC" range="104,195,1,1" id="2762" fcolor="103" font="1" title="B.T.">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" range="44,112,1,1" id="2763" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="46,138,1,1" id="2763" fcolor="103" font="1">
         <!-- 稱號 -->
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" range="44,112,1,1" id="2764" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="46,138,1,1" id="2764" fcolor="103" font="1">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" range="44,112,1,1" id="2765" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="46,138,1,1" id="2765" fcolor="103" font="1">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" range="44,126,1,1" id="2766" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="46,152,1,1" id="2766" fcolor="103" font="1">
         <!-- 職業 -->
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" range="44,126,1,1" id="2767" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="46,152,1,1" id="2767" fcolor="103" font="1">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" range="44,126,1,1" id="2768" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="46,152,1,1" id="2768" fcolor="103" font="1">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" range="44,140,1,1" id="2769" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="46,166,1,1" id="2769" fcolor="103" font="1">
         <!-- HP -->
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" range="44,140,1,1" id="2770" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="46,166,1,1" id="2770" fcolor="103" font="1">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" range="44,140,1,1" id="2771" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="46,166,1,1" id="2771" fcolor="103" font="1">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" range="44,154,1,1" id="2772" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="46,180,1,1" id="2772" fcolor="103" font="1">
         <!-- MP -->
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" range="44,154,1,1" id="2773" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="46,180,1,1" id="2773" fcolor="103" font="1">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" range="44,154,1,1" id="2774" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="46,180,1,1" id="2774" fcolor="103" font="1">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" range="44,168,1,1" id="2775" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="46,194,1,1" id="2775" fcolor="103" font="1">
         <!-- 星座 -->
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" range="44,168,1,1" id="2776" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="46,194,1,1" id="2776" fcolor="103" font="1">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" range="44,168,1,1" id="2777" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="46,194,1,1" id="2777" fcolor="103" font="1">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" range="134,169,1,1" id="2778" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="138,195,1,1" id="2778" fcolor="103" font="1">
         <!-- 血型 -->
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" range="134,169,1,1" id="2779" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="138,195,1,1" id="2779" fcolor="103" font="1">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" range="134,169,1,1" id="2780" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" range="138,195,1,1" id="2780" fcolor="103" font="1">
         <style wsVisible="" />
     </window>
     <!-- 用到2782 -->
@@ -2715,22 +2712,22 @@
     <!-- 使用2783..2799 , 14775..14779     -->
     <!-- - - - - - - - - - - - - - - - - - -->
     <icon id="2783" dir="\wnd01\" normal="btn225_n" focus="btn225_f" down="btn225_d" disable="normal" pos="0,0" />
-    <window class="WND_CLASS_BUTTON" range="44,210,94,28" id="2783" icon="2783" title="Change name" fcolor="104" font="1" tooltip="10040" tooltext="Character name unavailable. ">
+    <window class="WND_CLASS_BUTTON" range="47,228,94,28" id="2783" icon="2783" title="Change name" fcolor="104" font="1" tooltip="10040" tooltext="Character name unavailable. ">
         <style ssHCenter="" ssVCenter="" wsTab="" />
     </window>
-    <window class="WND_CLASS_BUTTON" range="44,210,94,28" id="2784" icon="2783" title="Change name" fcolor="104" font="1" tooltip="10040" tooltext="Character name unavailable. ">
+    <window class="WND_CLASS_BUTTON" range="47,228,94,28" id="2784" icon="2783" title="Change name" fcolor="104" font="1" tooltip="10040" tooltext="Character name unavailable. ">
         <style ssHCenter="" ssVCenter="" wsTab="" />
     </window>
-    <window class="WND_CLASS_BUTTON" range="44,210,94,28" id="2785" icon="2783" title="Change name" fcolor="104" font="1" tooltip="10040" tooltext="Character name unavailable. ">
+    <window class="WND_CLASS_BUTTON" range="47,228,94,28" id="2785" icon="2783" title="Change name" fcolor="104" font="1" tooltip="10040" tooltext="Character name unavailable. ">
         <style ssHCenter="" ssVCenter="" wsTab="" />
     </window>
-    <window class="WND_CLASS_BUTTON" range="44,242,94,28" id="2786" icon="2783" title="Edit guild name" fcolor="104" font="1" tooltip="10040" tooltext="Guild name unavailable.">
+    <window class="WND_CLASS_BUTTON" range="47,260,94,28" id="2786" icon="2783" title="Edit guild name" fcolor="104" font="1" tooltip="10040" tooltext="Guild name unavailable.">
         <style ssHCenter="" ssVCenter="" wsTab="" />
     </window>
-    <window class="WND_CLASS_BUTTON" range="44,242,94,28" id="2787" icon="2783" title="Edit guild name" fcolor="104" font="1" tooltip="10040" tooltext="Guild name unavailable.">
+    <window class="WND_CLASS_BUTTON" range="47,260,94,28" id="2787" icon="2783" title="Edit guild name" fcolor="104" font="1" tooltip="10040" tooltext="Guild name unavailable.">
         <style ssHCenter="" ssVCenter="" wsTab="" />
     </window>
-    <window class="WND_CLASS_BUTTON" range="44,242,94,28" id="2788" icon="2783" title="Edit guild name" fcolor="104" font="1" tooltip="10040" tooltext="Guild name unavailable.">
+    <window class="WND_CLASS_BUTTON" range="47,260,94,28" id="2788" icon="2783" title="Edit guild name" fcolor="104" font="1" tooltip="10040" tooltext="Guild name unavailable.">
         <style ssHCenter="" ssVCenter="" wsTab="" />
     </window>
     <!-- 修改角色名稱 視窗 -->
@@ -6814,14 +6811,5 @@
     <!-- aolat seleccion -->
     <icon id="60465" dir="\log\" normal="aolat_sel_ficha" focus="normal" down="normal" disable="normal" />
     <icon id="60466" dir="\log\" normal="aolat_sel_volver_n" focus="aolat_sel_volver_f" down="aolat_sel_volver_s" disable="normal" />
-    <window class="WND_CLASS_BASE" id="60470" range="0,0,181,402" icon="60465">
-        <style wsVisible="" />
-    </window>
-    <window class="WND_CLASS_BASE" id="60471" range="0,0,181,402" icon="60465">
-        <style wsVisible="" />
-    </window>
-    <window class="WND_CLASS_BASE" id="60472" range="0,0,181,402" icon="60465">
-        <style wsVisible="" />
-    </window>
     <!-- /aolat seleccion -->
 </root>

@@ -23,50 +23,68 @@ import ventana_login as vl
 from icono_subasta import a_shp
 
 MARCA = 'aolat seleccion'
-FW, FH = 181, 402                        # el interior de la ficha (la 2534, que la cubre entera, es de 181x402)
+FW, FH = 189, 426                        # la ficha entera (la ventana 2713..2715): ya no es un DLG_1 con marco
 ICONO_FICHA, ICONO_VOLVER = 60465, 60466
 FICHAS = (2713, 2714, 2715)
-# 12/11/2026, "se ve horrible cambia toda la distribucion por algo mas moderno y harmonioso". La ficha nueva:
-#   arriba a la izquierda el retrato; a su derecha el nivel, el bando y los botones Set / Face; arriba a la derecha el
-#   emblema de clase, que lo pinta el juego (no se mueve: se le dibuja un hueco con aro alrededor);
-#   el nombre en una banda de oro a todo lo ancho y debajo el sitio;
-#   la tabla Title / Job / HP / MP / Sign;
-#   el escenario con el pedestal, donde el juego pone al personaje (los pies a ~382, tampoco se mueve).
-RETRATO = (6, 6)
-EMBLEMA = (158, 24, 21)                  # centro y radio del hueco del emblema (medido en la captura: x 142..174)
-COL_X, COL_W = 70, 64
-LV_Y, BANDO_Y, BOTONES_Y = 10, 28, 48
-NOMBRE_Y, SITIO_Y = 74, 92
-STATS_Y = [112 + 14 * i for i in range(5)]
+# 12/11/2026, "distribuyelo de otra forma, esas 3 columnas se ven feas, debe verse diferente al juego original".
+# El juego pone las tres fichas el solo, en fila (angel.dat 0x4bfbfd: x = (ancho-800)/2 + 25 + 209*i,
+# y = (alto-600)/2 + 140) y al personaje en su sitio fijo: eso no se toca. Lo que cambia es que ya no son columnas:
+# la ficha pasa a WND_CLASS_BASE (sin marco ni barra de titulo) con fondo transparente, y en ella solo hay
+#   una placa flotante compacta arriba: retrato, nivel en pastilla, bando, Set / Face, el nombre y una tabla corta;
+#   y abajo un pedestal de luz donde se para el personaje, sobre el paisaje.
+# Con BASE las hijas van desde la esquina de la ventana (con el DLG_1 iban desde el interior, 4,20 mas adentro).
+PLACA = (4, 22, FW - 5, 214)
+RETRATO = (12, 30)
+EMBLEMA = (158, 26, 22)                  # el emblema del bando: lo pinta la ficha misma hacia x 142..174, y 5..45;
+                                         # la placa lleva ahi un hueco redondo (transparente) con su aro
+COL_X, COL_W = 78, 62
+LV_Y, BANDO_Y, BOTONES_Y = 36, 54, 72
+NOMBRE_Y, SITIO_Y = 100, 117
+STATS_Y = [138 + 14 * i for i in range(5)]
 # Cada hija de la ficha: (las tres ids, una por ficha) -> x, y, ancho, alto
 DISPOSICION = {
+    (2534, 2535, 2536): (0, 0, FW, FH),                              # la marca de la elegida (y el clic) cubre todo
     (2728, 2729, 2730): (RETRATO[0], RETRATO[1], 60, 60),            # aro del retrato
     (2740, 2741, 2742): (RETRATO[0] + 5, RETRATO[1] + 5, 50, 50),    # la cara
     (2719, 2720, 2721): (COL_X, LV_Y, COL_W, 14),                   # LV
     (2722, 2723, 2724): (COL_X, BANDO_Y, COL_W, 14),                # bando
     (2731, 2732, 2733): (COL_X, BOTONES_Y, 31, 17),                 # Set
     (2734, 2735, 2736): (COL_X + 33, BOTONES_Y, 31, 17),            # Face
-    (2716, 2717, 2718): (16, NOMBRE_Y, FW - 32, 14),                # nombre
-    (2725, 2726, 2727): (16, SITIO_Y, FW - 32, 14),                 # sitio
-    (2757, 2758, 2759): (12, STATS_Y[0], 24, 74),                   # rotulos Title..Sign
-    (2763, 2764, 2765): (44, STATS_Y[0], 1, 1),
-    (2766, 2767, 2768): (44, STATS_Y[1], 1, 1),
-    (2769, 2770, 2771): (44, STATS_Y[2], 1, 1),
-    (2772, 2773, 2774): (44, STATS_Y[3], 1, 1),
-    (2775, 2776, 2777): (44, STATS_Y[4], 1, 1),
-    (2760, 2761, 2762): (100, STATS_Y[4] + 1, 1, 1),                # B.T.
-    (2778, 2779, 2780): (134, STATS_Y[4] + 1, 1, 1),                # su valor
-    (2783, 2784, 2785): (44, 210, 94, 28),                          # Change name (solo si hace falta)
-    (2786, 2787, 2788): (44, 242, 94, 28),                          # Edit guild name
+    (2716, 2717, 2718): (14, NOMBRE_Y, FW - 28, 14),                # nombre
+    (2725, 2726, 2727): (14, SITIO_Y, FW - 28, 14),                 # sitio
+    (2757, 2758, 2759): (14, STATS_Y[0], 24, 74),                   # rotulos Title..Sign
+    (2763, 2764, 2765): (46, STATS_Y[0], 1, 1),
+    (2766, 2767, 2768): (46, STATS_Y[1], 1, 1),
+    (2769, 2770, 2771): (46, STATS_Y[2], 1, 1),
+    (2772, 2773, 2774): (46, STATS_Y[3], 1, 1),
+    (2775, 2776, 2777): (46, STATS_Y[4], 1, 1),
+    (2760, 2761, 2762): (104, STATS_Y[4] + 1, 1, 1),                # B.T.
+    (2778, 2779, 2780): (138, STATS_Y[4] + 1, 1, 1),                # su valor
+    (2783, 2784, 2785): (47, 228, 94, 28),                          # Change name (solo si hace falta)
+    (2786, 2787, 2788): (47, 260, 94, 28),                          # Edit guild name
 }
-# El fondo va en una hija BASE de cada ficha, la primera (debajo de todo): el icono puesto en la propia ventana
-# DLG_1 no lo pinta el juego en estas fichas (seguian verdes).
+# El fondo es el icono de la propia ficha (BASE): una BASE sin icono pinta la textura verde del tema ("y lo verde,
+# quita todo indicio del selector antiguo"). Antes iba en una hija aparte (60470..60472), que ya no hace falta.
 FONDOS = (60470, 60471, 60472)
 TITULO_FICHA = 'Adventurer'
-PIES = (90, 384)                         # donde apoya el personaje (medido en la captura: los pies a ~382)
-MW, MH = 120, 143                        # el menu (2565)
-OPCIONES_Y = (20, 39, 58, 77, 96)        # 2708, 2709, 2710/2711, 2501/2502, 2503: x 11, 98x17
-VOLVER = (26, 18)                        # la 2712, en 46,117
+PIES = (94, 404)                         # donde apoya el personaje (medido en la captura)
+# EL MENU (2565): era una columna a la derecha; ahora es una barra horizontal centrada bajo las fichas (su sitio lo
+# pone angel.dat: tools/seleccion_angel_dat.py, MENU_X / MENU_Y). Las opciones, de 98x17, en fila; las que se turnan
+# comparten hueco (Delete / Recover, Set PIN / Change PIN).
+MW, MH = 580, 30
+OPCION_Y = 7
+OPCIONES_X = (8, 112, 216, 320, 424)     # Enter, Create, Delete/Recover, Set/Change PIN, Delete PIN
+VOLVER = (26, 18)
+VOLVER_XY = (540, 6)
+MENU_DISPOSICION = {
+    (2708,): (OPCIONES_X[0], OPCION_Y, 98, 17),
+    (2709,): (OPCIONES_X[1], OPCION_Y, 98, 17),
+    (2710, 2711): (OPCIONES_X[2], OPCION_Y, 98, 17),
+    (2501, 2502): (OPCIONES_X[3], OPCION_Y, 98, 17),
+    (2503,): (OPCIONES_X[4], OPCION_Y, 98, 17),
+    (2712,): VOLVER_XY + VOLVER,
+    (2565,): (0, 0, MW, MH),
+}
 
 # 12/11/2026, "que se vea moderno": estilo plano. Pizarra oscura, un solo color de acento (celeste), lineas de 1 px,
 # esquinas redondeadas y nada de oro, gemas ni estrellas. El .shp solo tiene transparencia de todo o nada (alfa < 128
@@ -101,38 +119,52 @@ def _resplandor(im, caja, color, alfa, radio):
     im.alpha_composite(capa.filter(ImageFilter.GaussianBlur(radio)))
 
 
+def _pedestal(d, px, py, aro):
+    d.ellipse((px - 62, py - 13, px + 62, py + 13), fill=_rgba(FONDO_ABAJO), outline=_rgba(LINEA))
+    d.ellipse((px - 56, py - 10, px + 56, py + 10), fill=_rgba(SUPERFICIE_2), outline=_rgba(aro))
+    d.ellipse((px - 40, py - 6, px + 40, py + 6), outline=_rgba(ACENTO_OSCURO))
+    d.ellipse((px - 20, py - 3, px + 20, py + 3), fill=_rgba(SUPERFICIE), outline=_rgba(ACENTO_OSCURO))
+
+
 def ficha() -> Image.Image:
-    """El fondo de la ficha (ver DISPOSICION): retrato con el nivel en pastilla y el bando al lado, el nombre con un
-    subrayado de acento, una tarjeta para Title..Sign y abajo el escenario con una plataforma de luz."""
-    im = vl._degradado(FW, FH, FONDO_ARRIBA, FONDO_ABAJO)
-    # EL ESCENARIO, primero (sus brillos quedan debajo de todo lo demas)
-    px, py = PIES
-    _resplandor(im, (px - 85, py - 170, px + 85, py + 20), ACENTO_OSCURO, 90, 30)
-    _resplandor(im, (px - 50, py - 16, px + 50, py + 12), ACENTO, 120, 8)
+    """La ficha (189x426, transparente salvo la placa y el pedestal): ver DISPOSICION."""
+    im = Image.new('RGBA', (FW, FH), (0, 0, 0, 0))
+    # LA PLACA: pizarra con esquinas redondeadas, borde de 1 px y la barra de acento arriba
+    x0, y0, x1, y1 = PLACA
+    mascara = Image.new('L', im.size, 0)
+    ImageDraw.Draw(mascara).rounded_rectangle(PLACA, radius=10, fill=255)
+    im.paste(vl._degradado(FW, FH, FONDO_ARRIBA, FONDO_ABAJO), (0, 0), mascara)
     d = ImageDraw.Draw(im)
-    d.ellipse((px - 58, py - 12, px + 58, py + 12), fill=_rgba(SUPERFICIE), outline=_rgba(LINEA))
-    d.ellipse((px - 48, py - 8, px + 48, py + 8), outline=_rgba(ACENTO))
-    d.ellipse((px - 30, py - 5, px + 30, py + 5), outline=_rgba(ACENTO_OSCURO))
-    # el retrato y el hueco del emblema de clase: circulos de superficie
+    d.rounded_rectangle(PLACA, radius=10, outline=_rgba(LINEA))
+    d.rounded_rectangle((x0 + 24, y0, x1 - 24, y0 + 2), radius=1, fill=_rgba(ACENTO))
+    # el retrato y el hueco del emblema del bando
     x, y = RETRATO
     d.ellipse((x, y, x + 59, y + 59), fill=_rgba(SUPERFICIE_2))
     cx, cy, r = EMBLEMA
-    d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=_rgba(SUPERFICIE_2), outline=_rgba(LINEA))
-    # el nivel en una pastilla de acento y el bando sobre una linea tenue
+    d.ellipse((cx - r - 3, cy - r - 3, cx + r + 3, cy + r + 3), fill=_rgba(FONDO_ARRIBA), outline=_rgba(LINEA))
+    d.ellipse((cx - r, cy - r, cx + r, cy + r), outline=_rgba(ACENTO_OSCURO), width=2)
+    hueco = Image.new('L', im.size, 255)
+    ImageDraw.Draw(hueco).ellipse((cx - r + 2, cy - r + 2, cx + r - 2, cy + r - 2), fill=0)
+    im.putalpha(Image.composite(im.getchannel('A'), Image.new('L', im.size, 0), hueco))
+    d = ImageDraw.Draw(im)
+    # el nivel en pastilla y el bando sobre una linea tenue
     im.alpha_composite(_pastilla(COL_W, 15, ACENTO_OSCURO), (COL_X, LV_Y - 1))
     d = ImageDraw.Draw(im)
     d.line((COL_X + 4, BANDO_Y + 14, COL_X + COL_W - 4, BANDO_Y + 14), fill=_rgba(LINEA))
-    # el nombre: sin caja, con un subrayado corto de acento; el sitio debajo
-    d.line((8, NOMBRE_Y - 6, FW - 9, NOMBRE_Y - 6), fill=_rgba(LINEA))
-    d.rectangle((FW // 2 - 14, NOMBRE_Y + 15, FW // 2 + 13, NOMBRE_Y + 16), fill=_rgba(ACENTO))
-    # la tarjeta de Title..Sign: esquinas redondeadas y separadores de 1 px
-    y0, y1 = STATS_Y[0] - 3, STATS_Y[-1] + 16
-    d.rounded_rectangle((6, y0, FW - 7, y1), radius=6, fill=_rgba(SUPERFICIE), outline=_rgba(LINEA))
+    # el nombre con su subrayado de acento y el sitio debajo
+    d.line((x0 + 10, NOMBRE_Y - 6, x1 - 10, NOMBRE_Y - 6), fill=_rgba(LINEA))
+    d.rectangle((FW // 2 - 14, NOMBRE_Y + 14, FW // 2 + 13, NOMBRE_Y + 15), fill=_rgba(ACENTO))
+    # la tabla corta
+    t0, t1 = STATS_Y[0] - 3, STATS_Y[-1] + 16
+    d.rounded_rectangle((x0 + 6, t0, x1 - 6, t1), radius=6, fill=_rgba(SUPERFICIE), outline=_rgba(LINEA))
     for yy in STATS_Y[1:]:
-        d.line((12, yy - 1, FW - 13, yy - 1), fill=_rgba(SUPERFICIE_2))
-    # el borde de la ficha: 1 px y una barra de acento arriba
-    d.rectangle((0, 0, FW - 1, FH - 1), outline=_rgba(LINEA))
-    _barra_acento(d, FW)
+        d.line((x0 + 12, yy - 1, x1 - 12, yy - 1), fill=_rgba(SUPERFICIE_2))
+    # una pestana bajo la placa que apunta al personaje
+    cx = FW // 2
+    d.polygon(((cx - 8, y1), (cx + 8, y1), (cx, y1 + 7)), fill=_rgba(FONDO_ABAJO), outline=_rgba(LINEA))
+    d.line((cx - 7, y1, cx + 7, y1), fill=_rgba(FONDO_ABAJO))
+    # EL PEDESTAL, sobre el paisaje
+    _pedestal(d, PIES[0], PIES[1], ACENTO_OSCURO)
     return im
 
 
@@ -152,31 +184,32 @@ def mini(estado) -> Image.Image:
 
 
 def marca(fotograma) -> Image.Image:
-    """La ficha elegida (181x434 desde la esquina de la ficha): un contorno de acento de 2 px por dentro del borde y,
-    debajo, una barra de acento con una punta; la barra se estira en el segundo fotograma (late)."""
-    im = Image.new('RGBA', (FW, FH + 32), (0, 0, 0, 0))
+    """La ficha elegida (189x426, desde la esquina de la ficha): la placa con contorno de acento y el pedestal
+    encendido, con un aro de luz que se abre en el segundo fotograma (late)."""
+    im = Image.new('RGBA', (FW, FH), (0, 0, 0, 0))
     d = ImageDraw.Draw(im)
-    d.rectangle((0, 0, FW - 1, FH - 1), outline=_rgba(ACENTO), width=2)
-    ancho = (48, 64)[fotograma]
-    cx, y = FW // 2, FH + 8
-    d.polygon(((cx - 6, y), (cx + 6, y), (cx, y - 6)), fill=_rgba(ACENTO))
-    d.rounded_rectangle((cx - ancho // 2, y, cx + ancho // 2, y + 4), radius=2, fill=_rgba(ACENTO))
+    d.rounded_rectangle(PLACA, radius=10, outline=_rgba(ACENTO), width=2)
+    px, py = PIES
+    _pedestal(d, px, py, ACENTO)
+    d.ellipse((px - 40, py - 6, px + 40, py + 6), outline=_rgba(ACENTO))
+    k = (4, 9)[fotograma]
+    d.ellipse((px - 62 - k, py - 13 - k // 2, px + 62 + k, py + 13 + k // 2), outline=_rgba(ACENTO))
     return im
 
 
 def menu() -> Image.Image:
-    im = vl._degradado(MW, MH, FONDO_ARRIBA, FONDO_ABAJO)
+    """La barra (580x30): pizarra con esquinas redondeadas, borde de 1 px, barra de acento arriba y un separador fino
+    entre opcion y opcion; la flecha de volver, aparte a la derecha."""
+    im = Image.new('RGBA', (MW, MH), (0, 0, 0, 0))
+    mascara = Image.new('L', im.size, 0)
+    ImageDraw.Draw(mascara).rounded_rectangle((0, 0, MW - 1, MH - 1), radius=8, fill=255)
+    im.paste(vl._degradado(MW, MH, FONDO_ARRIBA, FONDO_ABAJO), (0, 0), mascara)
     d = ImageDraw.Draw(im)
-    d.fontmode = '1'
-    f = vl._letra(8)
-    texto = 'CHARACTERS'
-    caja = d.textbbox((0, 0), texto, font=f)
-    d.text(((MW - (caja[2] - caja[0])) // 2 - caja[0], 6 - caja[1]), texto, font=f, fill=_rgba(TENUE))
-    for y in OPCIONES_Y[1:]:
-        d.line((16, y - 2, MW - 17, y - 2), fill=_rgba(SUPERFICIE))
-    d.line((10, 114, MW - 11, 114), fill=_rgba(LINEA))
-    d.rectangle((0, 0, MW - 1, MH - 1), outline=_rgba(LINEA))
-    _barra_acento(d, MW)
+    d.rounded_rectangle((0, 0, MW - 1, MH - 1), radius=8, outline=_rgba(LINEA))
+    d.rounded_rectangle((40, 0, MW - 41, 1), radius=1, fill=_rgba(ACENTO))
+    for x in OPCIONES_X[1:]:
+        d.line((x - 3, 8, x - 3, MH - 9), fill=_rgba(LINEA))
+    d.line((VOLVER_XY[0] - 7, 6, VOLVER_XY[0] - 7, MH - 7), fill=_rgba(LINEA))
     return im
 
 
@@ -234,17 +267,12 @@ def wnd02(texto, nl):
     """Los cambios de la seleccion sobre el wnd02.xml que esta armando ventana_login.wnd02 (idempotente)."""
     texto = re.sub(r'[ \t]*<!-- %s -->.*?<!-- /%s -->\r?\n' % (MARCA, MARCA), '', texto, flags=re.S)
     for wid, fondo in zip(FICHAS, FONDOS):
-        texto = re.sub(r'(<window [^>]*\bid="%d"[^>]*?) icon="%d"' % (wid, ICONO_FICHA), r'\1', texto)
-        texto = _attr(texto, wid, 'title', TITULO_FICHA)
-        # La ULTIMA hija: el juego pinta las hijas de la ultima a la primera (la primera queda encima). Puesta la
-        # primera tapaba los textos, el retrato y los botones (12/11/2026, en la 0.0.0.134).
-        texto = re.sub(r'[ \t]*<child>%d</child>\r?\n' % fondo, '', texto)
         m = vl._ventana(texto, wid)
-        sangria = re.search(r'\n([ \t]*)<child>', texto[m.end():]).group(1)
-        cierre = texto.index('</window>', m.end())
-        linea = texto.rindex('\n', 0, cierre) + 1                 # el principio de la linea del </window>
-        texto = texto[:linea] + sangria + '<child>%d</child>' % fondo + nl + texto[linea:]
-    for ids, caja in DISPOSICION.items():
+        texto = texto[:m.start()] + m.group(0).replace('WND_CLASS_DLG_1', 'WND_CLASS_BASE') + texto[m.end():]
+        texto = _attr(texto, wid, 'title', TITULO_FICHA)
+        texto = re.sub(r'[ \t]*<child>%d</child>\r?\n' % fondo, '', texto)
+        texto = _attr(texto, wid, 'icon', ICONO_FICHA)
+    for ids, caja in list(DISPOSICION.items()) + list(MENU_DISPOSICION.items()):
         for wid in ids:
             m = vl._ventana(texto, wid)
             tag = re.sub(r'range="[^"]*"', 'range="%d,%d,%d,%d"' % caja, m.group(0), count=1)
@@ -261,9 +289,6 @@ def wnd02(texto, nl):
     bloque = '    <!-- %s -->%s' % (MARCA, nl)
     bloque += '    %s%s' % (linea(ICONO_FICHA, 'aolat_sel_ficha'), nl)
     bloque += '    %s%s' % (linea(ICONO_VOLVER, 'aolat_sel_volver_n', 'aolat_sel_volver_f', 'aolat_sel_volver_s'), nl)
-    for fondo in FONDOS:
-        bloque += ('    <window class="WND_CLASS_BASE" id="%d" range="0,0,%d,%d" icon="%d">%s'
-                   '        <style wsVisible="" />%s    </window>%s' % (fondo, FW, FH, ICONO_FICHA, nl, nl, nl))
     bloque += '    <!-- /%s -->%s' % (MARCA, nl)
     fin = texto.rindex('</')
     return texto[:fin] + bloque + texto[fin:]
