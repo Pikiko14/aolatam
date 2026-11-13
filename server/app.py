@@ -16906,7 +16906,11 @@ class Servidor:
                 return
 
             # Hechizo de maldicion / debuff a enemigo (Exhaustion Curse, Weak Curse, Slow Curse, etc.)
-            if tipo != _cb.ATAQUE_NORMAL and mag.get('es_debuff'):
+            # Y los controles sin dano (Silence 914, Demon Sealed 911, Action Sealed 401, Binding 9): antes iban por
+            # el camino del ataque y solo pegaban; ahora silencian o atan al monstruo, sin dano (13/11/2026).
+            _control_m = (__import__('pvp_liga').estado_de_control(tipo)
+                          if tipo != _cb.ATAQUE_NORMAL and m is not None else None)
+            if tipo != _cb.ATAQUE_NORMAL and (mag.get('es_debuff') or _control_m):
                 if not _puede_pagar(ses, mag, addr):
                     return
                 cost_sp = mag.get('cost_sp', 0)
@@ -16962,6 +16966,10 @@ class Servidor:
                     'mag_dmg_pct': mag.get('mag_dmg_pct', 0),
                     'mag_mit_pct': mag.get('mag_mit_pct', 0),
                 }
+                if _control_m == 'silenciado':
+                    m.silenciado_hasta = max(getattr(m, 'silenciado_hasta', 0.0), time.time() + dur_s)
+                elif _control_m == 'atado':
+                    m.debuffs[tipo]['vel_mov_mod'] = -1000         # atado: no anda (el paso tiene un minimo de 10)
                 # y lo que encadena (轉嫁法術): el dano por tiempo de Weaken (8843) e Inept (8833), etc.
                 _ef_curse = _cb.efecto_secundario(tipo)
                 if _ef_curse and random.randint(1, 100) <= int(_ef_curse.get('prob') or 100):
