@@ -282,6 +282,10 @@ def procesar(ses, cuerpo) -> bool:
             ses.enviar(canal_lua.paquete((canal_lua.CARPETA / 'teclas.lua').read_text(encoding='utf-8')))
         except Exception:
             log.exception('teclas.lua')
+        try:                                   # la pestana Bulk Sell de la tienda NPC (13/11/2026)
+            ses.enviar(canal_lua.paquete((canal_lua.CARPETA / 'venta_masiva.lua').read_text(encoding='utf-8')))
+        except Exception:
+            log.exception('venta_masiva.lua')
         return True
     if not tiene_ventana(ses):
         return True

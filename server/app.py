@@ -1689,6 +1689,97 @@ def _cerrar_puesto(ses, avisar_dueno: bool = True):
 
 
 
+# --- BULK SELL de la tienda NPC (13/11/2026, "una opcion al lado de Sell que diga bulk sell, que todo el gear y las
+# armas salgan seleccionados por defecto y el boton confirm sell lo venda"). La pestana Bulk de la ventana 13401
+# (tools/parche_venta_masiva.py) y su Lua (server/lua/venta_masiva.lua) piden con game.netcommand2(172, sub, i):
+#   sub 1 = abrir la pestana (lista nueva, todo marcado), 2 = marcar/desmarcar la fila i, 3 = vender lo marcado.
+# La lista la lleva el servidor (ses._venta_masiva) y la pinta VentaMasivaLista(filas, total, oro).
+CMD_VENTA_MASIVA = 172
+VM_VER, VM_MARCAR, VM_VENDER = 1, 2, 3
+
+
+def _vm_vendible(ses, ranura, item_id) -> bool:
+    import inventario as _iv
+    if not (_iv.PRIMERA_RANURA_BOLSA <= int(ranura) < 166) or _iv.es_equipo(ranura) or _iv.es_burbuja_bag(ranura):
+        return False
+    if not _iv.es_equipable(item_id) or _iv.es_mascota(item_id) or _iv.es_item_fashion(item_id):
+        return False
+    if _precio_venta(item_id) <= 0:
+        return False
+    return not (__import__('arena_premios_compat').es_premio(ses, ranura)
+                or __import__('item_mall').es_temporal(ses, ranura)
+                or __import__('furniture_items').protegido(ses, ranura))
+
+
+def vm_candidatos(ses):
+    """[(ranura, item_id)] del gear y las armas de la mochila que la tienda compra, por orden de casilla."""
+    bolsa = getattr(ses, 'inventario', None) or {}
+    out = []
+    for r, it in sorted(bolsa.items(), key=lambda kv: int(kv[0])):
+        try:
+            r, it = int(r), int(it or 0)
+        except (TypeError, ValueError):
+            continue
+        if it and _vm_vendible(ses, r, it):
+            out.append((r, it))
+    return out
+
+
+def _vm_paquete(ses):
+    import canal_lua
+    vm = ses._venta_masiva
+    mejoras = _mejoras_de(ses) or {}
+    filas, total = [], 0
+    for i, (r, it) in enumerate(vm['filas']):
+        marcada = i not in vm['fuera']
+        precio = _precio_venta(it) * _cant_de(ses, r) // _unidades_por_compra(it)
+        if marcada:
+            total += precio
+        filas.append([1 if marcada else 0, _nombre_item(it) + (' *' if r in mejoras else ''), precio])
+    return canal_lua.llamar('VentaMasivaLista', filas, total, int(getattr(ses, 'oro', 0) or 0))
+
+
+def _venta_masiva(ses, addr, cuerpo) -> bool:
+    """Un 0x002F de la pestana Bulk Sell. True si era suyo."""
+    if len(cuerpo) < 9 or cuerpo[0] != CMD_VENTA_MASIVA:
+        return False
+    import clases as _c
+    sub, i = struct.unpack_from('<II', cuerpo, 1)
+    if getattr(ses, 'muerto', False) or getattr(ses, 'puesto', None):
+        return True
+    vm = getattr(ses, '_venta_masiva', None)
+    if sub == VM_VER or vm is None:
+        ses._venta_masiva = vm = {'filas': vm_candidatos(ses), 'fuera': set()}
+    if sub == VM_MARCAR and 0 <= int(i) < len(vm['filas']):
+        vm['fuera'] ^= {int(i)}
+    if sub == VM_VENDER:
+        bolsa = ses.inventario
+        oro, tocadas = 0, []
+        for k, (r, it) in enumerate(vm['filas']):
+            if k in vm['fuera'] or int(bolsa.get(r, 0) or 0) != it or not _vm_vendible(ses, r, it):
+                continue                       # ya no esta o cambio: no se vende otra cosa por error
+            vendidas = _sacar(ses, r, _cant_de(ses, r))
+            if not vendidas:
+                continue
+            oro += _precio_venta(it) * vendidas // _unidades_por_compra(it)
+            tocadas.append(r)
+            log.info(f"[{addr}] bulk sell: {it} x{vendidas} de la casilla {r}")
+        if tocadas:
+            cid = ses.personaje.char_id
+            ses.oro = min(2000000000, getattr(ses, 'oro', 0) + oro)
+            ses.personaje.oro = ses.oro
+            ses.enviar(*_refrescar(ses, tocadas, con_oro=True),
+                       _c.aviso('Sold %d items for %d Gold' % (len(tocadas), oro), tipo=0, msg_id=_c.MSG_ITEM))
+            _guardar_bolsa(ses, cid)
+            if getattr(ses, 'usuario', None):
+                cuentas.guardar_oro(ses.usuario, cid, ses.oro)
+        else:
+            ses.enviar(_c.aviso('Nothing selected to sell.', tipo=0))
+        ses._venta_masiva = vm = {'filas': vm_candidatos(ses), 'fuera': set()}
+    ses.enviar(_vm_paquete(ses))
+    return True
+
+
 def _mejoras_de(ses):
     """Las mejoras del personaje de esa sesion, o None.
 
@@ -18362,6 +18453,8 @@ class Servidor:
             # por el camino de partir pilas del inventario.
             # La ventana de subasta (subasta_ventana.py): sus netcommand2 llevan 160..163 en el byte del contenedor.
             if __import__('subasta_ventana').procesar(ses, cuerpo):
+                return
+            if _venta_masiva(ses, addr, cuerpo):                         # Bulk Sell de la tienda (172)
                 return
             if __import__('medidor_dano').procesar(ses, cuerpo):       # el contador de dano (168)
                 return
