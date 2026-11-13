@@ -236,11 +236,14 @@ def wnd02(texto, nl):
     for wid, fondo in zip(FICHAS, FONDOS):
         texto = re.sub(r'(<window [^>]*\bid="%d"[^>]*?) icon="%d"' % (wid, ICONO_FICHA), r'\1', texto)
         texto = _attr(texto, wid, 'title', TITULO_FICHA)
+        # La ULTIMA hija: el juego pinta las hijas de la ultima a la primera (la primera queda encima). Puesta la
+        # primera tapaba los textos, el retrato y los botones (12/11/2026, en la 0.0.0.134).
+        texto = re.sub(r'[ \t]*<child>%d</child>\r?\n' % fondo, '', texto)
         m = vl._ventana(texto, wid)
-        fin_style = texto.index('/>', m.end()) + 2
-        if '<child>%d</child>' % fondo not in texto[m.end():m.end() + 300]:
-            sangria = re.search(r'\n([ \t]*)<child>', texto[m.end():]).group(1)
-            texto = texto[:fin_style] + nl + sangria + '<child>%d</child>' % fondo + texto[fin_style:]
+        sangria = re.search(r'\n([ \t]*)<child>', texto[m.end():]).group(1)
+        cierre = texto.index('</window>', m.end())
+        linea = texto.rindex('\n', 0, cierre) + 1                 # el principio de la linea del </window>
+        texto = texto[:linea] + sangria + '<child>%d</child>' % fondo + nl + texto[linea:]
     for ids, caja in DISPOSICION.items():
         for wid in ids:
             m = vl._ventana(texto, wid)

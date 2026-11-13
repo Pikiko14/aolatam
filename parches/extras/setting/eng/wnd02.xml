@@ -2462,7 +2462,6 @@
     </icon>
     <window class="WND_CLASS_DLG_1" range="0,0,189,426" id="2713" title="Adventurer" fcolor="104" font="1">
         <style wsVisible="" gsNoClose="" gsNoHelp="" gsNoLock="" />
-        <child>60470</child>
         <child>2731</child>
         <child>2734</child>
         <child>2783</child>
@@ -2485,6 +2484,7 @@
         <child>2772</child>
         <child>2775</child>
         <child>2778</child>
+        <child>60470</child>
     </window>
     <window class="WND_CLASS_STATIC" range="16,74,149,14" id="2716" fcolor="103" font="1">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
@@ -2519,7 +2519,6 @@
     </window>
     <window class="WND_CLASS_DLG_1" range="0,0,189,426" id="2714" title="Adventurer" fcolor="104" font="1">
         <style wsVisible="" gsNoClose="" gsNoHelp="" gsNoLock="" />
-        <child>60471</child>
         <child>2732</child>
         <child>2735</child>
         <child>2784</child>
@@ -2542,6 +2541,7 @@
         <child>2773</child>
         <child>2776</child>
         <child>2779</child>
+        <child>60471</child>
     </window>
     <window class="WND_CLASS_STATIC" range="16,74,149,14" id="2717" fcolor="103" font="1">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
@@ -2574,7 +2574,6 @@
     </window>
     <window class="WND_CLASS_DLG_1" range="0,0,189,426" id="2715" title="Adventurer" fcolor="104" font="1">
         <style wsVisible="" gsNoClose="" gsNoHelp="" gsNoLock="" />
-        <child>60472</child>
         <child>2733</child>
         <!-- 預設 -->
         <child>2736</child>
@@ -2601,6 +2600,7 @@
         <child>2774</child>
         <child>2777</child>
         <child>2780</child>
+        <child>60472</child>
     </window>
     <window class="WND_CLASS_STATIC" range="16,74,149,14" id="2718" fcolor="103" font="1">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
