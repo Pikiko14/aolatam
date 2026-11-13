@@ -21156,6 +21156,9 @@ class Servidor:
                     if _bol0.se_gasta(item_id):
                         _sacar(ses, ranura, 1)
                     _pisadas = _bol0.cartas_pisadas(ses.personaje.buffs, _mid_buff, _entrada)
+                    if _entrada.get('es_transform'):          # una forma pisa a la otra (hechizo u objeto)
+                        _pisadas = list(_pisadas) + [k for k, v in ses.personaje.buffs.items() if k != _mid_buff
+                                                     and k not in _pisadas and isinstance(v, dict) and v.get('es_transform')]
                     for _vieja in _pisadas:
                         ses.personaje.buffs.pop(_vieja, None)
                     ses.personaje.buffs[_mid_buff] = _entrada
@@ -21187,6 +21190,9 @@ class Servidor:
                     _dur_icono = min(_dur, 0x7FFFFFFF)   # el icono: int32 en ms (las cartas de 30 dias pasan de 2^31)
                     _sal.append(struct.pack('<HIBBII', 0x001D, _yo, 1, 4,
                                             _mid_buff, _dur_icono))
+                    # La forma, YA (antes solo salia al cambiar de mapa, desde la restauracion de buffs del login).
+                    if _entrada.get('es_transform'):
+                        _sal.append(_cb.atributo(_yo, _entrada['trans_sprite'], _cb.KIND_TRANSFORM))
                     # Y la vida y el mana al tope nuevo, como hace el hechizo
                     # cuando el buff sube los maximos: si no, se queda con la
                     # barra a medias sobre un maximo mas grande.
@@ -21214,10 +21220,10 @@ class Servidor:
                         p2.buffs.pop(bid, None)
                         try:
                             # apagar el icono: el mismo 0x001D con 0 ms
-                            ses.enviar_inmediato(
-                                struct.pack('<HIBBII', 0x001D,
-                                            p2.entity_id, 1, 4, bid, 0),
-                                _stats_ses(ses))
+                            _fin = [struct.pack('<HIBBII', 0x001D, p2.entity_id, 1, 4, bid, 0)]
+                            if b2.get('es_transform'):
+                                _fin.append(_cb.atributo(p2.entity_id, 0, _cb.KIND_TRANSFORM))
+                            ses.enviar_inmediato(*_fin, _stats_ses(ses))
                         except Exception:
                             pass
                     if _dur > 0:

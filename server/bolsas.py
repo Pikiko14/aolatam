@@ -722,6 +722,12 @@ def buff_de(item_id, ahora=0.0):
         if mag.get(key):entrada[key]=mag[key]
     for source,target in (('atk_speed_bonus','atk_speed'),('crit_rate','crit'),('phys_mit','mit')):
         if mag.get(source):entrada[target]=mag[source]
+    # 13/11/2026, "al usar los shape no me transforma de inmediato, debo pasar a otro mapa": los objetos de
+    # Shapeshifting (69517 Rock-loving Adventurer -> hechizo 21448, 變身型) dejan un buff de transformacion; marcado
+    # igual que el del hechizo para que se mande el KIND_TRANSFORM al usarlo y al caducar, y se quite al lanzar magia.
+    if mag.get('es_transformacion') and mag.get('trans_sprite'):
+        entrada['es_transform'] = True
+        entrada['trans_sprite'] = int(mag['trans_sprite'])
     _campos_de_carta(mid, entrada)
     return mid, entrada, dur
 
