@@ -16946,7 +16946,17 @@ class Servidor:
                     'def_mod': mag.get('def_mod', 0),
                     'phys_mit_pct': mag.get('phys_mit_pct', 0),
                     'vel_mov_mod': mag.get('vel_mov_mod', 0),
+                    # 13/11/2026: tambien lo magico (Intelligence Weaken, Weak Curse, Inept, Weaken...); antes se
+                    # perdia y esas maldiciones no hacian nada.
+                    'matk_mod': mag.get('matk_mod', 0),
+                    'mdef_mod': mag.get('mdef_mod', 0),
+                    'mag_dmg_pct': mag.get('mag_dmg_pct', 0),
+                    'mag_mit_pct': mag.get('mag_mit_pct', 0),
                 }
+                # y lo que encadena (轉嫁法術): el dano por tiempo de Weaken (8843) e Inept (8833), etc.
+                _ef_curse = _cb.efecto_secundario(tipo)
+                if _ef_curse and random.randint(1, 100) <= int(_ef_curse.get('prob') or 100):
+                    m.aplicar_efecto(_ef_curse)
                 if getattr(m, 'en_combate_con', None) is None:
                     m.en_combate_con = yo
 

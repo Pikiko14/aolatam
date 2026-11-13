@@ -60,11 +60,22 @@ def hechizos(npc_type):
 
 def elegir(m, rng=None):
     """(magic_id, media, variacion) del hechizo de este golpe, o None (golpe normal)."""
+    import time
     rng = rng or random
+    if time.time() < float(getattr(m, 'silenciado_hasta', 0) or 0):
+        return None                     # silenciado o sellado (Silence, Demon Sealed, Silencing Chop): golpe normal
     prob, lista = hechizos(getattr(m, 'npc_type', 0))
     if not lista or rng.random() >= prob:
         return None
     return rng.choice(lista)
+
+
+def _mod_magico(m, clave) -> int:
+    """La suma de `clave` en los debuffs vigentes del monstruo."""
+    import time
+    ahora = time.time()
+    return sum(int(b.get(clave, 0) or 0) for b in (getattr(m, 'debuffs', None) or {}).values()
+               if isinstance(b, dict) and b.get('fin', 0) > ahora)
 
 
 def dano(hechizo, m, defensa_fisica, defensa_magica, rng=None):
@@ -74,5 +85,10 @@ def dano(hechizo, m, defensa_fisica, defensa_magica, rng=None):
     _mid, media, var = hechizo
     if media > 0:
         base = int(getattr(m, 'matk', 0) or 0) + media + rng.randint(-var, var)
+        # las maldiciones que bajan el ataque magico (Intelligence Weaken, Weak Curse...): matk_mod y mag_dmg_pct
+        base = max(1, base + _mod_magico(m, 'matk_mod'))
+        pct = _mod_magico(m, 'mag_dmg_pct')
+        if pct:
+            base = max(1, int(base * (100 + pct) / 100))
         return cb.dano_recibido(base, int(defensa_magica))
     return cb.dano_recibido(int(m.pegar() * MULT_FISICA), int(defensa_fisica))

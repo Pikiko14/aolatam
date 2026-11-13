@@ -689,7 +689,7 @@ class Monstruo:
                 or ef.get('vel_mov', 0) < 0):
             return None
         # Resistencia del objetivo segun el tipo de debuff (體質型 vs res_body, 心靈型 vs res_mind):
-        if ef.get('tipo_mente') or ef.get('estado') in ('panico', 'confuso', 'silencio'):
+        if ef.get('tipo_mente') or ef.get('estado') in ('panico', 'confuso', 'silencio', 'silenciado', 'miedo'):
             res_val = getattr(self, 'res_mind', 0)
             if res_val > 0 and random.randint(1, 100) <= min(90, res_val):
                 return None
@@ -704,6 +704,16 @@ class Monstruo:
         mid = ef.get('magia')
         if mid:
             self.efectos_activos[mid] = fin
+        # Los debuffs de stats y la ralentizacion van a self.debuffs, que es lo que leen la defensa, el dano y el
+        # paso del monstruo (lento_hasta no lo leia nadie: Tendon Chop, Frozen Spell, Arrow Rain no frenaban).
+        deb = dict(ef.get('mods') or {})
+        if ef.get('vel_mov', 0) < 0:
+            deb['vel_mov_mod'] = int(ef['vel_mov'])
+        if deb:
+            if getattr(self, 'debuffs', None) is None:
+                self.debuffs = {}
+            deb['fin'] = fin
+            self.debuffs[mid or ('ef', id(ef))] = deb
         if ef.get('estado') in ('aturdido', 'congelado', 'inmovilizado',
                                 'paralizado', 'atado'):
             self.aturdido_hasta = max(self.aturdido_hasta, fin)
@@ -719,7 +729,10 @@ class Monstruo:
         if ef.get('vel_mov', 0) < 0:
             self.lento_hasta = max(self.lento_hasta, fin)
             return 'lento'
-        return 'efecto'
+        if ef.get('estado') in ('silenciado', 'sellado'):
+            self.silenciado_hasta = max(getattr(self, 'silenciado_hasta', 0.0), fin)
+            return 'silenciado'
+        return 'debuff' if deb else 'efecto'
 
     def tick_sangrado(self):
         """Cuanto dano por sangrado toca ahora, o 0."""
@@ -1869,25 +1882,23 @@ def datos_magia(magic_id: int) -> dict:
                 _p3 = _num(d.get('動態參數3'), 10)
                 _m_tr = re.search(r'(\d+)\s*(?:times|triggers)', desc_l)
                 _max_u = int(_m_tr.group(1)) if _m_tr else (_p3 if _p3 > 0 else 10)
-                _prob = max(25, _p2 if 0 < _p2 <= 100 else 30)
+                _prob = _p2 if 0 < _p2 <= 100 else 30          # el dato tal cual (Mind's Eye 10%)
                 if _ps > 0:
                     res['proc_spell'] = _ps
                     res['proc_prob'] = _prob
                     res['proc_max_uses'] = _max_u
-                    res['proc_on_attack'] = True
-                    res['proc_on_hit'] = True
+                    res['proc_on_attack'], res['proc_on_hit'] = lado_del_proc(desc_l)
             # 2) Formulas 47 y 48 activables (Erosion, Lava Charm, Blood Bond, Maim Shot, Osmose Arrow,
             #    Spearheart, Solar Power, Sage Slash, Colossal Might)
             elif res['formula'] in (47, 48) and res['dur_ms'] > 0:
                 _ps = _num(d.get('動態參數2'), 0)
                 _p1 = _num(d.get('動態參數1'), 30)
-                _prob = 35 if (_p1 >= 100 and 'chance' in desc_l) else max(25, min(100, _p1 if _p1 > 0 else 30))
+                _prob = 35 if (_p1 >= 100 and 'chance' in desc_l) else min(100, _p1 if _p1 > 0 else 30)
                 if _ps > 0:
                     res['proc_spell'] = _ps
                     res['proc_prob'] = _prob
                     res['proc_max_uses'] = 0
-                    res['proc_on_attack'] = True
-                    res['proc_on_hit'] = True
+                    res['proc_on_attack'], res['proc_on_hit'] = lado_del_proc(desc_l)
             # 3) Estado '魔法還擊' (Fire Gathering, Punishing Shield, Spine Shell, Hell Shield, Energy Roar,
             #    Holy Prayer, Spirit's Blessing, Spiritual Energy, Soul Corral, Titan Rage, Life Vine,
             #    Cross Slash, Arrow Gravity, Raijin's Protection, Lotus Armor, Spike Shield, Divine Attend,
@@ -1896,7 +1907,7 @@ def datos_magia(magic_id: int) -> dict:
             elif d.get('魔法狀態') == '魔法還擊':
                 _ps = _num(d.get('動態參數2'), 0)
                 _max_u = _num(d.get('動態參數1'), 10)
-                _prob = max(25, _num(d.get('動態參數3'), 30))
+                _prob = min(100, _num(d.get('動態參數3'), 30) or 30)
                 if _ps > 0:
                     res['proc_spell'] = _ps
                     res['proc_prob'] = _prob
@@ -1906,7 +1917,7 @@ def datos_magia(magic_id: int) -> dict:
             # 4) Estados '機率持續扣血' y '爆擊轉嫁' (Debilitating Thrust, Sniper Shot)
             elif d.get('魔法狀態') in ('機率持續扣血', '爆擊轉嫁'):
                 _ps = _num(d.get('動態參數1'), 0)
-                _prob = max(25, _num(d.get('動態參數2'), 30))
+                _prob = min(100, _num(d.get('動態參數2'), 30) or 30)
                 if _ps > 0:
                     res['proc_spell'] = _ps
                     res['proc_prob'] = _prob
@@ -2398,7 +2409,36 @@ def efecto_secundario(magic_id: int):
             'elem_dmg': elem_dmg,
             'sub_debuff': sub_deb,
             'intervalo': _n(h.get('作用間隔')),
-            'vel_mov': _n(h.get('移動速度'))}
+            'vel_mov': _n(h.get('移動速度')),
+            'mods': mods_de_debuff(hijo)}
+
+
+# 13/11/2026, "todos los poderes deben dar el efecto que dicen": los debuffs de stats que encadena un ataque por
+# 轉嫁法術 (Pierced Beat, Heavy Attack, Shatter Armor, Shadow Blind...: -defensa, -ataque, +dano recibido) no se
+# aplicaban al monstruo. Son las claves que ya leen Monstruo.defensa_efectiva / mdef_efectiva / recibir / pegar.
+CLAVES_DEBUFF = ('atk_mod', 'def_mod', 'matk_mod', 'mdef_mod', 'phys_dmg_pct', 'mag_dmg_pct', 'phys_mit_pct',
+                 'mag_mit_pct')
+
+
+def lado_del_proc(desc: str):
+    """(al atacar, al recibir) de un buff con proc, segun su descripcion: "when attacking" solo al pegar, "when
+    attacked / hit / receiving damage" solo al recibir; si no dice, los dos (como antes)."""
+    desc = (desc or '').lower()
+    al_recibir = bool(re.search(r'when (?:being |you are |you.re )?(?:attacked|hit|struck|damaged)|receiv|taking damage'
+                                r'|when attacked', desc))
+    al_atacar = bool(re.search(r'when (?:you )?(?:attack|hit an|deal|strik|cast)|on attack|while attacking'
+                               r'|attacking', desc)) and not re.search(r'when (?:being )?attacked', desc)
+    if al_atacar and not al_recibir:
+        return True, False
+    if al_recibir and not al_atacar:
+        return False, True
+    return True, True
+
+
+def mods_de_debuff(magic_id: int) -> dict:
+    """Los modificadores NEGATIVOS (debuff) de un hechizo: {clave: valor}. Lo positivo no se le pone a un enemigo."""
+    d = datos_magia(int(magic_id or 0)) or {}
+    return {k: int(d[k]) for k in CLAVES_DEBUFF if isinstance(d.get(k), (int, float)) and d[k] < 0}
 
 
 _EFECTOS_DISPONIBLES = None
