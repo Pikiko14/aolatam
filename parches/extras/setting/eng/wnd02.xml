@@ -2460,7 +2460,7 @@
     <icon id="2705" dir="\log\" normal="w038_08" focus="normal" down="normal" disable="normal">
         <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />
     </icon>
-    <window class="WND_CLASS_BASE" range="0,0,189,426" id="2713" title="Adventurer" fcolor="104" font="1" icon="60465">
+    <window class="WND_CLASS_BASE" range="0,0,1,1" id="2713" title="Adventurer" fcolor="104" font="1">
         <style wsVisible="" gsNoClose="" gsNoHelp="" gsNoLock="" />
         <child>2731</child>
         <child>2734</child>
@@ -2484,6 +2484,7 @@
         <child>2772</child>
         <child>2775</child>
         <child>2778</child>
+        <child>60470</child>
     </window>
     <window class="WND_CLASS_STATIC" range="14,100,161,14" id="2716" fcolor="103" font="1">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
@@ -2516,7 +2517,7 @@
         <!-- 大頭照 -->
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_BASE" range="0,0,189,426" id="2714" title="Adventurer" fcolor="104" font="1" icon="60465">
+    <window class="WND_CLASS_BASE" range="0,0,1,1" id="2714" title="Adventurer" fcolor="104" font="1">
         <style wsVisible="" gsNoClose="" gsNoHelp="" gsNoLock="" />
         <child>2732</child>
         <child>2735</child>
@@ -2540,6 +2541,7 @@
         <child>2773</child>
         <child>2776</child>
         <child>2779</child>
+        <child>60471</child>
     </window>
     <window class="WND_CLASS_STATIC" range="14,100,161,14" id="2717" fcolor="103" font="1">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
@@ -2570,7 +2572,7 @@
         <!-- 大頭照 -->
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_BASE" range="0,0,189,426" id="2715" title="Adventurer" fcolor="104" font="1" icon="60465">
+    <window class="WND_CLASS_BASE" range="0,0,1,1" id="2715" title="Adventurer" fcolor="104" font="1">
         <style wsVisible="" gsNoClose="" gsNoHelp="" gsNoLock="" />
         <child>2733</child>
         <!-- 預設 -->
@@ -2598,6 +2600,7 @@
         <child>2774</child>
         <child>2777</child>
         <child>2780</child>
+        <child>60472</child>
     </window>
     <window class="WND_CLASS_STATIC" range="14,100,161,14" id="2718" fcolor="103" font="1">
         <style wsVisible="" ssHCenter="" ssVCenter="" />
@@ -6811,5 +6814,14 @@
     <!-- aolat seleccion -->
     <icon id="60465" dir="\log\" normal="aolat_sel_ficha" focus="normal" down="normal" disable="normal" />
     <icon id="60466" dir="\log\" normal="aolat_sel_volver_n" focus="aolat_sel_volver_f" down="aolat_sel_volver_s" disable="normal" />
+    <window class="WND_CLASS_BASE" id="60470" range="0,0,189,426" icon="60465">
+        <style wsVisible="" />
+    </window>
+    <window class="WND_CLASS_BASE" id="60471" range="0,0,189,426" icon="60465">
+        <style wsVisible="" />
+    </window>
+    <window class="WND_CLASS_BASE" id="60472" range="0,0,189,426" icon="60465">
+        <style wsVisible="" />
+    </window>
     <!-- /aolat seleccion -->
 </root>

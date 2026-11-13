@@ -16,7 +16,7 @@ Las cuatro cosas de cada ficha se mueven juntas cambiando el 800 y el 600 de su 
 suma, y algunas son de un byte y no caben): con 800 - 2*DX y 600 - 2*DY todo se corre DX, DY.
 
 Lo nuevo (en 800x600):
-  * las fichas centradas (DX = +71: de x 25 a 96, las tres juntas ocupan 607 de 800) y 30 px mas arriba (DY = -30);
+  * las fichas centradas (DX = +71: de x 25 a 96, las tres juntas ocupan 607 de 800), a la altura de siempre;
   * el menu, una barra de MENU_W x MENU_H centrada debajo de las fichas, en MENU_X, MENU_Y;
   * la barra "(1)" fuera de la pantalla (y -3000).
 
@@ -27,9 +27,9 @@ import argparse
 import pathlib
 import struct
 
-DX, DY = 71, -30
+DX, DY = 71, 0          # en y no: el personaje no sube con la ficha (0.0.0.138 lo dejo encima del menu)
 MENU_W, MENU_H = 580, 30
-MENU_X, MENU_Y = (800 - MENU_W) // 2, 110 + 426 + 4      # bajo las fichas (que ahora empiezan en y 110)
+MENU_X, MENU_Y = (800 - MENU_W) // 2, 140 + 426           # justo bajo las fichas (y 140, 426 de alto)
 FUERA = -3000
 
 

@@ -28,15 +28,13 @@ ICONO_FICHA, ICONO_VOLVER = 60465, 60466
 FICHAS = (2713, 2714, 2715)
 # 12/11/2026, "distribuyelo de otra forma, esas 3 columnas se ven feas, debe verse diferente al juego original".
 # El juego pone las tres fichas el solo, en fila (angel.dat 0x4bfbfd: x = (ancho-800)/2 + 25 + 209*i,
-# y = (alto-600)/2 + 140) y al personaje en su sitio fijo: eso no se toca. Lo que cambia es que ya no son columnas:
+# y = (alto-600)/2 + 140) y al personaje con ellas; tools/seleccion_angel_dat.py las centra. Y ya no son columnas:
 # la ficha pasa a WND_CLASS_BASE (sin marco ni barra de titulo) con fondo transparente, y en ella solo hay
 #   una placa flotante compacta arriba: retrato, nivel en pastilla, bando, Set / Face, el nombre y una tabla corta;
 #   y abajo un pedestal de luz donde se para el personaje, sobre el paisaje.
 # Con BASE las hijas van desde la esquina de la ventana (con el DLG_1 iban desde el interior, 4,20 mas adentro).
 PLACA = (4, 22, FW - 5, 214)
 RETRATO = (12, 30)
-EMBLEMA = (158, 26, 22)                  # el emblema del bando: lo pinta la ficha misma hacia x 142..174, y 5..45;
-                                         # la placa lleva ahi un hueco redondo (transparente) con su aro
 COL_X, COL_W = 78, 62
 LV_Y, BANDO_Y, BOTONES_Y = 36, 54, 72
 NOMBRE_Y, SITIO_Y = 100, 117
@@ -63,8 +61,7 @@ DISPOSICION = {
     (2783, 2784, 2785): (47, 228, 94, 28),                          # Change name (solo si hace falta)
     (2786, 2787, 2788): (47, 260, 94, 28),                          # Edit guild name
 }
-# El fondo es el icono de la propia ficha (BASE): una BASE sin icono pinta la textura verde del tema ("y lo verde,
-# quita todo indicio del selector antiguo"). Antes iba en una hija aparte (60470..60472), que ya no hace falta.
+# El dibujo de la ficha va en una hija BASE con icono (60470..60472): ver wnd02.
 FONDOS = (60470, 60471, 60472)
 TITULO_FICHA = 'Adventurer'
 PIES = (94, 404)                         # donde apoya el personaje (medido en la captura)
@@ -137,16 +134,9 @@ def ficha() -> Image.Image:
     d = ImageDraw.Draw(im)
     d.rounded_rectangle(PLACA, radius=10, outline=_rgba(LINEA))
     d.rounded_rectangle((x0 + 24, y0, x1 - 24, y0 + 2), radius=1, fill=_rgba(ACENTO))
-    # el retrato y el hueco del emblema del bando
+    # el hueco del retrato (el emblema del bando venia pintado en el fondo verde de bando, que ya no se ve)
     x, y = RETRATO
     d.ellipse((x, y, x + 59, y + 59), fill=_rgba(SUPERFICIE_2))
-    cx, cy, r = EMBLEMA
-    d.ellipse((cx - r - 3, cy - r - 3, cx + r + 3, cy + r + 3), fill=_rgba(FONDO_ARRIBA), outline=_rgba(LINEA))
-    d.ellipse((cx - r, cy - r, cx + r, cy + r), outline=_rgba(ACENTO_OSCURO), width=2)
-    hueco = Image.new('L', im.size, 255)
-    ImageDraw.Draw(hueco).ellipse((cx - r + 2, cy - r + 2, cx + r - 2, cy + r - 2), fill=0)
-    im.putalpha(Image.composite(im.getchannel('A'), Image.new('L', im.size, 0), hueco))
-    d = ImageDraw.Draw(im)
     # el nivel en pastilla y el bando sobre una linea tenue
     im.alpha_composite(_pastilla(COL_W, 15, ACENTO_OSCURO), (COL_X, LV_Y - 1))
     d = ImageDraw.Draw(im)
@@ -239,10 +229,23 @@ PIEZAS = {'aolat_sel_ficha': ficha, 'aolat_sel_retrato': retrato, 'aolat_sel_men
           **{'aolat_sel_volver_%s' % e: (lambda e=e: volver(e)) for e in 'nfs'}}
 
 
+# El fondo "ID card" verde de cada ficha (181x402, uno por bando: iconos 2699..2705 de wnd02.xml) no es ninguna
+# ventana: lo pinta el juego por codigo detras de la ficha, aunque la ficha sea BASE o de 1x1 ("quita ese rectangulo
+# verde", 12/11/2026). Van transparentes, con su tamano y su ancla.
+FONDOS_BANDO = ('w038_06', 'w038_07', 'w038_08', 'w038_09', 'w038_10', 'w038_11', 'w038_35')
+
+
 def dibujar():
+    import struct
     vl.LOG.mkdir(parents=True, exist_ok=True)
     for nombre, f in PIEZAS.items():
         (vl.LOG / (nombre + '.shp')).write_bytes(a_shp(f()))
+    for nombre in FONDOS_BANDO:
+        orig = vl.fi.del_cliente('shape\\log\\%s.shp' % nombre)
+        w, h = struct.unpack_from('<II', orig, 20)
+        datos = bytearray(a_shp(Image.new('RGBA', (w, h), (0, 0, 0, 0))))
+        struct.pack_into('<ii', datos, 28, *struct.unpack_from('<ii', orig, 28))
+        (vl.LOG / (nombre + '.shp')).write_bytes(bytes(datos))
 
 
 def _icono(texto, iid, nuevo):
@@ -270,8 +273,19 @@ def wnd02(texto, nl):
         m = vl._ventana(texto, wid)
         texto = texto[:m.start()] + m.group(0).replace('WND_CLASS_DLG_1', 'WND_CLASS_BASE') + texto[m.end():]
         texto = _attr(texto, wid, 'title', TITULO_FICHA)
+        # La ficha pinta la textura verde del tema en todo su range, lleve icono o no (0.0.0.138: "se ve horrible").
+        # Se queda en 1x1 (las hijas se pintan y se pulsan igual fuera de su padre, como ya hacian las fichas con el
+        # menu 2565) y el dibujo va en una hija BASE con icono, la ULTIMA (el juego pinta las hijas de la ultima a la
+        # primera: la primera queda encima).
+        texto = re.sub(r'(<window [^>]*\bid="%d"[^>]*?) icon="%d"' % (wid, ICONO_FICHA), r'\1', texto)
+        m = vl._ventana(texto, wid)
+        texto = texto[:m.start()] + re.sub(r'range="[^"]*"', 'range="0,0,1,1"', m.group(0), count=1) + texto[m.end():]
         texto = re.sub(r'[ \t]*<child>%d</child>\r?\n' % fondo, '', texto)
-        texto = _attr(texto, wid, 'icon', ICONO_FICHA)
+        m = vl._ventana(texto, wid)
+        sangria = re.search(r'\n([ \t]*)<child>', texto[m.end():]).group(1)
+        cierre = texto.index('</window>', m.end())
+        linea_fin = texto.rindex('\n', 0, cierre) + 1
+        texto = texto[:linea_fin] + sangria + '<child>%d</child>' % fondo + nl + texto[linea_fin:]
     for ids, caja in list(DISPOSICION.items()) + list(MENU_DISPOSICION.items()):
         for wid in ids:
             m = vl._ventana(texto, wid)
@@ -289,6 +303,9 @@ def wnd02(texto, nl):
     bloque = '    <!-- %s -->%s' % (MARCA, nl)
     bloque += '    %s%s' % (linea(ICONO_FICHA, 'aolat_sel_ficha'), nl)
     bloque += '    %s%s' % (linea(ICONO_VOLVER, 'aolat_sel_volver_n', 'aolat_sel_volver_f', 'aolat_sel_volver_s'), nl)
+    for fondo in FONDOS:
+        bloque += ('    <window class="WND_CLASS_BASE" id="%d" range="0,0,%d,%d" icon="%d">%s'
+                   '        <style wsVisible="" />%s    </window>%s' % (fondo, FW, FH, ICONO_FICHA, nl, nl, nl))
     bloque += '    <!-- /%s -->%s' % (MARCA, nl)
     fin = texto.rindex('</')
     return texto[:fin] + bloque + texto[fin:]
