@@ -64,3 +64,8 @@ def test_los_drenajes_de_las_formulas_3_4_y_56():
     assert combate.datos_magia(113)['drain_mp_pct'] == 5                        # Demon-Sucking
     assert combate.datos_magia(13260)['drain_hp_tope_pct'] == 10                # Drain Strike
     assert combate.datos_magia(5401)['drain_mp_pct'] > 0                        # Stab
+
+
+def test_el_reflejo_sale_de_los_datos():
+    assert combate.datos_magia(308)['refl_fis_pct'] == 3                        # Rebound Spell I
+    assert combate.datos_magia(5021)['refl_mag_pct'] == 9                       # Refusal Wall I

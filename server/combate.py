@@ -1886,6 +1886,10 @@ def datos_magia(magic_id: int) -> dict:
             res['phys_mit_pct'] = _num(d.get('物理傷害抵銷') or (_d_aura.get('物理傷害抵銷') if d.get('範圍效果光環') == '是' and _d_aura else 0), 0)
             res['mag_mit_pct'] = _num(d.get('魔法傷害抵銷') or (_d_aura.get('魔法傷害抵銷') if d.get('範圍效果光環') == '是' and _d_aura else 0), 0)
             res['vel_mov_mod'] = _num(d.get('move_speed') or d.get('移動速度'), 0)
+            # Reflejo (Rebound Spell 308, Aegis 5646: 物理反彈; Refusal Wall 5021, Mirror Reflect 5061: 魔法反彈): el %
+            # del dano recibido que vuelve al atacante. Lo aplica app.py al pegar un monstruo (no a los jefes).
+            res['refl_fis_pct'] = _num(d.get('物理反彈'), 0)
+            res['refl_mag_pct'] = _num(d.get('魔法反彈'), 0)
 
             # Buffs con triggers / procs al atacar o al recibir dano:
             # 1) Formulas 53, 54, 61, 62 (Blazing Sun, Mana Overflow, Spell Boost, Witch Ward, Brainjack,

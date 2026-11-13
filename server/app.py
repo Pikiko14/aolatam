@@ -14207,6 +14207,25 @@ class Servidor:
                                                             m.hp = 0
                                                             _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.1)
 
+                                                    # EL REFLEJO DE LOS DATOS (13/11/2026): 物理反彈 / 魔法反彈 de cualquier buff
+                                                    # vivo (Rebound Spell, Aegis, Refusal Wall, Mirror Reflect...), "does
+                                                    # not affect Bosses".
+                                                    _es_mag_imp = atk_id not in (0, 656, _cb.ATAQUE_NORMAL)         # 656: el golpe normal del bicho
+                                                    _refl_pct = 0 if (_dc_bid is not None or _cb.es_jefe(getattr(m, 'npc_type', 0) or 0)) else sum(
+                                                        int(b.get('refl_mag_pct' if _es_mag_imp else 'refl_fis_pct', 0) or 0)
+                                                        for b in (pj.buffs or {}).values()
+                                                        if isinstance(b, dict) and b.get('fin', 0) > ahora_imp)
+                                                    if _refl_pct > 0 and suyo > 0:
+                                                        refl = max(1, int(round(suyo * min(100, _refl_pct) / 100.0)))
+                                                        m.registrar_dano(min(m.hp, refl), es_pet=False)
+                                                        m.hp = max(0, m.hp - refl)
+                                                        ses.enviar_inmediato(
+                                                            _cb.numero_flotante(m.entity_id, refl),
+                                                            _cb.atributo(m.entity_id, m.porcentaje if m.hp > 0 else 0))
+                                                        if m.hp <= 0:
+                                                            _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.1)
+                                                            return
+
                                                     # Shock Absorber (13675..13679): convierte un % del dano recibido en MP
                                                     _sa_bid = next((
                                                         bid for bid, b in (pj.buffs or {}).items()
