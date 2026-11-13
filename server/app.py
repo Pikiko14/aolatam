@@ -16988,6 +16988,8 @@ class Servidor:
                     'mag_dmg_pct': mag.get('mag_dmg_pct', 0),
                     'mag_mit_pct': mag.get('mag_mit_pct', 0),
                 }
+                if mag.get('congela'):                         # Divine Freeze: ni anda ni pega
+                    m.aturdido_hasta = max(getattr(m, 'aturdido_hasta', 0.0), time.time() + dur_s)
                 if _control_m == 'silenciado':
                     m.silenciado_hasta = max(getattr(m, 'silenciado_hasta', 0.0), time.time() + dur_s)
                 elif _control_m == 'atado':
@@ -17236,6 +17238,16 @@ class Servidor:
                         m.efectos_activos.pop(_brand_prev_id, None)
                         _pkg_debuff_m.append(struct.pack('<HIBBII', 0x001D, m.entity_id, 1, 4, _brand_prev_id, 0))
                     _ef2 = _cb.efecto_secundario(mag.get('brand_aoe_id', 0))
+            if (mag.get('debuff_al_pegar') and dano > 0 and m.vivo
+                    and random.random() * 100 < mag['debuff_al_pegar']):    # Armor Break: el debuff de su fila
+                _mods_ap = _cb.mods_de_debuff(tipo)
+                if _mods_ap:
+                    if getattr(m, 'debuffs', None) is None:
+                        m.debuffs = {}
+                    _mods_ap['fin'] = time.time() + max(1, int(mag.get('dur_ms') or 5000)) / 1000.0
+                    m.debuffs[tipo] = _mods_ap
+                    _pkg_debuff_m.append(struct.pack('<HIBBII', 0x001D, m.entity_id, 1, 4, tipo,
+                                                     int(mag.get('dur_ms') or 5000)))
             if _ef2 and random.random() * 100 < _ef2.get('prob', 0):
                 _aplicado = m.aplicar_efecto(_ef2)
                 if _aplicado:

@@ -2002,6 +2002,16 @@ def datos_magia(magic_id: int) -> dict:
                 any(k in nom_l for k in ('hit', 'attack', 'chop', 'beating', 'slash', 'wave', 'bomb', 'shot', 'thrust', 'strike', 'killing', 'brand'))
             )
 
+            # ATAQUE QUE ADEMAS MALDICE (Armor Break 12631: "Long-ranged attack ... has a chance of decreasing target's
+            # Defense"): como era debuff no pegaba. Ahora pega y el debuff de su propia fila entra al pegar.
+            if (res['es_debuff'] and d.get('攻擊型') == '是'
+                    and re.search(r'attacks? (?:on|a)|powerful shot|deals? damage', desc_l)):
+                res['es_debuff'], res['es_ataque'] = False, True
+                res['debuff_al_pegar'] = 50 if 'chance' in desc_l else 100
+            # Divine Freeze (5016, 神聖凍結): "freezes the target in place, unable to move and attack"
+            if d.get('魔法狀態') == '神聖凍結':
+                res['congela'] = True
+
             # CURAS QUE NO CURABAN (13/11/2026, auditoria de "todos los poderes deben dar el efecto que dicen"):
             #  * Sacred Heal (5096) y Celestial Heal (12006): HP fijo (數值), sin 攻擊型 ni tics, "restores ... HP" o
             #    "healing": no casaban con la lista de nombres ni con la frase exacta "restores hp";

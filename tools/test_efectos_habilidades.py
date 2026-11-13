@@ -87,3 +87,10 @@ def test_en_pvp_el_debuff_baja_las_stats_del_rival(monkeypatch):
     b = otro.personaje.buffs[5631]
     assert b['mit'] == -15 and b['def'] == -40 and pvp_liga.mitigacion(otro, False) > 1.0
     assert not pvp_liga.aplicar_debuff(yo, otro, 1, {}, 5000)
+
+
+def test_armor_break_pega_y_divine_freeze_congela():
+    ab = combate.datos_magia(12631)
+    assert ab['es_ataque'] and ab['debuff_al_pegar'] and combate.mods_de_debuff(12631)['def_mod'] < 0
+    assert combate.datos_magia(5016)['congela']
+    assert combate.datos_magia(102)['es_debuff']                     # Exhaustion Curse sigue siendo maldicion

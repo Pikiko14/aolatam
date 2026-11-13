@@ -341,6 +341,9 @@ ESTADOS_QUIETO = {'aturdido': 'aturdido', 'congelado': 'aturdido', 'paralizado':
 def aplicar_secundario(ses, otro, tipo, mag):
     """El efecto secundario de la habilidad `tipo` sobre el jugador `otro`, con su probabilidad, duracion e intervalo."""
     import combate
+    if mag.get('debuff_al_pegar') and random.random() * 100 < mag['debuff_al_pegar']:
+        aplicar_debuff(ses, otro, tipo, combate.mods_de_debuff(tipo), mag.get('dur_ms'), mag.get('nombre', ''),
+                       con_efecto=False)
     sec = combate.efecto_secundario(tipo) or {}
     prob = sec.get('prob')
     if not sec or random.random() * 100 >= float(100 if prob is None else prob):
