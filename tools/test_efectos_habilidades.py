@@ -69,3 +69,21 @@ def test_los_drenajes_de_las_formulas_3_4_y_56():
 def test_el_reflejo_sale_de_los_datos():
     assert combate.datos_magia(308)['refl_fis_pct'] == 3                        # Rebound Spell I
     assert combate.datos_magia(5021)['refl_mag_pct'] == 9                       # Refusal Wall I
+
+
+def test_en_pvp_el_debuff_baja_las_stats_del_rival(monkeypatch):
+    from types import SimpleNamespace as NS
+    import app
+    import presencia
+    import pvp_liga
+    monkeypatch.setattr(presencia, '_vivas', lambda clave: [])
+    monkeypatch.setattr(presencia, 'clave_de_mapa', lambda s, st: 0)
+    monkeypatch.setattr(presencia, 'entidad_de', lambda s: 1)
+    monkeypatch.setattr(app, '_stats_ses', lambda s: b'')
+    env = []
+    yo = NS(personaje=NS(nombre='a', entity_id=1, stage=1), enviar=lambda *x: None)
+    otro = NS(personaje=NS(nombre='b', entity_id=2, stage=1, buffs={}), enviar=lambda *x: env.extend(x))
+    assert pvp_liga.aplicar_debuff(yo, otro, 5631, {'phys_mit_pct': -15, 'def_mod': -40}, 5000, 'Shatter Armor')
+    b = otro.personaje.buffs[5631]
+    assert b['mit'] == -15 and b['def'] == -40 and pvp_liga.mitigacion(otro, False) > 1.0
+    assert not pvp_liga.aplicar_debuff(yo, otro, 1, {}, 5000)

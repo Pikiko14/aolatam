@@ -357,6 +357,92 @@ def aplicar_secundario(ses, otro, tipo, mag):
                                           'lentitud': max(-90, int(sec['vel_mov']))}, 'lento')
     if int(sec.get('hp_tick') or 0) < 0 and int(sec.get('intervalo') or 0) > 0:
         aplicar_dot(ses, otro, sub, -int(sec['hp_tick']), int(sec['intervalo']), dur, nombre)
+    if sec.get('mods'):
+        aplicar_debuff(ses, otro, sub, sec['mods'], dur, nombre, con_efecto=False)
+
+
+# Las claves de combate.mods_de_debuff a las que lee inventario.stats (sumas directas) y mitigacion() ('mit').
+_DEBUFF_A_BUFF = {'def_mod': 'def', 'atk_mod': 'atk', 'matk_mod': 'matk', 'mdef_mod': 'mdef',
+                  'phys_mit_pct': 'mit', 'mag_mit_pct': 'mag_mit'}
+
+
+def aplicar_debuff(ses, otro, tipo, mods, dur_ms, nombre='', con_efecto=True):
+    """Un debuff de stats al rival (13/11/2026, "todos los poderes deben dar el efecto que dicen"): -defensa,
+    -ataque, -mitigacion... como entrada de sus buffs (la leen sus stats y mitigacion()), con su icono y su fin."""
+    import time
+    import asyncio
+    import app, combate, presencia
+    p, q = ses.personaje, otro.personaje
+    entrada = {_DEBUFF_A_BUFF[k]: int(v) for k, v in (mods or {}).items() if k in _DEBUFF_A_BUFF and v}
+    if not entrada:
+        return False
+    dur_ms = int(dur_ms or 0) or 10000
+    entrada.update({'fin': time.time() + dur_ms / 1000.0, 'debuff_pvp': True, 'mag': {'nombre': nombre}})
+    if q.buffs is None:
+        q.buffs = {}
+    q.buffs[int(tipo)] = entrada
+    pkts = [struct.pack('<HIBBII', 0x001D, q.entity_id, 1, 4, int(tipo), dur_ms)]
+    try:
+        pkts.append(app._stats_ses(otro))
+    except Exception:
+        pass
+    if con_efecto:
+        efecto = combate.efecto_de_ataque(tipo)
+        apub, bpub = presencia.entidad_de(ses), presencia.entidad_de(otro)
+        for visor in presencia._vivas(presencia.clave_de_mapa(ses, p.stage)):
+            a = p.entity_id if visor is ses else apub
+            b = q.entity_id if visor is otro else bpub
+            try:
+                (getattr(visor, 'enviar_sin_espejo', None) or visor.enviar)(
+                    combate.numero_de_dano(a, b, 0, tipo, efecto=efecto, cast_time=0, es_magia=True),
+                    combate.cierre_de_dano(a, b, tipo, efecto=efecto, es_magia=True))
+            except Exception:
+                pass
+    try:
+        otro.enviar(*pkts)
+    except Exception:
+        pass
+    log.info('%s debuff %s a %s: %s (%d ms)', p.nombre, nombre, q.nombre, entrada, dur_ms)
+
+    def _expira():
+        if (q.buffs or {}).get(int(tipo)) is entrada:
+            q.buffs.pop(int(tipo), None)
+            try:
+                otro.enviar(struct.pack('<HIBBII', 0x001D, q.entity_id, 1, 4, int(tipo), 0), app._stats_ses(otro))
+            except Exception:
+                pass
+    try:
+        asyncio.get_event_loop().call_later(dur_ms / 1000.0, _expira)
+    except RuntimeError:
+        pass
+    return True
+
+
+def maldecir(ses, otro, tipo, mag):
+    """Una maldicion (Weak Curse, Exhaustion Curse, Slow Curse...) sobre otro jugador. Antes no se mandaba al PvP:
+    solo iban ahi los ataques, y las maldiciones contra jugadores no hacian nada."""
+    import combate, transitable
+    if not permitido(ses, otro) or mag.get('no_jugadores'):
+        return False
+    p, q = ses.personaje, otro.personaje
+    if max(abs(p.tile_x - q.tile_x), abs(p.tile_y - q.tile_y)) > max(1, mag.get('rango', 1)) + 1:
+        return False
+    if not transitable.linea_libre(p.stage, (p.tile_x, p.tile_y), (q.tile_x, q.tile_y)):
+        return False
+    mp, sp = int(mag.get('mp') or 0), int(mag.get('cost_sp') or 0)
+    if p.mp < mp or int(getattr(ses, 'sp', 0) or 0) < sp:
+        return False
+    p.mp -= mp
+    ses.sp = int(getattr(ses, 'sp', 0) or 0) - sp
+    p.sp = ses.sp
+    ses.enviar(combate.atributo(p.entity_id, p.mp, combate.KIND_MP), combate.atributo(p.entity_id, ses.sp, combate.KIND_SP))
+    mods = combate.mods_de_debuff(tipo)
+    if int(mag.get('vel_mov_mod') or 0) < 0:
+        _aplicar_control(ses, otro, tipo, {'nombre': mag.get('nombre', ''), 'dur_ms': mag.get('dur_ms'),
+                                           'lentitud': max(-90, int(mag['vel_mov_mod']))}, 'lento')
+    hecho = aplicar_debuff(ses, otro, tipo, mods, mag.get('dur_ms'), mag.get('nombre', ''))
+    aplicar_secundario(ses, otro, tipo, mag)
+    return hecho or int(mag.get('vel_mov_mod') or 0) < 0
 
 
 def aplicar_dot(ses, otro, sub, dano, intervalo_s, dur_ms, nombre=''):

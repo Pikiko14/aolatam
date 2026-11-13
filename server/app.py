@@ -15660,6 +15660,9 @@ class Servidor:
             if _rival is not None and (tipo == _cb.ATAQUE_NORMAL or mag.get('es_ataque')):
                 _pvp.atacar(ses, _rival, tipo, mag, arma_puesta)
                 return
+            if _rival is not None and tipo != _cb.ATAQUE_NORMAL and mag.get('es_debuff'):
+                _pvp.maldecir(ses, _rival, tipo, mag)          # maldiciones contra jugadores (13/11/2026)
+                return
             _pet_rival_obj = _pvp.mascota_objetivo(ses, objetivo) if objetivo else None
             if _pet_rival_obj is not None and (tipo == _cb.ATAQUE_NORMAL or mag.get('es_ataque')):
                 _pvp.atacar_mascota(ses, _pet_rival_obj[0], _pet_rival_obj[1], objetivo, tipo, mag, arma_puesta)
