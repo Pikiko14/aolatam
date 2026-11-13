@@ -9994,21 +9994,21 @@
     <icon id="60357" dir="\wnd01\" normal="aolat_raid_ranking" focus="normal" down="normal" disable="normal" />
     <!-- /aolat raid ranking -->
     <!-- aolat torre ventana -->
-    <color id="61070" normal="125,211,252" focus="125,211,252" down="125,211,252" disable="125,211,252"/>
-    <color id="61071" normal="148,163,184" focus="148,163,184" down="148,163,184" disable="148,163,184"/>
-    <color id="61072" normal="214,140,72" focus="214,140,72" down="214,140,72" disable="214,140,72"/>
+    <color id="59270" normal="125,211,252" focus="125,211,252" down="125,211,252" disable="125,211,252"/>
+    <color id="59271" normal="148,163,184" focus="148,163,184" down="148,163,184" disable="148,163,184"/>
+    <color id="59272" normal="214,140,72" focus="214,140,72" down="214,140,72" disable="214,140,72"/>
     <window class="WND_CLASS_DLG_1" range="0,0,348,370" id="59020" title="Tower of Babel" fcolor="104" font="1">
         <style wsVisible="" wsMoveable="" />
-        <child>61050</child>
-        <child>61051</child>
-        <child>61052</child>
-        <child>61053</child>
-        <child>61054</child>
-        <child>61055</child>
-        <child>61056</child>
-        <child>61057</child>
-        <child>61058</child>
-        <child>61059</child>
+        <child>59250</child>
+        <child>59251</child>
+        <child>59252</child>
+        <child>59253</child>
+        <child>59254</child>
+        <child>59255</child>
+        <child>59256</child>
+        <child>59257</child>
+        <child>59258</child>
+        <child>59259</child>
         <child>59022</child>
         <child>59023</child>
         <child>59025</child>
@@ -10017,235 +10017,235 @@
         <child>59024</child>
         <child>59027</child>
         <child>59026</child>
-        <child>61010</child>
-        <child>61020</child>
-        <child>61030</child>
-        <child>61040</child>
-        <child>61011</child>
-        <child>61021</child>
-        <child>61031</child>
-        <child>61041</child>
-        <child>61012</child>
-        <child>61022</child>
-        <child>61032</child>
-        <child>61042</child>
-        <child>61013</child>
-        <child>61023</child>
-        <child>61033</child>
-        <child>61043</child>
-        <child>61014</child>
-        <child>61024</child>
-        <child>61034</child>
-        <child>61044</child>
-        <child>61015</child>
-        <child>61025</child>
-        <child>61035</child>
-        <child>61045</child>
-        <child>61016</child>
-        <child>61026</child>
-        <child>61036</child>
-        <child>61046</child>
-        <child>61017</child>
-        <child>61027</child>
-        <child>61037</child>
-        <child>61047</child>
-        <child>61018</child>
-        <child>61028</child>
-        <child>61038</child>
-        <child>61048</child>
-        <child>61019</child>
-        <child>61029</child>
-        <child>61039</child>
-        <child>61049</child>
-        <child>61001</child>
+        <child>59210</child>
+        <child>59220</child>
+        <child>59230</child>
+        <child>59240</child>
+        <child>59211</child>
+        <child>59221</child>
+        <child>59231</child>
+        <child>59241</child>
+        <child>59212</child>
+        <child>59222</child>
+        <child>59232</child>
+        <child>59242</child>
+        <child>59213</child>
+        <child>59223</child>
+        <child>59233</child>
+        <child>59243</child>
+        <child>59214</child>
+        <child>59224</child>
+        <child>59234</child>
+        <child>59244</child>
+        <child>59215</child>
+        <child>59225</child>
+        <child>59235</child>
+        <child>59245</child>
+        <child>59216</child>
+        <child>59226</child>
+        <child>59236</child>
+        <child>59246</child>
+        <child>59217</child>
+        <child>59227</child>
+        <child>59237</child>
+        <child>59247</child>
+        <child>59218</child>
+        <child>59228</child>
+        <child>59238</child>
+        <child>59248</child>
+        <child>59219</child>
+        <child>59229</child>
+        <child>59239</child>
+        <child>59249</child>
+        <child>59203</child>
     </window>
-    <window class="WND_CLASS_BUTTON" id="61050" range="9,163,322,14" appdata="0">
+    <window class="WND_CLASS_BUTTON" id="59250" range="9,163,322,14" appdata="0">
         <style wsTab="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="61051" range="9,177,322,14" appdata="1">
+    <window class="WND_CLASS_BUTTON" id="59251" range="9,177,322,14" appdata="1">
         <style wsTab="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="61052" range="9,191,322,14" appdata="2">
+    <window class="WND_CLASS_BUTTON" id="59252" range="9,191,322,14" appdata="2">
         <style wsTab="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="61053" range="9,205,322,14" appdata="3">
+    <window class="WND_CLASS_BUTTON" id="59253" range="9,205,322,14" appdata="3">
         <style wsTab="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="61054" range="9,219,322,14" appdata="4">
+    <window class="WND_CLASS_BUTTON" id="59254" range="9,219,322,14" appdata="4">
         <style wsTab="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="61055" range="9,233,322,14" appdata="5">
+    <window class="WND_CLASS_BUTTON" id="59255" range="9,233,322,14" appdata="5">
         <style wsTab="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="61056" range="9,247,322,14" appdata="6">
+    <window class="WND_CLASS_BUTTON" id="59256" range="9,247,322,14" appdata="6">
         <style wsTab="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="61057" range="9,261,322,14" appdata="7">
+    <window class="WND_CLASS_BUTTON" id="59257" range="9,261,322,14" appdata="7">
         <style wsTab="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="61058" range="9,275,322,14" appdata="8">
+    <window class="WND_CLASS_BUTTON" id="59258" range="9,275,322,14" appdata="8">
         <style wsTab="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="61059" range="9,289,322,14" appdata="9">
+    <window class="WND_CLASS_BUTTON" id="59259" range="9,289,322,14" appdata="9">
         <style wsTab="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="59022" range="8,76,96,22" title="" fcolor="103" font="1" icon="61063">
+    <window class="WND_CLASS_BUTTON" id="59022" range="8,76,96,22" title="" fcolor="103" font="1" icon="59263">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnTorreSolo</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="59023" range="106,76,96,22" title="" fcolor="103" font="1" icon="61064">
+    <window class="WND_CLASS_BUTTON" id="59023" range="106,76,96,22" title="" fcolor="103" font="1" icon="59264">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnTorreParty</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="59025" range="236,312,96,26" title="" icon="61066" tooltip="10040" tooltext="Enter the Tower of Babel">
+    <window class="WND_CLASS_BUTTON" id="59025" range="236,312,96,26" title="" icon="59266" tooltip="10040" tooltext="Enter the Tower of Babel">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnTorreEntrar</OnCommand>
     </window>
-    <window class="WND_CLASS_STATIC" id="59021" range="14,42,200,14" title="" fcolor="61070" font="1">
+    <window class="WND_CLASS_STATIC" id="59021" range="14,42,200,14" title="" fcolor="59270" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="59028" range="10,105,320,14" title="" fcolor="61071" font="1">
+    <window class="WND_CLASS_STATIC" id="59028" range="10,105,320,14" title="" fcolor="59271" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
     <window class="WND_CLASS_STATIC" id="59024" range="12,130,220,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="59027" range="12,206,316,14" title="No climbs yet. Be the first!" fcolor="61071" font="1">
+    <window class="WND_CLASS_STATIC" id="59027" range="12,206,316,14" title="No climbs yet. Be the first!" fcolor="59271" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
     <window class="WND_CLASS_STATIC" id="59026" range="10,318,218,14" title="" fcolor="513" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61010" range="12,164,22,14" title="" fcolor="514" font="1">
+    <window class="WND_CLASS_STATIC" id="59210" range="12,164,22,14" title="" fcolor="514" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61020" range="36,164,176,14" title="" fcolor="514" font="1">
+    <window class="WND_CLASS_STATIC" id="59220" range="36,164,176,14" title="" fcolor="514" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61030" range="218,164,48,14" title="" fcolor="61070" font="1">
+    <window class="WND_CLASS_STATIC" id="59230" range="218,164,48,14" title="" fcolor="59270" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61040" range="274,164,56,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59240" range="274,164,56,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61011" range="12,178,22,14" title="" fcolor="510" font="1">
+    <window class="WND_CLASS_STATIC" id="59211" range="12,178,22,14" title="" fcolor="510" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61021" range="36,178,176,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59221" range="36,178,176,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61031" range="218,178,48,14" title="" fcolor="61070" font="1">
+    <window class="WND_CLASS_STATIC" id="59231" range="218,178,48,14" title="" fcolor="59270" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61041" range="274,178,56,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59241" range="274,178,56,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61012" range="12,192,22,14" title="" fcolor="61072" font="1">
+    <window class="WND_CLASS_STATIC" id="59212" range="12,192,22,14" title="" fcolor="59272" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61022" range="36,192,176,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59222" range="36,192,176,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61032" range="218,192,48,14" title="" fcolor="61070" font="1">
+    <window class="WND_CLASS_STATIC" id="59232" range="218,192,48,14" title="" fcolor="59270" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61042" range="274,192,56,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59242" range="274,192,56,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61013" range="12,206,22,14" title="" fcolor="61071" font="1">
+    <window class="WND_CLASS_STATIC" id="59213" range="12,206,22,14" title="" fcolor="59271" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61023" range="36,206,176,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59223" range="36,206,176,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61033" range="218,206,48,14" title="" fcolor="61070" font="1">
+    <window class="WND_CLASS_STATIC" id="59233" range="218,206,48,14" title="" fcolor="59270" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61043" range="274,206,56,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59243" range="274,206,56,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61014" range="12,220,22,14" title="" fcolor="61071" font="1">
+    <window class="WND_CLASS_STATIC" id="59214" range="12,220,22,14" title="" fcolor="59271" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61024" range="36,220,176,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59224" range="36,220,176,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61034" range="218,220,48,14" title="" fcolor="61070" font="1">
+    <window class="WND_CLASS_STATIC" id="59234" range="218,220,48,14" title="" fcolor="59270" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61044" range="274,220,56,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59244" range="274,220,56,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61015" range="12,234,22,14" title="" fcolor="61071" font="1">
+    <window class="WND_CLASS_STATIC" id="59215" range="12,234,22,14" title="" fcolor="59271" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61025" range="36,234,176,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59225" range="36,234,176,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61035" range="218,234,48,14" title="" fcolor="61070" font="1">
+    <window class="WND_CLASS_STATIC" id="59235" range="218,234,48,14" title="" fcolor="59270" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61045" range="274,234,56,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59245" range="274,234,56,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61016" range="12,248,22,14" title="" fcolor="61071" font="1">
+    <window class="WND_CLASS_STATIC" id="59216" range="12,248,22,14" title="" fcolor="59271" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61026" range="36,248,176,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59226" range="36,248,176,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61036" range="218,248,48,14" title="" fcolor="61070" font="1">
+    <window class="WND_CLASS_STATIC" id="59236" range="218,248,48,14" title="" fcolor="59270" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61046" range="274,248,56,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59246" range="274,248,56,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61017" range="12,262,22,14" title="" fcolor="61071" font="1">
+    <window class="WND_CLASS_STATIC" id="59217" range="12,262,22,14" title="" fcolor="59271" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61027" range="36,262,176,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59227" range="36,262,176,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61037" range="218,262,48,14" title="" fcolor="61070" font="1">
+    <window class="WND_CLASS_STATIC" id="59237" range="218,262,48,14" title="" fcolor="59270" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61047" range="274,262,56,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59247" range="274,262,56,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61018" range="12,276,22,14" title="" fcolor="61071" font="1">
+    <window class="WND_CLASS_STATIC" id="59218" range="12,276,22,14" title="" fcolor="59271" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61028" range="36,276,176,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59228" range="36,276,176,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61038" range="218,276,48,14" title="" fcolor="61070" font="1">
+    <window class="WND_CLASS_STATIC" id="59238" range="218,276,48,14" title="" fcolor="59270" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61048" range="274,276,56,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59248" range="274,276,56,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61019" range="12,290,22,14" title="" fcolor="61071" font="1">
+    <window class="WND_CLASS_STATIC" id="59219" range="12,290,22,14" title="" fcolor="59271" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61029" range="36,290,176,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59229" range="36,290,176,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61039" range="218,290,48,14" title="" fcolor="61070" font="1">
+    <window class="WND_CLASS_STATIC" id="59239" range="218,290,48,14" title="" fcolor="59270" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="61049" range="274,290,56,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="59249" range="274,290,56,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_BASE" id="61001" range="0,0,340,346" icon="61060">
+    <window class="WND_CLASS_BASE" id="59203" range="0,0,340,346" icon="59260">
         <style wsVisible="" />
     </window>
-    <icon id="61060" dir="\wnd01\" normal="aolat_torre_fondo" focus="normal" down="normal" disable="normal" />
-    <icon id="61062" dir="\wnd01\" normal="aolat_torre_solo_n" focus="aolat_torre_solo_f" down="aolat_torre_solo_s" disable="normal" />
-    <icon id="61063" dir="\wnd01\" normal="aolat_torre_solo_s" focus="aolat_torre_solo_s" down="aolat_torre_solo_s" disable="normal" />
-    <icon id="61064" dir="\wnd01\" normal="aolat_torre_party_n" focus="aolat_torre_party_f" down="aolat_torre_party_s" disable="normal" />
-    <icon id="61065" dir="\wnd01\" normal="aolat_torre_party_s" focus="aolat_torre_party_s" down="aolat_torre_party_s" disable="normal" />
-    <icon id="61066" dir="\wnd01\" normal="aolat_torre_entrar_n" focus="aolat_torre_entrar_f" down="aolat_torre_entrar_s" disable="normal" />
-    <icon id="61067" dir="\wnd01\" normal="aolat_torre_unirse_n" focus="aolat_torre_unirse_f" down="aolat_torre_unirse_s" disable="normal" />
-    <icon id="61068" dir="\wnd01\" normal="aolat_torre_salir_n" focus="aolat_torre_salir_f" down="aolat_torre_salir_s" disable="normal" />
+    <icon id="59260" dir="\wnd01\" normal="aolat_torre_fondo" focus="normal" down="normal" disable="normal" />
+    <icon id="59262" dir="\wnd01\" normal="aolat_torre_solo_n" focus="aolat_torre_solo_f" down="aolat_torre_solo_s" disable="normal" />
+    <icon id="59263" dir="\wnd01\" normal="aolat_torre_solo_s" focus="aolat_torre_solo_s" down="aolat_torre_solo_s" disable="normal" />
+    <icon id="59264" dir="\wnd01\" normal="aolat_torre_party_n" focus="aolat_torre_party_f" down="aolat_torre_party_s" disable="normal" />
+    <icon id="59265" dir="\wnd01\" normal="aolat_torre_party_s" focus="aolat_torre_party_s" down="aolat_torre_party_s" disable="normal" />
+    <icon id="59266" dir="\wnd01\" normal="aolat_torre_entrar_n" focus="aolat_torre_entrar_f" down="aolat_torre_entrar_s" disable="normal" />
+    <icon id="59267" dir="\wnd01\" normal="aolat_torre_unirse_n" focus="aolat_torre_unirse_f" down="aolat_torre_unirse_s" disable="normal" />
+    <icon id="59268" dir="\wnd01\" normal="aolat_torre_salir_n" focus="aolat_torre_salir_f" down="aolat_torre_salir_s" disable="normal" />
     <!-- /aolat torre ventana -->
 </root>

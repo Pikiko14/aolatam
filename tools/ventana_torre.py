@@ -13,8 +13,8 @@ juego pinta las hijas de la ultima a la primera). El dibujo sigue la linea de la
     pinta el de todos los botones) y la elegida lleva su icono encendido (seticon desde server/lua/torre.lua);
   * una linea que explica el modo (59028);
   * el ranking: cabecera (59024), columnas dibujadas y diez filas de textos sueltos (puesto, nombres, pisos, tiempo:
-    61010.., 61020.., 61030.., 61040..), con el primero en oro, plata y bronce para los tres primeros; encima de cada
-    fila un boton transparente (61050..) cuyo tooltip lleva todos los nombres; y el aviso de vacio (59027);
+    59210.., 59220.., 59230.., 59240..), con el primero en oro, plata y bronce para los tres primeros; encima de cada
+    fila un boton transparente (59250..) cuyo tooltip lleva todos los nombres; y el aviso de vacio (59027);
   * abajo el estado (59026) y el boton grande (59025), con Enter / Join / Leave dibujados (tres iconos).
 
 Los .shp solo tienen transparencia de todo o nada: todo lo que lleva texto dibujado es opaco.
@@ -41,14 +41,16 @@ MARCO_X, MARCO_Y, MARCO_ABAJO = 4, 20, 4
 
 VENTANA = 59020
 PISOS, SOLO, PARTY, CABECERA, ENTRAR, ESTADO, VACIO, MODO = 59021, 59022, 59023, 59024, 59025, 59026, 59027, 59028
-FONDO = 61001
-PUESTO, NOMBRES, NPISOS, TIEMPO, CLIC = 61010, 61020, 61030, 61040, 61050
+FONDO = 59203
+PUESTO, NOMBRES, NPISOS, TIEMPO, CLIC = 59210, 59220, 59230, 59240, 59250
 N_FILAS = 10
+# Todos los ids entre los que el cliente ya carga (13/11/2026): con 61001..61072, por encima de los mas altos de
+# wnd*.xml (ventana 60472, icono 60466, color 59099), el juego se cerraba al entrar al mundo.
 # Iconos
-I_FONDO, I_SOLO, I_SOLO_ON, I_PARTY, I_PARTY_ON, I_ENTRAR, I_UNIRSE, I_SALIR = (61060, 61062, 61063, 61064, 61065,
-                                                                              61066, 61067, 61068)
+I_FONDO, I_SOLO, I_SOLO_ON, I_PARTY, I_PARTY_ON, I_ENTRAR, I_UNIRSE, I_SALIR = (59260, 59262, 59263, 59264, 59265,
+                                                                              59266, 59267, 59268)
 # Colores de texto propios (los 510..514 son los de wnd01.xml: gris, verde, blanco, amarillo, oro)
-C_CELESTE, C_TENUE, C_BRONCE = 61070, 61071, 61072
+C_CELESTE, C_TENUE, C_BRONCE = 59270, 59271, 59272
 COLORES = {C_CELESTE: (125, 211, 252), C_TENUE: (148, 163, 184), C_BRONCE: (214, 140, 72)}
 C_ORO, C_PLATA, C_BLANCO, C_AMARILLO = 514, 510, 103, 513
 

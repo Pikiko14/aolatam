@@ -8,9 +8,9 @@ local T = TORRE
 
 -- Los ids de tools/ventana_torre.py
 local PISOS, SOLO, PARTY, CABECERA, ENTRAR, ESTADO, VACIO, MODO = 59021, 59022, 59023, 59024, 59025, 59026, 59027, 59028
-local PUESTO, NOMBRES, NPISOS, TIEMPO, CLIC = 61010, 61020, 61030, 61040, 61050
-local I_SOLO, I_SOLO_ON, I_PARTY, I_PARTY_ON = 61062, 61063, 61064, 61065
-local I_BOTON = {enter = 61066, join = 61067, leave = 61068}
+local PUESTO, NOMBRES, NPISOS, TIEMPO, CLIC = 59210, 59220, 59230, 59240, 59250
+local I_SOLO, I_SOLO_ON, I_PARTY, I_PARTY_ON = 59262, 59263, 59264, 59265
+local I_BOTON = {enter = 59266, join = 59267, leave = 59268}
 local AYUDA = {enter = "Enter the Tower of Babel", join = "Join your party's climb", leave = "Leave the tower"}
 local W, H = 348, 370             -- la ventana entera, con el marco
 
