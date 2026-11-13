@@ -1,6 +1,11 @@
 [
  {
   "fecha": "2026-11-13",
+  "titulo": "Update 0.0.0.164: new start screen",
+  "texto": "Please update to version 0.0.0.164 from AngelsLauncher. The game now opens with the Angels Online Forever start screen, with our new emblem over the sky. The Celestial Lion mount also looks cleaner: no more stray pixels around its tail."
+ },
+ {
+  "fecha": "2026-11-13",
   "titulo": "Update 0.0.0.163: the Aurora Stag is now the Celestial Lion",
   "texto": "Please update to version 0.0.0.163 from AngelsLauncher. The Aurora Stag mount is now the Celestial Lion: a white and gold lion crowned with a golden halo, with a smooth new run. It keeps the same stats and Hades in the Warring Realm Raid still drops it 10% of the time. If you already had the Aurora Stag, it is now your Celestial Lion."
  },
