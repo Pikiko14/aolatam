@@ -1780,6 +1780,26 @@ def _venta_masiva(ses, addr, cuerpo) -> bool:
     return True
 
 
+def _quitar_forma_de_objeto(ses):
+    """Las formas de los objetos de Shapeshifting (69517 Rock-loving Adventurer...) dicen "Effect vanishes when you
+    cast a spell": al lanzar una habilidad se va el buff de transformacion que vino de un objeto (de_item). Las de los
+    hechizos (Wolf Shift, Bear Shift) no: con esas se pelea."""
+    import combate as _cb
+    p = getattr(ses, 'personaje', None)
+    buffs = getattr(p, 'buffs', None) if p else None
+    if not buffs:
+        return False
+    fuera = [k for k, v in buffs.items() if isinstance(v, dict) and v.get('es_transform') and v.get('de_item')]
+    if not fuera:
+        return False
+    for k in fuera:
+        buffs.pop(k, None)
+    yo = p.entity_id
+    ses.enviar(*[struct.pack('<HIBBII', 0x001D, yo, 1, 4, int(k), 0) for k in fuera],
+               _cb.atributo(yo, 0, _cb.KIND_TRANSFORM), _stats_ses(ses))
+    return True
+
+
 def _mejoras_de(ses):
     """Las mejoras del personaje de esa sesion, o None.
 
@@ -15227,6 +15247,8 @@ class Servidor:
                          f"tile ({tx},{ty}) cuerpo {cuerpo.hex(' ')}")
 
             mag = _cb.datos_magia(tipo) if tipo != _cb.ATAQUE_NORMAL else {}
+            if tipo != _cb.ATAQUE_NORMAL and not mag.get('es_transformacion'):
+                _quitar_forma_de_objeto(ses)          # "Effect vanishes when you cast a spell"
             # ANDANDO NO SE DA EL GOLPE BASICO: el cliente lo sigue pidiendo mientras el jugador corre, y el
             # servidor lo aceptaba midiendo el alcance desde el destino (tile_x/tile_y), no desde donde va.
             # Le queda mas de una casilla del tramo: se suelta el objetivo y no sale el golpe.
