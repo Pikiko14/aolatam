@@ -398907,4 +398907,13 @@ Sprite = Run, hr013*, #7, !CharSmokeTwo, hr023*, hr033*, hr043*, hr053*
 SpriteFile = Wait, 1918_Wait.spr
 SpriteFile = Run, 1918_Run.spr
 
+[OBJECT]
+Name = H719 Undead Lion King
+Sequence = 1919
+Directory = \chr\h719\
+Sprite = Wait, hw013*, #12, hw023*, hw033*, hw023*
+Sprite = Run, hr013*, #7, !CharSmokeTwo, hr023*, hr033*, hr043*, hr053*, hr063*
+SpriteFile = Wait, 1919_Wait.spr
+SpriteFile = Run, 1919_Run.spr
+
 ; /aolat monturas

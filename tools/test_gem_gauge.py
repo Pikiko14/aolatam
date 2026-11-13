@@ -46,3 +46,19 @@ def test_sin_gema_no_se_gasta(monkeypatch):
     s = _ses([])
     assert app._usar_mejora(s, 't', 41, 3)
     assert s.cantidades[41] == 5 and any(b'has no gem to remove' in x for x in s.enviados)
+
+
+def test_gema_sin_hueco_no_se_gasta(monkeypatch):
+    # 13/11/2026, "me esta dejando poner gemas a los items sin tener un hueco abierto con piercing hammer": la gema se
+    # gastaba con "Failed to intensify". Sin hueco libre no se gasta y se dice que hay que abrirlo antes.
+    monkeypatch.setattr(app, '_refrescar', lambda *a, **k: [])
+    monkeypatch.setattr(app, '_stats_ses', lambda ses: b'')
+    monkeypatch.setattr(app, '_guardar_bolsa', lambda *a: None)
+    enviados = []
+    p = NS(char_id=1, mejoras={}, buffs={})
+    s = NS(personaje=p, inventario={41: 3113, 3: 163}, cantidades={41: 5}, usuario=None,
+           enviar=lambda *pk: enviados.extend(pk))
+    assert app._usar_mejora(s, 't', 41, 3)
+    assert s.cantidades[41] == 5 and s.inventario[41] == 3113
+    assert any(b'Piercing Hammer' in x for x in enviados)
+    assert not (p.mejoras.get(3) or {}).get('gemas')

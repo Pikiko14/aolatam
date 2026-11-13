@@ -116,7 +116,12 @@ def _vale(f):
     """Un objeto de verdad: nombre en ingles, sin (Trial) ni de tiempo limitado, y no de nuestros ids propios."""
     nombre = (f['基本名稱'] or '').strip()
     return (nombre and nombre.isascii() and 'trial' not in nombre.lower() and 'day' not in nombre.lower()
-            and not _n(f['持續時間']) and int(f['id']) < 89000)
+            and not _n(f['持續時間']) and int(f['id']) < 89000 and int(f['id']) not in MONTURAS_EXCLUSIVAS)
+
+
+# Las monturas propias (tools/montura_abismo.py: las de raid y el Undead Lion King del canje) no salen en bolsas ni
+# cajas: con ellas en content.db la Flamefang Lv60 Mount Box las repartia (13/11/2026).
+MONTURAS_EXCLUSIVAS = set(range(83300, 83400))
 
 
 def _sin_repetir(filas):
@@ -380,7 +385,8 @@ def bolsa_de_monturas(items, lo, hi):
 NIVELES_GACHA = (10, 20, 30, 40, 50, 60)
 ID_GACHA = 89150
 ICONO_GACHA = 59310                 # la capsula roja (tools/icono_gacha.py)
-REPARTO_GACHA = ((None, 91.2), ('藍', 8.0), ('黃', 0.8))       # normal, Quality, la mejor
+# 13/11/2026, "aumentemos el quality a 20% y las clase S a 3%" (antes 91.2 / 8.0 / 0.8)
+REPARTO_GACHA = ((None, 77.0), ('藍', 20.0), ('黃', 3.0))       # normal, Quality, la mejor (clase S)
 ARMAS_GACHA = ('劍', '刀', '斧', '錘', '槍', '弓箭', '彈弓', '杖', '影刃')
 ARMADURAS_GACHA = (('Light', '32'), ('Heavy', '33'), ('Robe', '34'))
 POR_VERSION_UNICA = 3               # gachas de un solo hueco (capa, accesorio): hasta 3 piezas por version
@@ -455,7 +461,7 @@ def gachas(items):
                            'cantidades': True, 'icono': ICONO_GACHA, 'gacha': {'nivel': nivel, 'tipo': clave},
                            'descripcion': 'Dropped by Lv%d-%d monsters. Open it to get one random piece (Lv%d-%d): '
                                           'normal %.1f%%, Quality %.1f%%, the best %.1f%% of each slot.'
-                                          % (nivel, nivel + 9, lo, hi, 91.2, 8.0, 0.8),
+                                          % ((nivel, nivel + 9, lo, hi) + tuple(p for _c, p in REPARTO_GACHA)),
                            'contenido': contenido})
     return salida
 

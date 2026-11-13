@@ -17,6 +17,9 @@ por los pies y por el centro: si no, la montura bailaba ("porque se mueve tanto 
 
 LAS HOJAS (docs/sprites_montura/<clave>/, sin versionar):
   taurus  9 filas x 5 columnas: filas 1-6 Run y 7-9 Wait, columnas las 5 direcciones del juego (la hoja del toro).
+  rey_leon  (13/11/2026) una sola pose por direccion, en una rejilla de 2 filas x 4 columnas: frente, frente-izquierda,
+          izquierda, espalda-izquierda / espalda, espalda-derecha, derecha, frente-derecha. Sin fotogramas: la espera
+          respira 1 px y al correr la pose da un saltito (POSE_ESPERA / POSE_CORRER).
   las otras cuatro: 4 columnas (fotogramas) y dos filas por direccion (la primera, de espera; la segunda, de correr),
           en el orden frente, frente-izquierda, izquierda, espalda-izquierda, espalda y las de la derecha. Cada
           montura dice que filas son cada direccion del juego (FILAS) y si alguna hay que voltearla (la del leon que
@@ -55,6 +58,9 @@ LOMO_TORO = 73                     # el lomo del toro de perfil sobre su ancla (
 
 S60 = dict(平均攻擊=55, 防禦=55, 魔攻=55, 魔防=55, 精準=8, 靈敏=16, 移動速度=70)
 S50 = dict(平均攻擊=45, 防禦=45, 魔攻=45, 魔防=45, 精準=7, 靈敏=14, 移動速度=60)
+# 13/11/2026, "montura especial, con stats lvl 70 pero se puede usar a lvl 60 con speed de 80 ... para fisicos y
+# magos": la escala de las de 50 y 60 un paso mas, ataque y magia iguales.
+S70 = dict(平均攻擊=65, 防禦=65, 魔攻=65, 魔防=65, 精準=9, 靈敏=18, 移動速度=80)
 
 MONTURAS = [
     dict(clave='taurus', nombre='Abyss Taurus', item=83301, icono=59301, sequence=1914, carpeta='h714', nivel=60,
@@ -64,6 +70,7 @@ MONTURAS = [
     dict(clave='lion', nombre='Blazemane Lion', item=83302, icono=59302, sequence=1915, carpeta='h715', nivel=60,
          altura=0, stats=S60, hoja='leon/hoja.png', descarga='leon', tipo='ocho',
          filas=((9, 9), (7, 8), (5, 6), (3, 4), (1, 2)), espejo=(False,) * 5,
+         escala_dir=(0.85, 1, 1, 1, 0.85),   # de frente la melena tapaba al jinete ("se ve raro en esos diagonales")
          descripcion='A lion with a mane of living fire, tamed in the depths of Flamefang.'),
     dict(clave='turtle', nombre='Coral Fortress Turtle', item=83303, icono=59303, sequence=1916, carpeta='h716',
          nivel=60, altura=4, stats=S60, hoja='tortuga/hoja.png', descarga='tortuga', tipo='ocho',
@@ -79,6 +86,28 @@ MONTURAS = [
          altura=-14, stats=S50, hoja='ciervo/hoja.png', descarga='ciervo', tipo='ocho',
          filas=((9, 9), (7, 7), (5, 6), (3, 4), (1, 2)), espejo=(False,) * 5,
          descripcion='A stag whose antlers shine like the aurora.'),
+    # 13/11/2026: no la suelta ninguna raid; se canjea por 1000 Mount Coin en Event Overview > Exchange > Ride and
+    # Robots (exchange.xml, receta 19261 del grupo 538). nivel = sus stats (70); nivel_uso = el que pide (60).
+    dict(clave='lionking', nombre='Undead Lion King', item=83306, icono=59306, sequence=1919, carpeta='h719', nivel=70,
+         nivel_uso=60, altura=0, stats=S70, hoja='rey_leon/hoja.png', descarga='rey_leon', tipo='ocho',
+         # la hoja completa (13/11/2026, "cambiemos los sprites del leon por este, aca esta todo"): 5 fotogramas,
+         # espera y carrera por direccion, como el carnero. La de una sola pose quedo en rey_leon/hoja_pose.png.
+         # El juego usa la vista "de frente" (7) al bajar en diagonal y la "de espaldas" (3) al subir en diagonal;
+         # el jinete se pinta siempre encima, y con la cabeza grande del leon quedaba sentado en la corona ("en
+         # diagonal derecha abajo se sigue viendo mal", 13/11/2026). En esas dos van sus tres cuartos: de espaldas
+         # la de espalda-izquierda y de frente la de frente-izquierda en espejo (mira abajo-derecha).
+         # Las vistas de tres cuartos en su lugar quedaban peor: el jinete se pinta de frente o de espaldas y no
+         # casaba ("se ve horrible en diagonal"). Vuelven las de verdad, algo mas pequenas (escala_dir) para que la
+         # corona no tape tanto al jinete.
+         filas=((9, 10), (7, 8), (5, 6), (3, 4), (1, 2)), espejo=(False,) * 5,
+         escala_dir=(0.88, 1, 1, 1, 0.88),
+         espera_fija=True,             # quieto: un solo fotograma que respira 1 px ("cuando esta quieto se mueve
+                                       # demasiado": cada pose de espera de la hoja venia dibujada distinta)
+         cuadricula=(6, 10), carrera=6,       # la hoja de 6 fotogramas por fila (13/11/2026); las de antes,
+                                              # rey_leon/hoja_5.png y hoja_pose.png
+         carrera_por_cuerpo=True,      # sin salto anadido y clavada por el cuerpo ("parece que brinca")
+         descripcion='The fallen king of the lions, risen from the grave with his rusted crown. Fit for warriors and '
+                     'mages alike.'),
 ]
 
 
@@ -209,8 +238,21 @@ def frames_rejilla(m):
 ALTOS_TORO = (111, 114, 103, 97, 107)
 
 
+def _tam(im) -> float:
+    """El tamano de un dibujo: la raiz de sus pixeles opacos (igual de grande = misma area, mire a donde mire)."""
+    return float(np.sqrt((np.array(im.getchannel('A')) > 40).sum()))
+
+
+def filas_rejilla_exacta(m):
+    """Hojas en cuadricula (m['cuadricula'] = (columnas, filas)): [fila] -> [imagenes]. Cada mancha va a la celda de su
+    centro (como celdas_rejilla del toro): cortar por el borde de la celda partia los sprites que se salen de ella y
+    colaba la corona del fotograma de abajo (la hoja de 6 del leon). Fuera las motas sueltas."""
+    columnas, nfilas = m['cuadricula']
+    return [[im for im, _xy in fila] for fila in celdas_rejilla(m, nfilas, columnas)]
+
+
 def frames_ocho(m):
-    filas = filas_ocho(m)
+    filas = filas_rejilla_exacta(m) if m.get('cuadricula') else filas_ocho(m)
     salida = {}
     # Una sola escala por montura (12/11/2026, "se ven mal algunos tamanos en ciertas direcciones"): las hojas
     # caricaturescas ya traen las direcciones a la misma escala (de perfil es mas baja porque se ve de lado); forzar
@@ -220,21 +262,87 @@ def frames_ocho(m):
         espera = filas[m['filas'][c][0] - 1][0]
         caja = espera.getchannel('A').point(lambda a: 255 if a > 40 else 0).getbbox()
         altos.append(caja[3] - caja[1])
-    escala = [sum(ALTOS_TORO) / sum(altos)] * 5
-    for anim, cual, poses in (('wait', 0, (0, 1, 2)), ('run', 1, (0, 1, 2, 3, 4))):
+    escala = sum(ALTOS_TORO) / sum(altos)
+    # 13/11/2026, "el leon se ve pequeno cuando corre ... deben verse en el mismo tamano en todas las direcciones y
+    # acciones": las hojas traen la carrera algo mas chica que la espera (el leon de frente-izq.: 113 px contra 128) y
+    # cada direccion a su tamano. Cada fila (direccion y accion) se lleva al mismo TAMANO, medido por el area del
+    # dibujo (su raiz), no por el alto: de perfil o con las patas estiradas el alto engana.
+    # Pero las direcciones NO se igualan entre si (13/11/2026: de frente y de espaldas el leon salia enorme, con la
+    # corona por encima del jinete): una sola escala por montura y la carrera de cada direccion, al tamano de su espera.
+    espera = {c: sum(_tam(filas[m['filas'][c][0] - 1][p]) for p in (0, 1, 2)) / 3 for c in range(5)}
+    salto = m.get('salto') or (0,) * 8
+    for anim, cual, poses in (('wait', 0, (0, 1, 2)), ('run', 1, tuple(range(m.get('carrera', 5))))):
         lista = []
         for p in poses:
             for c in range(5):
                 fila = filas[m['filas'][c][cual] - 1]
-                im = _escalar(fila[p % len(fila)], escala[c])
+                propio = sum(_tam(fila[q % len(fila)]) for q in poses) / len(poses)
+                cual_p = 0 if (anim == 'wait' and m.get('espera_fija')) else p % len(fila)
+                k_dir = (m.get('escala_dir') or (1,) * 5)[c]
+                im = _escalar(fila[cual_p], escala * espera[c] / propio * k_dir)
                 if m['espejo'][c]:
                     im = im.transpose(Image.FLIP_LEFT_RIGHT)
-                lista.append((im, _clavar(im, c)))
+                ox, oy = _clavar(im, c)
+                sube = salto[p] if anim == 'run' else (POSE_ESPERA[p] if m.get('espera_fija') else 0)
+                lista.append((im, (ox, oy + sube)))
+        if anim == 'run' and m.get('carrera_por_cuerpo'):
+            # Clavar cada fotograma por su pixel mas bajo hacia botar al cuerpo cada vez que las patas se estiran:
+            # en cada direccion, el centro del cuerpo a la misma altura sobre el ancla en todos los fotogramas.
+            for c in range(5):
+                idx = list(range(c, len(lista), 5))
+                alturas = [oy - _centro_y(im) for im, (_ox, oy) in (lista[i] for i in idx)]
+                media = sum(alturas) / len(alturas)
+                for i, h in zip(idx, alturas):
+                    im, (ox, oy) = lista[i]
+                    lista[i] = (im, (ox, round(oy + media - h)))
+        salida[anim] = lista
+    return salida
+
+
+def _centro_y(im) -> float:
+    a = np.array(im.getchannel('A')) > 40
+    ys = np.nonzero(a)[0]
+    return float(ys.mean()) if len(ys) else im.height / 2
+
+
+POSE_ESPERA = (0, 1, 0)                 # px que sube la pose en cada fotograma de espera (respira)
+POSE_CORRER = (0, 2, 3, 2, 0)           # y al correr (un saltito por zancada)
+
+
+def frames_pose(m):
+    """Una pose por direccion (rejilla de celdas iguales): la misma imagen en todos los fotogramas, subida un poco."""
+    im = Image.fromarray(_sin_fondo(_hoja(m)), 'RGBA')
+    filas, columnas = m['rejilla']
+    cw, ch = im.width / columnas, im.height / filas
+    poses = []
+    for f, c in m['celdas']:
+        celda = np.array(im.crop((round((c - 1) * cw), round((f - 1) * ch), round(c * cw), round(f * ch))))
+        # fuera las motas sueltas de la hoja: solo las manchas de cierto tamano (una mota ensanchaba el recorte y
+        # descentraba al leon de frente-izquierda)
+        from scipy import ndimage
+        manchas, n = ndimage.label(celda[:, :, 3] > 20, structure=np.ones((3, 3)))
+        tam = ndimage.sum(np.ones_like(manchas), manchas, range(1, n + 1))
+        celda[~np.isin(manchas, [i + 1 for i, t in enumerate(tam) if t >= 300])] = 0
+        celda = Image.fromarray(celda, 'RGBA')
+        poses.append(celda.crop(celda.getchannel('A').point(lambda a: 255 if a > 20 else 0).getbbox()))
+    altos = [p.height for p in poses]
+    k = sum(ALTOS_TORO) / sum(altos)                  # el alto medio, el del toro (como frames_ocho)
+    tamano = sum(_tam(p) for p in poses) / len(poses)
+    poses = [_escalar(p, k * tamano / _tam(p)) for p in poses]       # y cada direccion al mismo tamano (area)
+    salida = {}
+    for anim, subidas in (('wait', POSE_ESPERA), ('run', POSE_CORRER)):
+        lista = []
+        for d in subidas:
+            for c in range(5):
+                ox, oy = _clavar(poses[c], c)
+                lista.append((poses[c], (ox, oy + d)))
         salida[anim] = lista
     return salida
 
 
 def frames(m):
+    if m['tipo'] == 'pose':
+        return frames_pose(m)
     return frames_rejilla(m) if m['tipo'] == 'rejilla' else frames_ocho(m)
 
 
@@ -260,7 +368,7 @@ def icono(m, fr) -> bytes:
 # ---------------------------------------------------------------------------------------------- datos del cliente
 def bloque_char_obd(m) -> str:
     s = m['sequence']
-    if m['tipo'] == 'rejilla':
+    if m['tipo'] == 'rejilla' or m.get('carrera') == 6:
         run = 'hr013*, #7, !CharSmokeTwo, hr023*, hr033*, hr043*, hr053*, hr063*'
     else:
         run = 'hr013*, #7, !CharSmokeTwo, hr023*, hr033*, hr043*, hr053*'
@@ -327,7 +435,8 @@ def fila_item(m) -> str:
     stats = ' '.join('%s="%d"' % kv for kv in m['stats'].items())
     return ('<道具 編號="%d" 原型介面="%d" 原型外觀="%d" 基本名稱="%s" 物品類別="座騎" 物品等級="%d" 等級限制="%d" %s '
             '重量="160" 價格="3000000" 綁定次數="3" 顏色="黃" log等級="80" 說明定義="%s" 寵物座騎裝備="是" 裝備綁定="是" '
-            '抽中廣播="是" 收購價格="6000" />' % (m['item'], m['icono'], aspecto(m), m['nombre'], m['nivel'], m['nivel'],
+            '抽中廣播="是" 收購價格="6000" />' % (m['item'], m['icono'], aspecto(m), m['nombre'], m['nivel'],
+                                              m.get('nivel_uso', m['nivel']),
                                               stats, m['descripcion']))
 
 
@@ -342,9 +451,10 @@ def content_db(ruta):
         fila = dict(base)
         fila.update({'id': str(m['item']), '原型介面': str(m['icono']), '原型外觀': str(aspecto(m)),
                      '基本名稱': m['nombre'], '原型名稱': None, 'move_speed': str(m['stats']['移動速度'])})
-        for k in ('物品等級', '等級限制'):
-            if k in fila:
-                fila[k] = str(m['nivel'])
+        if '物品等級' in fila:
+            fila['物品等級'] = str(m['nivel'])
+        if '等級限制' in fila:
+            fila['等級限制'] = str(m.get('nivel_uso', m['nivel']))
         for k, v in m['stats'].items():
             for col in (k,) + nombres.get(k, ()):
                 if col in fila:
@@ -357,6 +467,29 @@ def content_db(ruta):
     con.commit()
     con.close()
     print('content.db: %d monturas en %s' % (len(MONTURAS), ruta))
+
+
+# El canje del Undead Lion King (13/11/2026): la fila 19261 de exchange.xml (libre, grupo 0) pasa al grupo 538 (Event
+# Overview > Exchange > Ride and Robots) por 1000 Mount Coin. En la copia que lee el servidor y en la del parche.
+CANJES = ((19261, 538, 'Undead Lion King', 83306, 89073, 1000),)
+
+
+BOM = bytes((0xEF, 0xBB, 0xBF))
+
+
+def exchange_xml():
+    for rel in (RAIZ / 'extracted_paks' / 'update26' / 'setting' / 'eng' / 'exchange.xml',
+                EXTRAS / 'setting' / 'eng' / 'exchange.xml'):
+        crudo = rel.read_bytes()
+        bom = crudo.startswith(BOM)
+        texto = crudo.decode('utf-8-sig')
+        for rid, grupo, nombre, premio, material, cantidad in CANJES:
+            fila = ('<exchange 編號="%d" 群組="%d" 獎賞說明="%s" 獎賞1="%d" 獎賞1數量="1" 材料1="%d" 材料1數量="%d"/>'
+                    % (rid, grupo, nombre, premio, material, cantidad))
+            texto, n = re.subn(r'<exchange 編號="%d" [^>]*/>' % rid, fila, texto, count=1)
+            if not n:
+                raise SystemExit('no esta la fila %d en %s' % (rid, rel))
+        rel.write_bytes((BOM if bom else b'') + texto.encode('utf-8'))
 
 
 def main():
@@ -387,6 +520,7 @@ def main():
     _xml_con(r'setting\itemicon4.xml', ['<icon id="%d" dir="\\item\\" normal="i%d" focus="normal" down="normal" '
                                         'disable="normal"/>' % (m['icono'], m['icono'] - 50000) for m in MONTURAS])
     _xml_con(r'setting\eng\item.xml', [fila_item(m) for m in MONTURAS])
+    exchange_xml()
     content_db(RAIZ / 'corpus' / 'content.db')
 
 

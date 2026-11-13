@@ -3107,6 +3107,19 @@ def _usar_mejora(ses, addr, ranura, objetivo) -> bool:
         log.info('[%s] mejora: %s sobre %s -> %s', addr, _nombre_item(item), nombre, msg)
         return True
 
+    # Una gema que no puede ir en esa pieza no es un intento fallido: no se gasta (13/11/2026, "me esta dejando poner
+    # gemas a los items sin tener un hueco abierto con piercing hammer": se perdia la gema con "Failed to intensify").
+    if not ok and clase in ('gema', 'gema_mascota'):
+        if 'hueco' in str(msg):
+            texto = 'Open a socket in %s with a Piercing Hammer first.' % nombre
+        elif 'nivel' in str(msg):
+            texto = '%s is too high level for %s.' % (_nombre_item(item), nombre)
+        else:
+            texto = 'Gems can only be set in weapons, armor and shields.'
+        ses.enviar(_cl.aviso(texto, tipo=0), *_refrescar(ses, [objetivo, ranura]))
+        log.info('[%s] mejora: %s sobre %s -> %s (no se gasta)', addr, _nombre_item(item), nombre, msg)
+        return True
+
     # El objeto se gasta pase lo que pase: todas las descripciones dicen que
     # un fallo no rompe la pieza pero si consume el intento.
     quedan = ses.cantidades.get(ranura, 1) - 1

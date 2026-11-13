@@ -24,7 +24,7 @@ DROPS_EVENTO = {
 # LAS GEAR GACHA (tools/generar_lucky_bags.py, 04/11/2026): cada monstruo de nivel 10+ fuera de mapas privados suelta
 # con esta probabilidad UNA gacha de su franja de nivel (10-19 la Level 10, ... 60+ la Level 60), de un tipo al azar
 # (armas, capa, accesorio, gemas, armadura Light/Heavy/Robe). Aparte del botin normal y sin la tasa de drop.
-GACHA_DROP_PROBABILIDAD = 0.30       # era 0.01; "sube el % de drop de gatchas a 30%" (13/11/2026)
+GACHA_DROP_PROBABILIDAD = 0.20       # 0.01 -> 0.30 -> 0.20 ("las gatchas 20% de drop", 13/11/2026)
 
 
 # Nombre del servidor: el que pinta el cliente al entrar ("Impacty(AOF-1)", server.xml 名稱, que pone el launcher:
