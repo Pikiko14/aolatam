@@ -330,6 +330,8 @@ def wnd02():
     iconos += '    <!-- /%s -->%s' % (MARCA, nl)
     fin = texto.rindex('</')
     texto = texto[:fin] + iconos + texto[fin:]
+    import seleccion_personaje  # la pantalla de seleccion de personaje (12/11/2026)
+    texto = seleccion_personaje.wnd02(texto, nl)
     _guardar(r'setting\eng\wnd02.xml', texto, bom)
 
 
@@ -340,6 +342,8 @@ def wndtext02():
     for _cuadro, rotulo, nombre in LEYENDA:
         texto = re.sub(r'<window id="%d" title="[^"]*"/>' % rotulo, '<window id="%d" title="%s"/>' % (rotulo, nombre),
                        texto)
+    import seleccion_personaje
+    texto = seleccion_personaje.wndtext02(texto)
     _guardar(r'setting\eng\wndtext02.xml', texto, bom)
 
 
@@ -354,9 +358,11 @@ def main():
             (WND01 / ('aolat_login_%s_%s.shp' % (titulo.lower(), e))).write_bytes(a_shp(boton(e, titulo)))
     for viejo in WND01.glob('aolat_login_btn_*.shp'):
         viejo.unlink()
+    import seleccion_personaje
+    seleccion_personaje.dibujar()
     wnd02()
     wndtext02()
-    print('ventana de login lista')
+    print('ventana de login y seleccion de personaje listas')
 
 
 if __name__ == '__main__':

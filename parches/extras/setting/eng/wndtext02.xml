@@ -497,7 +497,7 @@
 	<window id="2710" title="Delete a Chct."/>
 	<window id="2711" title="Recover"/>
 	<window id="2712" tooltext="Return"/>
-	<window id="2713" title="Angel Lyceum ID Card"/>
+	<window id="2713" title="Adventurer"/>
 	<window id="2716"/>
 	<window id="2719"/>
 	<window id="2722"/>
@@ -506,7 +506,7 @@
 	<window id="2731" title="Set" tooltext="Set pictures"/>
 	<window id="2734" title="Face" tooltext="can upload bmp, jpg, tga,png and so on"/>
 	<window id="2740"/>
-	<window id="2714" title="Angel Lyceum ID Card"/>
+	<window id="2714" title="Adventurer"/>
 	<window id="2717"/>
 	<window id="2720"/>
 	<window id="2723"/>
@@ -515,7 +515,7 @@
 	<window id="2732" title="Set" tooltext="Set pictures"/>
 	<window id="2735" title="Face" tooltext="can upload bmp, jpg, tga,png and so on"/>
 	<window id="2741"/>
-	<window id="2715" title="Angel Lyceum ID Card"/>
+	<window id="2715" title="Adventurer"/>
 	<window id="2718"/>
 	<window id="2721"/>
 	<window id="2724"/>

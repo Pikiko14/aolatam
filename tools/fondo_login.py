@@ -36,8 +36,14 @@ def _a_la_derecha(im: Image.Image) -> Image.Image:
     im = im.resize((round(im.width * ALTO / im.height), ALTO), Image.LANCZOS)
     x = ANCHO - im.width
     lienzo = Image.new('RGB', (ANCHO, ALTO))
-    espejo = im.crop((0, 0, x, ALTO)).transpose(Image.FLIP_LEFT_RIGHT).filter(ImageFilter.GaussianBlur(6))
-    lienzo.paste(espejo, (0, 0))
+    # 12/11/2026: la seleccion de personaje ensena el fondo corrido (x 1077..1573 y luego 0..528): el hueco queda en
+    # medio de la pantalla, entre el borde derecho de la imagen (por la vuelta) y el izquierdo. Era el borde izquierdo
+    # en espejo y muy borroso; ahora son los dos bordes en espejo, cada uno pegado a su lado, fundidos poco a poco.
+    izq = im.crop((0, 0, x, ALTO)).transpose(Image.FLIP_LEFT_RIGHT)                   # sigue al borde izquierdo
+    der = im.crop((im.width - x, 0, im.width, ALTO)).transpose(Image.FLIP_LEFT_RIGHT)  # sigue al derecho, por la vuelta
+    mezcla = Image.linear_gradient('L').rotate(-90, expand=True).resize((x, ALTO))      # 255 a la izquierda, 0 a la derecha
+    hueco = Image.composite(der, izq, mezcla).filter(ImageFilter.GaussianBlur(2))
+    lienzo.paste(hueco, (0, 0))
     lienzo.paste(im, (x, 0))
     return lienzo
 
