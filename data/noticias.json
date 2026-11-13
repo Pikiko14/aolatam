@@ -1,327 +1,332 @@
 [
-  {
-    "fecha": "2026-11-12",
-    "titulo": "Update 0.0.0.131: four new raid mounts",
-    "texto": "Please update to version 0.0.0.131 from AngelsLauncher. Four new mounts can drop from raid final bosses, 10% each: Satrixia in the Flamefang Raid drops the Blazemane Lion and the Coral Fortress Turtle (level 60), and Hades in the Warring Realm Raid drops the Frostcrown Ram and the Aurora Stag (level 50). The Abyss Taurus now stands still while idle and its rider sits right on its back."
-  },
-  {
-    "fecha": "2026-11-12",
-    "titulo": "Update 0.0.0.124: login, channels and Abyss Taurus",
-    "texto": "Please update to version 0.0.0.124 from AngelsLauncher. The login window has more room and a visible Save box for your account, the channel window has a new design centered under the emblem and shows the channel you pick, and the Abyss Taurus now stands on the ground with its rider seated on its back."
-  },
-  {
-    "fecha": "2026-11-12",
-    "titulo": "Update 0.0.0.119: sharper login buttons",
-    "texto": "Please update to version 0.0.0.119 from AngelsLauncher. The Login and Exit buttons now have sharper, easier to read text."
-  },
-  {
-    "fecha": "2026-11-12",
-    "titulo": "Update 0.0.0.118: new login window",
-    "texto": "Please update to version 0.0.0.118 from AngelsLauncher. The server and login window has a new night-blue and gold design, and the game now shows the new emblem as its icon on the taskbar. The character selection crash is fixed."
-  },
-  {
-    "fecha": "2026-11-12",
-    "titulo": "Fix: crash on character select",
-    "texto": "Fixed a crash when reaching the character selection screen after the new launcher update. Open AngelsLauncher once so it downloads the fixed game file."
-  },
-  {
-    "fecha": "2026-11-12",
-    "titulo": "New launcher and login screen",
-    "texto": "AngelsLauncher updates itself to version 1.0.5 with a brand new look: the floating sky islands, the new Angels Online Forever emblem and new buttons. Update to 0.0.0.116 to get the same art on the login screen and the new game icon. The agreement window no longer appears: the game goes straight to the login."
-  },
-  {
-    "fecha": "2026-11-11",
-    "titulo": "Update 0.0.0.115: Abyss Taurus fix",
-    "texto": "Please update to version 0.0.0.115 from AngelsLauncher. The Abyss Taurus mount now shows its armored bull look correctly."
-  },
-  {
-    "fecha": "2026-11-11",
-    "titulo": "Update 0.0.0.114: raid ranking and Abyss Taurus",
-    "texto": "Please update to version 0.0.0.114 from AngelsLauncher. Each raid now has a Ranking with the fastest clears: it shows the leader, and you can hover a row to see every member. When the last boss falls, a portal to the city opens. If you disconnect, you leave your raid group. New mount: the Abyss Taurus, a level 60 armored bull with top speed. Satrixia in the Flamefang Raid has a 3% chance to drop it."
-  },
-  {
-    "fecha": "2026-11-11",
-    "titulo": "Update 0.0.0.110: raid puzzles",
-    "texto": "Please update to version 0.0.0.110 from AngelsLauncher. Every raid now has a puzzle before each boss: a barrier of light only falls when you stand on the Light Altars together, bring down the pillars in the order the clues give, defeat the seal guardians or carry the flame to the Fire Altar. Zones are longer, with more packs and patrols, and the raid maps have no minimap or scene map. Each raid has its own banner, and the Raid Guide has a new Puzzles tab."
-  },
-  {
-    "fecha": "2026-11-11",
-    "titulo": "Update 0.0.0.109: three new raids",
-    "texto": "Please update to version 0.0.0.109 from AngelsLauncher. Three new raids are open in the AOF Raid list: Warring Realm Raid (level 50: Cerberus, Ares and Hades), Wintry Realm Raid (level 40: Ice Giant Hydea, Mighty Leon and Seasonia) and Dragon's Lair Raid (level 30: Blossom Hail, General Rizaburo and Watatsumi). Each one has its own weekly lockout and drops boxes of its level: class S gear, weapons and rare mounts, plus enhancement vouchers and Mount Coins. Check each Raid Guide for the boss mechanics."
-  },
-  {
-    "fecha": "2026-11-11",
-    "titulo": "Fix: Flamefang Raid drops",
-    "texto": "Flamefang Raid monsters no longer drop level 80 gear. Their drops are now level 50 to 60 equipment. The update 0.0.0.104 from AngelsLauncher is optional and only brings small data fixes."
-  },
-  {
-    "fecha": "2026-11-11",
-    "titulo": "Flamefang Raid: less HP",
-    "texto": "Flamefang Raid monsters now have less HP: regular monsters 5,000, elites 10,000. Lavamon has 1,000,000, Razorex 1,500,000 and Satrixia 2,000,000."
-  },
-  {
-    "fecha": "2026-11-11",
-    "titulo": "Monsters chase you further",
-    "texto": "Monsters no longer give up after a few steps. They now follow you up to 30 tiles and only stop after you stay out of reach for 5 seconds. Dungeon monsters can also stray further from their spot before going back."
-  },
-  {
-    "fecha": "2026-11-11",
-    "titulo": "Fix: pets and Earth Mage charm",
-    "texto": "Your summoned pet is now stored automatically when you die. The monster charmed by an Earth Mage now attacks the monsters you are fighting, and other monsters can fight back and kill it."
-  },
-  {
-    "fecha": "2026-11-11",
-    "titulo": "Fix: no walking while dead",
-    "texto": "Dead characters can no longer walk around while the death window is open (it happened mostly while riding a mount). Souls can still move as before."
-  },
-  {
-    "fecha": "2026-11-11",
-    "titulo": "Update 0.0.0.102: Flamefang Raid is harder",
-    "texto": "Please update to version 0.0.0.102 from AngelsLauncher. Flamefang Raid monsters now have level 80 stats, elites are tougher than regular level 80 monsters, and Lavamon, Razorex and Satrixia now have level 100 stats. To keep the fights winnable, the enrage timers are now 12, 14 and 18 minutes. Check the Raid Guide for the details."
-  },
-  {
-    "fecha": "2026-11-11",
-    "titulo": "Update 0.0.0.101: raid panel bars and Power Shield",
-    "texto": "Please update to version 0.0.0.101 from AngelsLauncher. The raid panel now has thin red HP and blue MP bars that no longer overlap. Power Shield now lasts 30 seconds and its bubble shows around you while it is active."
-  },
-  {
-    "fecha": "2026-11-11",
-    "titulo": "Update 0.0.0.100: compact raid panel",
-    "texto": "Please update to version 0.0.0.100 from AngelsLauncher. The raid panel is now compact: it only takes the space of its members and uses your theme color. Raid leaders can right-click a member in the panel to make them leader or remove them from the raid. Also fixed: after entering a map where someone had a charmed monster, other players could stay visible after leaving, or not show up at all."
-  },
-  {
-    "fecha": "2026-11-11",
-    "titulo": "Update 0.0.0.99: Raid Guide tabs",
-    "texto": "Please update to version 0.0.0.99 from AngelsLauncher. The Raid Guide tabs have a new look: the names fit inside them and the open tab lights up."
-  },
-  {
-    "fecha": "2026-11-11",
-    "titulo": "Update 0.0.0.98: Raid Guide",
-    "texto": "Please update to version 0.0.0.98 from AngelsLauncher. Press Guide in the AOF Raids window or in the Flamefang Raid window to read how the raid works and every boss mechanic: Lavamon's lava eruptions and Lava Blobs, Razorex's Searing Claw and Fire Breath, Satrixia's Inferno Nova, fire shield and Doom, plus the loot and the weekly lockout."
-  },
-  {
-    "fecha": "2026-11-11",
-    "titulo": "Update 0.0.0.97: raid windows polish",
-    "texto": "Please update to version 0.0.0.97 from AngelsLauncher. The Flamefang Raid window now matches the AOF Raids look, with separate panels for members and bosses and a clear box to invite players by name. Both windows now fit inside their frames, and the raid list shows its entries again."
-  },
-  {
-    "fecha": "2026-11-11",
-    "titulo": "Update 0.0.0.96: new AOF Raids window",
-    "texto": "Please update to version 0.0.0.96 from AngelsLauncher. The AOF Raids window has a new look: a Flamefang banner with its three bosses, the raid list on the left and the details on the right (level, players, bosses you can still loot this week and rewards)."
-  },
-  {
-    "fecha": "2026-11-11",
-    "titulo": "Update 0.0.0.95: Flamefang Raid",
-    "texto": "Please update to version 0.0.0.95 from AngelsLauncher. New raid for up to 20 level 60 players: press the AOF Raid button on the action bar to see the raid list, create a raid and invite players by name, with your party, or by right-clicking them. Defeat Lavamon, Razorex and Satrixia, each with their own mechanics, for level 60 class S gear vouchers, mount coins, mount boxes and skill boxes. A raid panel shows every member's health, mana and role. Bosses can be looted once per week (resets on Monday)."
-  },
-  {
-    "fecha": "2026-11-11",
-    "titulo": "Server performance",
-    "texto": "Server improvements to reduce short freezes: backups and launcher downloads no longer pause the game for everyone, and entering busy towns like the Angel Lyceum is faster."
-  },
-  {
-    "fecha": "2026-11-10",
-    "titulo": "Update 0.0.0.89: pet evolution tree",
-    "texto": "Please update to version 0.0.0.89 from AngelsLauncher. Open your pet info panel and press Evolve to see its whole evolution tree: every form with its picture, level, type, stats and abilities. Click the form you want and press Evolve: your pet grows that way when it has the level (15 / 35 / 55) and the Medium or Advanced Blood Certificate."
-  },
-  {
-    "fecha": "2026-11-10",
-    "titulo": "Update 0.0.0.86: new pet Abyss",
-    "texto": "Please update to version 0.0.0.86 from AngelsLauncher. A new pet line has arrived: the Abyss Egg hatches into Abyss Cub at level 15, becomes Abyss Fiend with a Medium Blood Certificate (level 35) and Abyss Lord with an Advanced Blood Certificate (level 55). Each stage has its own colors and size."
-  },
-  {
-    "fecha": "2026-11-09",
-    "titulo": "Charm success chance",
-    "texto": "Shining Charm no longer always works. Its chance is 10% at level I, 20% at II, 30% at III, 40% at IV and 50% at V, a bit lower against monsters above your level and a bit higher (up to +10%) against weaker ones. If it fails, the mana is spent and the monster attacks you."
-  },
-  {
-    "fecha": "2026-11-09",
-    "titulo": "Charm: one monster at a time",
-    "texto": "You can only have one charmed monster at a time. Charming a new one releases the previous one, which becomes a normal monster again."
-  },
-  {
-    "fecha": "2026-11-09",
-    "titulo": "Update 0.0.0.82: sort your bag",
-    "texto": "Please update to version 0.0.0.82 from AngelsLauncher. The Prop and Backpack windows have a new Sort button in their title bar, next to the lock: it sorts your items by category and stacks them together. Pets stay where they are. Maple Mark now shows the recorded place in its tooltip (Sign)."
-  },
-  {
-    "fecha": "2026-11-09",
-    "titulo": "Assassin basic attack",
-    "texto": "ShadowBlade (Assassin) basic attacks now use their proper attack animation."
-  },
-  {
-    "fecha": "2026-11-09",
-    "titulo": "Maple Mark fixed",
-    "texto": "Maple Mark works again: right click it to record your current position, then right click it again to travel there. Each travel uses one Maple Teleportation Scroll; if you have none, it uses one Maple Mark instead."
-  },
-  {
-    "fecha": "2026-11-09",
-    "titulo": "Treasure maps",
-    "texto": "A completed treasure map (10/10 pieces) now shows where the treasure is: open the Quest Log, TreMap tab, to see the place marked on the map. Walk to that spot to dig it up and get the reward; the map then starts again at 0/10. The level of the Map Pieces you use decides how rich the treasure is. The Delete button clears the map."
-  },
-  {
-    "fecha": "2026-11-09",
-    "titulo": "Update 0.0.0.80: exchanges fixed",
-    "texto": "Please update to version 0.0.0.80 from AngelsLauncher. The Exchange lists (Event Overview > Exchange: Winter Holiday PD, Ride and Robots, Enhanced Pestle and Ride Feed, and other exchanges) show all their items again."
-  },
-  {
-    "fecha": "2026-11-09",
-    "titulo": "Fixes",
-    "texto": "Monsters charmed with Shining Charm now only use basic attacks, with their normal damage. Skill levels of ShadowBlade can no longer go above your character level. Fixed a colored ring that could stay under your character after traveling to another map."
-  },
-  {
-    "fecha": "2026-11-08",
-    "titulo": "Update 0.0.0.79 and fixes",
-    "texto": "Please update to version 0.0.0.79 from AngelsLauncher: the quick bar now shows letters too when you assign them to a slot. City Angels send their citizens back to the Angel Lyceum again."
-  },
-  {
-    "fecha": "2026-11-08",
-    "titulo": "Update 0.0.0.78",
-    "texto": "Please update to version 0.0.0.78 from AngelsLauncher. The AOF tab of the System window now has a clean background that follows your window color."
-  },
-  {
-    "fecha": "2026-11-08",
-    "titulo": "Update 0.0.0.77: rebind your quick bar keys",
-    "texto": "Please update to version 0.0.0.77 from AngelsLauncher (it also updates the game). New AOF tab in the System window (Esc): chat is now closed until you press Enter; type your message and press Enter again to send it and close the chat (Esc closes it too). With Rebind you can assign any key to each quick bar slot, including numbers and letters, and they are saved on your PC. The quick bar now shows the key of each slot."
-  },
-  {
-    "fecha": "2026-11-07",
-    "titulo": "Sneak",
-    "texto": "Sneak now really hides the Assassin: while it lasts you become almost transparent, without name or health bar, and other players cannot select you. Attacking with anything other than an assassination technique, or the end of the effect, makes you visible again."
-  },
-  {
-    "fecha": "2026-11-07",
-    "titulo": "Skills, armor and Totem War souls",
-    "texto": "In Totem War, a soul can now click the totem of its own faction to revive there. Mage skills (Life, Wraith, Chaos, Earth) can only be used with their skill equipped. When you change a skill at the Skill Angel (for example Mantle to Vestment or Garment), the gear the new skill does not allow goes back to your bag; if your bag has no room, the change is cancelled."
-  },
-  {
-    "fecha": "2026-11-07",
-    "titulo": "Update 0.0.0.71: Login Rewarder",
-    "texto": "Please update to version 0.0.0.71 from the launcher. The Login Rewarder exchange no longer offers the Olympic Heart, Goddess Statue (7-Day), Angel Power Necklace (7 days) or Super Purple Potion, and the 3x EXP, 3x Skill EXP and 3x Pet EXP Chocolates now give 1 chocolate instead of 8. Less lag right after a server restart."
-  },
-  {
-    "fecha": "2026-11-07",
-    "titulo": "Revival, Totem War souls and Power Shield",
-    "texto": "Revival skills now work: the effect lands on the dead player and revives them where they are, with the health of the skill. In Totem War, a soul that walks next to its own faction totem revives there. Power Shield shows its bubble again while it lasts. Olly, Ozzy and the Blessing Angel are no longer in Angel Lyceum."
-  },
-  {
-    "fecha": "2026-11-07",
-    "titulo": "Update 0.0.0.70: Totem War and Healer",
-    "texto": "Please update to version 0.0.0.70 from the launcher. Totem War totems now go up to level 5 at most, with their LEVEL effect when they go up (levels 2 to 5) and when they go down (levels 4 to 1). The yellow number under K.O. now shows the credits you earned in the war. When the war ends, the PvP rings and the K.O. counter are cleared, and they no longer show on Totem War maps when there is no war. The Healer no longer sells Fusion Potions, Poke Eggs, hammers or Shapeshifting Slime."
-  },
-  {
-    "fecha": "2026-11-07",
-    "titulo": "Combat and Totem War",
-    "texto": "Skill side effects now work in PvP too, with each skill's own chance, duration and interval: burns, poisons and bleeds (they never kill), stun, freeze, root and slow. Totem War kills now give credits based on the victim's level: x5 for their first death in the war, x2 after that. The totem shows its new level when it goes up or down. Power Shield now shows its blue bubble while it lasts. At the max level (60) quests and rewards no longer give experience."
-  },
-  {
-    "fecha": "2026-11-07",
-    "titulo": "Totem War: totem levels",
-    "texto": "Destroying a totem of level 2 or higher now only lowers it one level, and it comes back with the full health of that level. Only a level 1 totem gives the territory. The totem now shows the LEVEL UP effect when its level changes. Sitting down no longer looks like dying to other players."
-  },
-  {
-    "fecha": "2026-11-07",
-    "titulo": "Totem War fixes",
-    "texto": "Everyone now sees the same totem level, and it updates as soon as it levels up during the war. A totem that levels up during the war also gets the health of its new level. Pets and summons no longer attack the totem of their own faction or league."
-  },
-  {
-    "fecha": "2026-11-07",
-    "titulo": "Skills and basic attacks",
-    "texto": "Using a skill no longer plays a basic attack too, for every class: the skill is your attack for that turn. After a skill, basic attacks only start again when you click the monster."
-  },
-  {
-    "fecha": "2026-11-07",
-    "titulo": "Fixes",
-    "texto": "Assassins no longer receive the production robot when choosing their class, their basic attack uses the right animation, and their skills no longer play a basic attack too. Cupid now saves your revival point correctly. Choosing a name that is already taken now tells you so."
-  },
-  {
-    "fecha": "2026-11-07",
-    "titulo": "Custom events",
-    "texto": "New custom event system on the server: maps can now have events when you enter them, at scheduled times or after hunting, with rewards, experience, portals, monster invasions and server-wide announcements. Stay tuned for the first ones!"
-  },
-  {
-    "fecha": "2026-11-07",
-    "titulo": "Map help and stronger monsters",
-    "texto": "NPCs that have a quest for you now show [!] before their name. All monsters now hit 50% harder."
-  },
-  {
-    "fecha": "2026-11-07",
-    "titulo": "Monster spells",
-    "texto": "Monsters now use their own spells and skills in combat, like the Phoenix Fire of the Evil Fire Elf, also against your pets and summons. Watch out!"
-  },
-  {
-    "fecha": "2026-11-07",
-    "titulo": "Bosses",
-    "texto": "Field bosses now take 20 minutes to come back after they die."
-  },
-  {
-    "fecha": "2026-11-07",
-    "titulo": "Quest rewards",
-    "texto": "Quests now give 10% of the experience they used to give. The quest window still shows the old amount."
-  },
-  {
-    "fecha": "2026-11-07",
-    "titulo": "Santa Clausula",
-    "texto": "Santa Clausula hits harder now (+500 attack and +500 magic attack), and you can now see his Cross Chop and Revolving Swords."
-  },
-  {
-    "fecha": "2026-11-07",
-    "titulo": "Power Shield",
-    "texto": "Power Shield now works: while it lasts, the damage you take is paid with MP instead of HP, up to its limit (1350 to 3000 damage depending on the level). Silence cannot be used on you while it is active."
-  },
-  {
-    "fecha": "2026-11-07",
-    "titulo": "Expression Codes",
-    "texto": "Expression Code cards (Train, Wait, Laugh, Yawn, Love...) now unlock a new expression at the end of the Emotes window, as their description says. If you used a Laugh card before, it is now in your window."
-  },
-  {
-    "fecha": "2026-11-06",
-    "titulo": "Fixes",
-    "texto": "City Angels only send their own citizens to the Angel Lyceum. The Trade Routes ring no longer stays on your character after delivering. Less lag right after a server restart and the first time some features are used. Treasure map: any 10 Map Pieces complete it, of any level, and repeated pieces count too."
-  },
-  {
-    "fecha": "2026-11-06",
-    "titulo": "Trade Routes update",
-    "texto": "New small cargo at the Guild Clerk: Herb (50,000), Wool (100,000), Spice (200,000), Wine (300,000) and Tea Cargo (400,000), 15 minutes each: Traders get back double what they invested. Thieves now get from the Fence what the Trader invested. Carrying cargo now slows you down 30% (was 50%). Everyone is told when someone buys a cargo. Hunters in a Trader's party now show the ring too. Update the client (0.0.0.69) from the launcher."
-  },
-  {
-    "fecha": "2026-11-06",
-    "titulo": "New event: Trade Routes",
-    "texto": "Talk to the Guild Clerk in any city (in Aurora City, by the market at 242,199) and become a Trader, Hunter or Thief (you can quit and take the same job back anytime; switching to another job takes 7 days). Traders buy Grain, Silk or Gem Cargo and ride it to another city for profit; Hunters in their party escort them and share a reward. Thieves hunt for traders outside the cities, steal the cargo and sell it to a Fence. Everyone who delivers also gets an exchange voucher. While you carry cargo, a countdown icon shows the time left (and you get reminders at 10, 5 and 1 minute). Your job stays after logging out; quit it at the Guild Clerk. Dropped cargo is visible on the ground: click it (within 3 steps, riding a mount) to pick it up. Cargo orders now survive server restarts (the timer pauses while the server is down)."
-  },
-  {
-    "fecha": "2026-11-06",
-    "titulo": "Fixes",
-    "texto": "Gem Gauge now removes the gem from the last hole (the hole stays open). Angels GO! (Superwing) can no longer be used while carrying Trade Routes cargo. Trade Routes PvP: whoever carries cargo (and their escort) can now attack the players who can attack them, and they can be selected right away. Less lag when players log in. While a cargo is in dispute (carried or dropped on the ground), Thieves and the Trader's party can keep fighting on that map. Players killed in PvP now fall for everyone. Trade Routes PvP: Thieves can now select the Trader again after the Trader dies and comes back to the map while the cargo is on the ground, and two players carrying cargo can target each other (no more shared team ring). Trade Routes PvP rings are back: Thieves and the Trader's side now show rings of different colors, so you can see who you are fighting."
-  },
-  {
-    "fecha": "2026-11-05",
-    "titulo": "Mages and Dark Cavern",
-    "texto": "Level 32 and 60 mage AoE (Angel's Light, Aurora Trap, Strong Acid Rain, Hell Flame, Thunder Scope, Fire Trap, Lull Thorn, Canker Moss) now cast in 1 second. Life, Wraith, Chaos and Earth only level up with spells of their own branch. Dark Cavern: black minimap, monsters and boss hit twice as hard and chase you across the whole map."
-  },
-  {
-    "fecha": "2026-11-05",
-    "titulo": "Pets",
-    "texto": "Pets that reach 0 HP now die and must be revived at the Pet Expert (Pet Revival). Pet breeding: choose one option each time your pet levels up. Pet skills now deal their damage correctly. Pet Feed (satiation over 100) makes your pet attack 25% faster and its bonus shows in the bag tooltip."
-  },
-  {
-    "fecha": "2026-11-05",
-    "titulo": "Shop, Lucky Bags and fixes",
-    "texto": "Lv1-60 gear sells to NPC shops for 100-6,000 gold depending on its level. Lucky Bags give Double Exp Card, Double Skill Exp Card, Ride Feed and hammers one at a time. Fixed the colored ring that sometimes appeared on players after changing maps."
-  },
-  {
-    "fecha": "2026-11-04",
-    "titulo": "Gear Gacha Lv10-60",
-    "texto": "Monsters now drop Gear Gacha of their level: weapons, cape, accessory, gems and Light/Heavy/Robe armor, with the official odds (normal 22.8%, Quality 2%, the best 0.2%)."
-  },
-  {
-    "fecha": "2026-11-04",
-    "titulo": "New server and website",
-    "texto": "We moved to a new server in America. Visit aoforever.tech (English/Spanish) to create your account and use My account: characters, password and the events calendar."
-  },
-  {
-    "fecha": "2026-11-03",
-    "titulo": "Fixes",
-    "texto": "Faction change at the Census Angel (Lyceum). Summons no longer walk through walls, Dense Forest portals no longer send you back and the minimap shows one dot per NPC."
-  }
+ {
+  "fecha": "2026-11-12",
+  "titulo": "Update 0.0.0.134: new character selection screen",
+  "texto": "Please update to version 0.0.0.134 from AngelsLauncher. The character selection screen has a new modern look: cleaner character cards with your level, faction, name and stats, a glowing platform for your character, a highlight on the selected card and a redesigned menu. The login background also blends smoothly now."
+ },
+ {
+  "fecha": "2026-11-12",
+  "titulo": "Update 0.0.0.131: four new raid mounts",
+  "texto": "Please update to version 0.0.0.131 from AngelsLauncher. Four new mounts can drop from raid final bosses, 10% each: Satrixia in the Flamefang Raid drops the Blazemane Lion and the Coral Fortress Turtle (level 60), and Hades in the Warring Realm Raid drops the Frostcrown Ram and the Aurora Stag (level 50). The Abyss Taurus now stands still while idle and its rider sits right on its back."
+ },
+ {
+  "fecha": "2026-11-12",
+  "titulo": "Update 0.0.0.124: login, channels and Abyss Taurus",
+  "texto": "Please update to version 0.0.0.124 from AngelsLauncher. The login window has more room and a visible Save box for your account, the channel window has a new design centered under the emblem and shows the channel you pick, and the Abyss Taurus now stands on the ground with its rider seated on its back."
+ },
+ {
+  "fecha": "2026-11-12",
+  "titulo": "Update 0.0.0.119: sharper login buttons",
+  "texto": "Please update to version 0.0.0.119 from AngelsLauncher. The Login and Exit buttons now have sharper, easier to read text."
+ },
+ {
+  "fecha": "2026-11-12",
+  "titulo": "Update 0.0.0.118: new login window",
+  "texto": "Please update to version 0.0.0.118 from AngelsLauncher. The server and login window has a new night-blue and gold design, and the game now shows the new emblem as its icon on the taskbar. The character selection crash is fixed."
+ },
+ {
+  "fecha": "2026-11-12",
+  "titulo": "Fix: crash on character select",
+  "texto": "Fixed a crash when reaching the character selection screen after the new launcher update. Open AngelsLauncher once so it downloads the fixed game file."
+ },
+ {
+  "fecha": "2026-11-12",
+  "titulo": "New launcher and login screen",
+  "texto": "AngelsLauncher updates itself to version 1.0.5 with a brand new look: the floating sky islands, the new Angels Online Forever emblem and new buttons. Update to 0.0.0.116 to get the same art on the login screen and the new game icon. The agreement window no longer appears: the game goes straight to the login."
+ },
+ {
+  "fecha": "2026-11-11",
+  "titulo": "Update 0.0.0.115: Abyss Taurus fix",
+  "texto": "Please update to version 0.0.0.115 from AngelsLauncher. The Abyss Taurus mount now shows its armored bull look correctly."
+ },
+ {
+  "fecha": "2026-11-11",
+  "titulo": "Update 0.0.0.114: raid ranking and Abyss Taurus",
+  "texto": "Please update to version 0.0.0.114 from AngelsLauncher. Each raid now has a Ranking with the fastest clears: it shows the leader, and you can hover a row to see every member. When the last boss falls, a portal to the city opens. If you disconnect, you leave your raid group. New mount: the Abyss Taurus, a level 60 armored bull with top speed. Satrixia in the Flamefang Raid has a 3% chance to drop it."
+ },
+ {
+  "fecha": "2026-11-11",
+  "titulo": "Update 0.0.0.110: raid puzzles",
+  "texto": "Please update to version 0.0.0.110 from AngelsLauncher. Every raid now has a puzzle before each boss: a barrier of light only falls when you stand on the Light Altars together, bring down the pillars in the order the clues give, defeat the seal guardians or carry the flame to the Fire Altar. Zones are longer, with more packs and patrols, and the raid maps have no minimap or scene map. Each raid has its own banner, and the Raid Guide has a new Puzzles tab."
+ },
+ {
+  "fecha": "2026-11-11",
+  "titulo": "Update 0.0.0.109: three new raids",
+  "texto": "Please update to version 0.0.0.109 from AngelsLauncher. Three new raids are open in the AOF Raid list: Warring Realm Raid (level 50: Cerberus, Ares and Hades), Wintry Realm Raid (level 40: Ice Giant Hydea, Mighty Leon and Seasonia) and Dragon's Lair Raid (level 30: Blossom Hail, General Rizaburo and Watatsumi). Each one has its own weekly lockout and drops boxes of its level: class S gear, weapons and rare mounts, plus enhancement vouchers and Mount Coins. Check each Raid Guide for the boss mechanics."
+ },
+ {
+  "fecha": "2026-11-11",
+  "titulo": "Fix: Flamefang Raid drops",
+  "texto": "Flamefang Raid monsters no longer drop level 80 gear. Their drops are now level 50 to 60 equipment. The update 0.0.0.104 from AngelsLauncher is optional and only brings small data fixes."
+ },
+ {
+  "fecha": "2026-11-11",
+  "titulo": "Flamefang Raid: less HP",
+  "texto": "Flamefang Raid monsters now have less HP: regular monsters 5,000, elites 10,000. Lavamon has 1,000,000, Razorex 1,500,000 and Satrixia 2,000,000."
+ },
+ {
+  "fecha": "2026-11-11",
+  "titulo": "Monsters chase you further",
+  "texto": "Monsters no longer give up after a few steps. They now follow you up to 30 tiles and only stop after you stay out of reach for 5 seconds. Dungeon monsters can also stray further from their spot before going back."
+ },
+ {
+  "fecha": "2026-11-11",
+  "titulo": "Fix: pets and Earth Mage charm",
+  "texto": "Your summoned pet is now stored automatically when you die. The monster charmed by an Earth Mage now attacks the monsters you are fighting, and other monsters can fight back and kill it."
+ },
+ {
+  "fecha": "2026-11-11",
+  "titulo": "Fix: no walking while dead",
+  "texto": "Dead characters can no longer walk around while the death window is open (it happened mostly while riding a mount). Souls can still move as before."
+ },
+ {
+  "fecha": "2026-11-11",
+  "titulo": "Update 0.0.0.102: Flamefang Raid is harder",
+  "texto": "Please update to version 0.0.0.102 from AngelsLauncher. Flamefang Raid monsters now have level 80 stats, elites are tougher than regular level 80 monsters, and Lavamon, Razorex and Satrixia now have level 100 stats. To keep the fights winnable, the enrage timers are now 12, 14 and 18 minutes. Check the Raid Guide for the details."
+ },
+ {
+  "fecha": "2026-11-11",
+  "titulo": "Update 0.0.0.101: raid panel bars and Power Shield",
+  "texto": "Please update to version 0.0.0.101 from AngelsLauncher. The raid panel now has thin red HP and blue MP bars that no longer overlap. Power Shield now lasts 30 seconds and its bubble shows around you while it is active."
+ },
+ {
+  "fecha": "2026-11-11",
+  "titulo": "Update 0.0.0.100: compact raid panel",
+  "texto": "Please update to version 0.0.0.100 from AngelsLauncher. The raid panel is now compact: it only takes the space of its members and uses your theme color. Raid leaders can right-click a member in the panel to make them leader or remove them from the raid. Also fixed: after entering a map where someone had a charmed monster, other players could stay visible after leaving, or not show up at all."
+ },
+ {
+  "fecha": "2026-11-11",
+  "titulo": "Update 0.0.0.99: Raid Guide tabs",
+  "texto": "Please update to version 0.0.0.99 from AngelsLauncher. The Raid Guide tabs have a new look: the names fit inside them and the open tab lights up."
+ },
+ {
+  "fecha": "2026-11-11",
+  "titulo": "Update 0.0.0.98: Raid Guide",
+  "texto": "Please update to version 0.0.0.98 from AngelsLauncher. Press Guide in the AOF Raids window or in the Flamefang Raid window to read how the raid works and every boss mechanic: Lavamon's lava eruptions and Lava Blobs, Razorex's Searing Claw and Fire Breath, Satrixia's Inferno Nova, fire shield and Doom, plus the loot and the weekly lockout."
+ },
+ {
+  "fecha": "2026-11-11",
+  "titulo": "Update 0.0.0.97: raid windows polish",
+  "texto": "Please update to version 0.0.0.97 from AngelsLauncher. The Flamefang Raid window now matches the AOF Raids look, with separate panels for members and bosses and a clear box to invite players by name. Both windows now fit inside their frames, and the raid list shows its entries again."
+ },
+ {
+  "fecha": "2026-11-11",
+  "titulo": "Update 0.0.0.96: new AOF Raids window",
+  "texto": "Please update to version 0.0.0.96 from AngelsLauncher. The AOF Raids window has a new look: a Flamefang banner with its three bosses, the raid list on the left and the details on the right (level, players, bosses you can still loot this week and rewards)."
+ },
+ {
+  "fecha": "2026-11-11",
+  "titulo": "Update 0.0.0.95: Flamefang Raid",
+  "texto": "Please update to version 0.0.0.95 from AngelsLauncher. New raid for up to 20 level 60 players: press the AOF Raid button on the action bar to see the raid list, create a raid and invite players by name, with your party, or by right-clicking them. Defeat Lavamon, Razorex and Satrixia, each with their own mechanics, for level 60 class S gear vouchers, mount coins, mount boxes and skill boxes. A raid panel shows every member's health, mana and role. Bosses can be looted once per week (resets on Monday)."
+ },
+ {
+  "fecha": "2026-11-11",
+  "titulo": "Server performance",
+  "texto": "Server improvements to reduce short freezes: backups and launcher downloads no longer pause the game for everyone, and entering busy towns like the Angel Lyceum is faster."
+ },
+ {
+  "fecha": "2026-11-10",
+  "titulo": "Update 0.0.0.89: pet evolution tree",
+  "texto": "Please update to version 0.0.0.89 from AngelsLauncher. Open your pet info panel and press Evolve to see its whole evolution tree: every form with its picture, level, type, stats and abilities. Click the form you want and press Evolve: your pet grows that way when it has the level (15 / 35 / 55) and the Medium or Advanced Blood Certificate."
+ },
+ {
+  "fecha": "2026-11-10",
+  "titulo": "Update 0.0.0.86: new pet Abyss",
+  "texto": "Please update to version 0.0.0.86 from AngelsLauncher. A new pet line has arrived: the Abyss Egg hatches into Abyss Cub at level 15, becomes Abyss Fiend with a Medium Blood Certificate (level 35) and Abyss Lord with an Advanced Blood Certificate (level 55). Each stage has its own colors and size."
+ },
+ {
+  "fecha": "2026-11-09",
+  "titulo": "Charm success chance",
+  "texto": "Shining Charm no longer always works. Its chance is 10% at level I, 20% at II, 30% at III, 40% at IV and 50% at V, a bit lower against monsters above your level and a bit higher (up to +10%) against weaker ones. If it fails, the mana is spent and the monster attacks you."
+ },
+ {
+  "fecha": "2026-11-09",
+  "titulo": "Charm: one monster at a time",
+  "texto": "You can only have one charmed monster at a time. Charming a new one releases the previous one, which becomes a normal monster again."
+ },
+ {
+  "fecha": "2026-11-09",
+  "titulo": "Update 0.0.0.82: sort your bag",
+  "texto": "Please update to version 0.0.0.82 from AngelsLauncher. The Prop and Backpack windows have a new Sort button in their title bar, next to the lock: it sorts your items by category and stacks them together. Pets stay where they are. Maple Mark now shows the recorded place in its tooltip (Sign)."
+ },
+ {
+  "fecha": "2026-11-09",
+  "titulo": "Assassin basic attack",
+  "texto": "ShadowBlade (Assassin) basic attacks now use their proper attack animation."
+ },
+ {
+  "fecha": "2026-11-09",
+  "titulo": "Maple Mark fixed",
+  "texto": "Maple Mark works again: right click it to record your current position, then right click it again to travel there. Each travel uses one Maple Teleportation Scroll; if you have none, it uses one Maple Mark instead."
+ },
+ {
+  "fecha": "2026-11-09",
+  "titulo": "Treasure maps",
+  "texto": "A completed treasure map (10/10 pieces) now shows where the treasure is: open the Quest Log, TreMap tab, to see the place marked on the map. Walk to that spot to dig it up and get the reward; the map then starts again at 0/10. The level of the Map Pieces you use decides how rich the treasure is. The Delete button clears the map."
+ },
+ {
+  "fecha": "2026-11-09",
+  "titulo": "Update 0.0.0.80: exchanges fixed",
+  "texto": "Please update to version 0.0.0.80 from AngelsLauncher. The Exchange lists (Event Overview > Exchange: Winter Holiday PD, Ride and Robots, Enhanced Pestle and Ride Feed, and other exchanges) show all their items again."
+ },
+ {
+  "fecha": "2026-11-09",
+  "titulo": "Fixes",
+  "texto": "Monsters charmed with Shining Charm now only use basic attacks, with their normal damage. Skill levels of ShadowBlade can no longer go above your character level. Fixed a colored ring that could stay under your character after traveling to another map."
+ },
+ {
+  "fecha": "2026-11-08",
+  "titulo": "Update 0.0.0.79 and fixes",
+  "texto": "Please update to version 0.0.0.79 from AngelsLauncher: the quick bar now shows letters too when you assign them to a slot. City Angels send their citizens back to the Angel Lyceum again."
+ },
+ {
+  "fecha": "2026-11-08",
+  "titulo": "Update 0.0.0.78",
+  "texto": "Please update to version 0.0.0.78 from AngelsLauncher. The AOF tab of the System window now has a clean background that follows your window color."
+ },
+ {
+  "fecha": "2026-11-08",
+  "titulo": "Update 0.0.0.77: rebind your quick bar keys",
+  "texto": "Please update to version 0.0.0.77 from AngelsLauncher (it also updates the game). New AOF tab in the System window (Esc): chat is now closed until you press Enter; type your message and press Enter again to send it and close the chat (Esc closes it too). With Rebind you can assign any key to each quick bar slot, including numbers and letters, and they are saved on your PC. The quick bar now shows the key of each slot."
+ },
+ {
+  "fecha": "2026-11-07",
+  "titulo": "Sneak",
+  "texto": "Sneak now really hides the Assassin: while it lasts you become almost transparent, without name or health bar, and other players cannot select you. Attacking with anything other than an assassination technique, or the end of the effect, makes you visible again."
+ },
+ {
+  "fecha": "2026-11-07",
+  "titulo": "Skills, armor and Totem War souls",
+  "texto": "In Totem War, a soul can now click the totem of its own faction to revive there. Mage skills (Life, Wraith, Chaos, Earth) can only be used with their skill equipped. When you change a skill at the Skill Angel (for example Mantle to Vestment or Garment), the gear the new skill does not allow goes back to your bag; if your bag has no room, the change is cancelled."
+ },
+ {
+  "fecha": "2026-11-07",
+  "titulo": "Update 0.0.0.71: Login Rewarder",
+  "texto": "Please update to version 0.0.0.71 from the launcher. The Login Rewarder exchange no longer offers the Olympic Heart, Goddess Statue (7-Day), Angel Power Necklace (7 days) or Super Purple Potion, and the 3x EXP, 3x Skill EXP and 3x Pet EXP Chocolates now give 1 chocolate instead of 8. Less lag right after a server restart."
+ },
+ {
+  "fecha": "2026-11-07",
+  "titulo": "Revival, Totem War souls and Power Shield",
+  "texto": "Revival skills now work: the effect lands on the dead player and revives them where they are, with the health of the skill. In Totem War, a soul that walks next to its own faction totem revives there. Power Shield shows its bubble again while it lasts. Olly, Ozzy and the Blessing Angel are no longer in Angel Lyceum."
+ },
+ {
+  "fecha": "2026-11-07",
+  "titulo": "Update 0.0.0.70: Totem War and Healer",
+  "texto": "Please update to version 0.0.0.70 from the launcher. Totem War totems now go up to level 5 at most, with their LEVEL effect when they go up (levels 2 to 5) and when they go down (levels 4 to 1). The yellow number under K.O. now shows the credits you earned in the war. When the war ends, the PvP rings and the K.O. counter are cleared, and they no longer show on Totem War maps when there is no war. The Healer no longer sells Fusion Potions, Poke Eggs, hammers or Shapeshifting Slime."
+ },
+ {
+  "fecha": "2026-11-07",
+  "titulo": "Combat and Totem War",
+  "texto": "Skill side effects now work in PvP too, with each skill's own chance, duration and interval: burns, poisons and bleeds (they never kill), stun, freeze, root and slow. Totem War kills now give credits based on the victim's level: x5 for their first death in the war, x2 after that. The totem shows its new level when it goes up or down. Power Shield now shows its blue bubble while it lasts. At the max level (60) quests and rewards no longer give experience."
+ },
+ {
+  "fecha": "2026-11-07",
+  "titulo": "Totem War: totem levels",
+  "texto": "Destroying a totem of level 2 or higher now only lowers it one level, and it comes back with the full health of that level. Only a level 1 totem gives the territory. The totem now shows the LEVEL UP effect when its level changes. Sitting down no longer looks like dying to other players."
+ },
+ {
+  "fecha": "2026-11-07",
+  "titulo": "Totem War fixes",
+  "texto": "Everyone now sees the same totem level, and it updates as soon as it levels up during the war. A totem that levels up during the war also gets the health of its new level. Pets and summons no longer attack the totem of their own faction or league."
+ },
+ {
+  "fecha": "2026-11-07",
+  "titulo": "Skills and basic attacks",
+  "texto": "Using a skill no longer plays a basic attack too, for every class: the skill is your attack for that turn. After a skill, basic attacks only start again when you click the monster."
+ },
+ {
+  "fecha": "2026-11-07",
+  "titulo": "Fixes",
+  "texto": "Assassins no longer receive the production robot when choosing their class, their basic attack uses the right animation, and their skills no longer play a basic attack too. Cupid now saves your revival point correctly. Choosing a name that is already taken now tells you so."
+ },
+ {
+  "fecha": "2026-11-07",
+  "titulo": "Custom events",
+  "texto": "New custom event system on the server: maps can now have events when you enter them, at scheduled times or after hunting, with rewards, experience, portals, monster invasions and server-wide announcements. Stay tuned for the first ones!"
+ },
+ {
+  "fecha": "2026-11-07",
+  "titulo": "Map help and stronger monsters",
+  "texto": "NPCs that have a quest for you now show [!] before their name. All monsters now hit 50% harder."
+ },
+ {
+  "fecha": "2026-11-07",
+  "titulo": "Monster spells",
+  "texto": "Monsters now use their own spells and skills in combat, like the Phoenix Fire of the Evil Fire Elf, also against your pets and summons. Watch out!"
+ },
+ {
+  "fecha": "2026-11-07",
+  "titulo": "Bosses",
+  "texto": "Field bosses now take 20 minutes to come back after they die."
+ },
+ {
+  "fecha": "2026-11-07",
+  "titulo": "Quest rewards",
+  "texto": "Quests now give 10% of the experience they used to give. The quest window still shows the old amount."
+ },
+ {
+  "fecha": "2026-11-07",
+  "titulo": "Santa Clausula",
+  "texto": "Santa Clausula hits harder now (+500 attack and +500 magic attack), and you can now see his Cross Chop and Revolving Swords."
+ },
+ {
+  "fecha": "2026-11-07",
+  "titulo": "Power Shield",
+  "texto": "Power Shield now works: while it lasts, the damage you take is paid with MP instead of HP, up to its limit (1350 to 3000 damage depending on the level). Silence cannot be used on you while it is active."
+ },
+ {
+  "fecha": "2026-11-07",
+  "titulo": "Expression Codes",
+  "texto": "Expression Code cards (Train, Wait, Laugh, Yawn, Love...) now unlock a new expression at the end of the Emotes window, as their description says. If you used a Laugh card before, it is now in your window."
+ },
+ {
+  "fecha": "2026-11-06",
+  "titulo": "Fixes",
+  "texto": "City Angels only send their own citizens to the Angel Lyceum. The Trade Routes ring no longer stays on your character after delivering. Less lag right after a server restart and the first time some features are used. Treasure map: any 10 Map Pieces complete it, of any level, and repeated pieces count too."
+ },
+ {
+  "fecha": "2026-11-06",
+  "titulo": "Trade Routes update",
+  "texto": "New small cargo at the Guild Clerk: Herb (50,000), Wool (100,000), Spice (200,000), Wine (300,000) and Tea Cargo (400,000), 15 minutes each: Traders get back double what they invested. Thieves now get from the Fence what the Trader invested. Carrying cargo now slows you down 30% (was 50%). Everyone is told when someone buys a cargo. Hunters in a Trader's party now show the ring too. Update the client (0.0.0.69) from the launcher."
+ },
+ {
+  "fecha": "2026-11-06",
+  "titulo": "New event: Trade Routes",
+  "texto": "Talk to the Guild Clerk in any city (in Aurora City, by the market at 242,199) and become a Trader, Hunter or Thief (you can quit and take the same job back anytime; switching to another job takes 7 days). Traders buy Grain, Silk or Gem Cargo and ride it to another city for profit; Hunters in their party escort them and share a reward. Thieves hunt for traders outside the cities, steal the cargo and sell it to a Fence. Everyone who delivers also gets an exchange voucher. While you carry cargo, a countdown icon shows the time left (and you get reminders at 10, 5 and 1 minute). Your job stays after logging out; quit it at the Guild Clerk. Dropped cargo is visible on the ground: click it (within 3 steps, riding a mount) to pick it up. Cargo orders now survive server restarts (the timer pauses while the server is down)."
+ },
+ {
+  "fecha": "2026-11-06",
+  "titulo": "Fixes",
+  "texto": "Gem Gauge now removes the gem from the last hole (the hole stays open). Angels GO! (Superwing) can no longer be used while carrying Trade Routes cargo. Trade Routes PvP: whoever carries cargo (and their escort) can now attack the players who can attack them, and they can be selected right away. Less lag when players log in. While a cargo is in dispute (carried or dropped on the ground), Thieves and the Trader's party can keep fighting on that map. Players killed in PvP now fall for everyone. Trade Routes PvP: Thieves can now select the Trader again after the Trader dies and comes back to the map while the cargo is on the ground, and two players carrying cargo can target each other (no more shared team ring). Trade Routes PvP rings are back: Thieves and the Trader's side now show rings of different colors, so you can see who you are fighting."
+ },
+ {
+  "fecha": "2026-11-05",
+  "titulo": "Mages and Dark Cavern",
+  "texto": "Level 32 and 60 mage AoE (Angel's Light, Aurora Trap, Strong Acid Rain, Hell Flame, Thunder Scope, Fire Trap, Lull Thorn, Canker Moss) now cast in 1 second. Life, Wraith, Chaos and Earth only level up with spells of their own branch. Dark Cavern: black minimap, monsters and boss hit twice as hard and chase you across the whole map."
+ },
+ {
+  "fecha": "2026-11-05",
+  "titulo": "Pets",
+  "texto": "Pets that reach 0 HP now die and must be revived at the Pet Expert (Pet Revival). Pet breeding: choose one option each time your pet levels up. Pet skills now deal their damage correctly. Pet Feed (satiation over 100) makes your pet attack 25% faster and its bonus shows in the bag tooltip."
+ },
+ {
+  "fecha": "2026-11-05",
+  "titulo": "Shop, Lucky Bags and fixes",
+  "texto": "Lv1-60 gear sells to NPC shops for 100-6,000 gold depending on its level. Lucky Bags give Double Exp Card, Double Skill Exp Card, Ride Feed and hammers one at a time. Fixed the colored ring that sometimes appeared on players after changing maps."
+ },
+ {
+  "fecha": "2026-11-04",
+  "titulo": "Gear Gacha Lv10-60",
+  "texto": "Monsters now drop Gear Gacha of their level: weapons, cape, accessory, gems and Light/Heavy/Robe armor, with the official odds (normal 22.8%, Quality 2%, the best 0.2%)."
+ },
+ {
+  "fecha": "2026-11-04",
+  "titulo": "New server and website",
+  "texto": "We moved to a new server in America. Visit aoforever.tech (English/Spanish) to create your account and use My account: characters, password and the events calendar."
+ },
+ {
+  "fecha": "2026-11-03",
+  "titulo": "Fixes",
+  "texto": "Faction change at the Census Angel (Lyceum). Summons no longer walk through walls, Dense Forest portals no longer send you back and the minimap shows one dot per NPC."
+ }
 ]
