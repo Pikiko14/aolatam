@@ -8858,15 +8858,25 @@ def _tesoro_paquete(ses):
     return struct.pack('<HIIIIIB', 0x012A, 0, mapa, escena, tesoro_hallados(ses.personaje), punto, 0xF5)
 
 
+# EL COFRE DEL TESORO (13/11/2026, "el treasure map me da el item directamente y no me muestra el cofre en tierra, que es
+# el deber ser"): al llegar al punto aparece el cofre del mapa (su 寶箱圖形, un objeto SERV_CLASS_TREASUREOBJ de
+# server.obd: 60153 el Dusty Wooden Box) en el suelo, solo para ese jugador; al pulsarlo se abre: sale el premio y el
+# album se vacia. Mientras el jugador siga cerca se le vuelve a mandar cada TESORO_REENVIO s (si cambio de mapa y volvio,
+# el cliente ya lo habia olvidado).
+TESORO_EID_BASE = 113_500_000
+TESORO_REENVIO = 15
+TESORO_RADIO_ABRIR = 4
+
+
 def _tesoro_al_pisar(ses, addr, casillas):
-    """Encuentra el tesoro al pasar cerca de su punto: sale el premio de la tabla de drop del mapa y el album se vacia.
-    Ninguna escena trae un script de tesoro (no hay MAKE_TREASURE en ningun mapa), asi que lo hace el servidor."""
+    """Al pasar cerca del punto del tesoro sale su cofre en el suelo. Ninguna escena trae un script de tesoro (no hay
+    MAKE_TREASURE en ningun mapa), asi que lo hace el servidor."""
     p = ses.personaje
     if not p or tesoro_hallados(p) < TESORO_TOTAL:
         return
     import tesoros
-    import bolsas as _bol_ts
     import clases as _cl_ts
+    import login as _lg_ts
     destino = tesoro_destino(p)
     if not destino or int(p.stage or 0) != destino[1]:
         return
@@ -8874,29 +8884,60 @@ def _tesoro_al_pisar(ses, addr, casillas):
     if not sitio or not any(max(abs(x - sitio[0]), abs(y - sitio[1])) <= TESORO_RADIO for x, y in casillas):
         return
     fila = tesoros.de_id(destino[0]) or {}
+    cofre = getattr(ses, '_tesoro_cofre', None)
+    ahora = time.time()
+    nuevo = not cofre or cofre.get('mapa') != destino[0]
+    if not nuevo and ahora - cofre.get('enviado', 0) < TESORO_REENVIO:
+        return
+    eid = TESORO_EID_BASE + int(p.char_id or 0) % 1_000_000
+    ses._tesoro_cofre = {'eid': eid, 'mapa': destino[0], 'stage': destino[1], 'tile': tuple(sitio), 'enviado': ahora}
+    paquetes = [_lg_ts._map_object_spawn(eid, int(fila.get('sprite_cofre') or 60153), tuple(sitio))]
+    if nuevo:
+        paquetes.append(_cl_ts.aviso('%s appeared! Click it to open it.' % (fila.get('nombre') or 'A treasure chest'),
+                                     tipo=0))
+        log.info('[%s] cofre del tesoro %s en la escena %d (%d,%d)', addr, destino[0], destino[1], sitio[0], sitio[1])
+    ses.enviar(*[x for x in paquetes if x])
+
+
+def _tesoro_pulsar(ses, addr, ent) -> bool:
+    """Clic en el cofre del tesoro: lo abre si esta cerca. True si era el cofre."""
+    cofre = getattr(ses, '_tesoro_cofre', None)
+    p = ses.personaje
+    if not cofre or not p or int(ent) != cofre['eid']:
+        return False
+    import tesoros
+    import bolsas as _bol_ts
+    import clases as _cl_ts
+    import combate as _cb_ts
+    if int(p.stage or 0) != cofre['stage']:
+        return True
+    tx, ty = cofre['tile']
+    if max(abs(int(p.tile_x) - tx), abs(int(p.tile_y) - ty)) > TESORO_RADIO_ABRIR:
+        ses.enviar(_cl_ts.aviso('Get closer to open the treasure.', tipo=0))
+        return True
+    fila = tesoros.de_id(cofre['mapa']) or {}
     premio = _bol_ts._sorteo(int(fila.get('drop') or 0))
     if not premio:
-        log.warning('[%s] el tesoro %s no tiene tabla de premio', addr, destino[0])
-        return
+        log.warning('[%s] el tesoro %s no tiene tabla de premio', addr, cofre['mapa'])
+        return True
     premio_id, premio_n = premio
     if premio_n > 1 and _bol_ts.es_premio_unitario(premio_id):
         premio_n = 1
     ranura = _meter(ses, premio_id, premio_n)
     if ranura is None:
-        ahora = time.time()
-        if ahora - getattr(ses, '_tesoro_lleno_t', 0) > 10:
-            ses._tesoro_lleno_t = ahora
-            ses.enviar(_cl_ts.aviso('You found the treasure, but your inventory is full.', tipo=0))
-        return
+        ses.enviar(_cl_ts.aviso('Your inventory is full: make room to open the treasure.', tipo=0))
+        return True
     tesoro_vaciar(p)
+    ses._tesoro_cofre = None
     nombre = _nombre_item(premio_id)
-    ses.enviar(*_refrescar(ses, [ranura]), _tesoro_paquete(ses),
+    ses.enviar(_cb_ts.despawn_monstruo(cofre['eid']), *_refrescar(ses, [ranura]), _tesoro_paquete(ses),
                _cl_ts.aviso('You found %s: %s x%d!' % (fila.get('nombre') or 'the treasure', nombre, premio_n),
                             tipo=0))
     _guardar_bolsa(ses, p.char_id)
     _logros_guardar(ses)
-    log.info('[%s] tesoro %s encontrado en la escena %d -> %s x%d (%s)', addr, destino[0], destino[1], premio_id,
+    log.info('[%s] tesoro %s abierto en la escena %d -> %s x%d (%s)', addr, cofre['mapa'], cofre['stage'], premio_id,
              premio_n, nombre)
+    return True
 
 
 def _soltar_encantado(ses, nuevo=None):
@@ -21515,6 +21556,8 @@ class Servidor:
                 return
             if ses.personaje and __import__('eventos_propios').pulsar(ses, ent):
                 return
+            if ses.personaje and _tesoro_pulsar(ses, addr, ent):
+                return                                  # el cofre del mapa del tesoro
             if __import__('travel_items').pulsar(ses,ent):
                 return
             if _casa_click(ses, ent):

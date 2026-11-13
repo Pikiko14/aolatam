@@ -76,26 +76,39 @@ def _sesion(p, monkeypatch, cabe=True):
     return NS(personaje=p, enviar=lambda *a: enviados.extend(a)), enviados
 
 
-def test_al_pasar_por_el_punto_sale_el_premio_y_se_vacia(monkeypatch):
+def test_al_pasar_por_el_punto_sale_el_cofre_y_al_pulsarlo_el_premio(monkeypatch):
+    # 13/11/2026, "el treasure map me da el item directamente y no me muestra el cofre en tierra": al pasar sale el
+    # cofre (0x000E con su sprite de server.obd) y el premio solo al pulsarlo, de cerca.
     p = _lleno()
     mapa, escena, punto = app.tesoro_destino(p)
     p.stage = escena
     x, y = tesoros.casilla(escena, punto)
     ses, enviados = _sesion(p, monkeypatch)
     app._tesoro_al_pisar(ses, 'a', [(x + 20, y + 20)])               # lejos: nada
-    assert app.tesoro_hallados(p) == 10
+    assert not getattr(ses, '_tesoro_cofre', None) and app.tesoro_hallados(p) == 10
     app._tesoro_al_pisar(ses, 'a', [(x + 2, y - 1)])
-    assert app.tesoro_hallados(p) == 0 and app.tesoro_destino(p) is None
-    assert enviados
+    cofre = ses._tesoro_cofre
+    assert cofre and cofre['tile'] == (x, y) and app.tesoro_hallados(p) == 10          # aun sin premio
+    sprite = tesoros.de_id(mapa)['sprite_cofre']
+    assert any(pk[:2] == b'\x0e\x00' and struct.unpack_from('<I', pk, 2 + 34)[0] == sprite for pk in enviados)
+    p.tile_x, p.tile_y = x + 10, y                                    # lejos: no se abre
+    assert app._tesoro_pulsar(ses, 'a', cofre['eid']) and app.tesoro_hallados(p) == 10
+    p.tile_x, p.tile_y = x + 1, y
+    assert not app._tesoro_pulsar(ses, 'a', cofre['eid'] + 1)         # otra entidad
+    assert app._tesoro_pulsar(ses, 'a', cofre['eid'])
+    assert app.tesoro_hallados(p) == 0 and app.tesoro_destino(p) is None and ses._tesoro_cofre is None
 
 
-def test_con_la_bolsa_llena_el_tesoro_espera(monkeypatch):
+def test_con_la_bolsa_llena_el_cofre_espera(monkeypatch):
     p = _lleno()
     mapa, escena, punto = app.tesoro_destino(p)
     p.stage = escena
     ses, _env = _sesion(p, monkeypatch, cabe=False)
-    app._tesoro_al_pisar(ses, 'a', [tesoros.casilla(escena, punto)])
-    assert app.tesoro_destino(p) == (mapa, escena, punto)
+    x, y = tesoros.casilla(escena, punto)
+    app._tesoro_al_pisar(ses, 'a', [(x, y)])
+    p.tile_x, p.tile_y = x, y
+    assert app._tesoro_pulsar(ses, 'a', ses._tesoro_cofre['eid'])
+    assert app.tesoro_destino(p) == (mapa, escena, punto) and ses._tesoro_cofre
 
 
 def test_delete_vacia_el_album(monkeypatch):
