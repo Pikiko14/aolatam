@@ -1698,6 +1698,21 @@ def datos_magia(magic_id: int) -> dict:
                 res['clon_poder'] = _num(d.get('動態參數2'),0)
                 res['dur_invoca'] = max(1,res['dur_ms']//1000)
 
+            # Mas robos (13/11/2026, auditoria de efectos): formula 3 (Blood Absorbing Spell: 動態參數1 % de que
+            # pase, 動態參數2 % del dano a vida), formula 4 (Demon-Sucking: lo mismo a mana), formula 56 (Drain
+            # Strike: 動態參數2 % del dano a vida, con tope en el 動態參數3 % de la vida maxima) y la linea Stab
+            # ("drain its mana", sin parametros: un 10 % del dano a mana).
+            if res['formula'] == 3 and d.get('攻擊型') == '是':
+                res['drain_hp_prob'] = _num(d.get('動態參數1'), 50)
+                res['drain_hp_pct'] = _num(d.get('動態參數2'), 10)
+            elif res['formula'] == 4 and d.get('攻擊型') == '是':
+                res['drain_mp_prob'] = _num(d.get('動態參數1'), 50)
+                res['drain_mp_pct'] = _num(d.get('動態參數2'), 5)
+            elif res['formula'] == 56 and d.get('攻擊型') == '是':
+                res['drain_hp_pct'] = _num(d.get('動態參數2'), 80)
+                res['drain_hp_tope_pct'] = _num(d.get('動態參數3'), 10)
+            elif 'drain its mana' in desc_l or 'drains its mana' in desc_l:
+                res['drain_mp_pct'] = 10
             # Robos de HP y MP (Forbidden Curse / Formula 39 y Bloodthirst Arrow / Formula 24)
             if res['formula'] in (24, 39) or (5116 <= magic_id <= 5120) or ('forbidden curse' in nom_l) or ('bloodthirst arrow' in nom_l):
                 res['drain_hp_pct'] = _num(d.get('動態參數2'), 30 if res['formula'] == 24 else 25)

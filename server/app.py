@@ -17249,12 +17249,14 @@ class Servidor:
                     _prob_drain = mag.get('drain_hp_prob', 100)
                     if random.random() * 100.0 < _prob_drain:
                         _hp_gain = max(1, int(round(dano * (_hp_drain / 100.0))))
+                        if mag.get('drain_hp_tope_pct'):          # Drain Strike: "up to 10% of max HP"
+                            _hp_gain = min(_hp_gain, max(1, _vida_max(ses.personaje) * mag['drain_hp_tope_pct'] // 100))
                         ses.personaje.hp = min(_vida_max(ses.personaje),
                                               ses.personaje.hp + _hp_gain)
                         _pkgs_drain.append(_cb.atributo(yo, ses.personaje.hp, _cb.KIND_HP))
                         _pkgs_drain.append(_cb.numero_flotante(yo, _hp_gain,
                                                                _cb.TIPO_CURA_HP))
-                if _mp_drain > 0:
+                if _mp_drain > 0 and random.random() * 100.0 < mag.get('drain_mp_prob', 100):
                     _mp_gain = max(1, int(round(dano * (_mp_drain / 100.0))))
                     ses.personaje.mp = min(_mana_max(ses.personaje),
                                           ses.personaje.mp + _mp_gain)

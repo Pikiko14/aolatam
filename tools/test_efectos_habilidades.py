@@ -57,3 +57,10 @@ def test_las_curas_que_no_curaban_ahora_curan():
         assert d['es_cura'] and not d['es_ataque'] and d['hp'] > 0, mid
     assert combate.datos_magia(13310)['cura_58'] == (5000, 50, 80)
     assert not combate.datos_magia(301)['es_cura']           # Flying Dart sigue siendo ataque
+
+
+def test_los_drenajes_de_las_formulas_3_4_y_56():
+    assert combate.datos_magia(110)['drain_hp_pct'] == 10                       # Blood Absorbing Spell
+    assert combate.datos_magia(113)['drain_mp_pct'] == 5                        # Demon-Sucking
+    assert combate.datos_magia(13260)['drain_hp_tope_pct'] == 10                # Drain Strike
+    assert combate.datos_magia(5401)['drain_mp_pct'] > 0                        # Stab
