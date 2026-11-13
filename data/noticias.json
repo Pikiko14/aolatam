@@ -1,5 +1,10 @@
 [
  {
+  "fecha": "2026-11-13",
+  "titulo": "Update 0.0.0.142: Gear Gacha drops, Sneak and Assassin fixes",
+  "texto": "Please update to version 0.0.0.142 from AngelsLauncher. Gear Gachas now drop much more often: every level 10+ monster has a 30% chance to drop one of its level, and they have a new red capsule icon. Sneak now takes its full 3 second cast before you turn invisible. New Assassins no longer get the Freshman Cask robot, and they are shown as Assassin instead of Miner."
+ },
+ {
   "fecha": "2026-11-12",
   "titulo": "Update 0.0.0.141: new character selection screen",
   "texto": "Please update to version 0.0.0.141 from AngelsLauncher. The character selection screen is fully redesigned: your three characters stand centered on glowing platforms over the landscape, each with a clean floating info card (portrait, level, faction, name and stats), the selected one is highlighted, and all options are now in one bar below. The old green ID cards are gone."
