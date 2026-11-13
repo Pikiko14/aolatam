@@ -1,6 +1,11 @@
 [
  {
   "fecha": "2026-11-12",
+  "titulo": "Update 0.0.0.141: new character selection screen",
+  "texto": "Please update to version 0.0.0.141 from AngelsLauncher. The character selection screen is fully redesigned: your three characters stand centered on glowing platforms over the landscape, each with a clean floating info card (portrait, level, faction, name and stats), the selected one is highlighted, and all options are now in one bar below. The old green ID cards are gone."
+ },
+ {
+  "fecha": "2026-11-12",
   "titulo": "Update 0.0.0.138: character selection redesigned",
   "texto": "Please update to version 0.0.0.138 from AngelsLauncher. The character selection screen has a brand new layout: your characters stand on glowing platforms over the landscape, each with a floating info plate, and the options are now a single bar below them. This also fixes the hidden texts on the cards from version 0.0.0.134."
  },
