@@ -1,6 +1,11 @@
 [
  {
   "fecha": "2026-11-13",
+  "titulo": "Update 0.0.0.143: Gear Gacha icon, Holiday PD and new website",
+  "texto": "Please update to version 0.0.0.143 from AngelsLauncher. Gear Gachas now show their new red capsule icon. The Winter Holiday PD exchange in Event Overview > Exchange works again: you no longer need to stand next to Fashionable. Our website aoforever.tech has a brand new look with the new emblem, and its news now come straight from the launcher."
+ },
+ {
+  "fecha": "2026-11-13",
   "titulo": "Update 0.0.0.142: Gear Gacha drops, Sneak and Assassin fixes",
   "texto": "Please update to version 0.0.0.142 from AngelsLauncher. Gear Gachas now drop much more often: every level 10+ monster has a 30% chance to drop one of its level, and they have a new red capsule icon. Sneak now takes its full 3 second cast before you turn invisible. New Assassins no longer get the Freshman Cask robot, and they are shown as Assassin instead of Miner."
  },
