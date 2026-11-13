@@ -1983,6 +1983,27 @@ def datos_magia(magic_id: int) -> dict:
                 any(k in nom_l for k in ('hit', 'attack', 'chop', 'beating', 'slash', 'wave', 'bomb', 'shot', 'thrust', 'strike', 'killing', 'brand'))
             )
 
+            # CURAS QUE NO CURABAN (13/11/2026, auditoria de "todos los poderes deben dar el efecto que dicen"):
+            #  * Sacred Heal (5096) y Celestial Heal (12006): HP fijo (數值), sin 攻擊型 ni tics, "restores ... HP" o
+            #    "healing": no casaban con la lista de nombres ni con la frase exacta "restores hp";
+            #  * formula 58 (Healing Cross 13310, Holy Stanza 15051): 動態參數1 de base + 動態參數2 % del ataque
+            #    magico, con tope en el 動態參數3 % de la vida maxima de quien la recibe (app.py lo calcula);
+            #  * Divine Prayer (5046, formula 42 hacia aliados): la onda que cura lo que dice su hijo (7901).
+            _cura_txt = ('heal' in desc_l or 'restor' in desc_l or 'rejuvenat' in desc_l or 'recover' in desc_l)
+            if (not res['es_cura'] and not res['es_debuff'] and d.get('攻擊型') != '是' and _cura_txt
+                    and res['formula'] == 1 and res['dur_ms'] <= 0 and not d.get('作用間隔')
+                    and _num(d.get('HP'), 0) > 0 and d.get('HP定義') == '數值'):
+                res['es_cura'], res['es_ataque'], res['es_buff'] = True, False, False
+            if res['formula'] == 58 and _cura_txt and d.get('攻擊型') != '是':
+                res['es_cura'], res['es_ataque'], res['es_buff'] = True, False, False
+                res['cura_58'] = (_num(d.get('動態參數1'), 0), _num(d.get('動態參數2'), 0), _num(d.get('動態參數3'), 100))
+                res['hp'] = res['cura_58'][0]
+            _hp_hijo = _num((_magic_xml().get(_num(d.get('轉嫁法術'), 0)) or {}).get('HP'), 0)
+            if (res['formula'] == 42 and d.get('攻擊型') != '是' and ('friendly' in desc_l or 'rejuvenat' in desc_l)
+                    and (res.get('hp', 0) > 0 or _hp_hijo > 0)):
+                res['es_cura'], res['es_ataque'], res['es_buff'] = True, False, False
+                res['hp'] = res.get('hp') or _hp_hijo
+
             # Se puede usar sobre uno mismo si es curacion, buff, invocacion o self-aoe
             res['es_auto'] = res['es_cura'] or res['es_buff'] or res['es_invocacion'] or res['es_self_aoe']
 

@@ -10,7 +10,9 @@ import hechizos_mob  # noqa: E402
 
 
 def _bicho():
-    return combate.Monstruo(1, 1, 'Dummy', (10, 10))
+    m = combate.Monstruo(1, 1, 'Dummy', (10, 10))
+    m.res_mind = m.res_body = 0                              # sin resistencias: el efecto siempre entra
+    return m
 
 
 def test_tendon_chop_frena_al_monstruo():
@@ -31,6 +33,7 @@ def test_un_monstruo_silenciado_no_lanza_hechizos(monkeypatch):
     m = _bicho()
     monkeypatch.setattr(hechizos_mob, 'hechizos', lambda t: (1.0, [(1, 10, 0)]))
     assert hechizos_mob.elegir(m) == (1, 10, 0)
+    m.res_mind = 0
     m.aplicar_efecto({'magia': 914, 'dur_ms': 5000, 'estado': 'silenciado'})
     assert hechizos_mob.elegir(m) is None
 
@@ -46,3 +49,11 @@ def test_la_maldicion_magica_baja_el_dano_del_hechizo_del_monstruo():
 def test_el_proc_usa_su_probabilidad_y_su_lado():
     assert combate.lado_del_proc('When attacking, 10% chance to deal') == (True, False)
     assert combate.lado_del_proc('When attacked, there is a 20% chance') == (False, True)
+
+
+def test_las_curas_que_no_curaban_ahora_curan():
+    for mid in (5096, 12006, 13310, 15051, 5046):           # Sacred, Celestial, Healing Cross, Holy Stanza, Divine Prayer
+        d = combate.datos_magia(mid)
+        assert d['es_cura'] and not d['es_ataque'] and d['hp'] > 0, mid
+    assert combate.datos_magia(13310)['cura_58'] == (5000, 50, 80)
+    assert not combate.datos_magia(301)['es_cura']           # Flying Dart sigue siendo ataque

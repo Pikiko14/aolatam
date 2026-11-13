@@ -16225,6 +16225,11 @@ class Servidor:
                     # 2. Habilidad de curacion real (Cure Spell de mago, Holy Light, etc.)
                     if mag.get('es_cura') and ses.personaje and not _tic:
                         cura = max(10, abs(mag.get('hp', 0)))
+                        _tope_58 = 0
+                        if mag.get('cura_58'):         # formula 58: base + % del ataque magico, con tope en % de vida
+                            _b58, _p58, _tope_58 = mag['cura_58']
+                            _matk58 = struct.unpack_from('<I', _stats_ses(ses), 2 + 44)[0]
+                            cura = max(10, int(_b58 + _matk58 * _p58 / 100))
                         # A otro jugador (角色 con el pinchado) o en area a los
                         # del grupo (自己/隊伍 con radio), como los buffs.
                         _otros_c, _a_mi_c = (([], True) if es_target_pet
@@ -16234,7 +16239,9 @@ class Servidor:
                                 continue              # a un muerto no le cura nadie (01/11/2026)
                             try:
                                 _p_c = _s_c.personaje
-                                _p_c.hp = min(_vida_max(_p_c, _s_c.inventario), _p_c.hp + cura)
+                                _max_c = _vida_max(_p_c, _s_c.inventario)
+                                cura = min(cura, _max_c * _tope_58 // 100) if _tope_58 else cura
+                                _p_c.hp = min(_max_c, _p_c.hp + cura)
                                 import presencia as _pr_cu
                                 _pub_c = _pr_cu.entidad_de(ses)
                                 _s_c.enviar_inmediato(
@@ -16262,7 +16269,9 @@ class Servidor:
                             f_pet_cast['hp'] = min(int(f_pet_cast.get('hp_max') or 100), int(f_pet_cast.get('hp') or 100) + cura)
                             targ_cura_vis = int(pet_eid_cast)
                         else:
-                            ses.personaje.hp = min(_vida_max(ses.personaje), ses.personaje.hp + cura)
+                            _max_yo = _vida_max(ses.personaje)
+                            cura = min(cura, _max_yo * _tope_58 // 100) if _tope_58 else cura
+                            ses.personaje.hp = min(_max_yo, ses.personaje.hp + cura)
                             targ_cura_vis = yo
                             # Y el MP, si lo cura (Soul Discharge V: +12000).
                             _mp_c = int(mag.get('mp_cura') or 0)
