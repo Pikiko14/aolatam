@@ -1,6 +1,11 @@
 [
  {
   "fecha": "2026-11-13",
+  "titulo": "Update 0.0.0.163: the Aurora Stag is now the Celestial Lion",
+  "texto": "Please update to version 0.0.0.163 from AngelsLauncher. The Aurora Stag mount is now the Celestial Lion: a white and gold lion crowned with a golden halo, with a smooth new run. It keeps the same stats and Hades in the Warring Realm Raid still drops it 10% of the time. If you already had the Aurora Stag, it is now your Celestial Lion."
+ },
+ {
+  "fecha": "2026-11-13",
   "titulo": "Update 0.0.0.157: Undead Lion King, Tower of Babel window and more",
   "texto": "Please update to version 0.0.0.157 from AngelsLauncher. New special mount: the Undead Lion King, with level 70 stats, usable from level 60 and speed 80, for warriors and mages alike. Exchange 1000 Mount Coins for it in Event Overview > Exchange > Ride and Robots. All mounts now keep the same size when running, and the Blazemane Lion no longer hides its rider in diagonals. The Tower of Babel has a new entry window. Gear Gachas now drop 20% of the time and give Quality gear 20% and the best gear 3%. Gems are no longer lost when the item has no open socket: open one with a Piercing Hammer first."
  },
