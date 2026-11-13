@@ -1,6 +1,11 @@
 [
  {
   "fecha": "2026-11-12",
+  "titulo": "Update 0.0.0.138: character selection redesigned",
+  "texto": "Please update to version 0.0.0.138 from AngelsLauncher. The character selection screen has a brand new layout: your characters stand on glowing platforms over the landscape, each with a floating info plate, and the options are now a single bar below them. This also fixes the hidden texts on the cards from version 0.0.0.134."
+ },
+ {
+  "fecha": "2026-11-12",
   "titulo": "Update 0.0.0.134: new character selection screen",
   "texto": "Please update to version 0.0.0.134 from AngelsLauncher. The character selection screen has a new modern look: cleaner character cards with your level, faction, name and stats, a glowing platform for your character, a highlight on the selected card and a redesigned menu. The login background also blends smoothly now."
  },
