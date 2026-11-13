@@ -167,6 +167,15 @@ def _multiplicador(ses, tipo, mag, magia):
     return mult, var_pct
 
 
+class _Resistencias:
+    """Las defensas elementales de un jugador con los nombres de las de un monstruo (combate.dano_elemental_extra)."""
+
+    def __init__(self, ses):
+        import app
+        d = app.defensas_elementales_jugador(ses)
+        self.res_fire, self.res_ice, self.res_lightning = d.get('fire', 0), d.get('ice', 0), d.get('thnd', 0)
+
+
 def _prob_critico(ses):
     import time, app
     extra = 0
@@ -249,6 +258,7 @@ def atacar(ses, otro, tipo, mag, arma, en_area=False, golpes=None, separacion=No
         return False          # 不能對玩家施放 de magic.xml
     if not en_area:
         alcance = combate.alcance_arma(arma) if tipo == combate.ATAQUE_NORMAL else max(1, mag.get('rango', 1))
+        alcance += combate.bono_alcance(p.buffs, tipo, mag)        # Extended Shot, Sword Requiem...
         if max(abs(p.tile_x-q.tile_x), abs(p.tile_y-q.tile_y)) > alcance+1:
             return False
         if not transitable.linea_libre(p.stage, (p.tile_x,p.tile_y), (q.tile_x,q.tile_y)):
@@ -270,6 +280,8 @@ def atacar(ses, otro, tipo, mag, arma, en_area=False, golpes=None, separacion=No
     dfs = struct.unpack_from('<I', app._stats_ses(otro), 54 if magia else 38)[0]
     if not magia and tipo != combate.ATAQUE_NORMAL:
         atk += int(round(combate.stance_de(tipo) * combate.PESO_STANCE))
+    if tipo == combate.ATAQUE_NORMAL:
+        atk += combate.golpe_extra_buffs(p.buffs)                  # Hooked Arrow, Barb Strike
     mult, var_pct = _multiplicador(ses, tipo, mag, magia)
     # LAS DE % DEL ATAQUE (HP定義 = 百分比: Panther Killing V, Frozen Snipe V al 100%) pegan ese % del ataque, con
     # peso 1 (dano_pvp ya lo preveia y no se usaba). Con el peso medido de los basicos (0,2426) y su 2,69 de
@@ -282,6 +294,8 @@ def atacar(ses, otro, tipo, mag, arma, en_area=False, golpes=None, separacion=No
         mult = (pct / 100.0) * (mult / base_m if base_m else 1.0)
         peso = 1.0
     crit = _prob_critico(ses)
+    if magia:
+        crit = min(0.90, crit + combate.crit_magico_buffs(p.buffs) / 100.0)     # Cloud Burst, Lava Charm
     combo = combate.combo_de(tipo) if tipo != combate.ATAQUE_NORMAL else None
     n = max(1, int(golpes)) if golpes is not None else (combo['golpes'] if combo else 1)
     sep = separacion if separacion is not None else max(0.05, (combo or {}).get('intervalo_ms', 200) / 1000.0)
@@ -296,6 +310,9 @@ def atacar(ses, otro, tipo, mag, arma, en_area=False, golpes=None, separacion=No
         es_crit = random.random() < crit
         dano = dano_pvp(atk, dfs, mult * (1.5 if es_crit else 1.0), var_pct, magia=magia, peso=peso)
         dano = max(1, int(round(dano * mitigacion(otro, magia))))
+        if magia:
+            # Arcane Fire / Ice Age / Lightning Seal, contra las defensas elementales del rival.
+            dano += combate.dano_elemental_extra(dano, p.buffs, _Resistencias(otro))
         _aplicar(ses, otro, dano, es_crit, primero and not en_area, tipo, efecto, magia)
 
     _golpe(primero=True)
@@ -378,6 +395,9 @@ def aplicar_debuff(ses, otro, tipo, mods, dur_ms, nombre='', con_efecto=True):
     p, q = ses.personaje, otro.personaje
     entrada = {_DEBUFF_A_BUFF[k]: int(v) for k, v in (mods or {}).items() if k in _DEBUFF_A_BUFF and v}
     if not entrada:
+        return False
+    if combate.resiste_debuff(q.buffs):
+        log.info('%s resiste el debuff %s (Exorshield / Barrier of Justice)', q.nombre, nombre)
         return False
     dur_ms = int(dur_ms or 0) or 10000
     entrada.update({'fin': time.time() + dur_ms / 1000.0, 'debuff_pvp': True, 'mag': {'nombre': nombre}})
@@ -519,6 +539,9 @@ def _aplicar_control(ses, otro, tipo, mag, estado):
     if estado == 'silenciado' and __import__('avatar_clones').escudo_mp_activo(otro)[0] is not None:
         log.info('%s no silencia a %s: tiene Power Shield', p.nombre, q.nombre)
         return
+    if combate.resiste_debuff(q.buffs):
+        log.info('%s resiste %s (Exorshield / Barrier of Justice)', q.nombre, estado)
+        return
     dur_ms = int(mag.get('dur_ms') or 0) or 5000
     fin = time.time() + dur_ms / 1000.0
     lentitud = mag.get('lentitud')
@@ -568,8 +591,15 @@ def _aplicar(ses, otro, dano, es_crit, con_efecto, tipo, efecto, magia, *, orige
     """Un golpe ya calculado: vida, paquetes a todos los que lo ven y muerte."""
     import combate, presencia
     p, q = ses.personaje, otro.personaje
+    if combate.inmune_al_dano(q.buffs):
+        dano = 0                                   # Shield Wall: inmune al dano fisico y magico mientras dura
     dano = __import__('avatar_clones').absorber(otro,dano)
     q.hp = max(0, q.hp - dano)
+    # Hurt Recovery / Agonizing Regen (被爆擊回血): un critico recibido devuelve al momento ese % del dano.
+    cura = combate.cura_por_critico(dano, q.buffs) if (es_crit and q.hp) else 0
+    if cura:
+        import app
+        q.hp = min(app._vida_max(q, otro.inventario), q.hp + cura)
     apub, bpub = presencia.entidad_de(ses), presencia.entidad_de(otro)
     visibles = presencia._vivas(presencia.clave_de_mapa(ses, p.stage))
     tipo_num = combate.TIPO_DANO_CRITICO if es_crit else combate.TIPO_DANO
@@ -589,6 +619,8 @@ def _aplicar(ses, otro, dano, es_crit, con_efecto, tipo, efecto, magia, *, orige
         # A la victima su vida tal cual; a los demas en porcentaje (presencia._vida_publica), o la barra sale llena.
         pkts += [combate.numero_flotante(b, dano, tipo_num),
                  combate.atributo(b, q.hp, combate.KIND_HP) if visor is otro else presencia._vida_publica(otro)]
+        if cura and visor is otro:
+            pkts.append(combate.numero_flotante(b, cura, combate.TIPO_CURA_HP))
         if not q.hp:
             if visor is otro:
                 # La victima muere como cuando la mata un monstruo (app, IA de

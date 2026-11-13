@@ -4650,15 +4650,16 @@ def _velocidad_sin_carga(ses) -> int:
         return base  # XML3141: movement is reduced to default, including mounts.
     try:
         import inventario as _inv
+        import combate as _cb_vel
         bolsa = getattr(ses, 'inventario', None) or {}
         ahora = time.time()
         bono_buff = 0.0
         for buff in (getattr(getattr(ses, 'personaje', None), 'buffs', None) or {}).values():
             if not isinstance(buff, dict) or buff.get('fin', 0) <= ahora:
                 continue
-            mag = buff.get('mag')
-            if isinstance(mag, dict):
-                bono_buff += float(mag.get('move_speed_bonus', 0) or 0)
+            if isinstance(buff.get('mag'), dict):
+                # Quick Step / Focus / Super Speed (瞬步) corren mas en sigilo.
+                bono_buff += _cb_vel.velocidad_buff(buff, _sigilo_activo(ses, ahora))
         # LA MONTURA DE FASHION NO QUITA VELOCIDAD.
         #
         # La ranura 174 es la montura de la pestaña Fashion y la 10 la de
@@ -10993,6 +10994,36 @@ def _pulso_aura(ses, aura_id, hijo_id, fin):
         pass
 
 
+def _rejuvenecer(ses, mp_gastado):
+    """Rejuvenation (扣MP轉HP, auditoria #10): el % del MP que se acaba de gastar vuelve como vida."""
+    import combate as _cb_r
+    p = getattr(ses, 'personaje', None)
+    if not p or getattr(ses, 'muerto', False) or p.hp <= 0:
+        return 0
+    cura = _cb_r.mp_a_hp(int(mp_gastado or 0), getattr(p, 'buffs', None))
+    if cura <= 0:
+        return 0
+    p.hp = min(_vida_max(p, ses.inventario), p.hp + cura)
+    ses.enviar(_cb_r.atributo(p.entity_id, p.hp, _cb_r.KIND_HP),
+               _cb_r.numero_flotante(p.entity_id, cura, _cb_r.TIPO_CURA_HP))
+    return cura
+
+
+def _limpiar_debuffs(ses):
+    """Exorshield / Barrier of Justice (formula 37): fuera los debuffs y controles que le pusieron."""
+    import combate as _cb_l
+    p = getattr(ses, 'personaje', None)
+    if not p or not getattr(p, 'buffs', None):
+        return []
+    quitar = [bid for bid, b in p.buffs.items() if _cb_l.es_debuff_recibido(b)]
+    for bid in quitar:
+        p.buffs.pop(bid, None)
+    if quitar:
+        ses.enviar(*[struct.pack('<HIBBII', 0x001D, p.entity_id, 1, 4, int(bid), 0) for bid in quitar],
+                   _stats_ses(ses))
+    return quitar
+
+
 def _buff_a_otro(s, tipo, entrada, dur_ms, mag, lanzador=None, ef=0):
     """Pone el buff a otro jugador: su icono, su ficha y su caducidad.
 
@@ -14180,6 +14211,8 @@ class Servidor:
                                                     if not pj or getattr(ses, 'muerto', False):
                                                         return
                                                     ahora_imp = time.time()
+                                                    if _cb.inmune_al_dano(pj.buffs, ahora_imp):
+                                                        suyo = 0                # Shield Wall: inmune mientras dura
                                                     # Demonic Counter (5156..5160), Particle Refraction (13670..13674) y Rebound Spell (5131..5135):
                                                     # reducen/reflejan parte del dano recibido al atacante sin repetir la animacion de casteo.
                                                     _dc_bid = next((
@@ -14187,7 +14220,7 @@ class Servidor:
                                                         if str(bid).isdigit() and (5156 <= int(bid) <= 5160 or 13670 <= int(bid) <= 13674 or 5131 <= int(bid) <= 5135)
                                                         and isinstance(b, dict) and b.get('fin', 0) > ahora_imp
                                                     ), None)
-                                                    if _dc_bid is not None:
+                                                    if _dc_bid is not None and suyo > 0:
                                                         _bid_i = int(_dc_bid)
                                                         if 5156 <= _bid_i <= 5160:
                                                             _dc_pct = 0.20 + 0.02 * (_bid_i - 5155)
@@ -15439,6 +15472,8 @@ class Servidor:
                     _rango_arma = max(1, mag.get('rango', 1))
                 else:
                     _rango_arma = _cb.alcance_arma(arma_puesta)
+                # Extended Shot, Sword Requiem, Skybreaker, Scatter Spear: casillas de mas (auditoria #10).
+                _rango_arma += _cb.bono_alcance(getattr(ses.personaje, 'buffs', None), tipo, mag)
                 _d = max(abs(m.tile_x - ses.personaje.tile_x),
                          abs(m.tile_y - ses.personaje.tile_y))
                 if _d > _rango_arma + 1:
@@ -15701,6 +15736,7 @@ class Servidor:
                         ses.enviar(__import__('clases').aviso('Not enough Mana.', tipo=0))
                         return
                     ses.personaje.mp = max(0, ses.personaje.mp - mp_coste)
+                    _rejuvenecer(ses, mp_coste)           # Rejuvenation (扣MP轉HP)
                     ses.enviar(_cb.atributo(yo, ses.personaje.mp, _cb.KIND_MP))
 
                 cd_ms = mag.get('cd_ms', 1000)
@@ -16141,6 +16177,7 @@ class Servidor:
                             ses.enviar(__import__('clases').aviso('Not enough Mana.', tipo=0))
                             return
                         ses.personaje.mp = max(0, ses.personaje.mp - mp_coste)
+                        _rejuvenecer(ses, mp_coste)           # Rejuvenation (扣MP轉HP)
 
                     ef = mag.get('efecto') or _cb.efecto_de_ataque(tipo)
                     cd_ms = mag.get('cd_ms', 2000)
@@ -16487,6 +16524,8 @@ class Servidor:
                             if es_target_pet and isinstance(f_pet_cast, dict):
                                 f_pet_cast.setdefault('buffs', {})[tipo] = dict(buff_entry)
                             elif _a_mi_b and not _cb.solo_da_sp(mag):     # Bloody Storm: sube el SP y ya
+                                if mag.get('limpia_debuffs'):
+                                    _limpiar_debuffs(ses)          # Exorshield / Barrier of Justice
                                 ses.personaje.buffs[tipo] = buff_entry
                                 # Power Shield: su burbuja, mientras dure (avatar_clones.iniciar_burbuja).
                                 if (_cb._magic_xml().get(int(tipo)) or {}).get('魔法狀態') == '法力護盾':
@@ -16665,6 +16704,7 @@ class Servidor:
                         ses.enviar(__import__('clases').aviso('Not enough Mana.', tipo=0))
                         return
                     ses.personaje.mp = max(0, ses.personaje.mp - mp_coste)
+                    _rejuvenecer(ses, mp_coste)           # Rejuvenation (扣MP轉HP)
                     ses.enviar(_cb.atributo(yo, ses.personaje.mp, _cb.KIND_MP))
 
                 cd_ms = mag.get('cd_ms', 1000)
@@ -16750,6 +16790,7 @@ class Servidor:
                         ses.enviar(__import__('clases').aviso('Not enough Mana.', tipo=0))
                         return
                     ses.personaje.mp = max(0, ses.personaje.mp - mp_coste)
+                    _rejuvenecer(ses, mp_coste)           # Rejuvenation (扣MP轉HP)
                     ses.enviar(_cb.atributo(yo, ses.personaje.mp, _cb.KIND_MP))
 
                 cd_ms = mag.get('cd_ms', 1000)
@@ -16873,6 +16914,7 @@ class Servidor:
                         ses.enviar(__import__('clases').aviso('Not enough Mana.', tipo=0))
                         return
                     ses.personaje.mp = max(0, ses.personaje.mp - mp_coste)
+                    _rejuvenecer(ses, mp_coste)           # Rejuvenation (扣MP轉HP)
                     ses.enviar(_cb.atributo(yo, ses.personaje.mp, _cb.KIND_MP))
 
                 cd_ms = mag.get('cd_ms', 1000)
@@ -16953,6 +16995,7 @@ class Servidor:
                         ses.enviar(__import__('clases').aviso('Not enough Mana.', tipo=0))
                         return
                     ses.personaje.mp = max(0, ses.personaje.mp - mp_coste)
+                    _rejuvenecer(ses, mp_coste)           # Rejuvenation (扣MP轉HP)
                     ses.enviar(_cb.atributo(yo, ses.personaje.mp, _cb.KIND_MP))
 
                 cd_ms = mag.get('cd_ms', 1000)
@@ -17068,6 +17111,7 @@ class Servidor:
                         ses.enviar(__import__('clases').aviso('Not enough Mana.', tipo=0))
                         return
                     ses.personaje.mp = max(0, ses.personaje.mp - mp_coste)
+                    _rejuvenecer(ses, mp_coste)           # Rejuvenation (扣MP轉HP)
                     ses.enviar(_cb.atributo(yo, ses.personaje.mp, _cb.KIND_MP))
                 # El Stance power de la habilidad, ponderado por
                 # PESO_STANCE (ver combate.py: la medicion dice que se suma
@@ -17114,6 +17158,8 @@ class Servidor:
                 for b_id, b_data in list(buffs_activos.items()):
                     if isinstance(b_data, dict) and b_data.get('fin', 0) > now and 'crit' in b_data:
                         extra_crit += b_data['crit']
+                if is_magic_skill:
+                    extra_crit += _cb.crit_magico_buffs(buffs_activos, now)     # Cloud Burst, Lava Charm
             # El Critical del personaje, no un 5 fijo: con Critical 11 la
             # probabilidad es 11%, no 5%.
             crit_prob = min(0.90, (critico_jugador(ses) + extra_crit) / 100.0)
@@ -17194,7 +17240,12 @@ class Servidor:
                 mult_spell = mult_base_combo * 1.5
 
             total_atk = ataque + (0 if is_magic_skill else dano_extra)
+            if tipo == _cb.ATAQUE_NORMAL:
+                total_atk += _cb.golpe_extra_buffs(buffs_activos)          # Hooked Arrow, Barb Strike
             dano = m.recibir(total_atk, es_magico=is_magic_skill, mult=mult_spell, var_pct=var_pct)
+            if is_magic_skill and dano > 0 and m.hp > 0:
+                # Arcane Fire / Ice Age / Lightning Seal: el elemento va en el mismo numero.
+                dano += m.recibir_extra(_cb.dano_elemental_extra(dano, buffs_activos, m))
             if tipo != _cb.ATAQUE_NORMAL:
                 log.info(f"[{addr}] habilidad {tipo} ({'magica' if is_magic_skill else 'fisica'}): "
                          f"{'Spl Atk' if is_magic_skill else 'R.Atk'} {total_atk} * mult {mult_spell:.3f}"
@@ -17248,6 +17299,9 @@ class Servidor:
                     m.debuffs[tipo] = _mods_ap
                     _pkg_debuff_m.append(struct.pack('<HIBBII', 0x001D, m.entity_id, 1, 4, tipo,
                                                      int(mag.get('dur_ms') or 5000)))
+            if _ef2 and _ef2.get('buff_lanzador') and dano > 0 and random.random() * 100 < _ef2['buff_lanzador_prob']:
+                # Thor's Hammer: "with a chance of increasing Attack" -- el buff 13001 es para el que pega.
+                _pkg_debuff_m.extend(_ejecutar_proc_subhechizo(ses, yo, m, int(_ef2['buff_lanzador']), addr=addr))
             if _ef2 and random.random() * 100 < _ef2.get('prob', 0):
                 _aplicado = m.aplicar_efecto(_ef2)
                 if _aplicado:

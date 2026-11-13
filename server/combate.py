@@ -467,6 +467,100 @@ def pct_dano_buffs(buffs, es_magico: bool, ahora: float = None) -> int:
     return total
 
 
+# ---- Estados de buff de magic.xml que solo ponian el icono (13/11/2026, auditoria #10) ----
+# Cada buff guarda la fila de datos_magia entera (buff_entry = dict(mag) o buff['mag']); estas funciones suman lo
+# que dan los buffs VIVOS.
+def _buffs_vivos(buffs, ahora=None):
+    if not buffs:
+        return []
+    ahora = time.time() if ahora is None else ahora
+    return [b for b in buffs.values() if isinstance(b, dict) and b.get('fin', 0) > ahora]
+
+
+def _dato_buff(b, clave, defecto=0):
+    v = b.get(clave)
+    if v is None and isinstance(b.get('mag'), dict):
+        v = b['mag'].get(clave)
+    return defecto if v is None else v
+
+
+def crit_magico_buffs(buffs, ahora=None) -> int:
+    """El critico extra de los HECHIZOS (法術爆擊提升: Cloud Burst, Lava Charm, Spiritual Energy)."""
+    return sum(int(_dato_buff(b, 'crit_mag') or 0) for b in _buffs_vivos(buffs, ahora))
+
+
+def golpe_extra_buffs(buffs, ahora=None) -> int:
+    """Ataque plano que suman al golpe NORMAL (Hooked Arrow, Barb Strike: 額外屬性攻擊 fisico)."""
+    return sum(int(_dato_buff(b, 'golpe_extra') or 0) for b in _buffs_vivos(buffs, ahora))
+
+
+# El elemento extra de Arcane Fire / Ice Age / Lightning Seal: cada punto de ataque elemental que pasa la resistencia
+# del objetivo (resistencia como en dano_recibido, r / (r + 100)) suma este % del dano del hechizo. Con 0,5 Arcane
+# Fire V (110) contra una resistencia de 70 da +32%, Lightning Seal V (30) un +9%.
+FACTOR_ELEMENTO_BUFF = 0.5
+_RES_DE_ELEMENTO = {'fire': 'res_fire', 'ice': 'res_ice', 'lightning': 'res_lightning'}
+
+
+def dano_elemental_extra(dano: int, buffs, objetivo=None, ahora=None) -> int:
+    """El dano de fuego / hielo / rayo que anaden los buffs 額外屬性攻擊 a un hechizo que ya hizo `dano`."""
+    if dano <= 0:
+        return 0
+    pct = 0.0
+    for b in _buffs_vivos(buffs, ahora):
+        for elem, valor in (_dato_buff(b, 'elem_extra', None) or {}).items():
+            res = max(0, int(getattr(objetivo, _RES_DE_ELEMENTO.get(elem, ''), 0) or 0)) if objetivo is not None else 0
+            pct += float(valor) * (100.0 / (res + 100.0))
+    return int(round(dano * pct * FACTOR_ELEMENTO_BUFF / 100.0))
+
+
+def bono_alcance(buffs, tipo: int, mag=None, ahora=None) -> int:
+    """Casillas de mas: los buffs de alcance (Extended Shot 標射槍術, Sword Requiem / Skybreaker 凌空劍氣, Scatter
+    Spear formula 72) valen para el golpe normal y para las habilidades de su rama (技能限制1: 槍術 / 劍術)."""
+    linea = '' if tipo == ATAQUE_NORMAL else str((mag or {}).get('linea') or '')
+    total = 0
+    for b in _buffs_vivos(buffs, ahora):
+        extra = int(_dato_buff(b, 'rango_bonus') or 0)
+        if extra > 0 and (tipo == ATAQUE_NORMAL or (linea and linea == _dato_buff(b, 'linea', ''))):
+            total += extra
+    return total
+
+
+def inmune_al_dano(buffs, ahora=None) -> bool:
+    """Shield Wall (物法傷抵銷): no entra ni el dano fisico ni el magico."""
+    return any(_dato_buff(b, 'inmune_dano', False) for b in _buffs_vivos(buffs, ahora))
+
+
+def cura_por_critico(dano: int, buffs, ahora=None) -> int:
+    """Lo que devuelve Hurt Recovery / Agonizing Regen (被爆擊回血) de un critico recibido."""
+    pct = max((int(_dato_buff(b, 'cura_critico_pct') or 0) for b in _buffs_vivos(buffs, ahora)), default=0)
+    return int(dano * min(100, pct) / 100) if dano > 0 else 0
+
+
+def mp_a_hp(mp_gastado: int, buffs, ahora=None) -> int:
+    """Rejuvenation (扣MP轉HP): el % del MP gastado en un hechizo que vuelve como vida."""
+    pct = max((int(_dato_buff(b, 'mp_a_hp_pct') or 0) for b in _buffs_vivos(buffs, ahora)), default=0)
+    return int(mp_gastado * pct / 100) if mp_gastado > 0 else 0
+
+
+def resiste_debuff(buffs, ahora=None) -> bool:
+    """Exorshield / Barrier of Justice (formula 37): la tirada de su inmunidad a un debuff nuevo."""
+    pct = max((int(_dato_buff(b, 'inmune_debuff_pct') or 0) for b in _buffs_vivos(buffs, ahora)), default=0)
+    return pct > 0 and random.random() * 100 < pct
+
+
+def es_debuff_recibido(b) -> bool:
+    """Si una entrada de personaje.buffs es un debuff o un control que le pusieron (lo que limpia la formula 37)."""
+    return isinstance(b, dict) and bool(b.get('debuff_pvp') or b.get('control_pvp') or b.get('es_debuff_recibido'))
+
+
+def velocidad_buff(b, en_sigilo: bool) -> float:
+    """La velocidad que da un buff: Quick Step / Focus / Super Speed (瞬步) dan mas en sigilo (動態參數2)."""
+    mag = b.get('mag') if isinstance(b.get('mag'), dict) else {}
+    if en_sigilo and mag.get('move_speed_sigilo'):
+        return float(mag['move_speed_sigilo'])
+    return float(mag.get('move_speed_bonus', 0) or 0)
+
+
 def atributo(entity_id: int, valor: int, kind: int = VIDA) -> bytes:
     """Sub-mensaje 0x0013: un atributo de una entidad cambio.
 
@@ -835,6 +929,20 @@ class Monstruo:
             self.muerto_en = time.time()
             self.en_combate_con = None
             if hasattr(self, 'debuffs') and self.debuffs:
+                self.debuffs.clear()
+        return d
+
+    def recibir_extra(self, d: int, es_pet: bool = False) -> int:
+        """Un dano ya calculado que va sin defensa (el elemento de Arcane Fire / Ice Age / Lightning Seal)."""
+        d = min(self.hp, max(0, int(d or 0)))
+        if not d:
+            return 0
+        self.registrar_dano(d, es_pet=es_pet)
+        self.hp -= d
+        if not self.hp:
+            self.muerto_en = time.time()
+            self.en_combate_con = None
+            if getattr(self, 'debuffs', None):
                 self.debuffs.clear()
         return d
 
@@ -1891,6 +1999,39 @@ def datos_magia(magic_id: int) -> dict:
             res['refl_fis_pct'] = _num(d.get('物理反彈'), 0)
             res['refl_mag_pct'] = _num(d.get('魔法反彈'), 0)
 
+            # ESTADOS DE BUFF QUE SOLO PONIAN EL ICONO (13/11/2026, auditoria #10). Los lee app.py con las funciones
+            # de buffs de abajo (crit_magico_buffs, golpe_extra_buffs, dano_elemental_extra, bono_alcance...).
+            _est = str(d.get('魔法狀態') or '')
+            _p1, _p2 = _num(d.get('動態參數1'), 0), _num(d.get('動態參數2'), 0)
+            res['linea'] = str(d.get('技能限制1') or '')
+            if _est == '額外屬性攻擊':
+                if d.get('物理型') == '是' and _p1 > 0:
+                    # Hooked Arrow / Barb Strike: "adds extra attack damage to a common attack".
+                    res['golpe_extra'] = _p1
+                else:
+                    # Arcane Fire (火焰), Ice Age (寒冰), Lightning Seal (雷電): "spell attacks will also deal fire
+                    # damage". El 機率 es el ataque de ese elemento, en la escala de las resistencias de los bichos.
+                    res['elem_extra'] = {k: v for k, v in (('fire', res['prob_fire']), ('ice', res['prob_ice']),
+                                                            ('lightning', res['prob_elec'])) if v > 0}
+            elif _est == '法術爆擊提升' and _p1 > 0:
+                res['crit_mag'] = _p1                          # Cloud Burst, Lava Charm, Spiritual Energy
+            elif _est in ('標射槍術', '凌空劍氣') or res['formula'] == 72:
+                res['rango_bonus'] = _p1                       # Extended Shot, Sword Requiem, Skybreaker, Scatter Spear
+            elif _est == '瞬步':
+                res['move_speed_bonus'] = res['move_speed_bonus'] or _p1      # Quick Step, Focus, Super Speed
+                res['move_speed_sigilo'] = _p2                                # "further increased in stealth"
+            elif _est == '被爆擊回血' and _p1 > 0:
+                res['cura_critico_pct'] = _p1                  # Hurt Recovery, Agonizing Regen
+            elif _est == '扣MP轉HP' and _p1 > 0:
+                res['mp_a_hp_pct'] = _p1                       # Rejuvenation: el % del MP gastado vuelve como HP
+            elif _est == '物法傷抵銷' and 'immune' in desc_l:
+                res['inmune_dano'] = True                      # Shield Wall: inmune al dano fisico y magico
+            if res['formula'] == 37:
+                # Exorshield / Barrier of Justice: quita los debuffs y da inmunidad a ellos (動態參數1 % de que
+                # no entre cada uno) mientras dura.
+                res['limpia_debuffs'] = True
+                res['inmune_debuff_pct'] = _p1 or 100
+
             # Buffs con triggers / procs al atacar o al recibir dano:
             # 1) Formulas 53, 54, 61, 62 (Blazing Sun, Mana Overflow, Spell Boost, Witch Ward, Brainjack,
             #    Flowing Water, Drifting Clouds, Tiger Arts, Twincore Blades, Mind's Eye, Blade Field,
@@ -2447,8 +2588,13 @@ def efecto_secundario(magic_id: int):
 
     elem_dmg = max(_n(h.get('雷電攻擊')), _n(h.get('火焰攻擊')), _n(h.get('寒冰攻擊')), _n(h.get('腐蝕攻擊')))
     sub_deb = _n(h.get('動態參數2')) if (_n(h.get('動態參數2')) in tabla) else 0
+    # Thor's Hammer (12491 -> 12971, formula 49): paraliza y, con 動態參數1 %, da al LANZADOR el buff de 動態參數2
+    # (13001 "Your Attack has increased", 對象 自己). Antes ese buff salia como icono encima del monstruo.
+    buff_lanzador = buff_lanzador_prob = 0
+    if str(h.get('公式') or '') == '49' and sub_deb and tabla.get(sub_deb, {}).get('對象') == '自己':
+        buff_lanzador, buff_lanzador_prob, sub_deb = sub_deb, _n(h.get('動態參數1'), 100), 0
 
-    return {'magia': hijo, 'prob': _n(h.get('轉嫁機率') or d.get('轉嫁機率') or 100),
+    return {'buff_lanzador': buff_lanzador, 'buff_lanzador_prob': buff_lanzador_prob,'magia': hijo, 'prob': _n(h.get('轉嫁機率') or d.get('轉嫁機率') or 100),
             'nombre': h.get('名稱', ''),
             'golpes': max(1, golpes),
             'dano_golpe': _n(h.get('HP')) if es_combo_multi else 0,

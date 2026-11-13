@@ -94,3 +94,77 @@ def test_armor_break_pega_y_divine_freeze_congela():
     assert ab['es_ataque'] and ab['debuff_al_pegar'] and combate.mods_de_debuff(12631)['def_mod'] < 0
     assert combate.datos_magia(5016)['congela']
     assert combate.datos_magia(102)['es_debuff']                     # Exhaustion Curse sigue siendo maldicion
+
+
+# ---- Auditoria #10: estados de buff que solo ponian el icono ----
+def _buff(mid, segundos=60):
+    d = dict(combate.datos_magia(mid))
+    d['mag'] = combate.datos_magia(mid)
+    d['fin'] = time.time() + segundos
+    return d
+
+
+def test_arcane_fire_y_compania_suman_su_elemento_al_hechizo():
+    m = _bicho()
+    m.res_fire, m.res_ice, m.res_lightning = 0, 100, 0
+    assert combate.dano_elemental_extra(1000, {795: _buff(795)}, m) == 550       # Arcane Fire V: 110 x 0,5
+    assert combate.dano_elemental_extra(1000, {5240: _buff(5240)}, m) == 375     # Ice Age V contra res 100: la mitad
+    assert combate.dano_elemental_extra(1000, {795: _buff(795, -1)}, m) == 0      # caducado no suma
+    m.hp = 300
+    assert m.recibir_extra(550) == 300 and m.hp == 0                            # no pasa de la vida que queda
+
+
+def test_hooked_arrow_suma_al_golpe_normal_y_cloud_burst_al_critico_de_hechizo():
+    assert combate.golpe_extra_buffs({5755: _buff(5755)}) == 1000                # Hooked Arrow V
+    assert combate.crit_magico_buffs({5205: _buff(5205)}) == 15                  # Cloud Burst V
+    assert combate.crit_magico_buffs({5755: _buff(5755)}) == 0
+
+
+def test_los_buffs_de_alcance_valen_para_el_basico_y_su_rama():
+    b = {895: _buff(895)}                                                       # Extended Shot V: +8
+    lanza = next(i for i, d in combate._magic_xml().items() if d.get('技能限制1') == '槍術技能'
+                 and d.get('攻擊型') == '是')
+    espada = next(i for i, d in combate._magic_xml().items() if d.get('技能限制1') == '劍術技能'
+                  and d.get('攻擊型') == '是')
+    assert combate.bono_alcance(b, combate.ATAQUE_NORMAL) == 8
+    assert combate.bono_alcance(b, lanza, combate.datos_magia(lanza)) == 8
+    assert combate.bono_alcance(b, espada, combate.datos_magia(espada)) == 0
+    assert combate.bono_alcance({16331: _buff(16331)}, lanza, combate.datos_magia(lanza)) == 1    # Scatter Spear
+
+
+def test_quick_step_corre_mas_en_sigilo():
+    b = _buff(5805)                                                             # Quick Step V: 30 / 60
+    assert combate.velocidad_buff(b, False) == 30 and combate.velocidad_buff(b, True) == 60
+
+
+def test_shield_wall_hurt_recovery_y_rejuvenation():
+    assert combate.inmune_al_dano({12445: _buff(12445)})                         # Shield Wall V
+    assert not combate.inmune_al_dano({12445: _buff(12445, -1)})
+    assert combate.cura_por_critico(1000, {425: _buff(425)}) == 500             # Hurt Recovery V: 50%
+    assert combate.mp_a_hp(1000, {5750: _buff(5750)}) == 900                    # Rejuvenation V: 90%
+
+
+def test_exorshield_limpia_y_resiste_los_debuffs(monkeypatch):
+    from types import SimpleNamespace as NS
+    import app
+    import presencia
+    import pvp_liga
+    monkeypatch.setattr(presencia, '_vivas', lambda clave: [])
+    monkeypatch.setattr(presencia, 'clave_de_mapa', lambda s, st: 0)
+    monkeypatch.setattr(presencia, 'entidad_de', lambda s: 1)
+    monkeypatch.setattr(app, '_stats_ses', lambda s: b'')
+    yo = NS(personaje=NS(nombre='a', entity_id=1, stage=1), enviar=lambda *x: None)
+    otro = NS(personaje=NS(nombre='b', entity_id=2, stage=1, buffs={}), enviar=lambda *x: None)
+    pvp_liga.aplicar_debuff(yo, otro, 5631, {'def_mod': -40}, 5000, 'Shatter Armor')
+    assert 5631 in otro.personaje.buffs
+    assert combate.datos_magia(5905)['limpia_debuffs']                          # Exorshield V
+    assert app._limpiar_debuffs(otro) == [5631] and not otro.personaje.buffs
+    otro.personaje.buffs[5905] = _buff(5905)                                    # 100%: no entra nada
+    assert not pvp_liga.aplicar_debuff(yo, otro, 5631, {'def_mod': -40}, 5000, 'Shatter Armor')
+
+
+def test_thors_hammer_paraliza_y_el_buff_de_ataque_es_del_lanzador():
+    ef = combate.efecto_secundario(12491)                                       # Thor's Hammer I
+    assert ef['estado'] == 'paralizado' and not ef['sub_debuff']
+    assert ef['buff_lanzador'] == 13001 and ef['buff_lanzador_prob'] == 60
+    assert combate.datos_magia(13001)['atk_bonus'] == 200
