@@ -309,14 +309,98 @@ def glifo(im: Image.Image, borde: int = 2):
     return puntos
 
 
-def boton_con_glifo(puntos, w: int, h: int, estado: str) -> Image.Image:
+# ---- iconos nuevos para los botones de la mochila ("los iconos los puedes cambiar por unos mas modernos??",
+# 14/11/2026). Se dibujan a 4x con trazo redondeado y se reducen con suavizado: lineas finas, sin pixel duro.
+ESCALA = 4
+
+
+def _icono_almacen(d, w, h, c):       # btn041: un almacen (tejado y puerta de persiana)
+    s = ESCALA
+    d.polygon(((2 * s, 7 * s), (w * s // 2, 2 * s), (w * s - 2 * s, 7 * s)), fill=c)
+    d.rectangle((4 * s, 7 * s, w * s - 4 * s, h * s - 3 * s), outline=c, width=s + s // 2)
+    for y in (10, 12):
+        d.line((6 * s, y * s, w * s - 6 * s, y * s), fill=c, width=s)
+
+
+def _icono_papelera(d, w, h, c):      # btn042: papelera
+    s, cx = ESCALA, w * ESCALA // 2
+    d.rounded_rectangle((cx - 5 * s, 4 * s, cx + 5 * s, 5 * s + s // 2), radius=s // 2, fill=c)
+    d.rectangle((cx - 2 * s, 2 * s + s // 2, cx + 2 * s, 4 * s), outline=c, width=s)
+    d.polygon(((cx - 4 * s, 6 * s + s // 2), (cx + 4 * s, 6 * s + s // 2), (cx + 3 * s, 15 * s), (cx - 3 * s, 15 * s)),
+              outline=c, width=s + s // 2)
+    for x in (-1, 1):
+        d.line((cx + x * s * 3 // 2, 8 * s + s // 2, cx + x * s * 3 // 2, 13 * s), fill=c, width=s)
+
+
+def _icono_percha(d, w, h, c):        # btn218: percha (moda, cartas, muebles, burbujas)
+    s, cx = ESCALA, w * ESCALA // 2
+    d.arc((cx - 2 * s, 2 * s, cx + 2 * s, 6 * s), 180, 400, fill=c, width=s + s // 2)
+    d.line((cx, 6 * s, cx, 8 * s), fill=c, width=s + s // 2)
+    d.line((cx, 8 * s, cx - 8 * s, 13 * s), fill=c, width=s + s // 2)
+    d.line((cx, 8 * s, cx + 8 * s, 13 * s), fill=c, width=s + s // 2)
+    d.line((cx - 8 * s, 13 * s, cx + 8 * s, 13 * s), fill=c, width=s + s // 2)
+
+
+def _icono_mochila(d, w, h, c):       # btn115: mochila
+    s, cx = ESCALA, w * ESCALA // 2
+    d.arc((cx - 3 * s, 1 * s + s // 2, cx + 3 * s, 6 * s), 180, 360, fill=c, width=s + s // 2)
+    d.rounded_rectangle((cx - 5 * s, 4 * s, cx + 5 * s, 15 * s), radius=3 * s, outline=c, width=s + s // 2)
+    d.rounded_rectangle((cx - 3 * s, 9 * s, cx + 3 * s, 13 * s), radius=s, outline=c, width=s)
+    d.line((cx - 3 * s, 11 * s, cx + 3 * s, 11 * s), fill=c, width=s)
+
+
+def _icono_escudo(d, w, h, c):        # btn043: equipo (escudo con una espada)
+    s, cx = ESCALA, w * ESCALA // 2
+    d.polygon(((cx - 5 * s, 3 * s), (cx + 5 * s, 3 * s), (cx + 5 * s, 9 * s), (cx, 15 * s + s // 2), (cx - 5 * s, 9 * s)),
+              outline=c, width=s + s // 2)
+    d.line((cx, 5 * s, cx, 12 * s), fill=c, width=s)
+    d.line((cx - 2 * s, 7 * s, cx + 2 * s, 7 * s), fill=c, width=s)
+
+
+def _icono_comercio(d, w, h, c):      # btn044: comercio (dos flechas que se cruzan)
+    s, cx = ESCALA, w * ESCALA // 2
+    for y, k in ((6, 1), (12, -1)):
+        x0, x1 = cx - 6 * s * k, cx + 6 * s * k
+        d.line((x0, y * s, x1, y * s), fill=c, width=s + s // 2)
+        d.polygon(((x1 + k * s, y * s), (x1 - k * 3 * s, y * s - 3 * s), (x1 - k * 3 * s, y * s + 3 * s)), fill=c)
+
+
+def _icono_puesto(d, w, h, c):        # btn045: puesto (toldo y mostrador)
+    s, cx = ESCALA, w * ESCALA // 2
+    d.polygon(((cx - 8 * s, 6 * s), (cx - 6 * s, 2 * s), (cx + 6 * s, 2 * s), (cx + 8 * s, 6 * s)), fill=c)
+    for i in range(4):
+        x = cx - 8 * s + i * 4 * s
+        d.chord((x, 4 * s, x + 4 * s, 8 * s), 0, 180, fill=c)
+    d.line((cx - 6 * s, 8 * s, cx - 6 * s, 15 * s), fill=c, width=s)
+    d.line((cx + 6 * s, 8 * s, cx + 6 * s, 15 * s), fill=c, width=s)
+    d.rounded_rectangle((cx - 8 * s, 11 * s, cx + 8 * s, 15 * s), radius=s, fill=c)
+
+
+ICONOS_NUEVOS = {'btn041': _icono_almacen, 'btn042': _icono_papelera, 'btn218': _icono_percha,
+                 'btn115': _icono_mochila, 'btn043': _icono_escudo, 'btn044': _icono_comercio,
+                 'btn045': _icono_puesto}
+
+
+def icono_nuevo(cual: str, w: int, h: int, color) -> Image.Image:
+    grande = Image.new('L', (w * ESCALA, h * ESCALA), 0)
+    ICONOS_NUEVOS[cual](ImageDraw.Draw(grande), w, h, 255)
+    alfa = grande.resize((w, h), Image.LANCZOS)
+    im = Image.new('RGBA', (w, h), color[:3] + (0,))
+    im.putalpha(alfa.point(lambda a: a * color[3] // 255))
+    return im
+
+
+def boton_con_glifo(puntos, w: int, h: int, estado: str, cual: str = '') -> Image.Image:
     import creacion_personaje as cp
     e = {'n': 'n', 'f': 'f', 'd': 's', 'b': 'n'}[estado]
     im = cp._cristal(w, h, e, 5 if w > 16 else 4, oro=(estado == 'd'))
     c = (40, 24, 4, 255) if estado == 'd' else (255, 236, 170, 255)
-    px = im.load()
-    for x, y in puntos:
-        px[x, y] = c
+    if cual in ICONOS_NUEVOS:
+        im.alpha_composite(icono_nuevo(cual, w, h, c))
+    else:
+        px = im.load()
+        for x, y in puntos:
+            px[x, y] = c
     if estado == 'b':
         # apagado (el del almacen lejos del almacen): el mismo cristal azul, mas oscuro; en gris parecia el viejo
         # ("aca falto cambiar", 14/11/2026)
@@ -335,7 +419,7 @@ def botones_mochila():
         base = leer_cualquiera(orig['%s_n' % b])
         puntos = glifo(base)
         for estado in ('n', 'f', 'd') + (('b',) if '%s_b' % b in orig else ()):
-            im = boton_con_glifo(puntos, base.width, base.height, estado)
+            im = boton_con_glifo(puntos, base.width, base.height, estado, b)
             res['%s_%s' % (b, estado)] = (im, a_shp(im))
     for estado in 'nfd':
         im = boton_titulo('ordenar', estado)
