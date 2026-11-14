@@ -5854,6 +5854,8 @@ Leagues will receive different amounts of Repute based on the outcome of the bat
     <window class="WND_CLASS_BASE" range="0,0,760,608" id="61000" title="Item Mall">
         <style wsVisible="" wsMoveable="" />
         <child>61151</child>
+        <child>61157</child>
+        <child>61158</child>
         <child>61150</child>
         <child>61152</child>
         <child>61153</child>
@@ -5961,6 +5963,13 @@ Leagues will receive different amounts of Repute based on the outcome of the bat
     </window>
     <window class="WND_CLASS_EDIT" id="61151" range="304,569,146,16" icon="2353" fcolor="105" font="1" tpos="2,2" limit="16">
         <style wsTab="" />
+    </window>
+    <window class="WND_CLASS_EDIT" id="61157" range="331,267,129,13" fcolor="103" font="1" tpos="2,2" limit="16">
+        <style wsVisible="" wsTab="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61158" range="461,263,20,19" icon="0" tooltip="10040" tooltext="Search the whole Mall (empty: back to the tabs)">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallBuscar</OnCommand>
     </window>
     <window class="WND_CLASS_STATIC" id="61150" range="54,568,401,20" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />

@@ -74,7 +74,7 @@ def test_comprar_pide_confirmar_y_va_a_mi_compra(world):
     s = world.player()
     c = _ir_a(s, CARTA_DOBLE_EXP)
     _cmd(s, 6, c)
-    assert item_mall.saldo(s.usuario) == 1000000 and 'again to confirm' in s._mall['msg']
+    assert item_mall.saldo(s.usuario) == 1000000 and 'Press Comprar again' in s._mall['msg']
     _cmd(s, 6, c)
     assert item_mall.saldo(s.usuario) == 1000000 - 35
     assert mn.datos(s)['cab'] == [[2017, 1]] and 'Mi Compra' in s._mall['msg']
@@ -127,3 +127,34 @@ def test_el_gm_lo_abre_con_mall(world):
     s.enviar = lambda *p: enviados.extend(p)
     assert app._probar_gm(s, b'/mall', 'test')
     assert any(_lua(p) == 'MallAbrir()' for p in enviados)
+
+
+def test_el_mensaje_no_desborda_la_barra(world):
+    s = world.player()
+    c = _ir_a(s, CARTA_DOBLE_EXP)
+    for a in (5, 6):
+        _cmd(s, a, c)
+        assert len(mn.datos(s)['msg']) <= mn.MSG_MAX
+    assert len(mn.corto('x' * 200)) == mn.MSG_MAX
+
+
+def _texto(s, texto):
+    t = texto.encode().ljust(16, b'\0')
+    for k in range(4):
+        _cmd(s, 20 + k, struct.unpack_from('<I', t, 4 * k)[0])
+
+
+def test_el_buscador_mira_todo_el_mall_y_las_pestanas_lo_quitan(world):
+    s = world.player()
+    buscado = mn._nombre_item(2017)[:12].lower()
+    _texto(s, buscado)
+    _cmd(s, 13)
+    ids = [r['id'] for r in mn.productos(s)]
+    assert CARTA_DOBLE_EXP in ids and 'found' in s._mall['msg']
+    d = mn.datos(s)
+    assert d['tab'] == -1 and d['sub'] == -1 and d['buscar'] == buscado.strip()
+    _texto(s, 'zzzz no existe')
+    _cmd(s, 13)
+    assert mn.productos(s) == [] and 'Nothing found' in s._mall['msg']
+    _cmd(s, 2, 1)
+    assert mn.datos(s)['buscar'] == '' and mn.productos(s)

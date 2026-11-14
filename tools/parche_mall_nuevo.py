@@ -26,6 +26,8 @@ sys.path.insert(0, str(RAIZ / 'tools'))
 import marcos_modernos as mm  # noqa: E402
 
 DISENO = RAIZ / 'docs' / 'item_mall_diseno.png'
+# El logo del servidor ("cambia el logo que dice angel online por el de aoforever", 14/11/2026): el del launcher.
+LOGO_AOF = RAIZ / 'launcher' / 'logo.png'
 ENG = RAIZ / 'parches' / 'extras' / 'setting' / 'eng'
 SHAPES = RAIZ / 'parches' / 'extras' / 'shape' / 'wnd01'
 XML = 'wnd05.xml'
@@ -59,6 +61,7 @@ MOCH = 61100                                        # 35
 ESPACIO, ORDENAR = 61140, 61141
 MENSAJE, REGALO_NOMBRE, HISTORIAL, REGALAR, CERRAR = 61150, 61151, 61152, 61153, 61154
 FAVORITO = 61155                                    # la estrella de "Productos Destacados"
+BUSCAR, BUSCAR_BTN = 61157, 61158                   # el buscador ("agregale un buscador", 14/11/2026)
 ARTE = 61190                                        # 3: logo, banner y chica, sin el tinte del tema
 FONDO = 61199
 
@@ -106,6 +109,7 @@ MOCH_X = (1088, 1152, 1216, 1281, 1344)
 MOCH_Y = (505, 567, 632, 695, 760, 822, 885)
 CAB_X = (1095, 1159, 1223, 1285, 1345)
 CAB_Y = (288, 352)
+CAJA_BUSCAR = (596, 486, 888, 520)                   # en la barra de Productos Destacados, antes de las paginas
 CAJA_ORO = (1086, 54, 1314, 102)                     # la moneda, el numero y el "+" del oro
 ORO_AG = (255, 214, 92, 255)                         # el "AG" en lugar del diamante
 
@@ -199,12 +203,65 @@ def limpio() -> Image.Image:
     _franja(im, (1128, 934, 1236, 972), 1236)                     # "20 / 100"
     _franja(im, (96, 1046, 840, 1086), 836)                       # el mensaje de abajo
     _franja(im, (944, 60, 1034, 98), 1034)                        # el numero del Angel Gold
+    _sin_logo(im)
+    _buscador(im)
     # Sin oro ni diamantes ("quita el oro, que diga ag en vez de diamantes", 14/11/2026): la caja del oro se borra con
     # el fondo del marco y el diamante del Angel Gold pasa a "AG", como en las tarjetas.
     _franja(im, CAJA_ORO, CAJA_ORO[0] - 4)
     _franja(im, (896, 62, 937, 96), 939)
     _texto(im, 'AG', 916, 79, 26, ORO_AG)
     return im
+
+
+def _buscador(im):
+    """La casilla del buscador: hundida como la del Angel Gold, con la lupa a la derecha (el tinte la pasa al tema)."""
+    x0, y0, x1, y1 = CAJA_BUSCAR
+    d = ImageDraw.Draw(im)
+    d.rounded_rectangle((x0, y0, x1, y1), radius=(y1 - y0) // 2, fill=(30, 32, 88, 255), outline=(150, 156, 226, 255),
+                        width=2)
+    d.rounded_rectangle((x0 + 3, y0 + 3, x1 - 3, y0 + 9), radius=3, fill=(22, 24, 70, 255))
+    cx, cy, r = x1 - 20, (y0 + y1) // 2 - 2, 8
+    d.ellipse((cx - r, cy - r, cx + r, cy + r), outline=(236, 240, 255, 255), width=3)
+    d.line((cx + 6, cy + 6, cx + 13, cy + 13), fill=(236, 240, 255, 255), width=4)
+
+
+def _sin_logo(im):
+    """Borra el logo de Angels Online del diseno: lo tapa con el cielo de alrededor difuminado."""
+    import numpy as np
+    x0, y0, x1, y1 = ARTE_DISENO['logo']
+    pieza = im.crop((x0, y0, x1, y1))
+    tapa = np.array(solo_logo(pieza).getchannel('A').filter(ImageFilter.MaxFilter(9))) > 20
+    rgb = np.array(pieza.convert('RGB'), dtype=np.float32)
+    queda = (~tapa).astype(np.float32)
+    for _ in range(4):                       # convolucion normalizada: rellena desde los bordes hacia dentro
+        def borroso(a, r=10):
+            # tres cajas seguidas ~ gaussiana (PIL no difumina imagenes de coma flotante)
+            for eje in (0, 1):
+                for _ in range(3):
+                    pad = np.pad(a, [(r + 1, r) if k == eje else (0, 0) for k in (0, 1)], mode='edge')
+                    c = np.cumsum(pad, axis=eje)
+                    a = (np.take(c, range(2 * r + 1, c.shape[eje]), axis=eje)
+                         - np.take(c, range(0, c.shape[eje] - 2 * r - 1), axis=eje)) / (2 * r + 1)
+            return a
+        peso = borroso(queda)
+        rel = np.stack([borroso(rgb[..., k] * queda) for k in range(3)], -1) / np.maximum(peso, 1e-4)[..., None]
+        rgb = np.where(tapa[..., None], rel, rgb)
+        queda = np.maximum(queda, np.clip(peso * 2, 0, 1) * tapa)
+    lleno = Image.fromarray(np.clip(rgb, 0, 255).astype(np.uint8), 'RGB').convert('RGBA')
+    im.paste(lleno, (x0, y0))
+
+
+def logo_aof(caja_logo):
+    """El logo de AOForever ajustado a la caja (proporcion intacta, centrado)."""
+    x0, y0, x1, y1 = caja_logo
+    logo = Image.open(LOGO_AOF).convert('RGBA')
+    logo = logo.crop(logo.getchannel('A').getbbox())
+    w, h = g(x1) - g(x0), g(y1) - g(y0)
+    f = min(w / logo.width, h / logo.height)
+    tam = (max(1, round(logo.width * f)), max(1, round(logo.height * f)))
+    lienzo = Image.new('RGBA', (w, h))
+    lienzo.alpha_composite(reducir(logo, tam), ((w - tam[0]) // 2, (h - tam[1]) // 2))
+    return lienzo
 
 
 def _fila_vacia(im, src, ancho, alto):
@@ -230,9 +287,10 @@ def arte():
     im = Image.open(DISENO).convert('RGBA')
     res = {}
     for nombre, (x0, y0, x1, y1) in ARTE_DISENO.items():
-        pieza = im.crop((x0, y0, x1, y1))
         if nombre == 'logo':
-            pieza = solo_logo(pieza)
+            res[nombre] = (logo_aof((x0, y0, x1, y1)), (g(x0), g(y0)))
+            continue
+        pieza = im.crop((x0, y0, x1, y1))
         res[nombre] = (reducir(pieza, (g(x1) - g(x0), g(y1) - g(y0))), (g(x0), g(y0)))
     return res
 
@@ -453,6 +511,11 @@ def bloque() -> str:
     # Lo que va encima de todo primero (el juego pinta los hijos del ultimo al primero).
     poner(REGALO_NOMBRE, _w('WND_CLASS_EDIT', REGALO_NOMBRE, caja(560, 1050, 830, 1080),
                             ' icon="2353" fcolor="105" font="1" tpos="2,2" limit="16"', 'wsTab=""'))
+    poner(BUSCAR, _w('WND_CLASS_EDIT', BUSCAR, caja(CAJA_BUSCAR[0] + 14, CAJA_BUSCAR[1] + 6, CAJA_BUSCAR[2] - 40,
+                                                     CAJA_BUSCAR[3] - 4),
+                     ' fcolor="103" font="1" tpos="2,2" limit="16"', 'wsVisible="" wsTab=""'))
+    poner(BUSCAR_BTN, _btn(BUSCAR_BTN, caja(CAJA_BUSCAR[2] - 38, CAJA_BUSCAR[1], CAJA_BUSCAR[2], CAJA_BUSCAR[3]), 0,
+                           'OnMallBuscar', tip='Search the whole Mall (empty: back to the tabs)'))
     poner(MENSAJE, _static(MENSAJE, caja(100, 1048, 840, 1084)))
     poner(HISTORIAL, _btn(HISTORIAL, caja(*BOTONES['historial'][1]), I_HISTORIAL, 'OnMallHistorial',
                           tip='Your recent purchases'))

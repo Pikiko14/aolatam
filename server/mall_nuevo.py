@@ -23,6 +23,7 @@ log = logging.getLogger('app')
 
 CMD_MALL = 173
 POR_PAGINA = 6
+MSG_MAX = 58                         # lo que cabe en la barra del mensaje sin pisar Historial
 NOMBRE_MAX = 18                      # lo que cabe en la tira del nombre de una tarjeta
 CASILLAS_MOCHILA = 35
 CONFIRMAR_SEGUNDOS = 15
@@ -63,7 +64,7 @@ def _estado(ses) -> dict:
     m = getattr(ses, '_mall', None)
     if m is None:
         m = ses._mall = {'tab': 0, 'sub': 0, 'pag': 0, 'sel': None, 'confirmar': None, 'regalo': False,
-                         'historial': False, 'msg': '', 'nombre': {}}
+                         'historial': False, 'msg': '', 'nombre': {}, 'buscar': ''}
     return m
 
 
@@ -163,8 +164,10 @@ def productos(ses, m=None) -> list:
     """Las filas del catalogo de la categoria elegida."""
     import item_mall
     m = m or _estado(ses)
-    clave, cats = subcategorias(m)[m['sub']]
     filas = item_mall.disponibles()
+    if m.get('buscar'):
+        return buscar(filas, m['buscar'])
+    clave, cats = subcategorias(m)[m['sub']]
     por_id = {int(r['id']): r for r in filas}
     if clave == 'favorite':
         return [por_id[p] for p in favoritos(ses.usuario) if p in por_id]
@@ -175,6 +178,13 @@ def productos(ses, m=None) -> list:
     orden = {c: i for i, c in enumerate(cats)}
     return sorted((r for r in filas if r['category'] in orden),
                   key=lambda r: (orden[r['category']], r['sort'], r['id']))
+
+
+def buscar(filas, texto) -> list:
+    """El buscador: los productos de todo el Mall cuyo nombre lleva el texto (sin mayusculas), por nombre."""
+    texto = texto.lower()
+    hay = [(_nombre_item(r['item']), r) for r in filas]
+    return [r for n, r in sorted(hay, key=lambda x: (x[0].lower(), x[1]['id'])) if texto in n.lower()]
 
 
 def paginas(n) -> int:
@@ -209,17 +219,23 @@ def datos(ses) -> dict:
     moch, espacio = _mochila(ses)
     return {
         'ag': _miles(item_mall.saldo(ses.usuario)),
-        'tab': -1 if m['historial'] else m['tab'],
+        'tab': -1 if m['historial'] or m.get('buscar') else m['tab'],
         'subs': [CLAVES.index(clave) for clave, _ in subs],
-        'sub': m['sub'],
+        'sub': -1 if m.get('buscar') else m['sub'],
+        'buscar': m.get('buscar', ''),
         'pag': '%d/%d' % (m['pag'] + 1, paginas(len(filas))),
         'cartas': cartas,
         'cab': [[item, cant] for _id, item, cant in cabinet(ses.usuario)],
         'moch': moch,
         'espacio': espacio,
-        'msg': m['msg'],
+        'msg': corto(m['msg']),
         'regalo': bool(m['regalo']),
     }
+
+
+def corto(msg: str) -> str:
+    """El mensaje de abajo en una linea que no pise los botones (\"que no desborde\", 14/11/2026)."""
+    return msg if len(msg) <= MSG_MAX else msg[:MSG_MAX - 2].rstrip() + '..'
 
 
 def pintar(ses) -> bytes:
@@ -256,7 +272,7 @@ def _comprar(ses, m, fila, receptor=None, addr='?'):
                 if getattr(s, '_mall', None) is not None:
                     s.enviar(pintar(s))
     else:
-        m['msg'] = 'You bought %s! It is waiting in Mi Compra: click it to move it to your backpack.' % nombre
+        m['msg'] = 'Bought %s! Click it in Mi Compra to take it.' % nombre
     log.info('[%s] mall nuevo: %s compra el producto %s%s', addr, ses.usuario, fila['id'],
              ' para %s' % receptor if receptor else '')
     ses.enviar(item_mall.almacen(ses.usuario), struct.pack('<HI', 0x0062, item_mall.saldo(ses.usuario)))
@@ -272,16 +288,16 @@ def accion(ses, a, b, addr='?'):
     if a not in (6,):
         m['confirmar'] = None
     if a == 2 and 0 <= b < len(PESTANAS):
-        m.update(tab=b, sub=0, pag=0, historial=False, sel=None, regalo=False)
+        m.update(tab=b, sub=0, pag=0, historial=False, sel=None, regalo=False, buscar='')
     elif a == 3 and 0 <= b < len(subcategorias(m)):
-        m.update(sub=b, pag=0, sel=None)
+        m.update(sub=b, pag=0, sel=None, buscar='')
     elif a == 4:
         m['pag'] += 1 if b else -1
     elif a == 5:
         fila = _fila_de_carta(ses, m, b)
         if fila:
             m['sel'] = fila['id']
-            m['msg'] = ('%s: %s Angel Gold. Comprar to buy, Regalar to gift, the star to keep it in Favorite.'
+            m['msg'] = ('%s: %s AG. Comprar, Regalar or the star.'
                         % (_nombre_item(fila['item']), _miles(precio(fila))))
     elif a == 6:
         fila = _fila_de_carta(ses, m, b)
@@ -293,7 +309,7 @@ def accion(ses, a, b, addr='?'):
                 _comprar(ses, m, fila, addr=addr)
             else:
                 m['confirmar'] = (fila['id'], time.time())
-                m['msg'] = 'Buy %s for %s Angel Gold? Press Comprar again to confirm.' % (
+                m['msg'] = 'Buy %s for %s AG? Press Comprar again.' % (
                     _nombre_item(fila['item']), _miles(precio(fila)))
     elif a == 7:
         filas = cabinet(ses.usuario)
@@ -308,15 +324,23 @@ def accion(ses, a, b, addr='?'):
         nombre = b''.join(m['nombre'].get(i, b'') for i in range(4)).split(b'\0')[0].decode('latin-1').strip()
         m['nombre'] = {}
         if not fila:
-            m['msg'] = 'Click an item first, then press Regalar.'
+            m['msg'] = 'Click an item first, then Regalar.'
         elif a == 9 or not nombre:
             m['regalo'] = True
-            m['msg'] = 'Gift %s: write the name and press Regalar.' % _nombre_item(fila['item'])
+            m['msg'] = 'Gift %s: write the name, then Regalar.' % _nombre_item(fila['item'])
         else:
             m['regalo'] = False
             _comprar(ses, m, fila, receptor=nombre, addr=addr)
+    elif a == 13:
+        texto = b''.join(m['nombre'].get(i, b'') for i in range(4)).split(bytes(1))[0].decode('latin-1').strip()
+        m['nombre'] = {}
+        m.update(buscar=texto, pag=0, sel=None, regalo=False, historial=False)
+        if texto:
+            n = len(productos(ses, m))
+            m['msg'] = ('%d item%s found for "%s".' % (n, '' if n == 1 else 's', texto) if n
+                        else 'Nothing found for "%s".' % texto)
     elif a == 10:
-        m.update(historial=not m['historial'], sub=0, pag=0, sel=None, regalo=False)
+        m.update(historial=not m['historial'], sub=0, pag=0, sel=None, regalo=False, buscar='')
         if m['historial'] and not comprados(ses.usuario):
             m['msg'] = 'You have not bought anything yet.'
     elif a == 11:
@@ -325,7 +349,7 @@ def accion(ses, a, b, addr='?'):
         m['msg'] = 'Backpack sorted.'
     elif a == 12:
         if m['sel'] is None:
-            m['msg'] = 'Click an item first, then the star to keep it in Favorite.'
+            m['msg'] = 'Click an item first, then the star.'
         else:
             fila = next((r for r in item_mall.disponibles() if r['id'] == m['sel']), None)
             nombre = _nombre_item(fila['item']) if fila else 'Item'

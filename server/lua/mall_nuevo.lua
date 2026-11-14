@@ -8,6 +8,7 @@ local M = AOLAT_MALL
 local CMD = 173
 local VENTANA = 61000
 local CERRAR_X, AG = 61001, 61002
+local BUSCAR = 61157
 local TAB, SUB = 61010, 61020
 local PAG_TXT = 61031
 local C_NOMBRE, C_ICONO, C_PRECIO, C_COMPRAR = 61040, 61050, 61060, 61070
@@ -71,6 +72,11 @@ function MallPintar(d)
     end
   end
   window.settitle(hijo(PAG_TXT), d.pag)
+  -- El buscador: lo que se escribe no se toca; solo se vacia cuando el servidor deja de buscar.
+  if d.buscar == "" and (M.buscar or "") ~= "" then
+    window.settitle(hijo(BUSCAR), "")
+  end
+  M.buscar = d.buscar
   for c = 0, N_CARTAS - 1 do
     local f = d.cartas[c + 1]
     window.show(hijo(C_ICONO + c), f ~= nil)
@@ -122,7 +128,22 @@ function OnMallCab(dwID, dwCmdID, dwParam, pParam)
   return cmd(7, window.getappdata(dwID) - 100)
 end
 
--- El nombre va en cuatro trozos de cuatro letras (netcommand2 solo lleva numeros), como el de la raid.
+-- Un texto va en cuatro trozos de cuatro letras (netcommand2 solo lleva numeros), como el de la raid.
+local function mandar_texto(texto)
+  for t = 0, 3 do
+    local v = 0
+    for k = 4, 1, -1 do
+      v = v * 256 + (string.byte(texto, t * 4 + k) or 0)
+    end
+    game.netcommand2(CMD, 20 + t, v)
+  end
+end
+
+function OnMallBuscar(dwID, dwCmdID, dwParam, pParam)
+  mandar_texto(window.gettitle(hijo(BUSCAR)) or "")
+  return cmd(13)
+end
+
 function OnMallRegalar(dwID, dwCmdID, dwParam, pParam)
   local caja = hijo(REGALO_NOMBRE)
   local nombre = ""
@@ -132,13 +153,7 @@ function OnMallRegalar(dwID, dwCmdID, dwParam, pParam)
   if nombre == "" then
     return cmd(9)
   end
-  for t = 0, 3 do
-    local v = 0
-    for k = 4, 1, -1 do
-      v = v * 256 + (string.byte(nombre, t * 4 + k) or 0)
-    end
-    game.netcommand2(CMD, 20 + t, v)
-  end
+  mandar_texto(nombre)
   window.settitle(caja, "")
   return cmd(8)
 end
