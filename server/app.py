@@ -1966,6 +1966,7 @@ PALABRAS_GM = frozenset((
     'recipes', 'recetas',
     'notice', 'aviso', 'anuncio', 'gmsg', 'twtotem',
     'reinicio', 'restart', 'santa',
+    'mall',
 )) | gm.PALABRAS
 
 
@@ -2065,6 +2066,8 @@ def _gm_parsear(texto: str):
         return ('aviso_reinicio', partes)
     if cmd == 'santa':
         return ('santa', partes)
+    if cmd == 'mall':
+        return ('mall',)
     if cmd in ('recipes','recetas'):return ('recipes',partes[1:])
     if cmd=='quiz':return ('quiz',partes[1:])
     if cmd=='gvg':return ('gvg',partes[1:])
@@ -2239,6 +2242,11 @@ def _probar_gm(ses, cuerpo, addr) -> bool:
     if leido[0] == 'santa':
         _resp_sc = __import__('santa_clausula').comando(leido[1])
         ses.enviar(_cl.aviso('GM: ' + _resp_sc, tipo=0, msg_id=_cl.MSG_TEXTO))
+        return True
+    if leido[0] == 'mall' and ses.personaje:
+        # El Item Mall nuevo (mall_nuevo.py): de momento solo lo abre el GM (14/11/2026).
+        ses.enviar(*__import__('mall_nuevo').abrir(ses))
+        log.info('[%s] GM /mall', addr)
         return True
     if leido[0] == 'aviso_reinicio':
         _resp_ar = __import__('aviso_reinicio').comando(leido[1])
@@ -18848,6 +18856,8 @@ class Servidor:
             if __import__('raid').procesar(ses, cuerpo, addr, getattr(self, 'mundos', None)):  # la raid (171)
                 return
             if __import__('arbol_mascotas').procesar(ses, cuerpo, addr):  # el arbol de evolucion de la mascota (170)
+                return
+            if __import__('mall_nuevo').procesar(ses, cuerpo, addr):    # el Item Mall nuevo (173)
                 return
             if __import__('item_mall').procesar(ses,opcode,cuerpo):
                 return

@@ -5850,4 +5850,582 @@ Leagues will receive different amounts of Repute based on the outcome of the bat
         <style wsVisible="" bsVCenter="" bsHCenter="" wsTab="" />
         <OnCommand>AofCerrarTeclas</OnCommand>
     </window>
+    <!-- aolat mall nuevo -->
+    <window class="WND_CLASS_BASE" range="0,0,760,608" id="61000" title="Item Mall">
+        <style wsVisible="" wsMoveable="" />
+        <child>61151</child>
+        <child>61150</child>
+        <child>61152</child>
+        <child>61153</child>
+        <child>61154</child>
+        <child>61001</child>
+        <child>61002</child>
+        <child>61003</child>
+        <child>61010</child>
+        <child>61011</child>
+        <child>61012</child>
+        <child>61013</child>
+        <child>61014</child>
+        <child>61015</child>
+        <child>61016</child>
+        <child>61017</child>
+        <child>61018</child>
+        <child>61020</child>
+        <child>61021</child>
+        <child>61022</child>
+        <child>61023</child>
+        <child>61024</child>
+        <child>61025</child>
+        <child>61026</child>
+        <child>61027</child>
+        <child>61028</child>
+        <child>61029</child>
+        <child>61155</child>
+        <child>61030</child>
+        <child>61031</child>
+        <child>61032</child>
+        <child>61070</child>
+        <child>61050</child>
+        <child>61040</child>
+        <child>61060</child>
+        <child>61071</child>
+        <child>61051</child>
+        <child>61041</child>
+        <child>61061</child>
+        <child>61072</child>
+        <child>61052</child>
+        <child>61042</child>
+        <child>61062</child>
+        <child>61073</child>
+        <child>61053</child>
+        <child>61043</child>
+        <child>61063</child>
+        <child>61074</child>
+        <child>61054</child>
+        <child>61044</child>
+        <child>61064</child>
+        <child>61075</child>
+        <child>61055</child>
+        <child>61045</child>
+        <child>61065</child>
+        <child>61080</child>
+        <child>61081</child>
+        <child>61082</child>
+        <child>61083</child>
+        <child>61084</child>
+        <child>61085</child>
+        <child>61086</child>
+        <child>61087</child>
+        <child>61088</child>
+        <child>61089</child>
+        <child>61100</child>
+        <child>61101</child>
+        <child>61102</child>
+        <child>61103</child>
+        <child>61104</child>
+        <child>61105</child>
+        <child>61106</child>
+        <child>61107</child>
+        <child>61108</child>
+        <child>61109</child>
+        <child>61110</child>
+        <child>61111</child>
+        <child>61112</child>
+        <child>61113</child>
+        <child>61114</child>
+        <child>61115</child>
+        <child>61116</child>
+        <child>61117</child>
+        <child>61118</child>
+        <child>61119</child>
+        <child>61120</child>
+        <child>61121</child>
+        <child>61122</child>
+        <child>61123</child>
+        <child>61124</child>
+        <child>61125</child>
+        <child>61126</child>
+        <child>61127</child>
+        <child>61128</child>
+        <child>61129</child>
+        <child>61130</child>
+        <child>61131</child>
+        <child>61132</child>
+        <child>61133</child>
+        <child>61134</child>
+        <child>61140</child>
+        <child>61141</child>
+        <child>61199</child>
+    </window>
+    <window class="WND_CLASS_EDIT" id="61151" range="304,569,146,16" icon="2353" fcolor="105" font="1" tpos="2,2" limit="16">
+        <style wsTab="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61150" range="54,568,401,20" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61152" range="475,564,89,29" icon="61605" tooltip="10040" tooltext="Your recent purchases">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallHistorial</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61153" range="571,564,87,29" icon="61606" tooltip="10040" tooltext="Send the selected item as a gift">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallRegalar</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61154" range="665,564,73,29" icon="61607">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallCerrar</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61001" range="722,23,32,33" icon="61603">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallCerrar</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="61002" range="513,33,48,20" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61003" range="621,33,63,20" title="" fcolor="105" font="1">
+        <style wsVisible="" ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61010" range="28,72,71,23" icon="61510" appdata="0">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallTab</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61011" range="103,72,71,23" icon="61512" appdata="1">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallTab</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61012" range="179,72,70,23" icon="61514" appdata="2">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallTab</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61013" range="254,72,70,23" icon="61516" appdata="3">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallTab</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61014" range="329,72,70,23" icon="61518" appdata="4">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallTab</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61015" range="404,72,71,23" icon="61520" appdata="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallTab</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61016" range="480,72,70,23" icon="61522" appdata="6">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallTab</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61017" range="555,72,70,23" icon="61524" appdata="7">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallTab</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61018" range="630,72,70,23" icon="61526" appdata="8">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallTab</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61020" range="16,138,120,24" icon="61540" appdata="0">
+        <style bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallSub</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61021" range="16,163,120,24" icon="61540" appdata="1">
+        <style bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallSub</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61022" range="16,188,120,23" icon="61540" appdata="2">
+        <style bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallSub</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61023" range="16,212,120,24" icon="61540" appdata="3">
+        <style bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallSub</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61024" range="16,237,120,24" icon="61540" appdata="4">
+        <style bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallSub</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61025" range="16,262,120,24" icon="61540" appdata="5">
+        <style bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallSub</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61026" range="16,287,120,24" icon="61540" appdata="6">
+        <style bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallSub</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61027" range="16,312,120,24" icon="61540" appdata="7">
+        <style bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallSub</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61028" range="16,337,120,24" icon="61540" appdata="8">
+        <style bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallSub</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61029" range="16,362,120,24" icon="61540" appdata="9">
+        <style bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallSub</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61155" range="153,260,24,24" icon="0" tooltip="10040" tooltext="Add or remove the selected item from Favorite">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallFavorito</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61030" range="488,263,18,19" icon="61601" appdata="0" tooltip="10040" tooltext="Previous page">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallPag</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="61031" range="507,263,30,19" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61032" range="538,263,18,19" icon="61602" appdata="1" tooltip="10040" tooltext="Next page">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallPag</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61070" range="180,394,87,19" icon="61600" appdata="0">
+        <style bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallComprar</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61050" range="203,324,36,36" icon="0" appdata="0" tooltip="10041" tooldelay="5">
+        <style bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallCarta</OnCommand>
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_STATIC" id="61040" range="164,293,115,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61060" range="218,377,48,16" title="" fcolor="105" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61071" range="318,394,87,19" icon="61600" appdata="1">
+        <style bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallComprar</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61051" range="341,324,36,36" icon="0" appdata="1" tooltip="10041" tooldelay="5">
+        <style bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallCarta</OnCommand>
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_STATIC" id="61041" range="302,293,115,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61061" range="356,377,48,16" title="" fcolor="105" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61072" range="456,394,87,19" icon="61600" appdata="2">
+        <style bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallComprar</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61052" range="479,324,36,36" icon="0" appdata="2" tooltip="10041" tooldelay="5">
+        <style bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallCarta</OnCommand>
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_STATIC" id="61042" range="440,293,115,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61062" range="494,377,48,16" title="" fcolor="105" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61073" range="180,519,87,19" icon="61600" appdata="3">
+        <style bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallComprar</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61053" range="203,455,36,36" icon="0" appdata="3" tooltip="10041" tooldelay="5">
+        <style bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallCarta</OnCommand>
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_STATIC" id="61043" range="164,428,115,15" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61063" range="218,505,48,15" title="" fcolor="105" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61074" range="318,519,87,19" icon="61600" appdata="4">
+        <style bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallComprar</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61054" range="341,455,36,36" icon="0" appdata="4" tooltip="10041" tooldelay="5">
+        <style bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallCarta</OnCommand>
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_STATIC" id="61044" range="302,428,115,15" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61064" range="356,505,48,15" title="" fcolor="105" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61075" range="456,519,87,19" icon="61600" appdata="5">
+        <style bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallComprar</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61055" range="479,455,36,36" icon="0" appdata="5" tooltip="10041" tooldelay="5">
+        <style bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallCarta</OnCommand>
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_STATIC" id="61045" range="440,428,115,15" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="61065" range="494,505,48,15" title="" fcolor="105" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61080" range="578,140,32,32" icon="0" appdata="100" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallCab</OnCommand>
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61081" range="612,140,32,32" icon="0" appdata="101" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallCab</OnCommand>
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61082" range="647,140,32,32" icon="0" appdata="102" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallCab</OnCommand>
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61083" range="681,140,32,32" icon="0" appdata="103" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallCab</OnCommand>
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61084" range="713,140,32,32" icon="0" appdata="104" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallCab</OnCommand>
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61085" range="578,175,32,32" icon="0" appdata="105" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallCab</OnCommand>
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61086" range="612,175,32,32" icon="0" appdata="106" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallCab</OnCommand>
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61087" range="647,175,32,32" icon="0" appdata="107" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallCab</OnCommand>
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61088" range="681,175,32,32" icon="0" appdata="108" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallCab</OnCommand>
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61089" range="713,175,32,32" icon="0" appdata="109" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallCab</OnCommand>
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61100" range="574,258,32,32" icon="0" appdata="200" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61101" range="608,258,32,32" icon="0" appdata="201" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61102" range="643,258,32,32" icon="0" appdata="202" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61103" range="678,258,32,32" icon="0" appdata="203" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61104" range="713,258,32,32" icon="0" appdata="204" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61105" range="574,291,32,32" icon="0" appdata="205" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61106" range="608,291,32,32" icon="0" appdata="206" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61107" range="643,291,32,32" icon="0" appdata="207" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61108" range="678,291,32,32" icon="0" appdata="208" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61109" range="713,291,32,32" icon="0" appdata="209" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61110" range="574,327,32,32" icon="0" appdata="210" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61111" range="608,327,32,32" icon="0" appdata="211" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61112" range="643,327,32,32" icon="0" appdata="212" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61113" range="678,327,32,32" icon="0" appdata="213" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61114" range="713,327,32,32" icon="0" appdata="214" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61115" range="574,361,32,32" icon="0" appdata="215" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61116" range="608,361,32,32" icon="0" appdata="216" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61117" range="643,361,32,32" icon="0" appdata="217" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61118" range="678,361,32,32" icon="0" appdata="218" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61119" range="713,361,32,32" icon="0" appdata="219" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61120" range="574,396,32,32" icon="0" appdata="220" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61121" range="608,396,32,32" icon="0" appdata="221" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61122" range="643,396,32,32" icon="0" appdata="222" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61123" range="678,396,32,32" icon="0" appdata="223" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61124" range="713,396,32,32" icon="0" appdata="224" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61125" range="574,430,32,32" icon="0" appdata="225" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61126" range="608,430,32,32" icon="0" appdata="226" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61127" range="643,430,32,32" icon="0" appdata="227" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61128" range="678,430,32,32" icon="0" appdata="228" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61129" range="713,430,32,32" icon="0" appdata="229" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61130" range="574,464,32,32" icon="0" appdata="230" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61131" range="608,464,32,32" icon="0" appdata="231" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61132" range="643,464,32,32" icon="0" appdata="232" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61133" range="678,464,32,32" icon="0" appdata="233" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61134" range="713,464,32,32" icon="0" appdata="234" tooltip="10041" tooldelay="5">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnTooltip>OnMallTip</OnTooltip>
+    </window>
+    <window class="WND_CLASS_STATIC" id="61140" range="613,506,57,21" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61141" range="673,504,71,26" icon="61604" tooltip="10040" tooltext="Sort your backpack">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallOrdenar</OnCommand>
+    </window>
+    <window class="WND_CLASS_BASE" id="61199" range="0,0,760,608" icon="61500">
+        <style wsVisible="" />
+    </window>
+    <icon id="61500" dir="\wnd01\" normal="aolat_mall_fondo" focus="normal" down="normal" disable="normal" />
+    <icon id="61510" dir="\wnd01\" normal="aolat_mall_tab0_n" focus="aolat_mall_tab0_f" down="aolat_mall_tab0_d" disable="aolat_mall_tab0_n" />
+    <icon id="61511" dir="\wnd01\" normal="aolat_mall_tab0_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61512" dir="\wnd01\" normal="aolat_mall_tab1_n" focus="aolat_mall_tab1_f" down="aolat_mall_tab1_d" disable="aolat_mall_tab1_n" />
+    <icon id="61513" dir="\wnd01\" normal="aolat_mall_tab1_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61514" dir="\wnd01\" normal="aolat_mall_tab2_n" focus="aolat_mall_tab2_f" down="aolat_mall_tab2_d" disable="aolat_mall_tab2_n" />
+    <icon id="61515" dir="\wnd01\" normal="aolat_mall_tab2_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61516" dir="\wnd01\" normal="aolat_mall_tab3_n" focus="aolat_mall_tab3_f" down="aolat_mall_tab3_d" disable="aolat_mall_tab3_n" />
+    <icon id="61517" dir="\wnd01\" normal="aolat_mall_tab3_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61518" dir="\wnd01\" normal="aolat_mall_tab4_n" focus="aolat_mall_tab4_f" down="aolat_mall_tab4_d" disable="aolat_mall_tab4_n" />
+    <icon id="61519" dir="\wnd01\" normal="aolat_mall_tab4_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61520" dir="\wnd01\" normal="aolat_mall_tab5_n" focus="aolat_mall_tab5_f" down="aolat_mall_tab5_d" disable="aolat_mall_tab5_n" />
+    <icon id="61521" dir="\wnd01\" normal="aolat_mall_tab5_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61522" dir="\wnd01\" normal="aolat_mall_tab6_n" focus="aolat_mall_tab6_f" down="aolat_mall_tab6_d" disable="aolat_mall_tab6_n" />
+    <icon id="61523" dir="\wnd01\" normal="aolat_mall_tab6_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61524" dir="\wnd01\" normal="aolat_mall_tab7_n" focus="aolat_mall_tab7_f" down="aolat_mall_tab7_d" disable="aolat_mall_tab7_n" />
+    <icon id="61525" dir="\wnd01\" normal="aolat_mall_tab7_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61526" dir="\wnd01\" normal="aolat_mall_tab8_n" focus="aolat_mall_tab8_f" down="aolat_mall_tab8_d" disable="aolat_mall_tab8_n" />
+    <icon id="61527" dir="\wnd01\" normal="aolat_mall_tab8_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61540" dir="\wnd01\" normal="aolat_mall_cat0_n" focus="aolat_mall_cat0_f" down="aolat_mall_cat0_s" disable="aolat_mall_cat0_n" />
+    <icon id="61541" dir="\wnd01\" normal="aolat_mall_cat0_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61542" dir="\wnd01\" normal="aolat_mall_cat1_n" focus="aolat_mall_cat1_f" down="aolat_mall_cat1_s" disable="aolat_mall_cat1_n" />
+    <icon id="61543" dir="\wnd01\" normal="aolat_mall_cat1_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61544" dir="\wnd01\" normal="aolat_mall_cat2_n" focus="aolat_mall_cat2_f" down="aolat_mall_cat2_s" disable="aolat_mall_cat2_n" />
+    <icon id="61545" dir="\wnd01\" normal="aolat_mall_cat2_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61546" dir="\wnd01\" normal="aolat_mall_cat3_n" focus="aolat_mall_cat3_f" down="aolat_mall_cat3_s" disable="aolat_mall_cat3_n" />
+    <icon id="61547" dir="\wnd01\" normal="aolat_mall_cat3_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61548" dir="\wnd01\" normal="aolat_mall_cat4_n" focus="aolat_mall_cat4_f" down="aolat_mall_cat4_s" disable="aolat_mall_cat4_n" />
+    <icon id="61549" dir="\wnd01\" normal="aolat_mall_cat4_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61550" dir="\wnd01\" normal="aolat_mall_cat5_n" focus="aolat_mall_cat5_f" down="aolat_mall_cat5_s" disable="aolat_mall_cat5_n" />
+    <icon id="61551" dir="\wnd01\" normal="aolat_mall_cat5_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61552" dir="\wnd01\" normal="aolat_mall_cat6_n" focus="aolat_mall_cat6_f" down="aolat_mall_cat6_s" disable="aolat_mall_cat6_n" />
+    <icon id="61553" dir="\wnd01\" normal="aolat_mall_cat6_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61554" dir="\wnd01\" normal="aolat_mall_cat7_n" focus="aolat_mall_cat7_f" down="aolat_mall_cat7_s" disable="aolat_mall_cat7_n" />
+    <icon id="61555" dir="\wnd01\" normal="aolat_mall_cat7_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61556" dir="\wnd01\" normal="aolat_mall_cat8_n" focus="aolat_mall_cat8_f" down="aolat_mall_cat8_s" disable="aolat_mall_cat8_n" />
+    <icon id="61557" dir="\wnd01\" normal="aolat_mall_cat8_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61558" dir="\wnd01\" normal="aolat_mall_cat9_n" focus="aolat_mall_cat9_f" down="aolat_mall_cat9_s" disable="aolat_mall_cat9_n" />
+    <icon id="61559" dir="\wnd01\" normal="aolat_mall_cat9_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61560" dir="\wnd01\" normal="aolat_mall_cat10_n" focus="aolat_mall_cat10_f" down="aolat_mall_cat10_s" disable="aolat_mall_cat10_n" />
+    <icon id="61561" dir="\wnd01\" normal="aolat_mall_cat10_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61562" dir="\wnd01\" normal="aolat_mall_cat11_n" focus="aolat_mall_cat11_f" down="aolat_mall_cat11_s" disable="aolat_mall_cat11_n" />
+    <icon id="61563" dir="\wnd01\" normal="aolat_mall_cat11_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61564" dir="\wnd01\" normal="aolat_mall_cat12_n" focus="aolat_mall_cat12_f" down="aolat_mall_cat12_s" disable="aolat_mall_cat12_n" />
+    <icon id="61565" dir="\wnd01\" normal="aolat_mall_cat12_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61566" dir="\wnd01\" normal="aolat_mall_cat13_n" focus="aolat_mall_cat13_f" down="aolat_mall_cat13_s" disable="aolat_mall_cat13_n" />
+    <icon id="61567" dir="\wnd01\" normal="aolat_mall_cat13_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61568" dir="\wnd01\" normal="aolat_mall_cat14_n" focus="aolat_mall_cat14_f" down="aolat_mall_cat14_s" disable="aolat_mall_cat14_n" />
+    <icon id="61569" dir="\wnd01\" normal="aolat_mall_cat14_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61570" dir="\wnd01\" normal="aolat_mall_cat15_n" focus="aolat_mall_cat15_f" down="aolat_mall_cat15_s" disable="aolat_mall_cat15_n" />
+    <icon id="61571" dir="\wnd01\" normal="aolat_mall_cat15_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61572" dir="\wnd01\" normal="aolat_mall_cat16_n" focus="aolat_mall_cat16_f" down="aolat_mall_cat16_s" disable="aolat_mall_cat16_n" />
+    <icon id="61573" dir="\wnd01\" normal="aolat_mall_cat16_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61600" dir="\wnd01\" normal="aolat_mall_comprar_n" focus="aolat_mall_comprar_f" down="aolat_mall_comprar_d" disable="aolat_mall_comprar_n" />
+    <icon id="61601" dir="\wnd01\" normal="aolat_mall_ant_n" focus="aolat_mall_ant_f" down="aolat_mall_ant_d" disable="aolat_mall_ant_n" />
+    <icon id="61602" dir="\wnd01\" normal="aolat_mall_sig_n" focus="aolat_mall_sig_f" down="aolat_mall_sig_d" disable="aolat_mall_sig_n" />
+    <icon id="61603" dir="\wnd01\" normal="aolat_mall_cerrarx_n" focus="aolat_mall_cerrarx_f" down="aolat_mall_cerrarx_d" disable="aolat_mall_cerrarx_n" />
+    <icon id="61604" dir="\wnd01\" normal="aolat_mall_ordenar_n" focus="aolat_mall_ordenar_f" down="aolat_mall_ordenar_d" disable="aolat_mall_ordenar_n" />
+    <icon id="61605" dir="\wnd01\" normal="aolat_mall_historial_n" focus="aolat_mall_historial_f" down="aolat_mall_historial_d" disable="aolat_mall_historial_n" />
+    <icon id="61606" dir="\wnd01\" normal="aolat_mall_regalar_n" focus="aolat_mall_regalar_f" down="aolat_mall_regalar_d" disable="aolat_mall_regalar_n" />
+    <icon id="61607" dir="\wnd01\" normal="aolat_mall_cerrar_n" focus="aolat_mall_cerrar_f" down="aolat_mall_cerrar_d" disable="aolat_mall_cerrar_n" />
+    <!-- /aolat mall nuevo -->
 </root>
