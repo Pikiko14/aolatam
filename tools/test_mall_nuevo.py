@@ -158,3 +158,14 @@ def test_el_buscador_mira_todo_el_mall_y_las_pestanas_lo_quitan(world):
     assert mn.productos(s) == [] and 'Nothing found' in s._mall['msg']
     _cmd(s, 2, 1)
     assert mn.datos(s)['buscar'] == '' and mn.productos(s)
+
+
+def test_alt_i_y_el_icono_abren_el_mall_nuevo(world):
+    import subasta_ventana as sv
+    s = world.player()
+    enviados = []
+    s.enviar = lambda *p: enviados.extend(p)
+    sv.procesar(s, struct.pack('<BII', sv.CMD_SALUDO, 1, 0))
+    lua = [_lua(p) for p in enviados]
+    hook = next(t for t in lua if 'function CreateMallWnd' in t)
+    assert 'function OnCommandMall' in hook and 'netcommand2(CMD, 1, 0)' in hook and hook.isascii()

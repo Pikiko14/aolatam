@@ -286,6 +286,10 @@ def procesar(ses, cuerpo) -> bool:
             ses.enviar(canal_lua.paquete((canal_lua.CARPETA / 'venta_masiva.lua').read_text(encoding='utf-8')))
         except Exception:
             log.exception('venta_masiva.lua')
+        try:                                   # Alt+I y el icono abren el Item Mall nuevo (14/11/2026)
+            ses.enviar(canal_lua.paquete((canal_lua.CARPETA / 'mall_teclas.lua').read_text(encoding='utf-8')))
+        except Exception:
+            log.exception('mall_teclas.lua')
         return True
     if not tiene_ventana(ses):
         return True
