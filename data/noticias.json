@@ -1,5 +1,10 @@
 [
  {
+  "fecha": "2026-11-14",
+  "titulo": "Update 0.0.0.168: new Bulk Sell look",
+  "texto": "Please update to version 0.0.0.168 from AngelsLauncher. The Bulk tab of the NPC Store now looks like the Sell page: one item per row with a check box, its name and price. Click a row to keep an item, check the total to receive, then press the confirm button to sell."
+ },
+ {
   "fecha": "2026-11-13",
   "titulo": "Update 0.0.0.167: Bulk Sell tab fixed",
   "texto": "Please update to version 0.0.0.167 from AngelsLauncher. The Bulk tab of the NPC Store was hidden behind the Sell page; it now shows next to Buy and Sell. Open it to sell all your gear and weapons at once: click a row to keep an item, then press Confirm sell."
