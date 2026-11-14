@@ -170,3 +170,12 @@ def test_alt_i_y_el_icono_abren_el_mall_nuevo(world):
     hook = next(t for t in lua if 'NUESTRAS.CreateMallWnd = function' in t)
     assert 'NUESTRAS.OnCommandMall = function' in hook and 'setmetatable(_G' in hook and hook.isascii()
     assert 'netcommand2(CMD, 1, 1)' in hook and 'netcommand2(CMD, 1, 2)' in hook
+
+
+def test_con_la_casilla_del_regalo_el_mensaje_no_la_pisa(world):
+    s = world.player()
+    c = _ir_a(s, CARTA_DOBLE_EXP)
+    _cmd(s, 5, c)
+    _cmd(s, 9)
+    d = mn.datos(s)
+    assert d['regalo'] and d['msg'].endswith('to:') and len(d['msg']) <= mn.MSG_MAX_REGALO

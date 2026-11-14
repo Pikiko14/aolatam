@@ -24,6 +24,7 @@ log = logging.getLogger('app')
 CMD_MALL = 173
 POR_PAGINA = 6
 MSG_MAX = 58                         # lo que cabe en la barra del mensaje sin pisar Historial
+MSG_MAX_REGALO = 34                  # con la casilla del nombre del regalo abierta (va a la derecha de la barra)
 NOMBRE_MAX = 18                      # lo que cabe en la tira del nombre de una tarjeta
 CASILLAS_MOCHILA = 35
 CONFIRMAR_SEGUNDOS = 15
@@ -228,14 +229,14 @@ def datos(ses) -> dict:
         'cab': [[item, cant] for _id, item, cant in cabinet(ses.usuario)],
         'moch': moch,
         'espacio': espacio,
-        'msg': corto(m['msg']),
+        'msg': corto(m['msg'], MSG_MAX_REGALO if m['regalo'] else MSG_MAX),
         'regalo': bool(m['regalo']),
     }
 
 
-def corto(msg: str) -> str:
+def corto(msg: str, maximo: int = MSG_MAX) -> str:
     """El mensaje de abajo en una linea que no pise los botones (\"que no desborde\", 14/11/2026)."""
-    return msg if len(msg) <= MSG_MAX else msg[:MSG_MAX - 2].rstrip() + '..'
+    return msg if len(msg) <= maximo else msg[:maximo - 2].rstrip() + '..'
 
 
 def pintar(ses) -> bytes:
@@ -327,7 +328,7 @@ def accion(ses, a, b, addr='?'):
             m['msg'] = 'Click an item first, then Gift.'
         elif a == 9 or not nombre:
             m['regalo'] = True
-            m['msg'] = 'Gift %s: write the name, then Gift.' % _nombre_item(fila['item'])
+            m['msg'] = 'Gift %s to:' % _nombre_item(fila['item'])[:MSG_MAX_REGALO - 9]
         else:
             m['regalo'] = False
             _comprar(ses, m, fila, receptor=nombre, addr=addr)
