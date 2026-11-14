@@ -112,6 +112,8 @@ MOCH_Y = (505, 567, 632, 695, 760, 822, 885)
 CAB_X = (1095, 1159, 1223, 1285, 1345)
 CAB_Y = (288, 352)
 CAJA_BUSCAR = (596, 486, 888, 520)                   # en la barra de Productos Destacados, antes de las paginas
+CAJA_AG = (886, 54, 1084, 102)                       # el AG, el numero y su "+"
+AG_DX = 226                                          # cuanto se mueve a la derecha
 CAJA_ORO = (1086, 54, 1314, 102)                     # la moneda, el numero y el "+" del oro
 ORO_AG = (255, 214, 92, 255)                         # el "AG" en lugar del diamante
 
@@ -212,6 +214,10 @@ def limpio() -> Image.Image:
     _franja(im, CAJA_ORO, CAJA_ORO[0] - 4)
     _franja(im, (896, 62, 937, 96), 939)
     _texto(im, 'AG', 916, 79, 26, ORO_AG)
+    # La caja del Angel Gold, a la derecha, donde estaba la del oro ("mueve el ag a la derecha", 14/11/2026).
+    caja_ag = im.crop(CAJA_AG)
+    _franja(im, CAJA_AG, CAJA_AG[2] + 2)
+    im.paste(caja_ag, (CAJA_AG[0] + AG_DX, CAJA_AG[1]))
     return im
 
 
@@ -283,7 +289,7 @@ ROTULOS = (
     ((1122, 1052, 1196, 1084), 'Gift', 30, 1118),
     ((1284, 1052, 1346, 1084), 'Close', 30, 1280),
     ((1286, 938, 1362, 970), 'Sort', 30, 1282),
-    ((1056, 938, 1134, 970), 'Space:', 28, 1052),
+    ((1056, 938, 1126, 970), 'Space:', 24, 1052),
 )
 COMPRAR_TEXTO = (384, 730, 466, 758)                 # el "Comprar" del boton que se recorta para las tarjetas
 BANNER_TEXTO = (578, 236, 790, 392)                  # "Descubre los mejores objetos!"
@@ -360,12 +366,17 @@ def _en_ingles(im):
     _texto_burbuja(im)
 
 
+_DISENO = None
+
+
 def diseno() -> Image.Image:
-    """El diseno del usuario sin el carrusel y en ingles."""
-    im = Image.open(DISENO).convert('RGBA')
-    _sin_carrusel(im)
-    _en_ingles(im)
-    return im
+    """El diseno del usuario sin el carrusel y en ingles (una copia: se puede pintar encima)."""
+    global _DISENO
+    if _DISENO is None:
+        _DISENO = Image.open(DISENO).convert('RGBA')
+        _sin_carrusel(_DISENO)
+        _en_ingles(_DISENO)
+    return _DISENO.copy()
 
 
 def _sin_logo(im):
@@ -476,7 +487,7 @@ def _estados(im):
 
 
 def _boton(src, tam=None, tinte=True):
-    im = Image.open(DISENO).convert('RGBA').crop(src)
+    im = diseno().crop(src)                          # los botones, con su texto ya en ingles
     if tinte:
         im = turquesa(im)
     return reducir(im, tam or (g(src[2]) - g(src[0]), g(src[3]) - g(src[1])))
@@ -657,7 +668,7 @@ def bloque() -> str:
                         tip='Send the selected item as a gift'))
     poner(CERRAR, _btn(CERRAR, caja(*BOTONES['cerrar'][1]), I_CERRAR, 'OnMallCerrar'))
     poner(CERRAR_X, _btn(CERRAR_X, caja(*BOTONES['cerrarx'][1]), I_CERRAR_X, 'OnMallCerrar'))
-    poner(AG, _static(AG, caja(946, 60, 1034, 98), color=103))
+    poner(AG, _static(AG, caja(946 + AG_DX, 60, 1034 + AG_DX, 98), color=103))
     for i in range(len(PESTANAS)):
         poner(TAB + i, _btn(TAB + i, caja(*tab_rect(i)), I_TAB + 2 * i, 'OnMallTab', appdata=i))
     paso = (CATS[3] - CATS[1]) / 10
