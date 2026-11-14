@@ -366,6 +366,7 @@ def procesar(ses, cuerpo, addr='?') -> bool:
         return True
     a, b = struct.unpack_from('<II', cuerpo, 1)
     if a == 1:
+        log.info('[%s] mall nuevo abierto (%s)', addr, {1: 'Alt+I', 2: 'icono'}.get(b, 'GM'))
         ses.enviar(*abrir(ses))
         return True
     try:

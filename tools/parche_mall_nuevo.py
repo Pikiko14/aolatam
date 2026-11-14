@@ -182,7 +182,7 @@ def _tarjeta_arte(im, x0, y0):
 
 def limpio() -> Image.Image:
     """El diseno sin lo que cambia, a tamano completo."""
-    im = Image.open(DISENO).convert('RGBA')
+    im = diseno()
     _franja(im, BARRA_TABS, 178)
     # Categories: las 10 filas vacias.
     fila = _fila_vacia(im, FILA_NORMAL, CATS[2] - CATS[0], 42)
@@ -227,28 +227,65 @@ def _buscador(im):
     d.line((cx + 6, cy + 6, cx + 13, cy + 13), fill=(236, 240, 255, 255), width=4)
 
 
+def _borroso(a, r=10):
+    """Tres cajas seguidas ~ gaussiana (PIL no difumina imagenes de coma flotante)."""
+    import numpy as np
+    for eje in (0, 1):
+        for _ in range(3):
+            pad = np.pad(a, [(r + 1, r) if k == eje else (0, 0) for k in (0, 1)], mode='edge')
+            c = np.cumsum(pad, axis=eje)
+            a = (np.take(c, range(2 * r + 1, c.shape[eje]), axis=eje)
+                 - np.take(c, range(0, c.shape[eje] - 2 * r - 1), axis=eje)) / (2 * r + 1)
+    return a
+
+
+def _rellenar(rgb, tapa, r=10):
+    """Rellena lo tapado de rgb (H x W x 3, float) desde sus bordes hacia dentro (convolucion normalizada)."""
+    import numpy as np
+    queda = (~tapa).astype(np.float32)
+    for _ in range(6):
+        peso = _borroso(queda, r)
+        rel = np.stack([_borroso(rgb[..., k] * queda, r) for k in range(3)], -1) / np.maximum(peso, 1e-4)[..., None]
+        rgb = np.where(tapa[..., None], rel, rgb)
+        queda = np.maximum(queda, np.clip(peso * 2, 0, 1) * tapa)
+    return rgb
+
+
+# Las flechas y los puntos del carrusel del banner, con el saliente del marco que los lleva ("quita esas flechas y los
+# dot del carousel porque no lo es", 14/11/2026).
+CARRUSEL = (500, 424, 854, 458)                      # dentro del banner (con margen para fundir)
+CARRUSEL_MARCO = (530, 456, 824, 470)                # lo que asoma sobre el borde de abajo
+
+
+def _sin_carrusel(im):
+    """Tapa la franja del carrusel con el dibujo de justo encima reflejado (sigue la textura sin costura arriba) y
+    funde los lados con lo que habia."""
+    import numpy as np
+    x0, y0, x1, y1 = CARRUSEL
+    alto = y1 - y0
+    encima = im.crop((x0, y0 - alto, x1, y0)).transpose(Image.FLIP_TOP_BOTTOM)
+    w = x1 - x0
+    lado = 26
+    funde = np.clip(np.minimum(np.arange(w), w - 1 - np.arange(w)) / lado, 0, 1)
+    mascara = Image.fromarray((np.tile(funde, (alto, 1)) * 255).astype(np.uint8), 'L')
+    im.paste(encima, (x0, y0), mascara)
+    _franja(im, CARRUSEL_MARCO, CARRUSEL_MARCO[0] - 6)
+
+
+def diseno() -> Image.Image:
+    """El diseno del usuario sin el carrusel."""
+    im = Image.open(DISENO).convert('RGBA')
+    _sin_carrusel(im)
+    return im
+
+
 def _sin_logo(im):
     """Borra el logo de Angels Online del diseno: lo tapa con el cielo de alrededor difuminado."""
     import numpy as np
     x0, y0, x1, y1 = ARTE_DISENO['logo']
     pieza = im.crop((x0, y0, x1, y1))
     tapa = np.array(solo_logo(pieza).getchannel('A').filter(ImageFilter.MaxFilter(9))) > 20
-    rgb = np.array(pieza.convert('RGB'), dtype=np.float32)
-    queda = (~tapa).astype(np.float32)
-    for _ in range(4):                       # convolucion normalizada: rellena desde los bordes hacia dentro
-        def borroso(a, r=10):
-            # tres cajas seguidas ~ gaussiana (PIL no difumina imagenes de coma flotante)
-            for eje in (0, 1):
-                for _ in range(3):
-                    pad = np.pad(a, [(r + 1, r) if k == eje else (0, 0) for k in (0, 1)], mode='edge')
-                    c = np.cumsum(pad, axis=eje)
-                    a = (np.take(c, range(2 * r + 1, c.shape[eje]), axis=eje)
-                         - np.take(c, range(0, c.shape[eje] - 2 * r - 1), axis=eje)) / (2 * r + 1)
-            return a
-        peso = borroso(queda)
-        rel = np.stack([borroso(rgb[..., k] * queda) for k in range(3)], -1) / np.maximum(peso, 1e-4)[..., None]
-        rgb = np.where(tapa[..., None], rel, rgb)
-        queda = np.maximum(queda, np.clip(peso * 2, 0, 1) * tapa)
+    rgb = _rellenar(np.array(pieza.convert('RGB'), dtype=np.float32), tapa)
     lleno = Image.fromarray(np.clip(rgb, 0, 255).astype(np.uint8), 'RGB').convert('RGBA')
     # Todo el hueco como cielo desenfocado: sin manchas de lo que habia; se funde con lo de al lado por la derecha y
     # por abajo (arriba y a la izquierda esta el borde de la imagen).
@@ -292,7 +329,7 @@ def fondo() -> Image.Image:
 
 def arte():
     """{nombre: (imagen, (x, y))}: el logo, el banner y la chica a su color, encima del fondo con tinte."""
-    im = Image.open(DISENO).convert('RGBA')
+    im = diseno()
     res = {}
     for nombre, (x0, y0, x1, y1) in ARTE_DISENO.items():
         if nombre == 'logo':

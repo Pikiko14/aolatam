@@ -167,5 +167,6 @@ def test_alt_i_y_el_icono_abren_el_mall_nuevo(world):
     s.enviar = lambda *p: enviados.extend(p)
     sv.procesar(s, struct.pack('<BII', sv.CMD_SALUDO, 1, 0))
     lua = [_lua(p) for p in enviados]
-    hook = next(t for t in lua if 'function CreateMallWnd' in t)
-    assert 'function OnCommandMall' in hook and 'netcommand2(CMD, 1, 0)' in hook and hook.isascii()
+    hook = next(t for t in lua if 'NUESTRAS.CreateMallWnd = function' in t)
+    assert 'NUESTRAS.OnCommandMall = function' in hook and 'setmetatable(_G' in hook and hook.isascii()
+    assert 'netcommand2(CMD, 1, 1)' in hook and 'netcommand2(CMD, 1, 2)' in hook
