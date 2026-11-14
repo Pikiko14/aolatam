@@ -317,10 +317,13 @@ def boton_con_glifo(puntos, w: int, h: int, estado: str) -> Image.Image:
     px = im.load()
     for x, y in puntos:
         px[x, y] = c
-    if estado == 'b':                            # apagado: sin color y medio transparente
-        gris = im.convert('LA').convert('RGBA')
-        gris.putalpha(im.getchannel('A').point(lambda a: a * 6 // 10))
-        im = gris
+    if estado == 'b':
+        # apagado (el del almacen lejos del almacen): el mismo cristal azul, mas oscuro; en gris parecia el viejo
+        # ("aca falto cambiar", 14/11/2026)
+        from PIL import ImageEnhance
+        rgb = ImageEnhance.Brightness(im.convert('RGB')).enhance(0.62)
+        rgb.putalpha(im.getchannel('A'))
+        im = rgb
     return im
 
 
