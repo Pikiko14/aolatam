@@ -74,10 +74,10 @@ def test_comprar_pide_confirmar_y_va_a_mi_compra(world):
     s = world.player()
     c = _ir_a(s, CARTA_DOBLE_EXP)
     _cmd(s, 6, c)
-    assert item_mall.saldo(s.usuario) == 1000000 and 'Press Comprar again' in s._mall['msg']
+    assert item_mall.saldo(s.usuario) == 1000000 and 'Press Buy again' in s._mall['msg']
     _cmd(s, 6, c)
     assert item_mall.saldo(s.usuario) == 1000000 - 35
-    assert mn.datos(s)['cab'] == [[2017, 1]] and 'Mi Compra' in s._mall['msg']
+    assert mn.datos(s)['cab'] == [[2017, 1]] and 'My Purchases' in s._mall['msg']
     _cmd(s, 7, 0)                                   # pulsar la casilla: a la mochila
     assert 2017 in s.inventario.values() and mn.datos(s)['cab'] == []
 

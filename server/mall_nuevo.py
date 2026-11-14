@@ -272,7 +272,7 @@ def _comprar(ses, m, fila, receptor=None, addr='?'):
                 if getattr(s, '_mall', None) is not None:
                     s.enviar(pintar(s))
     else:
-        m['msg'] = 'Bought %s! Click it in Mi Compra to take it.' % nombre
+        m['msg'] = 'Bought %s! Click it in My Purchases to take it.' % nombre
     log.info('[%s] mall nuevo: %s compra el producto %s%s', addr, ses.usuario, fila['id'],
              ' para %s' % receptor if receptor else '')
     ses.enviar(item_mall.almacen(ses.usuario), struct.pack('<HI', 0x0062, item_mall.saldo(ses.usuario)))
@@ -297,7 +297,7 @@ def accion(ses, a, b, addr='?'):
         fila = _fila_de_carta(ses, m, b)
         if fila:
             m['sel'] = fila['id']
-            m['msg'] = ('%s: %s AG. Comprar, Regalar or the star.'
+            m['msg'] = ('%s: %s AG. Buy, Gift or the star.'
                         % (_nombre_item(fila['item']), _miles(precio(fila))))
     elif a == 6:
         fila = _fila_de_carta(ses, m, b)
@@ -309,7 +309,7 @@ def accion(ses, a, b, addr='?'):
                 _comprar(ses, m, fila, addr=addr)
             else:
                 m['confirmar'] = (fila['id'], time.time())
-                m['msg'] = 'Buy %s for %s AG? Press Comprar again.' % (
+                m['msg'] = 'Buy %s for %s AG? Press Buy again.' % (
                     _nombre_item(fila['item']), _miles(precio(fila)))
     elif a == 7:
         filas = cabinet(ses.usuario)
@@ -324,10 +324,10 @@ def accion(ses, a, b, addr='?'):
         nombre = b''.join(m['nombre'].get(i, b'') for i in range(4)).split(b'\0')[0].decode('latin-1').strip()
         m['nombre'] = {}
         if not fila:
-            m['msg'] = 'Click an item first, then Regalar.'
+            m['msg'] = 'Click an item first, then Gift.'
         elif a == 9 or not nombre:
             m['regalo'] = True
-            m['msg'] = 'Gift %s: write the name, then Regalar.' % _nombre_item(fila['item'])
+            m['msg'] = 'Gift %s: write the name, then Gift.' % _nombre_item(fila['item'])
         else:
             m['regalo'] = False
             _comprar(ses, m, fila, receptor=nombre, addr=addr)

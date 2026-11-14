@@ -272,10 +272,99 @@ def _sin_carrusel(im):
     _franja(im, CARRUSEL_MARCO, CARRUSEL_MARCO[0] - 6)
 
 
+# ---- en ingles ("cambia lo que diga en espanol a ingles", 14/11/2026) -----------------------------------------------
+# (caja del texto en el diseno, texto nuevo, tamano, columna de donde sale el fondo para borrar el viejo)
+NAVY = (22, 26, 78, 255)
+ROTULOS = (
+    ((1114, 204, 1244, 238), 'My Purchases', 30, 1110),
+    ((1114, 416, 1250, 450), 'My Items', 30, 1110),
+    ((334, 486, 560, 516), 'Featured Items', 30, 330),
+    ((938, 1052, 1020, 1084), 'History', 30, 934),
+    ((1122, 1052, 1196, 1084), 'Gift', 30, 1118),
+    ((1284, 1052, 1346, 1084), 'Close', 30, 1280),
+    ((1286, 938, 1362, 970), 'Sort', 30, 1282),
+    ((1056, 938, 1134, 970), 'Space:', 28, 1052),
+)
+COMPRAR_TEXTO = (384, 730, 466, 758)                 # el "Comprar" del boton que se recorta para las tarjetas
+BANNER_TEXTO = (578, 236, 790, 392)                  # "Descubre los mejores objetos!"
+BURBUJA_TEXTO = (156, 758, 252, 800)                 # "Bienvenido al Item Mall!"
+
+
+def _rotulo(im, caja, texto, tam, columna, color=(255, 255, 255, 255), borde=NAVY, x=None):
+    _franja(im, caja, columna)
+    d = ImageDraw.Draw(im)
+    f = _letra(tam, 'Bold')
+    c = d.textbbox((0, 0), texto, font=f, stroke_width=2)
+    y = (caja[1] + caja[3]) // 2 - (c[3] + c[1]) // 2
+    d.text((caja[0] if x is None else x, y), texto, font=f, fill=color, stroke_width=2, stroke_fill=borde)
+
+
+def _tapar(im, caja, cual):
+    """Borra lo que cumple cual(h, s, v) dentro de caja rellenandolo desde lo de alrededor."""
+    import numpy as np
+    x0, y0, x1, y1 = caja
+    m = 30
+    zona = (x0 - m, y0 - m, x1 + m, y1 + m)
+    pieza = im.crop(zona)
+    hsv = np.array(pieza.convert('RGB').convert('HSV'), dtype=np.float32) / 255.0
+    tapa = np.zeros(hsv.shape[:2], bool)
+    tapa[m:-m, m:-m] = cual(hsv[m:-m, m:-m, 0], hsv[m:-m, m:-m, 1], hsv[m:-m, m:-m, 2])
+    tapa = np.array(Image.fromarray((tapa * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(7))) > 0
+    rgb = _rellenar(np.array(pieza.convert('RGB'), dtype=np.float32), tapa, r=6)
+    lleno = Image.fromarray(np.clip(rgb, 0, 255).astype(np.uint8), 'RGB').convert('RGBA')
+    im.paste(lleno, zona[:2], Image.fromarray((tapa * 255).astype(np.uint8), 'L'))
+
+
+def _texto_banner(im):
+    """El rotulo del banner en ingles: blanco a dorado con borde azul oscuro, un poco inclinado como el original."""
+    x0, y0, x1, y1 = BANNER_TEXTO
+    # lo viejo: el relleno claro (blanco a melocoton) y el borde azul oscuro de las letras
+    _tapar(im, BANNER_TEXTO, lambda h, s, v: (v < 0.42) | ((h < 0.17) & (s > 0.12) & (v > 0.6)))
+    lineas = ('Discover', 'the best', 'items!')
+    f = _letra(50, 'Bold')
+    capa = Image.new('RGBA', (x1 - x0 + 80, y1 - y0 + 60))
+    d = ImageDraw.Draw(capa)
+    alto = 50
+    for k, linea in enumerate(lineas):
+        d.text((40 + k * 6, 20 + k * alto), linea, font=f, fill=NAVY, stroke_width=6, stroke_fill=NAVY)
+    letras = Image.new('L', capa.size)
+    dl = ImageDraw.Draw(letras)
+    for k, linea in enumerate(lineas):
+        dl.text((40 + k * 6, 20 + k * alto), linea, font=f, fill=255)
+    oro = Image.new('RGBA', capa.size)
+    do = ImageDraw.Draw(oro)
+    for y in range(capa.height):
+        t = (y % alto) / alto
+        do.line((0, y, capa.width, y), fill=(255, int(250 - 60 * t), int(235 - 150 * t), 255))
+    capa.paste(oro, (0, 0), letras)
+    capa = capa.rotate(6, resample=Image.BICUBIC, expand=False)
+    im.alpha_composite(capa, (x0 - 40, y0 - 20))
+
+
+def _texto_burbuja(im):
+    x0, y0, x1, y1 = BURBUJA_TEXTO
+    _tapar(im, BURBUJA_TEXTO, lambda h, s, v: v < 0.6)
+    d = ImageDraw.Draw(im)
+    f = _letra(18, 'Bold')
+    for k, linea in enumerate(('Welcome to', 'the Item Mall!')):
+        c = d.textbbox((0, 0), linea, font=f)
+        d.text(((x0 + x1) // 2 - (c[2] + c[0]) // 2, y0 + 2 + k * 21), linea, font=f, fill=(40, 40, 96, 255))
+
+
+def _en_ingles(im):
+    for caja, texto, tam, columna in ROTULOS:
+        _rotulo(im, caja, texto, tam, columna)
+    _rotulo(im, COMPRAR_TEXTO, 'Buy', 26, COMPRAR_TEXTO[2] + 4, color=(255, 246, 226, 255), borde=(92, 40, 6, 255),
+            x=COMPRAR_TEXTO[0] + 14)
+    _texto_banner(im)
+    _texto_burbuja(im)
+
+
 def diseno() -> Image.Image:
-    """El diseno del usuario sin el carrusel."""
+    """El diseno del usuario sin el carrusel y en ingles."""
     im = Image.open(DISENO).convert('RGBA')
     _sin_carrusel(im)
+    _en_ingles(im)
     return im
 
 
