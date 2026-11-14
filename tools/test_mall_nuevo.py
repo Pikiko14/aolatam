@@ -46,12 +46,24 @@ def test_las_categorias_y_pestanas_son_las_de_la_ventana():
 
 
 def test_cada_pestana_del_catalogo_tiene_productos(world):
+    # Furniture la vacio el usuario ("en furniture quita todo", 03/11/2026): sale como en el Mall del juego, sin nada.
     s = world.player()
     for t, (nombre, subs) in enumerate(mn.PESTANAS):
-        if subs[0][1] is None:
+        if subs[0][1] is None or nombre == 'Furniture':
             continue
         _cmd(s, 2, t)
-        assert mn.productos(s), nombre
+        hay = []
+        for k in range(len(subs)):
+            _cmd(s, 3, k)
+            hay.append(bool(mn.productos(s)))
+        assert any(hay), nombre
+
+
+def test_intro_lleva_el_texto_y_ninguna_tarjeta(world):
+    s = world.player()
+    _cmd(s, 2, [n for n, _ in mn.PESTANAS].index('Intro'))
+    d = mn.datos(s)
+    assert d['cartas'] == [] and 'Angel Gold' in d['intro'] and chr(92) + 'n' in d['intro'] and chr(10) not in d['intro']
 
 
 def test_abrir_manda_el_lua_y_pinta(world):

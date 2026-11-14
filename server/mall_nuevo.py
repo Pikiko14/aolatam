@@ -23,25 +23,44 @@ log = logging.getLogger('app')
 
 CMD_MALL = 173
 POR_PAGINA = 6
+NOMBRE_MAX = 18                      # lo que cabe en la tira del nombre de una tarjeta
 CASILLAS_MOCHILA = 35
 CONFIRMAR_SEGUNDOS = 15
 
 # Las categorias, en el mismo orden que CATEGORIAS de tools/parche_mall_nuevo.py: el indice k es su imagen
 # (icono 61540 + 2k normal, + 1 elegida).
-CLAVES = ('all', 'hot', 'sale', 'weapons', 'armor', 'mounts', 'general', 'teleport', 'eggs', 'petitems', 'cards',
-          'potions', 'male', 'female', 'robots', 'favorite', 'history')
-# Las pestanas, con sus categorias: (clave, categorias de item_mall.json). None = no sale del catalogo.
+CLAVES = ('top', 'sale', 'lb_hot', 'lb_equip', 'lb_armor', 'lb_mount', 'sp_general', 'sp_potion', 'sp_teleport', 'pet',
+          'fn_general', 'fn_mini', 'fu_floor', 'fu_wall', 'fu_carpet', 'fu_gacha', 'fa_male', 'fa_female', 'fa_robot',
+          'fa_bubble', 'intro', 'favorite', 'history')
+# Las pestanas con sus categorias, las del Item Mall del juego (setting/eng/malllayout.xml: 功能類 11 一般 / 12 小遊戲,
+# 特殊類 13 / 16 藥水 / 27 傳送, 福袋類 28 熱門 / 29 裝備 / 30 / 31 座騎, 寵物類 19, 裝扮機甲 24 男裝 / 25 女裝 /
+# 17 機甲 / 40 對話泡泡, 傢俱類 32..35, 熱賣商品 22, 搶購區 23, 商城說明, 我的最愛), en el orden del diseno:
+# (clave, tipos de item_mall.json). None = no sale del catalogo.
 PESTANAS = (
-    ('Top Sale', (('hot', (22,)),)),
+    ('Top Sale', (('top', (22,)),)),
     ('On Sale', (('sale', (23,)),)),
-    ('LuckyBag', (('all', (28, 30, 31)), ('weapons', (28,)), ('armor', (30,)), ('mounts', (31,)))),
-    ('Special', (('all', (13, 27)), ('general', (13,)), ('teleport', (27,)))),
-    ('Pet', (('all', (15, 19)), ('eggs', (15,)), ('petitems', (19,)))),
-    ('Function', (('all', (11, 12)), ('general', (11,)), ('cards', (12,)))),
-    ('Potion', (('potions', (16,)),)),
-    ('Fashion', (('all', (24, 25, 17)), ('male', (24,)), ('female', (25,)), ('robots', (17,)))),
+    ('LuckyBag', (('lb_hot', (28,)), ('lb_equip', (29,)), ('lb_armor', (30,)), ('lb_mount', (31,)))),
+    ('Special', (('sp_general', (13,)), ('sp_potion', (16,)), ('sp_teleport', (27,)))),
+    ('Pet', (('pet', (19,)),)),
+    ('Function', (('fn_general', (11,)), ('fn_mini', (12,)))),
+    ('Furniture', (('fu_floor', (32,)), ('fu_wall', (33,)), ('fu_carpet', (34,)), ('fu_gacha', (35,)))),
+    ('Fashion', (('fa_male', (24,)), ('fa_female', (25,)), ('fa_robot', (17,)), ('fa_bubble', (40,)))),
+    ('Intro', (('intro', None),)),
     ('Favorite', (('favorite', None),)),
 )
+# La pestana Intro: lo del texto 12406 del Item Mall del juego, con lo de este servidor.
+# El MSTATIC del juego salta de linea con la barra y la n escritas (asi esta el texto 12406 de wnd05.xml).
+INTRO = ('[Angel Gold]\\n'
+         '1. Everything in the Item Mall is bought with Angel Gold. Every account starts with 1,000,000 and you earn '
+         'more from bosses and events.\\n'
+         '2. Angel Gold belongs to your account: it cannot be traded.\\n\\n'
+         '[How to use the Mall]\\n'
+         '1. Pick a tab and a category, then click an item to select it.\\n'
+         '2. Comprar buys it (press it twice to confirm). It waits in Mi Compra: click it to move it to your '
+         'backpack.\\n'
+         '3. Regalar sends the selected item to another player: write the name and press Regalar again.\\n'
+         '4. The star keeps the selected item in Favorite. Historial shows what you bought.\\n'
+         '5. Mi Compra holds 10 deliveries at most. Make sure your backpack has room before you claim them.')
 HISTORIAL = (('history', None),)
 _LUA = None
 
@@ -165,7 +184,9 @@ def productos(ses, m=None) -> list:
         return [por_id[p] for p in favoritos(ses.usuario) if p in por_id]
     if clave == 'history':
         return [por_id[p] for p in comprados(ses.usuario) if p in por_id]
-    if clave == 'hot' and not any(r['category'] == 22 for r in filas):
+    if clave == 'intro':
+        return []
+    if clave == 'top' and not any(r['category'] == 22 for r in filas):
         return mas_vendidos(filas)
     orden = {c: i for i, c in enumerate(cats)}
     return sorted((r for r in filas if r['category'] in orden),
@@ -198,8 +219,8 @@ def datos(ses) -> dict:
         nombre = _nombre_item(r['item'])
         if int(r['quantity']) > 1:
             nombre = '%s x%d' % (nombre, int(r['quantity']))
-        if len(nombre) > 24:
-            nombre = nombre[:22] + '..'
+        if len(nombre) > NOMBRE_MAX:
+            nombre = nombre[:NOMBRE_MAX - 2] + '..'
         cartas.append([int(r['item']), nombre, _miles(precio(r)), 1 if r['id'] == m['sel'] else 0])
     moch, espacio = _mochila(ses)
     return {
@@ -215,6 +236,7 @@ def datos(ses) -> dict:
         'espacio': espacio,
         'msg': m['msg'],
         'regalo': bool(m['regalo']),
+        'intro': INTRO if subs[m['sub']][0] == 'intro' else '',
     }
 
 

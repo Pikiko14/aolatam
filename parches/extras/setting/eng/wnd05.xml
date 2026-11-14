@@ -5870,6 +5870,7 @@ Leagues will receive different amounts of Repute based on the outcome of the bat
         <child>61016</child>
         <child>61017</child>
         <child>61018</child>
+        <child>61019</child>
         <child>61020</child>
         <child>61021</child>
         <child>61022</child>
@@ -5881,6 +5882,7 @@ Leagues will receive different amounts of Repute based on the outcome of the bat
         <child>61028</child>
         <child>61029</child>
         <child>61155</child>
+        <child>61156</child>
         <child>61030</child>
         <child>61031</child>
         <child>61032</child>
@@ -5955,6 +5957,9 @@ Leagues will receive different amounts of Repute based on the outcome of the bat
         <child>61134</child>
         <child>61140</child>
         <child>61141</child>
+        <child>61190</child>
+        <child>61191</child>
+        <child>61192</child>
         <child>61199</child>
     </window>
     <window class="WND_CLASS_EDIT" id="61151" range="304,569,146,16" icon="2353" fcolor="105" font="1" tpos="2,2" limit="16">
@@ -5985,39 +5990,43 @@ Leagues will receive different amounts of Repute based on the outcome of the bat
     <window class="WND_CLASS_STATIC" id="61003" range="621,33,63,20" title="" fcolor="105" font="1">
         <style wsVisible="" ssVCenter="" ssRight="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="61010" range="28,72,71,23" icon="61510" appdata="0">
+    <window class="WND_CLASS_BUTTON" id="61010" range="28,72,63,23" icon="61510" appdata="0">
         <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
         <OnCommand>OnMallTab</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="61011" range="103,72,71,23" icon="61512" appdata="1">
+    <window class="WND_CLASS_BUTTON" id="61011" range="96,72,63,23" icon="61512" appdata="1">
         <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
         <OnCommand>OnMallTab</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="61012" range="179,72,70,23" icon="61514" appdata="2">
+    <window class="WND_CLASS_BUTTON" id="61012" range="164,72,62,23" icon="61514" appdata="2">
         <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
         <OnCommand>OnMallTab</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="61013" range="254,72,70,23" icon="61516" appdata="3">
+    <window class="WND_CLASS_BUTTON" id="61013" range="231,72,63,23" icon="61516" appdata="3">
         <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
         <OnCommand>OnMallTab</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="61014" range="329,72,70,23" icon="61518" appdata="4">
+    <window class="WND_CLASS_BUTTON" id="61014" range="299,72,63,23" icon="61518" appdata="4">
         <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
         <OnCommand>OnMallTab</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="61015" range="404,72,71,23" icon="61520" appdata="5">
+    <window class="WND_CLASS_BUTTON" id="61015" range="367,72,63,23" icon="61520" appdata="5">
         <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
         <OnCommand>OnMallTab</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="61016" range="480,72,70,23" icon="61522" appdata="6">
+    <window class="WND_CLASS_BUTTON" id="61016" range="434,72,63,23" icon="61522" appdata="6">
         <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
         <OnCommand>OnMallTab</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="61017" range="555,72,70,23" icon="61524" appdata="7">
+    <window class="WND_CLASS_BUTTON" id="61017" range="502,72,63,23" icon="61524" appdata="7">
         <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
         <OnCommand>OnMallTab</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="61018" range="630,72,70,23" icon="61526" appdata="8">
+    <window class="WND_CLASS_BUTTON" id="61018" range="570,72,63,23" icon="61526" appdata="8">
+        <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
+        <OnCommand>OnMallTab</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="61019" range="638,72,62,23" icon="61528" appdata="9">
         <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
         <OnCommand>OnMallTab</OnCommand>
     </window>
@@ -6064,6 +6073,9 @@ Leagues will receive different amounts of Repute based on the outcome of the bat
     <window class="WND_CLASS_BUTTON" id="61155" range="153,260,24,24" icon="0" tooltip="10040" tooltext="Add or remove the selected item from Favorite">
         <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
         <OnCommand>OnMallFavorito</OnCommand>
+    </window>
+    <window class="WND_CLASS_MSTATIC" id="61156" range="163,293,393,249" title="" fcolor="103" font="1">
+        <style ssLeft="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="61030" range="488,263,18,19" icon="61601" appdata="0" tooltip="10040" tooltext="Previous page">
         <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
@@ -6363,10 +6375,24 @@ Leagues will receive different amounts of Repute based on the outcome of the bat
         <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
         <OnCommand>OnMallOrdenar</OnCommand>
     </window>
+    <window class="WND_CLASS_BASE" id="61190" range="0,0,142,64" icon="61610">
+        <style wsVisible="" />
+    </window>
+    <window class="WND_CLASS_BASE" id="61191" range="150,105,409,143" icon="61611">
+        <style wsVisible="" />
+    </window>
+    <window class="WND_CLASS_BASE" id="61192" range="8,388,137,162" icon="61612">
+        <style wsVisible="" />
+    </window>
     <window class="WND_CLASS_BASE" id="61199" range="0,0,760,608" icon="61500">
         <style wsVisible="" />
     </window>
-    <icon id="61500" dir="\wnd01\" normal="aolat_mall_fondo" focus="normal" down="normal" disable="normal" />
+    <icon id="61500" dir="\wnd01\" normal="aolat_mall_fondo" focus="normal" down="normal" disable="normal">
+        <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />
+    </icon>
+    <icon id="61610" dir="\wnd01\" normal="aolat_mall_arte_logo" focus="normal" down="normal" disable="normal" />
+    <icon id="61611" dir="\wnd01\" normal="aolat_mall_arte_banner" focus="normal" down="normal" disable="normal" />
+    <icon id="61612" dir="\wnd01\" normal="aolat_mall_arte_chica" focus="normal" down="normal" disable="normal" />
     <icon id="61510" dir="\wnd01\" normal="aolat_mall_tab0_n" focus="aolat_mall_tab0_f" down="aolat_mall_tab0_d" disable="aolat_mall_tab0_n" />
     <icon id="61511" dir="\wnd01\" normal="aolat_mall_tab0_s" focus="normal" down="normal" disable="normal" />
     <icon id="61512" dir="\wnd01\" normal="aolat_mall_tab1_n" focus="aolat_mall_tab1_f" down="aolat_mall_tab1_d" disable="aolat_mall_tab1_n" />
@@ -6385,6 +6411,8 @@ Leagues will receive different amounts of Repute based on the outcome of the bat
     <icon id="61525" dir="\wnd01\" normal="aolat_mall_tab7_s" focus="normal" down="normal" disable="normal" />
     <icon id="61526" dir="\wnd01\" normal="aolat_mall_tab8_n" focus="aolat_mall_tab8_f" down="aolat_mall_tab8_d" disable="aolat_mall_tab8_n" />
     <icon id="61527" dir="\wnd01\" normal="aolat_mall_tab8_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61528" dir="\wnd01\" normal="aolat_mall_tab9_n" focus="aolat_mall_tab9_f" down="aolat_mall_tab9_d" disable="aolat_mall_tab9_n" />
+    <icon id="61529" dir="\wnd01\" normal="aolat_mall_tab9_s" focus="normal" down="normal" disable="normal" />
     <icon id="61540" dir="\wnd01\" normal="aolat_mall_cat0_n" focus="aolat_mall_cat0_f" down="aolat_mall_cat0_s" disable="aolat_mall_cat0_n" />
     <icon id="61541" dir="\wnd01\" normal="aolat_mall_cat0_s" focus="normal" down="normal" disable="normal" />
     <icon id="61542" dir="\wnd01\" normal="aolat_mall_cat1_n" focus="aolat_mall_cat1_f" down="aolat_mall_cat1_s" disable="aolat_mall_cat1_n" />
@@ -6419,6 +6447,18 @@ Leagues will receive different amounts of Repute based on the outcome of the bat
     <icon id="61571" dir="\wnd01\" normal="aolat_mall_cat15_s" focus="normal" down="normal" disable="normal" />
     <icon id="61572" dir="\wnd01\" normal="aolat_mall_cat16_n" focus="aolat_mall_cat16_f" down="aolat_mall_cat16_s" disable="aolat_mall_cat16_n" />
     <icon id="61573" dir="\wnd01\" normal="aolat_mall_cat16_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61574" dir="\wnd01\" normal="aolat_mall_cat17_n" focus="aolat_mall_cat17_f" down="aolat_mall_cat17_s" disable="aolat_mall_cat17_n" />
+    <icon id="61575" dir="\wnd01\" normal="aolat_mall_cat17_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61576" dir="\wnd01\" normal="aolat_mall_cat18_n" focus="aolat_mall_cat18_f" down="aolat_mall_cat18_s" disable="aolat_mall_cat18_n" />
+    <icon id="61577" dir="\wnd01\" normal="aolat_mall_cat18_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61578" dir="\wnd01\" normal="aolat_mall_cat19_n" focus="aolat_mall_cat19_f" down="aolat_mall_cat19_s" disable="aolat_mall_cat19_n" />
+    <icon id="61579" dir="\wnd01\" normal="aolat_mall_cat19_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61580" dir="\wnd01\" normal="aolat_mall_cat20_n" focus="aolat_mall_cat20_f" down="aolat_mall_cat20_s" disable="aolat_mall_cat20_n" />
+    <icon id="61581" dir="\wnd01\" normal="aolat_mall_cat20_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61582" dir="\wnd01\" normal="aolat_mall_cat21_n" focus="aolat_mall_cat21_f" down="aolat_mall_cat21_s" disable="aolat_mall_cat21_n" />
+    <icon id="61583" dir="\wnd01\" normal="aolat_mall_cat21_s" focus="normal" down="normal" disable="normal" />
+    <icon id="61584" dir="\wnd01\" normal="aolat_mall_cat22_n" focus="aolat_mall_cat22_f" down="aolat_mall_cat22_s" disable="aolat_mall_cat22_n" />
+    <icon id="61585" dir="\wnd01\" normal="aolat_mall_cat22_s" focus="normal" down="normal" disable="normal" />
     <icon id="61600" dir="\wnd01\" normal="aolat_mall_comprar_n" focus="aolat_mall_comprar_f" down="aolat_mall_comprar_d" disable="aolat_mall_comprar_n" />
     <icon id="61601" dir="\wnd01\" normal="aolat_mall_ant_n" focus="aolat_mall_ant_f" down="aolat_mall_ant_d" disable="aolat_mall_ant_n" />
     <icon id="61602" dir="\wnd01\" normal="aolat_mall_sig_n" focus="aolat_mall_sig_f" down="aolat_mall_sig_d" disable="aolat_mall_sig_n" />

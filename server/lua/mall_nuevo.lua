@@ -11,8 +11,9 @@ local PAG_TXT = 61031
 local C_NOMBRE, C_ICONO, C_PRECIO, C_COMPRAR = 61040, 61050, 61060, 61070
 local CAB, MOCH = 61080, 61100
 local ESPACIO, MENSAJE, REGALO_NOMBRE = 61140, 61150, 61151
+local INTRO, PAG_ANT, PAG_SIG = 61156, 61030, 61032
 local I_TAB, I_SUB = 61510, 61540
-local N_TABS, N_SUBS, N_CARTAS, N_CAB, N_MOCH = 9, 10, 6, 10, 35
+local N_TABS, N_SUBS, N_CARTAS, N_CAB, N_MOCH = 10, 10, 6, 10, 35
 
 local function hijo(id)
   return window.find(WND_MALL, id)
@@ -50,7 +51,7 @@ local function casilla(id, f)
 end
 
 -- d: ag, oro, tab (-1 = Historial), subs (indices de categoria), sub, pag ("1/3"), cartas {{item, nombre, precio,
--- elegida}}, cab {{item, cantidad}}, moch {{item, cantidad}}, espacio, msg, regalo
+-- elegida}}, cab {{item, cantidad}}, moch {{item, cantidad}}, espacio, msg, regalo, intro (texto o "")
 function MallPintar(d)
   if not abierta() then
     return
@@ -69,7 +70,13 @@ function MallPintar(d)
       window.seticon(w, I_SUB + 2 * s + (k == d.sub and 1 or 0))
     end
   end
-  window.settitle(hijo(PAG_TXT), d.pag)
+  -- Intro: el texto en lugar de las tarjetas.
+  local intro = d.intro ~= ""
+  window.show(hijo(INTRO), intro)
+  window.settitle(hijo(INTRO), d.intro)
+  window.show(hijo(PAG_ANT), not intro)
+  window.show(hijo(PAG_SIG), not intro)
+  window.settitle(hijo(PAG_TXT), intro and "" or d.pag)
   for c = 0, N_CARTAS - 1 do
     local f = d.cartas[c + 1]
     window.show(hijo(C_ICONO + c), f ~= nil)
