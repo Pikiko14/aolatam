@@ -6371,7 +6371,7 @@ Leagues will receive different amounts of Repute based on the outcome of the bat
         <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
         <OnCommand>OnMallOrdenar</OnCommand>
     </window>
-    <window class="WND_CLASS_BASE" id="61190" range="0,0,145,69" icon="61610">
+    <window class="WND_CLASS_BASE" id="61190" range="39,1,63,61" icon="61610">
         <style wsVisible="" />
     </window>
     <window class="WND_CLASS_BASE" id="61191" range="150,105,409,143" icon="61611">

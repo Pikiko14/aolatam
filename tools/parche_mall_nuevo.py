@@ -26,8 +26,10 @@ sys.path.insert(0, str(RAIZ / 'tools'))
 import marcos_modernos as mm  # noqa: E402
 
 DISENO = RAIZ / 'docs' / 'item_mall_diseno.png'
-# El logo del servidor ("cambia el logo que dice angel online por el de aoforever", 14/11/2026): el del launcher.
-LOGO_AOF = RAIZ / 'launcher' / 'logo.png'
+# El logo del servidor ("debe ser el logo nuevo", 14/11/2026): el emblema de AOForever, recortado del fondo de
+# cuadros de la imagen que paso el usuario.
+LOGO_AOF = RAIZ / 'launcher' / 'emblema.png'
+CAJA_LOGO = (72, 2, 188, 114)                       # el emblema, redondo, en la esquina del logo viejo
 ENG = RAIZ / 'parches' / 'extras' / 'setting' / 'eng'
 SHAPES = RAIZ / 'parches' / 'extras' / 'shape' / 'wnd01'
 XML = 'wnd05.xml'
@@ -120,7 +122,7 @@ ORO_AG = (255, 214, 92, 255)                         # el "AG" en lugar del diam
 # aparte, sin tinte, para que otro tema no los manche.
 TONO_JUEGO = 192 / 360                               # el turquesa de (0, 72, 90)
 TONOS_DISENO = (200 / 360, 300 / 360)                # del azul al lila
-ARTE_DISENO = {'logo': (0, 0, 268, 128), 'banner': (276, 194, 1032, 458), 'chica': (14, 716, 268, 1014)}
+ARTE_DISENO = {'logo': (0, 0, 262, 118), 'banner': (276, 194, 1032, 458), 'chica': (14, 716, 268, 1014)}
 
 
 def turquesa(im, excluir=()):
@@ -248,7 +250,13 @@ def _sin_logo(im):
         rgb = np.where(tapa[..., None], rel, rgb)
         queda = np.maximum(queda, np.clip(peso * 2, 0, 1) * tapa)
     lleno = Image.fromarray(np.clip(rgb, 0, 255).astype(np.uint8), 'RGB').convert('RGBA')
-    im.paste(lleno, (x0, y0))
+    # Todo el hueco como cielo desenfocado: sin manchas de lo que habia; se funde con lo de al lado por la derecha y
+    # por abajo (arriba y a la izquierda esta el borde de la imagen).
+    lleno = lleno.filter(ImageFilter.GaussianBlur(9))
+    w, h = lleno.size
+    funde = np.minimum(np.clip((w - 1 - np.arange(w)) / 18, 0, 1)[None, :],
+                       np.clip((h - 1 - np.arange(h)) / 14, 0, 1)[:, None])
+    im.paste(lleno, (x0, y0), Image.fromarray((funde * 255).astype(np.uint8), 'L'))
 
 
 def logo_aof(caja_logo):
@@ -288,7 +296,7 @@ def arte():
     res = {}
     for nombre, (x0, y0, x1, y1) in ARTE_DISENO.items():
         if nombre == 'logo':
-            res[nombre] = (logo_aof((x0, y0, x1, y1)), (g(x0), g(y0)))
+            res[nombre] = (logo_aof(CAJA_LOGO), (g(CAJA_LOGO[0]), g(CAJA_LOGO[1])))
             continue
         pieza = im.crop((x0, y0, x1, y1))
         res[nombre] = (reducir(pieza, (g(x1) - g(x0), g(y1) - g(y0))), (g(x0), g(y0)))
