@@ -1735,8 +1735,32 @@ def _vm_paquete(ses):
         precio = _precio_venta(it) * _cant_de(ses, r) // _unidades_por_compra(it)
         if marcada:
             total += precio
-        filas.append([1 if marcada else 0, _nombre_item(it) + (' *' if r in mejoras else ''), precio])
+        filas.append([1 if marcada else 0, _nombre_item(it) + (' *' if r in mejoras else ''), precio, _icono_item(it)])
     return canal_lua.llamar('VentaMasivaLista', filas, total, int(getattr(ses, 'oro', 0) or 0))
+
+
+_ICONOS_ITEM = {}
+
+
+def _icono_item(item_id) -> int:
+    """El icono del objeto (原型介面 de item*.xml: el id de itemicon*.xml, la misma tabla que los iconos de ventana), o 0.
+    La fila de Bulk Sell lo pinta en su casilla, como la lista de Sell (13/11/2026)."""
+    it = int(item_id or 0)
+    if it not in _ICONOS_ITEM:
+        n = 0
+        try:
+            import sqlite3
+            import inventario as _iv_ic
+            con = sqlite3.connect(pathlib.Path(__file__).parent.parent / 'corpus' / 'content.db')
+            try:
+                fila = _iv_ic.fila_item(con, '"原型介面"', it)
+            finally:
+                con.close()
+            n = int(float(fila[0])) if fila and fila[0] not in (None, '') else 0
+        except Exception:
+            n = 0
+        _ICONOS_ITEM[it] = n
+    return _ICONOS_ITEM[it]
 
 
 def _venta_masiva(ses, addr, cuerpo) -> bool:

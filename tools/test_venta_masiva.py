@@ -47,6 +47,7 @@ def test_salen_marcados_solo_el_gear_y_las_armas_de_la_mochila(monkeypatch):
     assert ses._venta_masiva['filas'] == [(20, ESPADA), (22, ESCUDO)] and not ses._venta_masiva['fuera']
     lua = enviados[-1][2:].decode('latin1')
     assert lua.startswith('VentaMasivaLista(') and '"Item 1001"' in lua and ',150,' in lua
+    assert ',5616}' in lua.replace(' ', '')                         # el icono del objeto (原型介面) en su casilla
 
 
 def test_desmarcar_y_vender_solo_lo_marcado(monkeypatch):

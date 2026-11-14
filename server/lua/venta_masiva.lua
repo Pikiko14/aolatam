@@ -67,13 +67,19 @@ function VentaMasivaLista(filas, total, oro)
   local lista = de_pagina(13408)
   window.clearlist(lista)
   local n = 0
-  -- Como la lista de Sell: una fila por marco, en la casilla el icono de marcado (60500) o no (60501).
+  -- Como la lista de Sell: una fila por marco y en la casilla el icono del objeto (f[4], de itemicon*.xml; si no
+  -- tiene, el de marcado 60500 / 60501). Lo que se vende o se queda va en el texto.
   for i, f in ipairs(filas) do
+    local icono = f[4]
+    if not icono or icono <= 0 then
+      icono = f[1] == 1 and ICONO_SI or ICONO_NO
+    end
     if f[1] == 1 then
       n = n + 1
+      window.insertitemstrappnum(lista, "Sell: " .. corto(f[2], 20) .. " - " .. tostring(f[3]) .. " G", icono, i - 1)
+    else
+      window.insertitemstrappnum(lista, "Keep: " .. corto(f[2], 20), icono, i - 1)
     end
-    window.insertitemstrappnum(lista, corto(f[2], 22) .. " - " .. tostring(f[3]) .. " G",
-                               f[1] == 1 and ICONO_SI or ICONO_NO, i - 1)
   end
   window.settitle(de_pagina(13413), tostring(total))
   window.settitle(de_pagina(13417), tostring(oro or 0))
