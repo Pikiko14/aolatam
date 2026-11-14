@@ -1,6 +1,11 @@
 [
  {
   "fecha": "2026-11-14",
+  "titulo": "Update 0.0.0.175: new backpack icons",
+  "texto": "Please update to version 0.0.0.175 from AngelsLauncher. The backpack buttons have new icons: warehouse, trash can, fashion hanger, backpack, gear shield, trade and stall."
+ },
+ {
+  "fecha": "2026-11-14",
   "titulo": "Update 0.0.0.174: new buttons for Backpack, Angel Baby and Item Mall",
   "texto": "Please update to version 0.0.0.174 from AngelsLauncher. The Backpack, Angel Baby and Item Mall buttons and tabs now use the new blue and gold style, including the sort button. Bulk Sell is cleaner: item names sit closer to their icons and the empty quantity box is gone."
  },
