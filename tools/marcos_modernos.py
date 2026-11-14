@@ -212,6 +212,46 @@ def botones():
     return res
 
 
+# ---- los botones de la barra de titulo de las DLG_1 (14 x 14, shape\wnd01) -----------------------------------------
+# btn001 chincheta, btn002 cerrar, btn003 ayuda, btn004 bloquear, btn149 minimizar. Eran grises y naranjas al pulsar.
+TITULO = 14
+
+
+def boton_titulo(cual: str, estado: str) -> Image.Image:
+    import creacion_personaje as cp
+    e = {'n': 'n', 'f': 'f', 'd': 's'}[estado]
+    im = cp._cristal(TITULO, TITULO, e, 4, oro=(estado == 'd'))
+    d = ImageDraw.Draw(im)
+    c = (40, 24, 4, 255) if estado == 'd' else (255, 236, 170, 255)
+    if cual == 'btn002':                         # cerrar
+        d.line(((4, 4), (9, 9)), fill=c, width=2)
+        d.line(((9, 4), (4, 9)), fill=c, width=2)
+    elif cual == 'btn149':                       # minimizar
+        d.line(((4, 9), (9, 9)), fill=c, width=2)
+    elif cual == 'btn003':                       # ayuda: un "?"
+        d.arc((4, 2, 9, 7), 180, 90, fill=c, width=1)
+        d.line(((7, 7), (7, 8)), fill=c, width=1)
+        d.point((7, 10), fill=c)
+    elif cual == 'btn004':                       # bloquear: candado
+        d.arc((4, 2, 9, 8), 180, 360, fill=c, width=1)
+        d.line(((4, 5), (4, 6)), fill=c)
+        d.line(((9, 5), (9, 6)), fill=c)
+        d.rectangle((3, 6, 10, 10), fill=c)
+    else:                                        # btn001 chincheta
+        d.ellipse((5, 2, 10, 7), fill=c)
+        d.line(((6, 7), (3, 10)), fill=c, width=1)
+    return im
+
+
+def botones_titulo():
+    res = {}
+    for cual in ('btn001', 'btn002', 'btn003', 'btn004', 'btn149'):
+        for estado in ('n', 'f', 'd'):
+            im = boton_titulo(cual, estado)
+            res['%s_%s' % (cual, estado)] = (im, a_shp(im))
+    return res
+
+
 def piezas():
     """{nombre: (imagen, bytes del .shp)} de las 18 piezas de marco nuevas."""
     res = {}
@@ -236,7 +276,12 @@ def main():
         print(nombre, len(datos), 'bytes')
     DESTINO_BOTONES.mkdir(parents=True, exist_ok=True)
     for nombre, (_im, datos) in botones().items():
+        # El check y la X estan dos veces: \game\02\ (iconos 1154/1155) y \wnd01\ (10006/10007, los del aviso).
         (DESTINO_BOTONES / (nombre + '.shp')).write_bytes(datos)
+        (DESTINO / (nombre + '.shp')).write_bytes(datos)
+        print(nombre, len(datos), 'bytes')
+    for nombre, (_im, datos) in botones_titulo().items():
+        (DESTINO / (nombre + '.shp')).write_bytes(datos)
         print(nombre, len(datos), 'bytes')
 
 
