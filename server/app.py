@@ -13401,11 +13401,12 @@ class Servidor:
                 # "si elijo uno en uso no me dice que el nombre esta en uso, solo dice angel online" (07/11/2026). Con el
                 # codigo 1 el cliente sacaba el cuadro vacio. Los textos de login de string.xml van seguidos desde el 151
                 # (151 cuenta ya conectada, 152 clave mala, 153 "The character name is unavailable.", 154 "Create a
-                # character failed"...): se manda 3 = 153 para el nombre y 4 = 154 para lo demas. SIN VERIFICAR en el
-                # cliente: si sigue saliendo vacio, el numero esta en configuracion.ERROR_CREAR_*.
+                # character failed"...). VERIFICADO en el cliente (13/11/2026): el codigo ES el numero de string.xml, sin
+                # sumar nada -- con 1 salia "Angels Online" (string 1) y con 3 "Please enter your password." (string 3)
+                # al repetir el nombre "Carlita". Se manda 153 para el nombre y 154 para lo demas.
                 import configuracion as _cf_cr
-                _cod_cr = (getattr(_cf_cr, 'ERROR_CREAR_NOMBRE_EN_USO', 3) if 'name' in str(exc).lower()
-                           else getattr(_cf_cr, 'ERROR_CREAR_OTRO', 4))
+                _cod_cr = (getattr(_cf_cr, 'ERROR_CREAR_NOMBRE_EN_USO', 153) if 'name' in str(exc).lower()
+                           else getattr(_cf_cr, 'ERROR_CREAR_OTRO', 154))
                 ses.enviar(struct.pack('<HH', 0x0001, _cod_cr) + bytes(150))
                 return
             ses.enviar(personajes.respuesta_creacion(d['ranura'], nuevo))
