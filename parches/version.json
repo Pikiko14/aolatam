@@ -1,10 +1,10 @@
 {
- "version": "0.0.0.185",
- "numero": 185,
- "huella": "661bcfdb33dfc562b8c65440c203a075c1ec40524448697ccac8a50d50cee6ec",
+ "version": "0.0.0.186",
+ "numero": 186,
+ "huella": "ff7c93a3aaf166b203eb0c91967ed757e475d6d965d1f9ff45ee20748efd5d8b",
  "pak": "update27.pak",
- "bytes": 30971062,
- "sha256": "0c2b379084900ff6d30e2d7aa80e9a748be7ffb31af1aeb1a58d3f3215c7b318",
+ "bytes": 30969613,
+ "sha256": "eb2160855f434a267080930fa6ba8f44d4bdd882739c8a4add95a25d10f9e0af",
  "archivos": [
   "AGREEMENT.TXT",
   "MAP\\MAP002.MPC",
@@ -2265,5 +2265,5 @@
   "SHAPE\\WND01\\W006_08.SHP",
   "SHAPE\\WND01\\W006_09.SHP"
  ],
- "generado": "2026-11-14 17:54:02"
+ "generado": "2026-11-14 18:16:58"
 }

@@ -486,9 +486,56 @@ def _estados(im):
     return im, luz(1.18), d
 
 
-def _boton(src, tam=None, tinte=True, original=False):
+def _solo_boton(im, salto=26):
+    """Lo de alrededor del boton, transparente: se crece desde el borde del recorte por los colores parecidos (el fondo
+    y el marco van en degradado suave) hasta el contorno del boton, que es un salto de color. Asi un tema de otro color
+    no deja un rectangulo turquesa debajo ("los botones tienen como un background de color debajo", 14/11/2026)."""
+    import numpy as np
+    from collections import deque
+    rgb = np.array(im.convert('RGB'), dtype=np.int16)
+    h, w = rgb.shape[:2]
+    fuera = np.zeros((h, w), bool)
+    q = deque()
+    for x in range(w):
+        for y in (0, h - 1):
+            fuera[y, x] = True
+            q.append((y, x))
+    for y in range(h):
+        for x in (0, w - 1):
+            if not fuera[y, x]:
+                fuera[y, x] = True
+                q.append((y, x))
+    while q:
+        y, x = q.popleft()
+        for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            yy, xx = y + dy, x + dx
+            if 0 <= yy < h and 0 <= xx < w and not fuera[yy, xx]                     and int(np.abs(rgb[yy, xx] - rgb[y, x]).sum()) < salto:
+                fuera[yy, xx] = True
+                q.append((yy, xx))
+    alfa = Image.fromarray(((~fuera) * 255).astype(np.uint8), 'L').filter(ImageFilter.MinFilter(3))
+    alfa = alfa.filter(ImageFilter.MaxFilter(3)).filter(ImageFilter.GaussianBlur(0.7))
+    out = im.convert('RGBA')
+    out.putalpha(Image.fromarray(np.minimum(np.array(alfa), np.array(im.getchannel('A'))), 'L'))
+    return out
+
+
+def _con_forma(im, forma):
+    """Para los botones cuyo recorte empieza dentro del boton (Buy) o lleva marco pegado (la X): su forma a mano."""
+    m = Image.new('L', (im.width * 4, im.height * 4), 0)
+    d = ImageDraw.Draw(m)
+    if forma == 'circulo':
+        d.ellipse((4, 4, m.width - 5, m.height - 5), fill=255)
+    else:
+        d.rounded_rectangle((2, 2, m.width - 3, m.height - 3), radius=m.height // 2 - 2, fill=255)
+    out = im.convert('RGBA')
+    out.putalpha(m.resize(im.size, Image.LANCZOS))
+    return out
+
+
+def _boton(src, tam=None, tinte=True, original=False, forma=None):
     # los botones, con su texto ya en ingles; las flechas del paginador son las del carrusel, que en diseno() ya no estan
     im = (Image.open(DISENO).convert('RGBA') if original else diseno()).crop(src)
+    im = _con_forma(im, forma) if forma else _solo_boton(im)
     if tinte:
         im = turquesa(im)
     return reducir(im, tam or (g(src[2]) - g(src[0]), g(src[3]) - g(src[1])))
@@ -590,7 +637,8 @@ BOTONES = {
 def botones():
     res = {}
     for nombre, (_icono, src) in BOTONES.items():
-        n, f, d = _estados(_boton(src, tinte=nombre != 'comprar', original=nombre in ('ant', 'sig')))
+        forma = {'comprar': 'pastilla', 'cerrarx': 'circulo'}.get(nombre)
+        n, f, d = _estados(_boton(src, tinte=nombre != 'comprar', original=nombre in ('ant', 'sig'), forma=forma))
         for e, im in (('n', n), ('f', f), ('d', d)):
             res['aolat_mall_%s_%s' % (nombre, e)] = im
     return res
