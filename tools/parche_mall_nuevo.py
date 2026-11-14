@@ -120,7 +120,7 @@ ORO_AG = (255, 214, 92, 255)                         # el "AG" en lugar del diam
 # aparte, sin tinte, para que otro tema no los manche.
 TONO_JUEGO = 192 / 360                               # el turquesa de (0, 72, 90)
 TONOS_DISENO = (200 / 360, 300 / 360)                # del azul al lila
-ARTE_DISENO = {'logo': (0, 0, 262, 118), 'banner': (276, 194, 1032, 458), 'chica': (14, 716, 268, 1014)}
+ARTE_DISENO = {'logo': (0, 0, 268, 128), 'banner': (276, 194, 1032, 458), 'chica': (14, 716, 268, 1014)}
 
 
 def turquesa(im, excluir=()):
