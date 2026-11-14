@@ -179,3 +179,14 @@ def test_con_la_casilla_del_regalo_el_mensaje_no_la_pisa(world):
     _cmd(s, 9)
     d = mn.datos(s)
     assert d['regalo'] and d['msg'].endswith('to:') and len(d['msg']) <= mn.MSG_MAX_REGALO
+
+
+def test_gift_con_la_casilla_vacia_cancela_el_regalo(world):
+    s = world.player()
+    c = _ir_a(s, CARTA_DOBLE_EXP)
+    _cmd(s, 5, c)
+    _cmd(s, 9)
+    assert s._mall['regalo']
+    _cmd(s, 9)                                      # Gift otra vez sin nombre
+    assert not s._mall['regalo'] and 'cancelled' in s._mall['msg']
+    assert item_mall.saldo(s.usuario) == 1000000

@@ -324,7 +324,11 @@ def accion(ses, a, b, addr='?'):
         fila = next((r for r in item_mall.disponibles() if r['id'] == m['sel']), None)
         nombre = b''.join(m['nombre'].get(i, b'') for i in range(4)).split(b'\0')[0].decode('latin-1').strip()
         m['nombre'] = {}
-        if not fila:
+        if m['regalo'] and not nombre:
+            # Gift otra vez con la casilla vacia: se cancela ("no me deja cancelar el regalo", 14/11/2026)
+            m['regalo'] = False
+            m['msg'] = 'Gift cancelled.'
+        elif not fila:
             m['msg'] = 'Click an item first, then Gift.'
         elif a == 9 or not nombre:
             m['regalo'] = True
@@ -377,6 +381,10 @@ def procesar(ses, cuerpo, addr='?') -> bool:
     if not getattr(ses, 'personaje', None) or not getattr(ses, 'usuario', None):
         return True
     a, b = struct.unpack_from('<II', cuerpo, 1)
+    if a == 98:
+        log.info('[%s] mall nuevo: el cliente llamo a CreateMallWnd (ventana %s)', addr,
+                 'abierta: se cierra' if b else 'cerrada: se abre')
+        return True
     if a == 99:
         log.info('[%s] mall nuevo, prueba de la tecla: CreateMallWnd %s', addr,
                  {3: 'es la nuestra', 2: 'es otra funcion', 0: 'no existe'}.get(b, b))

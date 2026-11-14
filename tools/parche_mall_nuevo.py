@@ -486,8 +486,9 @@ def _estados(im):
     return im, luz(1.18), d
 
 
-def _boton(src, tam=None, tinte=True):
-    im = diseno().crop(src)                          # los botones, con su texto ya en ingles
+def _boton(src, tam=None, tinte=True, original=False):
+    # los botones, con su texto ya en ingles; las flechas del paginador son las del carrusel, que en diseno() ya no estan
+    im = (Image.open(DISENO).convert('RGBA') if original else diseno()).crop(src)
     if tinte:
         im = turquesa(im)
     return reducir(im, tam or (g(src[2]) - g(src[0]), g(src[3]) - g(src[1])))
@@ -589,7 +590,7 @@ BOTONES = {
 def botones():
     res = {}
     for nombre, (_icono, src) in BOTONES.items():
-        n, f, d = _estados(_boton(src, tinte=nombre != 'comprar'))
+        n, f, d = _estados(_boton(src, tinte=nombre != 'comprar', original=nombre in ('ant', 'sig')))
         for e, im in (('n', n), ('f', f), ('d', d)):
             res['aolat_mall_%s_%s' % (nombre, e)] = im
     return res
@@ -665,7 +666,7 @@ def bloque() -> str:
     poner(HISTORIAL, _btn(HISTORIAL, caja(*BOTONES['historial'][1]), I_HISTORIAL, 'OnMallHistorial',
                           tip='Your recent purchases'))
     poner(REGALAR, _btn(REGALAR, caja(*BOTONES['regalar'][1]), I_REGALAR, 'OnMallRegalar',
-                        tip='Send the selected item as a gift'))
+                        tip='Send the selected item as a gift (again with no name: cancel)'))
     poner(CERRAR, _btn(CERRAR, caja(*BOTONES['cerrar'][1]), I_CERRAR, 'OnMallCerrar'))
     poner(CERRAR_X, _btn(CERRAR_X, caja(*BOTONES['cerrarx'][1]), I_CERRAR_X, 'OnMallCerrar'))
     poner(AG, _static(AG, caja(946 + AG_DX, 60, 1034 + AG_DX, 98), color=103))

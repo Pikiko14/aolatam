@@ -24,6 +24,8 @@ end
 
 -- Alt+I (y lo que el juego use para abrir su mall): abre, o cierra si ya estaba abierta.
 NUESTRAS.CreateMallWnd = function()
+  -- aviso al servidor de que llego la llamada (accion 98; b = 1 si la ventana ya estaba abierta)
+  game.netcommand2(CMD, 98, abierta() and 1 or 0)
   if abierta() and OnMallCerrar then
     OnMallCerrar()
   else

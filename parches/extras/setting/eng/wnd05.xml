@@ -5978,7 +5978,7 @@ Leagues will receive different amounts of Repute based on the outcome of the bat
         <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
         <OnCommand>OnMallHistorial</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="61153" range="571,564,87,29" icon="61606" tooltip="10040" tooltext="Send the selected item as a gift">
+    <window class="WND_CLASS_BUTTON" id="61153" range="571,564,87,29" icon="61606" tooltip="10040" tooltext="Send the selected item as a gift (again with no name: cancel)">
         <style wsVisible="" bsHCenter="" bsVBottom="" wsTab="" />
         <OnCommand>OnMallRegalar</OnCommand>
     </window>
