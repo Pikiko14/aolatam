@@ -10,7 +10,7 @@ la pantalla de 1024 x 768. Encima van los controles de verdad, recortados del mi
   * 6 tarjetas: nombre, icono del objeto (game.getitemicon), precio y "Comprar";
   * "Mi Compra" = el Store Cabinet (10 casillas): pulsar una pasa el objeto a la mochila;
   * "Mis Objetos" = la mochila (35 casillas, solo para ver), "Espacio" y "Ordenar";
-  * abajo, el mensaje y Historial, Regalar (con la casilla del nombre) y Cerrar; arriba el Angel Gold, el oro y la X.
+  * abajo, el mensaje y Historial, Regalar (con la casilla del nombre) y Cerrar; arriba el Angel Gold y la X.
 La logica es server/lua/mall_nuevo.lua y server/mall_nuevo.py (comando 173). La abre el GM con /mall.
 
     python tools/parche_mall_nuevo.py
@@ -49,7 +49,7 @@ def caja(x0, y0, x1, y1):
 
 # ---- ids ------------------------------------------------------------------------------------------------------------
 VENTANA = 61000
-CERRAR_X, AG, ORO = 61001, 61002, 61003
+CERRAR_X, AG = 61001, 61002                         # (61003 era el oro)
 TAB = 61010                                         # 10
 SUB = 61020                                         # 10
 PAG_ANT, PAG_TXT, PAG_SIG = 61030, 61031, 61032
@@ -59,7 +59,6 @@ MOCH = 61100                                        # 35
 ESPACIO, ORDENAR = 61140, 61141
 MENSAJE, REGALO_NOMBRE, HISTORIAL, REGALAR, CERRAR = 61150, 61151, 61152, 61153, 61154
 FAVORITO = 61155                                    # la estrella de "Productos Destacados"
-INTRO = 61156                                       # el texto de la pestana Intro, sobre las tarjetas
 ARTE = 61190                                        # 3: logo, banner y chica, sin el tinte del tema
 FONDO = 61199
 
@@ -72,8 +71,8 @@ I_ARTE = 61610                                      # 3
 # Las pestanas y sus categorias son las del Item Mall del juego (setting/eng/malllayout.xml, "debe funcionar tal cual
 # el IM actual", 14/11/2026), en el orden del diseno. Cada categoria: (clave, texto, icono del diseno); las mismas
 # claves, con sus tipos de item_mall.json, en server/mall_nuevo.py.
-PESTANAS = ('Top Sale', 'On Sale', 'LuckyBag', 'Special', 'Pet', 'Function', 'Furniture', 'Fashion', 'Intro',
-            'Favorite')
+PESTANAS = ('Top Sale', 'On Sale', 'LuckyBag', 'Special', 'Pet', 'Function', 'Furniture', 'Fashion', 'Favorite')
+# Sin Intro ni oro ("quita el oro ... y quita la seccion de intro", 14/11/2026).
 ICONOS_DISENO = ('newest', 'hot', 'avatar', 'accessories', 'pets', 'mounts', 'consumables', 'upgrade', 'furniture',
                  'others')
 CATEGORIAS = (
@@ -87,7 +86,7 @@ CATEGORIAS = (
     ('fu_carpet', 'Floor & Carpet', 'furniture'), ('fu_gacha', 'Furniture Gacha', 'furniture'),
     ('fa_male', 'Male', 'avatar'), ('fa_female', 'Female', 'avatar'), ('fa_robot', 'Robots', 'mounts'),
     ('fa_bubble', 'Bubbles', 'others'),
-    ('intro', 'Mall Guide', 'newest'), ('favorite', 'Favorites', 'hot'), ('history', 'History', 'furniture'),
+    ('favorite', 'Favorites', 'hot'), ('history', 'History', 'furniture'),
 )
 
 # ---- el diseno (medidas en el diseno de 1402 x 1122) -----------------------------------------------------------------
@@ -107,6 +106,8 @@ MOCH_X = (1088, 1152, 1216, 1281, 1344)
 MOCH_Y = (505, 567, 632, 695, 760, 822, 885)
 CAB_X = (1095, 1159, 1223, 1285, 1345)
 CAB_Y = (288, 352)
+CAJA_ORO = (1086, 54, 1314, 102)                     # la moneda, el numero y el "+" del oro
+ORO_AG = (255, 214, 92, 255)                         # el "AG" en lugar del diamante
 
 
 # EL COLOR DEL TEMA ("que se vea harmonioso si es posible tenga el color del tema", 14/11/2026). Las ventanas del juego
@@ -189,15 +190,20 @@ def limpio() -> Image.Image:
             pt = PARTES[y0]
             _franja(im, (x0 + 14, y0 + pt['nombre'][0], x0 + 222, y0 + pt['nombre'][1]), x0 + 16)
             _tarjeta_arte(im, x0, y0)
-            _franja(im, (x0 + 110, y0 + pt['precio'][0], x0 + 200, y0 + pt['precio'][1]), x0 + 202)
+            _franja(im, (x0 + 72, y0 + pt['precio'][0], x0 + 200, y0 + pt['precio'][1] - 4), x0 + 70)
+            _texto(im, 'AG', x0 + 92, y0 + sum(pt['precio']) // 2, 24, ORO_AG)
     hueco = im.crop(SLOT_LIMPIO)
     for y in MOCH_Y:
         for x in MOCH_X:
             im.alpha_composite(hueco, (x - 31, y - 31))
     _franja(im, (1128, 934, 1236, 972), 1236)                     # "20 / 100"
     _franja(im, (96, 1046, 840, 1086), 836)                       # el mensaje de abajo
-    _franja(im, (944, 60, 1034, 98), 1034)                        # los numeros del Angel Gold y del oro
-    _franja(im, (1146, 60, 1264, 98), 1142)
+    _franja(im, (944, 60, 1034, 98), 1034)                        # el numero del Angel Gold
+    # Sin oro ni diamantes ("quita el oro, que diga ag en vez de diamantes", 14/11/2026): la caja del oro se borra con
+    # el fondo del marco y el diamante del Angel Gold pasa a "AG", como en las tarjetas.
+    _franja(im, CAJA_ORO, CAJA_ORO[0] - 4)
+    _franja(im, (896, 62, 937, 96), 939)
+    _texto(im, 'AG', 916, 79, 26, ORO_AG)
     return im
 
 
@@ -455,7 +461,6 @@ def bloque() -> str:
     poner(CERRAR, _btn(CERRAR, caja(*BOTONES['cerrar'][1]), I_CERRAR, 'OnMallCerrar'))
     poner(CERRAR_X, _btn(CERRAR_X, caja(*BOTONES['cerrarx'][1]), I_CERRAR_X, 'OnMallCerrar'))
     poner(AG, _static(AG, caja(946, 60, 1034, 98), color=103))
-    poner(ORO, _static(ORO, caja(1146, 60, 1262, 98), color=105, derecha=True))
     for i in range(len(PESTANAS)):
         poner(TAB + i, _btn(TAB + i, caja(*tab_rect(i)), I_TAB + 2 * i, 'OnMallTab', appdata=i))
     paso = (CATS[3] - CATS[1]) / 10
@@ -466,8 +471,6 @@ def bloque() -> str:
                             visible=False))
     poner(FAVORITO, _btn(FAVORITO, caja(282, 480, 326, 524), 0, 'OnMallFavorito',
                          tip='Add or remove the selected item from Favorite'))
-    poner(INTRO, _w('WND_CLASS_MSTATIC', INTRO, caja(300, 540, 1026, 1000), ' title="" fcolor="103" font="1"',
-                    'ssLeft=""'))
     poner(PAG_ANT, _btn(PAG_ANT, caja(900, 486, 934, 520), I_ANT, 'OnMallPag', appdata=0, tip='Previous page'))
     poner(PAG_TXT, _static(PAG_TXT, caja(936, 486, 990, 520), centro=True))
     poner(PAG_SIG, _btn(PAG_SIG, caja(992, 486, 1026, 520), I_SIG, 'OnMallPag', appdata=1, tip='Next page'))

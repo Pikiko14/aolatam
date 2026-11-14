@@ -59,13 +59,6 @@ def test_cada_pestana_del_catalogo_tiene_productos(world):
         assert any(hay), nombre
 
 
-def test_intro_lleva_el_texto_y_ninguna_tarjeta(world):
-    s = world.player()
-    _cmd(s, 2, [n for n, _ in mn.PESTANAS].index('Intro'))
-    d = mn.datos(s)
-    assert d['cartas'] == [] and 'Angel Gold' in d['intro'] and chr(92) + 'n' in d['intro'] and chr(10) not in d['intro']
-
-
 def test_abrir_manda_el_lua_y_pinta(world):
     s = world.player()
     enviados = []

@@ -31,7 +31,7 @@ CONFIRMAR_SEGUNDOS = 15
 # (icono 61540 + 2k normal, + 1 elegida).
 CLAVES = ('top', 'sale', 'lb_hot', 'lb_equip', 'lb_armor', 'lb_mount', 'sp_general', 'sp_potion', 'sp_teleport', 'pet',
           'fn_general', 'fn_mini', 'fu_floor', 'fu_wall', 'fu_carpet', 'fu_gacha', 'fa_male', 'fa_female', 'fa_robot',
-          'fa_bubble', 'intro', 'favorite', 'history')
+          'fa_bubble', 'favorite', 'history')
 # Las pestanas con sus categorias, las del Item Mall del juego (setting/eng/malllayout.xml: 功能類 11 一般 / 12 小遊戲,
 # 特殊類 13 / 16 藥水 / 27 傳送, 福袋類 28 熱門 / 29 裝備 / 30 / 31 座騎, 寵物類 19, 裝扮機甲 24 男裝 / 25 女裝 /
 # 17 機甲 / 40 對話泡泡, 傢俱類 32..35, 熱賣商品 22, 搶購區 23, 商城說明, 我的最愛), en el orden del diseno:
@@ -45,22 +45,8 @@ PESTANAS = (
     ('Function', (('fn_general', (11,)), ('fn_mini', (12,)))),
     ('Furniture', (('fu_floor', (32,)), ('fu_wall', (33,)), ('fu_carpet', (34,)), ('fu_gacha', (35,)))),
     ('Fashion', (('fa_male', (24,)), ('fa_female', (25,)), ('fa_robot', (17,)), ('fa_bubble', (40,)))),
-    ('Intro', (('intro', None),)),
     ('Favorite', (('favorite', None),)),
 )
-# La pestana Intro: lo del texto 12406 del Item Mall del juego, con lo de este servidor.
-# El MSTATIC del juego salta de linea con la barra y la n escritas (asi esta el texto 12406 de wnd05.xml).
-INTRO = ('[Angel Gold]\\n'
-         '1. Everything in the Item Mall is bought with Angel Gold. Every account starts with 1,000,000 and you earn '
-         'more from bosses and events.\\n'
-         '2. Angel Gold belongs to your account: it cannot be traded.\\n\\n'
-         '[How to use the Mall]\\n'
-         '1. Pick a tab and a category, then click an item to select it.\\n'
-         '2. Comprar buys it (press it twice to confirm). It waits in Mi Compra: click it to move it to your '
-         'backpack.\\n'
-         '3. Regalar sends the selected item to another player: write the name and press Regalar again.\\n'
-         '4. The star keeps the selected item in Favorite. Historial shows what you bought.\\n'
-         '5. Mi Compra holds 10 deliveries at most. Make sure your backpack has room before you claim them.')
 HISTORIAL = (('history', None),)
 _LUA = None
 
@@ -184,8 +170,6 @@ def productos(ses, m=None) -> list:
         return [por_id[p] for p in favoritos(ses.usuario) if p in por_id]
     if clave == 'history':
         return [por_id[p] for p in comprados(ses.usuario) if p in por_id]
-    if clave == 'intro':
-        return []
     if clave == 'top' and not any(r['category'] == 22 for r in filas):
         return mas_vendidos(filas)
     orden = {c: i for i, c in enumerate(cats)}
@@ -225,7 +209,6 @@ def datos(ses) -> dict:
     moch, espacio = _mochila(ses)
     return {
         'ag': _miles(item_mall.saldo(ses.usuario)),
-        'oro': _miles(getattr(ses, 'oro', 0) or 0),
         'tab': -1 if m['historial'] else m['tab'],
         'subs': [CLAVES.index(clave) for clave, _ in subs],
         'sub': m['sub'],
@@ -236,7 +219,6 @@ def datos(ses) -> dict:
         'espacio': espacio,
         'msg': m['msg'],
         'regalo': bool(m['regalo']),
-        'intro': INTRO if subs[m['sub']][0] == 'intro' else '',
     }
 
 
