@@ -3835,29 +3835,31 @@
         <child>13408</child>
         <child>13414</child>
         <child>13413</child>
-        <child>13415</child>
+        <child>13417</child>
         <child>13409</child>
     </window>
-    <window class="WND_CLASS_LIST" id="13408" range="4,4,248,186" cols="1" rows="11" gapx="0" gapy="2" fcolor="103" font="1" bcolor="13400" tpos="2,1">
+    <window class="WND_CLASS_LIST" id="13408" range="2,2,252,188" cols="1" rows="5" gapx="0" gapy="2" fcolor="103" font="1" bcolor="13400" tpos="44,12" tooltip="10040" tooltext="Click to keep or sell this item">
         <style wsVisible="" lsVScroll="" lsCheck="" lsSCheck="" wsTab="" />
         <child>13410</child>
         <OnCommand>OnVentaMasivaFila</OnCommand>
     </window>
-    <window class="WND_CLASS_SCROLLBAR" id="13410" range="249,-1,9,188" uicon="131" dicon="132" ticon="133" urange="0,0,9,10" drange="0,178,9,10" trange="0,10,9,168" thumbmin="8">
+    <window class="WND_CLASS_SCROLLBAR" id="13410" range="253,-1,9,188" uicon="131" dicon="132" ticon="133" urange="0,0,9,10" drange="0,180,9,10" trange="0,10,9,170" thumbmin="8">
         <style wsVisible="" csVScroll="" csSimple="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="13414" range="6,195,250,14" fcolor="103" font="1" title="">
+    <window class="WND_CLASS_STATIC" id="13414" range="4,196,92,14" fcolor="103" font="1" title="">
         <style wsVisible="" ssVCenter="" />
     </window>
     <window class="WND_CLASS_STATIC" id="13413" range="98,215,78,14" fcolor="103" font="1" title="0">
         <style wsVisible="" ssVCenter="" ssRight="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="13415" range="150,256,80,14" fcolor="103" font="1" title="Confirm sell">
+    <window class="WND_CLASS_STATIC" id="13417" range="21,253,75,14" fcolor="105" font="1" title="0">
         <style wsVisible="" ssVCenter="" ssRight="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="13409" range="233,253,26,18" icon="1154" tooltip="10040" tooltext="Confirm sell">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnVentaMasivaVender</OnCommand>
     </window>
+    <icon id="60500" dir="\wnd01\" normal="aolat_vm_si" focus="normal" down="normal" disable="normal" />
+    <icon id="60501" dir="\wnd01\" normal="aolat_vm_no" focus="normal" down="normal" disable="normal" />
     <!-- /aolat venta masiva -->
 </root>

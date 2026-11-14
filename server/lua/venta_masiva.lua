@@ -7,6 +7,7 @@ local V = VENTA_MASIVA
 local CMD = 172
 local PAG_COMPRA, PAG_VENTA, PAG_MASIVA = 13404, 13405, 13407
 local BTN_COMPRA, BTN_VENTA, BTN_MASIVA = 13402, 13403, 13406
+ICONO_SI, ICONO_NO = 60500, 60501
 
 local function hijo(id)
   if not V.wnd or not window.isexist(V.wnd) then
@@ -66,18 +67,20 @@ function VentaMasivaLista(filas, total, oro)
   local lista = de_pagina(13408)
   window.clearlist(lista)
   local n = 0
-  for _, f in ipairs(filas) do
-    local marca = f[1] == 1 and "[x] " or "[  ] "
+  -- Como la lista de Sell: una fila por marco, en la casilla el icono de marcado (60500) o no (60501).
+  for i, f in ipairs(filas) do
     if f[1] == 1 then
       n = n + 1
     end
-    window.insertitemstr(lista, marca .. corto(f[2], 24) .. "  " .. tostring(f[3]) .. " G", 0)
+    window.insertitemstrappnum(lista, corto(f[2], 22) .. " - " .. tostring(f[3]) .. " G",
+                               f[1] == 1 and ICONO_SI or ICONO_NO, i - 1)
   end
   window.settitle(de_pagina(13413), tostring(total))
+  window.settitle(de_pagina(13417), tostring(oro or 0))
   if #filas == 0 then
-    window.settitle(de_pagina(13414), "No gear or weapons to sell.")
+    window.settitle(de_pagina(13414), "Nothing to sell")
   else
-    window.settitle(de_pagina(13414), tostring(n) .. " of " .. tostring(#filas) .. " selected. Click to toggle.")
+    window.settitle(de_pagina(13414), tostring(n) .. " of " .. tostring(#filas) .. " selected")
   end
 end
 
