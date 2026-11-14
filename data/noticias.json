@@ -1,6 +1,11 @@
 [
  {
   "fecha": "2026-11-14",
+  "titulo": "Update 0.0.0.172: new alerts, buttons and Bulk Sell icons",
+  "texto": "Please update to version 0.0.0.172 from AngelsLauncher. Alert boxes and grey window frames have a new night-blue and gold look, with new OK/Cancel buttons and new window title buttons (close, pin, help, lock, minimize). Bulk Sell now shows each item icon and its name, and mounts and robots are no longer listed."
+ },
+ {
+  "fecha": "2026-11-14",
   "titulo": "Update 0.0.0.168: new Bulk Sell look",
   "texto": "Please update to version 0.0.0.168 from AngelsLauncher. The Bulk tab of the NPC Store now looks like the Sell page: one item per row with a check box, its name and price. Click a row to keep an item, check the total to receive, then press the confirm button to sell."
  },
