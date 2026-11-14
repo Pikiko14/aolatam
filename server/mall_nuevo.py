@@ -358,6 +358,17 @@ def accion(ses, a, b, addr='?'):
     return True
 
 
+# /malltecla: lo mismo que hace el exe con Alt+I (buscar la global CreateMallWnd y llamarla), avisando antes al
+# servidor de que encontro (accion 99: +1 si es la nuestra, +2 si es una funcion).
+PRUEBA_TECLA = '\n'.join((
+    'local f = CreateMallWnd',
+    'local n = (type(f) == "function" and 2 or 0)',
+    'if AOLAT_MALL_NUESTRAS and f == AOLAT_MALL_NUESTRAS.CreateMallWnd then n = n + 1 end',
+    'game.netcommand2(173, 99, n)',
+    'if f then f() end',
+))
+
+
 def procesar(ses, cuerpo, addr='?') -> bool:
     """El 0x002F de la ventana. True si era suyo."""
     if len(cuerpo) < 9 or cuerpo[0] != CMD_MALL:
@@ -365,6 +376,10 @@ def procesar(ses, cuerpo, addr='?') -> bool:
     if not getattr(ses, 'personaje', None) or not getattr(ses, 'usuario', None):
         return True
     a, b = struct.unpack_from('<II', cuerpo, 1)
+    if a == 99:
+        log.info('[%s] mall nuevo, prueba de la tecla: CreateMallWnd %s', addr,
+                 {3: 'es la nuestra', 2: 'es otra funcion', 0: 'no existe'}.get(b, b))
+        return True
     if a == 1:
         log.info('[%s] mall nuevo abierto (%s)', addr, {1: 'Alt+I', 2: 'icono'}.get(b, 'GM'))
         ses.enviar(*abrir(ses))
