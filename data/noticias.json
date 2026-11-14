@@ -1,6 +1,11 @@
 [
  {
   "fecha": "2026-11-13",
+  "titulo": "Update 0.0.0.166: new character creation, Bulk Sell and skill effects",
+  "texto": "- New character creation screens: cleaner layout with cards, hair grid and colour palettes.\n- Channel selector: narrower, and the selected channel is highlighted in gold.\n- NPC Store: new Bulk Sell tab. Your gear and weapons come pre-selected; click a row to toggle it and press Confirm sell.\n- Treasure maps: the chest now appears on the ground when you dig it up.\n- Shapeshift items transform you instantly, and the form ends when you cast a skill.\n- Panther Killing and other projectile skills: the impact now lands on the target.\n- Skills now do what their description says: curses, slows, silences, heals, life/mana drain, damage reflection, Arcane Fire/Ice Age/Lightning Seal elemental damage, Cloud Burst spell crit, Extended Shot and Sword Requiem range, Quick Step speed, Shield Wall immunity, Exorshield cleanse, Rejuvenation and Limit Breaker regeneration, Rage Armor and Spear Trap release, Sacred Pact and Illusionist taunts, and knockbacks/pulls (Basic Attack, TNT Arrow, Berserker's Fury, Whirlfire...).\n- Creating a character with a name in use now says \"The character name is unavailable.\""
+ },
+ {
+  "fecha": "2026-11-13",
   "titulo": "Update 0.0.0.164: new start screen",
   "texto": "Please update to version 0.0.0.164 from AngelsLauncher. The game now opens with the Angels Online Forever start screen, with our new emblem over the sky. The Celestial Lion mount also looks cleaner: no more stray pixels around its tail."
  },
