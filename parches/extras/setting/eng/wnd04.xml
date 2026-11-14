@@ -278,10 +278,10 @@
         <style wsVisible="" wsMoveable="" />
         <child>13402</child>
         <child>13403</child>
+        <child>13406</child>
         <child>13404</child>
         <child>13405</child>
         <child>13407</child>
-        <child>13406</child>
         <OnClose>OnNPCSaleClose</OnClose>
     </window>
     <window class="WND_CLASS_BUTTON" id="13402" range="8,231,32,16" icon="13504" title="Buy" fcolor="103" font="1">

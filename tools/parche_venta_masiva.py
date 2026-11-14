@@ -76,9 +76,13 @@ def wnd04():
     m = vl._ventana(texto, 13401)
     fin = texto.index('</window>', m.end())
     hijos = texto[m.end():fin]
-    for h in HIJOS:
-        if '<child>%d</child>' % h not in hijos:
-            hijos = hijos.replace('<child>13405</child>', '<child>13405</child>%s        <child>%d</child>' % (nl, h), 1)
+    # EL ORDEN IMPORTA: el juego pinta los hijos del ultimo al primero. Con el boton 13406 al final de la lista lo
+    # tapaba la pagina de Sell (13405, 205 px de ancho) y salia un "Bu.." apagado (13/11/2026, "no se ve el bulk
+    # sell"). El boton va junto a Buy/Sell, delante de las paginas; la pagina nueva detras de las otras dos.
+    # Se quitan primero: la copia de extracted_paks puede traer ya los nuestros (se volco ahi el parche).
+    hijos = re.sub(r'[ \t]*<child>(?:%s)</child>\r?\n?' % '|'.join(map(str, HIJOS)), '', hijos)
+    for h, tras in ((13406, 13403), (13407, 13405)):
+        hijos = hijos.replace('<child>%d</child>' % tras, '<child>%d</child>%s        <child>%d</child>' % (tras, nl, h), 1)
     texto = texto[:m.end()] + hijos + texto[fin:]
     fin = texto.rindex('</')
     texto = texto[:fin] + bloque(nl) + texto[fin:]
