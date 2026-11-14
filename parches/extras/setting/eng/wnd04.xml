@@ -3831,14 +3831,14 @@
         <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />
         <OnCommand>OnNPCSale_ChaPage_Bulk</OnCommand>
     </window>
-    <window class="WND_CLASS_BASE" range="0,0,205,274" id="13407" icon="13402">
+    <window class="WND_CLASS_BASE" range="0,0,205,274" id="13407" icon="60502">
         <child>13408</child>
         <child>13414</child>
         <child>13413</child>
         <child>13417</child>
         <child>13409</child>
     </window>
-    <window class="WND_CLASS_LIST" id="13408" range="2,2,252,188" cols="1" rows="5" gapx="0" gapy="2" fcolor="103" font="1" bcolor="13400" tpos="6,12" tooltip="10040" tooltext="Click to keep or sell this item">
+    <window class="WND_CLASS_LIST" id="13408" range="2,2,252,188" cols="1" rows="5" gapx="0" gapy="2" fcolor="103" font="1" bcolor="13400" tpos="14,12" tooltip="10040" tooltext="Click to keep or sell this item">
         <style wsVisible="" lsVScroll="" lsCheck="" lsSCheck="" wsTab="" />
         <child>13410</child>
         <OnCommand>OnVentaMasivaFila</OnCommand>
@@ -3861,5 +3861,6 @@
     </window>
     <icon id="60500" dir="\wnd01\" normal="aolat_vm_si" focus="normal" down="normal" disable="normal" />
     <icon id="60501" dir="\wnd01\" normal="aolat_vm_no" focus="normal" down="normal" disable="normal" />
+    <icon id="60502" dir="\wnd01\" normal="aolat_vm_fondo" focus="normal" down="normal" disable="normal" />
     <!-- /aolat venta masiva -->
 </root>

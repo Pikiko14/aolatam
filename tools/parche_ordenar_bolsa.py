@@ -76,8 +76,9 @@ def wnd03(texto: str) -> str:
 
 def main():
     SHAPES.mkdir(parents=True, exist_ok=True)
+    import marcos_modernos as mm         # desde el 14/11/2026 con el cristal de los demas botones
     for estado in 'nfd':
-        (SHAPES / ('aolat_ordenar_%s.shp' % estado)).write_bytes(icono(estado))
+        (SHAPES / ('aolat_ordenar_%s.shp' % estado)).write_bytes(mm.a_shp(mm.boton_titulo('ordenar', estado)))
     crudo = WND03.read_bytes()
     bom = crudo.startswith(b'\xef\xbb\xbf')
     nuevo = wnd03(crudo.decode('utf-8-sig'))

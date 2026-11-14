@@ -152,7 +152,8 @@ def originales(nombres):
     buscados = {('shape' + B + 'wnd01' + B + n + '.shp').lower() for n in nombres}
     mejor = {}
     for pak in fi.CLIENTE.glob('*'):
-        if pak.suffix.lower() != '.pak' or paks_cliente.numero(pak.name) < -1:
+        # update27 en adelante es nuestro parche (sin .bak): leerlo seria recolorear lo ya recoloreado en cada pasada.
+        if pak.suffix.lower() != '.pak' or not -1 <= paks_cliente.numero(pak.name) < 27:
             continue
         fuente = pak.with_name(pak.name + '.bak')
         datos = (fuente if fuente.exists() else pak).read_bytes()
@@ -237,6 +238,9 @@ def boton_titulo(cual: str, estado: str) -> Image.Image:
         d.line(((4, 5), (4, 6)), fill=c)
         d.line(((9, 5), (9, 6)), fill=c)
         d.rectangle((3, 6, 10, 10), fill=c)
+    elif cual == 'ordenar':                      # ordenar la mochila: barras de mayor a menor
+        for y, x1 in ((3, 10), (6, 8), (9, 6)):
+            d.line(((3, y), (x1, y)), fill=c, width=2)
     else:                                        # btn001 chincheta
         d.ellipse((5, 2, 10, 7), fill=c)
         d.line(((6, 7), (3, 10)), fill=c, width=1)
@@ -249,6 +253,90 @@ def botones_titulo():
         for estado in ('n', 'f', 'd'):
             im = boton_titulo(cual, estado)
             res['%s_%s' % (cual, estado)] = (im, a_shp(im))
+    return res
+
+
+# ---- los botones de la mochila (Prop 3031: btn042 borrar, btn218 bolsa de moda, btn115 mochila, btn043 equipo,
+# btn044 comercio, btn045 puesto; btn041 el del almacen, 17 x 17) y el de ordenar del titulo -------------------------
+# "cambia los botones del backpack incluyendo el de filtro por unos acordes a los nuevos" (14/11/2026). El dibujo es
+# el del original (lo casi blanco dentro del marco gris) sobre el cristal de los demas: crema en azul, oscuro en oro
+# al pulsar.
+BOTONES_MOCHILA = ('btn041', 'btn042', 'btn043', 'btn044', 'btn045', 'btn115', 'btn218')
+# "lo mismo en el angel baby y en el item mall" (14/11/2026). Son los botones grises de toda la interfaz:
+# btn095 (43 x 18: Set, Check, Add, Update, Buy, Gift, Try, Delete), btn111 (55 x 18: pestanas del Mall y Reset),
+# btn178 (81 x 18: Add Favorite), btn089 (47 x 16: pestanas de Angel Baby), btn112 (70 x 18: Backpack, Deposit...),
+# btn093 (la flecha), btn090 / btn091 (paginas) y btn077 (desplegable). El _d (pulsado o pestana elegida) en oro.
+BOTONES_VENTANAS = ('btn095', 'btn111', 'btn178', 'btn089', 'btn112', 'btn093', 'btn090', 'btn091', 'btn077')
+
+
+def leer16(d: bytes) -> Image.Image:
+    """Un .shp de tipo 2 sin paleta (2 bytes RGB565 por pixel, cab[3] = 512), como los botones de la mochila."""
+    cab = struct.unpack_from('<4s19I', d)
+    w, h = cab[5], cab[6]
+    offs = struct.unpack_from('<%dI' % h, d, 80)
+    im = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    px = im.load()
+    for y in range(h):
+        p = offs[y]
+        while True:
+            n, x, src = struct.unpack_from('<HHI', d, p)
+            p += 8
+            if x == 0xFFFF:
+                break
+            for i in range(n):
+                c = struct.unpack_from('<H', d, src + 2 * i)[0]
+                px[x + i, y] = (((c >> 11) & 31) * 255 // 31, ((c >> 5) & 63) * 255 // 63, (c & 31) * 255 // 31, 255)
+    return im
+
+
+def leer_cualquiera(d: bytes) -> Image.Image:
+    cab = struct.unpack_from('<4s19I', d)
+    if cab[2] == 4:                              # indice de la paleta + alfa
+        import parche_venta_masiva as pvm
+        return pvm.leer_indice_alfa(d)
+    return leer16(d) if cab[16] == 0 else leer8(d)   # sin paleta: RGB565 directo
+
+
+def glifo(im: Image.Image, borde: int = 2):
+    """Los pixeles del dibujo: lo casi blanco, sin el marco de fuera."""
+    px = im.load()
+    puntos = []
+    for y in range(borde, im.height - borde):
+        for x in range(borde, im.width - borde):
+            r, g, b, a = px[x, y]
+            if a and 0.299 * r + 0.587 * g + 0.114 * b > 215:
+                puntos.append((x, y))
+    return puntos
+
+
+def boton_con_glifo(puntos, w: int, h: int, estado: str) -> Image.Image:
+    import creacion_personaje as cp
+    e = {'n': 'n', 'f': 'f', 'd': 's', 'b': 'n'}[estado]
+    im = cp._cristal(w, h, e, 5 if w > 16 else 4, oro=(estado == 'd'))
+    c = (40, 24, 4, 255) if estado == 'd' else (255, 236, 170, 255)
+    px = im.load()
+    for x, y in puntos:
+        px[x, y] = c
+    if estado == 'b':                            # apagado: sin color y medio transparente
+        gris = im.convert('LA').convert('RGBA')
+        gris.putalpha(im.getchannel('A').point(lambda a: a * 6 // 10))
+        im = gris
+    return im
+
+
+def botones_mochila():
+    todos = BOTONES_MOCHILA + BOTONES_VENTANAS
+    orig = originales(['%s_%s' % (b, e) for b in todos for e in 'nb'])
+    res = {}
+    for b in todos:
+        base = leer_cualquiera(orig['%s_n' % b])
+        puntos = glifo(base)
+        for estado in ('n', 'f', 'd') + (('b',) if '%s_b' % b in orig else ()):
+            im = boton_con_glifo(puntos, base.width, base.height, estado)
+            res['%s_%s' % (b, estado)] = (im, a_shp(im))
+    for estado in 'nfd':
+        im = boton_titulo('ordenar', estado)
+        res['aolat_ordenar_%s' % estado] = (im, a_shp(im))
     return res
 
 
@@ -282,6 +370,11 @@ def main():
         print(nombre, len(datos), 'bytes')
     for nombre, (_im, datos) in botones_titulo().items():
         (DESTINO / (nombre + '.shp')).write_bytes(datos)
+        print(nombre, len(datos), 'bytes')
+    for nombre, (_im, datos) in botones_mochila().items():
+        (DESTINO / (nombre + '.shp')).write_bytes(datos)
+        if nombre.startswith('btn042'):          # el de borrar del Prop es el icono 1157, en game/02
+            (DESTINO_BOTONES / (nombre + '.shp')).write_bytes(datos)
         print(nombre, len(datos), 'bytes')
 
 

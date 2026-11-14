@@ -26,11 +26,14 @@ RAIZ = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(RAIZ / 'tools'))
 import ventana_login as vl  # noqa: E402
 from icono_subasta import a_shp  # noqa: E402
+import marcos_modernos as mm  # noqa: E402
+import struct  # noqa: E402
 
 RELATIVA = r'setting\eng\wnd04.xml'
 MARCA = 'aolat venta masiva'
 HIJOS = (13406, 13407)
 ICONO_SI, ICONO_NO = 60500, 60501
+ICONO_FONDO, ARCHIVO_FONDO = 60502, 'aolat_vm_fondo'
 ARCHIVO_SI, ARCHIVO_NO = 'aolat_vm_si', 'aolat_vm_no'
 LADO = 34                                        # la casilla de las filas de Sell mide ~35 x 35
 
@@ -50,8 +53,47 @@ def casilla(marcada: bool) -> Image.Image:
     return im
 
 
+def leer_indice_alfa(d: bytes) -> Image.Image:
+    """Un .shp de tipo 4 con 2 bytes por pixel (indice de la paleta RGB565 + alfa), como el fondo w060_02."""
+    cab = struct.unpack_from('<4s19I', d)
+    w, h = cab[5], cab[6]
+    offs = struct.unpack_from('<%dI' % h, d, 80)
+    pal = [struct.unpack_from('<H', d, cab[16] + 2 * i)[0] for i in range(256)]
+    rgb = [(((c >> 11) & 31) * 255 // 31, ((c >> 5) & 63) * 255 // 63, (c & 31) * 255 // 31) for c in pal]
+    im = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    px = im.load()
+    for y in range(h):
+        p = offs[y]
+        while True:
+            n, x, src = struct.unpack_from('<HHI', d, p)
+            p += 8
+            if x == 0xFFFF:
+                break
+            for i in range(n):
+                px[x + i, y] = rgb[d[src + 2 * i]] + (d[src + 2 * i + 1],)
+    return im
+
+
+# El fondo de Sell (w060_02, icono 13402) trae dibujado el campo de cantidad (la casilla blanca de 13438 y los huecos
+# de sus flechas 13439, x 180..263, y 195..210). En Bulk no hay cantidad: se rellena con el panel de al lado
+# ("quita eso blanco que esta arriba de lo que dara", 14/11/2026).
+HUECO_CANTIDAD = (178, 194, 264, 211)
+
+
+def fondo() -> Image.Image:
+    im = leer_indice_alfa(mm.originales(['w060_02'])['w060_02'])
+    px = im.load()
+    x0, y0, x1, y1 = HUECO_CANTIDAD
+    for y in range(y0, y1):
+        muestra = px[120, y]
+        for x in range(x0, x1):
+            px[x, y] = muestra
+    return im
+
+
 def iconos():
     vl.WND01.mkdir(parents=True, exist_ok=True)
+    (vl.WND01 / (ARCHIVO_FONDO + '.shp')).write_bytes(mm.a_shp32(fondo()))
     (vl.WND01 / (ARCHIVO_SI + '.shp')).write_bytes(a_shp(casilla(True)))
     (vl.WND01 / (ARCHIVO_NO + '.shp')).write_bytes(a_shp(casilla(False)))
 
@@ -64,7 +106,7 @@ def bloque(nl):
         '    <style wsVisible="" bsHCenter="" bsVCenter="" wsTab="" />',
         '    <OnCommand>OnNPCSale_ChaPage_Bulk</OnCommand>',
         '</window>',
-        '<window class="WND_CLASS_BASE" range="0,0,205,274" id="13407" icon="13402">',
+        '<window class="WND_CLASS_BASE" range="0,0,205,274" id="13407" icon="%d">' % ICONO_FONDO,
         '    <child>13408</child>',
         '    <child>13414</child>',
         '    <child>13413</child>',
@@ -73,7 +115,7 @@ def bloque(nl):
         '</window>',
         # Las mismas medidas que la lista de Sell (13431): 5 filas de ~36 px, una por marco del fondo.
         '<window class="WND_CLASS_LIST" id="13408" range="2,2,252,188" cols="1" rows="5" gapx="0" gapy="2" '
-        'fcolor="103" font="1" bcolor="13400" tpos="6,12" tooltip="10040" tooltext="Click to keep or sell this item">',
+        'fcolor="103" font="1" bcolor="13400" tpos="14,12" tooltip="10040" tooltext="Click to keep or sell this item">',
         '    <style wsVisible="" lsVScroll="" lsCheck="" lsSCheck="" wsTab="" />',
         '    <child>13410</child>',
         '    <OnCommand>OnVentaMasivaFila</OnCommand>',
@@ -98,6 +140,7 @@ def bloque(nl):
         '</window>',
         '<icon id="%d" dir="\\wnd01\\" normal="%s" focus="normal" down="normal" disable="normal" />' % (ICONO_SI, ARCHIVO_SI),
         '<icon id="%d" dir="\\wnd01\\" normal="%s" focus="normal" down="normal" disable="normal" />' % (ICONO_NO, ARCHIVO_NO),
+        '<icon id="%d" dir="\\wnd01\\" normal="%s" focus="normal" down="normal" disable="normal" />' % (ICONO_FONDO, ARCHIVO_FONDO),
         '<!-- /%s -->' % MARCA,
     ]
     return ''.join('    ' + l + nl for l in lineas)
