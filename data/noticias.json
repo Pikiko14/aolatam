@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-14",
+    "titulo": "Update 0.0.0.186: Item Mall buttons",
+    "texto": "Please update to version 0.0.0.186 from AngelsLauncher. The Item Mall buttons now look clean with every window theme."
+  },
+  {
+    "fecha": "2026-11-14",
     "titulo": "Update 0.0.0.185: the new Item Mall",
     "texto": "Please update to version 0.0.0.185 from AngelsLauncher. The Item Mall has a brand new window: open it with Alt+I or the Item Mall icon. Same tabs and categories as before, a search box for the whole Mall, My Purchases to claim what you bought, gifts for other players and your favorites and purchase history."
   },
