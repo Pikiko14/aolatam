@@ -1,8 +1,10 @@
 -- El Item Mall nuevo (14/11/2026): la ventana 61000 (tools/parche_mall_nuevo.py) con el diseno del usuario. Lo que se
 -- ve lo decide el servidor (server/mall_nuevo.py) y llega en MallPintar(d); cada clic va con game.netcommand2(173, a, b).
-WND_MALL = WND_MALL or 0
-MALL = MALL or {}
-local M = MALL
+-- Ojo: WND_MALL y MALL son globales del Item Mall del juego (angel.dat las lee al refrescar la mochila); usarlas
+-- aqui tiraba el cliente al abrir esta ventana.
+WND_AOLAT_MALL = WND_AOLAT_MALL or 0
+AOLAT_MALL = AOLAT_MALL or {}
+local M = AOLAT_MALL
 local CMD = 173
 local VENTANA = 61000
 local CERRAR_X, AG, ORO = 61001, 61002, 61003
@@ -16,11 +18,11 @@ local I_TAB, I_SUB = 61510, 61540
 local N_TABS, N_SUBS, N_CARTAS, N_CAB, N_MOCH = 10, 10, 6, 10, 35
 
 local function hijo(id)
-  return window.find(WND_MALL, id)
+  return window.find(WND_AOLAT_MALL, id)
 end
 
 local function abierta()
-  return WND_MALL ~= 0 and window.isexist(WND_MALL)
+  return WND_AOLAT_MALL ~= 0 and window.isexist(WND_AOLAT_MALL)
 end
 
 local function cmd(a, b)
@@ -30,14 +32,14 @@ end
 
 function MallAbrir()
   if abierta() then
-    window.setforeground(WND_MALL)
+    window.setforeground(WND_AOLAT_MALL)
     return
   end
-  WND_MALL = window.create(VENTANA, 0, 0, SYSTEM_HANDLER)
-  if not window.isexist(WND_MALL) then
+  WND_AOLAT_MALL = window.create(VENTANA, 0, 0, SYSTEM_HANDLER)
+  if not window.isexist(WND_AOLAT_MALL) then
     return
   end
-  window.move(WND_MALL, SYSTEM_SCREEN_WIDTH / 2 - 380, SYSTEM_SCREEN_HEIGHT / 2 - 304)
+  window.move(WND_AOLAT_MALL, SYSTEM_SCREEN_WIDTH / 2 - 380, SYSTEM_SCREEN_HEIGHT / 2 - 304)
 end
 
 local function casilla(id, f)
@@ -163,9 +165,9 @@ end
 
 function OnMallCerrar(dwID, dwCmdID, dwParam, pParam)
   if abierta() then
-    window.destroy(WND_MALL)
+    window.destroy(WND_AOLAT_MALL)
   end
-  WND_MALL = 0
+  WND_AOLAT_MALL = 0
   return 1
 end
 
