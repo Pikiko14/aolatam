@@ -3838,7 +3838,7 @@
         <child>13417</child>
         <child>13409</child>
     </window>
-    <window class="WND_CLASS_LIST" id="13408" range="2,2,252,188" cols="1" rows="5" gapx="0" gapy="2" fcolor="103" font="1" bcolor="13400" tpos="44,12" tooltip="10040" tooltext="Click to keep or sell this item">
+    <window class="WND_CLASS_LIST" id="13408" range="2,2,252,188" cols="1" rows="5" gapx="0" gapy="2" fcolor="103" font="1" bcolor="13400" tpos="6,12" tooltip="10040" tooltext="Click to keep or sell this item">
         <style wsVisible="" lsVScroll="" lsCheck="" lsSCheck="" wsTab="" />
         <child>13410</child>
         <OnCommand>OnVentaMasivaFila</OnCommand>

@@ -74,11 +74,12 @@ function VentaMasivaLista(filas, total, oro)
     if not icono or icono <= 0 then
       icono = f[1] == 1 and ICONO_SI or ICONO_NO
     end
+    -- Solo el nombre ("que solo salga el nombre", 14/11/2026); el precio va en el total. Lo desmarcado lleva (keep).
     if f[1] == 1 then
       n = n + 1
-      window.insertitemstrappnum(lista, "Sell: " .. corto(f[2], 20) .. " - " .. tostring(f[3]) .. " G", icono, i - 1)
+      window.insertitemstrappnum(lista, corto(f[2], 26), icono, i - 1)
     else
-      window.insertitemstrappnum(lista, "Keep: " .. corto(f[2], 20), icono, i - 1)
+      window.insertitemstrappnum(lista, corto(f[2], 19) .. " (keep)", icono, i - 1)
     end
   end
   window.settitle(de_pagina(13413), tostring(total))

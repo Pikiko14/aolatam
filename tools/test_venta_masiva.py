@@ -63,3 +63,12 @@ def test_desmarcar_y_vender_solo_lo_marcado(monkeypatch):
 def test_otro_comando_no_es_suyo(monkeypatch):
     ses, _env = _sesion(monkeypatch)
     assert not app._venta_masiva(ses, 'a', struct.pack('<BII', 11, 0, 0))
+
+
+def test_las_monturas_y_los_robots_no_entran(monkeypatch):
+    ses, _env = _sesion(monkeypatch)
+    LEON, ROBOT = 83305, 3795                                      # Celestial Lion (座騎), Penguin Robot (機甲)
+    monkeypatch.setattr(inventario, 'es_equipable', lambda it: it in (ESPADA, ESCUDO, CASCO_EQUIPADO, LEON, ROBOT))
+    monkeypatch.setattr(app, '_precio_venta', lambda it: 1500000 if it in (LEON, ROBOT) else 100)
+    ses.inventario.update({23: LEON, 24: ROBOT})
+    assert [it for _r, it in app.vm_candidatos(ses)] == [ESPADA, ESCUDO]

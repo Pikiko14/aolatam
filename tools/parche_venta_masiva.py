@@ -6,7 +6,7 @@ La tienda es la 13401 de wnd04.xml (WND_CLASS_DLG_1 "Store"), con las pestanas B
   * 13406, el boton "Bulk" junto a Sell (OnNPCSale_ChaPage_Bulk);
   * 13407, su pagina, con el mismo fondo que la de vender (icono 13402) y COMO ELLA ("que sea como el sell", 13/11):
       13408 la lista con las mismas 5 filas y el mismo sitio que la de Sell (13431), cada una en su marco: en la casilla
-            el icono de marcado (60500) o desmarcado (60501) y al lado "nombre - precio G"; pulsar una fila la marca o
+            el icono del objeto (o el de marcado 60500 / 60501) y al lado su nombre (tpos se suma al ancho del icono); pulsar una fila la marca o
             la desmarca;
       13410 su barra (la de 13432), 13414 el estado ("3 of 5 selected", a la izquierda de las casillas del fondo),
       13413 el total a cobrar (donde Sell pone el suyo, 13444), 13417 el oro del jugador (el 13441 de Sell) y 13409 el
@@ -73,7 +73,7 @@ def bloque(nl):
         '</window>',
         # Las mismas medidas que la lista de Sell (13431): 5 filas de ~36 px, una por marco del fondo.
         '<window class="WND_CLASS_LIST" id="13408" range="2,2,252,188" cols="1" rows="5" gapx="0" gapy="2" '
-        'fcolor="103" font="1" bcolor="13400" tpos="44,12" tooltip="10040" tooltext="Click to keep or sell this item">',
+        'fcolor="103" font="1" bcolor="13400" tpos="6,12" tooltip="10040" tooltext="Click to keep or sell this item">',
         '    <style wsVisible="" lsVScroll="" lsCheck="" lsSCheck="" wsTab="" />',
         '    <child>13410</child>',
         '    <OnCommand>OnVentaMasivaFila</OnCommand>',

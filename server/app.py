@@ -1704,6 +1704,10 @@ def _vm_vendible(ses, ranura, item_id) -> bool:
         return False
     if not _iv.es_equipable(item_id) or _iv.es_mascota(item_id) or _iv.es_item_fashion(item_id):
         return False
+    # Monturas y robots se equipan pero no son gear (14/11/2026: salian marcados Celestial Lion, Fight Lizard, Koala y
+    # Penguin Robot, de hasta 1.500.000 G cada uno).
+    if _categoria_item(item_id) in CATEGORIAS_FUERA_DE_BULK:
+        return False
     if _precio_venta(item_id) <= 0:
         return False
     return not (__import__('arena_premios_compat').es_premio(ses, ranura)
@@ -1737,6 +1741,30 @@ def _vm_paquete(ses):
             total += precio
         filas.append([1 if marcada else 0, _nombre_item(it) + (' *' if r in mejoras else ''), precio, _icono_item(it)])
     return canal_lua.llamar('VentaMasivaLista', filas, total, int(getattr(ses, 'oro', 0) or 0))
+
+
+CATEGORIAS_FUERA_DE_BULK = ('座騎', '機甲')          # monturas y robots (物品類別 de item*.xml)
+_CATEGORIAS_ITEM = {}
+
+
+def _categoria_item(item_id) -> str:
+    """El 物品類別 del objeto ('劍', '手套', '座騎'...), o ''."""
+    it = int(item_id or 0)
+    if it not in _CATEGORIAS_ITEM:
+        cat = ''
+        try:
+            import sqlite3
+            import inventario as _iv_cat
+            con = sqlite3.connect(pathlib.Path(__file__).parent.parent / 'corpus' / 'content.db')
+            try:
+                fila = _iv_cat.fila_item(con, '"物品類別"', it)
+            finally:
+                con.close()
+            cat = str(fila[0] or '') if fila else ''
+        except Exception:
+            cat = ''
+        _CATEGORIAS_ITEM[it] = cat
+    return _CATEGORIAS_ITEM[it]
 
 
 _ICONOS_ITEM = {}
