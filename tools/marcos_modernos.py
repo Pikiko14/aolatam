@@ -46,15 +46,32 @@ PIEZAS_W006 = {
 }
 
 
+# 14/11/2026, segunda version ("ese cuadrito no me cuadra que sea bonito, moderno"): casi opaco (se transparentaba
+# el texto de detras), marco de cuatro lineas de fuera adentro y un fondo con alguna estrella muy tenue.
+CAPAS = ((SOMBRA, RADIO), ((236, 196, 104, 255), RADIO), ((140, 100, 44, 255), RADIO - 1),
+         ((70, 118, 210, 255), RADIO - 2), ((22, 42, 96, 250), RADIO - 3))
+FONDO_PANEL = (14, 28, 66, 250)
+
+
+def centro() -> Image.Image:
+    """La pieza 09 (120 x 120, se repite): el azul con unas pocas estrellas tenues, sin costuras."""
+    im = Image.new('RGBA', (120, 120), FONDO_PANEL)
+    px = im.load()
+    for x, y, luz in ((17, 23, 46), (64, 9, 30), (101, 41, 52), (38, 77, 34), (88, 96, 44), (8, 108, 28),
+                      (113, 70, 26), (52, 50, 22)):
+        r, g, b, a = px[x, y]
+        px[x, y] = (min(255, r + luz), min(255, g + luz), min(255, b + luz), a)
+    return im
+
+
 def panel() -> Image.Image:
     """El panel entero (142 x 142) del que se recortan las nueve piezas."""
     lado = 2 * L + C
     im = Image.new('RGBA', (lado, lado), (0, 0, 0, 0))
     d = ImageDraw.Draw(im)
-    d.rounded_rectangle((0, 0, lado - 1, lado - 1), radius=RADIO, fill=SOMBRA)
-    d.rounded_rectangle((1, 1, lado - 2, lado - 2), radius=RADIO - 1, fill=ORO)
-    d.rounded_rectangle((2, 2, lado - 3, lado - 3), radius=RADIO - 2, fill=BRILLO)
-    d.rounded_rectangle((3, 3, lado - 4, lado - 4), radius=RADIO - 3, fill=FONDO)
+    for i, (color, radio) in enumerate(CAPAS):
+        d.rounded_rectangle((i, i, lado - 1 - i, lado - 1 - i), radius=max(1, radio), fill=color)
+    d.rectangle((len(CAPAS), len(CAPAS), lado - 1 - len(CAPAS), lado - 1 - len(CAPAS)), fill=FONDO_PANEL)
     return im
 
 
@@ -154,14 +171,54 @@ def originales(nombres):
 
 NOMBRES_W001 = ['w001_%02d' % i for i in range(1, 10)]
 
+# ---- los botones viejos de check y X (iconos 1154 / 1155, shape\game\02\btn067_* y btn069_*, 26 x 18) -------------
+# Los del aviso y los de confirmar de toda la interfaz (Store, Bulk Sell...). Con el cristal de la creacion de
+# personaje: el check dorado como "terminar", la X en azul. Estados: n normal, f raton encima, d pulsado.
+BOTON_W, BOTON_H = 26, 18
+DESTINO_BOTONES = RAIZ / 'parches' / 'extras' / 'shape' / 'game' / '02'
+
+
+def boton(cual: str, estado: str) -> Image.Image:
+    import creacion_personaje as cp
+    e = {'n': 'n', 'f': 'f', 'd': 's'}[estado]
+    if cual == 'si':
+        im = cp._cristal(BOTON_W, BOTON_H, e, 6, oro=True)
+        # el dorado no cambia con el estado en _cristal: mas luz con el raton, mas oscuro pulsado
+        factor = {'n': 1.0, 'f': 1.18, 'd': 0.78}[estado]
+        if factor != 1.0:
+            from PIL import ImageEnhance
+            rgb = ImageEnhance.Brightness(im.convert('RGB')).enhance(factor)
+            rgb.putalpha(im.getchannel('A'))
+            im = rgb
+        d = ImageDraw.Draw(im)
+        d.line(((8, 9), (11, 12), (18, 5)), fill=(40, 24, 4, 255), width=2)
+    else:
+        im = cp._cristal(BOTON_W, BOTON_H, e, 6)
+        d = ImageDraw.Draw(im)
+        c = (255, 236, 170, 255)
+        d.line(((9, 5), (16, 12)), fill=c, width=2)
+        d.line(((16, 5), (9, 12)), fill=c, width=2)
+    if estado == 'd':                            # pulsado: medio pixel abajo, como hundido
+        im = im.transform(im.size, Image.AFFINE, (1, 0, 0, 0, 1, -1))
+    return im
+
+
+def botones():
+    res = {}
+    for cual, archivo in (('si', 'btn067'), ('no', 'btn069')):
+        for estado in ('n', 'f', 'd'):
+            im = boton(cual, estado)
+            res['%s_%s' % (archivo, estado)] = (im, a_shp(im))
+    return res
+
 
 def piezas():
-    """{nombre: (imagen, bytes del .shp)} de las 18 piezas nuevas."""
+    """{nombre: (imagen, bytes del .shp)} de las 18 piezas de marco nuevas."""
     res = {}
     lienzo = panel()
     for nombre, caja in PIEZAS_W006.items():
         if nombre == 'w006_09':
-            im = Image.new('RGBA', (120, 120), FONDO)
+            im = centro()
         else:
             im = lienzo.crop(caja)
         res[nombre] = (im, a_shp32(im))
@@ -176,6 +233,10 @@ def main():
     DESTINO.mkdir(parents=True, exist_ok=True)
     for nombre, (_im, datos) in piezas().items():
         (DESTINO / (nombre + '.shp')).write_bytes(datos)
+        print(nombre, len(datos), 'bytes')
+    DESTINO_BOTONES.mkdir(parents=True, exist_ok=True)
+    for nombre, (_im, datos) in botones().items():
+        (DESTINO_BOTONES / (nombre + '.shp')).write_bytes(datos)
         print(nombre, len(datos), 'bytes')
 
 
