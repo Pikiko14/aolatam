@@ -564,6 +564,12 @@ def entrar(ses, addr='?'):
         log.info('raid %d: %s empieza la corrida', r['id'], _nombre(ses))
     if c['zona'] >= len(_datos(r)['zonas']):
         return 'This raid is already complete. Create a new one next week.'
+    # Angel Pass: "participar en la Raid" (la regla 參與紅白類, con su texto cambiado en string.xml), una vez por
+    # corrida y personaje (tools/pase_tareas.py, 15/11/2026)
+    contados = c.setdefault('pase', set())
+    if _cid(ses) not in contados:
+        contados.add(_cid(ses))
+        app._pase_evento(ses, '參與紅白類')
     llegada = tuple(_datos(r)['entrada'] if c['zona'] == 0 and not c['jefes_muertos'] else
                     _datos(r)['zonas'][c['zona']]['inicio'])
     app._viajar_por_portal(ses, addr, {'destino': _stage(r), 'llegada': llegada}, motivo='a la raid')

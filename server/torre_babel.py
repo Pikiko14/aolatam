@@ -283,8 +283,13 @@ def iniciar(ses, addr, modo):
         c = _CORRIDAS.get(clave)
         if c is None:
             c = _CORRIDAS[clave] = {'modo': modo, 'piso': 1, 'inicio': time.time(), 'nombres': set(), 'jefe': None}
+        nueva = ses.personaje.nombre not in c['nombres']
         c['nombres'].add(ses.personaje.nombre)
     log.info('%s entra a la Torre de Babel (%s, piso %d)', ses.personaje.nombre, MODOS[modo], c['piso'])
+    if nueva:
+        # Angel Pass: "jugar la Torre de Babel" (la regla 參與奧塔類, con su texto cambiado en string.xml), una vez por
+        # subida y personaje (tools/pase_tareas.py, 15/11/2026)
+        app._pase_evento(ses, '參與奧塔類')
     app._viajar_por_portal(ses, addr, {'destino': STAGE, 'llegada': llegada(c['piso'])}, motivo='a la Torre de Babel')
     if modo == PARTY and _es_lider(ses):
         # Cada vez que entra el lider, no solo al empezar: "la torre de babel party no le solicita aceptar el summon a

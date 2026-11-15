@@ -1,10 +1,10 @@
 {
- "version": "0.0.0.187",
- "numero": 187,
- "huella": "ec77b2840bc5351ad6c3b29d048428ea05f2b6bab5bd37c8faae51a3cf092b61",
+ "version": "0.0.0.188",
+ "numero": 188,
+ "huella": "ebb414ce37b51326affb9c4aa6117ada228c6e6b80c12d5a291cc805614fac02",
  "pak": "update27.pak",
- "bytes": 30972317,
- "sha256": "ac775d3e64ec7cbda457bdb893ec5547eee79b12e0800be0cbf02a9643ce7cbc",
+ "bytes": 31041241,
+ "sha256": "6b3d29052de142436e1f9b9c9e9c3b19ee682234d5c8e9070d1b29bd7f475093",
  "archivos": [
   "AGREEMENT.TXT",
   "MAP\\MAP002.MPC",
@@ -77,6 +77,7 @@
   "MAP\\MAP916.MPC",
   "SETTING\\BATTLEPASS.XML",
   "SETTING\\BATTLEPASSPRIZE.XML",
+  "SETTING\\BATTLEPASSTASK.XML",
   "SETTING\\CHAR.OBD",
   "SETTING\\CHARDEF.XML",
   "SETTING\\ENG\\ACTIVITYURL.XML",
@@ -113,6 +114,7 @@
   "SETTING\\ENG\\SP_STAR_ANGEL.XML",
   "SETTING\\ENG\\STAGE.XML",
   "SETTING\\ENG\\STRFILTER.XML",
+  "SETTING\\ENG\\STRING.XML",
   "SETTING\\ENG\\WND01.XML",
   "SETTING\\ENG\\WND02.XML",
   "SETTING\\ENG\\WND03.XML",
@@ -2266,5 +2268,5 @@
   "SHAPE\\WND01\\W006_08.SHP",
   "SHAPE\\WND01\\W006_09.SHP"
  ],
- "generado": "2026-11-15 09:44:59"
+ "generado": "2026-11-15 16:33:01"
 }

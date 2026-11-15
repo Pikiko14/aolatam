@@ -187,6 +187,13 @@ class Estado:
         t = temporada()
         dia, semana = _periodos(ahora)
         cambios = []
+        # Tareas que ya no estan en battlepasstask.xml (se cambiaron las de la temporada, tools/pase_tareas.py): ese
+        # periodo se vuelve a sortear en vez de dejar huecos en blanco en la ventana.
+        validas = tareas()
+        if any(par[0] not in validas for lista in (1, 2) for par in self.listas.get(lista, [])):
+            self.dia = ''
+        if any(par[0] not in validas for lista in (3, 4) for par in self.listas.get(lista, [])):
+            self.semana = ''
         if dia != self.dia:
             self.dia = dia
             self.listas[1] = [[i, 0] for i in _grupo(t.get('每日固定任務群組ID'))][:MAX_TAREAS]
