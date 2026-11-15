@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-15",
+    "titulo": "Update 0.0.0.188: new Angel Pass quests",
+    "texto": "Please update to version 0.0.0.188 from AngelsLauncher. Angel Pass quests are now things you can do on our server: every day play the Tower of Babel, plus monster hunting, pet capture, fusion and farming; every week join the Raid, plus bigger hunting, farming and Totem War goals."
+  },
+  {
+    "fecha": "2026-11-15",
     "titulo": "Update 0.0.0.187: new Angel Pass rewards",
     "texto": "Please update to version 0.0.0.187 from AngelsLauncher. Every Angel Pass level now rewards a 6-star Lucky Enhanced Pestle, 6-star Piercing Hammer or 6-star Lucky Hammer: 30 on the free track and 60 on the premium track. The premium pass also gives the Hunter PD set at levels 15, 30, 45 and 60 (Azure Hunter for male characters, Cherry Hunter for female)."
   },
