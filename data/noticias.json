@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-15",
+    "titulo": "Update 0.0.0.187: new Angel Pass rewards",
+    "texto": "Please update to version 0.0.0.187 from AngelsLauncher. Every Angel Pass level now rewards a 6-star Lucky Enhanced Pestle, 6-star Piercing Hammer or 6-star Lucky Hammer: 30 on the free track and 60 on the premium track. The premium pass also gives the Hunter PD set at levels 15, 30, 45 and 60 (Azure Hunter for male characters, Cherry Hunter for female)."
+  },
+  {
+    "fecha": "2026-11-15",
     "titulo": "Fix: Mark Portal Scroll shows your marked place",
     "texto": "The Mark Portal Scroll tooltip now shows the place you recorded with the Mark Stone under \"Sign\" (it used to say \"none\"). No client update needed."
   },
