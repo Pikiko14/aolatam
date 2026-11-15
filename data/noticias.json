@@ -1,5 +1,10 @@
 [
   {
+    "fecha": "2026-11-15",
+    "titulo": "Fix: Mark Portal Scroll shows your marked place",
+    "texto": "The Mark Portal Scroll tooltip now shows the place you recorded with the Mark Stone under \"Sign\" (it used to say \"none\"). No client update needed."
+  },
+  {
     "fecha": "2026-11-14",
     "titulo": "Update 0.0.0.186: Item Mall buttons",
     "texto": "Please update to version 0.0.0.186 from AngelsLauncher. The Item Mall buttons now look clean with every window theme."
