@@ -218,6 +218,21 @@ MALETAS_INVIERNO = (
     (89061, 82662, 'Winter Holiday Suitcase Box (M)', (89063, 89064, 89065, 89066, 89071, 89072)),
     (89062, 82663, 'Winter Holiday Suitcase Box (F)', (89067, 89068, 89069, 89070, 89071, 89072)),
 )
+# HUNTER PD NORMAL para el Angel Pass de pago (pase.py, 15/11/2026: "el premium dara tambien ese set pd para male y
+# female su correlativo, pero sin ser enchanted"): copias SOLO ESTETICAS de Enchanted-Azure Hunter (hombre,
+# 74748..74751) y Enchanted-Cherry Hunter (mujer, 74752..74755), como las de invierno. Mismo formato que PD_INVIERNO.
+PD_HUNTER = (
+    (89338, 74748, 49192, 5231, 'Azure Hunter Cowboy Hat', '頭部裝備', '限男性'),
+    (89339, 74749, 49193, 5232, 'Azure Hunter Denim Jacket', '身體裝備', '限男性'),
+    (89340, 74750, 49194, 5233, 'Azure Hunter Wrist Guard', '手部裝備', '限男性'),
+    (89341, 74751, 49195, 5234, 'Azure Hunter Cowboy Boots', '腳部裝備', '限男性'),
+    (89342, 74752, 49196, 5235, 'Cherry Hunter Cowboy Hat', '頭部裝備', '限女性'),
+    (89343, 74753, 49197, 5236, 'Cherry Hunter Denim Jacket', '身體裝備', '限女性'),
+    (89344, 74754, 49198, 5237, 'Cherry Hunter Wrist Guard', '手部裝備', '限女性'),
+    (89345, 74755, 49199, 5238, 'Cherry Hunter Cowboy Boots', '腳部裝備', '限女性'),
+)
+# pieza de hombre -> la de mujer que le corresponde (el pase muestra la de hombre y a las mujeres les da esta)
+HUNTER_MUJER = {PD_HUNTER[i][0]: PD_HUNTER[i + 4][0] for i in range(4)}
 # Enchanted -> normal, para el exchange.xml.
 GEMELOS_INVIERNO = {gem: iid for iid, gem, *_ in PD_INVIERNO}
 GEMELOS_INVIERNO.update({gem: iid for iid, gem, _, _ in MALETAS_INVIERNO})
@@ -395,6 +410,7 @@ LINEAS_ITEM9_PROPIAS = ((83266, LINEA_XML_MEDALLA), (ITEM_CAJA_55, LINEA_XML_CAJ
     (iid, _linea_xml_maleta_pd(iid)) for iid in MALETAS_PD) + tuple(
     (aura[0], _linea_xml_aura(aura)) for aura in AURAS_LOW) + tuple(
     (pieza[0], _linea_xml_pd_invierno(pieza)) for pieza in PD_INVIERNO) + tuple(
+    (pieza[0], _linea_xml_pd_invierno(pieza)) for pieza in PD_HUNTER) + tuple(
     (maleta[0], _linea_xml_maleta_invierno(maleta)) for maleta in MALETAS_INVIERNO) + tuple(
     (bolsa['id'], _linea_xml_lucky_bag(bolsa)) for bolsa in LUCKY_BAGS_MALL) + tuple(
     (pieza['id'], pieza['linea']) for pieza in SET_RECOLECTOR)
@@ -855,7 +871,7 @@ def registrar_medalla_en_servidor():
                      str(ITEM_CAJA_55), '80', _DESC_CAJA_55, '是', 'update26'))
                 con.commit()
                 log.info("Item %d (Lvl 55 Equipment Box) registrado en corpus/content.db", ITEM_CAJA_55)
-            for iid, _, icono, apariencia, nombre, ranura, sexo in PD_INVIERNO:
+            for iid, _, icono, apariencia, nombre, ranura, sexo in PD_INVIERNO + PD_HUNTER:
                 if not con.execute('SELECT id FROM item9 WHERE id = ?', (str(iid),)).fetchone():
                     cols = {'id': str(iid), '原型介面': str(icono), '原型外觀': str(apariencia), '基本名稱': nombre,
                             '物品類別': '紙娃娃', '綁定次數': '1', 'log等級': '80', '裝備綁定': '是', '_pak': 'update26'}
@@ -867,7 +883,7 @@ def registrar_medalla_en_servidor():
                     con.execute('INSERT INTO item9 (%s) VALUES (%s)' % (', '.join('"%s"' % k for k in cols),
                                                                        ', '.join('?' * len(cols))), tuple(cols.values()))
                     con.commit()
-                    log.info("Item %d (%s, PD de invierno normal) registrado en corpus/content.db", iid, nombre)
+                    log.info("Item %d (%s, PD normal) registrado en corpus/content.db", iid, nombre)
             if not con.execute('SELECT id FROM item9 WHERE id = ?', (str(ITEM_MONEDA_MONTURA),)).fetchone():
                 con.execute(
                     'INSERT INTO item9 (id, "原型介面", "基本名稱", "物品類別", weight, "log等級", "說明定義", "可堆疊", _pak) '

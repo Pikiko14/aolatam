@@ -1,10 +1,10 @@
 {
- "version": "0.0.0.186",
- "numero": 186,
- "huella": "ff7c93a3aaf166b203eb0c91967ed757e475d6d965d1f9ff45ee20748efd5d8b",
+ "version": "0.0.0.187",
+ "numero": 187,
+ "huella": "ec77b2840bc5351ad6c3b29d048428ea05f2b6bab5bd37c8faae51a3cf092b61",
  "pak": "update27.pak",
- "bytes": 30969613,
- "sha256": "eb2160855f434a267080930fa6ba8f44d4bdd882739c8a4add95a25d10f9e0af",
+ "bytes": 30972317,
+ "sha256": "ac775d3e64ec7cbda457bdb893ec5547eee79b12e0800be0cbf02a9643ce7cbc",
  "archivos": [
   "AGREEMENT.TXT",
   "MAP\\MAP002.MPC",
@@ -76,6 +76,7 @@
   "MAP\\MAP915.MPC",
   "MAP\\MAP916.MPC",
   "SETTING\\BATTLEPASS.XML",
+  "SETTING\\BATTLEPASSPRIZE.XML",
   "SETTING\\CHAR.OBD",
   "SETTING\\CHARDEF.XML",
   "SETTING\\ENG\\ACTIVITYURL.XML",
@@ -2265,5 +2266,5 @@
   "SHAPE\\WND01\\W006_08.SHP",
   "SHAPE\\WND01\\W006_09.SHP"
  ],
- "generado": "2026-11-14 18:16:58"
+ "generado": "2026-11-15 09:44:59"
 }

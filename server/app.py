@@ -9938,7 +9938,8 @@ def _pase_accion(ses, addr, que):
     est = _pase_estado(ses)
     t = pase.temporada()
     if que == pase.ACC_RECLAMAR:
-        items = pase.premios_pendientes(est)
+        _ap = getattr(ses.personaje, 'apariencia', None)
+        items = pase.premios_pendientes(est, mujer=bool(_ap) and int(_ap[0]) != 1)   # 1 = hombre
         libres = sum(1 for r in _ranuras_bolsa(ses.inventario) if r not in ses.inventario)
         if libres < len(items):
             ses.enviar(_cl_p.aviso('Your bag is full.'))

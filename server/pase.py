@@ -58,6 +58,11 @@ _RAIZ = pathlib.Path(__file__).resolve().parent.parent
 
 
 def _ultimo(nombre, eng=False):
+    # lo que va en el parche manda: los premios propios (tools/pase_premios.py) estan en parches/extras y el cliente los
+    # ve ahi; el servidor tiene que dar lo mismo que el cliente ensena
+    extra = _RAIZ / 'parches' / 'extras' / 'setting' / ('eng' if eng else '') / nombre
+    if extra.is_file():
+        return extra
     mejor = None
     for carpeta in (_RAIZ / 'extracted_paks').iterdir():
         m = re.fullmatch(r'update(\d*)', carpeta.name.lower())
@@ -270,7 +275,18 @@ def paquete_pase(est):
     return struct.pack('<HBI', S2C_PASE, 1 if est.pase else 0, est.pago)
 
 
-def premios_pendientes(est):
+def _segun_sexo(item, mujer):
+    """Las piezas del set Hunter del pase van como la de hombre en el XML; a las mujeres, su pareja Cherry Hunter."""
+    if not mujer:
+        return item
+    try:
+        import cliente_local
+        return cliente_local.HUNTER_MUJER.get(item, item)
+    except Exception:
+        return item
+
+
+def premios_pendientes(est, mujer=False):
     """[(item, cantidad)] de lo que se puede reclamar ya, y los niveles nuevos."""
     items = []
     for nv in range(est.gratis + 1, est.nivel + 1):
@@ -285,5 +301,5 @@ def premios_pendientes(est):
             for i in (1, 2):
                 it, c = _n(f.get('付費獎勵%d道具ID' % i)), _n(f.get('付費獎勵%d道具數量' % i))
                 if it > 0 and c > 0:
-                    items.append((it, c))
+                    items.append((_segun_sexo(it, mujer), c))
     return items
