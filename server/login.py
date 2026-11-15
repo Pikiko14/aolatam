@@ -331,6 +331,9 @@ def secuencia(p: Personaje):
                       #   617..666  la bolsa de burbujas de chat
                       if (int(r) == _inv.RANURA_ORO or (it and int(it) > 0))
                       and (int(r) <= 154 or 156 <= int(r) <= 666)]
+            # lo grabado con la Mark Stone: el "Sign:" de los Mark Portal Scroll (inventario.marcar_maple)
+            if getattr(p, 'travel_mark', None):
+                _inv.MARCA_VIAJE[p.char_id] = p.travel_mark
             salida.append(_inv.completo(p.char_id, _items, p.entity_id,
                                         mejoras=getattr(p, 'mejoras', None),
                                         mascota=getattr(p, 'mascota', None),

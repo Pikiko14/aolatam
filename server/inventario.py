@@ -1576,15 +1576,33 @@ def marcar_caducidad_holy(entrada, estado):
     return bytes(b)
 
 
-def marcar_maple(entrada, estado):
+MARCA_VIAJE = {}   # char_id -> {'stage', 'x', 'y'}: lo grabado con la Mark Stone (travel_items.py)
+
+
+def _es_pergamino_de_marca(item_id) -> bool:
+    """Mark Portal Scroll y sus variantes (使用公式 9): viajan al sitio de la Mark Stone."""
+    try:
+        import travel_items
+        return int(travel_items.item(int(item_id)).get('使用公式') or 0) == 9
+    except Exception:
+        return False
+
+
+def marcar_maple(entrada, estado, char_id=None):
     """El sitio grabado en un Maple Mark (categoria 魯易浮標 = 71), para el "Sign:" del tooltip.
 
     El cliente (0x5144a3) copia en el objeto (+0xA0 escena, +0xA4 x, +0xA8 y) los 12 bytes que van detras de los 86 de
     la entrada (v19 + 0x55), y el tooltip (0x672150) ensena "none" si la escena es 0. Se alarga la entrada con ellos y
     se pone su longitud extra en e[51:53], como en las mascotas ("en el signing sigue saliendo none", 09/11/2026).
+
+    Los Mark Portal Scroll (使用公式 9) usan el mismo campo con lo grabado por la Mark Stone del personaje: sin el,
+    el pergamino decia "Sign: none" aunque hubiera una marca ("el scroll no me dice el mapa que marque", 15/11/2026).
     """
     marca = (estado or {}).get('maple_mark')
     base = 6 if entrada[:2] == struct.pack('<H', 0x001B) else 0
+    if not marca and char_id is not None and len(entrada) >= base + 13 and MARCA_VIAJE.get(int(char_id)):
+        if _es_pergamino_de_marca(struct.unpack_from('<I', entrada, base + 9)[0]):
+            marca = MARCA_VIAJE[int(char_id)]
     if not marca or len(entrada) != base + 86:
         return entrada
     b = bytearray(entrada)
@@ -2590,7 +2608,7 @@ def completo(char_id: int, items, dueno: int = None, mejoras=None,
             _e = marcar_caducidad_mercenario(_e, _m)
             _e = marcar_caducidad_holy(_e, _m)
             _e = marcar_vinculacion(_e, _m)
-            _e = marcar_maple(_e, _m)
+            _e = marcar_maple(_e, _m, char_id)
             if _m and _m.get('veces'):
                 _e = marcar_mejora(_e, _m['veces'])
             if extras_visibles(_m):
@@ -2765,7 +2783,7 @@ def actualizar_ranuras(char_id: int, entradas, dueno: int = None,
             _e = marcar_caducidad_mercenario(_e, _m)
             _e = marcar_caducidad_holy(_e, _m)
             _e = marcar_vinculacion(_e, _m)
-            _e = marcar_maple(_e, _m)
+            _e = marcar_maple(_e, _m, char_id)
             if _m and _m.get('veces'):
                 _e = marcar_mejora(_e, _m['veces'])
             if extras_visibles(_m):

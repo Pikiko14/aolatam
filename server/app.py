@@ -1307,7 +1307,7 @@ def _refrescar(ses, ranuras, con_oro=False):
                 _linea = inv.marcar_caducidad_mercenario(_linea, _mej)
                 _linea = inv.marcar_caducidad_holy(_linea, _mej)
                 _linea = inv.marcar_vinculacion(_linea, _mej)
-                _linea = inv.marcar_maple(_linea, _mej)
+                _linea = inv.marcar_maple(_linea, _mej, cid)
                 if _mej and _mej.get('veces'):
                     _linea = inv.marcar_mejora(_linea, _mej['veces'])
                 # Y los stats del martillo verde, que van en la misma entrada en

@@ -136,7 +136,13 @@ def usar(s,slot,target=None):
         app._guardar_bolsa(s,s.personaje.char_id)
         recent_mall.cambiar(s,consume,[],transaccion=transaction)
         if record:
-            if not maple:s.personaje.travel_mark=record
+            if not maple:
+                s.personaje.travel_mark=record
+                # el "Sign:" de los Mark Portal Scroll de la bolsa con el sitio nuevo (inventario.marcar_maple)
+                import inventario
+                inventario.MARCA_VIAJE[s.personaje.char_id]=record
+                pergaminos=[k for k,i in s.inventario.items() if i and inventario._es_pergamino_de_marca(i)]
+                if pergaminos:s.enviar(*app._refrescar(s,pergaminos))
             _efecto(s,row)
             _notice(s,'Location recorded: map %d (%d, %d).'%(record['stage'],record['x'],record['y']))
             if maple:s.enviar(*app._refrescar(s,[slot]))   # el "Sign:" del tooltip con el sitio grabado

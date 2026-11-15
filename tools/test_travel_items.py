@@ -102,3 +102,19 @@ def test_maple_mark_entry_carries_the_recorded_point_for_the_tooltip():
     assert struct.unpack_from('<III',e,6+86)==(34,119,70)
     sin=inventario.actualizar_ranuras(1,[(30,20565,1,None)],5)
     assert len(sin)==6+86
+
+
+def test_el_mark_portal_scroll_ensena_el_sitio_de_la_mark_stone():
+    """'el scroll no me dice el mapa que marque' (15/11/2026): el Sign: del tooltip son 12 bytes tras los 86."""
+    import struct
+    import inventario as inv
+    e = bytearray(86)
+    struct.pack_into('<I', e, 9, 3694)                     # Mark Portal Scroll
+    inv.MARCA_VIAJE[987654] = {'stage': 38, 'x': 50, 'y': 9}
+    r = inv.marcar_maple(bytes(e), None, 987654)
+    assert struct.unpack_from('<H', r, 51)[0] == 12 and struct.unpack_from('<III', r, 86) == (38, 50, 9)
+    struct.pack_into('<I', e, 9, 3693)                     # la Mark Stone no lleva Sign
+    assert inv.marcar_maple(bytes(e), None, 987654) == bytes(e)
+    struct.pack_into('<I', e, 9, 3694)
+    assert inv.marcar_maple(bytes(e), None, 123) == bytes(e)   # sin marca grabada: "none"
+    inv.MARCA_VIAJE.pop(987654, None)
