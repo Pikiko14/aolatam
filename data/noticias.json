@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-16",
+    "titulo": "Update 0.0.0.190: Angel Pass quests and EXP x2",
+    "texto": "Please update to version 0.0.0.190 from AngelsLauncher. Character EXP is now x2. Angel Pass: Capture Pet and Fusion quests were removed (a new daily Tower of Babel x3 takes their place), and completing a quest no longer hides the rest of the list. Removed quests are replaced without losing your progress."
+  },
+  {
+    "fecha": "2026-11-16",
     "titulo": "Update 0.0.0.189: Angel Pass in the Item Mall",
     "texto": "Please update to version 0.0.0.189 from AngelsLauncher. The Archangel Pass (premium track) is now in the Item Mall for 15,000 AG and the Passage Chapter (+1 Pass level) for 1,000 AG, under Special > General. Farming quests are gone from the Angel Pass: they are replaced by more pet capture and fusion quests, and a weekly Tower of Babel quest."
   },
