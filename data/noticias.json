@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-16",
+    "titulo": "No more wasted Pestles at +10",
+    "texto": "Using a Pestle or Ride Feed on gear or a pet that is already at the maximum (+10) no longer counts as a failed attempt: you get a notice and the item is not consumed."
+  },
+  {
+    "fecha": "2026-11-16",
     "titulo": "Equipment lasts much longer, male student clothes fixed",
     "texto": "Hardiness now wears down 20 times slower: weapons lose 1 every 200 hits you land and a random armor piece 1 every 200 hits you take (it was 1 every 10). Male characters now get the real male Students' Clothes, Gloves and Shoes; characters created with the wrong (female) set are fixed when they log in."
   },
