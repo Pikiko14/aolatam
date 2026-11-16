@@ -4051,6 +4051,42 @@
             "gift_quantity": 0,
             "price_source": "Lucky Bag por clase (tools/generar_lucky_bags.py)",
             "publication": "pedido del usuario 03/11/2026"
+        },
+        {
+            "id": 32747,
+            "item": 82684,
+            "flags": 0,
+            "sort": 19,
+            "category": 13,
+            "quantity": 1,
+            "price": 15000,
+            "special_price": 0,
+            "duration": 0,
+            "start": "",
+            "end": "",
+            "limit": 0,
+            "gift": 0,
+            "gift_quantity": 0,
+            "price_source": "pedido del usuario 16/11/2026: pase premium 15k AG, cada nivel 1k AG",
+            "publication": "pedido del usuario 16/11/2026"
+        },
+        {
+            "id": 32746,
+            "item": 82685,
+            "flags": 0,
+            "sort": 20,
+            "category": 13,
+            "quantity": 1,
+            "price": 1000,
+            "special_price": 0,
+            "duration": 0,
+            "start": "",
+            "end": "",
+            "limit": 0,
+            "gift": 0,
+            "gift_quantity": 0,
+            "price_source": "pedido del usuario 16/11/2026: pase premium 15k AG, cada nivel 1k AG",
+            "publication": "pedido del usuario 16/11/2026"
         }
     ],
     "top_sale": {
