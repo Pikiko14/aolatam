@@ -60,3 +60,31 @@ def test_tareas_viejas_se_vuelven_a_sortear():
     est.listas[4] = [[80, 0]]
     assert est.al_dia() == [1, 2]
     assert all(par[0] in pase.tareas() for lista in (1, 2, 3, 4) for par in est.listas[lista])
+
+
+def test_las_que_ya_no_estan_se_cambian_y_el_resto_guarda_su_progreso():
+    est = pase.Estado(1)
+    est.al_dia()
+    azar = est.listas[4][0][0]
+    est.listas[4][0][1] = 7
+    est.listas[3][0][1] = 1
+    est.listas[4].append([999, 3])           # una que se quito de la temporada
+    assert est.al_dia() == [2]
+    assert [azar, 7] in est.listas[4] and est.listas[3][0][1] == 1
+    assert all(par[0] in pase.tareas() for par in est.listas[4])
+    assert len(est.listas[4]) == int(pase.temporada()['每週隨機任務數量'])
+
+
+def test_sin_mascotas_ni_fusion():
+    for clave, ids in _grupos().items():
+        for i in ids:
+            assert pase.tareas()[i]['規則'] not in ('抓寵類', '融合道具類'), (clave, i)
+
+
+def test_al_cumplir_una_tarea_se_repinta_su_periodo():
+    est = pase.Estado(1)
+    est.al_dia()
+    tocadas, _ = est.contar(pase_tareas.BABEL)
+    assert pase.periodos_cumplidos(tocadas) == [1]
+    assert pase.periodos_cumplidos([(4, 68, 1)]) == []
+    assert pase.periodos_cumplidos([(4, 68, 200)]) == [2]

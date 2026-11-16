@@ -187,13 +187,25 @@ class Estado:
         t = temporada()
         dia, semana = _periodos(ahora)
         cambios = []
-        # Tareas que ya no estan en battlepasstask.xml (se cambiaron las de la temporada, tools/pase_tareas.py): ese
-        # periodo se vuelve a sortear en vez de dejar huecos en blanco en la ventana.
+        # Tareas que ya no estan en battlepasstask.xml (se cambiaron las de la temporada, tools/pase_tareas.py): se
+        # cambian solo esas, por otras del grupo que no tenga, y el resto guarda su progreso (antes se volvia a sortear
+        # todo el periodo y se perdia lo ya hecho en la semana).
         validas = tareas()
-        if any(par[0] not in validas for lista in (1, 2) for par in self.listas.get(lista, [])):
-            self.dia = ''
-        if any(par[0] not in validas for lista in (3, 4) for par in self.listas.get(lista, [])):
-            self.semana = ''
+        for cual, (fija, azar, n) in ((1, ('每日固定任務群組ID', '每日隨機任務群組ID', '每日隨機任務數量')),
+                                      (2, ('每週固定任務群組ID', '每週隨機任務群組ID', '每週隨機任務數量'))):
+            if (cual == 1 and dia != self.dia) or (cual == 2 and semana != self.semana):
+                continue
+            lf, la = (1, 2) if cual == 1 else (3, 4)
+            if all(par[0] in validas for lista in (lf, la) for par in self.listas.get(lista, [])):
+                continue
+            antes = {par[0]: par[1] for lista in (lf, la) for par in self.listas.get(lista, [])}
+            self.listas[lf] = [[i, antes.get(i, 0)] for i in _grupo(t.get(fija))][:MAX_TAREAS]
+            quedan = [par for par in self.listas.get(la, []) if par[0] in validas]
+            libres = [i for i in _grupo(t.get(azar)) if i not in {par[0] for par in quedan}]
+            random.Random('%d:%s:%d' % (self.char_id, dia if cual == 1 else semana, len(quedan))).shuffle(libres)
+            falta = max(0, min(_n(t.get(n)), MAX_TAREAS) - len(quedan))
+            self.listas[la] = sorted(quedan + [[i, 0] for i in libres[:falta]])
+            cambios.append(cual)
         if dia != self.dia:
             self.dia = dia
             self.listas[1] = [[i, 0] for i in _grupo(t.get('每日固定任務群組ID'))][:MAX_TAREAS]
@@ -264,6 +276,20 @@ def paquete_estado(est):
 
 def paquete_reinicio(est, cual):
     return struct.pack('<HI', S2C_REINICIO, cual) + _listas(est, (1, 2) if cual == 1 else (3, 4))
+
+
+def periodos_cumplidos(tocadas):
+    """[1] / [2] / [1, 2]: los periodos (dia, semana) donde alguna de estas tareas llego a su meta.
+
+    El 0x018F solo cambia el mapa del cliente (FUN_0049f0b0) y no repinta la pagina de tareas, y al cumplirse una el
+    jugador veia desaparecer el resto ("al completar 1 mision se pierde el resto", 16/11/2026). El 0x018E del periodo
+    (FUN_005f45a0) vacia esas dos listas, las vuelve a llenar y repinta (FUN_0049cf30) sin cerrar la ventana."""
+    res = set()
+    for lista, tarea, progreso in tocadas:
+        f = tareas().get(tarea) or {}
+        if progreso >= max(1, _n(f.get('動態參數1'), 1)):
+            res.add(1 if lista in (1, 2) else 2)
+    return sorted(res)
 
 
 def paquete_tarea(lista, tarea, progreso):

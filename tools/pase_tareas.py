@@ -41,14 +41,12 @@ def _tareas(lista):
 
 # (regla, exp, 動態參數1, 動態參數2)
 # Sin granja de momento ("elimina estas misiones y agregas otras, no tendremos farm de momento", 16/11/2026): fuera
-# regar, abonar, cosechar y plantar; en su lugar mas mascotas, fusion y Torre de Babel.
-DIARIAS_AZAR = ([('打怪類', 10, 50, r) for r in RAZAS] +
-                [('抓寵類', 10, 5, None), ('融合道具類', 10, 3, None),
-                 ('抓寵類', 20, 10, None), ('融合道具類', 20, 6, None)])
+# regar, abonar, cosechar y plantar. Tampoco mascotas ni fusion (Capture Pet / Perform Fusion: "quita esto tambien",
+# 16/11/2026). La temporada sortea 7 diarias, asi que la septima es la Torre de Babel x3.
+DIARIAS_AZAR = [('打怪類', 10, 50, r) for r in RAZAS] + [(BABEL, 20, 3, None)]
 DIARIAS_FIJAS = [(BABEL, 20, 1, None), ('登入遊戲類', 10, 1, None), ('完成通行證任務類', 20, 70, None)]
 SEMANALES_AZAR = ([('打怪類', 50, 200, r) for r in RAZAS] +
-                  [('抓寵類', 50, 20, None), ('融合道具類', 50, 10, None), ('參與圖騰戰類', 50, 1, None),
-                   (BABEL, 50, 5, None)])
+                  [('參與圖騰戰類', 50, 1, None), (BABEL, 50, 5, None)])
 SEMANALES_FIJAS = [('登入遊戲類', 30, 5, None), (RAID, 70, 1, None), ('完成通行證任務類', 150, 800, None)]
 
 
