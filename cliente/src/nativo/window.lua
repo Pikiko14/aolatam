@@ -1,6 +1,7 @@
 -- Capa nativa window.* del cliente original, sobre los wnd0N.xml. Los scripts originales (extracted_luas) se ejecutan SIN modificar
 -- encima de esta tabla. Cada ventana viva tiene un handle entero; las funciones que no existen se registran en faltantes.
 local M = { diferidos = {}, faltantes = {}, vivas = {}, raices = {}, siguiente = 1000, ui = nil, trazas = {} }
+local bit = require('bit')
 
 local function nueva(id, padre)
   M.siguiente = M.siguiente + 1
@@ -88,6 +89,93 @@ function W.getclock() return math.floor(love.timer.getTime() * 1000) end
 function W.regsetting() end
 function W.regcustom() end
 
+-- ---- listas (WND_CLASS_LIST / COMBO): filas { texto, appdata, icono }; la marcada es w.sel (0-based, -1 ninguna)
+local function filas(w) w.filas = w.filas or {}; return w.filas end
+function W.insertitemstr(h, texto, icono)
+  local w = obt(h); if not w then return -1 end
+  local f = filas(w); f[#f + 1] = { texto = tostring(texto or ''), icono = icono, appdata = #f }
+  return #f - 1
+end
+function W.insertitemstrappnum(h, texto, icono, appdata)
+  local w = obt(h); if not w then return -1 end
+  local f = filas(w); f[#f + 1] = { texto = tostring(texto or ''), icono = icono, appdata = appdata or 0 }
+  return #f - 1
+end
+function W.clearlist(h) local w = obt(h); if w then w.filas = {}; w.sel = -1 end end
+function W.getitemcount(h) local w = obt(h); return w and #filas(w) or 0 end
+function W.getitemtitle(h, i) local w = obt(h); local f = w and filas(w)[(i or 0) + 1]; return f and f.texto or '' end
+function W.getitemappdata(h, i) local w = obt(h); local f = w and filas(w)[(i or 0) + 1]; return f and f.appdata or 0 end
+function W.setcheckitem(h, i) local w = obt(h); if w then w.sel = i end end
+function W.getcheckitem(h) local w = obt(h); return w and (w.sel or -1) or -1 end
+
+-- ---- radios: el grupo es el padre; setradio(h, n) marca el n-esimo boton bsRadio del grupo (0-based)
+local function radios(w)
+  local lista = {}
+  for _, c in ipairs(w.hijos) do
+    if c.def and ((c.def.estilo or '') .. (c.def.style or '')):find('bsRadio', 1, true) then lista[#lista + 1] = c end
+  end
+  return lista
+end
+function W.setradio(h, n)
+  local w = obt(h); if not w then return end
+  local grupo = (#radios(w) > 0) and w or w.padre
+  if not grupo then return end
+  for i, c in ipairs(radios(grupo)) do c.check = (i - 1) == n end
+  grupo.radio = n
+end
+function W.getradio(h)
+  local w = obt(h); if not w then return -1 end
+  local grupo = (#radios(w) > 0) and w or w.padre
+  if not grupo then return -1 end
+  for i, c in ipairs(radios(grupo)) do if c.check then return i - 1 end end
+  return grupo.radio or -1
+end
+
+-- ---- estilos y atributos de icono: modifystyle(h, quitar, poner) / modifyiconattrib(h, quitar, poner) con bits
+function W.modifystyle(h, quitar, poner)
+  local w = obt(h); if not w then return end
+  w.estilo_bits = bit.bor(bit.band(w.estilo_bits or 0, bit.bnot(quitar or 0)), poner or 0)
+end
+function W.modifyiconattrib(h, quitar, poner)
+  local w = obt(h); if not w then return end
+  w.icono_bits = bit.bor(bit.band(w.icono_bits or 0, bit.bnot(quitar or 0)), poner or 0)
+end
+
+-- ---- texto multilinea (chat, ayudas): lineas, alto de linea, maximo, palabras por linea, fuente y zona de trabajo
+function W.setlines(h, n) local w = obt(h); if w then w.n_lineas = n end end
+function W.setlineheight(h, n) local w = obt(h); if w then w.alto_linea = n end end
+function W.setmaxline(h, n) local w = obt(h); if w then w.max_lineas = n end end
+function W.setwordsperline(h, n) local w = obt(h); if w then w.por_linea = n end end
+function W.enablebreakline(h, v) local w = obt(h); if w then w.cortar = v ~= false and v ~= 0 end end
+function W.setfont(h, f) local w = obt(h); if w then w.fuente = f end end
+function W.setworkrange(h, x, y, an, al) local w = obt(h); if w then w.zona = { x, y, an, al } end end
+function W.scrolledit(h, n)
+  local w = obt(h); if not w then return end
+  if n == -1 then w.scroll = 0 else w.scroll = math.max(0, (w.scroll or 0) + (n or 0)) end
+end
+
+-- ---- barras de desplazamiento / spin: rango y valor
+function W.setrange(h, mn, mx) local w = obt(h); if w then w.rmin, w.rmax = mn, mx end end
+function W.getrange(h) local w = obt(h); if w then return w.rmin or 0, w.rmax or 0 end return 0, 0 end
+
+-- ---- orden, arrastre, ayudas
+function W.setforeground(h)
+  local w = obt(h); if not w then return end
+  local lista = w.padre and w.padre.hijos or M.raices
+  for i, c in ipairs(lista) do if c == w then table.remove(lista, i) break end end
+  lista[#lista + 1] = w
+end
+function W.setdrop(h, tipo, mascara) local w = obt(h); if w then w.drop_tipo, w.drop_mascara = tipo, mascara end end
+function W.settooltiptext(h, t) local w = obt(h); if w then w.ayuda = tostring(t or '') end end
+function W.limitmove(h, x, y) local w = obt(h); if w then w.limite = { x, y } end end
+function W.changeregsetting(viejo, nuevo) local w = obt(nuevo); if w then w.reg = viejo end end
+function W.setappdatafordualint(h, a, b) local w = obt(h); if w then w.dual = { a or 0, b or 0 } end end
+function W.getappdatafordualint(h) local w = obt(h); if w and w.dual then return w.dual[1], w.dual[2] end return 0, 0 end
+
+function W.setalwaysedit(h, v) local w = obt(h); if w then w.siempre_edita = v ~= false and v ~= 0 end end
+function W.setbmpicon(h, ic) local w = obt(h); if w then w.icono = ic end end
+function W.setclipping(h, v) local w = obt(h); if w then w.recorta = v ~= false and v ~= 0 end end
+
 -- cualquier otra funcion: se anota (con cuantas veces) y devuelve nada
 setmetatable(W, { __index = function(_, nombre)
   return function()
@@ -136,9 +224,25 @@ function M.dibujar(w)
       love.graphics.print(w.lineas[i], x + 9, y + 4 + (i - math.max(1, n - lineas + 1)) * 13, 0, 0.85, 0.85)
     end
     end
+  elseif w.filas and #w.filas > 0 then
+    -- lista: una fila de 16 px por elemento, la marcada resaltada; recortada a la ventana
+    local alto = 16
+    love.graphics.setScissor(x, y, math.max(1, w.w), math.max(1, w.hh))
+    for i, f in ipairs(w.filas) do
+      local fy = y + (i - 1 - (w.scroll or 0)) * alto
+      if fy >= y - alto and fy < y + w.hh then
+        if (i - 1) == (w.sel or -1) then love.graphics.setColor(0.25, 0.55, 0.8, 0.55); love.graphics.rectangle('fill', x, fy, w.w, alto) end
+        love.graphics.setColor(1, 1, 1); love.graphics.print(f.texto, x + 4, fy + 1, 0, 0.85, 0.85)
+      end
+    end
+    love.graphics.setScissor()
   elseif w.titulo ~= '' then
     if w.def and w.def.fcolor == '105' then love.graphics.setColor(0.08, 0.14, 0.2) else love.graphics.setColor(1, 1, 1) end
     love.graphics.print(w.titulo, x + 2, y + 1, 0, 0.85, 0.85)
+  end
+  -- icono en gris (ICON_ATTRIB_GRAY puesto con modifyiconattrib): un velo oscuro encima
+  if w.icono_bits and w.icono_bits ~= 0 and w.w > 0 then
+    love.graphics.setColor(0.2, 0.2, 0.2, 0.45); love.graphics.rectangle('fill', x, y, w.w, w.hh)
   end
   for _, c in ipairs(w.hijos) do M.dibujar(c) end
 end
@@ -307,10 +411,21 @@ function M.clic(mx, my)
   for i = #M.raices, 1, -1 do
     local w = bajo(M.raices[i], mx, my)
     if w then
-      if (w.def.estilo or ''):find('bsCheck', 1, true) then w.check = not w.check end
+      local estilo = (w.def.estilo or '') .. (w.def.style or '')
+      if estilo:find('bsCheck', 1, true) then w.check = not w.check end
+      if estilo:find('bsRadio', 1, true) and w.padre then
+        for _, c in ipairs(w.padre.hijos) do c.check = (c == w) end
+      end
+      -- en una lista el clic marca la fila y el script recibe su indice en dwParam (getitemtitle(dwID, dwParam))
+      local param = 0
+      if w.filas and #w.filas > 0 then
+        local _, y0 = abs(w)
+        local i = math.floor((my - y0) / 16) + (w.scroll or 0)
+        if i >= 0 and i < #w.filas then w.sel = i; param = i end
+      end
       local fn = _G[w.def.eventos.OnCommand]
       if fn then
-        local ok, e = pcall(fn, w.h, w.id, 0, 0)
+        local ok, e = pcall(fn, w.h, w.id, param, 0)
         if not ok then M.trazas[#M.trazas + 1] = 'error ' .. w.def.eventos.OnCommand .. ': ' .. tostring(e) end
       else
         M.faltantes['handler:' .. w.def.eventos.OnCommand] = (M.faltantes['handler:' .. w.def.eventos.OnCommand] or 0) + 1

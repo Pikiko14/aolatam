@@ -6,10 +6,10 @@
 local E = {}
 E.__index = E
 
--- Orden de dibujo, de atras hacia delante.
+-- Orden de dibujo, de atras hacia delante (座騎 / montura va detras del cuerpo).
 local CAPAS = {
-  { '背部另一層', 'trasera' }, { '背部', 'espalda' }, { '身體', 'cuerpo' }, { '腳部', 'pies' },
-  { '手部', 'manos' }, { '頭部', 'cabeza' }, { '副手', 'mano_izq' }, { '主手', 'mano_der' },
+  { '座騎', 'montura' }, { '背部另一層', 'trasera' }, { '背部', 'espalda' }, { '身體', 'cuerpo' },
+  { '腳部', 'pies' }, { '手部', 'manos' }, { '頭部', 'cabeza' }, { '副手', 'mano_izq' }, { '主手', 'mano_der' },
 }
 
 local function atributos(linea)
@@ -42,33 +42,71 @@ function E:_cargar()
   end
 end
 
--- Ids de sprite de la pieza N. El numero de doll es el id del archivo (1160_wait.spr) o, si no existe tal cual, el id con el prefijo de
--- genero (20000 + N mujer, 30000 + N hombre); la capa trasera es el mismo con +5000. Devuelve { base, otra } o nil.
-function E:pieza(n, genero)
-  local clave = n .. genero
+-- Ids de sprite de la pieza N. Prefijo de genero (20000 mujer / 30000 hombre), si falta el otro genero,
+-- luego el id pelado; capa trasera = id + 5000. `permitir_montura` acepta carpetas h...
+function E:pieza(n, genero, permitir_montura)
+  local clave = n .. genero .. (permitir_montura and 'm' or '')
   if self.cache[clave] ~= nil then return self.cache[clave] or nil end
   local pre = genero == 'b' and 30000 or 20000
+  local otro = genero == 'b' and 20000 or 30000
   local res = false
-  for _, id in ipairs({ pre + n, n }) do      -- primero el id con prefijo de genero; sin respaldo al otro genero
+  -- Primero la pieza por su nombre en char*.obd ("ITEMn", carpeta del genero y luego la del otro): es como la busca
+  -- angel.dat y cubre las prendas nuevas, cuyo Sequence no es 2/3xxxx + n (8117 -> 125117, 4528 -> 100028).
+  local por_nombre = self.gfx:piezas_char()[n]
+  local otro_gen = genero == 'b' and 'g' or 'b'
+  if por_nombre and not permitir_montura then
+    local function primera(lista)
+      for _, sid in ipairs(lista) do
+        local ruta = sid and self.gfx:ruta_de_id(sid)
+        if ruta and ruta:sub(1, 10) == 'shape/chr/' then return sid end
+      end
+    end
+    -- capa normal y capa izquierda, cada una del genero y si falta del otro
+    local base = primera({ por_nombre[genero], por_nombre[otro_gen] })
+    local izq = primera({ por_nombre[genero .. 'l'], por_nombre[otro_gen .. 'l'] })
+    if base or izq then res = { base = base, izq = izq } end
+  end
+  -- Si no: prefijo del genero, luego el otro (mujer sin 2xxxx usa el 3xxxx del hombre: 31156…),
+  -- y al final el id pelado. Los 1156-1158 en i914g son retales; el traje completo esta en i118x b.
+  for _, id in ipairs(res and {} or { pre + n, otro + n, n }) do
     local ruta = self.gfx:ruta_de_id(id)
-    -- solo vale una ruta de personaje (shape/chr): el mismo numero puede ser de un NPC o un monstruo
-    -- solo carpetas de ropa (i...): las r... son disfraces y robots, las h... monturas
-    -- las carpetas i900..i926 son PELO (objetos 1001..1163 de char.obd): un numero de pieza que cae ahi no es una prenda
-    if ruta and ruta:sub(1, 11) == 'shape/chr/i' and not ruta:match('^shape/chr/i9[0-2]%d[bg]/') then
-      res = { base = id, otra = self.gfx:ruta_de_id(id + 5000) and (id + 5000) or nil }
-      break
+    -- solo shape/chr: el mismo numero puede ser NPC/monstruo
+    if ruta and ruta:sub(1, 10) == 'shape/chr/' then
+      local ok = false
+      if permitir_montura and ruta:match('^shape/chr/h') then
+        ok = true
+      elseif ruta:match('^shape/chr/i') then
+        -- Evitar retales de pelo en i9xx con id < 20000; la ropa valida va con 2/3xxxx o fuera de i9xx.
+        local pelo = ruta:match('^shape/chr/i9[0-2]%d[bg]/') and id < 20000
+        ok = not pelo
+      elseif ruta:match('^shape/chr/r') and id == n then
+        ok = true
+      end
+      if ok then
+        res = { base = id, otra = self.gfx:ruta_de_id(id + 5000) and (id + 5000) or nil }
+        break
+      end
     end
   end
   self.cache[clave] = res
   return res or nil
 end
 
+-- 26/28/30: en item.xml la 原型外觀 apunta a dolls 129/131/133 (qipao/mono), no al uniforme.
+-- angel.dat pinta mal igual; nosotros usamos los dolls de estudiante (15/14/16 → piezas 1157/1156/1158)
+-- que SI tienen spr en i914g..i916g (mujer) y 3xxxx (hombre).
+local DOLL_ESTUDIANTE = { [26] = 15, [28] = 14, [30] = 16 }
+-- Por si el inventario aun trae 26/28/30 en un hombre (personajes viejos).
+local SUSTITUTO_HOMBRE = { [26] = 3410, [28] = 3409, [30] = 3411 }
+
 -- Lista de ids de sprite (de atras hacia delante) para el equipo `items` (ids de item) de un personaje 'g' (mujer) o 'b' (hombre).
 function E:capas(items, genero)
   self:_cargar()
   local partes, fuente = {}, {}
-  for _, it in ipairs(items) do
-    local doll = self.items[it] and self.dolls[self.items[it]]
+  for _, raw in ipairs(items) do
+    local it = (genero == 'b' and SUSTITUTO_HOMBRE[raw]) or raw
+    local doll_id = DOLL_ESTUDIANTE[raw] or (self.items[it] and self.items[it]) or self.items[raw]
+    local doll = doll_id and self.dolls[doll_id]
     if doll then
       for _, c in ipairs(CAPAS) do
         local n = tonumber(doll[c[1]])
@@ -79,12 +117,18 @@ function E:capas(items, genero)
   local out = {}
   for _, c in ipairs(CAPAS) do
     local n = partes[c[2]]
-    local p = n and self:pieza(n, genero)
+    local p = n and self:pieza(n, genero, c[2] == 'montura')
     if p then
-      if c[2] == 'trasera' or c[2] == 'cuerpo' then
+      if c[2] == 'trasera' or c[2] == 'cuerpo' or c[2] == 'montura' then
         if p.otra then out[#out + 1] = { id = p.otra, item = fuente[c[2]], atras = true } end
       end
-      if c[2] ~= 'trasera' and p.base then out[#out + 1] = { id = p.base, item = fuente[c[2]] } end
+      -- la capa ...l ("左") es la prenda en la MANO IZQUIERDA: la usa la ranura de mano secundaria (副手), y el resto la
+      -- normal; con el espejo se voltea todo igual (capturas de Windows del 15/11/2026: el ramo cambia de lado al girar).
+      -- El arco de pulpo 8119 es de mano secundaria y por eso solo existe en i1713bl / i1713gl.
+      local id = (c[2] == 'mano_izq') and (p.izq or p.base) or (p.base or p.izq)
+      if c[2] ~= 'trasera' and id then
+        out[#out + 1] = { id = id, item = fuente[c[2]], atras = c[2] == 'montura' or nil }
+      end
     end
   end
   return out, partes
@@ -93,8 +137,7 @@ end
 -- Tinte de una prenda: lo que lleva su icono en itemicon.xml (maskbias, maskcolor, maskrange); si no, el de su objeto en char*.obd.
 function E:tinte_de_item(it)
   local ic = it and self.iconos[it] and self.gfx:def_icono_item(self.iconos[it])
-  if ic and ic.maskbias then return self.gfx:tinte_de(ic.maskbias, ic.maskcolor or '0', ic.maskrange or '0') end
-  return nil
+  return self.gfx:tinte_icono(ic)
 end
 
 -- Personaje completo (setting/char*.obd): cuerpo base 1000 (hombre) / 1100 (mujer), pelo 1001+estilo / 1101+estilo
@@ -111,7 +154,8 @@ function E:personaje(items, ap, genero)
   end
   local oculta = false
   for _, it in ipairs(items) do
-    local doll = self.items[it] and self.dolls[self.items[it]]
+    local doll_id = DOLL_ESTUDIANTE[it] or (self.items[it] and self.items[it])
+    local doll = doll_id and self.dolls[doll_id]
     -- un casco de cobertura total solo oculta el pelo si su pieza se puede dibujar (si no, el personaje quedaria calvo)
     if doll and doll['頭部全罩'] == '是' and tonumber(doll['頭部']) and self:pieza(tonumber(doll['頭部']), genero) then oculta = true end
   end
@@ -125,7 +169,8 @@ function E:personaje(items, ap, genero)
   -- las capas traseras (capa extra de la prenda: capa, cola de la tunica) van DETRAS del cuerpo; el resto, encima
   local final, detras = {}, {}
   for _, c in ipairs(capas) do
-    local spec = { id = c.id, tinte = self:tinte_de_item(c.item) or g:tinte_mascara(c.id) }
+    local ic = c.item and self.iconos[c.item] and g:def_icono_item(self.iconos[c.item])
+    local spec = { id = c.id, tinte = g:tinte_pieza(c.id, ic) }
     if c.atras then detras[#detras + 1] = spec else out[#out + 1] = spec end
   end
   for _, c in ipairs(detras) do final[#final + 1] = c end

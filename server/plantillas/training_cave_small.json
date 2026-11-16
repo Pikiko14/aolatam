@@ -1,0 +1,1222 @@
+{
+ "_nota": "Training Cave(small) (stage 45), creada con tools/editor_mapas.",
+ "stage": 45,
+ "spawns": [
+  {
+   "entity_id": 900001,
+   "nombre": "Skeletal Bishop",
+   "npc_type": 172,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    133,
+    85
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900002,
+   "nombre": "Skeletal Bishop",
+   "npc_type": 172,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    133,
+    81
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900003,
+   "nombre": "Skeletal Bishop",
+   "npc_type": 172,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    130,
+    81
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900004,
+   "nombre": "Skeletal Bishop",
+   "npc_type": 172,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    128,
+    84
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900005,
+   "nombre": "Skeletal Bishop",
+   "npc_type": 172,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    131,
+    68
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900006,
+   "nombre": "Skeletal Bishop",
+   "npc_type": 172,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    133,
+    65
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900007,
+   "nombre": "Skeletal Bishop",
+   "npc_type": 172,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    135,
+    69
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900008,
+   "nombre": "Skeletal Bishop",
+   "npc_type": 172,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    133,
+    71
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900009,
+   "nombre": "Skeletal Bishop",
+   "npc_type": 172,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    113,
+    74
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900010,
+   "nombre": "Skeletal Bishop",
+   "npc_type": 172,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    117,
+    72
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900011,
+   "nombre": "Skeletal Bishop",
+   "npc_type": 172,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    120,
+    75
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900012,
+   "nombre": "Skeletal Bishop",
+   "npc_type": 172,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    116,
+    78
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900013,
+   "nombre": "Skeletal Bishop",
+   "npc_type": 172,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    109,
+    89
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900014,
+   "nombre": "Skeletal Bishop",
+   "npc_type": 172,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    110,
+    85
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900015,
+   "nombre": "Skeletal Bishop",
+   "npc_type": 172,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    114,
+    87
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900016,
+   "nombre": "Skeletal Bishop",
+   "npc_type": 172,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    106,
+    86
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900017,
+   "nombre": "Skeletal Bishop",
+   "npc_type": 172,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    87,
+    87
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900018,
+   "nombre": "Skeletal Bishop",
+   "npc_type": 172,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    87,
+    85
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900019,
+   "nombre": "Skeletal Bishop",
+   "npc_type": 172,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    92,
+    85
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900020,
+   "nombre": "Skeletal Bishop",
+   "npc_type": 172,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    91,
+    87
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900021,
+   "nombre": "Skeletal Bishop",
+   "npc_type": 172,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    77,
+    84
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900022,
+   "nombre": "Skeletal Bishop",
+   "npc_type": 172,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    78,
+    81
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900023,
+   "nombre": "Skeletal Bishop",
+   "npc_type": 172,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    83,
+    82
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900024,
+   "nombre": "Skeletal Bishop",
+   "npc_type": 172,
+   "sprite": 42185,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    81,
+    84
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900025,
+   "nombre": "Sexy Quli",
+   "npc_type": 176,
+   "sprite": 42187,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    41,
+    86
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900026,
+   "nombre": "Sexy Quli",
+   "npc_type": 176,
+   "sprite": 42187,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    47,
+    87
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900027,
+   "nombre": "Sexy Quli",
+   "npc_type": 176,
+   "sprite": 42187,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    41,
+    82
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900028,
+   "nombre": "Sexy Quli",
+   "npc_type": 176,
+   "sprite": 42187,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    48,
+    83
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900029,
+   "nombre": "Sexy Quli",
+   "npc_type": 176,
+   "sprite": 42187,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    56,
+    74
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900030,
+   "nombre": "Sexy Quli",
+   "npc_type": 176,
+   "sprite": 42187,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    61,
+    72
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900031,
+   "nombre": "Sexy Quli",
+   "npc_type": 176,
+   "sprite": 42187,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    61,
+    78
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900032,
+   "nombre": "Sexy Quli",
+   "npc_type": 176,
+   "sprite": 42187,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    57,
+    80
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900033,
+   "nombre": "Sexy Quli",
+   "npc_type": 176,
+   "sprite": 42187,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    43,
+    68
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900034,
+   "nombre": "Sexy Quli",
+   "npc_type": 176,
+   "sprite": 42187,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    45,
+    64
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900035,
+   "nombre": "Sexy Quli",
+   "npc_type": 176,
+   "sprite": 42187,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    52,
+    67
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900036,
+   "nombre": "Sexy Quli",
+   "npc_type": 176,
+   "sprite": 42187,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    47,
+    71
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900037,
+   "nombre": "Sexy Quli",
+   "npc_type": 176,
+   "sprite": 42187,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    30,
+    80
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900038,
+   "nombre": "Sexy Quli",
+   "npc_type": 176,
+   "sprite": 42187,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    28,
+    77
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900039,
+   "nombre": "Sexy Quli",
+   "npc_type": 176,
+   "sprite": 42187,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    32,
+    77
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900040,
+   "nombre": "Sexy Quli",
+   "npc_type": 176,
+   "sprite": 42187,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    34,
+    81
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900041,
+   "nombre": "Sexy Quli",
+   "npc_type": 176,
+   "sprite": 42187,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    55,
+    56
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900042,
+   "nombre": "Sexy Quli",
+   "npc_type": 176,
+   "sprite": 42187,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    62,
+    58
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900043,
+   "nombre": "Sexy Quli",
+   "npc_type": 176,
+   "sprite": 42187,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    60,
+    63
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900044,
+   "nombre": "Sexy Quli",
+   "npc_type": 176,
+   "sprite": 42187,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    54,
+    62
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900045,
+   "nombre": "Sexy Quli",
+   "npc_type": 176,
+   "sprite": 42187,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    74,
+    53
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900046,
+   "nombre": "Sexy Quli",
+   "npc_type": 176,
+   "sprite": 42187,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    79,
+    53
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900047,
+   "nombre": "Sexy Quli",
+   "npc_type": 176,
+   "sprite": 42187,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    80,
+    59
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900048,
+   "nombre": "Sexy Quli",
+   "npc_type": 176,
+   "sprite": 42187,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    74,
+    58
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 45
+  },
+  {
+   "entity_id": 900049,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    86,
+    46
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900050,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    87,
+    51
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900051,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    93,
+    46
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900052,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    99,
+    41
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900053,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    104,
+    44
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900054,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    110,
+    44
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900055,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    108,
+    39
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900056,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    103,
+    36
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900057,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    97,
+    32
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900058,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    96,
+    28
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900059,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    102,
+    25
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900060,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    111,
+    26
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900061,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    115,
+    28
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900062,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    109,
+    31
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900063,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    126,
+    27
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900064,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    129,
+    20
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900065,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    124,
+    17
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900066,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    123,
+    25
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900067,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    116,
+    8
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900068,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    119,
+    16
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900069,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    108,
+    15
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900070,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    103,
+    19
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900071,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    100,
+    16
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900072,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    96,
+    11
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900073,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    91,
+    8
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900074,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    77,
+    8
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900075,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    77,
+    2
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900076,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    83,
+    2
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900077,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    83,
+    11
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900078,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    72,
+    13
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900079,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    70,
+    7
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900080,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    73,
+    3
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  },
+  {
+   "entity_id": 900081,
+   "nombre": "Puqi Crab",
+   "npc_type": 1174,
+   "sprite": 42419,
+   "klass": 1,
+   "monstruo": true,
+   "tile": [
+    65,
+    9
+   ],
+   "direccion": 0,
+   "visible": 0,
+   "nivel": 48
+  }
+ ],
+ "recursos": []
+}

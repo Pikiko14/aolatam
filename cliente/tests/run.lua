@@ -86,6 +86,54 @@ for _, h in ipairs(V.hello) do
   igual('hello ' .. h.nombre .. ' variante', r.variante, h.variante)
 end
 
+-- Blowfish del AUTH (igual que server/clave_cliente.py con clave "secreta")
+do
+  local clave = require('src.clave')
+  local esperado = 'ba060f983787c77ba23443825daf4edda23443825daf4edda23443825daf4edd'
+  igual('clave Blowfish secreta', hex(clave.bloque('secreta')), esperado)
+end
+
+-- Objeto de mapa con nombre (0x000F real de una sesion: veta "Copper(L)") y el mismo id otra vez (busca-o-crea)
+do
+  local W = require('src.mundo')
+  local w = W.nuevo()
+  local b = unhex('f0d9d20300000000d40a000050090000436f70706572284c29000000000000006d0601eb0000000000000002')
+  w:mensaje(0x000F, b)
+  local e = w.ents[64150000]
+  igual('0x000F crea el objeto', e ~= nil, true)
+  igual('0x000F posicion', e and (e.x .. ',' .. e.y), '2772,2384')
+  igual('0x000F sprite', e and e.sprite, 60161)
+  igual('0x000F nombre', e and e.nombre, 'Copper(L)')
+  w:mensaje(0x000E, b:sub(1, 43))
+  igual('0x000E no rehace el objeto', w.ents[64150000] == e, true)
+  -- flags de mapa y stage de una sesion real (stage 41 = 0x29), y el bit 0x20 que apaga el minimapa
+  w:mensaje(0x0014, unhex('05020000ff0000'))
+  igual('0x0014 con minimapa', w.sin_minimapa, false)
+  w:mensaje(0x0014, unhex('25020000ff0000'))
+  igual('0x0014 sin minimapa', w.sin_minimapa, true)
+  w:mensaje(0x0196, unhex('020003010100000029005c00000003'))
+  igual('0x0196 stage', w.stage, 41)
+end
+
+-- Canal Lua (0x01A0): el saludo del servidor (subasta_ventana.SALUDO) llega como codigo y debe salir el c2s 0x002F
+do
+  local W = require('src.mundo')
+  local nat = require('src.nativo')
+  local w = W.nuevo()
+  w:mensaje(0x01A0, 'game.netcommand2(160, 1, 0)\0')
+  igual('0x01A0 encola el codigo', w.lua_pendiente and w.lua_pendiente[1], 'game.netcommand2(160, 1, 0)')
+  local enviado
+  local g_prev = rawget(_G, 'game')
+  rawset(_G, 'game', nat.game)
+  nat.game.enviar = function(m) enviado = m end
+  nat.ejecutar(w.lua_pendiente[1])
+  igual('netcommand2 -> c2s 0x002F', enviado and hex(enviado), '2f00a00100000000000000')
+  nat.game.netcommand(117, 0)
+  igual('netcommand -> c2s 0x002E', enviado and hex(enviado), '2e007500000000000000')
+  nat.game.enviar = nil
+  rawset(_G, 'game', g_prev)
+end
+
 print(string.format('PRUEBAS net.lua: %d correctas, %d falladas', pasadas, #falladas))
 for _, f in ipairs(falladas) do print('  FALLA ' .. f) end
 return #falladas == 0

@@ -80,10 +80,33 @@ ROPA_INICIAL = {
 # (servidor) pero invisible/mal dibujada (cliente): parecia que no le
 # hubieran dado la ropa clasica de estudiante.
 ROPA_INICIAL_HOMBRE = {
-    'cuerpo':  26,    # Blue Students' Clothes (M)
-    'guantes': 28,    # Students' Gloves (M)
-    'zapatos': 30,    # Students' Shoes (M)
+    'cuerpo':  3410,  # Blue Students' Clothes (M) — item 26 es de mujer (doll 129 = qipao)
+    'guantes': 3409,  # Students' Gloves (M)
+    'zapatos': 3411,  # Students' Shoes (M)
 }
+
+# Personajes hombre creados con el bug (26/28/30 en ranuras 2/5/6): al entrar se sustituyen.
+_SUST_HOMBRE_RANURA = {2: (26, 3410), 5: (28, 3409), 6: (30, 3411)}
+
+
+def corregir_ropa_hombre(p) -> bool:
+    """Si el personaje es hombre y aun lleva 26/28/30 en el equipo, pone 3410/3409/3411.
+    Devuelve True si cambio algo (hay que guardar inventario)."""
+    ap = getattr(p, 'apariencia', None) or (p.get('apariencia') if isinstance(p, dict) else None)
+    if not ap or int(ap[0]) != 1:
+        return False
+    bolsa = getattr(p, 'inventario', None)
+    if bolsa is None and isinstance(p, dict):
+        bolsa = p.get('inventario')
+    if not isinstance(bolsa, dict):
+        return False
+    cambio = False
+    for ranura, (viejo, nuevo) in _SUST_HOMBRE_RANURA.items():
+        for clave in (ranura, str(ranura)):
+            if bolsa.get(clave) == viejo:
+                bolsa[clave] = nuevo
+                cambio = True
+    return cambio
 
 # La Level 1-10 Growth Box (20103) NO se da aqui: se entrega mas tarde, al
 # terminar el tutorial (segunda charla con el Angels' Tutor), junto con la

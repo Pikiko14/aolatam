@@ -1,12 +1,26 @@
--- Pantalla de login y seleccion de personaje. Guarda servidor, usuario y carpeta del juego (nunca la clave) en config.txt del perfil de LÖVE.
+-- Pantalla de login y seleccion de personaje (cliente propio AOF / LÖVE).
+-- Guarda servidor, usuario y carpeta del juego (nunca la clave) en config.txt del perfil de LÖVE.
 local L = {}
 L.__index = L
 
 local CAMPOS = {
-  { 'servidor', 'Servidor (host:puerto)', false },
+  { 'servidor', 'Servidor', false },
   { 'usuario', 'Usuario', false },
   { 'clave', 'Clave', true },
-  { 'carpeta', 'Carpeta del juego (con los .pak)', false },
+  { 'carpeta', 'Carpeta del juego (data1.pak / update*.pak)', false },
+}
+
+-- Paleta Angels Online Forever (launcher): azul noche, carmesi, oro.
+local C = {
+  cielo1 = { 10 / 255, 20 / 255, 62 / 255 },
+  cielo2 = { 92 / 255, 10 / 255, 30 / 255 },
+  oro = { 255 / 255, 205 / 255, 96 / 255 },
+  oro_suave = { 255 / 255, 238 / 255, 170 / 255 },
+  texto = { 214 / 255, 214 / 255, 236 / 255 },
+  texto_dim = { 160 / 255, 165 / 255, 190 / 255 },
+  campo = { 8 / 255, 12 / 255, 36 / 255, 0.72 },
+  campo_activo = { 22 / 255, 58 / 255, 168 / 255, 0.55 },
+  rosa = { 236 / 255, 72 / 255, 92 / 255 },
 }
 
 local function leer_config()
@@ -18,13 +32,29 @@ local function leer_config()
   return cfg
 end
 
+local function degradado(ancho, alto)
+  local mesh = love.graphics.newMesh({
+    { 0, 0, 0, 0, C.cielo1[1], C.cielo1[2], C.cielo1[3], 1 },
+    { ancho, 0, 1, 0, C.cielo1[1], C.cielo1[2], C.cielo1[3], 1 },
+    { ancho, alto, 1, 1, C.cielo2[1], C.cielo2[2], C.cielo2[3], 1 },
+    { 0, alto, 0, 1, C.cielo2[1], C.cielo2[2], C.cielo2[3], 1 },
+  }, 'fan')
+  love.graphics.setColor(1, 1, 1, 1)
+  love.graphics.draw(mesh)
+end
+
+local function halo(cx, cy, r, a)
+  love.graphics.setColor(C.oro[1], C.oro[2], C.oro[3], a)
+  love.graphics.circle('fill', cx, cy, r)
+end
+
 function L.nuevo(por_defecto)
   local cfg = leer_config()
-  local self = setmetatable({ valores = {}, activo = 1, mensaje = nil, fase = 'form', personajes = nil, nuevo = nil }, L)
+  local self = setmetatable({ valores = {}, activo = 1, mensaje = nil, fase = 'form', personajes = nil, nuevo = nil, t0 = love.timer.getTime() }, L)
   self.valores.servidor = cfg.servidor or por_defecto.servidor or '127.0.0.1:16768'
   self.valores.usuario = cfg.usuario or ''
   self.valores.clave = ''
-  self.valores.carpeta = cfg.carpeta or por_defecto.carpeta or ''
+  self.valores.carpeta = cfg.carpeta or por_defecto.carpeta or 'C:/AO/Angels Online'
   return self
 end
 
@@ -45,7 +75,6 @@ function L:texto(t)
   end
 end
 
--- Devuelve 'enviar' cuando el formulario esta completo y se pulso Enter.
 function L:tecla(k)
   if self.fase == 'crear' then
     local n = self.nuevo
@@ -88,7 +117,6 @@ function L:empezar_creacion(ranura)
   self.mensaje = nil
 end
 
--- apariencia que se manda y con la que se dibuja la vista previa: genero (1 hombre), peinado, ?, color de pelo, color de piel
 function L:apariencia()
   local n = self.nuevo
   return { n.genero, n.peinado, 0, n.color, 0 }
@@ -100,56 +128,85 @@ function L:mostrar_personajes(lista)
 end
 
 function L:dibujar(ancho, alto, raton)
-  love.graphics.clear(0.06, 0.09, 0.16)
-  local x = ancho / 2 - 250
-  love.graphics.setColor(1, 1, 1)
-  love.graphics.print('Angels Online - cliente multiplataforma (prototipo)', x, 70, 0, 1.4, 1.4)
+  degradado(ancho, alto)
+  local t = love.timer.getTime() - (self.t0 or 0)
+  halo(ancho * 0.18, alto * 0.22, 90 + math.sin(t * 0.7) * 8, 0.07)
+  halo(ancho * 0.82, alto * 0.7, 120 + math.cos(t * 0.5) * 10, 0.05)
+
+  local x = math.floor(ancho / 2 - 260)
+  local y0 = math.floor(alto * 0.14)
+
+  love.graphics.setColor(C.oro[1], C.oro[2], C.oro[3], 1)
+  love.graphics.print('ANGELS ONLINE FOREVER', x, y0, 0, 1.65, 1.65)
+  love.graphics.setColor(C.oro_suave[1], C.oro_suave[2], C.oro_suave[3], 0.95)
+  love.graphics.print('Cliente propio · multiplataforma', x, y0 + 36, 0, 1.05, 1.05)
+  love.graphics.setColor(C.texto_dim[1], C.texto_dim[2], C.texto_dim[3], 1)
+  love.graphics.print('Sin angel.dat · lee los .pak de tu instalacion', x, y0 + 58)
+
   local filas = {}
   if self.fase == 'form' then
     for i, c in ipairs(CAMPOS) do
-      local y = 140 + (i - 1) * 62
-      love.graphics.setColor(0.7, 0.8, 1); love.graphics.print(c[2], x, y)
-      love.graphics.setColor(i == self.activo and 0.15 or 0.1, i == self.activo and 0.25 or 0.15, i == self.activo and 0.5 or 0.3)
-      love.graphics.rectangle('fill', x, y + 18, 500, 28, 4, 4)
-      love.graphics.setColor(1, 1, 1)
+      local y = y0 + 100 + (i - 1) * 68
+      love.graphics.setColor(C.texto[1], C.texto[2], C.texto[3], 1)
+      love.graphics.print(c[2], x, y)
+      local activo = (i == self.activo)
+      local col = activo and C.campo_activo or C.campo
+      love.graphics.setColor(col[1], col[2], col[3], col[4] or 1)
+      love.graphics.rectangle('fill', x, y + 20, 520, 32, 2, 2)
+      if activo then
+        love.graphics.setColor(C.oro[1], C.oro[2], C.oro[3], 0.85)
+        love.graphics.rectangle('line', x, y + 20, 520, 32, 2, 2)
+      end
+      love.graphics.setColor(1, 1, 1, 1)
       local v = self.valores[c[1]]
-      love.graphics.print((c[3] and string.rep('*', #v) or v) .. (i == self.activo and '_' or ''), x + 8, y + 24)
+      local mostrar = (c[3] and string.rep('•', #v) or v) .. (activo and (math.floor(t * 2) % 2 == 0 and '|' or ' ') or '')
+      love.graphics.print(mostrar, x + 10, y + 26)
     end
-    love.graphics.setColor(0.8, 0.9, 1)
-    love.graphics.print('Tab: cambiar campo    Enter: conectar', x, 400)
-    love.graphics.print('La clave solo sirve para cuentas creadas con este cliente (la del cliente original no se puede reproducir).', x, 424, 0, 1, 1)
+    love.graphics.setColor(C.texto_dim[1], C.texto_dim[2], C.texto_dim[3], 1)
+    love.graphics.print('Tab cambia campo · Enter entra', x, y0 + 390)
+    love.graphics.print('Misma clave que en la web / Windows (Blowfish). La cuenta se crea en la web si aun no existe.', x, y0 + 412, 0, 0.95, 0.95)
   elseif self.fase == 'crear' then
     local n = self.nuevo
-    love.graphics.setColor(0.7, 0.8, 1); love.graphics.print('Nuevo personaje (ranura ' .. (n.ranura + 1) .. ')', x, 130)
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.print('Nombre: ' .. n.nombre .. '_', x, 170)
-    love.graphics.print('Genero: ' .. (n.genero == 1 and 'Hombre' or 'Mujer') .. '      (Tab cambia)', x, 200)
-    love.graphics.print('Peinado: ' .. n.peinado .. '      (izquierda / derecha)', x, 230)
-    love.graphics.print('Color de pelo: ' .. n.color .. '      (arriba / abajo)', x, 260)
-    love.graphics.setColor(0.8, 0.9, 1); love.graphics.print('Enter: crear     Esc: volver', x, 300)
-    if self.vista_previa then self.vista_previa(x + 380, 420, self:apariencia(), n.genero == 1 and 'b' or 'g') end
+    love.graphics.setColor(C.oro[1], C.oro[2], C.oro[3], 1)
+    love.graphics.print('Nuevo personaje · ranura ' .. (n.ranura + 1), x, y0 + 100)
+    love.graphics.setColor(C.texto[1], C.texto[2], C.texto[3], 1)
+    love.graphics.print('Nombre: ' .. n.nombre .. '|', x, y0 + 140)
+    love.graphics.print('Genero: ' .. (n.genero == 1 and 'Hombre' or 'Mujer') .. '   (Tab)', x, y0 + 172)
+    love.graphics.print('Peinado: ' .. n.peinado .. '   (← →)', x, y0 + 204)
+    love.graphics.print('Color de pelo: ' .. n.color .. '   (↑ ↓)', x, y0 + 236)
+    love.graphics.setColor(C.texto_dim[1], C.texto_dim[2], C.texto_dim[3], 1)
+    love.graphics.print('Enter crea · Esc vuelve', x, y0 + 280)
+    if self.vista_previa then self.vista_previa(x + 380, y0 + 380, self:apariencia(), n.genero == 1 and 'b' or 'g') end
   else
-    love.graphics.setColor(0.7, 0.8, 1); love.graphics.print('Elige personaje', x, 140)
+    love.graphics.setColor(C.oro[1], C.oro[2], C.oro[3], 1)
+    love.graphics.print('Elige personaje', x, y0 + 100)
     for i, pj in ipairs(self.personajes or {}) do
-      local y = 180 + (i - 1) * 70
-      local sobre = raton and raton[1] >= x and raton[1] < x + 500 and raton[2] >= y and raton[2] < y + 58
-      love.graphics.setColor(sobre and 0.2 or 0.1, sobre and 0.35 or 0.18, sobre and 0.65 or 0.4)
-      love.graphics.rectangle('fill', x, y, 500, 58, 6, 6)
-      love.graphics.setColor(1, 1, 1)
+      local y = y0 + 140 + (i - 1) * 74
+      local sobre = raton and raton[1] >= x and raton[1] < x + 520 and raton[2] >= y and raton[2] < y + 62
+      love.graphics.setColor(C.campo[1], C.campo[2], C.campo[3], sobre and 0.9 or 0.65)
+      love.graphics.rectangle('fill', x, y, 520, 62, 2, 2)
+      if sobre then
+        love.graphics.setColor(C.oro[1], C.oro[2], C.oro[3], 0.9)
+        love.graphics.rectangle('line', x, y, 520, 62, 2, 2)
+      end
+      love.graphics.setColor(1, 1, 1, 1)
       if pj.ocupada then
-        love.graphics.print(pj.nombre, x + 14, y + 8, 0, 1.3, 1.3)
-        love.graphics.print('Nivel ' .. pj.nivel .. '   mapa ' .. pj.mapa, x + 14, y + 34)
-        filas[#filas + 1] = { x = x, y = y, w = 500, h = 58, ranura = pj.ranura }
+        love.graphics.print(pj.nombre, x + 16, y + 10, 0, 1.25, 1.25)
+        love.graphics.setColor(C.texto_dim[1], C.texto_dim[2], C.texto_dim[3], 1)
+        love.graphics.print('Nivel ' .. pj.nivel .. ' · mapa ' .. pj.mapa, x + 16, y + 36)
+        filas[#filas + 1] = { x = x, y = y, w = 520, h = 62, ranura = pj.ranura }
       else
-        love.graphics.setColor(0.8, 0.9, 1); love.graphics.print('(ranura vacia) clic para crear un personaje', x + 14, y + 20)
-        filas[#filas + 1] = { x = x, y = y, w = 500, h = 58, ranura = pj.ranura, vacia = true }
+        love.graphics.setColor(C.texto[1], C.texto[2], C.texto[3], 1)
+        love.graphics.print('Ranura vacia — clic para crear', x + 16, y + 22)
+        filas[#filas + 1] = { x = x, y = y, w = 520, h = 62, ranura = pj.ranura, vacia = true }
       end
     end
   end
   if self.mensaje then
-    love.graphics.setColor(1, 0.6, 0.4); love.graphics.print(self.mensaje, x, 470)
+    love.graphics.setColor(C.rosa[1], C.rosa[2], C.rosa[3], 1)
+    love.graphics.print(self.mensaje, x, alto - 48)
   end
-  love.graphics.setColor(1, 1, 1)
+  love.graphics.setColor(1, 1, 1, 1)
   return filas
 end
 

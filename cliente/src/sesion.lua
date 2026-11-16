@@ -2,22 +2,23 @@
 -- Maquina de estados sin bloqueo para usarla desde love.update. Solo depende de luasocket (viene con LÖVE).
 local socket = require('socket')
 local net = require('src.net')
+local clave_bf = require('src.clave')
 
 local S = {}
 S.__index = S
 
 local OP_AUTH, OP_LISTA, OP_ENTRAR, OP_REDIRECT = 0x0002, 0x0000, 0x0006, 0x0004
 
--- AUTH de login: [usuario en texto + nulo, relleno] + bloque opaco de contrasena (73 B en total).
--- Con el servidor de desarrollo (validar_password = 0) el bloque puede ir en cero.
--- AUTH de login: usuario en texto + nulo (hasta 21 B), 32 B de huella de la clave desde el desplazamiento 21 (cuentas.hash_de_auth del
--- servidor) y relleno hasta 73 B. El cifrado de la clave del cliente original no esta resuelto: este cliente manda su propia huella
--- (sha256 de usuario + clave), asi que solo entra en cuentas creadas con el. Sin clave (nil) va en cero (servidor de desarrollo).
+-- AUTH de login (igual que angel.dat): usuario ASCIIZ (21 B) + 32 B Blowfish de la clave + relleno a 73 B.
+-- Con la misma clave de Windows/web el servidor descifra y valida el PBKDF2. Sin clave (nil/vacio) va en cero
+-- (solo sirve si validar_password=0).
 local function auth_login(usuario, clave)
   local cuerpo = (usuario .. '\0'):sub(1, 21)
   cuerpo = cuerpo .. string.rep('\0', 21 - #cuerpo)
   if clave and clave ~= '' then
-    cuerpo = cuerpo .. love.data.hash('sha256', 'angels-lua:' .. usuario:lower() .. ':' .. clave)
+    cuerpo = cuerpo .. clave_bf.bloque(clave)
+  else
+    cuerpo = cuerpo .. string.rep('\0', 32)
   end
   cuerpo = cuerpo .. string.rep('\0', 73 - #cuerpo)
   return net.p16(OP_AUTH) .. cuerpo

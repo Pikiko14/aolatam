@@ -1,12 +1,16 @@
 -- Estado del mundo que cuentan los mensajes del servidor: mi personaje, el mapa y las demas entidades.
 local net = require('src.net')
+local bit = require('bit')
 local u16, u32 = net.u16, net.u32
 
 local W = {}
 W.__index = W
 
 function W.nuevo()
-  return setmetatable({ ents = {}, yo = nil, stage = nil, ver_mapa = 0, chat = {}, flotantes = {}, efectos = {}, objetivo = nil }, W)
+  return setmetatable({
+    ents = {}, yo = nil, stage = nil, ver_mapa = 0, chat = {}, flotantes = {}, efectos = {},
+    objetivo = nil, buffs = {}, mascota_orden = 1,
+  }, W)
 end
 
 -- 0x0002/0x0008/0x0001/0x0003 dan la casilla; 0x0005 va en pixeles (32 por casilla). Aqui todo se guarda en pixeles, en la esquina de la casilla (el servidor usa casilla * 32).
@@ -54,7 +58,11 @@ function W:mensaje(op, b)
     self.yo = u32(b, 1)
     self.stage = u32(b, 3954)
     self.ents[self.yo] = { id = self.yo, x = px(u32(b, 9)), y = px(u32(b, 13)), nombre = cstr(b:sub(17, 50)), yo = true }
-    self.stats = { hp = u32(b, 103), hp_max = u32(b, 107), mp = u32(b, 111), mp_max = u32(b, 115) }   -- bloque de 0x0042 en +102
+    -- bloque 0x0042 embebido en +102: HP/MP u32 y SP pts/max u16 en +16/+18 del bloque (inventario.stats)
+    self.stats = {
+      hp = u32(b, 103), hp_max = u32(b, 107), mp = u32(b, 111), mp_max = u32(b, 115),
+      sp = u16(b, 119), sp_max = u16(b, 121),
+    }
     self.atrib = atributos(b, 103) or self.atrib
     -- faccion en +60 (1 Aurora, 2 Beasts, 3 Steel, 4 Shadow, 5 Heaven) y 36 habilidades de 14 B desde +214: id u8, nivel u16, nivel2 u16, exp u32, exp_sig u32
     self.faccion = b:byte(61)
@@ -75,20 +83,59 @@ function W:mensaje(op, b)
     self.genero = b:byte(56) == 1 and 'b' or 'g'      -- primer byte de la apariencia (+55); 1 = hombre segun las grabaciones
     self.ver_mapa = self.ver_mapa + 1
   elseif op == 0x0042 and #b >= 16 then
-    self.stats = { hp = u32(b, 1), hp_max = u32(b, 5), mp = u32(b, 9), mp_max = u32(b, 13) }
+    self.stats = {
+      hp = u32(b, 1), hp_max = u32(b, 5), mp = u32(b, 9), mp_max = u32(b, 13),
+      sp = (#b >= 20) and u16(b, 17) or (self.stats and self.stats.sp) or 0,
+      sp_max = (#b >= 20) and u16(b, 19) or (self.stats and self.stats.sp_max) or 0,
+    }
     self.atrib = atributos(b, 1) or self.atrib
-  elseif op == 0x001D and #b >= 14 and u32(b, 1) == self.yo and (b:byte(6) == 31 or b:byte(6) == 32) then
-    local p, n = 6, b:byte(5)
+  elseif op == 0x001D and #b >= 6 then
+    -- [entity u32][n u8] luego n entradas: code u8 + payload.
+    -- code 1 = equipo visual (ranura u32, item u32; 0 quita) — PD del job y fashion van por aqui;
+    -- code 4 = buff (magic_id u32, dur_ms u32; dur 0 quita); 31/32 = exp / exp_sig u64; 3 = enfriamiento; 0x11 = orden mascota
+    local quien, n = u32(b, 1), b:byte(5)
+    local p = 6
     for _ = 1, n do
-      if p + 8 > #b then break end
+      if p > #b then break end
       local code = b:byte(p)
-      if code ~= 31 and code ~= 32 then break end
-      local v = u32(b, p + 1) + u32(b, p + 5) * 4294967296
-      if code == 32 then self.exp = v else self.exp_sig = v end
-      p = p + 9
+      if code == 1 and p + 8 <= #b then
+        local ranura, item = u32(b, p + 1), u32(b, p + 5)
+        if quien == self.yo or quien == 0 then
+          self.puesto_visual = self.puesto_visual or {}
+          if item == 0 then self.puesto_visual[ranura] = false
+          else self.puesto_visual[ranura] = item end
+        end
+        local e = self.ents[quien]
+        if e and e.jugador and not e.yo then
+          e.puesto_visual = e.puesto_visual or {}
+          if item == 0 then e.puesto_visual[ranura] = false else e.puesto_visual[ranura] = item end
+          e.equipo = nil
+        end
+        p = p + 9
+      elseif code == 4 and p + 8 <= #b then
+        local mid, dur = u32(b, p + 1), u32(b, p + 5)
+        if quien == self.yo or quien == 0 then
+          self.buffs = self.buffs or {}
+          if dur == 0 then self.buffs[mid] = nil
+          else self.buffs[mid] = { id = mid, fin = love.timer.getTime() + dur / 1000 } end
+        end
+        p = p + 9
+      elseif (code == 31 or code == 32) and p + 8 <= #b and quien == self.yo then
+        local v = u32(b, p + 1) + u32(b, p + 5) * 4294967296
+        if code == 32 then self.exp = v else self.exp_sig = v end
+        p = p + 9
+      elseif code == 0x11 and p + 4 <= #b and quien == self.yo then
+        self.mascota_orden = u32(b, p + 1)
+        p = p + 5
+      elseif code == 3 and p + 8 <= #b then
+        p = p + 9   -- cooldown de magia: lo lleva main.lua por otra via visual
+      else
+        break
+      end
     end
   elseif op == 0x0013 and #b >= 6 then
-    -- atributos de una entidad: entidad@0, n@4 y n veces (kind u8, valor u32). kind 0 = HP (% en monstruos), 2 = MP
+    -- atributos de una entidad: entidad@0, n@4 y n veces (kind u8, valor u32).
+    -- kind 0 = HP (% en monstruos), 2 = MP, 4 = SP del jugador
     local id, n = u32(b, 1), b:byte(5)
     local e = self.ents[id]
     for i = 0, n - 1 do
@@ -100,21 +147,28 @@ function W:mensaje(op, b)
         if id == self.yo and self.stats then self.stats.hp = val end
       elseif kind == 2 and id == self.yo and self.stats then
         self.stats.mp = val
+      elseif kind == 4 and id == self.yo and self.stats then
+        self.stats.sp = val
       end
     end
   elseif op == 0x000A and #b >= 12 then
-    -- evento de combate: a@0, b@4, c@8. c = 7 muerte de `a`; c = 0x03060001 `a` fija como objetivo a `b`; otro c = golpe de `a` a `b`
+    -- evento de combate: a@0, b@4, c@8. c = 7 muerte de `a`; c = 0 / (a,0,0) levantarse; c = 0x03060001 objetivo; otro = golpe
     local a, t, c = u32(b, 1), u32(b, 5), u32(b, 9)
     local ahora = love.timer.getTime()
     local ea, et = self.ents[a], self.ents[t]
     if c == 7 then
       if ea then ea.muerto = ahora end
+      if a == self.yo then self.muerto = true end
       if self.objetivo == a then self.objetivo = nil end
+    elseif c == 0 and t == 0 then
+      if ea then ea.muerto = nil end
+      if a == self.yo then self.muerto = false end
     elseif c == 0x03060001 then
       if a == self.yo then self.objetivo = t end
     elseif ea then
       ea.atacando = ahora + 0.5
-      if et and (et.x ~= ea.x or et.y ~= ea.y) then ea.dig, ea.espejo = W.direccion(et.x - ea.x, et.y - ea.y) end
+      -- coords del servidor: y crece hacia el norte; direccion() espera y de pantalla (abajo)
+      if et and (et.x ~= ea.x or et.y ~= ea.y) then ea.dig, ea.espejo = W.direccion(et.x - ea.x, ea.y - et.y) end
     end
   elseif op == 0x000B and #b >= 9 then
     -- numero flotante sobre quien recibe el golpe: entidad@0, tipo@4, valor@5
@@ -143,6 +197,7 @@ function W:mensaje(op, b)
       hp = u32(b, 60), mp = u32(b, 64), hp_max = u32(b, 72), mp_max = u32(b, 80),
       atk = doble(83), dfs = doble(91), matk = doble(99), mdef = doble(107), rigor = doble(115), agilidad = doble(123),
       saciedad = u16(b, 178), intimidad = b:byte(180), estrellas = u32(b, 197),
+      orden = self.mascota_orden or 1,
     }
   elseif op == 0x0023 and #b >= 5 then
     -- invitacion a un grupo: [char del lider u32][nombre ASCIIZ]
@@ -303,17 +358,85 @@ function W:mensaje(op, b)
       self.instancias[casilla] = b:sub(p + 1, p + 8)
       p = p + 86 + u16(b, p + 51)
     end
+  elseif op == 0x000C and #b >= 4 then
+    -- cambio de mapa: [stage u32][+24 B]. El cliente debe contestar C2S 0x0009 vacio; el server reenvia la entrada.
+    local stage = u32(b, 1)
+    local yo = self.yo and self.ents[self.yo]
+    self.ents = {}
+    if yo then
+      yo.dx, yo.dy = nil, nil
+      self.ents[self.yo] = yo
+    end
+    self.objetivo, self.efectos, self.flotantes = nil, {}, {}
+    self.stage = stage
+    self.pedir_mapa = true
+    self.ver_mapa = self.ver_mapa + 1
   elseif op == 0x0008 and #b >= 62 then
     local id = u32(b, 1)
     self.ents[id] = { id = id, x = px(u32(b, 9)), y = px(u32(b, 13)), nombre = cstr(b:sub(17, 33)), sprite = u32(b, 35), clase = u32(b, 41) }
-  elseif op == 0x0001 and #b >= 60 then
+  elseif (op == 0x000E or op == 0x000F or op == 0x0010) and #b >= 36 then
+    -- objeto de mapa del servidor (vetas, arboles, madrigueras, portales, totems, tornados...): angel.dat 005ef410 ->
+    -- 005b85d0, BUSCA-O-CREA por id; el sprite solo cuenta al crear. id@0, capa@4, x,y en PIXELES@8/@12 (y desde abajo,
+    -- como el resto del servidor), nombre@16..31 solo en 0x000F, orientacion@33, sprite u16@34.
     local id = u32(b, 1)
-    self.ents[id] = { id = id, x = px(u32(b, 9)), y = px(u32(b, 13)), nombre = cstr(b:sub(17, 32)), jugador = true }
+    local e = self.ents[id]
+    if not e then
+      e = { id = id, x = u32(b, 9), y = u32(b, 13), sprite = u16(b, 35), objeto_mapa = true, espejo = b:byte(34) == 2 }
+      self.ents[id] = e
+    end
+    if op == 0x000F then
+      local n = cstr(b:sub(17, 32))
+      if n ~= '' then e.nombre = n end
+    end
+  elseif op == 0x0014 and #b >= 4 then
+    -- flags del mapa (server/login.py flags_de_mapa): con el bit 0x20 el mapa no tiene minimapa ni Scene Map
+    self.flags_mapa = u32(b, 1)
+    self.sin_minimapa = bit.band(self.flags_mapa, 0x20) ~= 0
+  elseif op == 0x0196 and #b >= 10 then
+    -- datos del mapa al entrar; el stage va en el offset 8
+    self.stage = self.stage or u16(b, 9)
+  elseif op == 0x005C and #b >= 1 then
+    -- emotes desbloqueados: un byte por emote (posiciones 12..48 de la barra de emotes)
+    self.emotes = {}
+    for i = 1, #b do self.emotes[i - 1] = b:byte(i) ~= 0 end
+  elseif op == 0x001C and #b >= 1 then
+    -- habilidades del personaje (server/clases.py): cabecera + registros; se guarda crudo para la ventana de skills
+    self.habilidades_crudo = b
+  elseif op == 0x01A0 and #b >= 1 then
+    -- canal Lua del servidor (server/canal_lua.py): codigo latin1 terminado en \0; main.lua lo ejecuta con la capa nativa
+    self.lua_pendiente = self.lua_pendiente or {}
+    if #self.lua_pendiente < 200 then self.lua_pendiente[#self.lua_pendiente + 1] = (b:gsub('%z.*$', '')) end
+  elseif op == 0x006D then
+    -- ack vacio del movimiento (se repite con 0x0016 y 0x0005): nada que hacer
+  elseif op == 0x005D and #b >= 4 then
+    -- hora del servidor (segundos); la UI la puede usar para relojes y cuentas atras
+    self.hora_servidor, self.hora_local = u32(b, 1), love.timer.getTime()
+  elseif op == 0x0001 and #b >= 60 then
+    -- otro jugador: apariencia @55..59, faccion @60, fashion/equipo 8 u32 @64..92 (PD>fashion>gear), arma @96, insignia @100
+    local id = u32(b, 1)
+    local equipo = {}
+    if #b >= 104 then
+      for i = 0, 7 do
+        local it = u32(b, 65 + i * 4)
+        if it ~= 0 then equipo[#equipo + 1] = it end
+      end
+      local arma, insignia = u32(b, 97), u32(b, 101)
+      if arma ~= 0 then equipo[#equipo + 1] = arma end
+      if insignia ~= 0 then equipo[#equipo + 1] = insignia end
+    end
+    self.ents[id] = {
+      id = id, x = px(u32(b, 9)), y = px(u32(b, 13)), nombre = cstr(b:sub(17, 32)), jugador = true,
+      apariencia = { b:byte(56), b:byte(57), b:byte(58), b:byte(59), b:byte(60) },
+      genero = b:byte(56) == 1 and 'b' or 'g',
+      equipo = equipo,
+      sentado = b:byte(62) == 7,
+    }
   elseif op == 0x0005 and #b >= 22 then
     local e = self.ents[u32(b, 1)]
     if e then
       e.x, e.y, e.dx, e.dy, e.vel = u32(b, 5), u32(b, 9), u32(b, 13), u32(b, 17), u16(b, 21)
-      if e.dx ~= e.x or e.dy ~= e.y then e.dig, e.espejo = W.direccion(e.dx - e.x, e.dy - e.y) end
+      -- y del servidor crece hacia el norte; direccion() usa y de pantalla (hacia abajo)
+      if e.dx ~= e.x or e.dy ~= e.y then e.dig, e.espejo = W.direccion(e.dx - e.x, e.y - e.dy) end
     end
   elseif op == 0x0003 and #b >= 12 then
     local e = self.ents[u32(b, 1)]
@@ -326,16 +449,68 @@ function W:oro()
   return (self.cantidades and self.cantidades[0]) or 0
 end
 
--- Ids de item que lleva puestos mi personaje: equipo regular (casillas 1..19); la Fashion (167..174) pisa a la de Gear.
+-- Misma regla que presencia._spawn: por cada ranura visual, PD/0x001D > fashion > gear;
+-- luego el arma real (3), otras piezas de gear y la insignia (175).
+local PARES_VISUAL = { { 167, 1 }, { 168, 2 }, { 169, 3 }, { 170, 4 }, { 171, 5 }, { 172, 6 }, { 173, 7 }, { 174, 10 } }
+
+-- En el cliente: 26/28/30 son el set de estudiante de mujer (sin spr masculino).
+-- Si el personaje es hombre, se dibujan los ids (M) equivalentes; el inventario no se toca.
+local SUSTITUTO_HOMBRE = { [26] = 3410, [28] = 3409, [30] = 3411 }
+
+local function item_en(mapa, r)
+  if not mapa then return nil end
+  local v = mapa[r]
+  if v == false then return false end   -- 0x001D lo vacio a proposito
+  if v and v ~= 0 then return v end
+  return nil
+end
+
 function W:puesto()
-  local out = {}
-  for casilla, item in pairs(self.items or {}) do
-    if casilla >= 1 and casilla < 20 then out[#out + 1] = { casilla, item } end
+  local bag, vis = self.items or {}, self.puesto_visual or {}
+  local function at(r)
+    if vis[r] ~= nil then
+      local v = vis[r]
+      return (v and v ~= 0) and v or nil
+    end
+    local v = bag[r]
+    return (v and v ~= 0) and v or nil
   end
-  table.sort(out, function(a, b) return a[1] < b[1] end)
+  local function ver(it)
+    if not it then return nil end
+    if self.genero == 'b' and SUSTITUTO_HOMBRE[it] then return SUSTITUTO_HOMBRE[it] end
+    return it
+  end
+  -- Primero todo el equipo de combate y despues la moda: E:capas se queda con la ultima prenda que da cada pieza, asi la
+  -- moda tapa pieza a pieza (el casco de moda tapa a los dos cascos de combate) y lo que la moda no trae (la mochila)
+  -- se sigue viendo, como en el cliente de Windows (capturas del 15/11/2026). Antes la moda quitaba la ranura entera.
   local lista = {}
-  for _, v in ipairs(out) do lista[#lista + 1] = v[2] end
-  for c = 167, 174 do if self.items and self.items[c] then lista[#lista + 1] = self.items[c] end end
+  for r = 1, 19 do
+    local it = ver(at(r))
+    if it then lista[#lista + 1] = it end
+  end
+  for _, p in ipairs(PARES_VISUAL) do
+    local it = ver(at(p[1]))
+    if it then lista[#lista + 1] = it end
+  end
+  local insignia = ver(at(175))
+  if insignia then lista[#lista + 1] = insignia end
+  return lista
+end
+
+-- Equipo visual de otro jugador: 0x0001 ya viene fusionado; si llego 0x001D code 1, se recompone.
+function W.equipo_de(e)
+  if e.equipo then return e.equipo end
+  local vis = e.puesto_visual
+  if not vis then return {} end
+  local lista = {}
+  for _, p in ipairs(PARES_VISUAL) do
+    local it = item_en(vis, p[1]) or item_en(vis, p[2])
+    if it then lista[#lista + 1] = it end
+  end
+  local arma = item_en(vis, 3)
+  if arma then lista[#lista + 1] = arma end
+  local insignia = item_en(vis, 175)
+  if insignia then lista[#lista + 1] = insignia end
   return lista
 end
 
@@ -351,11 +526,17 @@ function W:avanzar(dt)
   for i = #self.flotantes, 1, -1 do
     if ahora - self.flotantes[i].t > 1.2 then table.remove(self.flotantes, i) end
   end
+  if self.buffs then
+    for id, b in pairs(self.buffs) do
+      if b.fin and ahora >= b.fin then self.buffs[id] = nil end
+    end
+  end
   for _, e in pairs(self.ents) do
     if e.dx then
       local vx, vy = e.dx - e.x, e.dy - e.y
       local d = math.sqrt(vx * vx + vy * vy)
-      local paso = (e.vel or 50) * dt * 3
+      -- misma escala que combate.PX_POR_SEGUNDO_POR_VELOCIDAD (2.5 px/s por punto de vel)
+      local paso = (e.vel or 50) * 2.5 * dt
       if d <= paso then e.x, e.y, e.dx, e.dy = e.dx, e.dy, nil, nil
       else e.x, e.y = e.x + vx / d * paso, e.y + vy / d * paso end
     end

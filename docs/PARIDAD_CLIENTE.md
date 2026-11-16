@@ -53,7 +53,7 @@ Criterio de aceptacion: la lista completa en verde y la reproduccion de sesiones
 el motor grafico, no de lo que aparece).
 
 ## 3. Lo que falta descifrar antes de poder prometer la paridad
-- **Contrasena:** como el cliente original deriva el hash que manda en el login. **NO esta resuelto** (`docs/07_LOGIN_REAL.md`, "Deuda conocida"; `tools/analizar_auth.py` no lo resolvio). El cliente Lua manda su propia huella: solo entra en cuentas creadas con el.
+- **Contrasena:** resuelto (14/11/2026). El cliente Lua cifra con el mismo Blowfish (`d593b7880791f844`) que angel.dat (`cliente/src/clave.lua`).
 - **Animacion:** resuelta en lo basico (reposo, correr, atacar, morir; 5 direcciones + espejo); faltan sentarse, trabajar, montura y duales.
 - **Personaje con equipo:** resuelto en lo basico (cuerpo base 999/1100, pelo 1001+/1101+, piezas por `doll`); el orden de capas y el tinte son deducidos y faltan por comparar.
 - **Efectos de habilidades:** `shape/magic`, `effect` y su sincronizacion con los golpes.
@@ -74,26 +74,29 @@ Si el hito 0 funciona, cubre Linux y Mac sin escribir cliente. El cliente propio
 ## 5. Legal (no es asesoria)
 El arte y el sonido son de IGG. El cliente nuevo debe leer los archivos del cliente que cada jugador ya tiene instalado y no redistribuirlos.
 
-## 6. Estado real del cliente Lua (`cliente/`, 28/10/2026)
+## 6. Estado real del cliente Lua (`cliente/`, 14/11/2026)
 
 Verificado en vivo contra un servidor de desarrollo aislado. "Probado" = se ejecuto y el servidor confirmo el efecto.
 
 | area | estado | notas |
 |---|---|---|
-| Red, cifrado, Hello | hecho | 63 pruebas contra vectores del servidor Python |
-| Login, clave propia, seleccion de personaje | hecho | clave: ver seccion 3; crear personajes probado (C2S 0x0003, 57 B) con vista previa |
-| Mapa: terreno, objetos, orden por y | hecho (objetos 95 % dibujables en Aurora; el resto son luces y marcas invisibles) | v5 y v6 (celda de 7 B en v6; el byte 0 es el tileset directo). Bordes suaves entre suelos (degradado propio de 16 px, no las mascaras `brush.pNN` del original). Sombras bajo las entidades (elipse fija) y objetos animados (8 de 216 tipos en el Lyceum). Faltan agua animada y las costuras cada 16 casillas |
-| NPC y monstruos: sprites, animacion, direccion | hecho | NPC sin archivo en los pak (p. ej. 40044) salen como punto |
+| Red, cifrado, Hello | hecho | 64 pruebas (incluye Blowfish del AUTH) |
+| Login, clave Blowfish (= Windows/web), seleccion | hecho | misma clave que angel.dat; crear personajes (C2S 0x0003) |
+| Mapa: terreno, objetos, orden por y | hecho (objetos 95 % dibujables en Aurora; el resto son luces y marcas invisibles) | v5 y v6; bordes suaves; sombras; animados. Faltan agua y costuras |
+| Cambio de mapa | hecho | S2C `0x000C` → C2S `0x0009` → nueva ficha `0x0002`; mpc desde `stage.xml` 地圖檔 |
+| NPC y monstruos: sprites, animacion, direccion | hecho | NPC sin archivo en los pak salen como punto |
+| Otros jugadores vestidos | hecho | `0x0001` lee fashion/equipo @64..100 y dibuja con `equipo:personaje` |
 | Personaje: cuerpo, pelo, equipo, tinte | parcial | tinte y orden de capas sin comparar con el original |
 | Caminar, chat de canal y local | hecho | el chat local lo anota el cliente (el servidor no lo devuelve) |
-| Combate: objetivo, ataque, danio, muerte, botin | probado | falta barra de objetivo con captura, magias y barra de habilidades |
+| Combate: objetivo, ataque, danio, muerte, botin | probado | barra de objetivo arriba al centro; magias F1-F12 |
 | Inventario: ver, usar, equipar, mover, tooltip | probado | usar/equipar = C2S 0x002E; mover = 0x0012; el 0x001B se aplica |
 | Equipo (Alt+E) | parcial | posicion de casillas medida a mano; solo lectura |
 | Dialogo de NPC con retrato y opciones | probado | texto de `msg.xml`; falta la ventana de tienda de otros tipos (stall, mall) |
 | Tienda: comprar y vender | probado | comprar = 0x0027, vender = 0x0028 con la instancia de 8 B; el precio mostrado sale de item.xml y el servidor cobra con su tabla |
 | Misiones (Q) | parcial | contadores de paso en 0 |
-| HUD con los marcos originales (158 personaje, 182 barra F1-F12, 269 minimapa, 116 menu, 134 chat) | probado | nombre, nivel, HP, MP, exp, F1-F12, chat translucido y menu clicable (Prop, Quest, Friend, Map). Faltan retrato, lista de skills del panel, pestanas del chat y SP |
-| HUD (detalle anterior): |  | minimapa con la imagen de `shape/smap`; faltan buffs y el mapa de escena |
+| HUD con los marcos originales (158 personaje, 182 barra F1-F12, 269 minimapa, 116 menu, 134 chat) | probado | nombre, nivel, HP, MP, SP (lamparas), exp, F1-F12, chat y menu. Faltan retrato, lista de skills del panel y pestanas del chat |
+| Buffs (0x001D code 4) | hecho | iconos bajo el panel con tiempo restante |
+| HUD (detalle anterior): |  | minimapa `shape/smap`; falta mapa de escena a pantalla completa |
 | Sonido y musica | parcial | musica por escena (`stage.xml` -> `music/NN.ogg`) y efectos: golpe (`hit`), subida de nivel, magia (`magicNNN` por 特效編號) y fallo; F5 silencia. Faltan sonidos de pasos, NPC, ambiente (`g*.ogg`, `b*.ogg`) y su tabla por evento |
 | Barra de habilidades y lanzar magias | probado | 0x005B (24 ranuras) y C2S 0x0006 [magia u16][objetivo u32]; iconos de `skillicon.xml`; el MP baja; el enfriamiento mostrado es local |
 | Efectos visuales de magias y golpes | probado | S2C 0x0011 fase 0 trae el id (特效編號 = Sequence de un objeto SP_CLASS_EFFECT en m01/m02/m03.obd); se reproducen los cuadros una vez sobre el objetivo (aditivo si SP_ATTRIB_WHITELIGHT). Visto el efecto 181 (aura de fuego). Faltan trayectorias de proyectiles y efectos de estado persistentes |
@@ -101,7 +104,7 @@ Verificado en vivo contra un servidor de desarrollo aislado. "Probado" = se ejec
 | Grupo: invitar, aceptar, lista con vida y mana, chat de grupo, salir | probado | 0x0017, 0x0018, 0x0023, 0x0024, 0x0025, 0x0026 y chat 0x0126; probado con dos clientes (faltan expulsar, ascender y deshacer desde la interfaz) |
 | Chat privado (/w) | probado | C2S 0x0127 y S2C 0x0127; el emisor ve "[To nombre]" |
 | Banco: ventana 2100, 25 casillas, sacar y guardar con doble clic | probado | S2C 0x004E (tipo*1000+n) y 0x001B con contenedor 2; C2S 0x002F [contenedor 16 sacar / 17 guardar][casilla][4 B]; probado con el Bank Clerk de Aurora (faltan los 6 cofres alquilables y el banco de gremio) |
-| Mascotas: aparecen en el mundo (0x0050) y ventana con sus datos (0x0065, tecla P) | parcial | probado invocando un Water Elf Egg; su sprite 3037 no tiene definicion en los obd del cliente y sale como punto con nombre. Faltan ordenes (activo/ayuda/seguro), habilidades, renombrar y alimentar |
+| Mascotas: mundo (0x0050), ficha (P → 0x015E/0x0065), ordenes Stay/Follow/Attack (0x003E) | parcial | ordenes hechas; faltan habilidades, renombrar y alimentar; algunos sprites sin def en obd |
 | Correo, gremios, banco, casas, mall, ligas | falta | |
 | Android / iOS | falta | el indice de pak usa `io.popen` |
 

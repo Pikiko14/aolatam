@@ -205,6 +205,22 @@ function U:mensaje(mid, cadenas)
   return t
 end
 
+-- Texto de string.xml (game.getstring de los scripts): <字串 編號="id" 文字="..."/>, sin codigos de color y con \n reales.
+function U:cadena(id)
+  if not self.cadenas then
+    self.cadenas = {}
+    local t = self.paks:leer('setting/eng/string.xml') or self.paks:leer('setting/big5/string.xml') or ''
+    for attr in t:gmatch('<[^>/ ]+%s+([^>]-)/?>') do
+      local a = atributos(attr)
+      local n = tonumber(a['編號'])
+      if n and a['文字'] and not self.cadenas[n] then
+        self.cadenas[n] = a['文字']:gsub('&quot;', '"'):gsub('&lt;', '<'):gsub('&gt;', '>'):gsub('&apos;', "'"):gsub('&amp;', '&')
+      end
+    end
+  end
+  return self.cadenas[tonumber(id) or -1] or ''
+end
+
 -- Nombre de una habilidad (setting/eng/skill.xml: <技能 編號 名稱>).
 function U:habilidad_nombre(id)
   if not self.nombres_hab then
@@ -491,7 +507,13 @@ function U:escena(id)
       local a = atributos(linea)
       local sid = tonumber(a['編號'])
       if sid and not self.escenas[sid] then
-        self.escenas[sid] = { nombre = a['名稱'] or ('stage ' .. sid), radar = (a['雷達圖'] or ''):gsub('\\', '/'), musica = a['配樂檔1'] and a['配樂檔1']:gsub('\\', '/') or nil }
+        local mapa = (a['地圖檔'] or ''):gsub('\\', '/'):gsub('^map/', ''):gsub('%.mpc$', '')
+        self.escenas[sid] = {
+          nombre = a['名稱'] or ('stage ' .. sid),
+          mapa = mapa ~= '' and mapa or string.format('map%03d', sid),
+          radar = (a['雷達圖'] or ''):gsub('\\', '/'),
+          musica = a['配樂檔1'] and a['配樂檔1']:gsub('\\', '/') or nil,
+        }
       end
     end
   end
@@ -503,6 +525,14 @@ end
 function U:dibujar_minimapa(ancho, mundo, mapa, grande, ancla_x, ancla_y, ancho_fijo)
   local esc = mundo.stage and self:escena(mundo.stage)
   if not esc or not mapa then return end
+  local x0, y0 = ancla_x or (ancho - (ancho_fijo or 180) - 10), ancla_y or 10
+  if mundo.sin_minimapa then
+    -- mapa con el bit 0x20 del 0x0014: como angel.dat, el minimapa sale en negro, sin puntos ni carteles
+    local an = ancho_fijo or (grande and 360 or 180)
+    love.graphics.setColor(0, 0, 0, 0.85); love.graphics.rectangle('fill', x0 - 3, y0 - 3, an + 6, an * 0.5 + 6, 4, 4)
+    love.graphics.setColor(1, 1, 1)
+    return
+  end
   local img = esc.radar ~= '' and self:imagen_radar('shape/' .. esc.radar) or nil
   local an = ancho_fijo or (grande and 360 or 180)
   if grande and ancho_fijo then an = ancho_fijo * 2 end
@@ -649,12 +679,60 @@ function U:dibujar_hud_original(ancho, alto, mundo, enfriando, raton, grande, es
   if st and st.hp_max > 0 then
     barra_h(P.x + 116, P.y + 18, 100, 10, st.hp / st.hp_max, 0.85, 0.15, 0.15)
     barra_h(P.x + 116, P.y + 31, 100, 10, st.mp / math.max(1, st.mp_max), 0.2, 0.4, 0.95)
+    local sp_max = math.max(1, st.sp_max or 0)
+    if (st.sp_max or 0) > 0 then
+      barra_h(P.x + 116, P.y + 44, 100, 8, (st.sp or 0) / sp_max, 0.95, 0.85, 0.2)
+    end
     love.graphics.setColor(1, 1, 1)
     love.graphics.print(st.hp .. '/' .. st.hp_max, P.x + 120, P.y + 17, 0, 0.8, 0.8)
     love.graphics.print(st.mp .. '/' .. st.mp_max, P.x + 120, P.y + 30, 0, 0.8, 0.8)
+    if (st.sp_max or 0) > 0 then
+      -- 1000 pts = 1 barra (lampara), como el cliente de Windows
+      love.graphics.print(string.format('%.1f/%.0f', (st.sp or 0) / 1000, sp_max / 1000), P.x + 120, P.y + 43, 0, 0.7, 0.7)
+    end
   end
   if mundo.exp and mundo.exp_sig and mundo.exp_sig > 0 then
     barra_h(P.x + 116, P.y + 57, 100, 4, mundo.exp / mundo.exp_sig, 0.95, 0.75, 0.15)
+  end
+  -- buffs activos (0x001D code 4): iconos bajo el panel
+  local bx, by = P.x + 8, P.y + P.h + 4
+  local bi = 0
+  for _, bf in pairs(mundo.buffs or {}) do
+    local mg = self:magia(bf.id)
+    local img = self:icono_magia(mg)
+    local x = bx + (bi % 8) * 28
+    local y = by + math.floor(bi / 8) * 28
+    love.graphics.setColor(0, 0, 0, 0.55); love.graphics.rectangle('fill', x, y, 26, 26, 2, 2)
+    love.graphics.setColor(1, 1, 1)
+    if img then love.graphics.draw(img.img, x, y, 0, 26 / 36, 26 / 36)
+    else love.graphics.print('?', x + 8, y + 6) end
+    if bf.fin then
+      local falta = math.max(0, bf.fin - love.timer.getTime())
+      love.graphics.setColor(1, 1, 0.7); love.graphics.print(string.format('%d', falta), x + 1, y + 14, 0, 0.7, 0.7)
+    end
+    bi = bi + 1
+    if bi >= 16 then break end
+  end
+  love.graphics.setColor(1, 1, 1)
+  -- barra de objetivo (como el cartel de angel.dat sobre el bicho seleccionado)
+  if mundo.objetivo and mundo.ents[mundo.objetivo] then
+    local e = mundo.ents[mundo.objetivo]
+    local ox, oy = ancho / 2 - 110, 8
+    love.graphics.setColor(0.05, 0.08, 0.18, 0.88); love.graphics.rectangle('fill', ox, oy, 220, 42, 3, 3)
+    love.graphics.setColor(0.95, 0.75, 0.25, 0.9); love.graphics.rectangle('line', ox, oy, 220, 42, 3, 3)
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.print(e.nombre or ('#' .. e.id), ox + 8, oy + 4)
+    local hp = e.hp
+    if hp ~= nil then
+      local frac = (hp <= 100 and not e.jugador) and (hp / 100) or (e.hp_max and e.hp_max > 0 and hp / e.hp_max or math.min(1, hp / 100))
+      barra_h(ox + 8, oy + 24, 204, 10, frac, 0.85, 0.2, 0.15)
+      love.graphics.setColor(1, 1, 1)
+      if e.jugador or (e.hp_max and e.hp_max > 0) then
+        love.graphics.print((e.hp or '?') .. '/' .. (e.hp_max or '?'), ox + 12, oy + 23, 0, 0.75, 0.75)
+      else
+        love.graphics.print(string.format('%d%%', math.floor(frac * 100)), ox + 12, oy + 23, 0, 0.75, 0.75)
+      end
+    end
   end
   -- barra rapida: 12 casillas de 31 px desde (+35, +3); F1..F12 = ranuras 1..12 de la barra de habilidades
   local R = pos.rapida
@@ -766,7 +844,22 @@ function U:dibujar_mascota(x, y, m)
   end
   t(tostring(m.saciedad), 26, 246, 0.8); t(tostring(m.intimidad), 121, 246, 0.8)
   t(string.format('%.1f stars', m.estrellas / 10), 26, 267, 0.8)
+  -- ordenes C2S 0x003E: 0 quieta, 1 seguir, 2 atacar (como angel.dat)
+  local ordenes = { { 0, 'Stay' }, { 1, 'Follow' }, { 2, 'Attack' } }
+  local filas_orden = {}
+  local activo = m.orden or 1
+  for i, o in ipairs(ordenes) do
+    local dx = 8 + (i - 1) * 68
+    local dy = 290
+    local on = (activo == o[1])
+    love.graphics.setColor(on and 0.25 or 0.08, on and 0.35 or 0.12, on and 0.55 or 0.28, 0.95)
+    love.graphics.rectangle('fill', x + dx, y + dy, 62, 22, 2, 2)
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.printf(o[2], x + dx, y + dy + 4, 62, 'center')
+    filas_orden[#filas_orden + 1] = { x = x + dx, y = y + dy, w = 62, h = 22, modo = o[1] }
+  end
   love.graphics.setColor(1, 1, 1)
+  return filas_orden
 end
 
 -- Ventana del banco (2100): fondo, 25 casillas (ids 2101..2125 = casillas 1..25) e iconos de lo guardado. Devuelve las casillas con su rectangulo.

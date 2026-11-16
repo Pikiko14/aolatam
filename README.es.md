@@ -73,7 +73,7 @@ de Wolay, parametros de nombre, carga de mapas e invocaciones PvP/desconexion:
 Supreme Power activa la etiqueta PLV sin cambiar nivel real ni ranuras.
 Restaurados Blessing Angel y el dialogo de viaje de BattlefieldAngel.
 Arena y Holy Battlefield tienen rondas persistentes, inscripciones, PvP propio
-y comandos GM separados. Holy incluye captura de cristales. Horarios del XML
+y  GM separados. Holy incluye captura de cristales. Horarios del XML
 en hora local del servidor. Holy incorpora construccion persistente, estatuas
 y bloqueo de puertas. Trabajo aun incompleto: sin apertura automatica y con
 rondas GM con entrada normal (gold/piedra) hasta completar los premios oficiales. Los premios semanales de Olympus y las

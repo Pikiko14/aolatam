@@ -1,7 +1,7 @@
 -- Punto de entrada.
 --   love cliente                                                  juego normal: login, personaje y mundo
 --   love cliente --pruebas                                         pruebas de la capa de red
---   love cliente --sonda host puerto usuario [ranura] [segundos]   login + mundo sin ventana
+--   love cliente --sonda host puerto usuario [ranura] [segundos]   login + mundo sin ventana (clave: AO_CLAVE)
 --   love cliente --mapa NOMBRE [x y] [captura.png]                 dibuja un mapa del cliente instalado (C:/AO/Angels Online)
 local Sesion = require('src.sesion')
 
@@ -27,6 +27,7 @@ local nv2_hecho, ni_hecho, dbg_dim, nl_hecho
 local nativo_listo, nd_hecho, nv_hecho, nv_info
 local casillas_banco, ultimo_clic_banco = nil, { t = 0, casilla = nil }
 local mascota_abierta = os.getenv('AO_MASCOTA') ~= nil
+local filas_mascota_orden = nil
 local amigos_abiertos, amigo_sel, filas_amigos = os.getenv('AO_AMIGOS') ~= nil, 1, nil
 if not modo then modo = 'vivo'; pantalla = 'login' end
 local CLIENTE = os.getenv('AO_CLIENTE') or 'C:/AO/Angels Online'
@@ -48,6 +49,7 @@ function love.load()
     vistos, orden = {}, {}
     sesion = Sesion.nueva{
       host = args[1], puerto = tonumber(args[2]), usuario = args[3], ranura = tonumber(args[4] or 0),
+      clave = os.getenv('AO_CLAVE'),
       alEstado = function(t) print(string.format('[%5.2fs] %s', love.timer.getTime() - t0, t)) end,
       alMensaje = function(op, body, rol)
         local k = rol .. ':0x' .. string.format('%04X', op)
@@ -136,6 +138,7 @@ function love.load()
     iniciar_audio()
     sesion = Sesion.nueva{
       host = args[1], puerto = tonumber(args[2]), usuario = args[3], ranura = tonumber(args[4] or 0),
+      clave = os.getenv('AO_CLAVE'),
       alEstado = function(t) print(string.format('[%5.2fs] %s', love.timer.getTime() - t0, t)) end,
       alMensaje = function(op, body, rol) if rol == 'mundo' then mundo:mensaje(op, body) end end,
     }
@@ -287,6 +290,13 @@ function love.mousepressed(mx, my, boton)
   if not yo then return end
   local w, h = love.graphics.getDimensions()
   local net = require('src.net')
+  if mundo.muerto then
+    -- boton "Return to city" centrado
+    local bw, bh = 280, 36
+    local bx, by = w / 2 - bw / 2, h / 2 + 20
+    if mx >= bx and mx < bx + bw and my >= by and my < by + bh then revivir_en_ciudad() end
+    return
+  end
   if filas_menu then
     for _, f in ipairs(filas_menu) do
       if mx >= f.x and mx < f.x + f.w and my >= f.y and my < f.y + f.h then
@@ -348,6 +358,16 @@ function love.mousepressed(mx, my, boton)
       end
     end
   end
+  if mascota_abierta and filas_mascota_orden then
+    for _, f in ipairs(filas_mascota_orden) do
+      if mx >= f.x and mx < f.x + f.w and my >= f.y and my < f.y + f.h then
+        sesion:enviar(net.p16(0x003E) .. string.char(f.modo))
+        mundo.mascota_orden = f.modo
+        if mundo.mascota then mundo.mascota.orden = f.modo end
+        return
+      end
+    end
+  end
   if amigos_abiertos and filas_amigos then
     for _, f in ipairs(filas_amigos) do
       if mx >= f.x and mx < f.x + f.w and my >= f.y and my < f.y + f.h then amigo_sel = f.indice; return end
@@ -390,7 +410,9 @@ function love.mousepressed(mx, my, boton)
 end
 
 function caminar_a(wx, wy)
+  if mundo.muerto then return end
   local yo = mundo.yo and mundo.ents[mundo.yo]
+  if not yo then return end
   local net = require('src.net')
   -- colision: se corta el tramo en la ultima casilla libre (el servidor solo reenvia; la pared la respeta el cliente)
   if visor.mapa then
@@ -400,6 +422,13 @@ function caminar_a(wx, wy)
   end
   sesion:enviar(net.p16(0x0004) .. net.p16(math.floor(yo.x)) .. net.p16(math.floor(yo.y)) .. string.char(1) .. net.p16(0)
     .. net.p16(math.floor(wx)) .. net.p16(math.floor(wy)))
+end
+
+function revivir_en_ciudad()
+  if not mundo.muerto or not sesion then return end
+  local net = require('src.net')
+  -- C2S 0x0016 [accion=2][parametro u32=0]: Return to Angel Lyceum / checkpoint
+  sesion:enviar(net.p16(0x0016) .. string.char(2) .. net.p32(0))
 end
 
 -- Chat: Enter abre la linea, Enter envia (C2S 0x000E, texto en claro terminado en nulo), Escape cancela.
@@ -485,6 +514,7 @@ function love.keypressed(k)
     return
   end
   if k == 'return' or k == 'kpenter' then
+    if mundo.muerto and not escribiendo then revivir_en_ciudad(); return end
     if escribiendo then enviar_chat(texto_chat); texto_chat = '' end
     escribiendo = not escribiendo
   elseif k == 'escape' then
@@ -515,6 +545,10 @@ function love.keypressed(k)
     minimapa_grande = not minimapa_grande
   elseif k == 'p' and not escribiendo then
     mascota_abierta = not mascota_abierta
+    if mascota_abierta and sesion then
+      local net = require('src.net')
+      sesion:enviar(net.p16(0x015E))   -- pedir ficha 0x0065 como angel.dat
+    end
   elseif k:match('^f%d+$') and not escribiendo and tonumber(k:sub(2)) <= 12 then
     lanzar(tonumber(k:sub(2)))
   elseif k == 'pause' and audio then
@@ -797,14 +831,22 @@ function love.update(dt)
         end
       end
     end
+    if mundo.pedir_mapa and sesion and sesion.rol == 'mundo' then
+      mundo.pedir_mapa = false
+      local net = require('src.net')
+      sesion:enviar(net.p16(0x0009))   -- listo, manda la entrada del mapa nuevo
+    end
     if mundo.ver_mapa ~= mapa_visto and mundo.stage then
       mapa_visto = mundo.ver_mapa
-      local nombre = string.format('map%03d', mundo.stage)
-      print('stage', mundo.stage, visor:cargar_mapa(nombre) and ('mapa ' .. nombre) or 'mapa no encontrado')
       local esc = visor.ui:escena(mundo.stage)
+      local nombre = (esc and esc.mapa) or string.format('map%03d', mundo.stage)
+      print('stage', mundo.stage, visor:cargar_mapa(nombre) and ('mapa ' .. nombre) or 'mapa no encontrado')
       if audio and esc then audio:musica(esc.musica) end
       local yo = mundo.ents[mundo.yo]
-      print('yo', yo.nombre, yo.x, yo.y)
+      if yo then
+        print('yo', yo.nombre, yo.x, yo.y)
+        if visor.mapa then visor:centrar(yo.x, visor.mapa.h * 32 - yo.y) end
+      end
     end
     return
   end
@@ -826,7 +868,22 @@ function love.draw()
   end
   if modo == 'mapa' and visor then
     local w, h = love.graphics.getDimensions()
-    visor:dibujar(w, h)
+    -- AO_PJ=x,y;x,y: personajes de prueba (cuerpo base 999) en esas posiciones del mapa, para ver quien tapa a quien
+    local prueba
+    if os.getenv('AO_PJ') and visor.mapa then
+      prueba = { ents = {}, efectos = {}, flotantes = {} }
+      local k = 0
+      -- x,y o x,y,sprite separados por ';'
+      for trozo in os.getenv('AO_PJ'):gmatch('[^;]+') do
+        local px, py, spr = trozo:match('(%d+),(%d+),?(%d*)')
+        if px then
+          k = k + 1
+          prueba.ents[k] = { id = k, x = tonumber(px), y = visor.mapa.h * 32 - tonumber(py), sprite = tonumber(spr) or 999,
+                             nombre = (spr ~= '' and spr or 'prueba' .. k) }
+        end
+      end
+    end
+    visor:dibujar(w, h, prueba)
     if os.getenv('AO_MARCAS') then
       -- prueba de orientacion: cruces en las posiciones dadas (px,py;...) con la y tal cual o volteada (AO_FLIP)
       love.graphics.setColor(1, 0, 0)
@@ -960,9 +1017,24 @@ function love.draw()
     local items = {}
     for i = 2, #args - 1 do items[#items + 1] = tonumber(args[i]) end
     local capas, partes = equipo:capas(items, args[1])
-    for _, c in ipairs(capas) do
-      local s = visor.gfx:cuadro_anim(c.id, 'wait', 3, 1, equipo:tinte_de_item(c.item))
-      if s then love.graphics.setColor(1, 1, 1); love.graphics.draw(s.img, 200 - s.ox, 250 - s.oy) end
+    if os.getenv('AO_AP') then
+      -- AO_AP=1,6,0,0,19 (la apariencia del personaje): el personaje entero, cuerpo y pelo incluidos, como en el juego
+      local ap = {}
+      for v in os.getenv('AO_AP'):gmatch('%d+') do ap[#ap + 1] = tonumber(v) end
+      local todo = equipo:personaje(items, ap, args[1])
+      local espejo = os.getenv('AO_ESPEJO') ~= nil
+      for _, c in ipairs(todo) do
+        local s = visor.gfx:cuadro_anim(c.id, 'wait', 3, 1, c.tinte)
+        if s then
+          love.graphics.setColor(1, 1, 1)
+          if espejo then love.graphics.draw(s.img, 200 + s.ox, 250 - s.oy, 0, -1, 1) else love.graphics.draw(s.img, 200 - s.ox, 250 - s.oy) end
+        end
+      end
+    else
+      for _, c in ipairs(capas) do
+        local s = visor.gfx:cuadro_anim(c.id, 'wait', 3, 1, equipo:tinte_de_item(c.item))
+        if s then love.graphics.setColor(1, 1, 1); love.graphics.draw(s.img, 200 - s.ox, 250 - s.oy) end
+      end
     end
     local t = {}
     for k, v in pairs(partes) do t[#t + 1] = k .. '=' .. v end
@@ -1000,7 +1072,12 @@ function love.draw()
     else
       filas_misiones = nil
     end
-    if mascota_abierta and mundo.mascota then visor.ui:dibujar_mascota(w - 230, 330, mundo.mascota) end
+    if mascota_abierta and mundo.mascota then
+      mundo.mascota.orden = mundo.mascota_orden or mundo.mascota.orden or 1
+      filas_mascota_orden = visor.ui:dibujar_mascota(w - 230, 330, mundo.mascota)
+    else
+      filas_mascota_orden = nil
+    end
     if amigos_abiertos then
       filas_amigos = visor.ui:dibujar_amigos(w - 300, 240, mundo, amigo_sel)
     else
@@ -1020,7 +1097,15 @@ function love.draw()
           local carpeta, lista = nat.carpeta_luas(), nil
           nat.cargar(carpeta, lista)
           print('CreateMainWnd', pcall(CreateMainWnd, 1))
+          -- los scripts y el Lua del servidor mandan sus ordenes por la sesion (game.netcommand / netcommand2)
+          nat.game.enviar = function(m) if sesion then sesion:enviar(m) end end
           if os.getenv('AO_NDEBUG') then print('CMD', WND_COMMAND_X, WND_COMMAND_Y, window.width(WND_COMMAND), window.left(WND_COMMAND), window.top(WND_COMMAND), SYSTEM_SCREEN_WIDTH, SYSTEM_SCREEN_HEIGHT) end
+        end
+        -- el Lua que llego por el canal 0x01A0, en orden (ventanas propias: Item Mall, subasta, raid...)
+        if mundo.lua_pendiente and #mundo.lua_pendiente > 0 then
+          local cola = mundo.lua_pendiente
+          mundo.lua_pendiente = {}
+          for _, codigo in ipairs(cola) do nat.ejecutar(codigo) end
         end
         do
           local an, al = love.graphics.getDimensions()
@@ -1122,6 +1207,17 @@ function love.draw()
       opciones_dialogo = visor.ui:dibujar_dialogo(mundo.dialogo, w, love.graphics.getHeight(), { mx, my })
     else
       opciones_dialogo = nil
+    end
+    if mundo.muerto then
+      local bw, bh = 280, 36
+      local bx, by = w / 2 - bw / 2, h / 2 + 20
+      love.graphics.setColor(0, 0, 0, 0.55); love.graphics.rectangle('fill', 0, 0, w, h)
+      love.graphics.setColor(0.15, 0.12, 0.14, 0.95); love.graphics.rectangle('fill', w / 2 - 200, h / 2 - 70, 400, 140, 6, 6)
+      love.graphics.setColor(0.85, 0.75, 0.55); love.graphics.printf('You are dead', w / 2 - 180, h / 2 - 50, 360, 'center')
+      love.graphics.setColor(0.7, 0.72, 0.78); love.graphics.printf('Return to your checkpoint to revive', w / 2 - 180, h / 2 - 22, 360, 'center')
+      love.graphics.setColor(0.35, 0.28, 0.18); love.graphics.rectangle('fill', bx, by, bw, bh, 4, 4)
+      love.graphics.setColor(0.95, 0.9, 0.7); love.graphics.printf('Return to city (Enter)', bx, by + 8, bw, 'center')
+      love.graphics.setColor(1, 1, 1)
     end
     if os.getenv('AO_DEBUG') then love.graphics.print(sesion.estado, 8, 70) end
     cuadros = cuadros + 1

@@ -57,19 +57,48 @@ function G:tileset(n)
       end
     end
   end
+  -- Los pinceles claros tambien son suelo: el b39 (57) es el cielo de nubes que rodea las ciudades flotantes.
   local img = love.graphics.newImage(datos)
   img:setFilter('nearest', 'nearest')
-  t = { imagen = img, quads = {} }
+  -- lado nativo del brush (8 o 16…); el atlas 512 lo repite, pero el muestreo usa este periodo.
+  -- datos (512x512, rgba8) queda para fundir pinceles pixel a pixel en visor.lua.
+  t = { imagen = img, lado = lado, quads = {}, datos = datos }
   self.ts[n] = t
   return t
 end
 
--- Quad 32x32 de la textura para la casilla (x, y): la textura se repite cada 16 casillas.
+-- Ruido de grano para los bordes entre suelos: brush.p03 (256 casillas de 32x32 = 512x512, valores 5..28) normalizado
+-- a 0..1. Es de los propios datos del juego, asi el borde tiene la misma textura que los pinceles.
+function G:ruido()
+  if self._ruido ~= nil then return self._ruido or nil end
+  local b = self.paks:leer('brush/brush.p03')
+  if not b or #b < 32 + 262144 then self._ruido = false; return nil end
+  local r = {}
+  local lo, hi = 255, 0
+  for i = 33, 32 + 262144 do local v = b:byte(i); if v < lo then lo = v end; if v > hi then hi = v end end
+  local esc = 1 / math.max(1, hi - lo)
+  for k = 0, 255 do
+    local tx, ty = k % 16, math.floor(k / 16)
+    for yy = 0, 31 do
+      for xx = 0, 31 do
+        r[(ty * 32 + yy) * 512 + tx * 32 + xx] = (b:byte(33 + k * 1024 + yy * 32 + xx) - lo) * esc
+      end
+    end
+  end
+  self._ruido = r
+  return r
+end
+
+-- Quad 32x32: periodo = lado del brush (no siempre 16). brush.b05 etc. son 8×8.
 function G:quad_de(t, x, y)
-  local k = (x % 16) * 16 + (y % 16)
+  local L = t.lado or 16
+  local tx, ty = x % L, y % L
+  if tx < 0 then tx = tx + L end
+  if ty < 0 then ty = ty + L end
+  local k = tx * L + ty
   local q = t.quads[k]
   if not q then
-    q = love.graphics.newQuad((x % 16) * 32, (y % 16) * 32, 32, 32, 512, 512)
+    q = love.graphics.newQuad(tx * 32, ty * 32, 32, 32, 512, 512)
     t.quads[k] = q
   end
   return q
@@ -138,8 +167,12 @@ local function leer_spr(b)
   local cnt = u32(b, 9)
   local pal_off = 80 + 12 * cnt
   local primero = u32(b, 81)
-  local pal = {}
-  for i = 0, math.max(0, math.floor((primero - pal_off) / 2)) - 1 do pal[i] = { c565(u16(b, pal_off + 2 * i + 1)) } end
+  local pal = { crudo = {}, mascara = u32(b, 25) }   -- +24: cuantos colores del principio de la paleta son mascara
+  for i = 0, math.max(0, math.floor((primero - pal_off) / 2)) - 1 do
+    local v = u16(b, pal_off + 2 * i + 1)
+    pal.crudo[i] = v
+    pal[i] = { c565(v) }
+  end
   local frames, nombres = {}, {}
   for i = 0, cnt - 1 do
     local off, size, noff = u32(b, 85 + 12 * i), u32(b, 89 + 12 * i), u32(b, 93 + 12 * i)
@@ -163,7 +196,10 @@ function G:sprite(ruta, tinte)
         im, ox, oy = decodificar_shp(b)
       else
         local pal, frames = leer_spr(b)
-        if frames and frames[1] then im, ox, oy = decodificar_shp(frames[1], pal) end
+        if frames and frames[1] then
+          im, ox, oy = decodificar_shp(frames[1], (tinte and pal and pal.crudo) and paleta_tenida(pal, tinte) or pal)
+          if im then tinte = nil end            -- ya va en la paleta
+        end
       end
       if im then
         if tinte then aplicar_tinte(im, tinte) end
@@ -177,16 +213,89 @@ function G:sprite(ruta, tinte)
   return res or nil
 end
 
--- Tinte: BaseBias / MaskBias = <sesgo BGR de 3 bytes con signo>, <color base RGB565>, <tolerancia>. A cada pixel parecido al color base
--- se le suma el sesgo, en proporcion a lo parecido que es (1 - distancia / tolerancia). Interpretacion deducida de color.obd y char*.obd
--- (el color base coincide con el gris/piel del sprite); falta compararla con el cliente original.
+-- Tinte como angel.dat (SetBias 0x76e3d0 y el retinte de paleta 0x77ca50, 15/11/2026):
+--   BaseBias / MaskBias = sesgo, color, rango.  Cada color pasa a HSV 6/5/5 (tono 0..63, saturacion 0..31, brillo 0..31).
+--   Ventana de tonos: tono(color) +- (rango & 63), con vuelta; rango >= 128 -> el tono se FIJA a (sesgo & 0xff), si no se
+--   le suma. Saturacion += byte 1 del sesgo y brillo += byte 2 (con signo, 0..31). En los .spr de paleta los primeros
+--   `mascara` colores usan MaskBias y el resto BaseBias. Un sesgo 0 no toca nada.
+local function sb8(v) return v >= 128 and v - 256 or v end
+local function hsv565(v)
+  local r = bit.band(bit.rshift(v, 11), 31) / 31
+  local g = bit.band(bit.rshift(v, 5), 63) / 63
+  local b = bit.band(v, 31) / 31
+  local mx, mn = math.max(r, g, b), math.min(r, g, b)
+  local d = mx - mn
+  local h = 0
+  if d > 0 then
+    if mx == r then h = ((g - b) / d) % 6 elseif mx == g then h = (b - r) / d + 2 else h = (r - g) / d + 4 end
+    h = h / 6
+  end
+  return math.floor(h * 64 + 0.5) % 64, (mx > 0) and math.floor(d / mx * 31 + 0.5) or 0, math.floor(mx * 31 + 0.5)
+end
+local function rgb_de_hsv(h, s, v)
+  h, s, v = (h % 64) / 64 * 6, s / 31, v / 31
+  local i = math.floor(h)
+  local f = h - i
+  local p, q, u = v * (1 - s), v * (1 - s * f), v * (1 - s * (1 - f))
+  i = i % 6
+  if i == 0 then return v, u, p elseif i == 1 then return q, v, p elseif i == 2 then return p, v, u
+  elseif i == 3 then return p, q, v elseif i == 4 then return u, p, v else return v, p, q end
+end
+
+-- un lado del tinte -> { sesgo, lo, hi, fija, k } o nil (sesgo 0)
+local function lado(sesgo, color, rango)
+  sesgo, color, rango = tonumber(sesgo) or 0, tonumber(color) or 0, tonumber(rango) or 0
+  if sesgo == 0 then return nil end
+  local h = hsv565(color)
+  local tol = bit.band(rango, 63)
+  local lo, hi = h - tol, h + tol
+  if lo < 0 then lo, hi = lo + 64, hi + 64 end
+  return { sesgo = sesgo, lo = lo, hi = hi, fija = bit.band(rango, 255) >= 128, k = sesgo .. ',' .. color .. ',' .. rango }
+end
+local function lado_txt(txt)
+  if not txt then return nil end
+  local a, c, r = txt:match('(0x%x+)%s*,%s*(0x%x+)%s*,%s*(%d+)')
+  return a and lado(a, c, r) or nil
+end
+local function tinte(base, mascara)
+  if not base and not mascara then return nil end
+  return { base = base, mascara = mascara, k = (base and base.k or '-') .. '|' .. (mascara and mascara.k or '-') }
+end
+
+-- color RGB565 retenido por un lado del tinte, o nil si su tono queda fuera de la ventana
+local function retenir(v, l)
+  local h, s, val = hsv565(v)
+  if not ((h >= l.lo and h <= l.hi) or (h + 64 >= l.lo and h + 64 <= l.hi)) then return nil end
+  local b0 = bit.band(l.sesgo, 255)
+  h = l.fija and (b0 % 64) or ((h + b0) % 64)
+  s = math.max(0, math.min(31, s + sb8(bit.band(bit.rshift(l.sesgo, 8), 255))))
+  val = math.max(0, math.min(31, val + sb8(bit.band(bit.rshift(l.sesgo, 16), 255))))
+  return { rgb_de_hsv(h, s, val) }
+end
+
+-- paleta de un .spr retenida: mascara para los primeros pal.mascara colores, base para el resto
+local function paleta_tenida(pal, t)
+  local out = { crudo = pal.crudo, mascara = pal.mascara }
+  local m = pal.mascara or 0
+  for i, c in pairs(pal) do
+    if type(i) == 'number' then
+      local l = (i < m) and t.mascara or t.base
+      out[i] = (l and pal.crudo and pal.crudo[i] and retenir(pal.crudo[i], l)) or c
+    end
+  end
+  return out
+end
+
+-- imagenes sin paleta: el mismo retinte pixel a pixel con el lado base
 function aplicar_tinte(im, t)
+  local l = t.base or t.mascara
+  if not l then return end
   im:mapPixel(function(x, y, r, g, b, a)
     if a == 0 then return r, g, b, a end
-    local d = math.max(math.abs(r - t.br), math.abs(g - t.bg), math.abs(b - t.bb))
-    local w = 1 - d / t.tol
-    if w <= 0 then return r, g, b, a end
-    return math.min(1, math.max(0, r + t.dr * w)), math.min(1, math.max(0, g + t.dg * w)), math.min(1, math.max(0, b + t.db * w)), a
+    local v = bit.bor(bit.lshift(math.floor(r * 31 + 0.5), 11), bit.lshift(math.floor(g * 63 + 0.5), 5), math.floor(b * 31 + 0.5))
+    local c = retenir(v, l)
+    if c then return c[1], c[2], c[3], a end
+    return r, g, b, a
   end)
 end
 
@@ -206,58 +315,49 @@ end
 
 local function sbyte(v) return v >= 128 and v - 256 or v end
 
--- "0xf60425, 0x9492, 160" -> tinte { dr, dg, db (0..1), br, bg, bb (0..1), tol (0..1), k }
-local function leer_tinte(txt)
-  local a, c, tol = txt:match('(0x%x+)%s*,%s*(0x%x+)%s*,%s*(%d+)')
-  if not a then return nil end
-  local sesgo, base = tonumber(a), tonumber(c)
-  local br, bg, bb = c565(base)
-  return { dr = sbyte(bit.band(sesgo, 255)) / 255, dg = sbyte(bit.band(bit.rshift(sesgo, 8), 255)) / 255,
-           db = sbyte(bit.band(bit.rshift(sesgo, 16), 255)) / 255, br = br, bg = bg, bb = bb, tol = tonumber(tol) / 255, k = txt }
+-- Tinte de itemicon.xml (variante de color de una prenda): basebias/baserange y maskbias/maskrange, color 0 si no lo trae.
+function G:tinte_icono(ic)
+  if not ic then return nil end
+  return tinte(ic.basebias and lado(ic.basebias, ic.basecolor or 0, ic.baserange or 0) or nil,
+               ic.maskbias and lado(ic.maskbias, ic.maskcolor or 0, ic.maskrange or 0) or nil)
 end
-
--- Tinte a partir de los tres valores sueltos (maskbias, maskcolor, maskrange) de itemicon.xml.
-function G:tinte_de(bias, color, rango)
-  return leer_tinte(bias .. ', ' .. color .. ', ' .. rango)
-end
+-- compatibilidad: tinte_de(sesgo, color, rango) = solo mascara
+function G:tinte_de(bias, color, rango) return tinte(nil, lado(bias, color, rango)) end
 
 -- Tinte de piel / pelo: setting/color.obd, objeto `seq` (piel 1.., pelo 1001..).
 function G:tinte_color(seq)
   if not self.color then
     self.color = {}
-    local t = self.paks:leer('setting/color.obd') or ''
-    for bloque in bloques_obd(t) do
+    local txt = self.paks:leer('setting/color.obd') or ''
+    for bloque in bloques_obd(txt) do
       local sq = tonumber(bloque:match('Sequence%s*=%s*(%d+)'))
       local b = bloque:match('BaseBias%s*=%s*([^\r\n]+)')
-      if sq and b then self.color[sq] = leer_tinte(b) end
+      local m = bloque:match('MaskBias%s*=%s*([^\r\n]+)')
+      if sq then self.color[sq] = tinte(lado_txt(b), lado_txt(m)) end
     end
   end
   return self.color[seq]
 end
 
--- Tinte propio de un objeto de personaje (MaskBias en char*.obd), o nil.
-function G:tinte_mascara(id)
-  self.mascaras = self.mascaras or {}
-  if self.mascaras[id] ~= nil then return self.mascaras[id] or nil end
-  if not self.char_obd then
-    self.char_obd = {}
-    for _, n in ipairs({ 'char', 'char2', 'char3', 'char4' }) do
-      self.char_obd[#self.char_obd + 1] = self.paks:leer('setting/' .. n .. '.obd') or ''
-    end
-  end
-  local res = false
-  local aguja = '\nSequence = ' .. id .. '\r\n'
-  for _, t in ipairs(self.char_obd) do
-    local i = t:find(aguja, 1, true)
-    if i then
-      local fin = t:find('[OBJECT]', i, true) or (i + 600)
-      local b = t:sub(i, fin):match('MaskBias%s*=%s*([^\r\n]+)')
-      if b then res = leer_tinte(b) or false end
-      break
-    end
-  end
-  self.mascaras[id] = res
-  return res or nil
+-- Tinte de un objeto de cualquier .obd (piezas de char*.obd, NPC y monstruos de npc.obd): su BaseBias y su MaskBias.
+function G:tinte_obj(sid)
+  self.tintes_obj = self.tintes_obj or {}
+  local c = self.tintes_obj[sid]
+  if c ~= nil then return c or nil end
+  local d = self:definiciones()[sid]
+  c = d and tinte(lado_txt(d.basebias), lado_txt(d.maskbias)) or false
+  self.tintes_obj[sid] = c
+  return c or nil
+end
+function G:tinte_npc(sid) return self:tinte_obj(sid) end
+function G:tinte_mascara(sid) return self:tinte_obj(sid) end
+
+-- Tinte de una prenda: el de su pieza en char*.obd y, encima, lo que traiga la variante de color de su icono.
+function G:tinte_pieza(sid, ic)
+  local a, b = self:tinte_obj(sid), self:tinte_icono(ic)
+  if not b then return a end
+  if not a then return b end
+  return tinte(b.base or a.base, b.mascara or a.mascara)
 end
 
 -- Cuadro `nombre` (o el primero) de un .spr con varios cuadros. Devuelve { img, ox, oy, w, h } o nil.
@@ -272,8 +372,7 @@ function G:cuadro_spr(ruta, nombre, tinte)
     if frames and #frames > 0 then
       local k = 1
       if nombre then for i, n in ipairs(nombres) do if n == nombre then k = i; break end end end
-      local im, ox, oy = decodificar_shp(frames[k], pal)
-      if im and tinte then aplicar_tinte(im, tinte) end
+      local im, ox, oy = decodificar_shp(frames[k], (tinte and pal.crudo) and paleta_tenida(pal, tinte) or pal)
       if im then res = { img = love.graphics.newImage(im), ox = ox, oy = oy, w = im:getWidth(), h = im:getHeight() } end
     end
   end
@@ -293,10 +392,13 @@ function G:ruta_de_id(sid)
     self.por_id = t
     -- carpeta -> su .spr de espera: la definicion del objeto manda (Directory), no el numero del archivo. Ej.: la 40076 (Assoc. Captain)
     -- apunta a \npc\n039\ (el mago negro), pero el unico 40076_wait.spr esta en n064 (un emblema dorado).
-    local por_dir = {}
+    -- En las carpetas de equipo (shape/chr/iNNNN[g|b]) van dos .spr: el de ir a pie y el montado (+5000); manda el menor.
+    local por_dir, num_dir = {}, {}
     for k in pairs(self.paks.indice) do
-      local dir = k:match('^(shape/[%w]+/[^/]+)/%d+_wait%.spr$')
-      if dir and not k:match('^shape/stage') then por_dir[dir] = k:sub(1, -5) end
+      local dir, num = k:match('^(shape/[%w]+/[^/]+)/(%d+)_wait%.spr$')
+      if dir and not k:match('^shape/stage') and (not num_dir[dir] or tonumber(num) < num_dir[dir]) then
+        por_dir[dir], num_dir[dir] = k:sub(1, -5), tonumber(num)
+      end
     end
     self.por_dir = por_dir
   end
@@ -356,7 +458,9 @@ end
 function G:definiciones()
   if self.defs then return self.defs end
   local defs = {}
-  for _, arch in ipairs({ 'setting/mapobj.obd', 'setting/server.obd', 'setting/npc.obd', 'setting/common.obd', 'setting/house.obd', 'setting/m01.obd', 'setting/m02.obd', 'setting/m03.obd', 'setting/npc_alan.obd', 'setting/npc_hch.obd', 'setting/smallgame.obd' }) do
+  -- char*.obd: las piezas de equipo (Sequence 2xxxx..15xxxx, nombre "ITEMnnnn (...)", Directory \chr\i...\); sin ellas las
+  -- prendas nuevas (8117, 8130, 4528...) no tenian sprite y el personaje salia desnudo.
+  for _, arch in ipairs({ 'setting/mapobj.obd', 'setting/server.obd', 'setting/npc.obd', 'setting/common.obd', 'setting/house.obd', 'setting/m01.obd', 'setting/m02.obd', 'setting/m03.obd', 'setting/npc_alan.obd', 'setting/npc_hch.obd', 'setting/smallgame.obd', 'setting/char.obd', 'setting/char2.obd', 'setting/char3.obd', 'setting/char4.obd' }) do
     local t = self.paks:leer(arch)
     if t then
       for bloque in bloques_obd(t) do
@@ -366,7 +470,7 @@ function G:definiciones()
           if k and not l:match('^%s*//') and d[k] == nil then d[k] = v:gsub('//.*$', ''):gsub('%s+$', '') end
         end
         local sid = d.Sequence and tonumber(d.Sequence)
-        if sid and not defs[sid] then defs[sid] = { dir = d.Directory or '', sprite = d.Sprite or '', nombre = d.Name or '', proceso = d.Process or '' } end
+        if sid and not defs[sid] then defs[sid] = { dir = d.Directory or '', sprite = d.Sprite or '', nombre = d.Name or '', proceso = d.Process or '', flags = d.Flags or '', basebias = d.BaseBias, maskbias = d.MaskBias } end
       end
     end
   end
@@ -375,6 +479,26 @@ function G:definiciones()
 end
 
 -- Primer cuadro del objeto `sid`.
+-- Piezas de equipo de char*.obd: indice[n][genero] = Sequence de la version a pie (carpeta ...g / ...b, no la "l" ni la
+-- montada, que comparte carpeta y lleva +5000 en el Sequence). n es el numero de pieza del doll (nombre "ITEMn").
+function G:piezas_char()
+  if self._piezas then return self._piezas end
+  local idx = {}
+  for sid, d in pairs(self:definiciones()) do
+    local n = d.nombre and tonumber(d.nombre:match('^ITEM%s*(%d+)'))
+    local dir = d.dir and d.dir:lower():gsub(string.char(92), '/'):gsub('/+$', '')
+    -- carpeta ...g / ...b (capa normal) o ...gl / ...bl (capa del lado izquierdo, por detras del cuerpo, Sequence +2000):
+    -- hay prendas que solo tienen la izquierda (el arco de pulpo 8119 esta solo en i1713bl / i1713gl)
+    local gen = dir and (dir:match('^/?chr/i%d+([gb]l)$') or dir:match('^/?chr/i%d+([gb])$') or dir:match('^/?chr/i%w-([gb])$'))
+    if n and gen then
+      idx[n] = idx[n] or {}
+      if not idx[n][gen] or sid < idx[n][gen] then idx[n][gen] = sid end
+    end
+  end
+  self._piezas = idx
+  return idx
+end
+
 function G:objeto(sid)
   local d = self:definiciones()[sid]
   if not d then return nil end

@@ -75,3 +75,7 @@ data/subastas.db
 data/subastas.db-*
 data/raid_ranking.json
 data/raid_ranking.tmp
+
+# LÖVE portable del cliente propio
+tools/love/
+
