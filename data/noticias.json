@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-16",
+    "titulo": "Fix: monsters fight back again",
+    "texto": "After reconnecting on some maps, monsters stopped attacking back when you hit them. This is fixed on the server; no update needed."
+  },
+  {
+    "fecha": "2026-11-16",
     "titulo": "Update 0.0.0.190: Angel Pass quests and EXP x2",
     "texto": "Please update to version 0.0.0.190 from AngelsLauncher. Character EXP is now x2. Angel Pass: Capture Pet and Fusion quests were removed (a new daily Tower of Babel x3 takes their place), and completing a quest no longer hides the rest of the list. Removed quests are replaced without losing your progress."
   },
