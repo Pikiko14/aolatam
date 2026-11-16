@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-16",
+    "titulo": "Update 0.0.0.189: Angel Pass in the Item Mall",
+    "texto": "Please update to version 0.0.0.189 from AngelsLauncher. The Archangel Pass (premium track) is now in the Item Mall for 15,000 AG and the Passage Chapter (+1 Pass level) for 1,000 AG, under Special > General. Farming quests are gone from the Angel Pass: they are replaced by more pet capture and fusion quests, and a weekly Tower of Babel quest."
+  },
+  {
+    "fecha": "2026-11-16",
     "titulo": "Fix: Totem War K.O. counter",
     "texto": "The K.O. counter no longer appears when you enter a Totem War field (like Dragon Graveyard) while there is no war. No client update needed."
   },
