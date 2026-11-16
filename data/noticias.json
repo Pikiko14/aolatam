@@ -1,5 +1,10 @@
 [
   {
+    "fecha": "2026-11-16",
+    "titulo": "Fix: Totem War K.O. counter",
+    "texto": "The K.O. counter no longer appears when you enter a Totem War field (like Dragon Graveyard) while there is no war. No client update needed."
+  },
+  {
     "fecha": "2026-11-15",
     "titulo": "Update 0.0.0.188: new Angel Pass quests",
     "texto": "Please update to version 0.0.0.188 from AngelsLauncher. Angel Pass quests are now things you can do on our server: every day play the Tower of Babel, plus monster hunting, pet capture, fusion and farming; every week join the Raid, plus bigger hunting, farming and Totem War goals."
