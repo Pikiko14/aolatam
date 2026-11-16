@@ -23,8 +23,8 @@ import inventario as inv
 
 log = logging.getLogger('durabilidad')
 
-GOLPES_ARMA = 10
-GOLPES_ARMADURA = 10
+GOLPES_ARMA = 200                        # 16/11/2026: era 10, se rompia muy rapido
+GOLPES_ARMADURA = 200
 COSTE_REPARAR = 0.05                    # 0x8c2520 del cliente
 
 RANURAS_ARMA = (inv.RANURA_DERECHA, inv.RANURA_IZQUIERDA)

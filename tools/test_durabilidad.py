@@ -20,7 +20,7 @@ def _nada(*a, **k):
     pass
 
 
-def test_el_arma_se_gasta_cada_10_golpes_y_la_armadura_cada_10_recibidos():
+def test_el_arma_se_gasta_cada_GOLPES_ARMA_golpes_y_la_armadura_cada_GOLPES_ARMADURA_recibidos():
     s = _ses()
     for _ in range(dur.GOLPES_ARMA * 3):
         dur.golpe_dado(s, _nada, _nada)
