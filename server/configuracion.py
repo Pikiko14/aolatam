@@ -531,7 +531,7 @@ NIVEL_MAXIMO_PERSONAJE = 60
 # =====================================================================
 # 1.0 = Experiencia normal oficial
 # 2.0 = Doble experiencia, etc.
-TASA_EXP_BASE = 1.5         # Multiplicador de EXP de personaje
+TASA_EXP_BASE = 2.0         # Multiplicador de EXP de personaje (x2: pedido del usuario, 16/11/2026; antes 1.5)
 TASA_SKILL_EXP_BASE = 2     # Multiplicador de EXP de habilidades (stamina/skills)
 # DROP: cada item de la tabla oficial del monstruo (serv_drop.xml) tira con SU probabilidad por esta tasa
 # (1.0 = la oficial; 2.0 = el doble...). Ejemplos a 1.0 por monstruo muerto: Harp Sheep ~1,5% de soltar algo,
