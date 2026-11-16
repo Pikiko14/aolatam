@@ -8235,9 +8235,12 @@ def _companeros(ses):
     e = _sala_de(ses)
     if e is None:
         return []
+    yo = getattr(getattr(ses, 'personaje', None), 'entity_id', None)
     vivos = [s for s in e.sesiones
              if s is not ses and not getattr(s, 'cerrada', False)
+             and not getattr(s, 'desconectado', False)
              and getattr(s, 'personaje', None) is not None
+             and s.personaje.entity_id != yo               # una sesion vieja del mismo personaje no es un companero
              and getattr(s, '_sala', None) is e
              and s.monstruos is e.monstruos]
     return vivos
@@ -12564,6 +12567,10 @@ class Servidor:
             pass
         finally:
             ses.desconectado = True
+            # Lo que miran las salas compartidas (_companeros, _entrar_en_sala): sin esto la sesion vieja seguia "dentro"
+            # y, con la misma entidad que la nueva al reconectar, la IA se saltaba los bichos que te pegan ("no me
+            # atacan cuando los ataco", 16/11/2026).
+            ses.cerrada = True
             try:
                 _intercambio_cerrar(ses)
             except Exception:
