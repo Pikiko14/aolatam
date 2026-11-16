@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-16",
+    "titulo": "Equipment lasts much longer, male student clothes fixed",
+    "texto": "Hardiness now wears down 20 times slower: weapons lose 1 every 200 hits you land and a random armor piece 1 every 200 hits you take (it was 1 every 10). Male characters now get the real male Students' Clothes, Gloves and Shoes; characters created with the wrong (female) set are fixed when they log in."
+  },
+  {
+    "fecha": "2026-11-16",
     "titulo": "Gem icons in the item tooltip",
     "texto": "Open AngelsLauncher to get the new game client. Item tooltips now show the icon of every gem set in the piece, in a row below the gem names. No server restart was needed."
   },
