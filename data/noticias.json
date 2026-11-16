@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-16",
+    "titulo": "Gem icons in the item tooltip",
+    "texto": "Open AngelsLauncher to get the new game client. Item tooltips now show the icon of every gem set in the piece, in a row below the gem names. No server restart was needed."
+  },
+  {
+    "fecha": "2026-11-16",
     "titulo": "Hardiness, Piercing Hammer and Lucky Dice in the tooltip",
     "texto": "Open AngelsLauncher to get the new game client. Hardiness now wears down: weapons lose 1 every 10 hits you land and a random armor piece 1 every 10 hits you take. At 0 the piece gives no stats until you repair it at a Repair NPC (Repair / Repair All, paid in gold). The Piercing Hammer is no longer used up on gear that already has an empty socket: set a gem first. Socket success rates are now 84%, 74%, 64%, 54% and 44%. Item tooltips now list the Lucky Dice (green hammer) attributes of each piece."
   },
