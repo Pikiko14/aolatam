@@ -9888,6 +9888,9 @@ def _pase_al_dia(ses, enviar=True):
         for cual in cambios:
             ses.enviar(pase.paquete_reinicio(est, cual))
     if cambios:
+        log.info('pase: %s nuevas tareas %s (enviadas=%s): %s', getattr(ses.personaje, 'nombre', '?'), cambios, enviar,
+                 {k: [x[0] for x in v] for k, v in est.listas.items()})
+    if cambios:
         _pase_evento(ses, '登入遊戲類', guardar=False)
         _pase_guardar(ses)
     return cambios
@@ -9897,7 +9900,10 @@ def _pase_entrar(ses):
     """Al entrar al mundo: el 0x018D con todo el estado."""
     import pase
     _pase_al_dia(ses, enviar=False)
-    ses.enviar(pase.paquete_estado(_pase_estado(ses)))
+    est = _pase_estado(ses)
+    log.info('pase: %s entra nivel %d exp %d listas %s', getattr(ses.personaje, 'nombre', '?'), est.nivel, est.exp,
+             {k: v for k, v in est.listas.items()})
+    ses.enviar(pase.paquete_estado(est))
 
 
 def _pase_evento(ses, regla, n=1, param=None, guardar=True):
@@ -9915,6 +9921,9 @@ def _pase_evento(ses, regla, n=1, param=None, guardar=True):
             tocadas += mas
         for t in tocadas:
             ses.enviar(pase.paquete_tarea(*t))
+        if tocadas or total:
+            log.info('pase: %s %s -> tareas %s, exp +%d (nivel %d, exp %d)', getattr(ses.personaje, 'nombre', '?'),
+                     regla, tocadas, total, est.nivel, est.exp + total)
         if total:
             est.sumar_exp(total)
             ses.enviar(pase.paquete_nivel(est))
@@ -10581,8 +10590,11 @@ def _tw_al_entrar(ses):
         ses.enviar(_tw_e.spawn_totem(m), _cb_mod().atributo(m.entity_id, m.porcentaje))
     if not _tw_e.activa():
         # Campo de guerra sin guerra: sin modo PvP, ni aro de bando ni K.O. ("y porque sigue el aro naranja", 07/11/2026).
+        # El K.O. ya lo esconde el cliente al cargar el mapa (la ficha del 0x0002 llama a 00602110 con visible=0); el
+        # 0x001D codigo 25 SIEMPRE lo abre (00602470 pasa visible=1), asi que mandar un "0 K.O." para limpiarlo lo
+        # sacaba en Dragon Graveyard sin guerra ("me sale KO y no hay totem war", 16/11/2026).
         ses.tw_modo_pvp = False
-        ses.enviar(_tw_e.modo_pvp(p.entity_id, False), _tw_e.kills_ko(p.entity_id, 0, 0))
+        ses.enviar(_tw_e.modo_pvp(p.entity_id, False))
     if _tw_e.activa():
         import clases as _cl_e
         # El modo PvP del cliente; el 1751 ("You are in the Totem Battlefield
