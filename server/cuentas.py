@@ -1077,7 +1077,8 @@ def guardar_inventario(usuario: str, char_id: int, bolsa: dict,
                                       or v.get('house_egg_deadline') or v.get('mercenary_token_deadline') or v.get('holy_pass_fin')
                                       or v.get('arena_premio_fin') or v.get('mall_fin')
                                       or v.get('item_fin') or v.get('stone_fin')
-                              or v.get('piezas') or v.get('fuel') or v.get('cofre_item'))}
+                              or v.get('piezas') or v.get('fuel') or v.get('cofre_item')
+                              or v.get('dur') is not None)}
         if cantidades is not None:
             p['cantidades'] = {str(k): int(v)
                                for k, v in sorted(cantidades.items(), key=_slot_sort_key)
@@ -1097,7 +1098,8 @@ def guardar_mejoras(usuario: str, char_id: int, mejoras: dict):
                                   or v.get('house_egg_deadline') or v.get('mercenary_token_deadline') or v.get('holy_pass_fin')
                                   or v.get('arena_premio_fin') or v.get('mall_fin')
                                   or v.get('item_fin') or v.get('stone_fin')
-                              or v.get('piezas') or v.get('fuel') or v.get('cofre_item'))}
+                              or v.get('piezas') or v.get('fuel') or v.get('cofre_item')
+                              or v.get('dur') is not None)}
     _actualizar_personaje(usuario, char_id, _mut)
 
 

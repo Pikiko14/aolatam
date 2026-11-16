@@ -624,5 +624,6 @@ def test_la_curva_de_exito_y_el_tope_de_mas_diez():
     assert not ok and est[20]['veces'] == 10, motivo
 
 
-def test_el_martillo_de_perforar_no_cambio():
-    assert [round(m.probabilidad_hueco(h), 2) for h in range(5)] == [1.0, 1.0, 1.0, 1.0, 0.93]
+def test_el_martillo_de_perforar_va_por_hueco():
+    # 16/11/2026: "los lucky piercing hammer tambien deben ir en base al % ... ahorita todos funcionan"
+    assert [round(m.probabilidad_hueco(h), 2) for h in range(5)] == [0.84, 0.74, 0.64, 0.54, 0.44]

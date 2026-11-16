@@ -1310,6 +1310,7 @@ def _refrescar(ses, ranuras, con_oro=False):
                 _linea = inv.marcar_maple(_linea, _mej, cid)
                 if _mej and _mej.get('veces'):
                     _linea = inv.marcar_mejora(_linea, _mej['veces'])
+                _linea = inv.marcar_durabilidad(_linea, _mej)            # Hardiness gastado (durabilidad.py)
                 # Y los stats del martillo verde, que van en la misma entrada en
                 # registros de cuatro bytes desde el offset 13.
                 if inv.extras_visibles(_mej):
@@ -1329,6 +1330,65 @@ def _refrescar(ses, ranuras, con_oro=False):
         if any(v.get('vinculacion') for v in mejoras.values()):
             cuentas.guardar_mejoras(ses.usuario, cid, mejoras)
     return fuera
+
+
+def _dur_refrescar(ses, ranuras, rota=False):
+    """Manda el Hardiness nuevo de esas casillas; si alguna se rompio, los stats sin ella y un aviso."""
+    import clases as _cl_d
+    salida = _refrescar(ses, ranuras)
+    if rota:
+        salida.append(_stats_ses(ses))
+        salida.append(_cl_d.aviso('Your equipment is broken (Hardiness 0). Repair it at a Repair NPC.', tipo=0))
+    ses.enviar(*salida)
+
+
+def _dur_guardar(ses):
+    if ses.personaje and getattr(ses, 'usuario', None):
+        cuentas.guardar_mejoras(ses.usuario, ses.personaje.char_id, ses.personaje.mejoras)
+
+
+def _dur_golpe_dado(ses):
+    try:
+        __import__('durabilidad').golpe_dado(ses, _dur_refrescar, _dur_guardar)
+    except Exception:
+        log.exception('durabilidad: golpe dado')
+
+
+def _dur_golpe_recibido(ses):
+    try:
+        __import__('durabilidad').golpe_recibido(ses, _dur_refrescar, _dur_guardar)
+    except Exception:
+        log.exception('durabilidad: golpe recibido')
+
+
+def _dur_reparar(ses, addr, cuerpo, todo):
+    """c2s 0x003B [instancia] (Repair) / 0x003C (Repair All) de la ventana WND_REPAIR."""
+    import clases as _cl_d
+    import durabilidad as _dur
+    import inventario as _iv_d
+    if not getattr(ses, 'personaje', None):
+        return
+    if todo:
+        ranuras = _dur.reparables(ses)
+    else:
+        if len(cuerpo) < 8:
+            return
+        r = _iv_d.ranura_de_instancia(_instancias(ses), bytes(cuerpo[:8]), ses.inventario)
+        ranuras = [r] if r is not None and r in _dur.reparables(ses) else []
+    if not ranuras:
+        return
+    hechas, oro, falta = _dur.reparar(ses, ranuras)
+    if falta:
+        ses.enviar(_cl_d.aviso('You do not have enough gold to repair.', tipo=0))
+        return
+    salida = _refrescar(ses, hechas, con_oro=True)
+    salida.append(_stats_ses(ses))
+    ses.enviar(*salida)
+    _dur_guardar(ses)
+    if getattr(ses, 'usuario', None):
+        _guardar_bolsa(ses, ses.personaje.char_id)
+    log.info('[%s] %s repara %s por %d de oro', addr, ses.personaje.nombre,
+             [(r, ses.inventario.get(r)) for r in hechas], oro)
 
 
 def _entrada_item_puesto(ses, ranura: int, cantidad: int) -> bytes:
@@ -3281,6 +3341,17 @@ def _usar_mejora(ses, addr, ranura, objetivo) -> bool:
         ses.enviar(_cl.aviso('%s only works on gear up to Lvl %d (%s is Lvl %d).'
                              % (_nombre_item(item), tope_txt, nombre, nivel_pieza), tipo=0))
         log.info('[%s] mejora: %s sobre %s -> %s', addr, _nombre_item(item), nombre, msg)
+        return True
+
+    # Piercing Hammer sobre una pieza con un hueco vacio (o con los 5): no se intenta ni se gasta ("si el gear tiene un
+    # piercing hammer sin gema, no debe aplicar otro piercing y no me descuente el item", 16/11/2026).
+    if not ok and clase == 'perforar' and ('engarzar' in str(msg) or 'ya tiene los' in str(msg)):
+        if 'engarzar' in str(msg):
+            texto = '%s already has an empty socket. Set a gem in it before piercing again.' % nombre
+        else:
+            texto = '%s already has all its sockets.' % nombre
+        ses.enviar(_cl.aviso(texto, tipo=0), *_refrescar(ses, [objetivo, ranura]))
+        log.info('[%s] mejora: %s sobre %s -> %s (no se gasta)', addr, _nombre_item(item), nombre, msg)
         return True
 
     # Una gema que no puede ir en esa pieza no es un intento fallido: no se gasta (13/11/2026, "me esta dejando poner
@@ -14400,6 +14471,7 @@ class Servidor:
                                                     and random.randint(1, 100) <= int(getattr(ses, 'sigilo_esquiva', 0) or 0)):
                                                 suyo = 0
                                             if targ_eid == yo and suyo:
+                                                _dur_golpe_recibido(ses)                 # Hardiness de la armadura
                                                 bolsa_yo = getattr(ses, 'inventario', None)
                                                 if bolsa_yo:
                                                     mods_eq = _iv.modificadores_porcentuales_equipo(bolsa_yo)
@@ -15238,6 +15310,10 @@ class Servidor:
         if (opcode in (0x19,0x1a,0x1b,0x1c,0x1e,0x1f,0x20,0x21)
                 and ses.rol == 'mundo' and ses.personaje
                 and __import__('amigos').procesar(ses,opcode,cuerpo,self.mundos)):
+            return
+
+        if opcode in (0x003B, 0x003C) and ses.rol == 'mundo':
+            _dur_reparar(ses, addr, cuerpo, opcode == 0x003C)
             return
 
         if opcode == 0x0018 and ses.rol == 'mundo':
@@ -17520,6 +17596,8 @@ class Servidor:
             if tipo == _cb.ATAQUE_NORMAL:
                 total_atk += _cb.golpe_extra_buffs(buffs_activos)          # Hooked Arrow, Barb Strike
             dano = m.recibir(total_atk, es_magico=is_magic_skill, mult=mult_spell, var_pct=var_pct)
+            if dano > 0:
+                _dur_golpe_dado(ses)                                         # Hardiness del arma
             if is_magic_skill and dano > 0 and m.hp > 0:
                 # Arcane Fire / Ice Age / Lightning Seal: el elemento va en el mismo numero.
                 dano += m.recibir_extra(_cb.dano_elemental_extra(dano, buffs_activos, m))

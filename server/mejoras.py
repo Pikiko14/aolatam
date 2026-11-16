@@ -66,6 +66,8 @@ EXCLUSIVOS = ('velocidad', 'peso', 'ranuras')
 
 # Cuantos huecos de gema admite una pieza. Lo dijo el usuario: cinco.
 MAX_HUECOS = 5
+# Probabilidad de abrir el hueco N con un Piercing Hammer, normal o Lucky (el usuario, 16/11/2026: "84, 74, 64, 54, 44").
+EXITO_HUECO = {1: 0.84, 2: 0.74, 3: 0.64, 4: 0.54, 5: 0.44}
 
 # Los carteles que manda el servidor real, de string.xml. Medidos el
 # 29/09/2026 viendo que numero llega en cada caso.
@@ -731,11 +733,9 @@ def probabilidad(veces: int) -> float:
 
 
 def probabilidad_hueco(huecos: int) -> float:
-    """La del martillo de perforar, que no se toco al cambiar la de las mejoras: los cuatro primeros huecos son
-    seguros y el quinto sale al 93%."""
-    if huecos <= 3:
-        return 1.0
-    return max(0.20, 1.0 - (huecos - 3) * 0.07)
+    """La del martillo de perforar (normal o Lucky) para abrir el hueco numero huecos + 1 (EXITO_HUECO). Antes los
+    cuatro primeros eran seguros y "ahorita todos funcionan" (16/11/2026)."""
+    return EXITO_HUECO.get(int(huecos) + 1, min(EXITO_HUECO.values()))
 
 
 def pct_por_mejoras(tipo: str, veces: int) -> dict:

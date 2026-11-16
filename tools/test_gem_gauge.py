@@ -62,3 +62,21 @@ def test_gema_sin_hueco_no_se_gasta(monkeypatch):
     assert s.cantidades[41] == 5 and s.inventario[41] == 3113
     assert any(b'Piercing Hammer' in x for x in enviados)
     assert not (p.mejoras.get(3) or {}).get('gemas')
+
+
+def test_piercing_con_un_hueco_vacio_no_se_gasta(monkeypatch):
+    # 16/11/2026, "si el gear tiene un piercing hammer sin gema, no debe aplicar otro piercing y no me descuente el
+    # item": con el hueco anterior vacio no se intenta, no se gasta y se avisa.
+    monkeypatch.setattr(app, '_refrescar', lambda *a, **k: [])
+    monkeypatch.setattr(app, '_stats_ses', lambda ses: b'')
+    monkeypatch.setattr(app, '_guardar_bolsa', lambda *a: None)
+    martillo = 1207                                  # 6-star Piercing Hammer
+    assert mejoras.clase_de(martillo) == 'perforar'
+    enviados = []
+    p = NS(char_id=1, mejoras={3: {'veces': 0, 'gemas': [], 'extra': {}, 'huecos': 1}}, buffs={})
+    s = NS(personaje=p, inventario={41: martillo, 3: 163}, cantidades={41: 5}, usuario=None,
+           enviar=lambda *pk: enviados.extend(pk))
+    assert app._usar_mejora(s, 't', 41, 3)
+    assert s.cantidades[41] == 5 and s.inventario[41] == martillo
+    assert p.mejoras[3]['huecos'] == 1
+    assert any(b'empty socket' in x for x in enviados)

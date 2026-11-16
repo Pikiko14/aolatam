@@ -297,7 +297,7 @@ def instancia_de(char_id: int, ranura_item: int) -> bytes:
 
 
 def movimiento(origen: int, destino: int, char_id: int, item_id: int,
-               instancia: bytes) -> bytes:
+               instancia: bytes, dur: int = None) -> bytes:
     """Sub-mensaje 0x001B que describe mover un item de una ranura a otra."""
     p = _plantillas()
     sube = origen < destino
@@ -316,7 +316,7 @@ def movimiento(origen: int, destino: int, char_id: int, item_id: int,
     # cliente. Va en el mismo sitio relativo que en el 0x001A, +45 del
     # bloque del item.
     if 'dur' in o:
-        struct.pack_into('<I', b, o['dur'], durabilidad(item_id))
+        struct.pack_into('<I', b, o['dur'], durabilidad(item_id) if dur is None else int(dur))
     if es_mascota(item_id):
         nombres_elfos = {3396: b"Water Elf\x00", 3397: b"Fire Elf\x00", 3398: b"Wind Elf\x00", 3399: b"Earth Elf\x00"}
         nom_pet = nombres_elfos.get(item_id, b"Pet\x00")
@@ -517,6 +517,8 @@ def bonos_de_equipo(bolsa, mejoras: dict = None, mascotas: dict = None) -> dict:
             continue
         if not es_equipo(r) or r == RANURA_ORO or r in (11, 12, pet_equipment.RANURA):
             continue
+        if durabilidad_actual(iid, (mejoras or {}).get(r) or (mejoras or {}).get(str(r))) == 0 and durabilidad(iid):
+            continue            # Hardiness 0: rota, no da nada hasta repararla (server/durabilidad.py)
         x = dict(_bonus(iid))
         # LOS STATS DEL MARTILLO VERDE. Se guardaban y se enseñaban en el
         # tooltip, pero no entraban aqui, asi que no subian nada de verdad.
@@ -1627,6 +1629,27 @@ def marcar_vinculacion(entrada, estado):
     return bytes(b)
 
 
+def durabilidad_actual(item_id: int, mejora: dict = None) -> int:
+    """El Hardiness que le queda a la pieza: el de mejoras[ranura]['dur'] o, si no se ha gastado nunca, el maximo."""
+    tope = durabilidad(item_id)
+    if mejora and mejora.get('dur') is not None:
+        return max(0, min(int(mejora['dur']), tope))
+    return tope
+
+
+def marcar_durabilidad(entrada: bytes, mejora: dict = None) -> bytes:
+    """Escribe el Hardiness gastado en una entrada ya armada (+45, OFF_DURABILIDAD). Sin 'dur' la deja como viene
+    (el maximo de item.xml)."""
+    if not mejora or mejora.get('dur') is None:
+        return entrada
+    base = 6 if entrada[:2] == struct.pack('<H', 0x001B) else 0
+    if len(entrada) < base + OFF_DURABILIDAD + 4:
+        return entrada
+    b = bytearray(entrada)
+    struct.pack_into('<I', b, base + OFF_DURABILIDAD, max(0, int(mejora['dur'])))
+    return bytes(b)
+
+
 def marcar_mejora(entrada: bytes, veces: int) -> bytes:
     """Escribe el +N en una entrada ya armada.
 
@@ -2611,6 +2634,7 @@ def completo(char_id: int, items, dueno: int = None, mejoras=None,
             _e = marcar_maple(_e, _m, char_id)
             if _m and _m.get('veces'):
                 _e = marcar_mejora(_e, _m['veces'])
+            _e = marcar_durabilidad(_e, _m)
             if extras_visibles(_m):
                 _e = marcar_extras(_e, extras_visibles(_m))
             if _m and (_m.get('huecos') or _m.get('gemas')):
@@ -2786,6 +2810,7 @@ def actualizar_ranuras(char_id: int, entradas, dueno: int = None,
             _e = marcar_maple(_e, _m, char_id)
             if _m and _m.get('veces'):
                 _e = marcar_mejora(_e, _m['veces'])
+            _e = marcar_durabilidad(_e, _m)
             if extras_visibles(_m):
                 _e = marcar_extras(_e, extras_visibles(_m))
             if _m and (_m.get('huecos') or _m.get('gemas')):
