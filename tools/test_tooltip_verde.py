@@ -34,8 +34,16 @@ def test_el_gancho_salta_a_la_seccion_nueva_y_vuelve():
     assert nuevo[o] == 0xE9
     assert pv.GANCHO_EN + 5 + struct.unpack_from('<i', nuevo, o + 1)[0] == va
     assert nuevo[o + 5:o + 7] == b'\x90\x90'
-    # Despues del gancho el exe de antes no cambia (delante si: la cabecera PE lleva la seccion nueva).
-    assert nuevo[o + 7:len(d)] == d[o + 7:]
+    # Fuera de la cabecera PE, los dos ganchos y los dos punteros de la vtable, el exe de antes no cambia.
+    tocados = [(o, 7), (_off(nuevo, pv.GANCHO2_EN), 7),
+               (_off(nuevo, pv.VTABLE_TOOLTIP + 4 * pv.SLOT_PINTAR), 4),
+               (_off(nuevo, pv.VTABLE_TOOLTIP + 4 * pv.SLOT_TEXTO), 4)]
+    distintos = [i for i in range(0x1000, len(d)) if nuevo[i] != d[i]]
+    assert distintos and all(any(p <= i < p + n for p, n in tocados) for i in distintos)
+    o2 = _off(nuevo, pv.GANCHO2_EN)
+    assert nuevo[o2] == 0xE9 and va < pv.GANCHO2_EN + 5 + struct.unpack_from('<i', nuevo, o2 + 1)[0] < va + sec['vsz']
+    for slot in (pv.SLOT_PINTAR, pv.SLOT_TEXTO):
+        assert va < struct.unpack_from('<I', nuevo, _off(nuevo, pv.VTABLE_TOOLTIP + 4 * slot))[0] < va + sec['vsz']
     codigo = nuevo[sec['rptr']:sec['rptr'] + sec['vsz']]
     assert pv.GANCHO_ORIGINAL in codigo
     assert pv.CABECERA in codigo and pv.LINEA in codigo
