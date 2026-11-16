@@ -9921,6 +9921,8 @@ def _pase_evento(ses, regla, n=1, param=None, guardar=True):
             tocadas += mas
         for t in tocadas:
             ses.enviar(pase.paquete_tarea(*t))
+        for cual in pase.periodos_cumplidos(tocadas):
+            ses.enviar(pase.paquete_reinicio(est, cual))
         if tocadas or total:
             log.info('pase: %s %s -> tareas %s, exp +%d (nivel %d, exp %d)', getattr(ses.personaje, 'nombre', '?'),
                      regla, tocadas, total, est.nivel, est.exp + total)
