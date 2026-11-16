@@ -627,3 +627,12 @@ def test_la_curva_de_exito_y_el_tope_de_mas_diez():
 def test_el_martillo_de_perforar_va_por_hueco():
     # 16/11/2026: "los lucky piercing hammer tambien deben ir en base al % ... ahorita todos funcionan"
     assert [round(m.probabilidad_hueco(h), 2) for h in range(5)] == [0.84, 0.74, 0.64, 0.54, 0.44]
+
+
+def test_en_el_tope_el_pestle_no_se_intenta_y_app_no_lo_gasta():
+    """app.py no gasta el objeto si el motivo dice 'al maximo' (16/11/2026: en +10 fallaba "a +11" y gastaba el Pestle)."""
+    est = {20: {'veces': m.MAX_MEJORA, 'gemas': [], 'extra': {}, 'huecos': 0}}
+    ok, msg = m.aplicar(est, 20, 3121, 1, 'arma', rng=random.Random(0), prob_perder=m.PROB_PERDER)
+    assert not ok and 'al maximo' in msg and est[20]['veces'] == m.MAX_MEJORA
+    app = (pathlib.Path(__file__).resolve().parent.parent / 'server' / 'app.py').read_text(encoding='utf-8')
+    assert "'al maximo' in str(msg)" in app

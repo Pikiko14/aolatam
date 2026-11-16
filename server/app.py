@@ -3343,6 +3343,14 @@ def _usar_mejora(ses, addr, ranura, objetivo) -> bool:
         log.info('[%s] mejora: %s sobre %s -> %s', addr, _nombre_item(item), nombre, msg)
         return True
 
+    # Pieza ya en el tope (+10): no se intenta ni se gasta ("cuando esta en x10 me dice que falla a x11 y me descuenta
+    # 1 pestle ... no deberia dejarme usar el pestle", 16/11/2026).
+    if not ok and ('al maximo' in str(msg) or 'tope de' in str(msg)):
+        ses.enviar(_cl.aviso('%s is already at the maximum enhancement (+%d).' % (nombre, _mj.MAX_MEJORA), tipo=0),
+                   *_refrescar(ses, [objetivo, ranura]))
+        log.info('[%s] mejora: %s sobre %s -> %s (no se gasta)', addr, _nombre_item(item), nombre, msg)
+        return True
+
     # Piercing Hammer sobre una pieza con un hueco vacio (o con los 5): no se intenta ni se gasta ("si el gear tiene un
     # piercing hammer sin gema, no debe aplicar otro piercing y no me descuente el item", 16/11/2026).
     if not ok and clase == 'perforar' and ('engarzar' in str(msg) or 'ya tiene los' in str(msg)):
