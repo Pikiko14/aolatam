@@ -13703,13 +13703,6 @@ class Servidor:
             ses.inventario = p.inventario
             ses.cantidades = p.cantidades
             ses.oro = p.oro
-            # Hombre con uniforme de mujer (26/28/30): angel.dat no lo dibuja → cuerpo gris.
-            try:
-                if personajes.corregir_ropa_hombre(p):
-                    _guardar_bolsa(ses, p.char_id)
-                    log.info(f"[{addr}] ropa estudiante hombre corregida a 3410/3409/3411")
-            except Exception:
-                log.exception('corregir ropa hombre')
             # Los arqueros que recibieron la municion 15000 (no existe) al elegir clase: se cambia por la Feshman
             # Bullet de verdad (ver clases.regalo).
             try:
