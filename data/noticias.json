@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-17",
+    "titulo": "Angel Pass and portal fixes",
+    "texto": "The Angel Pass window no longer resets to Lv. 1 with no quests after changing maps (Tower of Babel, reviving...). Walking onto a portal or dungeon entrance now takes you through as soon as you arrive, without standing on it waiting."
+  },
+  {
+    "fecha": "2026-11-17",
     "titulo": "Angel Pass fix",
     "texto": "Fixed the Angel Pass window sometimes showing the wrong level and no daily or weekly quests (it happened when logging in while dead). Your pass progress was never lost: just log in again to see it."
   },
