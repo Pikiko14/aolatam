@@ -5576,8 +5576,10 @@ def _armar_portal_al_llegar(ses, addr, destino_tile, casillas):
     # armar, sin ventana de tiempo. La marca se borra sola al salir del radio.
     if getattr(ses, 'portal_pisado', None) == tuple(por['tile']):
         return
-    vel = max(1, _velocidad_de(ses))
-    espera = min(5.0, max(0.2, casillas * 25.0 / vel))
+    # Lo que tarda DE VERDAD el cliente (combate.segundos_de_tramo, 2,5 px/s por punto de speed). Antes era
+    # casillas * 25 / vel, casi el doble: el jugador llegaba al tornado y se quedaba parado encima hasta que saltaba
+    # ("demora para entrar a la dungeon", 17/11/2026).
+    espera = min(5.0, max(0.2, __import__('combate').segundos_de_tramo(casillas, _velocidad_de(ses))))
     # El mapa en que se armo. Si antes de acabar el paso el jugador cambia de
     # mapa (otro tornado, un teletransporte), la casilla de destino ya no es
     # de este mapa: se miraba igual y saltaba el portal de esa misma casilla
@@ -24323,10 +24325,10 @@ class Servidor:
                     if _hb_walk.paso_guardian(ses,(_ox,_oy),(ses.personaje.tile_x,ses.personaje.tile_y),demora=_hb_wait):
                         return
                     ses._holy_salto_pendiente=None
+                # En linea recta, como lo anda el cliente (en diagonal son mas pixeles que casillas).
                 _armar_portal_al_llegar(
                     ses, addr, (ses.personaje.tile_x, ses.personaje.tile_y),
-                    max(abs(ses.personaje.tile_x - _ox),
-                        abs(ses.personaje.tile_y - _oy)))
+                    math.hypot(dst['x'] - d['cur_x'], dst['y'] - d['cur_y']) / 32.0)
                 # Reglas "al pisar una zona" del editor (trampas, teletransportes ocultos...).
                 try:
                     import eventos_propios as _evp_pisar

@@ -258,6 +258,14 @@ def secuencia(p: Personaje):
             import logros as _lg_sec
             salida.append(_lg_sec.paquete(p, getattr(p, 'logros_muertos', None) or {},
                                           ctx=getattr(p, '_logros_ctx', None)))
+        elif op == 0x018D:
+            # ANGEL PASS. La plantilla traia el 0x018D del personaje grabado (nivel 1, exp 15, sin tareas) y se
+            # repetia en CADA cambio de mapa (Torre de Babel, revivir...), pisando el de verdad: la ventana salia
+            # "Lv. 1 15/250" y vacia (17/11/2026). Va el estado real; si aun no esta cargado (primera entrada), nada:
+            # app._pase_entrar lo manda despues.
+            if getattr(p, '_pase', None) is not None:
+                import pase as _pase_sec
+                salida.append(_pase_sec.paquete_estado(p._pase))
         elif op == 0x0156:
             # Never restore the collection cells belonging to the captured
             # character during login or a map change.
