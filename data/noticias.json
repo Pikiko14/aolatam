@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-17",
+    "titulo": "Angel Pass fix",
+    "texto": "Fixed the Angel Pass window sometimes showing the wrong level and no daily or weekly quests (it happened when logging in while dead). Your pass progress was never lost: just log in again to see it."
+  },
+  {
+    "fecha": "2026-11-17",
     "titulo": "Pestle and Ride Feed risk, bag weight fix",
     "texto": "The normal Pestle and Ride Feed now work as their tooltip says: if the enhancement fails (from +3 on), the gear or the mount is lost. Lucky Pestles and Lucky Ride Feeds still never break anything. Your bag weight now updates right away when you drop an item, open a Lucky Bag or get a new item."
   },
