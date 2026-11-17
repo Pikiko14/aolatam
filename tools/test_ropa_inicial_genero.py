@@ -31,3 +31,10 @@ def test_personaje_hombre_recibe_la_ropa_de_hombre():
 def test_sin_eleccion_se_usa_la_apariencia_por_defecto_mujer():
     p = personajes.personaje_nuevo('SinElegir', 0, 1003, elegidos=None)
     assert p['inventario']['2'] == personajes.ROPA_INICIAL['cuerpo']
+
+
+def test_al_entrar_no_se_cambia_la_ropa_de_un_hombre():
+    """16/11/2026: los hombres llevan 26/28/30 como todos; corregir_ropa_hombre ya no la cambia por 3410/3409/3411."""
+    p = {'apariencia': [1, 0, 1, 0, 0], 'inventario': {'2': 26, '5': 28, '6': 30}}
+    assert not personajes.corregir_ropa_hombre(p)
+    assert p['inventario'] == {'2': 26, '5': 28, '6': 30}

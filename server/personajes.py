@@ -80,13 +80,14 @@ ROPA_INICIAL = {
 # (servidor) pero invisible/mal dibujada (cliente): parecia que no le
 # hubieran dado la ropa clasica de estudiante.
 ROPA_INICIAL_HOMBRE = {
-    'cuerpo':  3410,  # Blue Students' Clothes (M) — item 26 es de mujer (doll 129 = qipao)
-    'guantes': 3409,  # Students' Gloves (M)
-    'zapatos': 3411,  # Students' Shoes (M)
+    'cuerpo':  26,  # Students' Uniform: 16/11/2026 el usuario la devolvio a la de siempre (3410/3409/3411 "esta mala")
+    'guantes': 28,  # Students' Gloves
+    'zapatos': 30,  # Students' shoes
 }
 
-# Personajes hombre creados con el bug (26/28/30 en ranuras 2/5/6): al entrar se sustituyen.
-_SUST_HOMBRE_RANURA = {2: (26, 3410), 5: (28, 3409), 6: (30, 3411)}
+# Antes se cambiaba al entrar el 26/28/30 de los hombres por 3410/3409/3411. Desactivado el 16/11/2026: los hombres
+# vuelven a llevar 26/28/30 (ROPA_INICIAL_HOMBRE), asi que no se toca nada.
+_SUST_HOMBRE_RANURA = {}
 
 
 def corregir_ropa_hombre(p) -> bool:
