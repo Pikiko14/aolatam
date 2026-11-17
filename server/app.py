@@ -11830,6 +11830,8 @@ def _paquete_peso(ses):
     import inventario as inv
     if not getattr(ses, 'personaje', None) or getattr(ses, 'rol', None) != 'mundo':
         return None
+    if getattr(ses, 'mapa_cargando', False):
+        return None             # se tiraria con la carga del mapa; va con el siguiente 0x001B
     if inv.peso_total(getattr(ses, 'inventario', None)) == getattr(ses, 'peso_enviado', None):
         return None
     return _stats_ses(ses)

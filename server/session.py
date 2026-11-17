@@ -27,6 +27,14 @@ import messages  # noqa: registra los esquemas
 
 log = logging.getLogger('session')
 
+# Lo que se aplaza (no se tira) mientras el cliente carga un mapa: inventario, chat... y el ANGEL PASS (0x018D estado,
+# 0x018E tareas del periodo, 0x018F una tarea, 0x0190 reclamado, 0x0191 nivel, 0x0194 pase comprado). Sin el pase aqui,
+# quien entraba muerto (al revivir hay un cambio de mapa en la misma secuencia de entrada) perdia el 0x018D y la ventana
+# se quedaba con lo de la sesion anterior: "Lv. 1" y sin misiones (17/11/2026).
+DIFERIDOS_AL_CARGAR = tuple(op.to_bytes(2, 'little') for op in
+                            (0x001B, 0x000D, 0x0128, 0x0126, 0x0127,
+                             0x018D, 0x018E, 0x018F, 0x0190, 0x0191, 0x0194))
+
 PLANTILLA_HELLO = pathlib.Path(__file__).parent / 'plantillas' / 'hello_embebido.bin'
 
 
@@ -169,7 +177,7 @@ class Session:
         else:
             prefijo, resto = (), submsgs
         for sub in resto:
-            if sub[:2] in (b'\x1b\x00',b'\x0d\x00',b'\x28\x01',b'\x26\x01',b'\x27\x01'):
+            if sub[:2] in DIFERIDOS_AL_CARGAR:
                 self._mapa_ui_diferida.append(sub)
                 if len(self._mapa_ui_diferida) > 256:
                     self._mapa_ui_diferida.pop(0)

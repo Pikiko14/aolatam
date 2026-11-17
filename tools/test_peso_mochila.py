@@ -42,3 +42,10 @@ def test_al_tirar_algo_se_manda_el_peso_nuevo_y_solo_si_cambio():
     ses.inventario.pop(42)
     ses.enviar(inv.vaciar_ranura(1, 42))
     assert 0x0042 in _opcodes(ses)                 # se tiro algo: va el peso nuevo
+
+
+def test_al_cargar_un_mapa_el_peso_espera():
+    pocion = next(i for i in range(2, 200) if inv.peso_de(i) > 0)
+    ses = _Ses({41: pocion})
+    ses.mapa_cargando = True
+    assert app._paquete_peso(ses) is None and getattr(ses, 'peso_enviado', None) is None
