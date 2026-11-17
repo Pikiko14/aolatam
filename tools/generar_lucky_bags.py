@@ -56,7 +56,7 @@ NIVELES_CLASE = (60, 50, 40, 30)
 # se abran, pero no tienen fila en el Item Mall.
 FUERA_DEL_MALL = {'Lv60 %s Lucky Bag' % c for c, *_ in CLASES} | {'Lv60 Mount Lucky Bag'}   # "saca todos los lvl 60"
 ARMADURA = ('衣服', '頭飾', '手套', '鞋子')
-MONTURAS = ((60, 55, 60), (50, 45, 54), (35, 30, 39))
+MONTURAS = ((60, 55, 60), (50, 50, 55), (35, 30, 39))   # la Lv50 era 45-54; "monturas lvl 50 - 55" (17/11/2026)
 RECETAS = ('26', '27', '28', '29', '31')   # armas, armaduras, costura, tecnica, cocina
 
 # LA PLANTILLA DE LAS BOLSAS DE CLASE. Partio de la Lv60 Axeman Lucky Bag de su captura (sin los Upgrade Coin) y el
@@ -104,7 +104,9 @@ def _items():
     filas = {}
     for t in ['item'] + ['item%d' % i for i in range(2, 10)]:
         cols = {c[1] for c in con.execute('pragma table_info(%s)' % t)}
-        quiero = ['id', '基本名稱', '物品類別', '物品等級', '等級限制', '技能限制1', '顏色', '持續時間', '動態資料1']
+        # Con los stats de las monturas: sin ellos _fuerza daba 0 a todas y "las mas fuertes" eran las de id mas bajo.
+        quiero = ['id', '基本名稱', '物品類別', '物品等級', '等級限制', '技能限制1', '顏色', '持續時間', '動態資料1',
+                  *STATS_MONTURA]
         sel = ','.join(c if c in cols else 'NULL' for c in quiero)
         for r in con.execute('select %s from %s' % (sel, t)):
             filas.setdefault(int(r[0]), dict(zip(quiero, r)))
@@ -329,8 +331,11 @@ def cajas_santa(items):
 # Las pesos van en milesimas de % (100000 = 100%) y la bolsa da las cantidades de su plantilla ('cantidades').
 RIDE_FEED, RIDE_FEED_CUANTOS = 4457, 1     # x1 (05/11/2026), como las cartas de EXP
 MONTURAS_PROPIAS = {35: 10.0, 50: 5.0, 60: 5.0}
-MONTURAS_BAJAS = 25.0
+# La Lv50 (17/11/2026): "monturas lvl 50 - 55 con 5% las low con 15 y el resto" a Ride Feed, "3% las mas fuertes" -- cada
+# una, aparte del 5%, que se reparten las demas (FUERTE_APARTE).
+MONTURAS_BAJAS = {35: 25.0, 50: 15.0, 60: 25.0}
 FUERTES, PCT_FUERTE, TOPE_CADA = 0.15, 0.1, 5.0
+FUERTE_APARTE = {50: 3.0}
 STATS_MONTURA = ('atk_avg', 'matk', 'def', 'mdef', 'accuracy', 'agility', 'move_speed')
 
 
@@ -352,14 +357,16 @@ def bolsa_de_monturas(items, lo, hi):
     fuertes, normales = propias[:n_fuertes], propias[n_fuertes:]
     pct = {}
     total_propias = MONTURAS_PROPIAS[nivel]
+    pct_fuerte = FUERTE_APARTE.get(nivel, PCT_FUERTE)
     for f in fuertes:
-        pct[int(f['id'])] = PCT_FUERTE
+        pct[int(f['id'])] = pct_fuerte
     if normales:
-        cada = min(TOPE_CADA, (total_propias - PCT_FUERTE * len(fuertes)) / len(normales))
+        resto = total_propias if nivel in FUERTE_APARTE else total_propias - PCT_FUERTE * len(fuertes)
+        cada = min(TOPE_CADA, resto / len(normales))
         for f in normales:
             pct[int(f['id'])] = cada
     if bajas:
-        cada = min(TOPE_CADA, MONTURAS_BAJAS / len(bajas))
+        cada = min(TOPE_CADA, MONTURAS_BAJAS[nivel] / len(bajas))
         for f in bajas:
             pct.setdefault(int(f['id']), cada)
     feed = 100.0 - sum(pct.values())
@@ -371,7 +378,7 @@ def bolsa_de_monturas(items, lo, hi):
     texto = ('%s %.1f%%, a lower-level mount or robot (Lv10-%d) %.1f%% (%.2f%% each), a Lv%d-%d mount or '
              'robot %.1f%% (the strongest %.1f%% each)') % (feed_txt, feed, lo - 1, suma_bajas,
                                                             suma_bajas / max(1, len(bajas)), lo, hi, suma_propias,
-                                                            PCT_FUERTE)
+                                                            pct_fuerte)
     return contenido, texto
 
 
