@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-17",
+    "titulo": "Pestle and Ride Feed risk, bag weight fix",
+    "texto": "The normal Pestle and Ride Feed now work as their tooltip says: if the enhancement fails (from +3 on), the gear or the mount is lost. Lucky Pestles and Lucky Ride Feeds still never break anything. Your bag weight now updates right away when you drop an item, open a Lucky Bag or get a new item."
+  },
+  {
+    "fecha": "2026-11-17",
     "titulo": "Lv50 Mount Lucky Bag improved",
     "texto": "Open AngelsLauncher to get version 0.0.0.191. The Lv50 Mount Lucky Bag now gives a Lv50-55 mount or robot 17% of the time: the 4 strongest (SKY-Fish Bu55, SKY-Fish Re55, Lift Robot and Weighty cat Boots) 3% each, and the rest share 5%. Lower-level mounts (Lv10-49) 15%, Ride Feed 68%."
   },
