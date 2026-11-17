@@ -92,6 +92,19 @@ class Session:
                         submsgs = tuple(submsgs) + tuple(extra_b)
             except Exception:
                 pass
+        # EL PESO DE LA MOCHILA solo lo pinta el cliente con el 0x0042 (stats). Tirar algo, abrir una bolsa... mandan el
+        # 0x001B de la casilla y nada mas, asi que el peso se quedaba viejo (17/11/2026). Si va un 0x001B sin 0x0042 y el
+        # peso cambio, se manda tambien (app._paquete_peso).
+        paquete_peso = getattr(self, 'paquete_peso', None)
+        if paquete_peso is not None:
+            cabezas = [bytes(s[:2]) for s in submsgs if isinstance(s, (bytes, bytearray))]
+            if (0x1B).to_bytes(2, 'little') in cabezas and (0x42).to_bytes(2, 'little') not in cabezas:
+                try:
+                    extra = paquete_peso(self)
+                    if extra:
+                        submsgs = tuple(submsgs) + (extra,)
+                except Exception:
+                    log.debug('no se pudo mandar el peso', exc_info=True)
         submsgs = self._filtrar_carga_mapa(submsgs)
         if not submsgs:
             return

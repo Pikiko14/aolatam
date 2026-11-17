@@ -636,3 +636,16 @@ def test_en_el_tope_el_pestle_no_se_intenta_y_app_no_lo_gasta():
     assert not ok and 'al maximo' in msg and est[20]['veces'] == m.MAX_MEJORA
     app = (pathlib.Path(__file__).resolve().parent.parent / 'server' / 'app.py').read_text(encoding='utf-8')
     assert "'al maximo' in str(msg)" in app
+
+
+def test_el_ride_feed_y_el_pestle_normales_siempre_pierden_la_pieza():
+    """17/11/2026: el Ride Feed normal que falla (desde +3) se lleva la montura siempre; el Pestle normal tambien."""
+    assert m.prob_perder(4457) == 1.0          # Ride Feed
+    assert m.prob_perder(3121) == 1.0          # Pestle
+    est = {9: {'veces': 5, 'gemas': [], 'extra': {}, 'huecos': 0}}
+
+    class Falla:
+        def random(self):
+            return 0.999                       # siempre falla la mejora (y siempre "sale" el riesgo si es 1.0)
+    ok, msg = m.aplicar(est, 9, 4457, 50, 'montura', rng=Falla(), prob_perder=m.prob_perder(4457))
+    assert not ok and msg == m.PERDIDA

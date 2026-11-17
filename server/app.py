@@ -3304,7 +3304,7 @@ def _usar_mejora(ses, addr, ranura, objetivo) -> bool:
         ok, msg = _mj.aplicar(p.mejoras, objetivo, item, nivel_pieza, tipo,
                               exito_seguro=seguro,
                               bono_cuarta_mejora=blessing.get('enhance_fourth_pct', 0) / 100.0,
-                              prob_perder=_mj.PROB_PERDER if _mj.es_normal(item) else 0.0)
+                              prob_perder=_mj.prob_perder(item))
         _logros_contar(ses, 'mejora_ok' if ok else 'mejora_fallo', addr=addr)
 
     nombre = _nombre_item(pieza)
@@ -11825,11 +11825,25 @@ def _cb_alcance(ses) -> int:
     return _cb.alcance_arma(arma)
 
 
+def _paquete_peso(ses):
+    """El 0x0042 si el peso de la mochila cambio desde el ultimo que se mando (session.Session.enviar)."""
+    import inventario as inv
+    if not getattr(ses, 'personaje', None) or getattr(ses, 'rol', None) != 'mundo':
+        return None
+    if inv.peso_total(getattr(ses, 'inventario', None)) == getattr(ses, 'peso_enviado', None):
+        return None
+    return _stats_ses(ses)
+
+
+Session.paquete_peso = staticmethod(_paquete_peso)
+
+
 def _stats_ses(ses):
     """Genera el paquete 0x0042 con stats completos del personaje."""
     import inventario as inv
     p = getattr(ses, 'personaje', None)
     bolsa = getattr(ses, 'inventario', None)
+    ses.peso_enviado = inv.peso_total(bolsa)
     habs = p.habilidades if p else None
     hp = p.hp if p else None
     hp_max = p.hp_max if p else None

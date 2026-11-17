@@ -667,9 +667,19 @@ def tirar_verde(rangos, todos: bool = False, rng=None):
 # lucky, luego de +3 si falla hay chance de que se pierda el item, el chance sea 30". Solo los que se llaman asi a
 # secas: los Lucky y los de bendicion (祝福) siguen sin romper nada.
 NOMBRES_NORMALES = ('Pestle', 'Ride Feed')
-PROB_PERDER = 0.30
+PROB_PERDER = 1.0             # 17/11/2026: era 0.30; "el pestle normal tambien se pierde al fallar"
 NIVEL_RIESGO = 3              # se arriesga al fallar el paso de +3 a +4 y los siguientes
 PERDIDA = 'la pieza se perdio'
+# El Ride Feed normal (17/11/2026): "que se pierda siempre", como dice su tooltip ("If it fails, the ride will die and
+# disappear"). El Pestle normal tambien (PROB_PERDER).
+PROB_PERDER_RIDE_FEED = 1.0
+
+
+def prob_perder(item_id) -> float:
+    """La probabilidad de perder la pieza al fallar desde +NIVEL_RIESGO con ese objeto (0 los Lucky y los de bendicion)."""
+    if not es_normal(item_id):
+        return 0.0
+    return PROB_PERDER_RIDE_FEED if str(_fila(item_id)[0] or '').strip() == 'Ride Feed' else PROB_PERDER
 
 
 def es_normal(item_id) -> bool:
