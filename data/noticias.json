@@ -1,5 +1,10 @@
 [
   {
+    "fecha": "2026-11-17",
+    "titulo": "Lv50 Mount Lucky Bag improved",
+    "texto": "Open AngelsLauncher to get version 0.0.0.191. The Lv50 Mount Lucky Bag now gives a Lv50-55 mount or robot 17% of the time: the 4 strongest (SKY-Fish Bu55, SKY-Fish Re55, Lift Robot and Weighty cat Boots) 3% each, and the rest share 5%. Lower-level mounts (Lv10-49) 15%, Ride Feed 68%."
+  },
+  {
     "fecha": "2026-11-16",
     "titulo": "No more wasted Pestles at +10",
     "texto": "Using a Pestle or Ride Feed on gear or a pet that is already at the maximum (+10) no longer counts as a failed attempt: you get a notice and the item is not consumed."
