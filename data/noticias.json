@@ -1,5 +1,10 @@
 [
   {
+    "fecha": "2026-11-18",
+    "titulo": "Champion aura",
+    "texto": "The Angel Arena champion now shines: while wearing the No. 1 badge, a golden fire aura surrounds the character, visible to everyone on the map. Update with AngelsLauncher to see it."
+  },
+  {
     "fecha": "2026-11-17",
     "titulo": "Elementary and Arena prizes",
     "texto": "Angel Elementary now gives its EXP, Skill EXP and Credit, and the Top 30 receive their prize in the bag (or from the Elementary Teacher if the bag is full). Angel Arena now gives Angel Gold: 10,000 for 1st, 7,000 for 2nd, 5,000 for 3rd and 100 for every other ranked player, plus the No. 1 badge of their level for the champion. Fixed backpacks that did not count their slots."
