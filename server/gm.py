@@ -53,7 +53,7 @@ _CMDS_EFECTO = ('efecto', 'fx')
 # /fxm N [skill]: el efecto de MAGIA N (shape\magic\N, 特效編號) sobre ti, con el par 0x0011 (fase 0x00 y 0x80) que lleva el
 # numero de efecto en 12 bits. Para elegir el brillo del campeon de Arena (17/11/2026): el 25 es W06 天使光環, que no usa
 # ningun skill.
-# /brillo <segundos>: cada cuanto se relanza ese brillo (competicion_premios.CADA_BRILLO), para dejarlo continuo.
+# /brillo: vuelve a mandar el aura de los campeones a todos (en el cliente ya no se apaga; ver competicion_premios).
 _CMDS_EFECTO_MAGIA = ('fxm', 'efectomagia', 'brillo')
 # Prueba del 0x001D kind 9 (hechizo) con un tercer campo a eleccion. Solo se midio con
 # rango I (valor 1). Sirve para averiguar si un valor (p.ej. 0) le quita al cliente un
@@ -675,10 +675,7 @@ def parsear(texto: str):
         except (IndexError, ValueError):
             return ('err', 'usage: /efecto <numero>  (0x0020 sobre el totem del mapa o sobre ti)')
     if cmd == 'brillo':
-        try:
-            return ('brillo', max(0.3, min(30.0, float(parts[1]))))
-        except (IndexError, ValueError):
-            return ('err', 'usage: /brillo <seconds>  (how often the Arena champion aura is replayed)')
+        return ('brillo',)
     if cmd in _CMDS_EFECTO_MAGIA:
         try:
             return ('efecto_magia', int(parts[1], 0), int(parts[2], 0) if len(parts) >= 3 else 0)
@@ -897,8 +894,9 @@ def aplicar(ses, parsed) -> str:
         return msg
     if kind == 'brillo':
         import competicion_premios as _cp_br
-        _cp_br.CADA_BRILLO = float(parsed[1])
-        msg = 'Champion aura replayed every %.2f s.' % _cp_br.CADA_BRILLO
+        import competiciones as _cpt_br
+        _cp_br.volver_a_mandar_brillo(_cpt_br._sesiones())
+        msg = 'Champion aura will be sent again to everyone.'
         _avisar(ses, msg)
         return msg
     if kind == 'efecto_magia':

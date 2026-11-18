@@ -201,14 +201,14 @@ def _con_badge_de_campeon(r, miembro, plan):
                       caduca_en=fin + arena_premios_compat.DURATION))
 
 
-# EL BRILLO DEL CAMPEON (17/11/2026, "debe brillar", "crea el efecto tu que sea vistoso"): mientras lleve puesto un badge
-# No. 1 de Arena, el efecto de magia 25 (que ningun skill usa) se le repite cada CADA_BRILLO s, para el y para los del
-# mapa. tools/brillo_campeon.py dibuja en sus frames un aura Super Saiyan. "debe salir siempre" (18/11/2026): se relanza
-# al acabar la animacion; cuanto dura depende de la unidad de tiempo de M02.OBD, asi que se ajusta en vivo con el GM
-# /brillo <segundos> y luego se fija aqui.
+# EL BRILLO DEL CAMPEON (17-18/11/2026, "debe brillar", "crea el efecto tu que sea vistoso", "algo como los super
+# sayan"): quien lleve puesto un badge No. 1 de Arena lleva encima el efecto de magia 25 (que ningun skill usa), en el
+# que tools/brillo_campeon.py dibuja un aura de fuego dorado. Relanzarlo cada poco lo hacia titilar ("no debe titilar,
+# debe encenderse siempre", "que dure la animacion por siempre"): ahora el fuego del parche no se retira nunca (M02.OBD
+# sin evento de cierre) y el servidor lo manda UNA vez a cada jugador que lo puede ver, por mapa: al campeon cuando
+# termina de cargar el suyo y a cada uno de los del mapa cuando termina de cargar el suyo. Como no hay paquete para
+# quitar un efecto, si se quita el badge el aura sigue hasta que cambie de mapa o reconecte.
 EFECTO_CAMPEON = 25
-# A 0,8 s las auras se solapaban y se quemaban en blanco (captura del 18/11/2026); ajustar con /brillo.
-CADA_BRILLO = 1.2                 # el aura dura ~2,9 s (6 frames x 8 x 60 ms): a 1,2 s se solapan 2-3 copias sin huecos, el aspecto que gusto (18/11/2026); a 0,75 se amontonaban y lo tapaban
 BADGES_CAMPEON = {item for _, item in BADGES_NO1}
 # Como se manda el efecto (gm /fxm N modo para probarlos):
 #   0  las dos fases del 0x0011 (0x00 golpe + 0x80 cierre): el jugador hace la animacion de lanzar y a sus pies sale
@@ -243,41 +243,46 @@ def lleva_badge_campeon(ses):
     return int((getattr(ses, 'inventario', None) or {}).get(inventario.RANURA_INSIGNIA) or 0) in BADGES_CAMPEON
 
 
-def mandar_brillo(ses):
-    """Un pase del aura: a el con su entidad y a los demas del mapa con la publica (no mientras carga un mapa)."""
-    import presencia
-    if getattr(ses, 'mapa_cargando', False):
-        return False
-    p = ses.personaje
-    ses.enviar(*_paquetes_brillo(p.entity_id, p))
-    publico = _paquetes_brillo(presencia.entidad_de(ses), p)
-    for otro in presencia._vivas(presencia.clave_de_mapa(ses, p.stage)):
-        if otro is not ses:
-            (getattr(otro, 'enviar_sin_espejo', None) or otro.enviar)(*publico)
-    return True
-
-
-def _brillo_paso(ses):
-    """Un eslabon de la cadena de cada campeon: manda el aura y se vuelve a programar a CADA_BRILLO s, para que salga
-    seguida ("que siempre brille el fuego"). El reloj de competiciones va de segundo en segundo y con el no se puede
-    bajar de 1 s. Se corta sola al quitarse el badge, morir o desconectarse."""
-    if not lleva_badge_campeon(ses):
-        ses._brillo_activo = False
-        return
-    try:
-        mandar_brillo(ses)
-    except Exception:
-        __import__('logging').getLogger('competiciones').exception('brillo del campeon')
-    __import__('asyncio').get_event_loop().call_later(CADA_BRILLO, _brillo_paso, ses)
+def _carga(ses):
+    """Marca de la ultima carga de mapa de esa sesion (session.mapa_cambiado_en): cambia con cada mapa nuevo."""
+    return getattr(ses, 'mapa_cambiado_en', 0)
 
 
 def brillo_campeon(ses):
-    """Lo llama el reloj de competiciones cada segundo por jugador: arranca la cadena del aura si hace falta."""
-    if getattr(ses, '_brillo_activo', False) or not lleva_badge_campeon(ses):
-        return False
-    ses._brillo_activo = True
-    _brillo_paso(ses)
-    return True
+    """Lo llama el reloj de competiciones cada segundo por jugador. Si es campeon, manda el aura (que en el cliente ya
+    no se apaga) a quien aun no la tenga en su mapa actual: el mismo cuando acaba de cargar el suyo, y cada jugador de
+    su mapa cuando acaba de cargar el suyo. Devuelve a cuantos se la mando."""
+    import presencia
+    if not lleva_badge_campeon(ses) or getattr(ses, 'mapa_cargando', False):
+        return 0
+    p = ses.personaje
+    yo = _carga(ses)
+    vistos = getattr(ses, '_brillo_vistos', None)
+    if not isinstance(vistos, dict) or vistos.get('yo') != yo:
+        # El campeon cambio de mapa (o acaba de entrar): para todos es una entidad nueva, sin aura.
+        vistos = ses._brillo_vistos = {}
+    enviados = 0
+    if 'yo' not in vistos:
+        ses.enviar(*_paquetes_brillo(p.entity_id, p))
+        vistos['yo'] = yo
+        enviados += 1
+    publico = None
+    for otro in presencia._vivas(presencia.clave_de_mapa(ses, p.stage)):
+        if otro is ses or getattr(otro, 'mapa_cargando', False):
+            continue
+        if vistos.get(id(otro)) == _carga(otro):
+            continue
+        publico = publico or _paquetes_brillo(presencia.entidad_de(ses), p)
+        (getattr(otro, 'enviar_sin_espejo', None) or otro.enviar)(*publico)
+        vistos[id(otro)] = _carga(otro)
+        enviados += 1
+    return enviados
+
+
+def volver_a_mandar_brillo(sesiones):
+    """GM /brillo: olvida a quien se le mando el aura, para que el reloj se la vuelva a mandar a todos."""
+    for s in sesiones:
+        s._brillo_vistos = None
 
 
 def preparar(con, r):

@@ -20,7 +20,7 @@ van en el ancla), cab[16] = 0 (sin paleta) y 2 bytes RGB565 por pixel desde cab[
 
 Deja parches/extras/shape/magic/025/<frame>.shp y setting/m02.obd (entran en el parche) y, con --vista RUTA.png, una
 hoja con los 12 frames y el aura sobre un muneco. El servidor lo lanza con el cierre (fase 0x80) del 0x0011 del
-efecto 25 cada CADA_BRILLO s (competicion_premios.brillo_campeon; gm /fxm 25 [modo], /brillo <segundos>).
+efecto 25 una vez por jugador y mapa (competicion_premios.brillo_campeon; gm /fxm 25 [modo], /brillo).
 
     python tools/brillo_campeon.py [--vista RUTA.png]
 """
@@ -114,7 +114,8 @@ def _llamas(t, ancho_max, alto_max, semilla, fuerza=1.0):
     # version hueca partia el aura en dos mitades ("se ve mal").
     hueco = np.clip(np.abs(x) / (perfil * 0.45 + 1), 0, 1)       # 0 en el eje del cuerpo
     v = llama * (0.12 + 0.88 * borde_luz) * (0.35 + 0.65 * hueco)
-    v = v * TRANSPARENCIA * fuerza * (0.9 + 0.1 * np.sin(t * 6 * np.pi))
+    # Sin el parpadeo de conjunto (0.9 + 0.1 * sin) que llevaba: "no debe titilar, debe encenderse siempre" (18/11/2026).
+    v = v * TRANSPARENCIA * fuerza
     return np.clip(v, 0, 1)
 
 
@@ -261,14 +262,17 @@ def original(frame) -> bytes:
 
 # "que siempre brille el fuego" (18/11/2026): las tres capas duran lo mismo (48 unidades de DelayUnit) y sin el
 # frame congelado ni el fundido que traia el halo (s083061 x6 y @SP_EVENT_ACT_FADEOUT), asi el servidor la relanza
-# al terminar (competicion_premios.CADA_BRILLO) y no hay bajon. Solo cambian esas tres lineas Sprite de M02.OBD.
+# al terminar y no hay bajon (luego: el fuego sin cierre, ver abajo). Solo cambian esas lineas de M02.OBD.
 # Con @SP_EVENT_ACT_REMOVE al final (como otros 53 efectos de M02): sin el, la capa no se retiraba nunca y cada
 # relanzamiento sumaba otra copia ("se va poniendo cada vez amarillo", 18/11/2026).
 # El fuego sale despues de las chispas ("si se ve el fuego pero luego de las chispas", 18/11/2026): por eso las capas
 # de chispas y rayos van vacias (dibujar()), y queda solo el fuego.
+# "que dure la animacion por siempre" (18/11/2026): el fuego (280) va SIN evento de cierre, asi no se retira nunca y
+# queda en bucle; el servidor lo manda una sola vez por jugador y mapa (competicion_premios.brillo_campeon), en vez
+# de relanzarlo, que es lo que lo hacia titilar.
 SPRITES_M02 = {
     279: 'Sprite = Wait, #16, s082011, s082021, s082031, @SP_EVENT_ACT_REMOVE, SCROVER',
-    280: 'Sprite = Wait, #8, s083011, s083021, s083031, s083041, s083051, s083061, @SP_EVENT_ACT_REMOVE, SCROVER',
+    280: 'Sprite = Wait, #8, s083011, s083021, s083031, s083041, s083051, s083061, SCROVER',
     328: 'Sprite = Wait, #16, s188011, s188021, s188031, @SP_EVENT_ACT_REMOVE, SCROVER',
 }
 # La capa 279 (el angel original) se dibujaba sin sumar luz: con fuego, opaco. Se le pone la de las otras dos.
