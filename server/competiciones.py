@@ -62,8 +62,19 @@ class Rechazo(ValueError):
         self.dialogo = dialogo
 
 
+_CONFIG_EVENTOS = [None, None]          # [mtime, datos]
+
+
 def config_eventos():
-    return json.loads((pathlib.Path(__file__).parent / 'plantillas' / 'competiciones_config.json').read_text(encoding='utf-8'))
+    """competiciones_config.json, releido solo si cambia: el cron lo pedia en cada tick y el read_text se veia en el
+    vigia del bucle (17/11/2026). Se sigue pudiendo editar en caliente. Devuelve una copia (hay quien la modifica)."""
+    import copy
+    p = pathlib.Path(__file__).parent / 'plantillas' / 'competiciones_config.json'
+    mt = p.stat().st_mtime_ns
+    if _CONFIG_EVENTOS[0] != mt:
+        _CONFIG_EVENTOS[1] = json.loads(p.read_text(encoding='utf-8'))
+        _CONFIG_EVENTOS[0] = mt
+    return copy.deepcopy(_CONFIG_EVENTOS[1])
 
 
 def _modo_pruebas():

@@ -1448,6 +1448,9 @@ CODIGO_FACCION = {
 }
 
 
+FICHA_MUERTO = 7     # byte 61 de la ficha: entra ya tumbado (ver _ficha)
+
+
 def _ficha(p, base):
     m = Msg.registry[(0x0002, 's2c', 'privado')]
     d = m.parse(base)
@@ -1504,6 +1507,12 @@ def _ficha(p, base):
         _ap = getattr(p, 'apariencia', None)
         if _ap and len(_ap) >= 5:
             u50[5:10] = bytes(int(v) & 0xFF for v in _ap[:5])
+        # MUERTO AL ENTRAR (17/11/2026, "aparezco vivo y luego hace el efecto de muerto"): el byte 61 de la ficha
+        # (u50[11]) va a la entidad +0x3be y, si vale FICHA_MUERTO, sub_5E9C90 llama a la muerte (0x5be800) con el flag
+        # de animar a 0: 0x4b4b70 pone la ultima imagen de "Dead" (0x565380(6)) en vez de la caida, y la ventana de
+        # revivir (ShowDeadOptionWindow) sale igual. app pone p._ficha_muerto al muerto que no es alma.
+        if len(u50) > 11 and getattr(p, '_ficha_muerto', False):
+            u50[11] = FICHA_MUERTO
         d['unk_50'] = bytes(u50)
     # HP y MP. El campo 'stats' arranca en +102 de la ficha (a3 + 104), asi que los
     # cuatro LE32 del principio son hp, hp_max, mp, mp_max (+102, +106,

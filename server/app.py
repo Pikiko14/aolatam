@@ -817,13 +817,65 @@ def _precalentar():
             ('sprites de npc', lambda: __import__('login').sprite_de(1)),
             ('descripciones de bolsas', lambda: __import__('bolsas')._cargar_descripciones()),
             ('huevos de captura', lambda: __import__('house_services').capture_eggs()),
-            ('niveles de magia', lambda: __import__('skills').nivel_de_magia(1))):
+            ('niveles de magia', lambda: __import__('skills').nivel_de_magia(1)),
+            # 17/11/2026, el vigia parado 0,4 s al primer uso: razas del pase al matar, bolsas de drops_bolsas.json al
+            # abrir una, casillas transitables al aparecer Santa Clausula.
+            ('angel pass', lambda: (__import__('pase').razas(), __import__('pase').tareas(),
+                                    __import__('pase').premios())),
+            ('bolsas extra', lambda: __import__('bolsas')._cargar_extra()),
+            ('transitable', lambda: __import__('transitable')._cargar())):
         try:
             f()
             hecho.append(nombre)
         except Exception:
             log.warning('precalentar %s', nombre, exc_info=True)
     log.info('precargado al arrancar en %.1fs: %s', time.time() - t0, ', '.join(hecho))
+    _congelar_heap('al arrancar', recoger=True)
+
+
+# EL GC DE PYTHON CONGELABA EL SERVIDOR (17/11/2026, "lag al spamear skills"): con todo lo precargado hay ~900.000
+# objetos y cada recoleccion completa los recorre todos: 0,19 s en el PC, ~0,43 s en el VPS. Es la pausa que el vigia
+# del bucle veia una y otra vez en sitios que no tienen nada de lento (una consulta, un read_text, el propio poll).
+# gc.freeze() pasa lo que ya existe a una generacion que el GC no vuelve a mirar: las tablas, XML y mapas cargados
+# no son basura y no hace falta recorrerlos. Se vuelve a congelar cada CADA_CONGELAR s para lo que se carga despues
+# (salas de mapas, personajes); como mucho se queda sin recoger la basura ciclica de ese momento, que es poca.
+CADA_CONGELAR = 600
+GC_LENTO = 0.1
+
+
+def _congelar_heap(motivo, recoger=False):
+    import gc
+    t = time.perf_counter()
+    if recoger:
+        gc.collect()
+    gc.freeze()
+    log.info('gc: heap congelado %s (%d objetos, %.2f s)', motivo, gc.get_freeze_count(), time.perf_counter() - t)
+
+
+def _vigilar_gc():
+    """Avisa de las recolecciones que paran el bucle mas de GC_LENTO s."""
+    import gc
+    inicio = {}
+
+    def _cb(fase, info):
+        if fase == 'start':
+            inicio['t'] = time.perf_counter()
+            return
+        dt = time.perf_counter() - inicio.get('t', time.perf_counter())
+        if dt >= GC_LENTO:
+            log.warning('gc: recoleccion de la generacion %s paro %.2f s (%s recogidos)', info.get('generation'), dt,
+                        info.get('collected'))
+
+    gc.callbacks.append(_cb)
+
+
+async def _congelar_heap_periodico():
+    while True:
+        await asyncio.sleep(CADA_CONGELAR)
+        try:
+            _congelar_heap('periodico')
+        except Exception:
+            log.exception('gc: congelar')
 
 
 def _ranura_libre(bolsa, desde=20, hasta=None):
@@ -8852,6 +8904,13 @@ def _muerto_quieto(ses, addr=''):
     (getattr(ses, 'enviar_sin_espejo', None) or ses.enviar)(*pkts)
 
 
+def _marcar_ficha_muerto(ses):
+    """Antes de armar la secuencia de mapa: el muerto que no es alma entra ya tumbado (login._ficha, FICHA_MUERTO)."""
+    p = getattr(ses, 'personaje', None)
+    if p is not None:
+        p._ficha_muerto = bool(getattr(ses, 'muerto', False)) and not getattr(ses, 'fantasma', False)
+
+
 def _reaplicar_muerte(ses):
     """Al terminar de cargar un mapa, el que esta muerto lo sigue estando en su cliente y en el de los demas.
 
@@ -8876,9 +8935,13 @@ def _reaplicar_muerte(ses):
             log.debug('alma a los demas al cargar el mapa', exc_info=True)
     else:
         # La muerte como la de un monstruo: 0x000A tipo muerte con un asesino que el cliente conoce (un bicho
-        # del mapa) y la vida a 0.
+        # del mapa) y la vida a 0. Si la ficha ya lo trajo tumbado (_marcar_ficha_muerto), el 0x000A le repetiria
+        # la caida ("aparezco vivo y luego hace el efecto de muerto", 17/11/2026): a el solo la vida a 0.
         _asesino = int(next(iter(getattr(ses, 'monstruos', None) or {}), 0))
-        mandar(_cb_rm.ataque(yo, _asesino, 0, _cb_rm.TIPO_MUERTE), _cb_rm.atributo(yo, 0, _cb_rm.KIND_HP))
+        if getattr(p, '_ficha_muerto', False):
+            mandar(_cb_rm.atributo(yo, 0, _cb_rm.KIND_HP))
+        else:
+            mandar(_cb_rm.ataque(yo, _asesino, 0, _cb_rm.TIPO_MUERTE), _cb_rm.atributo(yo, 0, _cb_rm.KIND_HP))
         _avisar_muerte_a_los_demas(ses, _asesino)
     if hasattr(ses, 'volcar'):
         ses.volcar()
@@ -13708,6 +13771,7 @@ class Servidor:
                 p._amplify_verdes = _amplify_refrescar(ses, enviar=False)
             except Exception:
                 log.exception('amplify antes de entrar')
+            _marcar_ficha_muerto(ses)
             for sub in __import__('gathering_nodes').scene(ses, secuencia(p)):
                 ses.enviar(sub)
             # El inventario va dentro de la secuencia de entrada: el 0x001A
@@ -18148,6 +18212,7 @@ class Servidor:
             p = ses.personaje
             ses.monstruos = _monstruos_de(p.stage)
             # Cargar la secuencia completa oficial del nuevo mapa (aparicion, capas, barra, stats, spawns y atributos)
+            _marcar_ficha_muerto(ses)
             for sub in __import__('gathering_nodes').scene(ses, _lg2.secuencia(p)):
                 ses.enviar(sub)
             __import__('elementary').loaded(ses)
@@ -24693,7 +24758,8 @@ class Servidor:
         wsrv = await asyncio.start_server(
             functools.partial(self.cliente, rol='mundo'), self.host, self.wport)
         log.info(f"servidor de MUNDO en {self.host}:{self.wport}")
-        tareas = [srv.serve_forever(), wsrv.serve_forever(), _vigia_del_bucle()]
+        _vigilar_gc()
+        tareas = [srv.serve_forever(), wsrv.serve_forever(), _vigia_del_bucle(), _congelar_heap_periodico()]
         try:
             fsrv = await asyncio.start_server(self.archivos, self.host, self.fport)
             log.info(f"servidor de archivos en {self.host}:{self.fport}")
