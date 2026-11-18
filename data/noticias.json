@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-17",
+    "titulo": "Less lag and death on login",
+    "texto": "Server optimizations to reduce the short freezes that happened while spamming skills. Also, if you log in or change maps while dead, you now appear already lying down with the revive window, instead of standing up and then falling."
+  },
+  {
+    "fecha": "2026-11-17",
     "titulo": "Angel Pass and portal fixes",
     "texto": "The Angel Pass window no longer resets to Lv. 1 with no quests after changing maps (Tower of Babel, reviving...). Walking onto a portal or dungeon entrance now takes you through as soon as you arrive, without standing on it waiting."
   },
