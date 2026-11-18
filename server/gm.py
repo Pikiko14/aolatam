@@ -50,6 +50,11 @@ _CMDS_ANIM = ('anim', 'golpe')
 # /efecto N: el efecto N del 0x0020 (Lua effectNNN del cliente) sobre el totem del mapa, o sobre ti si no hay. Para
 # encontrar el de 'Level N' del totem (TotemLevelUp / TotemLevelDown del script de efectos), 07/11/2026.
 _CMDS_EFECTO = ('efecto', 'fx')
+# /fxm N [skill]: el efecto de MAGIA N (shape\magic\N, 特效編號) sobre ti, con el par 0x0011 (fase 0x00 y 0x80) que lleva el
+# numero de efecto en 12 bits. Para elegir el brillo del campeon de Arena (17/11/2026): el 25 es W06 天使光環, que no usa
+# ningun skill.
+# /brillo <segundos>: cada cuanto se relanza ese brillo (competicion_premios.CADA_BRILLO), para dejarlo continuo.
+_CMDS_EFECTO_MAGIA = ('fxm', 'efectomagia', 'brillo')
 # Prueba del 0x001D kind 9 (hechizo) con un tercer campo a eleccion. Solo se midio con
 # rango I (valor 1). Sirve para averiguar si un valor (p.ej. 0) le quita al cliente un
 # hechizo, que es lo que haria falta para que el rango II tape al I sin reloguear.
@@ -61,7 +66,8 @@ _CMDS = frozenset(('help',) + _CMDS_ITEM + _CMDS_LEVEL + _CMDS_SETLEVEL + _CMDS_
                   + _CMDS_LEVELALL + _CMDS_SKILLS + _CMDS_SKILLSALL + _CMDS_SKILLS5
                   + _CMDS_CLEARSKILLS + _CMDS_PET + _CMDS_QUEST + _CMDS_BALL
                   + _CMDS_GUILDLEVEL + _CMDS_GUILDREP + _CMDS_GUILD
-                  + _CMDS_TW + _CMDS_FARM + _CMDS_SETMAP + _CMDS_ANIM + _CMDS_EFECTO + _CMDS_HECHIZO + _CMDS_TRADE)
+                  + _CMDS_TW + _CMDS_FARM + _CMDS_SETMAP + _CMDS_ANIM + _CMDS_EFECTO + _CMDS_HECHIZO + _CMDS_TRADE
+                  + _CMDS_EFECTO_MAGIA)
 # _CMDS se quedaba sin 'gold' y 'setlevel' (se anadieron arriba, al vuelo: no se tocan las
 # tuplas que ya tenia cada quien para no reordenar nada). No cambia nada vivo: _CMDS solo lo
 # usa texto_de(), y nada del servidor llama a texto_de() hoy (ver mas abajo, PALABRAS).
@@ -83,13 +89,15 @@ PALABRAS = _CMDS
 _GRUPOS_DELEGADOS = (_CMDS_LEVEL, _CMDS_SETLEVEL, _CMDS_GOLD, _CMDS_LEVELALL,
                     _CMDS_SKILLS, _CMDS_SKILLSALL, _CMDS_SKILLS5, _CMDS_CLEARSKILLS,
                     _CMDS_PET, _CMDS_QUEST, _CMDS_BALL, _CMDS_SETMAP, _CMDS_ANIM, _CMDS_EFECTO, _CMDS_HECHIZO,
-                    _CMDS_TRADE)    # /job, /caravana, /aro: sin esto el chat no los mandaba aqui (06/11/2026)
+                    _CMDS_TRADE,    # /job, /caravana, /aro: sin esto el chat no los mandaba aqui (06/11/2026)
+                    _CMDS_EFECTO_MAGIA)
 PALABRAS_DELEGADAS = frozenset(w for grupo in _GRUPOS_DELEGADOS for w in grupo)
 # Los 'kind' que gm.parsear() puede devolver para PALABRAS_DELEGADAS, para que el
 # dispatcher de app.py sepa cuales reenviar a gm.aplicar().
 RESULTADOS_DELEGADOS = frozenset((
     'level', 'levelall', 'setlevel', 'gold', 'skills', 'skillsall', 'skills5',
     'clearskills', 'pet', 'quest', 'ball', 'setmap', 'anim', 'efecto', 'hechizo', 'trade',
+    'efecto_magia', 'brillo',
 ))
 
 AYUDA = ("GM: /item <id> [qty]  /level <n>  /levelall <n>  /setlevel <name|all> <n>/guildlevel <1..10>  /guildrep <n>  "
@@ -666,6 +674,16 @@ def parsear(texto: str):
             return ('efecto', int(parts[1], 0))
         except (IndexError, ValueError):
             return ('err', 'usage: /efecto <numero>  (0x0020 sobre el totem del mapa o sobre ti)')
+    if cmd == 'brillo':
+        try:
+            return ('brillo', max(0.3, min(30.0, float(parts[1]))))
+        except (IndexError, ValueError):
+            return ('err', 'usage: /brillo <seconds>  (how often the Arena champion aura is replayed)')
+    if cmd in _CMDS_EFECTO_MAGIA:
+        try:
+            return ('efecto_magia', int(parts[1], 0), int(parts[2], 0) if len(parts) >= 3 else 0)
+        except (IndexError, ValueError):
+            return ('err', 'usage: /fxm <magic effect number> [mode 0 both | 1 close only | 2 close with tile]')
     if cmd in _CMDS_ANIM:
         uso = 'usage: /anim <tipo> <animacion>  |  /anim off'
         if len(parts) == 2 and parts[1].lower() in ('off', 'reset', 'no'):
@@ -875,6 +893,23 @@ def aplicar(ses, parsed) -> str:
             eid = _tw_fx.eid_totem(p.stage)
         ses.enviar(struct.pack('<HIHI', 0x0020, eid, int(parsed[1]) & 0xFFFF, eid))
         msg = 'effect %d sobre %s' % (parsed[1], 'el totem' if eid != p.entity_id else 'ti')
+        _avisar(ses, msg)
+        return msg
+    if kind == 'brillo':
+        import competicion_premios as _cp_br
+        _cp_br.CADA_BRILLO = float(parsed[1])
+        msg = 'Champion aura replayed every %.2f s.' % _cp_br.CADA_BRILLO
+        _avisar(ses, msg)
+        return msg
+    if kind == 'efecto_magia':
+        import combate as _cb_fxm
+        p = getattr(ses, 'personaje', None)
+        if not p:
+            return 'no character in world yet'
+        import competicion_premios as _cp_fxm
+        yo, n, modo = p.entity_id, int(parsed[1]) & 0xFFF, int(parsed[2])
+        ses.enviar(*_cp_fxm.paquetes_efecto(yo, n, modo, p.tile_x, p.tile_y))
+        msg = 'Magic effect %d on you (mode %d).' % (n, modo)
         _avisar(ses, msg)
         return msg
     if kind == 'anim':

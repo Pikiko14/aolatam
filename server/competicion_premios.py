@@ -201,6 +201,85 @@ def _con_badge_de_campeon(r, miembro, plan):
                       caduca_en=fin + arena_premios_compat.DURATION))
 
 
+# EL BRILLO DEL CAMPEON (17/11/2026, "debe brillar", "crea el efecto tu que sea vistoso"): mientras lleve puesto un badge
+# No. 1 de Arena, el efecto de magia 25 (que ningun skill usa) se le repite cada CADA_BRILLO s, para el y para los del
+# mapa. tools/brillo_campeon.py dibuja en sus frames un aura Super Saiyan. "debe salir siempre" (18/11/2026): se relanza
+# al acabar la animacion; cuanto dura depende de la unidad de tiempo de M02.OBD, asi que se ajusta en vivo con el GM
+# /brillo <segundos> y luego se fija aqui.
+EFECTO_CAMPEON = 25
+# A 0,8 s las auras se solapaban y se quemaban en blanco (captura del 18/11/2026); ajustar con /brillo.
+CADA_BRILLO = 1.2                 # el aura dura ~2,9 s (6 frames x 8 x 60 ms): a 1,2 s se solapan 2-3 copias sin huecos, el aspecto que gusto (18/11/2026); a 0,75 se amontonaban y lo tapaban
+BADGES_CAMPEON = {item for _, item in BADGES_NO1}
+# Como se manda el efecto (gm /fxm N modo para probarlos):
+#   0  las dos fases del 0x0011 (0x00 golpe + 0x80 cierre): el jugador hace la animacion de lanzar y a sus pies sale
+#      el circulo de inicio ("no quiero se vea ese circulo abajo ni la animacion", 18/11/2026), sea magia o fisico.
+#   1  solo el cierre (0x80), sin golpe.
+#   2  solo el cierre, con la casilla, como efecto_aura_objetivo (el aura de los debuffs sobre el objetivo).
+MODO_BRILLO = 1
+
+
+def paquetes_efecto(eid, efecto, modo, tx=0, ty=0):
+    import combate
+    if modo == 0:
+        return (combate.numero_de_dano(eid, eid, 0, ataque=0, efecto=efecto, cast_time=0, es_magia=False),
+                combate.cierre_de_dano(eid, eid, ataque=0, efecto=efecto, es_magia=False))
+    if modo == 2:
+        return (combate.cierre_de_dano(eid, eid, ataque=0, efecto=efecto, es_magia=False,
+                                       tile_x=int(tx or 0), tile_y=int(ty or 0)),)
+    return (combate.cierre_de_dano(eid, eid, ataque=0, efecto=efecto, es_magia=False),)
+
+
+def _paquetes_brillo(eid, p=None):
+    return paquetes_efecto(eid, EFECTO_CAMPEON, MODO_BRILLO, getattr(p, 'tile_x', 0), getattr(p, 'tile_y', 0))
+
+
+def lleva_badge_campeon(ses):
+    """Si ese jugador (vivo, en el mundo, conectado) lleva puesto un badge No. 1 de Arena."""
+    import inventario
+    p = getattr(ses, 'personaje', None)
+    if (p is None or getattr(ses, 'rol', None) != 'mundo' or getattr(ses, 'muerto', False)
+            or getattr(ses, 'desconectado', False)):
+        return False
+    return int((getattr(ses, 'inventario', None) or {}).get(inventario.RANURA_INSIGNIA) or 0) in BADGES_CAMPEON
+
+
+def mandar_brillo(ses):
+    """Un pase del aura: a el con su entidad y a los demas del mapa con la publica (no mientras carga un mapa)."""
+    import presencia
+    if getattr(ses, 'mapa_cargando', False):
+        return False
+    p = ses.personaje
+    ses.enviar(*_paquetes_brillo(p.entity_id, p))
+    publico = _paquetes_brillo(presencia.entidad_de(ses), p)
+    for otro in presencia._vivas(presencia.clave_de_mapa(ses, p.stage)):
+        if otro is not ses:
+            (getattr(otro, 'enviar_sin_espejo', None) or otro.enviar)(*publico)
+    return True
+
+
+def _brillo_paso(ses):
+    """Un eslabon de la cadena de cada campeon: manda el aura y se vuelve a programar a CADA_BRILLO s, para que salga
+    seguida ("que siempre brille el fuego"). El reloj de competiciones va de segundo en segundo y con el no se puede
+    bajar de 1 s. Se corta sola al quitarse el badge, morir o desconectarse."""
+    if not lleva_badge_campeon(ses):
+        ses._brillo_activo = False
+        return
+    try:
+        mandar_brillo(ses)
+    except Exception:
+        __import__('logging').getLogger('competiciones').exception('brillo del campeon')
+    __import__('asyncio').get_event_loop().call_later(CADA_BRILLO, _brillo_paso, ses)
+
+
+def brillo_campeon(ses):
+    """Lo llama el reloj de competiciones cada segundo por jugador: arranca la cadena del aura si hace falta."""
+    if getattr(ses, '_brillo_activo', False) or not lleva_badge_campeon(ses):
+        return False
+    ses._brillo_activo = True
+    _brillo_paso(ses)
+    return True
+
+
 def preparar(con, r):
     con.execute('CREATE TABLE IF NOT EXISTS competiciones_premios '
                 '(ronda TEXT, char_id INTEGER, estado TEXT, plan TEXT, '

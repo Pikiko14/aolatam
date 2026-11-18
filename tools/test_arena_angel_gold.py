@@ -79,3 +79,32 @@ def test_el_campeon_recibe_su_badge_una_vez(monkeypatch):
     plan = {'items': [{'id': 66330, 'cantidad': 1}]}                 # ya trae el compat Lv280
     cp._con_badge_de_campeon(r, {'nivel': 434}, plan)
     assert [i['id'] for i in plan['items']] == [66330]
+
+
+def test_el_campeon_con_su_badge_brilla_seguido_para_todo_el_mapa(monkeypatch):
+    import asyncio
+    import types
+    import inventario
+    import presencia
+    yo_env, otro_env, programados = [], [], []
+    p = types.SimpleNamespace(entity_id=1001, stage=41)
+    yo = types.SimpleNamespace(personaje=p, rol='mundo', inventario={inventario.RANURA_INSIGNIA: 66324},
+                               enviar=lambda *a: yo_env.extend(a))
+    otro = types.SimpleNamespace(enviar=lambda *a: otro_env.extend(a))
+    monkeypatch.setattr(presencia, 'entidad_de', lambda s: 777)
+    monkeypatch.setattr(presencia, 'clave_de_mapa', lambda s, st: st)
+    monkeypatch.setattr(presencia, '_vivas', lambda st: [yo, otro])
+    bucle = types.SimpleNamespace(call_later=lambda t, f, *a: programados.append((t, f, a)))
+    monkeypatch.setattr(asyncio, 'get_event_loop', lambda: bucle)
+    assert cp.brillo_campeon(yo)
+    assert not cp.brillo_campeon(yo)                     # el reloj no arranca otra cadena
+    assert programados[-1][0] == cp.CADA_BRILLO
+    t, f, a = programados.pop()
+    f(*a)                                                # el siguiente eslabon
+    assert len(yo_env) == len(otro_env) == 2 * len(cp._paquetes_brillo(1))
+    assert all(m[:2] == b'\x11\x00' and m[2] == cp.EFECTO_CAMPEON and m[22] == 2 for m in yo_env + otro_env)
+    assert int.from_bytes(yo_env[0][4:8], 'little') == 1001 and int.from_bytes(otro_env[0][4:8], 'little') == 777
+    yo.inventario = {inventario.RANURA_INSIGNIA: 8660}   # se lo quita (el No. 2 no brilla): la cadena se corta
+    t, f, a = programados.pop()
+    f(*a)
+    assert not programados and yo._brillo_activo is False and len(yo_env) == 2 * len(cp._paquetes_brillo(1))

@@ -1160,6 +1160,10 @@ async def reloj():
                 __import__('app')._items_con_tiempo(ses)      # equipo "(N days)": pone la fecha
                 __import__('arena_premios_compat').caducados(ses, campo_fin='item_fin', campo_item='item_fin_id')
                 __import__('competicion_premios').entregar(ses, automatico=True)
+                try:
+                    __import__('competicion_premios').brillo_campeon(ses)     # el campeon de Arena brilla
+                except Exception:
+                    log.exception('brillo del campeon')
         except Exception:
             log.exception('competition clock')
         await asyncio.sleep(1)
