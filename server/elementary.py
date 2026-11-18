@@ -18,7 +18,11 @@ import secrets
 import struct
 import time
 
+import logging
+
 import elementary_codec as wire
+
+log=logging.getLogger('elementary')
 
 STAGE=502
 TEACHER=56
@@ -251,14 +255,27 @@ def _finish(r):
         _notice(s,'Angel Elementary finished. Your rank: %d; points: %d.'%(rank,m['score']))
 
 
+def _sincronizar(s):
+    """Deja en la base lo que el personaje tiene en memoria antes de entregar.
+
+    recent_mall.cambiar y la entrega comparan la base con la memoria (mochila, nivel, exp, skills) y rechazan si no
+    coinciden. El progreso se guarda en segundo plano y con retraso, y la exp de skills solo en algunos momentos, asi
+    que la comparacion fallaba siempre y la recompensa no llegaba nunca ("el angel elementary no da experiencia",
+    17/11/2026)."""
+    __import__('app')._sincronizar_personaje(s)
+
+
 def _award(s):
-    """Progress is saved once; item prizes stay pending for the teacher."""
+    """Exp, Skill Exp y Credit al terminar; el premio del Top 30 se entrega a la vez (si no cabe, queda para el teacher)."""
     import cuentas,clases,combate,configuracion,app,recent_mall
     if getattr(s,'mapa_cargando',False) or getattr(s,'muerto',False):return
     with cuentas._LOCK,cuentas._get_conn() as con:
         _schema(con)
         rows=con.execute('SELECT run,payload FROM elementary_results WHERE owner=? AND character=? AND awarded=0',
                          (s.usuario.casefold(),s.personaje.char_id)).fetchall()
+    if rows:
+        try:_sincronizar(s)
+        except Exception:log.exception('Angel Elementary: no se pudo guardar a %s antes de premiar',s.personaje.nombre)
     for run,payload in rows:
         m=json.loads(payload);p=s.personaje;saved=[]
         bell=next((slot for slot,it in s.inventario.items() if it==26627 and 20<=slot<160),None) if m['bell'] else None
@@ -284,11 +301,13 @@ def _award(s):
                     exp-=max(1,clases.exp_requerida_skill(lv,sid));lv+=1
                 if lv>=cap:exp=min(exp,max(1,clases.exp_requerida_skill(lv,sid)))
                 skills.append([sid,lv,exp])
-            d['habilidades']=skills;d['creditos']=int(d.get('creditos',p.creditos))+credit
+            d['habilidades']=skills;d['creditos']=int(p.creditos or 0)+credit
             con.execute('UPDATE elementary_results SET awarded=1 WHERE run=? AND owner=? AND character=?',
                         (run,s.usuario.casefold(),p.char_id));saved.append(copy.deepcopy(d))
         try:recent_mall.cambiar(s,{bell:1} if bell is not None else {},[],transaccion=award)
-        except recent_mall.Rechazo:continue
+        except recent_mall.Rechazo as exc:
+            log.info('Angel Elementary: %s aun sin recompensa de %s (%s)',p.nombre,run,exc)
+            continue
         d=saved[0]
         for attr in ('nivel','exp','hp_max','mp_max','creditos'):setattr(p,attr,d[attr])
         p.habilidades=[tuple(h) for h in d['habilidades']]
@@ -299,29 +318,47 @@ def _award(s):
         for sid,_,_ in p.habilidades:packets.append(clases.aviso_doble(clases.MSG_SKILL_EXP,clases.nombre(sid),str(sk)))
         s.enviar(*packets)
         _notice(s,'Angel Elementary rewards delivered: %d Exp, %d Skill Exp and %d Credit.'%(xp,sk,credit))
+        log.info('Angel Elementary: %s recibe %d exp, %d skill exp y %d credit (puesto %s, %d puntos)',
+                 p.nombre,xp,sk,credit,m.get('place','?'),m['score'])
+        _premio_top(s,run,avisar_fallo=False)
+
+
+def _premio_top(s,run=None,avisar_fallo=True):
+    """El premio del Top 30 (bufprize). Devuelve el mensaje del teacher: 8344 sin premio, 8347 ya entregado, 8345 dado.
+    None si no se pudo dar (mochila llena...): queda pendiente para el Elementary Teacher."""
+    import cuentas,recent_mall
+    with cuentas._LOCK,cuentas._get_conn() as con:
+        _schema(con)
+        sql='SELECT run,score,place,claimed FROM elementary_results WHERE owner=? AND character=?'
+        args=[s.usuario.casefold(),s.personaje.char_id]
+        if run is not None:sql+=' AND run=?';args.append(run)
+        row=con.execute(sql+' ORDER BY rowid DESC LIMIT 1',args).fetchone()
+    if not row or row[1]<1 or row[2]>30:return 8344
+    if row[3]:return 8347
+    prize=next((r for r in data()['prizes'] if r['place']==row[2]),None)
+    if prize is None:return 8344
+    def mark(con,d):
+        cur=con.execute('UPDATE elementary_results SET claimed=1 WHERE run=? AND owner=? AND character=? AND claimed=0',
+                        (row[0],s.usuario.casefold(),s.personaje.char_id))
+        if cur.rowcount!=1:raise recent_mall.Rechazo('This prize was already claimed.')
+    try:recent_mall.cambiar(s,{},prize['items'],transaccion=mark)
+    except recent_mall.Rechazo as exc:
+        log.info('Angel Elementary: premio Top %d de %s pendiente (%s)',row[2],s.personaje.nombre,exc)
+        _notice(s,str(exc) if avisar_fallo else
+                'Your Angel Elementary Top %d prize is waiting at the Elementary Teacher (%s)'%(row[2],exc))
+        return None
+    log.info('Angel Elementary: %s recibe el premio Top %d %s',s.personaje.nombre,row[2],prize['items'])
+    _notice(s,'Angel Elementary Top %d prize delivered.'%row[2])
+    return 8345
 
 
 def claim(s):
-    import cuentas,recent_mall,dialogos
+    import dialogos
     if s.personaje.stage!=41 or max(abs(s.personaje.tile_x-132),abs(s.personaje.tile_y-80))>8:return
-    with cuentas._LOCK,cuentas._get_conn() as con:
-        _schema(con)
-        row=con.execute('SELECT run,score,place,claimed FROM elementary_results WHERE owner=? AND character=? ORDER BY rowid DESC LIMIT 1',
-                        (s.usuario.casefold(),s.personaje.char_id)).fetchone()
-    if not row or row[1]<1 or row[2]>30:mid=8344
-    elif row[3]:mid=8347
-    else:
-        prize=next((r for r in data()['prizes'] if r['place']==row[2]),None)
-        if prize is None:return
-        def mark(con,d):
-            cur=con.execute('UPDATE elementary_results SET claimed=1 WHERE run=? AND owner=? AND character=? AND claimed=0',
-                            (row[0],s.usuario.casefold(),s.personaje.char_id))
-            if cur.rowcount!=1:raise recent_mall.Rechazo('This prize was already claimed.')
-        try:recent_mall.cambiar(s,{},prize['items'],transaccion=mark)
-        except recent_mall.Rechazo as exc:_notice(s,str(exc));return
-        mid=8345
-        _notice(s,'Angel Elementary Top %d prize delivered.'%row[2])
-    s.enviar(dialogos.armar_linea(mid,4))
+    try:_sincronizar(s)
+    except Exception:log.exception('Angel Elementary: no se pudo guardar a %s antes del premio',s.personaje.nombre)
+    mid=_premio_top(s)
+    if mid is not None:s.enviar(dialogos.armar_linea(mid,4))
 
 
 def pulsar(s,entity):

@@ -647,6 +647,31 @@ MAX_MOCHILA = 50
 PROP_EXTRA = range(95, 120)
 
 
+_CASILLAS_DE_MOCHILA = None
+
+
+def _casillas_por_mochila() -> dict:
+    """{item: casillas} de todas las Backpack (背包, 動態資料1) de item.xml ... item9.xml.
+
+    Solo se miraba item.xml, y las 222 mochilas de item2..item9 contaban 0 casillas: con la Backpack vacia el servidor
+    decia "la mochila esta llena" en cuanto se llenaba el Prop (17/11/2026)."""
+    global _CASILLAS_DE_MOCHILA
+    if _CASILLAS_DE_MOCHILA is None:
+        import house_services as _hs_tb
+        res = {}
+        for nombre in ['item.xml'] + ['item%d.xml' % n for n in range(2, 10)]:
+            try:
+                filas = _hs_tb.xml_rows(nombre)
+            except Exception:
+                log.warning('mochilas: no se pudo leer %s', nombre, exc_info=True)
+                continue
+            for iid, fila in filas.items():
+                if fila.get('物品類別') == '背包':
+                    res[int(iid)] = int(fila.get('動態資料1') or 0)
+        _CASILLAS_DE_MOCHILA = res
+    return _CASILLAS_DE_MOCHILA
+
+
 def _casillas_mochila(bolsa) -> int:
     """Las casillas de la Backpack puesta (0 sin ella)."""
     b = bolsa or {}
@@ -656,10 +681,7 @@ def _casillas_mochila(bolsa) -> int:
         if not it:
             continue
         try:
-            import house_services as _hs_tb
-            fila = _hs_tb.xml_rows('item.xml').get(int(it)) or {}
-            if fila.get('物品類別') == '背包':
-                extra += int(fila.get('動態資料1') or 0)
+            extra += _casillas_por_mochila().get(int(it), 0)
         except Exception:
             extra = MAX_MOCHILA
     return max(0, min(MAX_MOCHILA, extra))
@@ -1995,6 +2017,25 @@ def _guardar_bolsa(ses, cid):
                                    _cantidades(ses))
 
 
+def _sincronizar_personaje(ses):
+    """Deja YA en la base lo que el personaje tiene en memoria: mochila, oro, rango/creditos y progreso.
+
+    Las entregas transaccionales (recent_mall.cambiar, competicion_premios.entregar) comparan la base con la memoria y
+    se cancelan si no coinciden, para no pisar progreso sin guardar. Pero el progreso se guarda en segundo plano y con
+    retraso, y la exp de skills solo en algunos momentos: la comparacion fallaba y el premio no llegaba nunca ("el
+    angel elementary no da experiencia", 17/11/2026). Llamarlo justo antes de esas entregas."""
+    p = getattr(ses, 'personaje', None)
+    if p is None or not getattr(ses, 'usuario', None):
+        return
+    _guardar_bolsa(ses, p.char_id)
+    p.oro = getattr(ses, 'oro', getattr(p, 'oro', 0))
+    cuentas.guardar_oro(ses.usuario, p.char_id, p.oro)
+    cuentas.guardar_rango(ses.usuario, p.char_id, getattr(p, 'rango', 1), getattr(p, 'creditos', 0))
+    cuentas.guardar_progreso(ses.usuario, p.char_id, p.nivel, p.exp, p.hp, p.mp, p.habilidades,
+                             hp_max=p.hp_max, mp_max=p.mp_max)
+    cuentas.vaciar_progreso()
+
+
 def _nombre_item(item_id: int) -> str:
     """Nombre del item para el cartel de 'obtuviste X'."""
     try:
@@ -2036,11 +2077,11 @@ def _gm_dar_item(ses, item_id: int, n: int = 1) -> str:
     import clases as _cl
     import inventario as _iv_gm
     if getattr(ses, 'inventario', None) is None or not getattr(ses, 'personaje', None):
-        return 'no hay personaje en el mundo todavia'
+        return 'No character in the world yet.'
     item_id = int(item_id)
     n = max(1, min(9999, int(n)))
     if not _item_existe(item_id):
-        return 'el item %d no existe' % item_id
+        return 'Item %d does not exist.' % item_id
     # LAS MASCOTAS TIRAN EL CLIENTE. Su entrada de inventario mide 235 bytes
     # -- se vio al abrir un huevo en el servidor real -- y nuestro
     # constructor solo sabe hacer las de 86 y 119. Dandole una mascota, el
@@ -2049,7 +2090,7 @@ def _gm_dar_item(ses, item_id: int, n: int = 1) -> str:
     ranuras_antes = set(ses.inventario.keys())
     ranura = _meter(ses, item_id, n)
     if ranura is None:
-        return 'la mochila esta llena'
+        return 'Your backpack is full.'
     ranuras_ahora = set(ses.inventario.keys())
     ranuras_refrescar = sorted(list(ranuras_ahora - ranuras_antes) or [ranura])
     nom = _nombre_item(item_id)

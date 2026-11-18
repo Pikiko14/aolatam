@@ -163,6 +163,44 @@ def seleccionar(r, cid, miembro):
     return plan, 'pendiente'
 
 
+def angel_gold_arena(r, cid, estado):
+    """AG de Angel Arena por puesto (17/11/2026: 1o 10.000, 2o 7.000, 3o 5.000, el resto 100), encima de lo que de la
+    tabla o los premios compat. Solo a quien quedo clasificado en una ronda con premio: no en pruebas, canceladas,
+    espectadores ni rondas de uno solo (seleccionar ya los deja fuera con otro estado)."""
+    import competiciones as c
+    if r.get('stage') not in c.ARENAS or estado not in ('pendiente','sin_tabla'):
+        return 0
+    ranking=r.get('clasificacion',[])
+    if cid not in ranking:
+        return 0
+    tabla=r.get('arena_angel_gold')
+    if tabla is None:
+        tabla=c.config_eventos().get('arena_angel_gold') or {}
+    puesto=ranking.index(cid)+1
+    return max(0,int(tabla.get(str(puesto),tabla.get('resto',0)) or 0))
+
+
+# EL BADGE DEL CAMPEON (17/11/2026, "le deben dar un badge tambien de ganador", "el de su nivel"): el 徽章 "No. 1" de
+# item.xml que corresponde a su nivel. Duran 持續時間 9240 min como los premios compat (caduca_en; los quita caducados).
+BADGES_NO1 = ((280, 66330), (240, 66327), (180, 66324), (120, 66321), (0, 8659))
+BADGES_ARENA = {8659, 8660, 8661} | set(range(66321, 66333))
+
+
+def badge_campeon(nivel):
+    return next(item for desde, item in BADGES_NO1 if int(nivel) >= desde)
+
+
+def _con_badge_de_campeon(r, miembro, plan):
+    """Mete el badge No. 1 de su nivel en el plan del 1o, si no trae ya uno de Arena (los compat Lv280 de 401+)."""
+    import arena_premios_compat
+    items = plan.setdefault('items', [])
+    if any(int(i.get('id', 0)) in BADGES_ARENA for i in items):
+        return
+    fin = float(r.get('finalizada', r.get('fin', 0)) or 0) or __import__('time').time()
+    items.append(dict(id=badge_campeon(miembro.get('nivel', 1)), cantidad=1,
+                      caduca_en=fin + arena_premios_compat.DURATION))
+
+
 def preparar(con, r):
     con.execute('CREATE TABLE IF NOT EXISTS competiciones_premios '
                 '(ronda TEXT, char_id INTEGER, estado TEXT, plan TEXT, '
@@ -175,6 +213,14 @@ def preparar(con, r):
             if row:
                 plan=__import__('arena_premios_compat').plan(r,cid,m,json.loads(row[2]),compat)
                 if plan:estado='pendiente'
+        ag=angel_gold_arena(r,cid,estado)
+        if ag:
+            if plan is None:
+                plan=dict(exp=0,oro=0,creditos=0,skill_exp=0,skill_exp_ppm=0,items=[])
+            plan['angel_gold']=int(plan.get('angel_gold',0))+ag
+            estado='pendiente'
+            if r['clasificacion'].index(cid)==0:
+                _con_badge_de_campeon(r,m,plan)
         if plan:
             # Freeze each skill amount against its curve at result creation,
             # not against whatever level it has when retrying the delivery.
@@ -190,6 +236,19 @@ def preparar(con, r):
                 for sid,lv,_ in skills]
         con.execute('INSERT OR IGNORE INTO competiciones_premios VALUES (?,?,?,?)',
                     (r['id'], int(cid), estado, json.dumps(plan)))
+
+
+def hay_pendiente(char_id):
+    """True si ese personaje tiene algun premio de competicion por entregar (sin abrir transaccion de escritura)."""
+    import cuentas
+    with cuentas._LOCK:
+        con = cuentas._get_conn()
+        try:
+            return bool(con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='competiciones_premios'").fetchone()
+                        and con.execute("SELECT 1 FROM competiciones_premios WHERE char_id=? AND estado IN ('pendiente','sin_tabla') LIMIT 1",
+                                        (int(char_id),)).fetchone())
+        finally:
+            con.close()
 
 
 def entregar(ses, automatico=False, stage=None):

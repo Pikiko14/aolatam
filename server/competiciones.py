@@ -261,6 +261,7 @@ def iniciar(stage, minutos, registro=15, nivel=401, por='gm', inicio=None, ident
     r['holy_exp_config'] = copy.deepcopy(cfg.get('holy_exp')) if stage==112 else None
     r['holy_exp_resultado'] = copy.deepcopy(cfg.get('holy_exp_por_resultado')) if stage==112 else None
     r['arena_premio_compat'] = copy.deepcopy(cfg.get('arena_premio_compat')) if stage in ARENAS else None
+    r['arena_angel_gold'] = copy.deepcopy(cfg.get('arena_angel_gold') or {}) if stage in ARENAS else None
     __import__('competicion_premios').validar_holy_exp(r['holy_exp_config'])
     __import__('competicion_premios').validar(r['premios_config'], holy=stage == 112)
     r['premios_en_pruebas'] = bool(cfg.get('premios_en_pruebas', False))
@@ -1056,6 +1057,12 @@ def opciones(ses, opcion):
     if opcion not in joins + watches + (7751,):
         return False
     if opcion == 7751:
+        # Sin esto la entrega se cancelaba en silencio si el progreso aun no estaba guardado (app._sincronizar_personaje).
+        try:
+            if __import__('competicion_premios').hay_pendiente(ses.personaje.char_id):
+                __import__('app')._sincronizar_personaje(ses)
+        except Exception:
+            log.exception('premio de competicion: no se pudo guardar a %s antes', ses.personaje.nombre)
         cantidad = __import__('competicion_premios').entregar(ses,stage=stage)
         if cantidad:
             # Original msg.xml delivery response. Install a fresh dialogue

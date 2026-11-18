@@ -51,6 +51,13 @@
         "habilitado": true,
         "fuente": "Premios originales Lv280 como sustitucion provisional para401+, autorizada por Karma; NO tabla oficial401+"
     },
+    "arena_angel_gold": {
+        "1": 10000,
+        "2": 7000,
+        "3": 5000,
+        "resto": 100,
+        "nota": "AG de Angel Arena por puesto final, encima de los premios de tabla/compat (17/11/2026). Se congela al abrir cada ronda."
+    },
     "premios_holy": [
         {
             "nivel_min": 1,

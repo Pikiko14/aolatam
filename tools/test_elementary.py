@@ -88,15 +88,30 @@ def test_finish_persists_progress_and_teacher_gives_original_top_prize_once(worl
     saved=stored(world,s)
     assert saved['exp']==s.personaje.exp and saved['exp']>12345
     assert saved['habilidades']==[list(h) for h in s.personaje.habilidades]
-    assert not s.inventario  #Bell consumed with progress receipt
+    assert 26627 not in s.inventario.values()  #Bell consumed with progress receipt
+    # 17/11/2026: el premio del Top 30 llega con la exp, sin ir al teacher
+    assert sum(s.cantidades.get(k,1) for k,v in s.inventario.items() if v==25832)==200
+    with sqlite3.connect(world.db) as con:
+        assert con.execute('SELECT awarded,claimed FROM elementary_results').fetchone()==(1,1)
     before=copy.deepcopy(saved);q.cron();assert stored(world,s)==before
     s.personaje.stage=41;s.personaje.tile_x=132;s.personaje.tile_y=80
     request(srv,s,0x5,struct.pack('<I',56))
     assert any(struct.unpack_from('<I',p,2)[0]==8341 for p in s.packets if p[:2]==b'\x12\0' and len(p)>6)
     request(srv,s,0xb,b'\x0a')
-    assert sum(s.cantidades.get(k,1) for k,v in s.inventario.items() if v==25832)==200
-    before=copy.deepcopy(stored(world,s));q.claim(s)
-    assert stored(world,s)==before and any(b'prize delivered' in p for p in s.packets)
+    assert sum(s.cantidades.get(k,1) for k,v in s.inventario.items() if v==25832)==200   #no se da dos veces
+
+
+def test_la_recompensa_llega_aunque_la_exp_en_memoria_no_este_guardada(world):
+    """17/11/2026, "el angel elementary no da experiencia": el progreso se guarda con retraso y la comparacion
+    base/memoria rechazaba la entrega para siempre."""
+    srv,s=setup(world)
+    s.personaje.habilidades=[(1,1,0)];world.save(s)
+    r=enrol(world,srv,s)
+    request(srv,s,0x153,answer_body(r,r['questions'][0]['correct']))
+    s.personaje.exp+=777;s.personaje.habilidades=[(1,1,5)]      #mato bichos y aun no se guardo
+    antes=s.personaje.exp
+    q._finish(q.current());q.cron()
+    assert s.personaje.exp>antes and stored(world,s)['exp']==s.personaje.exp
     with sqlite3.connect(world.db) as con:
         assert con.execute('SELECT awarded,claimed FROM elementary_results').fetchone()==(1,1)
 
@@ -165,11 +180,11 @@ def test_scheduled_registration_opens_once_per_date_without_early_battle_notice(
 def test_teacher_refuses_zero_score_and_full_bag_keeps_reward_pending(world):
     srv,s=setup(world);r=enrol(world,srv,s)
     request(srv,s,0x153,answer_body(r,r['questions'][0]['correct']))
-    q._finish(q.current())
+    s.inventario.update({slot:20 for slot in range(20,app._tope_bolsa(s.inventario)+1)});world.save(s)
+    q._finish(q.current());q.cron()
+    with sqlite3.connect(world.db) as con:
+        assert con.execute('SELECT awarded,claimed FROM elementary_results').fetchone()==(1,0)   #exp si, premio no cabe
     s.personaje.stage=41;s.personaje.tile_x=132;s.personaje.tile_y=80
-    s.inventario.update({slot:20 for slot in range(20,80)});world.save(s)
-    q.claim(s)
-    with sqlite3.connect(world.db) as con:assert con.execute('SELECT claimed FROM elementary_results').fetchone()[0]==0
     s.inventario.pop(20);world.save(s);q.claim(s)
     assert sum(s.cantidades.get(k,1) for k,v in s.inventario.items() if v==25832)==200
 
