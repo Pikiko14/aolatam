@@ -68,7 +68,9 @@ ESTILOS = {3530: 'wsVisible="" lsVCenter="" lsReport="" wsTab=""'}
 NUEVAS = (
     '<window class="WND_CLASS_BUTTON" id="3590" range="4,2,36,36" icon="484" fcolor="103" font="3" tpos="0,26" '
     'tooltip="10040" tooltext="The item you are selling">',
-    '    <style wsTab="" />',
+    # Visible: sin wsVisible nunca se veia el objeto elegido ("no se ve la foto al seleccionar item", 20/11/2026);
+    # el fondo viejo tenia una casilla pintada ahi y no se notaba.
+    '    <style wsVisible="" wsTab="" />',
     '</window>',
     '<window class="WND_CLASS_STATIC" id="3591" range="46,5,186,14" title="" fcolor="103" font="1">',
     '    <style wsVisible="" ssVCenter="" />',
@@ -180,7 +182,7 @@ PESTANA_VENDER = (
 
 MANEJADORES = {
     3518: 'OnSubastaSusurrar',
-    3519: 'OnSubastaRefrescar',
+    3519: 'OnSubastaCorreo',          # el sobre escribe al vendedor (20/11/2026; la lupa 3529 ya refresca)
     3530: 'OnSubastaFila',
     3531: 'OnSubastaPagAnt',
     3533: 'OnSubastaPagSig',

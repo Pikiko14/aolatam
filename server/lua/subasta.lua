@@ -235,7 +235,7 @@ function OnADTrade_Item_BuyType(dwID, dwCmdID, dwParam, pParam)
   return 1
 end
 
--- Los dos botones de arriba (eran susurro y carta): susurrar al vendedor y refrescar.
+-- Los dos botones de arriba (susurro y carta): susurrar al vendedor y escribirle (OnSubastaCorreo). La lupa refresca.
 function OnSubastaSusurrar(dwID, dwCmdID, dwParam, pParam)
   local f = S.filas[S.sel + 1]
   if f and S.modo == TODO then
@@ -248,6 +248,36 @@ end
 
 function OnSubastaRefrescar(dwID, dwCmdID, dwParam, pParam)
   SubastaPedir()
+  return 1
+end
+
+-- El sobre: escribir al vendedor ("no me funciona el boton de correo", 20/11/2026; antes refrescaba). Hace lo mismo
+-- que un jugador, con las funciones del mail.lua del cliente: OnClickUnreadMail abre la ventana de amigos en la
+-- pestana del correo, OnWritePage(boton 3227) pasa a "Write a letter" y deja la base en WndBaseID, y ahi se rellenan
+-- el destinatario (3232) y el asunto (3236).
+function OnSubastaCorreo(dwID, dwCmdID, dwParam, pParam)
+  local f = S.filas[S.sel + 1]
+  if not (f and S.modo == TODO) then
+    estado("Pick an item in All to mail its seller.")
+    return 1
+  end
+  if OnClickUnreadMail == nil or OnWritePage == nil then
+    estado("The mail window is not available.")
+    return 1
+  end
+  OnClickUnreadMail(0, 0, 0, 0)
+  if not window.isexist(WND_FRIEND) then
+    return 1
+  end
+  local escribir = window.find(WND_FRIEND, 3227)
+  if escribir and escribir ~= 0 then
+    OnWritePage(escribir, 0, 0, 0)
+  end
+  if WndBaseID and WndBaseID ~= 0 then
+    window.settitle(window.find(WndBaseID, 3232), f[5])
+    window.settitle(window.find(WndBaseID, 3236), corto("Auction: " .. f[2], 31))
+    window.setfocus(window.find(WndBaseID, 3241))
+  end
   return 1
 end
 

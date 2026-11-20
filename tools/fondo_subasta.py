@@ -47,6 +47,10 @@ FILA_A = (21, 41, 62)
 FILA_B = (26, 50, 74)
 SEPARADOR = (44, 82, 106)
 CASILLA = (10, 20, 33)
+# Las cajas de los textos OSCUROS del cliente (los desplegables 3524 y 3527, la pagina 3532 y la cantidad 3538): en el
+# fondo original eran claras, y sobre caja oscura no se leian (captura del 20/11/2026).
+CLARA = (226, 218, 192)
+CLARA_BORDE = (150, 140, 110)
 
 LISTA_X0, LISTA_X1 = 6, 783
 CABECERA_Y0, FILAS_Y0, FILA_ALTO, N_FILAS = 41, 79, 38, 9
@@ -87,8 +91,8 @@ def dibujar() -> Image.Image:
     _caja(dib, (184, 22, 234, 36))
     dib.line((242, 6, 242, 33), fill=BORDE_SUAVE)
     # Filtros: los dos desplegables sobre caja oscura, y un separador antes de la lupa.
-    _caja(dib, (552, 13, 620, 31))
-    _caja(dib, (676, 13, 744, 31))
+    _caja(dib, (552, 13, 604, 31), relleno=CLARA, borde=CLARA_BORDE)
+    _caja(dib, (676, 13, 728, 31), relleno=CLARA, borde=CLARA_BORDE)
     dib.line((748, 6, 748, 33), fill=BORDE_SUAVE)
 
     # Cabecera de la lista, con filete dorado debajo.
@@ -109,7 +113,7 @@ def dibujar() -> Image.Image:
     dib.rectangle((LISTA_X0, FILAS_Y0, LISTA_X1, FILAS_Y0 + N_FILAS * FILA_ALTO - 1), outline=BORDE)
 
     # Pagina.
-    _caja(dib, (700, 424, 786, 442))
+    _caja(dib, (716, 425, 768, 442), relleno=CLARA, borde=CLARA_BORDE)
 
     # Barra de abajo.
     dib.rectangle((1, 444, ANCHO - 2, ALTO - 2), fill=BARRA)
@@ -118,7 +122,7 @@ def dibujar() -> Image.Image:
     _caja(dib, (466, 447, 548, 464))                              # el oro
     dib.ellipse((469, 450, 479, 460), fill=ORO, outline=(150, 110, 40))
     _caja(dib, (552, 447, 620, 464))                              # lo publicado
-    _caja(dib, (648, 447, 736, 464))                              # la cantidad
+    _caja(dib, (665, 448, 717, 464), relleno=CLARA, borde=CLARA_BORDE)   # la cantidad
     return im
 
 
