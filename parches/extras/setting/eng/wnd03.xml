@@ -2714,8 +2714,8 @@
         <style wsVisible="" lsVScroll="" lsHCenter="" wsTab="" />
         <OnCommand>OnADTrade_SelectLV</OnCommand>
     </window>
-    <icon id="3511" dir="\wnd01\" normal="w030_01" focus="normal" down="normal" disable="normal">
-        <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />
+    <icon id="3511" dir="\wnd01\" normal="aolat_subasta" focus="normal" down="normal" disable="normal">
+        <attrib ICON_ATTRIB_FAST="" />
     </icon>
     <icon id="3512" dir="\wnd01\" normal="w030_04" focus="normal" down="normal" disable="normal">
         <attrib ICON_ATTRIB_THEME="" ICON_ATTRIB_FAST="" />

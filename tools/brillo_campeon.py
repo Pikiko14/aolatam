@@ -270,10 +270,13 @@ def original(frame) -> bytes:
 # "que dure la animacion por siempre" (18/11/2026): el fuego (280) va SIN evento de cierre, asi no se retira nunca y
 # queda en bucle; el servidor lo manda una sola vez por jugador y mapa (competicion_premios.brillo_campeon), en vez
 # de relanzarlo, que es lo que lo hacia titilar.
+# Y LAS TRES SIN CIERRE (20/11/2026, "el vps me desconecta del juego a cada rato"): con el fuego en bucle y las otras
+# dos capas con @SP_EVENT_ACT_REMOVE, el cliente se cerraba sin volcado a los 6-17 s de entrar (sospecha: al retirar
+# esas capas libera el efecto entero mientras el fuego sigue). Con las tres en bucle (0.0.0.196) no habia cierres.
 SPRITES_M02 = {
-    279: 'Sprite = Wait, #16, s082011, s082021, s082031, @SP_EVENT_ACT_REMOVE, SCROVER',
+    279: 'Sprite = Wait, #16, s082011, s082021, s082031, SCROVER',
     280: 'Sprite = Wait, #8, s083011, s083021, s083031, s083041, s083051, s083061, SCROVER',
-    328: 'Sprite = Wait, #16, s188011, s188021, s188031, @SP_EVENT_ACT_REMOVE, SCROVER',
+    328: 'Sprite = Wait, #16, s188011, s188021, s188031, SCROVER',
 }
 # La capa 279 (el angel original) se dibujaba sin sumar luz: con fuego, opaco. Se le pone la de las otras dos.
 FLAGS_M02 = {279: 'Flags = SP_ATTRIB_WHITELIGHT'}

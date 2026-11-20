@@ -159,6 +159,7 @@ TORRE = (
     '</window>',
 )
 
+FONDO = 'aolat_subasta'          # shape/wnd01/aolat_subasta.shp, de tools/fondo_subasta.py
 ICONO_PESTANA_ELEGIDA = 59030
 ICONO_PESTANA = (
     r'<icon id="%d" dir="\log\" normal="btn140_d" focus="normal" down="normal" disable="normal">' % ICONO_PESTANA_ELEGIDA,
@@ -258,6 +259,15 @@ def generar(texto: str) -> str:
     if '<icon id="%d"' % ICONO_PESTANA_ELEGIDA not in salida:
         m = re.search(r'[ \t]*<window [^>]*\bid="3501"[^>]*>[\s\S]*?</window>', salida)
         salida = salida[:m.end()] + ''.join(nl + sangria + linea for linea in ICONO_PESTANA) + salida[m.end():]
+    # EL FONDO PROPIO (20/11/2026, "una propia pestana para la subasta que se vea armoniosa"): el icono 3511 era la
+    # rejilla de IGG (w030_01), de tema y con casillas que no casan con la lista; ahora el de tools/fondo_subasta.py,
+    # sin ICON_ATTRIB_THEME para que el cliente no lo tina.
+    salida, n = re.subn(r'(<icon id="3511" dir="\\wnd01\\" normal=")w030_01("[^>]*>)\s*<attrib ICON_ATTRIB_THEME="" '
+                        r'ICON_ATTRIB_FAST="" />',
+                        lambda m4: m4.group(1) + FONDO + m4.group(2) + nl + sangria + '    <attrib ICON_ATTRIB_FAST="" />',
+                        salida, count=1)
+    if n != 1:
+        raise SystemExit('no esta el icono 3511 (w030_01) en wnd03.xml')
     faltan = ids - hechos
     if faltan:
         raise SystemExit('no se encontraron en wnd03.xml: %s' % sorted(faltan))

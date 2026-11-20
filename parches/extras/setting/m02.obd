@@ -1033,7 +1033,7 @@ Space = 0, 0, 0
 Flags = SP_ATTRIB_WHITELIGHT
 Process = SP_CLASS_EFFECT
 Directory = \magic\025\
-Sprite = Wait, #16, s082011, s082021, s082031, @SP_EVENT_ACT_REMOVE, SCROVER
+Sprite = Wait, #16, s082011, s082021, s082031, SCROVER
 
 
 [OBJECT]
@@ -1416,7 +1416,7 @@ Space = 0, 0, 0
 Flags = SP_ATTRIB_WHITELIGHT
 Process = SP_CLASS_EFFECT
 Directory = \magic\025\
-Sprite = Wait, #16, s188011, s188021, s188031, @SP_EVENT_ACT_REMOVE, SCROVER
+Sprite = Wait, #16, s188011, s188021, s188031, SCROVER
 
 
 [OBJECT]

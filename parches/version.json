@@ -1,10 +1,10 @@
 {
- "version": "0.0.0.202",
- "numero": 202,
- "huella": "4ee466feaffa0f2093b3fa15f416832d01ef944362daf403765dadfcc1fd76d1",
+ "version": "0.0.0.204",
+ "numero": 204,
+ "huella": "f69013824863b15fdcc531d4f2801d6dd1345bc738e1fc29e5e8266fd5fb9830",
  "pak": "update27.pak",
- "bytes": 31178219,
- "sha256": "ffd82c55248f429c4acb93dbb624dc8c94d767818627eaffb229f1ad6e811c80",
+ "bytes": 31184259,
+ "sha256": "f5014de2c6d50fbd0da4778dd3e058860d008f3388e1c43f8e8114d004e0a16a",
  "archivos": [
   "AGREEMENT.TXT",
   "MAP\\MAP002.MPC",
@@ -2164,6 +2164,7 @@
   "SHAPE\\WND01\\AOLAT_ROL_DANO.SHP",
   "SHAPE\\WND01\\AOLAT_ROL_SANADOR.SHP",
   "SHAPE\\WND01\\AOLAT_ROL_TANQUE.SHP",
+  "SHAPE\\WND01\\AOLAT_SUBASTA.SHP",
   "SHAPE\\WND01\\AOLAT_SYS_AOF.SHP",
   "SHAPE\\WND01\\AOLAT_TB_F.SHP",
   "SHAPE\\WND01\\AOLAT_TB_N.SHP",
@@ -2281,5 +2282,5 @@
   "SHAPE\\WND01\\W006_08.SHP",
   "SHAPE\\WND01\\W006_09.SHP"
  ],
- "generado": "2026-11-18 10:47:16"
+ "generado": "2026-11-20 11:21:58"
 }
