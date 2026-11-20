@@ -1,5 +1,10 @@
 [
   {
+    "fecha": "2026-11-20",
+    "titulo": "Game closing fix and new Auction House look",
+    "texto": "Fixed the game closing by itself a few seconds after logging in when the Angel Arena champion aura was on screen. The Auction House window has a brand new design. Update with AngelsLauncher."
+  },
+  {
     "fecha": "2026-11-18",
     "titulo": "Champion aura",
     "texto": "The Angel Arena champion now shines: while wearing the No. 1 badge, a golden fire aura surrounds the character, visible to everyone on the map. Update with AngelsLauncher to see it."
