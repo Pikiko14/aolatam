@@ -1,5 +1,10 @@
 [
   {
+    "fecha": "2026-11-21",
+    "titulo": "Auction House tidy-up",
+    "texto": "The hint text at the bottom of the Auction House no longer covers the Sell tab. Update with AngelsLauncher."
+  },
+  {
     "fecha": "2026-11-20",
     "titulo": "Auction House fixes",
     "texto": "The item you are selling now shows its picture in the Sell tab, the filter, page and quantity boxes are easier to read, and the mail button now opens a new letter to the seller of the selected item. Update with AngelsLauncher."
