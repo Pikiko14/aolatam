@@ -37,7 +37,7 @@ ATRIBUTOS = {
     # sean del color configurado en el cliente" (02/11/2026). Las 3084/3085 de antes eran naranja y gris fijos.
     3502: {'title': 'All', 'range': '9,442,32,17', 'icon': str(2734)},
     3503: {'title': 'Mine', 'range': '47,442,32,17', 'icon': str(2734)},
-    3517: {'title': 'Pick an item and press the check to buy it.', 'range': '88,449,370,14'},
+    3517: {'title': 'Pick an item and press the check to buy it.', 'range': '128,449,330,14'},
     3522: {'title': 'New'},
     3542: {'title': 'Cheap'},
     3523: {'title': 'Category'},

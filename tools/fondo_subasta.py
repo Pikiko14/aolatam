@@ -118,7 +118,7 @@ def dibujar() -> Image.Image:
     # Barra de abajo.
     dib.rectangle((1, 444, ANCHO - 2, ALTO - 2), fill=BARRA)
     dib.line((1, 444, ANCHO - 2, 444), fill=BORDE)
-    _caja(dib, (86, 447, 460, 464), relleno=(14, 34, 50))          # el aviso
+    _caja(dib, (124, 447, 460, 464), relleno=(14, 34, 50))         # el aviso (tras las pestanas, que llegan a x=118)
     _caja(dib, (466, 447, 548, 464))                              # el oro
     dib.ellipse((469, 450, 479, 460), fill=ORO, outline=(150, 110, 40))
     _caja(dib, (552, 447, 620, 464))                              # lo publicado

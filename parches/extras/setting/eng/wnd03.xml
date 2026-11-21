@@ -2460,7 +2460,7 @@
         <style ssVCenter="" />
         <!-- 座標 -->
     </window>
-    <window class="WND_CLASS_STATIC" id="3517" range="88,449,370,14" title="Pick an item and press the check to buy it." fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="3517" range="128,449,330,14" title="Pick an item and press the check to buy it." fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" />
         <!-- 座標 -->
     </window>

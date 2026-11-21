@@ -68,7 +68,7 @@ local function pintar_pestanas()
     estado("Pick one and press the check to take it back.")
   elseif S.venta then
     rotulo(S.venta.nombre)
-    estado("Write the price and Qty. up here, then the check.")
+    estado("Set the price and Qty. above, then the check.")
   else
     rotulo("Pick an item below")
     estado("Pick the item you want to sell.")
