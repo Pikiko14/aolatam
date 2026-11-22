@@ -1,0 +1,81 @@
+{
+  "_comentario": "Pet Defense (server/pet_defense.py y pet_defense_partida.py). Se relee al cambiar: se puede ajustar sin reiniciar (lo nuevo vale desde la partida siguiente). TORRES: alcance en casillas, cadencia en segundos entre golpes, ataque es la base de Monstruo.recibir (x0,4 como el golpe basico de la mascota), area = casillas alrededor del objetivo que tambien reciben, ralentiza = segundos a media velocidad, objetivos = a cuantos pega a la vez, essence_por_oleada = Essence extra (x nivel) al acabar cada oleada, coste en Essence, sprites = la mascota de cada fase (evoluciona al mejorar; los retratos de las ventanas salen de ellas, tools/ventana_pet_defense.py: al cambiar de mascota hay que volver a correrlo y sacar el parche). Vender devuelve venta_reembolso de lo gastado en ella. Mejorar al nivel N cuesta coste x N (N = 2, 3...) y da ataque x mejora_ataque y +mejora_alcance casillas por nivel. ENEMIGOS: npc_type de monster.xml (solo el aspecto), y su vida, defensas, velocidad (la del 0x0005), Essence al morir y vida que le quitan al cristal al llegar. OLEADAS: [tipo, cuantos]; la vida de cada enemigo crece un hp_por_oleada por oleada.",
+  "torres": {
+    "lobo":     {"nombre": "Wolf",        "rol": "Fast bites, short",  "sprites": [3003, 3004, 3008], "alcance": 3, "cadencia": 0.6, "ataque": 170, "magico": false, "coste": 50},
+    "guardian": {"nombre": "Earth Guard", "rol": "Steady hits",        "sprites": [3074, 3076, 3080], "alcance": 5, "cadencia": 1.2, "ataque": 250, "magico": false, "coste": 60},
+    "bebe":     {"nombre": "Honey Baby",  "rol": "+Essence each wave", "sprites": [3122, 3124, 3128], "alcance": 4, "cadencia": 1.5, "ataque": 80,  "magico": false, "essence_por_oleada": 15, "coste": 70},
+    "arquero":  {"nombre": "Wind Archer", "rol": "Fast, long range",   "sprites": [3062, 3064, 3068], "alcance": 8, "cadencia": 0.8, "ataque": 150, "magico": false, "coste": 80},
+    "oso":      {"nombre": "Bear",        "rol": "Heavy, short range", "sprites": [3014, 3016, 3020], "alcance": 3, "cadencia": 1.6, "ataque": 520, "magico": false, "coste": 90},
+    "escarcha": {"nombre": "Frost Diver", "rol": "Slows enemies",      "sprites": [3038, 3040, 3044], "alcance": 6, "cadencia": 1.5, "ataque": 120, "magico": true, "ralentiza": 2.5, "coste": 90},
+    "flor":     {"nombre": "Flower Fairy","rol": "Hits 2 at once",     "sprites": [3026, 3028, 3033], "alcance": 6, "cadencia": 1.4, "ataque": 180, "magico": true, "objetivos": 2, "coste": 100},
+    "elfo":     {"nombre": "Elf Queen",   "rol": "Magic sniper",       "sprites": [3086, 3088, 3092], "alcance": 9, "cadencia": 1.3, "ataque": 260, "magico": true, "coste": 110},
+    "fuego":    {"nombre": "Fire Bomber", "rol": "Magic splash",       "sprites": [3050, 3054, 3056], "alcance": 6, "cadencia": 2.0, "ataque": 400, "magico": true, "area": 2, "coste": 120},
+    "espada":   {"nombre": "Holy Blades", "rol": "Hits 3 at once",     "sprites": [3110, 3112, 3116], "alcance": 5, "cadencia": 1.1, "ataque": 200, "magico": false, "objetivos": 3, "coste": 150},
+    "dragon":   {"nombre": "Dragon",      "rol": "Big magic splash",   "sprites": [3098, 3100, 3105], "alcance": 7, "cadencia": 2.2, "ataque": 700, "magico": true, "area": 2, "coste": 220}
+  },
+  "torre_por_defecto": "guardian",
+  "max_torres_por_jugador": 16,
+  "venta_reembolso": 0.5,
+  "mejora_ataque": 1.5,
+  "mejora_alcance": 1,
+  "multiplicador_ataque": 7,
+  "dano_por_nivel": [500, 700, 1200],
+  "_dano_por_nivel": "El dano de cada golpe de la mascota MAS BARATA de nivel 1, 2 y 3, sin defensa del enemigo; las demas pegan eso x su coste / coste_referencia (el coste mas bajo si no se pone): el que cuesta mas pega mas. Los poderes, x mult_poder. Con esto el ataque de cada torre y multiplicador_ataque no cuentan; si se quita dano_por_nivel, vuelven (21/11/2026).",
+  "radio_movimiento": 3,
+  "velocidad_torres": 60,
+  "prob_poder": 0.5,
+  "mult_poder": 1.5,
+  "_movimiento_y_poderes": "Cada mascota se mueve como mucho radio_movimiento casillas de su piedra para acercarse al enemigo y vuelve sin enemigos; con prob_poder lanza uno de sus poderes de ataque o maldicion (los de su especie y fase) que pega mult_poder veces el golpe basico (21/11/2026).",
+  "_multiplicador_ataque": "Las torres contra enemigos de nivel 60: el ataque de cada una x esto. Con poderes y movimiento, el jugador simulado (construye y mejora solo, sin pelear) gana con 7 dejando 20 de 30 de cristal; con 6, 5 de 30; con 8, 29 de 30 (21/11/2026).",
+  "nivel_maximo": 3,
+
+  "mapa": {
+    "stage": 917,
+    "nombre": "Pet Defense",
+    "portal": [143, 52],
+    "cristal": [14, 27],
+    "llegada": [11, 27],
+    "npc_cristal": 6881,
+    "objeto_cristal": 60368,
+    "npc_espacio": 7967,
+    "separacion_espacios": 15,
+    "distancia_espacio": 3,
+    "salida": [41, [173, 91]]
+  },
+
+  "partida": {
+    "vida_cristal": 30,
+    "essence_inicial": 600,
+    "pausa_inicial": 20,
+    "pausa_entre_oleadas": 12,
+    "separacion_enemigos": 1.0,
+    "casillas_por_paso": 3,
+    "hp_por_oleada": 0.12
+  },
+
+  "_enemigos": "La vida va x2,8 sobre la de nivel 60 desde que las mascotas pegan un dano fijo sin defensa (dano_por_nivel): asi el jugador simulado gana dejando 21 de 30 de cristal (21/11/2026). Stats de nivel 60 del juego base: los mobs de nivel 55-65 de los mapas de siempre tienen 2.000-4.500 de vida, ~620 de defensa y ~250 de defensa magica; los blindados (Dark Elite) ~1.500 de defensa; el jefe de nivel 60 de la Torre de Babel (Cat Lord) 25.949 de vida, 633 y 419. npc_types: los aspectos, de monster.xml, de mapas de antes de las expansiones nuevas; cada mob sale con uno al azar de su lista y el jefe de cada oleada es el de su numero (jefe 1 en la oleada 1...), jefes base de la Torre de Babel.",
+  "enemigos": {
+    "normal":   {"npc_types": [193, 199, 203, 804, 1175, 1176, 204, 822, 1177, 1178, 205, 206, 814, 899, 1179, 894, 901, 902, 1183, 903, 953, 951, 1185, 900, 952, 825, 3571, 805, 1180, 891, 3572],
+                 "hp": 8400, "defensa": 620, "mdef": 250, "velocidad": 45, "essence": 15, "dano_cristal": 1},
+    "rapido":   {"npc_types": [840, 841, 843, 847, 895, 848, 912],
+                 "hp": 5600, "defensa": 450, "mdef": 220, "velocidad": 85, "essence": 15, "dano_cristal": 1},
+    "blindado": {"npc_types": [897, 898, 832, 835, 1181, 893, 887],
+                 "hp": 12600, "defensa": 1500, "mdef": 280, "velocidad": 35, "essence": 22, "dano_cristal": 2},
+    "jefe":     {"npc_types": [89, 116, 36, 40, 41, 74, 165, 47, 201, 4088],
+                 "hp": 72800, "defensa": 633, "mdef": 419, "velocidad": 28, "essence": 200, "dano_cristal": 3}
+  },
+  "jefe_cada_oleada": true,
+
+  "oleadas": [
+    {"enemigos": [["normal", 14]]},
+    {"enemigos": [["normal", 16], ["rapido", 4]]},
+    {"enemigos": [["normal", 14], ["rapido", 8]]},
+    {"enemigos": [["normal", 18], ["blindado", 4]]},
+    {"enemigos": [["normal", 14], ["blindado", 8], ["rapido", 4]]},
+    {"enemigos": [["rapido", 20], ["normal", 8]]},
+    {"enemigos": [["normal", 18], ["blindado", 8], ["rapido", 6]]},
+    {"enemigos": [["blindado", 16], ["normal", 12]]},
+    {"enemigos": [["rapido", 14], ["blindado", 12], ["normal", 12]]},
+    {"enemigos": [["normal", 20], ["blindado", 12], ["rapido", 10]]}
+  ]
+}

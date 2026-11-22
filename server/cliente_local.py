@@ -688,27 +688,30 @@ def _parchear_equipo_ligado_vendible_xml_bytes(xml_bytes: bytes) -> bytes:
 
 
 def _parchear_venta_por_nivel_xml_bytes(xml_bytes: bytes) -> bytes:
-    """El 收購價格 (lo que el cliente enseña que paga la tienda) del equipo de nivel 1..60 que se vende por nivel
-    (venta_nivel.py: 100 a 6.000). Sin el, la tienda seguia enseñando el precio viejo aunque el servidor pagara el
-    nuevo ("no funciona lo de vender gear de lvl 1 a 60 en 100 a 6k gold", 05/11/2026). Solo sube, nunca baja."""
+    """El 收購價格 (lo que el cliente enseña que paga la tienda) de lo que se vende a precio fijo (venta_nivel.fijo: todo
+    lo que no se compra en tiendas ni en el Item Mall, 100 de oro desde el 21/11/2026). Sin el, la tienda seguia
+    enseñando el precio viejo aunque el servidor pagara el nuevo ("no funciona lo de vender gear...", 05/11/2026).
+
+    Solo toca lo que el cliente ya deja vender (lo que trae 收購價格) y el equipo de nivel 1..60 sin el, que se vende
+    desde el 05/11/2026 (venta_nivel.precio); lo demas (objetos de mision, etc.) sigue sin poder venderse."""
     import venta_nivel
     txt = xml_bytes.decode('utf-8', errors='ignore')
     cambio = [False]
+    nuevo = venta_nivel.PRECIO_FIJO
 
     def _parchear(m):
         tag = m.group(0)
         id_m = re.search(r'編號="(\d+)"', tag)
-        if not id_m:
-            return tag
-        nuevo = venta_nivel.precio(int(id_m.group(1)))
-        if nuevo <= 0:
+        if not id_m or not venta_nivel.fijo(int(id_m.group(1))):
             return tag
         actual = re.search(r'收購價格="(\d+)"', tag)
         if actual:
-            if int(actual.group(1)) >= nuevo:
+            if int(actual.group(1)) == nuevo:
                 return tag
             cambio[0] = True
             return tag[:actual.start(1)] + str(nuevo) + tag[actual.end(1):]
+        if venta_nivel.precio(int(id_m.group(1))) <= 0:
+            return tag
         cambio[0] = True
         return tag[:-2].rstrip() + f' 收購價格="{nuevo}" />'
 

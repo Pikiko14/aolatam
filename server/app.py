@@ -611,27 +611,36 @@ def _unidades_por_compra(item_id: int) -> int:
 
 
 def _precio_venta(item_id: int) -> int:
-    """Lo que paga la tienda por ese item.
+    """Lo que paga la tienda por ese item (por unidad, salvo lo de PRECIO_FIJO, que es por casilla).
 
-    Sale de la columna 收購價格, que es distinta del precio de lista: la Red
-    Potion 1 vale 40 de lista y 12 de venta, y son justo los numeros de la
-    captura (once pociones dieron 132 de oro). El equipo no suele traerla,
-    y para ese se usa la mitad del precio de lista.
+    Desde el 21/11/2026 ("que todo lo que los npc compren valga 100 gold"): lo que NO se compra en tiendas NPC ni en el
+    Item Mall se paga a venta_nivel.PRECIO_FIJO (100) por casilla, sea cual sea su nivel o la cantidad apilada. Lo que se
+    compra se queda con su precio de siempre, que es menor que el de compra, para que revender no de oro infinito.
+
+    Ese precio de siempre sale de la columna 收購價格, que es distinta del precio de lista: la Red Potion 1 vale 40 de
+    lista y 12 de venta, y son justo los numeros de la captura (once pociones dieron 132 de oro). El equipo no suele
+    traerla, y para ese se usa la mitad del precio de lista.
     """
+    import venta_nivel
+    if venta_nivel.fijo(item_id):
+        return venta_nivel.PRECIO_FIJO
     lista, venta = _cargar_precios().get(int(item_id or 0), (0, 0))
     if venta > 0:
-        base = venta
-    elif lista > 0:
-        base = max(1, lista // 2)
-    else:
-        base = 1
-    return max(base, _venta_por_nivel(item_id))
+        return venta
+    if lista > 0:
+        return max(1, lista // 2)
+    return 1
 
 
-# El equipo de nivel 1 a 60 se vende por 100 a 6.000 de oro segun su nivel: ver venta_nivel.py.
-def _venta_por_nivel(item_id) -> int:
+def _ganancia_venta(item_id: int, cantidad: int) -> int:
+    """El oro por vender `cantidad` de ese item juntas (una casilla): lo de precio fijo paga 100 por casilla; lo demas
+    por unidad, y la municion por paquete (ver _unidades_por_compra: sin eso 1000 flechas compradas por 14 se vendian por
+    4000)."""
     import venta_nivel
-    return venta_nivel.precio(item_id)
+    precio = _precio_venta(item_id)
+    if venta_nivel.fijo(item_id):
+        return precio
+    return precio * cantidad // _unidades_por_compra(item_id)
 
 
 # La mochila del personaje (04/11/2026, "en la mochila principal tengamos 50 espacios, osea el alt b 50"):
@@ -1870,7 +1879,7 @@ def _vm_paquete(ses):
     filas, total = [], 0
     for i, (r, it) in enumerate(vm['filas']):
         marcada = i not in vm['fuera']
-        precio = _precio_venta(it) * _cant_de(ses, r) // _unidades_por_compra(it)
+        precio = _ganancia_venta(it, _cant_de(ses, r))
         if marcada:
             total += precio
         filas.append([1 if marcada else 0, _nombre_item(it) + (' *' if r in mejoras else ''), precio, _icono_item(it)])
@@ -1947,7 +1956,7 @@ def _venta_masiva(ses, addr, cuerpo) -> bool:
             vendidas = _sacar(ses, r, _cant_de(ses, r))
             if not vendidas:
                 continue
-            oro += _precio_venta(it) * vendidas // _unidades_por_compra(it)
+            oro += _ganancia_venta(it, vendidas)
             tocadas.append(r)
             log.info(f"[{addr}] bulk sell: {it} x{vendidas} de la casilla {r}")
         if tocadas:
@@ -4002,6 +4011,9 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
     objetivo = m.entity_id
     yo_muerte = yo
     if __import__('league_war').monster_dead(ses,m):
+        return
+    # Pet Defense: su Essence y fuera, sin EXP, botin ni reaparicion (pet_defense_partida.py)
+    if getattr(m, 'pet_defense', False) and __import__('pet_defense_partida').al_morir(ses, m):
         return
     # Santa Clausula (evento de Navidad): botin a todos los que le pegaron, antes de que se reparta y se vacie dano_por.
     if getattr(m, 'npc_type', 0) == 23901:
@@ -13852,6 +13864,10 @@ class Servidor:
             except Exception:
                 log.exception('Torre de Babel: al entrar')
             try:
+                __import__('pet_defense_partida').al_entrar(ses, addr)
+            except Exception:
+                log.exception('Pet Defense: al entrar')
+            try:
                 __import__('raid').al_entrar(ses, addr)
             except Exception:
                 log.exception('raid: al entrar')
@@ -14283,6 +14299,8 @@ class Servidor:
                                 continue
                             if getattr(m, 'es_estructura_hb', False):
                                 continue  # Holy buildings never use ordinary monster AI.
+                            if getattr(m, 'pet_defense', False):
+                                continue  # Pet Defense: los lleva pet_defense_partida por el camino, sin pelear.
                             if not getattr(m, 'vivo', True):
                                 continue
                             if _ajenos_ia and (getattr(m, 'en_combate_con', None) in _ajenos_ia
@@ -18271,6 +18289,10 @@ class Servidor:
             except Exception:
                 log.exception('Torre de Babel: al entrar')
             try:
+                __import__('pet_defense_partida').al_entrar(ses, addr)
+            except Exception:
+                log.exception('Pet Defense: al entrar')
+            try:
                 __import__('raid').al_entrar(ses, addr)
             except Exception:
                 log.exception('raid: al entrar')
@@ -18601,9 +18623,7 @@ class Servidor:
                 vendidas = _sacar(ses, ranura, cant)
                 if not vendidas:
                     continue
-                # La municion se paga por paquete (ver _unidades_por_compra): sin
-                # esto 1000 flechas compradas por 14 se vendian por 4000.
-                ganancia = _precio_venta(it_id) * vendidas // _unidades_por_compra(it_id)
+                ganancia = _ganancia_venta(it_id, vendidas)
                 oro_ganado += ganancia
                 tocadas.append(ranura)
                 log.info(f"[{addr}] vendio {it_id} x{vendidas} de la casilla "
@@ -19095,6 +19115,8 @@ class Servidor:
             if __import__('arbol_mascotas').procesar(ses, cuerpo, addr):  # el arbol de evolucion de la mascota (170)
                 return
             if __import__('mall_nuevo').procesar(ses, cuerpo, addr):    # el Item Mall nuevo (173)
+                return
+            if __import__('pet_defense_ui').procesar(ses, cuerpo, addr):  # Pet Defense (174)
                 return
             if __import__('item_mall').procesar(ses,opcode,cuerpo):
                 return
@@ -22509,6 +22531,9 @@ class Servidor:
 
 
             if ses.personaje and __import__('nightmare_cave').pulsar(ses, ent, addr):
+                return
+            # Pet Defense: las piedras de los espacios (construir / mejorar torre) y el cristal
+            if ses.personaje and __import__('pet_defense_partida').pulsar(ses, ent, addr):
                 return
 
             # Los dialogos del tutorial van por entity_id (19 Raphael, 20

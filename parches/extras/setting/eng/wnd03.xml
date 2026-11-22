@@ -10248,4 +10248,493 @@
     <icon id="59267" dir="\wnd01\" normal="aolat_torre_unirse_n" focus="aolat_torre_unirse_f" down="aolat_torre_unirse_s" disable="normal" />
     <icon id="59268" dir="\wnd01\" normal="aolat_torre_salir_n" focus="aolat_torre_salir_f" down="aolat_torre_salir_s" disable="normal" />
     <!-- /aolat torre ventana -->
+    <!-- aolat pet defense -->
+    <color id="59780" normal="110,231,183" focus="110,231,183" down="110,231,183" disable="110,231,183"/>
+    <color id="59781" normal="148,163,184" focus="148,163,184" down="148,163,184" disable="148,163,184"/>
+    <color id="59782" normal="251,211,104" focus="251,211,104" down="251,211,104" disable="251,211,104"/>
+    <color id="59783" normal="248,113,113" focus="248,113,113" down="248,113,113" disable="248,113,113"/>
+    <window class="WND_CLASS_DLG_1" range="0,0,440,364" id="59280" title="Pet Defense" fcolor="104" font="1">
+        <style wsVisible="" wsMoveable="" />
+        <child>59284</child>
+        <child>59281</child>
+        <child>59298</child>
+        <child>59310</child>
+        <child>59299</child>
+        <child>59311</child>
+        <child>59300</child>
+        <child>59312</child>
+        <child>59301</child>
+        <child>59313</child>
+        <child>59302</child>
+        <child>59314</child>
+        <child>59303</child>
+        <child>59315</child>
+        <child>59304</child>
+        <child>59316</child>
+        <child>59305</child>
+        <child>59317</child>
+        <child>59306</child>
+        <child>59318</child>
+        <child>59307</child>
+        <child>59319</child>
+        <child>59308</child>
+        <child>59320</child>
+        <child>59309</child>
+        <child>59321</child>
+        <child>59282</child>
+        <child>59283</child>
+        <child>59286</child>
+        <child>59287</child>
+        <child>59288</child>
+        <child>59289</child>
+        <child>59290</child>
+        <child>59291</child>
+        <child>59292</child>
+        <child>59293</child>
+        <child>59294</child>
+        <child>59295</child>
+        <child>59296</child>
+        <child>59297</child>
+        <child>59285</child>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59284" range="314,306,110,26" title="" icon="59708" tooltip="10040" tooltext="Start a Pet Defense game">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDEmpezar</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="59281" range="14,44,260,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59298" range="10,140,62,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59310" range="10,155,62,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59299" range="80,140,62,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59311" range="80,155,62,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59300" range="150,140,62,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59312" range="150,155,62,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59301" range="220,140,62,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59313" range="220,155,62,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59302" range="290,140,62,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59314" range="290,155,62,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59303" range="360,140,62,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59315" range="360,155,62,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59304" range="10,240,62,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59316" range="10,255,62,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59305" range="80,240,62,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59317" range="80,255,62,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59306" range="150,240,62,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59318" range="150,255,62,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59307" range="220,240,62,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59319" range="220,255,62,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59308" range="290,240,62,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59320" range="290,255,62,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59309" range="360,240,62,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59321" range="360,255,62,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59282" range="10,278,412,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59283" range="10,312,296,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59286" range="8,76,66,96" title="" icon="59716">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDCarta1</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59287" range="78,76,66,96" title="" icon="59717">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDCarta2</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59288" range="148,76,66,96" title="" icon="59718">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDCarta3</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59289" range="218,76,66,96" title="" icon="59719">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDCarta4</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59290" range="288,76,66,96" title="" icon="59720">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDCarta5</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59291" range="358,76,66,96" title="" icon="59721">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDCarta6</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59292" range="8,176,66,96" title="" icon="59722">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDCarta7</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59293" range="78,176,66,96" title="" icon="59723">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDCarta8</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59294" range="148,176,66,96" title="" icon="59724">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDCarta9</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59295" range="218,176,66,96" title="" icon="59725">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDCarta10</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59296" range="288,176,66,96" title="" icon="59726">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDCarta11</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59297" range="358,176,66,96" title="" icon="59727">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDCarta12</OnCommand>
+    </window>
+    <window class="WND_CLASS_BASE" id="59285" range="0,0,432,340" icon="59701">
+        <style wsVisible="" />
+    </window>
+    <window class="WND_CLASS_DLG_1" range="0,0,440,286" id="59350" title="Choose a pet" fcolor="104" font="1">
+        <style wsVisible="" wsMoveable="" />
+        <child>59351</child>
+        <child>59366</child>
+        <child>59367</child>
+        <child>59368</child>
+        <child>59369</child>
+        <child>59370</child>
+        <child>59371</child>
+        <child>59372</child>
+        <child>59373</child>
+        <child>59374</child>
+        <child>59375</child>
+        <child>59376</child>
+        <child>59377</child>
+        <child>59352</child>
+        <child>59354</child>
+        <child>59355</child>
+        <child>59356</child>
+        <child>59357</child>
+        <child>59358</child>
+        <child>59359</child>
+        <child>59360</child>
+        <child>59361</child>
+        <child>59362</child>
+        <child>59363</child>
+        <child>59364</child>
+        <child>59365</child>
+        <child>59353</child>
+    </window>
+    <window class="WND_CLASS_STATIC" id="59351" range="10,4,412,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59366" range="10,113,62,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59367" range="80,113,62,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59368" range="150,113,62,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59369" range="220,113,62,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59370" range="290,113,62,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59371" range="360,113,62,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59372" range="10,219,62,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59373" range="80,219,62,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59374" range="150,219,62,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59375" range="220,219,62,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59376" range="290,219,62,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59377" range="360,219,62,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59352" range="10,242,412,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59354" range="8,26,66,84" title="" icon="59728">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDOpcion1</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59355" range="78,26,66,84" title="" icon="59729">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDOpcion2</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59356" range="148,26,66,84" title="" icon="59730">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDOpcion3</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59357" range="218,26,66,84" title="" icon="59731">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDOpcion4</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59358" range="288,26,66,84" title="" icon="59732">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDOpcion5</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59359" range="358,26,66,84" title="" icon="59733">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDOpcion6</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59360" range="8,132,66,84" title="" icon="59734">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDOpcion7</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59361" range="78,132,66,84" title="" icon="59735">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDOpcion8</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59362" range="148,132,66,84" title="" icon="59736">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDOpcion9</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59363" range="218,132,66,84" title="" icon="59737">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDOpcion10</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59364" range="288,132,66,84" title="" icon="59738">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDOpcion11</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59365" range="358,132,66,84" title="" icon="59739">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDOpcion12</OnCommand>
+    </window>
+    <window class="WND_CLASS_BASE" id="59353" range="0,0,432,262" icon="59706">
+        <style wsVisible="" />
+    </window>
+    <window class="WND_CLASS_DLG_1" range="0,0,288,174" id="59380" title="Tower" fcolor="104" font="1">
+        <style wsVisible="" wsMoveable="" />
+        <child>59386</child>
+        <child>59387</child>
+        <child>59382</child>
+        <child>59383</child>
+        <child>59384</child>
+        <child>59385</child>
+        <child>59388</child>
+        <child>59381</child>
+        <child>59389</child>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59386" range="8,116,128,26" title="" icon="59713">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDMejorar</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59387" range="144,116,128,26" title="" icon="59714">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDVender</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="59382" range="96,10,176,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59383" range="96,28,176,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59384" range="96,46,176,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59385" range="96,64,176,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59388" range="8,96,264,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59381" range="8,8,80,80" title="" icon="59740">
+        <style wsVisible="" />
+    </window>
+    <window class="WND_CLASS_BASE" id="59389" range="0,0,280,150" icon="59707">
+        <style wsVisible="" />
+    </window>
+    <window class="WND_CLASS_DLG_1" range="0,0,408,76" id="59330" title="Pet Defense" fcolor="104" font="1">
+        <style wsVisible="" wsMoveable="" />
+        <child>59335</child>
+        <child>59336</child>
+        <child>59331</child>
+        <child>59332</child>
+        <child>59333</child>
+        <child>59334</child>
+        <child>59337</child>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59335" range="240,28,156,20" title="" icon="59709" tooltip="10040" tooltext="Skip the pause and send the next wave">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDSiguiente</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59336" range="340,4,56,20" title="" icon="59710" tooltip="10040" tooltext="Give up and leave">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDSalir</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="59331" range="28,7,96,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59332" range="156,7,76,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59333" range="264,7,68,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59334" range="8,31,226,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BASE" id="59337" range="0,0,400,52" icon="59702">
+        <style wsVisible="" />
+    </window>
+    <window class="WND_CLASS_DLG_1" range="0,0,308,220" id="59340" title="Pet Defense" fcolor="104" font="1">
+        <style wsVisible="" wsMoveable="" />
+        <child>59346</child>
+        <child>59347</child>
+        <child>59342</child>
+        <child>59343</child>
+        <child>59344</child>
+        <child>59345</child>
+        <child>59341</child>
+        <child>59348</child>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59346" range="30,162,110,26" title="" icon="59711" tooltip="10040" tooltext="Play again">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDOtra</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59347" range="160,162,110,26" title="" icon="59712" tooltip="10040" tooltext="Back to town">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDSalirFin</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="59342" range="16,78,268,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59343" range="16,96,268,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59344" range="16,114,268,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="59345" range="16,132,268,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59341" range="4,4,292,60" title="" icon="59704">
+        <style wsVisible="" />
+    </window>
+    <window class="WND_CLASS_BASE" id="59348" range="0,0,300,196" icon="59703">
+        <style wsVisible="" />
+    </window>
+    <icon id="59701" dir="\wnd01\" normal="aolat_pd_menu" focus="normal" down="normal" disable="normal" />
+    <icon id="59702" dir="\wnd01\" normal="aolat_pd_hud" focus="normal" down="normal" disable="normal" />
+    <icon id="59703" dir="\wnd01\" normal="aolat_pd_fin" focus="normal" down="normal" disable="normal" />
+    <icon id="59706" dir="\wnd01\" normal="aolat_pd_elegir" focus="normal" down="normal" disable="normal" />
+    <icon id="59707" dir="\wnd01\" normal="aolat_pd_torre" focus="normal" down="normal" disable="normal" />
+    <icon id="59704" dir="\wnd01\" normal="aolat_pd_victoria" focus="normal" down="normal" disable="normal" />
+    <icon id="59705" dir="\wnd01\" normal="aolat_pd_derrota" focus="normal" down="normal" disable="normal" />
+    <icon id="59716" dir="\wnd01\" normal="aolat_pd_carta0" focus="normal" down="normal" disable="normal" />
+    <icon id="59728" dir="\wnd01\" normal="aolat_pd_op0_n" focus="aolat_pd_op0_f" down="aolat_pd_op0_f" disable="normal" />
+    <icon id="59740" dir="\wnd01\" normal="aolat_pd_ret0_0" focus="normal" down="normal" disable="normal" />
+    <icon id="59741" dir="\wnd01\" normal="aolat_pd_ret0_1" focus="normal" down="normal" disable="normal" />
+    <icon id="59742" dir="\wnd01\" normal="aolat_pd_ret0_2" focus="normal" down="normal" disable="normal" />
+    <icon id="59717" dir="\wnd01\" normal="aolat_pd_carta1" focus="normal" down="normal" disable="normal" />
+    <icon id="59729" dir="\wnd01\" normal="aolat_pd_op1_n" focus="aolat_pd_op1_f" down="aolat_pd_op1_f" disable="normal" />
+    <icon id="59743" dir="\wnd01\" normal="aolat_pd_ret1_0" focus="normal" down="normal" disable="normal" />
+    <icon id="59744" dir="\wnd01\" normal="aolat_pd_ret1_1" focus="normal" down="normal" disable="normal" />
+    <icon id="59745" dir="\wnd01\" normal="aolat_pd_ret1_2" focus="normal" down="normal" disable="normal" />
+    <icon id="59718" dir="\wnd01\" normal="aolat_pd_carta2" focus="normal" down="normal" disable="normal" />
+    <icon id="59730" dir="\wnd01\" normal="aolat_pd_op2_n" focus="aolat_pd_op2_f" down="aolat_pd_op2_f" disable="normal" />
+    <icon id="59746" dir="\wnd01\" normal="aolat_pd_ret2_0" focus="normal" down="normal" disable="normal" />
+    <icon id="59747" dir="\wnd01\" normal="aolat_pd_ret2_1" focus="normal" down="normal" disable="normal" />
+    <icon id="59748" dir="\wnd01\" normal="aolat_pd_ret2_2" focus="normal" down="normal" disable="normal" />
+    <icon id="59719" dir="\wnd01\" normal="aolat_pd_carta3" focus="normal" down="normal" disable="normal" />
+    <icon id="59731" dir="\wnd01\" normal="aolat_pd_op3_n" focus="aolat_pd_op3_f" down="aolat_pd_op3_f" disable="normal" />
+    <icon id="59749" dir="\wnd01\" normal="aolat_pd_ret3_0" focus="normal" down="normal" disable="normal" />
+    <icon id="59750" dir="\wnd01\" normal="aolat_pd_ret3_1" focus="normal" down="normal" disable="normal" />
+    <icon id="59751" dir="\wnd01\" normal="aolat_pd_ret3_2" focus="normal" down="normal" disable="normal" />
+    <icon id="59720" dir="\wnd01\" normal="aolat_pd_carta4" focus="normal" down="normal" disable="normal" />
+    <icon id="59732" dir="\wnd01\" normal="aolat_pd_op4_n" focus="aolat_pd_op4_f" down="aolat_pd_op4_f" disable="normal" />
+    <icon id="59752" dir="\wnd01\" normal="aolat_pd_ret4_0" focus="normal" down="normal" disable="normal" />
+    <icon id="59753" dir="\wnd01\" normal="aolat_pd_ret4_1" focus="normal" down="normal" disable="normal" />
+    <icon id="59754" dir="\wnd01\" normal="aolat_pd_ret4_2" focus="normal" down="normal" disable="normal" />
+    <icon id="59721" dir="\wnd01\" normal="aolat_pd_carta5" focus="normal" down="normal" disable="normal" />
+    <icon id="59733" dir="\wnd01\" normal="aolat_pd_op5_n" focus="aolat_pd_op5_f" down="aolat_pd_op5_f" disable="normal" />
+    <icon id="59755" dir="\wnd01\" normal="aolat_pd_ret5_0" focus="normal" down="normal" disable="normal" />
+    <icon id="59756" dir="\wnd01\" normal="aolat_pd_ret5_1" focus="normal" down="normal" disable="normal" />
+    <icon id="59757" dir="\wnd01\" normal="aolat_pd_ret5_2" focus="normal" down="normal" disable="normal" />
+    <icon id="59722" dir="\wnd01\" normal="aolat_pd_carta6" focus="normal" down="normal" disable="normal" />
+    <icon id="59734" dir="\wnd01\" normal="aolat_pd_op6_n" focus="aolat_pd_op6_f" down="aolat_pd_op6_f" disable="normal" />
+    <icon id="59758" dir="\wnd01\" normal="aolat_pd_ret6_0" focus="normal" down="normal" disable="normal" />
+    <icon id="59759" dir="\wnd01\" normal="aolat_pd_ret6_1" focus="normal" down="normal" disable="normal" />
+    <icon id="59760" dir="\wnd01\" normal="aolat_pd_ret6_2" focus="normal" down="normal" disable="normal" />
+    <icon id="59723" dir="\wnd01\" normal="aolat_pd_carta7" focus="normal" down="normal" disable="normal" />
+    <icon id="59735" dir="\wnd01\" normal="aolat_pd_op7_n" focus="aolat_pd_op7_f" down="aolat_pd_op7_f" disable="normal" />
+    <icon id="59761" dir="\wnd01\" normal="aolat_pd_ret7_0" focus="normal" down="normal" disable="normal" />
+    <icon id="59762" dir="\wnd01\" normal="aolat_pd_ret7_1" focus="normal" down="normal" disable="normal" />
+    <icon id="59763" dir="\wnd01\" normal="aolat_pd_ret7_2" focus="normal" down="normal" disable="normal" />
+    <icon id="59724" dir="\wnd01\" normal="aolat_pd_carta8" focus="normal" down="normal" disable="normal" />
+    <icon id="59736" dir="\wnd01\" normal="aolat_pd_op8_n" focus="aolat_pd_op8_f" down="aolat_pd_op8_f" disable="normal" />
+    <icon id="59764" dir="\wnd01\" normal="aolat_pd_ret8_0" focus="normal" down="normal" disable="normal" />
+    <icon id="59765" dir="\wnd01\" normal="aolat_pd_ret8_1" focus="normal" down="normal" disable="normal" />
+    <icon id="59766" dir="\wnd01\" normal="aolat_pd_ret8_2" focus="normal" down="normal" disable="normal" />
+    <icon id="59725" dir="\wnd01\" normal="aolat_pd_carta9" focus="normal" down="normal" disable="normal" />
+    <icon id="59737" dir="\wnd01\" normal="aolat_pd_op9_n" focus="aolat_pd_op9_f" down="aolat_pd_op9_f" disable="normal" />
+    <icon id="59767" dir="\wnd01\" normal="aolat_pd_ret9_0" focus="normal" down="normal" disable="normal" />
+    <icon id="59768" dir="\wnd01\" normal="aolat_pd_ret9_1" focus="normal" down="normal" disable="normal" />
+    <icon id="59769" dir="\wnd01\" normal="aolat_pd_ret9_2" focus="normal" down="normal" disable="normal" />
+    <icon id="59726" dir="\wnd01\" normal="aolat_pd_carta10" focus="normal" down="normal" disable="normal" />
+    <icon id="59738" dir="\wnd01\" normal="aolat_pd_op10_n" focus="aolat_pd_op10_f" down="aolat_pd_op10_f" disable="normal" />
+    <icon id="59770" dir="\wnd01\" normal="aolat_pd_ret10_0" focus="normal" down="normal" disable="normal" />
+    <icon id="59771" dir="\wnd01\" normal="aolat_pd_ret10_1" focus="normal" down="normal" disable="normal" />
+    <icon id="59772" dir="\wnd01\" normal="aolat_pd_ret10_2" focus="normal" down="normal" disable="normal" />
+    <icon id="59708" dir="\wnd01\" normal="aolat_pd_empezar_n" focus="aolat_pd_empezar_f" down="aolat_pd_empezar_s" disable="normal" />
+    <icon id="59709" dir="\wnd01\" normal="aolat_pd_siguiente_n" focus="aolat_pd_siguiente_f" down="aolat_pd_siguiente_s" disable="normal" />
+    <icon id="59710" dir="\wnd01\" normal="aolat_pd_salir_n" focus="aolat_pd_salir_f" down="aolat_pd_salir_s" disable="normal" />
+    <icon id="59711" dir="\wnd01\" normal="aolat_pd_otra_n" focus="aolat_pd_otra_f" down="aolat_pd_otra_s" disable="normal" />
+    <icon id="59712" dir="\wnd01\" normal="aolat_pd_fsalir_n" focus="aolat_pd_fsalir_f" down="aolat_pd_fsalir_s" disable="normal" />
+    <icon id="59713" dir="\wnd01\" normal="aolat_pd_mejorar_n" focus="aolat_pd_mejorar_f" down="aolat_pd_mejorar_s" disable="normal" />
+    <icon id="59714" dir="\wnd01\" normal="aolat_pd_vender_n" focus="aolat_pd_vender_f" down="aolat_pd_vender_s" disable="normal" />
+    <!-- /aolat pet defense -->
 </root>

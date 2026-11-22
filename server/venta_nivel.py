@@ -7,6 +7,11 @@ oro infinito) y lo del Item Mall se queda con su precio de siempre. La municion 
 
 Lo usan app._precio_venta (lo que paga el servidor) y cliente_local (el 收購價格 de los item*.xml del parche, que es lo
 que el cliente ENSEÑA en la tienda: sin el se veia el precio viejo y parecia que no funcionaba).
+
+21/11/2026 ("que todo lo que los npc compren valga 100 gold los npc donde puedo vender gear e items"): todo lo que NO se
+compra (ni en tiendas NPC ni en el Item Mall) se paga a PRECIO_FIJO por casilla, sea gear de cualquier nivel o un item
+apilado; precio() queda solo para saber que equipo sin 收購價格 debe poder venderse. Lo que se compra conserva su precio
+de siempre (menor que el de compra): con 100 una Red Potion de 35 daria oro infinito.
 """
 import logging
 import pathlib
@@ -15,6 +20,7 @@ import re
 log = logging.getLogger('venta_nivel')
 
 VENTA_POR_NIVEL = ((1, 100), (60, 6000))
+PRECIO_FIJO = 100
 _COMPRABLES = None
 
 
@@ -68,3 +74,14 @@ def precio(item_id) -> int:
     if comprables is None or item_id in comprables:
         return 0
     return int(round((p0 + (nivel - n0) * (p1 - p0) / (n1 - n0)) / 10.0)) * 10
+
+
+def fijo(item_id) -> bool:
+    """True si la tienda lo paga a PRECIO_FIJO por casilla: todo lo que no se compra en tiendas NPC ni en el Item Mall.
+    Sin shop.xml no se aplica a nada (si no, las pociones de tienda se venderian por 100)."""
+    try:
+        item_id = int(item_id or 0)
+    except (TypeError, ValueError):
+        return False
+    comprables = items_comprables()
+    return bool(item_id) and comprables is not None and item_id not in comprables

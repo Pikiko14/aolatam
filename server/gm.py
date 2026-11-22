@@ -55,6 +55,10 @@ _CMDS_EFECTO = ('efecto', 'fx')
 # ningun skill.
 # /brillo: vuelve a mandar el aura de los campeones a todos (en el cliente ya no se apaga; ver competicion_premios).
 _CMDS_EFECTO_MAGIA = ('fxm', 'efectomagia', 'brillo')
+# Pet Defense, fase 1 (21/11/2026): /torre [tipo|huevo] pone una torre-mascota en tu casilla; /torre quitar las quita.
+_CMDS_TORRE = ('torre', 'tower')
+# Pet Defense, fase 2: /pd start (empieza una partida), /pd stop, /pd tipo <guardian|arquero|fuego>, /pd info.
+_CMDS_PD = ('pd', 'petdefense')
 # Prueba del 0x001D kind 9 (hechizo) con un tercer campo a eleccion. Solo se midio con
 # rango I (valor 1). Sirve para averiguar si un valor (p.ej. 0) le quita al cliente un
 # hechizo, que es lo que haria falta para que el rango II tape al I sin reloguear.
@@ -67,7 +71,7 @@ _CMDS = frozenset(('help',) + _CMDS_ITEM + _CMDS_LEVEL + _CMDS_SETLEVEL + _CMDS_
                   + _CMDS_CLEARSKILLS + _CMDS_PET + _CMDS_QUEST + _CMDS_BALL
                   + _CMDS_GUILDLEVEL + _CMDS_GUILDREP + _CMDS_GUILD
                   + _CMDS_TW + _CMDS_FARM + _CMDS_SETMAP + _CMDS_ANIM + _CMDS_EFECTO + _CMDS_HECHIZO + _CMDS_TRADE
-                  + _CMDS_EFECTO_MAGIA)
+                  + _CMDS_EFECTO_MAGIA + _CMDS_TORRE + _CMDS_PD)
 # _CMDS se quedaba sin 'gold' y 'setlevel' (se anadieron arriba, al vuelo: no se tocan las
 # tuplas que ya tenia cada quien para no reordenar nada). No cambia nada vivo: _CMDS solo lo
 # usa texto_de(), y nada del servidor llama a texto_de() hoy (ver mas abajo, PALABRAS).
@@ -90,14 +94,14 @@ _GRUPOS_DELEGADOS = (_CMDS_LEVEL, _CMDS_SETLEVEL, _CMDS_GOLD, _CMDS_LEVELALL,
                     _CMDS_SKILLS, _CMDS_SKILLSALL, _CMDS_SKILLS5, _CMDS_CLEARSKILLS,
                     _CMDS_PET, _CMDS_QUEST, _CMDS_BALL, _CMDS_SETMAP, _CMDS_ANIM, _CMDS_EFECTO, _CMDS_HECHIZO,
                     _CMDS_TRADE,    # /job, /caravana, /aro: sin esto el chat no los mandaba aqui (06/11/2026)
-                    _CMDS_EFECTO_MAGIA)
+                    _CMDS_EFECTO_MAGIA, _CMDS_TORRE, _CMDS_PD)
 PALABRAS_DELEGADAS = frozenset(w for grupo in _GRUPOS_DELEGADOS for w in grupo)
 # Los 'kind' que gm.parsear() puede devolver para PALABRAS_DELEGADAS, para que el
 # dispatcher de app.py sepa cuales reenviar a gm.aplicar().
 RESULTADOS_DELEGADOS = frozenset((
     'level', 'levelall', 'setlevel', 'gold', 'skills', 'skillsall', 'skills5',
     'clearskills', 'pet', 'quest', 'ball', 'setmap', 'anim', 'efecto', 'hechizo', 'trade',
-    'efecto_magia', 'brillo',
+    'efecto_magia', 'brillo', 'torre', 'pd',
 ))
 
 AYUDA = ("GM: /item <id> [qty]  /level <n>  /levelall <n>  /setlevel <name|all> <n>/guildlevel <1..10>  /guildrep <n>  "
@@ -676,6 +680,10 @@ def parsear(texto: str):
             return ('err', 'usage: /efecto <numero>  (0x0020 sobre el totem del mapa o sobre ti)')
     if cmd == 'brillo':
         return ('brillo',)
+    if cmd in _CMDS_PD:
+        return ('pd', parts[1].lower() if len(parts) > 1 else 'info', parts[2].lower() if len(parts) > 2 else '')
+    if cmd in _CMDS_TORRE:
+        return ('torre', parts[1].lower() if len(parts) > 1 else '')
     if cmd in _CMDS_EFECTO_MAGIA:
         try:
             return ('efecto_magia', int(parts[1], 0), int(parts[2], 0) if len(parts) >= 3 else 0)
@@ -890,6 +898,28 @@ def aplicar(ses, parsed) -> str:
             eid = _tw_fx.eid_totem(p.stage)
         ses.enviar(struct.pack('<HIHI', 0x0020, eid, int(parsed[1]) & 0xFFFF, eid))
         msg = 'effect %d sobre %s' % (parsed[1], 'el totem' if eid != p.entity_id else 'ti')
+        _avisar(ses, msg)
+        return msg
+    if kind == 'pd':
+        import pet_defense_partida as _pdp
+        sub, arg = parsed[1], parsed[2]
+        if sub in ('start', 'empezar', 'jugar'):
+            msg = _pdp.empezar(ses, getattr(ses, 'addr', '?'))
+        elif sub in ('stop', 'salir', 'terminar'):
+            msg = 'Pet Defense: game stopped.' if _pdp.terminar(ses, 'abandono', avisar=False) else 'Pet Defense: no game running.'
+        elif sub in ('tipo', 'type', 'tower'):
+            msg = _pdp.elegir_tipo(ses, arg)
+        else:
+            pa = _pdp.partida(ses)
+            msg = _pdp._estado(pa) if pa else 'Pet Defense: /pd start | /pd stop | /pd tipo <guardian|arquero|fuego>'
+        _avisar(ses, msg)
+        return msg
+    if kind == 'torre':
+        import pet_defense as _pd
+        if parsed[1] in ('quitar', 'off', 'remove', 'clear'):
+            msg = 'removed %d towers' % _pd.quitar(ses)
+        else:
+            msg = _pd.poner(ses, parsed[1] or None)
         _avisar(ses, msg)
         return msg
     if kind == 'brillo':

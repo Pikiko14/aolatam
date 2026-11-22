@@ -1,5 +1,6 @@
 """Cuatro pedidos del 05/11/2026:
-- "vender gear de lvl 1 a 60 en 100 a 6k gold" (venta_nivel.py y el 收購價格 del parche)
+- "vender gear de lvl 1 a 60 en 100 a 6k gold" (venta_nivel.py y el 收購價格 del parche); desde el 21/11/2026,
+  todo lo que no se compra vale 100 por casilla
 - "los aoe lvl 32 y 60 de las 4 clases de mago baja el cast time a 1 seg" (combate.CAST_RAPIDO)
 - "que el dark cavern el minimapa salga negro y aumenta un 30% el ataque de los mob y jefe"
 - "que los mob te persigan por todo el mapa" (en el Dark Cavern)
@@ -19,18 +20,30 @@ import venta_nivel  # noqa: E402
 IRON_SWORD_LV30, COPPER_SWORD_LV10 = 163, 148
 
 
-def test_venta_por_nivel_de_100_a_6000():
-    assert venta_nivel.VENTA_POR_NIVEL == ((1, 100), (60, 6000))
-    assert venta_nivel.precio(IRON_SWORD_LV30) == 3000
-    assert venta_nivel.precio(COPPER_SWORD_LV10) == 1000
-    assert app._precio_venta(IRON_SWORD_LV30) == 3000
+RED_POTION = 2                 # se compra en las tiendas NPC: conserva su precio (si no, oro infinito)
 
 
-def test_el_cliente_ensena_el_precio_nuevo():
-    x = ('<root>\n  <道具 編號="%d" 價格="500" />\n  <道具 編號="%d" 收購價格="50" />\n</root>'
-         % (IRON_SWORD_LV30, COPPER_SWORD_LV10)).encode('utf-8')
+def test_lo_que_no_se_compra_vale_100_por_casilla():
+    """21/11/2026: "que todo lo que los npc compren valga 100 gold" (antes el gear 1..60 iba de 100 a 6.000)."""
+    assert venta_nivel.PRECIO_FIJO == 100
+    for it in (IRON_SWORD_LV30, COPPER_SWORD_LV10):
+        assert venta_nivel.fijo(it)
+        assert app._precio_venta(it) == 100
+        assert app._ganancia_venta(it, 1) == app._ganancia_venta(it, 20) == 100
+
+
+def test_lo_de_tienda_conserva_su_precio():
+    assert RED_POTION in venta_nivel.items_comprables() and not venta_nivel.fijo(RED_POTION)
+    p = app._precio_venta(RED_POTION)
+    assert 0 < p < app._precio_compra(RED_POTION)
+    assert app._ganancia_venta(RED_POTION, 11) == p * 11
+
+
+def test_el_cliente_ensena_100():
+    x = ('<root>\n  <道具 編號="%d" 價格="500" />\n  <道具 編號="%d" 收購價格="50" />\n'
+         '  <道具 編號="%d" 收購價格="12" />\n</root>' % (IRON_SWORD_LV30, COPPER_SWORD_LV10, RED_POTION)).encode('utf-8')
     out = cliente_local._parchear_venta_por_nivel_xml_bytes(x).decode('utf-8')
-    assert '收購價格="3000"' in out and '收購價格="1000"' in out
+    assert out.count('收購價格="100"') == 2 and '收購價格="12"' in out
 
 
 def test_aoe_de_mago_en_1_segundo():

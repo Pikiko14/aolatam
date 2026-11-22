@@ -69,6 +69,7 @@
     <場景 編號="43" 名稱="West Playground" 地圖檔="map\map043.mpc" 筆刷檔="brush\brush.gic" 雷達圖="smap\043" 配樂檔1="music\11.ogg" 亮度="255" 天氣="0" 平行空間="5" 不懲罰="是" />
     <場景 編號="44" 名稱="Training Palace" 地圖檔="map\map044.mpc" 筆刷檔="brush\brush.gic" 雷達圖="smap\044" 配樂檔1="music\19.ogg" 亮度="255" 天氣="0" 平行空間="3" 不懲罰="是" 不可標記="是" />
     <場景 編號="45" 名稱="Training Cave(small)" 地圖檔="map\map045.mpc" 筆刷檔="brush\brush.gic" 雷達圖="smap\045" 配樂檔1="music\11.ogg" 亮度="160" 天氣="0" 不懲罰="是" />
+    <場景 編號="917" 名稱="Pet Defense" 地圖檔="map\map917.mpc" 筆刷檔="brush\brush.gic" 雷達圖="smap\045" 配樂檔1="music\11.ogg" 亮度="160" 天氣="0" 不懲罰="是" />
     <場景 編號="46" 名稱="Training Cave(big)" 地圖檔="map\map046.mpc" 筆刷檔="brush\brush.gic" 雷達圖="smap\046" 配樂檔1="music\11.ogg" 亮度="160" 天氣="0" 不懲罰="是" />
     <場景 編號="47" 名稱="Outpost Battlefield" 地圖檔="map\map047.mpc" 筆刷檔="brush\brush.gic" 雷達圖="smap\047" 配樂檔1="music\26.ogg" 亮度="255" 天氣="0" 不懲罰="是" 不可標記="是" PK="是" PVP陣營對戰="是" />
     <場景 編號="48" 名稱="Outpost Battlefield" 地圖檔="map\map048.mpc" 筆刷檔="brush\brush.gic" 雷達圖="smap\047" 配樂檔1="music\26.ogg" 亮度="255" 天氣="0" 不懲罰="是" 不可標記="是" PK="是" PVP陣營對戰="是" />
