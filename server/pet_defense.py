@@ -252,10 +252,23 @@ def objetivos(t: Torre):
     return objetivo(t, t.n_objetivos)
 
 
+def bono(t: Torre, clave):
+    """Lo que suma la mejora `clave` elegida en la partida de su dueno (pet_defense_partida.BONOS): veces x 'paso'."""
+    try:
+        import pet_defense_partida
+        veces = int(pet_defense_partida.bonos_de(t.dueno).get(clave, 0))
+    except Exception:
+        veces = 0
+    if not veces:
+        return 0
+    return veces * float(((config().get('bonos') or {}).get(clave) or {}).get('paso', 0))
+
+
 def _golpe(t: Torre, m, mult_extra=1.0, magico=None) -> int:
     """Le quita la vida a m y devuelve el dano que se ensena: el fijo de su nivel (dano_por_nivel, sin defensa) o, sin
     el, el ataque contra su defensa como el golpe basico de la mascota."""
     import combate as cb
+    mult_extra *= 1.0 + bono(t, 'ataque')
     if getattr(t, 'dano_fijo', 0):
         dano = int(round(t.dano_fijo * mult_extra))
         m.recibir_extra(dano, es_pet=True)
@@ -303,7 +316,9 @@ def poder(t: Torre, m, ahora, rng=None):
     rng = rng or random
     cfg = config()
     libres = [sk for sk in getattr(t, 'skills', ()) if ahora >= t.cd_skills.get(sk, 0)]
-    if not libres or rng.random() >= float(cfg.get('prob_poder', 0.5)):
+    prob = float(cfg.get('prob_poder', 0.5)) + bono(t, 'poder') * float(((cfg.get('bonos') or {}).get('poder') or {}).get(
+        'prob_por_paso', 0.25))
+    if not libres or rng.random() >= min(0.95, prob):
         return None
     sk = rng.choice(libres)
     d = cb.datos_magia(sk)
@@ -311,7 +326,7 @@ def poder(t: Torre, m, ahora, rng=None):
     magia = bool(d.get('es_magia_visual'))
     efecto = d.get('efecto') or 101
     cast = max(100, int(d.get('cast_time') or 100))
-    mult = float(cfg.get('mult_poder', 1.5))
+    mult = float(cfg.get('mult_poder', 1.5)) * (1.0 + bono(t, 'poder'))
     dano = _golpe(t, m, mult, magia or t.magico)
     ahora_pk = [cb.ataque(t.entidad, m.entity_id, cb.anim_de_monstruo(t.ficha.get('nombre', ''))),
                 cb.numero_de_dano(t.entidad, m.entity_id, dano, ataque=sk, efecto=efecto, cast_time=cast, es_magia=magia)]
@@ -337,7 +352,7 @@ def mover(t: Torre, ahora):
     import combate as cb
     import transitable
     from codec import Msg
-    radio = int(config().get('radio_movimiento', 3))
+    radio = int(config().get('radio_movimiento', 3)) + int(round(bono(t, 'movimiento')))
     if radio <= 0 or ahora < t.llega_mov:
         return False
     destino, parar = None, 0
@@ -399,7 +414,7 @@ def tick(ahora=None):
             continue
         if ahora < t.proximo:
             continue
-        t.proximo = ahora + t.cadencia
+        t.proximo = ahora + t.cadencia * max(0.3, 1.0 - bono(t, 'velocidad'))
         golpeados, paquetes = [], []
         for m in blancos:
             if m.hp <= 0:

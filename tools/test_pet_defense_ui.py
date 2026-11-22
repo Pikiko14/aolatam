@@ -347,3 +347,36 @@ def rk_tmp(tmp_path, monkeypatch):
     import pet_defense_ranking
     monkeypatch.setattr(pet_defense_ranking, 'DB_PATH', tmp_path / 'pet_defense.db')
 
+
+
+def test_al_limpiar_la_oleada_se_elige_una_mejora(partida):
+    """"Que cada oleada salga una pestana dandole atributos a los pet" (22/11/2026)."""
+    ses, pa = partida
+    pa.oleada = 1
+    ses.enviados.clear()
+    pp.ofrecer_bono(pa)
+    assert pa.elecciones == 1 and any(t.startswith('PDBono(') for t in _lua_de(ses.enviados))
+    ses.enviados.clear()
+    ui.procesar(ses, _cuerpo(11, pp.BONOS.index('velocidad')))
+    assert pa.bonos['velocidad'] == 1 and pa.elecciones == 0
+    assert any(t == 'PDBonoCerrar()' for t in _lua_de(ses.enviados))
+    ses.enviados.clear()
+    ui.procesar(ses, _cuerpo(11, 0))                             # sin elecciones: aviso y nada
+    assert pa.bonos['ataque'] == 0 and any(t.startswith('PDBonoAviso(') for t in _lua_de(ses.enviados))
+
+
+def test_las_mejoras_cambian_a_las_mascotas(partida):
+    ses, pa = partida
+    datos = dict(CFG['torres']['lobo'])
+    t = pd.crear(ses, 'lobo', datos, pa.espacios[0])
+    m = combate.Monstruo(9500, 6, 'Fire Goblin', (5, 5), 0, stage=917)
+    m.hp_max = m.hp = 100_000
+    base = pd._golpe(t, m)
+    pa.bonos['ataque'] = 2
+    assert pd._golpe(t, m) == int(round(base * (1 + 2 * CFG['bonos']['ataque']['paso'])))
+    pa.bonos['velocidad'] = 1
+    assert abs(pd.bono(t, 'velocidad') - CFG['bonos']['velocidad']['paso']) < 1e-9
+    pa.bonos['movimiento'] = 2
+    assert pd.bono(t, 'movimiento') == 2 * CFG['bonos']['movimiento']['paso']
+    pa.bonos['poder'] = 1
+    assert pd.bono(t, 'poder') == CFG['bonos']['poder']['paso']

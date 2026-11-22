@@ -168,6 +168,19 @@ def fin(pa):
         log.debug('PDFin', exc_info=True)
 
 
+# ---------------------------------------------------------------------------------------------- mejoras por oleada
+def bono(pa):
+    """La ventana para elegir la mejora de las mascotas (pet_defense_partida.BONOS), con lo que lleva cada una."""
+    import pet_defense_partida as pp
+    opciones = []
+    for clave in pp.BONOS:
+        d = (pa.cfg.get('bonos') or {}).get(clave) or {}
+        opciones.append([d.get('nombre', clave), d.get('texto', ''), 'Lv %d' % int(pa.bonos.get(clave, 0))])
+    quedan = '' if pa.elecciones <= 1 else '  (%d to choose)' % pa.elecciones
+    titulo = 'Wave %d cleared! Choose a blessing for all your pets%s' % (pa.oleada, quedan)
+    return preparar(pa.ses) + [canal_lua.llamar('PDBono', titulo, opciones)]
+
+
 # ---------------------------------------------------------------------------------------------- el ranking
 def _tiempo(s):
     s = int(s or 0)
@@ -247,6 +260,17 @@ def procesar(ses, cuerpo, addr='?') -> bool:
         ses.enviar(canal_lua.llamar('PDCerrar'))
     elif a == 10:
         ses.enviar(*ranking(ses))
+    elif a == 11 and pa is not None:
+        import pet_defense_partida as pp_b
+        ok, msg = pp_b.elegir_bono(pa, pp_b.BONOS[b] if b < len(pp_b.BONOS) else '')
+        if ok and pa.elecciones > 0:
+            ses.enviar(*bono(pa))
+        elif ok:
+            ses.enviar(canal_lua.llamar('PDBonoCerrar'))
+        if ok:
+            pp_b._aviso(ses, msg)
+        else:
+            ses.enviar(canal_lua.llamar('PDBonoAviso', msg))
     elif a == 4:
         if pa is not None and pp.saltar_pausa(pa):
             refrescar(pa, forzar=True)

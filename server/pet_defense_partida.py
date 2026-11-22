@@ -116,6 +116,8 @@ class Partida:
         self.muertos = 0
         self.fugados = 0
         self.resultado = None
+        self.bonos = {k: 0 for k in BONOS}  # las mejoras elegidas al acabar las oleadas (veces cada una)
+        self.elecciones = 0                 # las que quedan por elegir
 
     @property
     def total_oleadas(self):
@@ -277,7 +279,10 @@ def pulsar(ses, ent, addr='?'):
     if pa is None:
         return False
     if int(ent) == pa.npc_cristal:
-        _aviso(ses, _estado(pa))
+        if pa.elecciones > 0:
+            ses.enviar(*ui.bono(pa))
+        else:
+            _aviso(ses, _estado(pa))
         return True
     i = pa.npc_espacio.get(int(ent))
     if i is None:
@@ -568,8 +573,46 @@ def tick_partida(pa, ahora):
         _aviso(ses, 'Wave %d cleared!%s Next wave in %d s.  %s' % (
             pa.oleada, (' Your towers give +%d Essence.' % extra) if extra else '',
             int(pt.get('pausa_entre_oleadas', 10)), _estado(pa)))
+        ofrecer_bono(pa)
     if pa.resultado is None:
         __import__('pet_defense_ui').refrescar(pa, ahora)
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Mejoras para las mascotas al acabar cada oleada
+# ---------------------------------------------------------------------------------------------------------------------
+# "Que cada oleada salga una pestana dandole atributos a los pet: mas ataque, mas spell ataque, mas rango de movimiento,
+# mas velocidad de ataque" (22/11/2026). Al limpiar una oleada se gana una eleccion; la ventana (pet_defense_ui.bono)
+# ofrece las cuatro y la elegida vale para TODAS las mascotas hasta el final de la partida, sumandose si se repite.
+# Si se cierra sin elegir, se puede elegir luego pulsando el cristal. Cuanto da cada una: plantillas/pet_defense.json,
+# "bonos".
+BONOS = ('ataque', 'poder', 'movimiento', 'velocidad')
+
+
+def ofrecer_bono(pa):
+    pa.elecciones += 1
+    try:
+        pa.ses.enviar(*__import__('pet_defense_ui').bono(pa))
+    except Exception:
+        log.exception('Pet Defense: ventana de mejoras')
+
+
+def elegir_bono(pa, clave):
+    """Aplica la mejora `clave` si queda alguna eleccion. Devuelve (ok, texto)."""
+    if clave not in BONOS:
+        return False, 'Unknown blessing.'
+    if pa.elecciones <= 0:
+        return False, 'No blessing to choose right now. Clear a wave first.'
+    pa.elecciones -= 1
+    pa.bonos[clave] = pa.bonos.get(clave, 0) + 1
+    datos = (pa.cfg.get('bonos') or {}).get(clave) or {}
+    return True, '%s level %d for all your pets!' % (datos.get('nombre', clave), pa.bonos[clave])
+
+
+def bonos_de(ses):
+    """Las mejoras de la partida de ese jugador ({} si no tiene)."""
+    pa = _PARTIDAS.get(ses)
+    return pa.bonos if pa is not None else {}
 
 
 def saltar_pausa(pa, ahora=None):

@@ -10862,6 +10862,89 @@
     <window class="WND_CLASS_BASE" id="58106" range="0,0,400,292" icon="59785">
         <style wsVisible="" />
     </window>
+    <window class="WND_CLASS_DLG_1" range="0,0,440,230" id="58200" title="Pet blessing" fcolor="104" font="1">
+        <style wsVisible="" wsMoveable="" />
+        <child>58201</child>
+        <child>58206</child>
+        <child>58210</child>
+        <child>58214</child>
+        <child>58207</child>
+        <child>58211</child>
+        <child>58215</child>
+        <child>58208</child>
+        <child>58212</child>
+        <child>58216</child>
+        <child>58209</child>
+        <child>58213</child>
+        <child>58217</child>
+        <child>58218</child>
+        <child>58202</child>
+        <child>58203</child>
+        <child>58204</child>
+        <child>58205</child>
+        <child>58219</child>
+    </window>
+    <window class="WND_CLASS_STATIC" id="58201" range="10,4,412,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58206" range="11,130,94,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58210" range="11,146,94,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58214" range="11,162,94,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58207" range="117,130,94,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58211" range="117,146,94,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58215" range="117,162,94,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58208" range="223,130,94,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58212" range="223,146,94,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58216" range="223,162,94,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58209" range="329,130,94,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58213" range="329,146,94,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58217" range="329,162,94,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58218" range="10,188,412,14" title="" fcolor="59783" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="58202" range="8,26,100,100" title="" icon="59786">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDBono1</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="58203" range="114,26,100,100" title="" icon="59787">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDBono2</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="58204" range="220,26,100,100" title="" icon="59788">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDBono3</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="58205" range="326,26,100,100" title="" icon="59789">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDBono4</OnCommand>
+    </window>
+    <window class="WND_CLASS_BASE" id="58219" range="0,0,432,206" icon="59790">
+        <style wsVisible="" />
+    </window>
     <window class="WND_CLASS_DLG_1" range="0,0,308,220" id="59340" title="Pet Defense" fcolor="104" font="1">
         <style wsVisible="" wsMoveable="" />
         <child>59346</child>
@@ -10907,6 +10990,11 @@
     <icon id="59704" dir="\wnd01\" normal="aolat_pd_victoria" focus="normal" down="normal" disable="normal" />
     <icon id="59705" dir="\wnd01\" normal="aolat_pd_derrota" focus="normal" down="normal" disable="normal" />
     <icon id="59785" dir="\wnd01\" normal="aolat_pd_rfondo" focus="normal" down="normal" disable="normal" />
+    <icon id="59790" dir="\wnd01\" normal="aolat_pd_bfondo" focus="normal" down="normal" disable="normal" />
+    <icon id="59786" dir="\wnd01\" normal="aolat_pd_bono_ataque_n" focus="aolat_pd_bono_ataque_f" down="aolat_pd_bono_ataque_f" disable="normal" />
+    <icon id="59787" dir="\wnd01\" normal="aolat_pd_bono_poder_n" focus="aolat_pd_bono_poder_f" down="aolat_pd_bono_poder_f" disable="normal" />
+    <icon id="59788" dir="\wnd01\" normal="aolat_pd_bono_movimiento_n" focus="aolat_pd_bono_movimiento_f" down="aolat_pd_bono_movimiento_f" disable="normal" />
+    <icon id="59789" dir="\wnd01\" normal="aolat_pd_bono_velocidad_n" focus="aolat_pd_bono_velocidad_f" down="aolat_pd_bono_velocidad_f" disable="normal" />
     <icon id="59716" dir="\wnd01\" normal="aolat_pd_carta0" focus="normal" down="normal" disable="normal" />
     <icon id="59728" dir="\wnd01\" normal="aolat_pd_op0_n" focus="aolat_pd_op0_f" down="aolat_pd_op0_f" disable="normal" />
     <icon id="59740" dir="\wnd01\" normal="aolat_pd_ret0_0" focus="normal" down="normal" disable="normal" />

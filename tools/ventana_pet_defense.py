@@ -62,6 +62,10 @@ M_RANKING, I_RANKING, I_R_FONDO = 59391, 59784, 59785
 V_RANKING, R_TITULO, R_MARCA, R_RANGOS, R_PREMIOS, R_VACIO, R_FONDO = range(58100, 58107)
 R_PUESTO, R_NOMBRE, R_RANGO, R_PUNTOS, R_OLEADAS = 58110, 58120, 58130, 58140, 58150      # + 0..9
 N_RANKING = 10
+# Las mejoras al acabar cada oleada (22/11/2026): la ventana 58200 con cuatro tarjetas con icono
+V_BONO, B_TITULO, B_OPCION, B_NOMBRE, B_TEXTO, B_NIVEL, B_ESTADO, B_FONDO = 58200, 58201, 58202, 58206, 58210, 58214, 58218, 58219
+I_BONO, I_B_FONDO = 59786, 59790                     # I_BONO + 0..3 (ataque, poder, movimiento, velocidad)
+BONOS = ('ataque', 'poder', 'movimiento', 'velocidad')
 
 # ---------------------------------------------------------------------------------------------- medidas
 CW, CH, CPASO = 66, 96, 70                       # tarjeta de la galeria
@@ -74,6 +78,8 @@ EMPEZAR_XY = (MW - 8 - BOTON_W, MH - 8 - BOTON_H)
 RANKING_XY = (EMPEZAR_XY[0] - 8 - BOTON_W, EMPEZAR_XY[1])
 
 RW, RH = 400, 292
+BW, BH = 432, 206
+B_CARTA, B_PASO, B_Y = 100, 106, 26
 R_FILA0, R_PASO = 46, 18
 R_COLS = ((12, 22), (36, 130), (170, 70), (244, 70), (318, 76))      # puesto, nombre, rango, puntos, oleadas/tiempo
 
@@ -312,6 +318,72 @@ def fondo_ranking():
     return im
 
 
+BONO_COLOR = {'ataque': (248, 113, 59), 'poder': (192, 132, 252), 'movimiento': (74, 222, 128), 'velocidad': (250, 204, 21)}
+
+
+def _simbolo(clave, k=4):
+    """El dibujo de cada mejora (a k veces, para suavizarlo al reducir), centrado en 100x100."""
+    im = Image.new('RGBA', (100 * k, 100 * k), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    borde = (20, 20, 30, 255)
+
+    def r(*xy):
+        return [v * k for v in xy]
+    if clave == 'ataque':                                   # una espada en diagonal
+        d.polygon(r(70, 18, 78, 22, 40, 64, 34, 58), fill=(226, 232, 240, 255), outline=borde, width=k)
+        d.line(r(72, 21, 38, 60), fill=(255, 255, 255, 255), width=k)
+        d.polygon(r(26, 56, 44, 74, 48, 70, 30, 52), fill=(214, 160, 70, 255), outline=borde, width=k)
+        d.polygon(r(34, 62, 40, 68, 26, 82, 20, 76), fill=(120, 60, 30, 255), outline=borde, width=k)
+        d.ellipse(r(16, 78, 24, 86), fill=(214, 160, 70, 255), outline=borde, width=k)
+    elif clave == 'poder':                                  # baculo con estrella magica
+        d.line(r(34, 84, 58, 40), fill=(140, 90, 50, 255), width=5 * k)
+        d.ellipse(r(52, 22, 76, 46), fill=(216, 180, 254, 255), outline=borde, width=k)
+        import math
+        pts = []
+        for i in range(10):
+            ang = -math.pi / 2 + i * math.pi / 5
+            rad = 22 if i % 2 == 0 else 9
+            pts += [64 + rad * math.cos(ang), 34 + rad * math.sin(ang)]
+        d.polygon(r(*pts), fill=(250, 232, 255, 255), outline=(126, 34, 206, 255), width=k)
+        for x, y in ((24, 30), (82, 62), (30, 52)):
+            d.ellipse(r(x - 3, y - 3, x + 3, y + 3), fill=(233, 213, 255, 255))
+    elif clave == 'movimiento':                             # bota con ala
+        d.polygon(r(36, 26, 54, 26, 54, 62, 74, 66, 76, 78, 34, 78), fill=(146, 98, 56, 255), outline=borde, width=k)
+        d.line(r(36, 72, 76, 72), fill=(96, 60, 30, 255), width=2 * k)
+        d.polygon(r(36, 34, 14, 22, 18, 32, 10, 34, 18, 42, 12, 48, 36, 48), fill=(240, 253, 244, 255), outline=borde,
+                  width=k)
+        d.line(r(16, 32, 34, 38), fill=(134, 239, 172, 255), width=k)
+        d.line(r(16, 42, 34, 44), fill=(134, 239, 172, 255), width=k)
+    else:                                                   # rayo
+        d.polygon(r(56, 12, 28, 56, 48, 56, 38, 90, 74, 42, 54, 42, 66, 12), fill=(253, 224, 71, 255), outline=borde,
+                  width=k)
+        d.line(r(56, 16, 34, 54), fill=(255, 251, 220, 255), width=2 * k)
+    return im.resize((100, 100), Image.LANCZOS)
+
+
+def carta_bono(clave, foco=False):
+    color = BONO_COLOR[clave]
+    im = Image.new('RGBA', (B_CARTA, B_CARTA), _rgba(SUPERFICIE if foco else SUPERFICIE_2))
+    im.alpha_composite(_degradado(B_CARTA, B_CARTA, tuple(int(c * (0.45 if foco else 0.3)) for c in color), SUPERFICIE_2))
+    im.alpha_composite(_resplandor(B_CARTA, B_CARTA, color, (50, 50), 30, 190 if foco else 150))
+    im.alpha_composite(_simbolo(clave))
+    ImageDraw.Draw(im).rounded_rectangle((0, 0, B_CARTA - 1, B_CARTA - 1), radius=10,
+                                         outline=_rgba(ACENTO if foco else color), width=2 if foco else 1)
+    return _redondear(im, 10)
+
+
+def fondo_bono():
+    im = _degradado(BW, BH, FONDO_ARRIBA, FONDO_ABAJO)
+    d = ImageDraw.Draw(im)
+    d.rectangle((0, 0, BW - 1, BH - 1), outline=_rgba(LINEA))
+    d.line((8, 22, BW - 9, 22), fill=_rgba(LINEA))
+    for i in range(4):
+        x = 8 + i * B_PASO
+        d.rounded_rectangle((x, B_Y + B_CARTA + 2, x + B_CARTA - 1, B_Y + B_CARTA + 54), radius=6,
+                            fill=_rgba(SUPERFICIE_2), outline=_rgba(LINEA))
+    return im
+
+
 def fondo_elegir():
     im = _degradado(EW, EH, FONDO_ARRIBA, FONDO_ABAJO)
     d = ImageDraw.Draw(im)
@@ -434,6 +506,10 @@ def piezas() -> dict:
         p['aolat_pd_vender_%s' % e] = boton('Sell', e, T_BOTON_W, rojo=True)
         p['aolat_pd_ranking_%s' % e] = boton('Ranking', e)
     p['aolat_pd_rfondo'] = fondo_ranking()
+    p['aolat_pd_bfondo'] = fondo_bono()
+    for clave in BONOS:
+        p['aolat_pd_bono_%s_n' % clave] = carta_bono(clave)
+        p['aolat_pd_bono_%s_f' % clave] = carta_bono(clave, foco=True)
     normal = al_estilo_nativo(icono_barra())
     p[NOMBRE_BOTON + '_n'] = normal
     p[NOMBRE_BOTON + '_f'] = ImageEnhance.Brightness(normal).enhance(1.25)
@@ -554,6 +630,21 @@ def bloque() -> str:
            (R_FONDO, _w('WND_CLASS_BASE', R_FONDO, 0, 0, RW, RH, ' icon="%d"' % I_R_FONDO))]
     ventana(V_RANKING, 'Pet Defense ranking', RW, RH, rk)
 
+    # MEJORAS
+    bo = [(B_TITULO, _texto(B_TITULO, 10, 4, BW - 20, C_ORO))]
+    for i in range(4):
+        x = 8 + i * B_PASO
+        y = B_Y + B_CARTA + 4
+        bo += [(B_NOMBRE + i, _texto(B_NOMBRE + i, x + 3, y, B_CARTA - 6, C_BLANCO, '', ' ssHCenter=""')),
+               (B_TEXTO + i, _texto(B_TEXTO + i, x + 3, y + 16, B_CARTA - 6, C_TENUE, '', ' ssHCenter=""')),
+               (B_NIVEL + i, _texto(B_NIVEL + i, x + 3, y + 32, B_CARTA - 6, C_ACENTO, '', ' ssHCenter=""'))]
+    bo.append((B_ESTADO, _texto(B_ESTADO, 10, BH - 18, BW - 20, C_ROJO)))
+    for i, clave in enumerate(BONOS):
+        x = 8 + i * B_PASO
+        bo.append((B_OPCION + i, _boton(B_OPCION + i, x, B_Y, B_CARTA, B_CARTA, I_BONO + i, 'OnPDBono%d' % (i + 1))))
+    bo.append((B_FONDO, _w('WND_CLASS_BASE', B_FONDO, 0, 0, BW, BH, ' icon="%d"' % I_B_FONDO)))
+    ventana(V_BONO, 'Pet blessing', BW, BH, bo)
+
     # FIN
     f = [(F_OTRA, _boton(F_OTRA, OTRA_XY[0], OTRA_XY[1], F_BOTON_W, BOTON_H, I_OTRA, 'OnPDOtra', 'Play again')),
          (F_SALIR, _boton(F_SALIR, F_SALIR_XY[0], F_SALIR_XY[1], F_BOTON_W, BOTON_H, I_F_SALIR, 'OnPDSalirFin',
@@ -569,7 +660,10 @@ def bloque() -> str:
     iconos = [_icono(I_M_FONDO, 'aolat_pd_menu'), _icono(I_H_FONDO, 'aolat_pd_hud'), _icono(I_F_FONDO, 'aolat_pd_fin'),
               _icono(I_E_FONDO, 'aolat_pd_elegir'), _icono(I_T_FONDO, 'aolat_pd_torre'),
               _icono(I_VICTORIA, 'aolat_pd_victoria'), _icono(I_DERROTA, 'aolat_pd_derrota'),
-              _icono(I_R_FONDO, 'aolat_pd_rfondo')]
+              _icono(I_R_FONDO, 'aolat_pd_rfondo'), _icono(I_B_FONDO, 'aolat_pd_bfondo')]
+    for i, clave in enumerate(BONOS):
+        iconos.append(_icono(I_BONO + i, 'aolat_pd_bono_%s_n' % clave, 'aolat_pd_bono_%s_f' % clave,
+                             'aolat_pd_bono_%s_f' % clave))
     for i in range(len(torres())):
         iconos.append(_icono(I_CARTA + i, 'aolat_pd_carta%d' % i))
         iconos.append(_icono(I_OPCION + i, 'aolat_pd_op%d_n' % i, 'aolat_pd_op%d_f' % i, 'aolat_pd_op%d_f' % i))

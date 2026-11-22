@@ -33,6 +33,13 @@
   "partidas_por_dia": 3,
   "ag_por_oleada": 100,
   "_diario": "Cada personaje puede empezar partidas_por_dia partidas al dia (de medianoche a medianoche del servidor; 0 = sin limite) y gana ag_por_oleada Angel Gold por cada oleada superada, al acabar (22/11/2026).",
+  "bonos": {
+    "ataque":     {"nombre": "Attack",       "texto": "+10% damage",          "paso": 0.10},
+    "poder":      {"nombre": "Spell power",  "texto": "+20% skill damage",    "paso": 0.20, "prob_por_paso": 0.25},
+    "movimiento": {"nombre": "Roaming",      "texto": "+1 tile from statue",  "paso": 1},
+    "velocidad":  {"nombre": "Attack speed", "texto": "+8% attack speed",     "paso": 0.08}
+  },
+  "_bonos": "Al acabar cada oleada se elige una mejora para todas las mascotas de la partida (se suman si se repiten): ataque = +paso de dano (todos los golpes); poder = +paso de dano de los poderes y +paso x prob_por_paso de probabilidad de lanzarlos (0,20 x 0,25 = +5%); movimiento = +paso casillas de radio_movimiento; velocidad = -paso de la espera entre golpes (22/11/2026).",
   "temporada": {"inicio": "2026-11-22", "dias": 14},
   "ranking_top": 10,
   "rangos": {"Bronze": 5000, "Silver": 12000, "Gold": 20000, "angel_top": 10},

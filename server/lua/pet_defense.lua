@@ -300,3 +300,46 @@ function OnPDRanking(dwID, dwCmdID, dwParam, pParam)
   game.netcommand2(CMD_PD, 10, 0)
   return 1
 end
+
+-- ------------------------------------------------------------------------------------------------- las mejoras
+-- La 58200 (22/11/2026): al acabar cada oleada, elegir una mejora para todas las mascotas. opciones: {{nombre, texto,
+-- "Lv 2"}, ...} en el orden ataque, poder, movimiento, velocidad.
+WND_PD_BONO = WND_PD_BONO or 0
+local B_TITULO, B_NOMBRE, B_TEXTO, B_NIVEL, B_ESTADO = 58201, 58206, 58210, 58214, 58218
+local BW, BH = 440, 230
+
+function PDBono(titulo, opciones)
+  WND_PD_BONO = crear(WND_PD_BONO, 58200, SYSTEM_SCREEN_WIDTH / 2 - BW / 2, SYSTEM_SCREEN_HEIGHT / 2 - BH / 2)
+  if not window.isexist(WND_PD_BONO) then
+    return
+  end
+  window.settitle(WND_PD_BONO, "Pet blessing")
+  window.settitle(en(WND_PD_BONO, B_TITULO), corto(titulo, 70))
+  window.settitle(en(WND_PD_BONO, B_ESTADO), "")
+  for i = 0, 3 do
+    local o = opciones and opciones[i + 1]
+    window.settitle(en(WND_PD_BONO, B_NOMBRE + i), o and corto(o[1], 16) or "")
+    window.settitle(en(WND_PD_BONO, B_TEXTO + i), o and corto(o[2], 18) or "")
+    window.settitle(en(WND_PD_BONO, B_NIVEL + i), o and tostring(o[3]) or "")
+  end
+end
+
+function PDBonoAviso(texto)
+  if window.isexist(WND_PD_BONO) then
+    window.settitle(en(WND_PD_BONO, B_ESTADO), corto(texto, 70))
+  end
+end
+
+function PDBonoCerrar()
+  WND_PD_BONO = cerrar(WND_PD_BONO)
+end
+
+local function bono(i)
+  game.netcommand2(CMD_PD, 11, i - 1)
+  return 1
+end
+
+function OnPDBono1(dwID, dwCmdID, dwParam, pParam) return bono(1) end
+function OnPDBono2(dwID, dwCmdID, dwParam, pParam) return bono(2) end
+function OnPDBono3(dwID, dwCmdID, dwParam, pParam) return bono(3) end
+function OnPDBono4(dwID, dwCmdID, dwParam, pParam) return bono(4) end
