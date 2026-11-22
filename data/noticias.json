@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-22",
+    "titulo": "Pet Defense: exotic bosses",
+    "texto": "Every Pet Defense wave now ends with an exotic boss from distant lands: Blossom Hail, General Tengu, Scorpion Lyst, Raider Lobb, Inhibitor Speiss, Fallen Swordsman, Mech Angel Alpha, Raptor Treynor, Ghost King and the hydra Cartastolov. Monsters get 10% stronger every wave, and your pets now roam a little farther from their statues."
+  },
+  {
+    "fecha": "2026-11-22",
     "titulo": "Pet Defense: ranking, seasons and rewards",
     "texto": "Pet Defense now has a season ranking! Press Ranking in the Pet Defense menu to see the top 10 of the 2-week season. Your best game sets your rank: Bronze, Silver, Gold, Angel (top 10) or Champion (#1), with Angel Gold rewards when the season ends. Every wave you clear also gives 100 Angel Gold. Each character can play 3 games per day. Update with AngelsLauncher."
   },
