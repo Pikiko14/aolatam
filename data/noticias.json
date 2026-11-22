@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-22",
+    "titulo": "Pet Defense balance update",
+    "texto": "Pet Defense is now tougher: monsters gain 30% more HP and defense and 5% more speed with every wave. Pet blessings now give 2% per pick (up to 20% if you pick the same one every wave). The final evolution of Holy Blades, Dragon, Wolf and Fire Bomber now costs 1200 Essence."
+  },
+  {
+    "fecha": "2026-11-22",
     "titulo": "Pet Defense: pet blessings",
     "texto": "After every Pet Defense wave you can now choose a blessing for all your pets until the end of the game: more Attack, more Spell power, more Roaming range or more Attack speed. Pick the same one again to stack it. If you close the window, click the crystal to choose later. Update with AngelsLauncher."
   },
