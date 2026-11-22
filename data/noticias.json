@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-22",
+    "titulo": "Pet Defense: ranking, seasons and rewards",
+    "texto": "Pet Defense now has a season ranking! Press Ranking in the Pet Defense menu to see the top 10 of the 2-week season. Your best game sets your rank: Bronze, Silver, Gold, Angel (top 10) or Champion (#1), with Angel Gold rewards when the season ends. Every wave you clear also gives 100 Angel Gold. Each character can play 3 games per day. Update with AngelsLauncher."
+  },
+  {
+    "fecha": "2026-11-22",
     "titulo": "New minigame: Pet Defense!",
     "texto": "Defend the Holy Battlefield crystal from 10 waves of level 60 monsters, each ending with a boss, in the new Pet Defense cave. Open it from the new crystal button on the bottom bar. Click the stones along the path to place one of 11 pets as a tower; upgrade them to watch them evolve. Each pet moves around its stone and uses its own skills. Also: NPC shops now pay 100 Gold per slot for anything that is not sold in shops or in the Item Mall. Update with AngelsLauncher."
   },
