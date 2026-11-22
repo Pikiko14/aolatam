@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-22",
+    "titulo": "Pet Defense: pet blessings",
+    "texto": "After every Pet Defense wave you can now choose a blessing for all your pets until the end of the game: more Attack, more Spell power, more Roaming range or more Attack speed. Pick the same one again to stack it. If you close the window, click the crystal to choose later. Update with AngelsLauncher."
+  },
+  {
+    "fecha": "2026-11-22",
     "titulo": "Pet Defense: exotic bosses",
     "texto": "Every Pet Defense wave now ends with an exotic boss from distant lands: Blossom Hail, General Tengu, Scorpion Lyst, Raider Lobb, Inhibitor Speiss, Fallen Swordsman, Mech Angel Alpha, Raptor Treynor, Ghost King and the hydra Cartastolov. Monsters get 10% stronger every wave, and your pets now roam a little farther from their statues."
   },
