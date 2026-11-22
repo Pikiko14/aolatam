@@ -1,5 +1,10 @@
 [
   {
+    "fecha": "2026-11-22",
+    "titulo": "New minigame: Pet Defense!",
+    "texto": "Defend the Holy Battlefield crystal from 10 waves of level 60 monsters, each ending with a boss, in the new Pet Defense cave. Open it from the new crystal button on the bottom bar. Click the stones along the path to place one of 11 pets as a tower; upgrade them to watch them evolve. Each pet moves around its stone and uses its own skills. Also: NPC shops now pay 100 Gold per slot for anything that is not sold in shops or in the Item Mall. Update with AngelsLauncher."
+  },
+  {
     "fecha": "2026-11-21",
     "titulo": "Auction House tidy-up",
     "texto": "The hint text at the bottom of the Auction House no longer covers the Sell tab. Update with AngelsLauncher."
