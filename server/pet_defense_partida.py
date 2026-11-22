@@ -384,9 +384,9 @@ def _sacar_enemigo(pa, tipo, datos, ahora):
         return None
     if tipo == 'jefe':
         _aviso(ses, 'BOSS: %s appears!' % m.nombre)
-    k = 1.0 + float(pa.cfg['partida'].get('hp_por_oleada', 0.15)) * (pa.oleada - 1)
+    k = multiplicador_oleada(pa.cfg, pa.oleada)
     m.hp_max = m.hp = max(1, int(int(datos.get('hp', 100)) * k))
-    m.defensa, m.mdef = int(datos.get('defensa', 0)), int(datos.get('mdef', 0))
+    m.defensa, m.mdef = int(int(datos.get('defensa', 0)) * k), int(int(datos.get('mdef', 0)) * k)
     m.atk = m.matk = 0
     m.pet_defense = True                      # app salta su IA y su muerte normal (sin EXP ni botin)
     m.pd_tipo, m.pd_datos = tipo, datos
@@ -396,6 +396,15 @@ def _sacar_enemigo(pa, tipo, datos, ahora):
     pa.enemigos[eid] = m
     ses.enviar(__import__('combate').atributo(eid, m.porcentaje))
     return m
+
+
+def multiplicador_oleada(cfg, oleada):
+    """Lo que se multiplican los stats de los enemigos (vida, defensa y defensa magica) en esa oleada: +stats_por_oleada
+    por cada oleada despues de la primera ("que aumenten todos los stat de mob en .1 por cada oleada", 22/11/2026). La
+    velocidad no: con +10% por oleada, en la 10 corrian casi el doble y pasaban sin que las torres llegaran."""
+    pt = cfg.get('partida') or {}
+    paso = float(pt.get('stats_por_oleada', pt.get('hp_por_oleada', 0.1)))
+    return 1.0 + paso * (max(1, int(oleada)) - 1)
 
 
 def aspecto(pa, tipo, datos):

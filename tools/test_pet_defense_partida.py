@@ -212,3 +212,19 @@ def rk_tmp(tmp_path, monkeypatch):
     import pet_defense_ranking
     monkeypatch.setattr(pet_defense_ranking, 'DB_PATH', tmp_path / 'pet_defense.db')
 
+
+
+def test_los_stats_suben_un_10_por_ciento_por_oleada():
+    """"Que aumenten todos los stat de mob en .1 por cada oleada" (22/11/2026)."""
+    assert CFG['partida']['stats_por_oleada'] == 0.1
+    assert pp.multiplicador_oleada(CFG, 1) == 1.0
+    assert abs(pp.multiplicador_oleada(CFG, 10) - 1.9) < 1e-9
+
+
+def test_el_enemigo_sale_con_sus_stats_de_la_oleada(ses):
+    pa = pp.partida(ses)
+    pa.oleada = 6
+    datos = CFG['enemigos']['blindado']
+    m = pp._sacar_enemigo(pa, 'blindado', datos, 1000.0)
+    k = 1.5
+    assert m.hp_max == int(datos['hp'] * k) and m.defensa == int(datos['defensa'] * k) and m.mdef == int(datos['mdef'] * k)
