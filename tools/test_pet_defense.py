@@ -1,5 +1,7 @@
 """Pet Defense, fase 1 (21/11/2026): torres-mascota fijas que pegan a los monstruos en su alcance (server/pet_defense.py)."""
 import pathlib
+
+import pytest
 import struct
 import sys
 from types import SimpleNamespace as NS
@@ -104,3 +106,11 @@ def test_tope_y_tipo_desconocido(monkeypatch):
 def test_comando_gm():
     assert 'torre' in gm.PALABRAS_DELEGADAS and 'torre' in gm.RESULTADOS_DELEGADOS
     assert gm.parsear('/torre fuego') == ('torre', 'fuego') and gm.parsear('/tower quitar') == ('torre', 'quitar')
+
+
+@pytest.fixture(autouse=True)
+def rk_tmp(tmp_path, monkeypatch):
+    """Las partidas que acaban no van a la base de datos de verdad (data/pet_defense.db)."""
+    import pet_defense_ranking
+    monkeypatch.setattr(pet_defense_ranking, 'DB_PATH', tmp_path / 'pet_defense.db')
+

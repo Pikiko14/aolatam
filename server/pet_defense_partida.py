@@ -148,6 +148,9 @@ def empezar(ses, addr='?'):
     if not camino(int(mp['stage']), mp['portal'], mp['cristal']):
         return 'Pet Defense: no path from the portal to the crystal on map %s' % mp.get('stage')
     terminar(ses, 'abandono', avisar=False)
+    import pet_defense_ranking as rk
+    if rk.quedan_hoy(getattr(ses.personaje, 'char_id', 0)) == 0:
+        return 'You already played Pet Defense %d times today. Come back tomorrow!' % rk.maximo_al_dia()
     ses._pd_pendiente = True
     app._viajar_por_portal(ses, addr, {'destino': int(mp['stage']), 'llegada': tuple(mp['llegada'])}, motivo='a Pet Defense')
     return 'Pet Defense: going to %s' % mp.get('nombre', mp['stage'])
@@ -171,6 +174,13 @@ def al_entrar(ses, addr='?'):
         app._sincronizar_cambio_mapa(ses, int(st), int(x), int(y))
         return
     ses._pd_pendiente = False
+    import pet_defense_ranking as rk
+    if rk.quedan_hoy(getattr(p, 'char_id', 0)) == 0:
+        _aviso(ses, 'You already played Pet Defense %d times today. Come back tomorrow!' % rk.maximo_al_dia())
+        st, (x, y) = mp.get('salida', [41, [173, 91]])
+        app._sincronizar_cambio_mapa(ses, int(st), int(x), int(y))
+        return
+    rk.anotar_entrada(getattr(p, 'char_id', 0))
     pa = _PARTIDAS[ses] = Partida(ses, cfg, time.time())
     _dibujar_mapa(pa)
     pd._arrancar()
@@ -593,6 +603,14 @@ def terminar(ses, resultado, avisar=True):
                 pass
     log.info('Pet Defense: %s termina (%s) %s', getattr(getattr(ses, 'personaje', None), 'nombre', '?'), resultado,
              pa.resultado_datos)
+    try:
+        pa.guardada = __import__('pet_defense_ranking').guardar(ses, pa.resultado_datos)
+    except Exception:
+        log.exception('Pet Defense: guardar la partida')
+    try:
+        pa.resultado_datos['angel_gold'] = __import__('pet_defense_ranking').premiar_oleadas(ses, superadas)
+    except Exception:
+        log.exception('Pet Defense: AG por oleadas')
     try:
         __import__('pet_defense_ui').fin(pa)
     except Exception:

@@ -57,6 +57,11 @@ C_ACENTO, C_TENUE, C_ORO, C_ROJO = 59780, 59781, 59782, 59783
 COLORES = {C_ACENTO: (110, 231, 183), C_TENUE: (148, 163, 184), C_ORO: (251, 211, 104), C_ROJO: (248, 113, 113)}
 C_BLANCO = 103
 BOTON_BARRA, X_BARRA, Y_BARRA, NOMBRE_BOTON = 59005, 167, -127, 'aolat_pd'
+# Fase 4 (22/11/2026): el boton Ranking del menu y la ventana del ranking (ids 58100.., un hueco libre por debajo)
+M_RANKING, I_RANKING, I_R_FONDO = 59391, 59784, 59785
+V_RANKING, R_TITULO, R_MARCA, R_RANGOS, R_PREMIOS, R_VACIO, R_FONDO = range(58100, 58107)
+R_PUESTO, R_NOMBRE, R_RANGO, R_PUNTOS, R_OLEADAS = 58110, 58120, 58130, 58140, 58150      # + 0..9
+N_RANKING = 10
 
 # ---------------------------------------------------------------------------------------------- medidas
 CW, CH, CPASO = 66, 96, 70                       # tarjeta de la galeria
@@ -66,6 +71,11 @@ BANNER = (4, 4, MW - 4, 70)
 FILAS_MENU = (76, 176)
 BOTON_W, BOTON_H = 110, 26
 EMPEZAR_XY = (MW - 8 - BOTON_W, MH - 8 - BOTON_H)
+RANKING_XY = (EMPEZAR_XY[0] - 8 - BOTON_W, EMPEZAR_XY[1])
+
+RW, RH = 400, 292
+R_FILA0, R_PASO = 46, 18
+R_COLS = ((12, 22), (36, 130), (170, 70), (244, 70), (318, 76))      # puesto, nombre, rango, puntos, oleadas/tiempo
 
 EW, EH = 432, 262
 OW, OH = 66, 84                                  # opcion de la ventana de elegir (retrato + nombre dibujado)
@@ -284,6 +294,24 @@ def tarjeta(clave, datos, i, w, h, nombre_dibujado=False, foco=False):
     return _redondear(im, 7)
 
 
+def fondo_ranking():
+    im = _degradado(RW, RH, FONDO_ARRIBA, FONDO_ABAJO)
+    d = ImageDraw.Draw(im)
+    d.rectangle((0, 0, RW - 1, RH - 1), outline=_rgba(LINEA))
+    d.rounded_rectangle((6, 24, RW - 7, R_FILA0 + R_PASO * N_RANKING + 2), radius=8, fill=_rgba(SUPERFICIE_2),
+                        outline=_rgba(LINEA))
+    d.rounded_rectangle((30, 24, 96, 26), radius=1, fill=_rgba(ACENTO))
+    f = _fuente('segoeuib.ttf', 9)
+    for (x, _w), rotulo in zip(R_COLS, ('#', 'PLAYER', 'RANK', 'SCORE', 'WAVES  TIME')):
+        d.text((x + 1, 30), rotulo, font=f, fill=_rgba(TENUE))
+    for i in range(N_RANKING):
+        if i % 2 == 0:
+            y = R_FILA0 + R_PASO * i
+            d.rounded_rectangle((10, y - 1, RW - 11, y + R_PASO - 2), radius=3, fill=_rgba(SUPERFICIE))
+    d.line((8, R_FILA0 + R_PASO * N_RANKING + 8, RW - 9, R_FILA0 + R_PASO * N_RANKING + 8), fill=_rgba(LINEA))
+    return im
+
+
 def fondo_elegir():
     im = _degradado(EW, EH, FONDO_ARRIBA, FONDO_ABAJO)
     d = ImageDraw.Draw(im)
@@ -404,6 +432,8 @@ def piezas() -> dict:
         p['aolat_pd_fsalir_%s' % e] = boton('Leave', e, F_BOTON_W, rojo=True)
         p['aolat_pd_mejorar_%s' % e] = boton('Upgrade', e, T_BOTON_W)
         p['aolat_pd_vender_%s' % e] = boton('Sell', e, T_BOTON_W, rojo=True)
+        p['aolat_pd_ranking_%s' % e] = boton('Ranking', e)
+    p['aolat_pd_rfondo'] = fondo_ranking()
     normal = al_estilo_nativo(icono_barra())
     p[NOMBRE_BOTON + '_n'] = normal
     p[NOMBRE_BOTON + '_f'] = ImageEnhance.Brightness(normal).enhance(1.25)
@@ -454,13 +484,15 @@ def bloque() -> str:
     # MENU: textos encima, luego las tarjetas (botones con su clic) y el fondo.
     m = [(M_EMPEZAR, _boton(M_EMPEZAR, EMPEZAR_XY[0], EMPEZAR_XY[1], BOTON_W, BOTON_H, I_EMPEZAR, 'OnPDEmpezar',
                             'Start a Pet Defense game')),
+         (M_RANKING, _boton(M_RANKING, RANKING_XY[0], RANKING_XY[1], BOTON_W, BOTON_H, I_RANKING, 'OnPDRanking',
+                            'Season ranking and rewards')),
          (M_SUB, _texto(M_SUB, 14, 44, 260, C_ACENTO))]
     for i in range(n):
         x, y = _rejilla(i, FILAS_MENU)
         m.append((M_NOMBRE + i, _texto(M_NOMBRE + i, x + 2, y + RET_H + 2, CW - 4, C_BLANCO, '', ' ssHCenter=""')))
         m.append((M_COSTE + i, _texto(M_COSTE + i, x + 2, y + RET_H + 17, CW - 4, C_ORO, '', ' ssHCenter=""')))
     m.append((M_INFO, _texto(M_INFO, 10, FILAS_MENU[1] + CH + 6, MW - 20, C_TENUE)))
-    m.append((M_ESTADO, _texto(M_ESTADO, 10, EMPEZAR_XY[1] + 6, EMPEZAR_XY[0] - 18, C_ORO)))
+    m.append((M_ESTADO, _texto(M_ESTADO, 10, EMPEZAR_XY[1] + 6, RANKING_XY[0] - 18, C_ORO)))
     for i in range(n):
         x, y = _rejilla(i, FILAS_MENU)
         m.append((M_ARTE + i, _boton(M_ARTE + i, x, y, CW, CH, I_CARTA + i, 'OnPDCarta%d' % (i + 1))))
@@ -504,6 +536,24 @@ def bloque() -> str:
     h.append((H_FONDO, _w('WND_CLASS_BASE', H_FONDO, 0, 0, HW, HH, ' icon="%d"' % I_H_FONDO)))
     ventana(V_HUD, 'Pet Defense', HW, HH, h)
 
+    # RANKING
+    rk = [(R_TITULO, _texto(R_TITULO, 10, 4, RW - 20, C_BLANCO)),
+          (R_VACIO, _texto(R_VACIO, 14, R_FILA0 + R_PASO * 3, RW - 28, C_TENUE, 'No games yet this season. Be the first!',
+                           ' ssHCenter=""'))]
+    for i in range(N_RANKING):
+        y = R_FILA0 + R_PASO * i + 1
+        puesto = (C_ORO, C_BLANCO, C_ORO)[i] if i < 3 else C_TENUE
+        for base, (x, w), color in ((R_PUESTO, R_COLS[0], puesto), (R_NOMBRE, R_COLS[1], C_ORO if i == 0 else C_BLANCO),
+                                    (R_RANGO, R_COLS[2], C_ACENTO), (R_PUNTOS, R_COLS[3], C_BLANCO),
+                                    (R_OLEADAS, R_COLS[4], C_TENUE)):
+            rk.append((base + i, _texto(base + i, x, y, w, color)))
+    yb = R_FILA0 + R_PASO * N_RANKING + 12
+    rk += [(R_MARCA, _texto(R_MARCA, 10, yb, RW - 20, C_ORO)),
+           (R_RANGOS, _texto(R_RANGOS, 10, yb + 16, RW - 20, C_TENUE)),
+           (R_PREMIOS, _texto(R_PREMIOS, 10, yb + 32, RW - 20, C_ACENTO)),
+           (R_FONDO, _w('WND_CLASS_BASE', R_FONDO, 0, 0, RW, RH, ' icon="%d"' % I_R_FONDO))]
+    ventana(V_RANKING, 'Pet Defense ranking', RW, RH, rk)
+
     # FIN
     f = [(F_OTRA, _boton(F_OTRA, OTRA_XY[0], OTRA_XY[1], F_BOTON_W, BOTON_H, I_OTRA, 'OnPDOtra', 'Play again')),
          (F_SALIR, _boton(F_SALIR, F_SALIR_XY[0], F_SALIR_XY[1], F_BOTON_W, BOTON_H, I_F_SALIR, 'OnPDSalirFin',
@@ -518,14 +568,15 @@ def bloque() -> str:
 
     iconos = [_icono(I_M_FONDO, 'aolat_pd_menu'), _icono(I_H_FONDO, 'aolat_pd_hud'), _icono(I_F_FONDO, 'aolat_pd_fin'),
               _icono(I_E_FONDO, 'aolat_pd_elegir'), _icono(I_T_FONDO, 'aolat_pd_torre'),
-              _icono(I_VICTORIA, 'aolat_pd_victoria'), _icono(I_DERROTA, 'aolat_pd_derrota')]
+              _icono(I_VICTORIA, 'aolat_pd_victoria'), _icono(I_DERROTA, 'aolat_pd_derrota'),
+              _icono(I_R_FONDO, 'aolat_pd_rfondo')]
     for i in range(len(torres())):
         iconos.append(_icono(I_CARTA + i, 'aolat_pd_carta%d' % i))
         iconos.append(_icono(I_OPCION + i, 'aolat_pd_op%d_n' % i, 'aolat_pd_op%d_f' % i, 'aolat_pd_op%d_f' % i))
         for fase in range(3):
             iconos.append(_icono(I_RETRATO + 3 * i + fase, 'aolat_pd_ret%d_%d' % (i, fase)))
     for iid, nombre in ((I_EMPEZAR, 'empezar'), (I_SIGUIENTE, 'siguiente'), (I_SALIR, 'salir'), (I_OTRA, 'otra'),
-                        (I_F_SALIR, 'fsalir'), (I_MEJORAR, 'mejorar'), (I_VENDER, 'vender')):
+                        (I_F_SALIR, 'fsalir'), (I_MEJORAR, 'mejorar'), (I_VENDER, 'vender'), (I_RANKING, 'ranking')):
         iconos.append(_icono(iid, 'aolat_pd_%s_n' % nombre, 'aolat_pd_%s_f' % nombre, 'aolat_pd_%s_s' % nombre))
     colores = ''.join('    <color id="%d" normal="%s" focus="%s" down="%s" disable="%s"/>\n'
                       % ((cid,) + (','.join(map(str, c)),) * 4) for cid, c in COLORES.items())

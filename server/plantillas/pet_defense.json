@@ -29,6 +29,21 @@
   "_multiplicador_ataque": "Las torres contra enemigos de nivel 60: el ataque de cada una x esto. Con poderes y movimiento, el jugador simulado (construye y mejora solo, sin pelear) gana con 7 dejando 20 de 30 de cristal; con 6, 5 de 30; con 8, 29 de 30 (21/11/2026).",
   "nivel_maximo": 3,
 
+  "_ranking": "Fase 4 (pet_defense_ranking.py): temporadas de 'dias' dias desde 'inicio'; el ranking es la mejor partida de cada personaje en la temporada. Rangos por la mejor partida: Bronze/Silver/Gold por puntos, Angel si esta entre los angel_top primeros y Champion el 1o (los dos con al menos los puntos de Bronze). Al empezar una temporada se reparten los premios de la anterior segun el rango final: angel_gold y items [{id, cantidad, dias}] (dias = caducidad; sin dias, para siempre). Puntos de una partida: oleadas x 1000 + cristal x 200 + bonus de tiempo (hasta 2000), x1,5 si gana: ganar con 20 de cristal en ~23 min da ~21.900.",
+  "partidas_por_dia": 3,
+  "ag_por_oleada": 100,
+  "_diario": "Cada personaje puede empezar partidas_por_dia partidas al dia (de medianoche a medianoche del servidor; 0 = sin limite) y gana ag_por_oleada Angel Gold por cada oleada superada, al acabar (22/11/2026).",
+  "temporada": {"inicio": "2026-11-22", "dias": 14},
+  "ranking_top": 10,
+  "rangos": {"Bronze": 5000, "Silver": 12000, "Gold": 20000, "angel_top": 10},
+  "premios": {
+    "Bronze":   {"angel_gold": 1000,  "items": []},
+    "Silver":   {"angel_gold": 3000,  "items": []},
+    "Gold":     {"angel_gold": 6000,  "items": []},
+    "Angel":    {"angel_gold": 12000, "items": []},
+    "Champion": {"angel_gold": 30000, "items": []}
+  },
+
   "mapa": {
     "stage": 917,
     "nombre": "Pet Defense",

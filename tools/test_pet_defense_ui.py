@@ -339,3 +339,11 @@ def test_el_dano_es_por_nivel_y_por_coste():
     t = NS(dano_fijo=pd.dano_de(barata, 3), ataque=1, magico=False, ralentiza=0, area=0, entidad=1, ficha={'nombre': 'Wolf'})
     pd.disparar(t, m)
     assert m.hp == 10_000 - 1200
+
+
+@pytest.fixture(autouse=True)
+def rk_tmp(tmp_path, monkeypatch):
+    """Las partidas que acaban no van a la base de datos de verdad (data/pet_defense.db)."""
+    import pet_defense_ranking
+    monkeypatch.setattr(pet_defense_ranking, 'DB_PATH', tmp_path / 'pet_defense.db')
+

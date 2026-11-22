@@ -10256,6 +10256,7 @@
     <window class="WND_CLASS_DLG_1" range="0,0,440,364" id="59280" title="Pet Defense" fcolor="104" font="1">
         <style wsVisible="" wsMoveable="" />
         <child>59284</child>
+        <child>59391</child>
         <child>59281</child>
         <child>59298</child>
         <child>59310</child>
@@ -10300,6 +10301,10 @@
     <window class="WND_CLASS_BUTTON" id="59284" range="314,306,110,26" title="" icon="59708" tooltip="10040" tooltext="Start a Pet Defense game">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnPDEmpezar</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="59391" range="196,306,110,26" title="" icon="59784" tooltip="10040" tooltext="Season ranking and rewards">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnPDRanking</OnCommand>
     </window>
     <window class="WND_CLASS_STATIC" id="59281" range="14,44,260,14" title="" fcolor="59780" font="1">
         <style wsVisible="" ssVCenter="" />
@@ -10379,7 +10384,7 @@
     <window class="WND_CLASS_STATIC" id="59282" range="10,278,412,14" title="" fcolor="59781" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="59283" range="10,312,296,14" title="" fcolor="59782" font="1">
+    <window class="WND_CLASS_STATIC" id="59283" range="10,312,178,14" title="" fcolor="59782" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
     <window class="WND_CLASS_BUTTON" id="59286" range="8,76,66,96" title="" icon="59716">
@@ -10630,6 +10635,233 @@
     <window class="WND_CLASS_BASE" id="59337" range="0,0,400,52" icon="59702">
         <style wsVisible="" />
     </window>
+    <window class="WND_CLASS_DLG_1" range="0,0,408,316" id="58100" title="Pet Defense ranking" fcolor="104" font="1">
+        <style wsVisible="" wsMoveable="" />
+        <child>58101</child>
+        <child>58105</child>
+        <child>58110</child>
+        <child>58120</child>
+        <child>58130</child>
+        <child>58140</child>
+        <child>58150</child>
+        <child>58111</child>
+        <child>58121</child>
+        <child>58131</child>
+        <child>58141</child>
+        <child>58151</child>
+        <child>58112</child>
+        <child>58122</child>
+        <child>58132</child>
+        <child>58142</child>
+        <child>58152</child>
+        <child>58113</child>
+        <child>58123</child>
+        <child>58133</child>
+        <child>58143</child>
+        <child>58153</child>
+        <child>58114</child>
+        <child>58124</child>
+        <child>58134</child>
+        <child>58144</child>
+        <child>58154</child>
+        <child>58115</child>
+        <child>58125</child>
+        <child>58135</child>
+        <child>58145</child>
+        <child>58155</child>
+        <child>58116</child>
+        <child>58126</child>
+        <child>58136</child>
+        <child>58146</child>
+        <child>58156</child>
+        <child>58117</child>
+        <child>58127</child>
+        <child>58137</child>
+        <child>58147</child>
+        <child>58157</child>
+        <child>58118</child>
+        <child>58128</child>
+        <child>58138</child>
+        <child>58148</child>
+        <child>58158</child>
+        <child>58119</child>
+        <child>58129</child>
+        <child>58139</child>
+        <child>58149</child>
+        <child>58159</child>
+        <child>58102</child>
+        <child>58103</child>
+        <child>58104</child>
+        <child>58106</child>
+    </window>
+    <window class="WND_CLASS_STATIC" id="58101" range="10,4,380,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58105" range="14,100,372,14" title="No games yet this season. Be the first!" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58110" range="12,47,22,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58120" range="36,47,130,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58130" range="170,47,70,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58140" range="244,47,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58150" range="318,47,76,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58111" range="12,65,22,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58121" range="36,65,130,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58131" range="170,65,70,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58141" range="244,65,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58151" range="318,65,76,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58112" range="12,83,22,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58122" range="36,83,130,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58132" range="170,83,70,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58142" range="244,83,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58152" range="318,83,76,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58113" range="12,101,22,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58123" range="36,101,130,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58133" range="170,101,70,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58143" range="244,101,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58153" range="318,101,76,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58114" range="12,119,22,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58124" range="36,119,130,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58134" range="170,119,70,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58144" range="244,119,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58154" range="318,119,76,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58115" range="12,137,22,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58125" range="36,137,130,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58135" range="170,137,70,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58145" range="244,137,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58155" range="318,137,76,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58116" range="12,155,22,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58126" range="36,155,130,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58136" range="170,155,70,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58146" range="244,155,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58156" range="318,155,76,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58117" range="12,173,22,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58127" range="36,173,130,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58137" range="170,173,70,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58147" range="244,173,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58157" range="318,173,76,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58118" range="12,191,22,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58128" range="36,191,130,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58138" range="170,191,70,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58148" range="244,191,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58158" range="318,191,76,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58119" range="12,209,22,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58129" range="36,209,130,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58139" range="170,209,70,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58149" range="244,209,70,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58159" range="318,209,76,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58102" range="10,238,380,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58103" range="10,254,380,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58104" range="10,270,380,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BASE" id="58106" range="0,0,400,292" icon="59785">
+        <style wsVisible="" />
+    </window>
     <window class="WND_CLASS_DLG_1" range="0,0,308,220" id="59340" title="Pet Defense" fcolor="104" font="1">
         <style wsVisible="" wsMoveable="" />
         <child>59346</child>
@@ -10674,6 +10906,7 @@
     <icon id="59707" dir="\wnd01\" normal="aolat_pd_torre" focus="normal" down="normal" disable="normal" />
     <icon id="59704" dir="\wnd01\" normal="aolat_pd_victoria" focus="normal" down="normal" disable="normal" />
     <icon id="59705" dir="\wnd01\" normal="aolat_pd_derrota" focus="normal" down="normal" disable="normal" />
+    <icon id="59785" dir="\wnd01\" normal="aolat_pd_rfondo" focus="normal" down="normal" disable="normal" />
     <icon id="59716" dir="\wnd01\" normal="aolat_pd_carta0" focus="normal" down="normal" disable="normal" />
     <icon id="59728" dir="\wnd01\" normal="aolat_pd_op0_n" focus="aolat_pd_op0_f" down="aolat_pd_op0_f" disable="normal" />
     <icon id="59740" dir="\wnd01\" normal="aolat_pd_ret0_0" focus="normal" down="normal" disable="normal" />
@@ -10736,5 +10969,6 @@
     <icon id="59712" dir="\wnd01\" normal="aolat_pd_fsalir_n" focus="aolat_pd_fsalir_f" down="aolat_pd_fsalir_s" disable="normal" />
     <icon id="59713" dir="\wnd01\" normal="aolat_pd_mejorar_n" focus="aolat_pd_mejorar_f" down="aolat_pd_mejorar_s" disable="normal" />
     <icon id="59714" dir="\wnd01\" normal="aolat_pd_vender_n" focus="aolat_pd_vender_f" down="aolat_pd_vender_s" disable="normal" />
+    <icon id="59784" dir="\wnd01\" normal="aolat_pd_ranking_n" focus="aolat_pd_ranking_f" down="aolat_pd_ranking_s" disable="normal" />
     <!-- /aolat pet defense -->
 </root>

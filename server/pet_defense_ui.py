@@ -62,7 +62,10 @@ def abrir(ses):
     n = len(cfg.get('oleadas') or [])
     jefe = any(t == 'jefe' for ol in cfg.get('oleadas') or () for t, _ in ol.get('enemigos') or ())
     sub = '%d waves%s - defend the crystal' % (n, ', boss at the end' if jefe else '')
-    info = 'Click a stone in the cave to choose which pet goes there; click it again to upgrade.'
+    import pet_defense_ranking as rk
+    quedan = rk.quedan_hoy(getattr(ses.personaje, 'char_id', 0))
+    hoy = '' if quedan is None else '  Games left today: %d/%d.' % (quedan, rk.maximo_al_dia())
+    info = _linea_marca(ses) + '.' + hoy
     filas = []
     for clave, d in _torres():
         ataque, alcance = _stats(d)
@@ -155,14 +158,56 @@ def fin(pa):
             pass
         return
     s = int(d.get('segundos', 0))
-    lineas = ['Waves cleared: %d / %d' % (d.get('oleadas', 0), pa.total_oleadas),
-              'Crystal: %d / %d' % (pa.vida, pa.vida_max),
+    lineas = ['Waves cleared: %d / %d   Crystal: %d / %d' % (d.get('oleadas', 0), pa.total_oleadas, pa.vida, pa.vida_max),
               'Time: %d:%02d   Enemies defeated: %d' % (s // 60, s % 60, d.get('muertos', 0)),
-              'Score: {:,}'.format(int(d.get('puntos', 0)))]
+              'Score: {:,}   Reward: {:,} AG'.format(int(d.get('puntos', 0)), int(d.get('angel_gold', 0))),
+              _linea_marca(ses, int(d.get('puntos', 0)))]
     try:
         ses.enviar(*(preparar(ses) + [canal_lua.llamar('PDFin', pa.resultado == 'victoria', lineas)]))
     except Exception:
         log.debug('PDFin', exc_info=True)
+
+
+# ---------------------------------------------------------------------------------------------- el ranking
+def _tiempo(s):
+    s = int(s or 0)
+    return '%d:%02d' % (s // 60, s % 60)
+
+
+def _linea_marca(ses, puntos=None):
+    """'Season 3 best: #4 21,300 (Gold)' del jugador, o 'No score yet this season'."""
+    import pet_defense_ranking as rk
+    n = rk.temporada()[0]
+    puesto, fila = rk.mi_marca(getattr(ses.personaje, 'char_id', 0), n)
+    if fila is None:
+        return 'No score yet in season %d' % n
+    r = rk.rango(fila[4], puesto)
+    nuevo = ' NEW BEST!' if puntos is not None and int(puntos) >= int(fila[4]) and int(puntos) > 0 else ''
+    return 'Season %d best: #%d  {:,}%s%s'.format(int(fila[4])) % (n, puesto, (' (%s)' % r) if r else '', nuevo)
+
+
+def ranking(ses):
+    """La ventana del ranking de la temporada: los 10 mejores, la marca del jugador y los premios por rango."""
+    import pet_defense as pd
+    import pet_defense_ranking as rk
+    n, _desde, hasta = rk.temporada()
+    dias = max(0, int((hasta - time.time()) // 86400))
+    horas = max(0, int((hasta - time.time()) % 86400 // 3600))
+    titulo = 'Season %d - ends in %dd %dh' % (n, dias, horas)
+    filas = []
+    for i, (cid, _u, nombre, nivel, puntos, oleadas, segundos, _res) in enumerate(rk.ranking(n)):
+        filas.append([i + 1, nombre, rk.rango(puntos, i + 1) or '-', '{:,}'.format(int(puntos)),
+                      '%d/%d  %s' % (oleadas, len(pd.config().get('oleadas') or []), _tiempo(segundos))])
+    premios = pd.config().get('premios') or {}
+    def _ag(v):
+        v = int(v or 0)
+        return '%dk' % (v // 1000) if v and v % 1000 == 0 else '{:,}'.format(v)
+    linea_premios = 'Rewards (AG): ' + '  '.join('%s %s' % (k, _ag((premios.get(k) or {}).get('angel_gold', 0)))
+                                                 for k in ('Champion', 'Angel', 'Gold', 'Silver', 'Bronze') if premios.get(k))
+    r = pd.config().get('rangos') or {}
+    linea_rangos = 'Bronze {:,}  Silver {:,}  Gold {:,}  Angel top {}  Champion #1'.format(
+        int(r.get('Bronze', 0)), int(r.get('Silver', 0)), int(r.get('Gold', 0)), int(r.get('angel_top', 10)))
+    return preparar(ses) + [canal_lua.llamar('PDRanking', titulo, filas, _linea_marca(ses), linea_rangos, linea_premios)]
 
 
 # ---------------------------------------------------------------------------------------------- los botones
@@ -195,7 +240,13 @@ def procesar(ses, cuerpo, addr='?') -> bool:
             return True
         msg = pp.empezar(ses, addr)
         log.info('Pet Defense: %s pide empezar: %s', getattr(ses.personaje, 'nombre', '?'), msg)
+        if msg.startswith('You already played'):
+            ses.enviar(canal_lua.llamar('PDAviso', 'No games left today. Come back tomorrow!'))
+            pp._aviso(ses, msg)
+            return True
         ses.enviar(canal_lua.llamar('PDCerrar'))
+    elif a == 10:
+        ses.enviar(*ranking(ses))
     elif a == 4:
         if pa is not None and pp.saltar_pausa(pa):
             refrescar(pa, forzar=True)

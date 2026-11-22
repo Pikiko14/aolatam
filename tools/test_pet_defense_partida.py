@@ -204,3 +204,11 @@ def test_el_cristal_es_el_de_la_holy_battlefield(ses):
     mp = CFG['mapa']
     esperado = login._map_object_spawn(pa.npc_cristal, mp['objeto_cristal'], tuple(mp['cristal']))
     assert mp['objeto_cristal'] in (60368, 60367) and esperado and esperado in ses.enviados
+
+
+@pytest.fixture(autouse=True)
+def rk_tmp(tmp_path, monkeypatch):
+    """Las partidas que acaban no van a la base de datos de verdad (data/pet_defense.db)."""
+    import pet_defense_ranking
+    monkeypatch.setattr(pet_defense_ranking, 'DB_PATH', tmp_path / 'pet_defense.db')
+

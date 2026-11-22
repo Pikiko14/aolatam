@@ -262,3 +262,41 @@ function OnPDSalirFin(dwID, dwCmdID, dwParam, pParam)
   game.netcommand2(CMD_PD, 5, 0)
   return 1
 end
+
+-- ------------------------------------------------------------------------------------------------- el ranking
+-- La 58100 (fase 4): titulo "Season 3 - ends in 5d 4h"; filas {{puesto, nombre, rango, puntos, "10/10  23:12"}, ...};
+-- marca: la del jugador; rangos y premios: las dos lineas de abajo.
+WND_PD_RANKING = WND_PD_RANKING or 0
+local R_TITULO, R_MARCA, R_RANGOS, R_PREMIOS, R_VACIO = 58101, 58102, 58103, 58104, 58105
+local R_PUESTO, R_NOMBRE, R_RANGO, R_PUNTOS, R_OLEADAS = 58110, 58120, 58130, 58140, 58150
+local RW, RH = 408, 316
+
+function PDRanking(titulo, filas, marca, rangos, premios)
+  WND_PD_RANKING = crear(WND_PD_RANKING, 58100, SYSTEM_SCREEN_WIDTH / 2 - RW / 2, SYSTEM_SCREEN_HEIGHT / 2 - RH / 2)
+  if not window.isexist(WND_PD_RANKING) then
+    return
+  end
+  window.settitle(WND_PD_RANKING, "Pet Defense ranking")
+  window.settitle(en(WND_PD_RANKING, R_TITULO), corto(titulo, 60))
+  window.show(en(WND_PD_RANKING, R_VACIO), not (filas and filas[1]))
+  for i = 0, 9 do
+    local f = filas and filas[i + 1]
+    window.settitle(en(WND_PD_RANKING, R_PUESTO + i), f and tostring(f[1]) or "")
+    window.settitle(en(WND_PD_RANKING, R_NOMBRE + i), f and corto(f[2], 20) or "")
+    window.settitle(en(WND_PD_RANKING, R_RANGO + i), f and tostring(f[3]) or "")
+    window.settitle(en(WND_PD_RANKING, R_PUNTOS + i), f and tostring(f[4]) or "")
+    window.settitle(en(WND_PD_RANKING, R_OLEADAS + i), f and tostring(f[5]) or "")
+  end
+  window.settitle(en(WND_PD_RANKING, R_MARCA), corto(marca, 64))
+  window.settitle(en(WND_PD_RANKING, R_RANGOS), corto(rangos, 64))
+  window.settitle(en(WND_PD_RANKING, R_PREMIOS), corto(premios, 64))
+end
+
+function PDRankingCerrar()
+  WND_PD_RANKING = cerrar(WND_PD_RANKING)
+end
+
+function OnPDRanking(dwID, dwCmdID, dwParam, pParam)
+  game.netcommand2(CMD_PD, 10, 0)
+  return 1
+end
