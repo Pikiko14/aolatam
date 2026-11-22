@@ -1,7 +1,7 @@
 {
   "_comentario": "Pet Defense (server/pet_defense.py y pet_defense_partida.py). Se relee al cambiar: se puede ajustar sin reiniciar (lo nuevo vale desde la partida siguiente). TORRES: alcance en casillas, cadencia en segundos entre golpes, ataque es la base de Monstruo.recibir (x0,4 como el golpe basico de la mascota), area = casillas alrededor del objetivo que tambien reciben, ralentiza = segundos a media velocidad, objetivos = a cuantos pega a la vez, essence_por_oleada = Essence extra (x nivel) al acabar cada oleada, coste en Essence, sprites = la mascota de cada fase (evoluciona al mejorar; los retratos de las ventanas salen de ellas, tools/ventana_pet_defense.py: al cambiar de mascota hay que volver a correrlo y sacar el parche). Vender devuelve venta_reembolso de lo gastado en ella. Mejorar al nivel N cuesta coste x N (N = 2, 3...) y da ataque x mejora_ataque y +mejora_alcance casillas por nivel. ENEMIGOS: npc_type de monster.xml (solo el aspecto), y su vida, defensas, velocidad (la del 0x0005), Essence al morir y vida que le quitan al cristal al llegar. OLEADAS: [tipo, cuantos]; la vida, la defensa y la defensa magica de cada enemigo crecen un stats_por_oleada por oleada (la velocidad no).",
   "torres": {
-    "lobo":     {"nombre": "Wolf",        "rol": "Fast bites, short",  "sprites": [3003, 3004, 3008], "alcance": 3, "cadencia": 0.6, "ataque": 170, "magico": false, "coste": 50},
+    "lobo":     {"nombre": "Wolf",        "rol": "Fast bites, short",  "sprites": [3003, 3004, 3008], "alcance": 3, "cadencia": 0.6, "ataque": 170, "magico": false, "coste": 50, "coste_nivel": {"3": 1200}},
     "guardian": {"nombre": "Earth Guard", "rol": "Steady hits",        "sprites": [3074, 3076, 3080], "alcance": 5, "cadencia": 1.2, "ataque": 250, "magico": false, "coste": 60},
     "bebe":     {"nombre": "Honey Baby",  "rol": "+Essence each wave", "sprites": [3122, 3124, 3128], "alcance": 4, "cadencia": 1.5, "ataque": 80,  "magico": false, "essence_por_oleada": 15, "coste": 70},
     "arquero":  {"nombre": "Wind Archer", "rol": "Fast, long range",   "sprites": [3062, 3064, 3068], "alcance": 8, "cadencia": 0.8, "ataque": 150, "magico": false, "coste": 80},
@@ -9,9 +9,9 @@
     "escarcha": {"nombre": "Frost Diver", "rol": "Slows enemies",      "sprites": [3038, 3040, 3044], "alcance": 6, "cadencia": 1.5, "ataque": 120, "magico": true, "ralentiza": 2.5, "coste": 90},
     "flor":     {"nombre": "Flower Fairy","rol": "Hits 2 at once",     "sprites": [3026, 3028, 3033], "alcance": 6, "cadencia": 1.4, "ataque": 180, "magico": true, "objetivos": 2, "coste": 100},
     "elfo":     {"nombre": "Elf Queen",   "rol": "Magic sniper",       "sprites": [3086, 3088, 3092], "alcance": 9, "cadencia": 1.3, "ataque": 260, "magico": true, "coste": 110},
-    "fuego":    {"nombre": "Fire Bomber", "rol": "Magic splash",       "sprites": [3050, 3054, 3056], "alcance": 6, "cadencia": 2.0, "ataque": 400, "magico": true, "area": 2, "coste": 120},
-    "espada":   {"nombre": "Holy Blades", "rol": "Hits 3 at once",     "sprites": [3110, 3112, 3116], "alcance": 5, "cadencia": 1.1, "ataque": 200, "magico": false, "objetivos": 3, "coste": 150},
-    "dragon":   {"nombre": "Dragon",      "rol": "Big magic splash",   "sprites": [3098, 3100, 3105], "alcance": 7, "cadencia": 2.2, "ataque": 700, "magico": true, "area": 2, "coste": 220}
+    "fuego":    {"nombre": "Fire Bomber", "rol": "Magic splash",       "sprites": [3050, 3054, 3056], "alcance": 6, "cadencia": 2.0, "ataque": 400, "magico": true, "area": 2, "coste": 120, "coste_nivel": {"3": 1200}},
+    "espada":   {"nombre": "Holy Blades", "rol": "Hits 3 at once",     "sprites": [3110, 3112, 3116], "alcance": 5, "cadencia": 1.1, "ataque": 200, "magico": false, "objetivos": 3, "coste": 150, "coste_nivel": {"3": 1200}},
+    "dragon":   {"nombre": "Dragon",      "rol": "Big magic splash",   "sprites": [3098, 3100, 3105], "alcance": 7, "cadencia": 2.2, "ataque": 700, "magico": true, "area": 2, "coste": 220, "coste_nivel": {"3": 1200}}
   },
   "torre_por_defecto": "guardian",
   "max_torres_por_jugador": 16,
@@ -34,12 +34,12 @@
   "ag_por_oleada": 100,
   "_diario": "Cada personaje puede empezar partidas_por_dia partidas al dia (de medianoche a medianoche del servidor; 0 = sin limite) y gana ag_por_oleada Angel Gold por cada oleada superada, al acabar (22/11/2026).",
   "bonos": {
-    "ataque":     {"nombre": "Attack",       "texto": "+10% damage",          "paso": 0.10},
-    "poder":      {"nombre": "Spell power",  "texto": "+20% skill damage",    "paso": 0.20, "prob_por_paso": 0.25},
+    "ataque":     {"nombre": "Attack",       "texto": "+2% damage",           "paso": 0.02},
+    "poder":      {"nombre": "Spell power",  "texto": "+2% skill damage",     "paso": 0.02, "prob_por_paso": 0.25},
     "movimiento": {"nombre": "Roaming",      "texto": "+1 tile from statue",  "paso": 1},
-    "velocidad":  {"nombre": "Attack speed", "texto": "+8% attack speed",     "paso": 0.08}
+    "velocidad":  {"nombre": "Attack speed", "texto": "+2% attack speed",     "paso": 0.02}
   },
-  "_bonos": "Al acabar cada oleada se elige una mejora para todas las mascotas de la partida (se suman si se repiten): ataque = +paso de dano (todos los golpes); poder = +paso de dano de los poderes y +paso x prob_por_paso de probabilidad de lanzarlos (0,20 x 0,25 = +5%); movimiento = +paso casillas de radio_movimiento; velocidad = -paso de la espera entre golpes (22/11/2026).",
+  "_bonos": "Al acabar cada oleada se elige una mejora para todas las mascotas de la partida (se suman si se repiten): ataque = +paso de dano (todos los golpes); poder = +paso de dano de los poderes y +paso x prob_por_paso de probabilidad de lanzarlos (0,02 x 0,25 = +0,5%); con 2% por vez, elegir la misma las 10 oleadas da +20% (22/11/2026, antes 10%); movimiento = +paso casillas de radio_movimiento; velocidad = -paso de la espera entre golpes (22/11/2026).",
   "temporada": {"inicio": "2026-11-22", "dias": 14},
   "ranking_top": 10,
   "rangos": {"Bronze": 5000, "Silver": 12000, "Gold": 20000, "angel_top": 10},
@@ -72,7 +72,8 @@
     "pausa_entre_oleadas": 12,
     "separacion_enemigos": 1.0,
     "casillas_por_paso": 3,
-    "stats_por_oleada": 0.1
+    "stats_por_oleada": 0.3,
+    "velocidad_por_oleada": 0.05
   },
 
   "_enemigos": "La vida va x2,8 sobre la de nivel 60 desde que las mascotas pegan un dano fijo sin defensa (dano_por_nivel): asi el jugador simulado gana dejando 21 de 30 de cristal (21/11/2026). Stats de nivel 60 del juego base: los mobs de nivel 55-65 de los mapas de siempre tienen 2.000-4.500 de vida, ~620 de defensa y ~250 de defensa magica; los blindados (Dark Elite) ~1.500 de defensa; el jefe de nivel 60 de la Torre de Babel (Cat Lord) 25.949 de vida, 633 y 419. npc_types: los aspectos, de monster.xml, de mapas de antes de las expansiones nuevas; cada mob sale con uno al azar de su lista y el jefe de cada oleada es el de su numero (jefe 1 en la oleada 1...): jefes de las expansiones que el servidor tiene apagadas, de los que el cliente sabe dibujar ('utiliza jefes de las expansiones que no tenemos habilitadas, que se vea bien exotico', 22/11/2026): Blossom Hail, General Tengu, Scorpion Lyst, Raider Lobb, Inhibitor Speiss, C-Fallen Swordsman, Mech Angel Alpha, Raptor Treynor, C-Ghost King y C-Cartastolov.",

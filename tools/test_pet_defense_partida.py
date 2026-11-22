@@ -216,9 +216,9 @@ def rk_tmp(tmp_path, monkeypatch):
 
 def test_los_stats_suben_un_10_por_ciento_por_oleada():
     """"Que aumenten todos los stat de mob en .1 por cada oleada" (22/11/2026)."""
-    assert CFG['partida']['stats_por_oleada'] == 0.1
+    assert CFG['partida']['stats_por_oleada'] == 0.3
     assert pp.multiplicador_oleada(CFG, 1) == 1.0
-    assert abs(pp.multiplicador_oleada(CFG, 10) - 1.9) < 1e-9
+    assert abs(pp.multiplicador_oleada(CFG, 10) - 3.7) < 1e-9
 
 
 def test_el_enemigo_sale_con_sus_stats_de_la_oleada(ses):
@@ -226,5 +226,43 @@ def test_el_enemigo_sale_con_sus_stats_de_la_oleada(ses):
     pa.oleada = 6
     datos = CFG['enemigos']['blindado']
     m = pp._sacar_enemigo(pa, 'blindado', datos, 1000.0)
-    k = 1.5
+    k = pp.multiplicador_oleada(CFG, 6)
     assert m.hp_max == int(datos['hp'] * k) and m.defensa == int(datos['defensa'] * k) and m.mdef == int(datos['mdef'] * k)
+
+
+def test_la_ultima_evolucion_de_algunas_cuesta_1200(ses):
+    """"Que las ultimas transformaciones del sword, dragon, brute y fire cuesten 1200 esencias" (22/11/2026)."""
+    pa = pp.partida(ses)
+    for clave in ('espada', 'dragon', 'lobo', 'fuego'):
+        assert pp._coste(ses, 3, clave) == 1200
+        assert pp._coste(ses, 2, clave) == CFG['torres'][clave]['coste'] * 2
+    assert pp._coste(ses, 3, 'oso') == CFG['torres']['oso']['coste'] * 3
+    pa.essence = 10_000
+    pp.construir(pa, 0, 'dragon')
+    pp.mejorar(pa, 0)
+    antes = pa.essence
+    ok, _msg = pp.mejorar(pa, 0)
+    assert ok and antes - pa.essence == 1200
+
+
+def test_los_enemigos_corren_mas_en_cada_oleada(ses):
+    """"Que los mob no caminen con su velocidad normal tambien" (22/11/2026): +velocidad_por_oleada por oleada."""
+    from codec import Msg
+    pa = pp.partida(ses)
+    paso = CFG['partida']['velocidad_por_oleada']
+    assert paso > 0
+    datos = CFG['enemigos']['normal']
+    velocidades = []
+    for oleada in (1, 10):
+        pa.oleada = oleada
+        m = pp._sacar_enemigo(pa, 'normal', datos, 1000.0)
+        ses.enviados.clear()
+        m.pd_llega = 0
+        pp._mover(pa, m, 1000.0)
+        mv = [p for p in ses.enviados if struct.unpack_from('<H', p)[0] == 0x0005][0]
+        velocidades.append(Msg.registry[(0x0005, 's2c', '*')].parse(mv[2:])['speed']
+                           if hasattr(Msg.registry[(0x0005, 's2c', '*')], 'parse') else mv)
+    if isinstance(velocidades[0], int):
+        assert velocidades[1] == round(datos['velocidad'] * (1 + paso * 9)) and velocidades[0] == datos['velocidad']
+    else:
+        assert velocidades[0] != velocidades[1]

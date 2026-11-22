@@ -267,7 +267,13 @@ def _nombre_tipo(ses):
 
 
 def _coste(ses, nivel, tipo=None):
+    """Lo que cuesta poner (nivel 1) o subir a ese nivel una torre: coste x nivel, salvo que la torre traiga su precio
+    para ese nivel en 'coste_nivel' ("que las ultimas transformaciones del sword, dragon, brute y fire cuesten 1200
+    esencias", 22/11/2026)."""
     datos = pd.config()['torres'].get(tipo or tipo_elegido(ses)) or {}
+    fijo = (datos.get('coste_nivel') or {}).get(str(int(nivel)))
+    if fijo is not None:
+        return int(fijo)
     return int(datos.get('coste', 0)) * max(1, int(nivel))
 
 
@@ -468,7 +474,9 @@ def _mover(pa, m, ahora):
     while j < len(ruta) - 1 and j - i < pasos_max and (ruta[j + 1][0] - ruta[j][0], ruta[j + 1][1] - ruta[j][1]) == d:
         j += 1
     (x0, y0), (x1, y1) = ruta[i], ruta[j]
-    vel = int(m.pd_datos.get('velocidad', 45))
+    # "Que los mob no caminen con su velocidad normal tambien" (22/11/2026): +velocidad_por_oleada por oleada
+    paso_vel = float((pa.cfg.get('partida') or {}).get('velocidad_por_oleada', 0))
+    vel = int(round(int(m.pd_datos.get('velocidad', 45)) * (1.0 + paso_vel * (max(1, pa.oleada) - 1))))
     if ahora < getattr(m, 'lento_hasta', 0):
         vel = max(5, vel // 2)
     pk = Msg.registry[(0x0005, 's2c', '*')].build(entity_id=m.entity_id, cur_x=x0 * 32, cur_y=y0 * 32,
