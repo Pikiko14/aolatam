@@ -277,11 +277,12 @@ def _spawn(ses):
         _pd_job = __import__('trade_routes').pd_de(ses)
     except Exception:
         _pd_job = {}
+    _mb = getattr(ses, '_mb_visual', None) or {}      # Angel MOBA: lo comprado en la tienda, por encima (moba_tienda)
     for idx, (r_fash, r_eq) in enumerate(((167, 1), (168, 2), (169, 3), (170, 4),
                                           (171, 5), (172, 6), (173, 7), (174, 10))):
-        it = int(_pd_job.get(r_fash) or bolsa.get(r_fash) or bolsa.get(r_eq) or 0)
+        it = int(_mb.get(r_eq) or _pd_job.get(r_fash) or bolsa.get(r_fash) or bolsa.get(r_eq) or 0)
         struct.pack_into('<I', b, 64 + idx * 4, it)
-    struct.pack_into('<I', b, 96, int(bolsa.get(3) or 0))
+    struct.pack_into('<I', b, 96, int(_mb.get(3) or bolsa.get(3) or 0))
     struct.pack_into('<I', b, 100, int(bolsa.get(175) or 0))
     # Burbuja de chat para otros jugadores: Angel.exe 0x5e997b lee dword ptr [packet + 0x6C]
     # (offset 106 en 'b') y lo almacena en la ranura 15 (0xF) del equipo del personaje.
@@ -396,6 +397,9 @@ def clave_de_mapa(ses, stage):
         return (int(stage),'daily',(r or {}).get('id'))
     if int(stage) in territorios_liga.AREAS:
         return territorios_liga.clave(ses, stage)
+    if int(stage) == int((__import__('moba').config().get('mapa') or {}).get('stage', -1)):
+        pa = __import__('moba').partida_de(ses)          # Angel MOBA: los 10 de una partida se ven entre ellos
+        return (int(stage), 'moba', pa.id if pa is not None else 'fuera-%d' % id(ses))
     if int(stage) == 501:
         import granja_liga
         return granja_liga.clave(ses)

@@ -1152,6 +1152,11 @@ async def reloj():
                 __import__('pet_defense_ranking').cron()      # Pet Defense: premios al cerrar cada temporada
             except Exception:
                 log.exception('Pet Defense season clock')
+            try:
+                __import__('moba_lobby').cron()               # Angel MOBA: inscripcion a horas fijas
+                __import__('moba_ranking').cron()             # y premios al cerrar cada temporada
+            except Exception:
+                log.exception('Angel MOBA sign-up clock')
             import holy_battlefield as hb
             hb.tick_cristales()
             tick_retornos()

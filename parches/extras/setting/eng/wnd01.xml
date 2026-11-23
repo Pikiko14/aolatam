@@ -194,6 +194,7 @@
 		<child>59003</child>
 		<child>59004</child>
 		<child>59005</child>
+		<child>59006</child>
 		<child>59002</child>
 		<child>59001</child>
         <child>12600</child>
@@ -6242,4 +6243,11 @@
     </window>
     <icon id="59005" dir="\wnd01\" normal="aolat_pd_n" focus="aolat_pd_f" down="aolat_pd_n" disable="normal" />
     <!-- /aolat pet defense -->
+    <!-- aolat angel moba -->
+    <window class="WND_CLASS_BUTTON" range="121,-127,40,56" id="59006" icon="59006" tooltip="10043" tooltext="Angel MOBA">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnCommandMoba</OnCommand>
+    </window>
+    <icon id="59006" dir="\wnd01\" normal="aolat_mb_n" focus="aolat_mb_f" down="aolat_mb_n" disable="normal" />
+    <!-- /aolat angel moba -->
 </root>

@@ -55,6 +55,7 @@ def recursos():
 
 
 def puede_atacar(ses,target):
+    if not __import__('moba').puede_atacar(ses,target):return False      # MOBA: no a las unidades de tu equipo
     if not __import__('daily_events').can_target(ses,target):return False
     if not __import__('league_war').can_target(ses,target):return False
     if not getattr(target,'es_estructura_hb',False):return True

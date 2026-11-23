@@ -4015,6 +4015,9 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
     # Pet Defense: su Essence y fuera, sin EXP, botin ni reaparicion (pet_defense_partida.py)
     if getattr(m, 'pet_defense', False) and __import__('pet_defense_partida').al_morir(ses, m):
         return
+    # Angel MOBA: subditos, torres y nucleos (moba.py), sin EXP ni botin
+    if getattr(m, 'moba', False) and __import__('moba').al_morir(ses, m):
+        return
     # Santa Clausula (evento de Navidad): botin a todos los que le pegaron, antes de que se reparta y se vacie dano_por.
     if getattr(m, 'npc_type', 0) == 23901:
         try:
@@ -5107,8 +5110,9 @@ def _apariencia(ses):
     ent = p.entity_id
     out = []
     # 1. Ranuras de equipo regular (1..7, 10)
+    mb = getattr(ses, '_mb_visual', None) or {}    # Angel MOBA: lo comprado en la tienda (moba_tienda.vestir)
     for r in RANURAS_VISIBLES:
-        out.append(_cb.equipar_visual(ent, r, int(bolsa.get(r, 0) or 0)))
+        out.append(_cb.equipar_visual(ent, r, int(mb.get(r) or bolsa.get(r, 0) or 0)))
     # 2. Ranuras de Fashion (167..174): TODAS, con 0 las vacias. Mandando
     # solo las ocupadas, al quitarse una pieza nadie le decia al cliente que
     # esa ranura habia quedado vacia, y la seguia pintando encima del
@@ -5116,7 +5120,8 @@ def _apariencia(ses):
     # Con job de Trade Routes, la PD del job (la fashion queda bloqueada hasta dejarlo).
     pd = __import__('trade_routes').pd_de(ses)
     for r in range(167, 175):
-        out.append(_cb.equipar_visual(ent, r, int(pd.get(r) or bolsa.get(r, 0) or 0)))
+        r_eq = {174: 10}.get(r, r - 166)
+        out.append(_cb.equipar_visual(ent, r, int(mb.get(r_eq) or pd.get(r) or bolsa.get(r, 0) or 0)))
     return out
 
 
@@ -11961,6 +11966,14 @@ Session.paquete_peso = staticmethod(_paquete_peso)
 def _stats_ses(ses):
     """Genera el paquete 0x0042 con stats completos del personaje."""
     import inventario as inv
+    try:                                    # heroe del MOBA: las suyas, no las del personaje (23/11/2026)
+        import moba
+        pa = moba.partida_de(ses)
+        h = pa.heroes.get(ses) if pa is not None else None
+        if h is not None:
+            return __import__('moba_heroe')._paquete_stats(h)
+    except Exception:
+        log.debug('moba: stats', exc_info=True)
     p = getattr(ses, 'personaje', None)
     bolsa = getattr(ses, 'inventario', None)
     ses.peso_enviado = inv.peso_total(bolsa)
@@ -12606,6 +12619,8 @@ class Servidor:
 
                 if getattr(ses, 'muerto', False) or getattr(p, 'hp', 1) <= 0:
                     toca_regen = False       # muerto no se regenera ("estando muerto me recupera la hp")
+                if __import__('moba').partida_de(ses) is not None:
+                    toca_regen = False       # en el MOBA la vida y el mana son los del heroe (moba_heroe.tick)
                 if toca_regen:
                     pkgs = []
                     bolsa_pj = getattr(ses, 'inventario', None)
@@ -13868,6 +13883,10 @@ class Servidor:
             except Exception:
                 log.exception('Pet Defense: al entrar')
             try:
+                __import__('moba').al_entrar(ses, addr)
+            except Exception:
+                log.exception('MOBA: al entrar')
+            try:
                 __import__('raid').al_entrar(ses, addr)
             except Exception:
                 log.exception('raid: al entrar')
@@ -14301,6 +14320,8 @@ class Servidor:
                                 continue  # Holy buildings never use ordinary monster AI.
                             if getattr(m, 'pet_defense', False):
                                 continue  # Pet Defense: los lleva pet_defense_partida por el camino, sin pelear.
+                            if getattr(m, 'moba', False) and not getattr(m, 'moba_jugador', False):
+                                continue  # MOBA: los lleva moba.py; contra un jugador, esta IA (moba_jugador).
                             if not getattr(m, 'vivo', True):
                                 continue
                             if _ajenos_ia and (getattr(m, 'en_combate_con', None) in _ajenos_ia
@@ -15776,6 +15797,9 @@ class Servidor:
             tipo, objetivo = d3
             tx = getattr(d3, 'tx', 0)
             ty = getattr(d3, 'ty', 0)
+            # Angel MOBA: el heroe pega y lanza sus poderes con el combate del evento (moba_heroe.py), no con el suyo
+            if __import__('moba_heroe').accion(ses, tipo, objetivo, tx, ty):
+                return
             yo = ses.entity_id or 1001
 
             bichos = getattr(ses, 'monstruos', None) or {}
@@ -18293,6 +18317,10 @@ class Servidor:
             except Exception:
                 log.exception('Pet Defense: al entrar')
             try:
+                __import__('moba').al_entrar(ses, addr)
+            except Exception:
+                log.exception('MOBA: al entrar')
+            try:
                 __import__('raid').al_entrar(ses, addr)
             except Exception:
                 log.exception('raid: al entrar')
@@ -19117,6 +19145,8 @@ class Servidor:
             if __import__('mall_nuevo').procesar(ses, cuerpo, addr):    # el Item Mall nuevo (173)
                 return
             if __import__('pet_defense_ui').procesar(ses, cuerpo, addr):  # Pet Defense (174)
+                return
+            if __import__('moba_lobby').procesar(ses, cuerpo, addr):      # Angel MOBA (175)
                 return
             if __import__('item_mall').procesar(ses,opcode,cuerpo):
                 return
@@ -20720,6 +20750,11 @@ class Servidor:
             # location". 動態資料1 es el % de vida y mana con que se levanta:
             # Revival Scroll 3697 20, High-effect 11723 50, Enhanced 15248 100.
             # No lo trataba nadie y el objeto no hacia nada.
+            # Angel MOBA: el heroe juega con lo de su clase, sin pociones ni objetos (moba_heroe.py).
+            if __import__('moba').partida_de(ses) is not None:
+                import clases as _cl_mb
+                ses.enviar(_cl_mb.aviso('Items cannot be used in the Angel MOBA.', tipo=0), *_refrescar(ses, [ranura]))
+                return
             _rev = _pergamino_revivir(int(bolsa[ranura]))
             if _rev is not None:
                 _usar_pergamino_revivir(ses, addr, ranura, _rev)
@@ -24124,6 +24159,8 @@ class Servidor:
                 # El Revival ya levanta directamente (_revivir_con_hechizo): no es "volver a la ciudad".
                 log.info(f"[{addr}] respuesta a revivir: {parametro}")
                 return
+            if accion == 2 and ses.personaje and __import__('moba').partida_de(ses) is not None:
+                return                      # Angel MOBA: el heroe reaparece solo en su base (moba_heroe.reaparecer)
             if accion == 2 and ses.personaje and getattr(ses, 'muerto', False):
                 # "Return to Angel Lyceum to revive". La ventana la abre el
                 # cliente al morir y contesta con este 0x0016 [02 00 00 00 00];

@@ -25,6 +25,14 @@
    "tope_personas": 0,
    "sin_cambio_de_canal": false
   },
+  "918": {
+   "nombre": "Angel MOBA",
+   "copias": 1000,
+   "dinamica": true,
+   "asignacion": "individual",
+   "tope_personas": 1,
+   "sin_cambio_de_canal": false
+  },
   "917": {
    "nombre": "Pet Defense",
    "copias": 1000,

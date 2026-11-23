@@ -276,7 +276,8 @@ def procesar(ses, cuerpo) -> bool:
         ses.enviar(canal_lua.paquete(SALUDO_LUA), canal_lua.paquete(medidor_dano.SALUDO_LUA),
                    canal_lua.paquete(torre_babel.SALUDO_LUA), canal_lua.paquete(arbol_mascotas.SALUDO_LUA),
                    canal_lua.paquete(__import__('raid').SALUDO_LUA),
-                   canal_lua.paquete(__import__('pet_defense_ui').SALUDO_LUA))     # el boton de Pet Defense (59005)
+                   canal_lua.paquete(__import__('pet_defense_ui').SALUDO_LUA),     # el boton de Pet Defense (59005)
+                   canal_lua.paquete(__import__('moba_lobby').SALUDO_LUA))         # el del Angel MOBA (59006)
         # La pestana AOF de System y las teclas de la barra (server/lua/teclas.lua, tools/parche_teclas_aof.py):
         # sin los nativos game.aof* del exe el propio script no hace nada.
         try:

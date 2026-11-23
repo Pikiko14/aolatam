@@ -1,0 +1,1052 @@
+{
+ "_comentario": "Angel MOBA (server/moba.py), 23/11/2026. Mapa 918 (tools/mapa_moba.py, copia del Holy Battlefield 112). Casillas del servidor (x, y desde abajo). EQUIPOS: 1 Jiabli (base arriba a la derecha, donde la del Holy) y 2 Raphael (abajo a la izquierda), con las estructuras del Holy Battlefield: el nucleo es su estatua y las torres sus guardianes. CARRILES: puntos de paso de base a base; el camino entre puntos sale solo por las casillas pisables. TORRES: en cada carril y equipo, una en cada fraccion del recorrido desde su base (la interior y la exterior); hay que tirar la exterior antes que la interior y todas las de un carril... (fase 2). SUBDITOS: salen de cada base por los tres carriles cada 'cada' segundos; pelean con los subditos, torres y nucleo enemigos y con los jugadores enemigos que vean.",
+ "mapa": {
+  "stage": 918,
+  "salida": [
+   41,
+   [
+    173,
+    91
+   ]
+  ]
+ },
+ "equipos": {
+  "1": {
+   "nombre": "Jiabli",
+   "nucleo": [
+    218,
+    207
+   ],
+   "llegada": [
+    224,
+    212
+   ],
+   "npc_nucleo": 3936,
+   "npc_torre": 3902,
+   "npc_subdito": 7030
+  },
+  "2": {
+   "nombre": "Raphael",
+   "nucleo": [
+    100,
+    88
+   ],
+   "llegada": [
+    95,
+    82
+   ],
+   "npc_nucleo": 3961,
+   "npc_torre": 3926,
+   "npc_subdito": 3642
+  }
+ },
+ "carriles": {
+  "top": [
+   [
+    218,
+    207
+   ],
+   [
+    190,
+    227
+   ],
+   [
+    120,
+    232
+   ],
+   [
+    45,
+    215
+   ],
+   [
+    25,
+    170
+   ],
+   [
+    45,
+    120
+   ],
+   [
+    100,
+    88
+   ]
+  ],
+  "mid": [
+   [
+    218,
+    207
+   ],
+   [
+    185,
+    172
+   ],
+   [
+    155,
+    145
+   ],
+   [
+    125,
+    117
+   ],
+   [
+    100,
+    88
+   ]
+  ],
+  "bot": [
+   [
+    218,
+    207
+   ],
+   [
+    264,
+    191
+   ],
+   [
+    292,
+    140
+   ],
+   [
+    280,
+    85
+   ],
+   [
+    230,
+    45
+   ],
+   [
+    157,
+    38
+   ],
+   [
+    110,
+    54
+   ],
+   [
+    100,
+    88
+   ]
+  ]
+ },
+ "torres": {
+  "fracciones": [
+   0.15,
+   0.32
+  ]
+ },
+ "nucleo": {
+  "hp": 30000,
+  "defensa": 400,
+  "ataque": 420,
+  "alcance": 8,
+  "cadencia": 1.4
+ },
+ "torre": {
+  "hp": 15000,
+  "defensa": 300,
+  "ataque": 260,
+  "alcance": 7,
+  "cadencia": 1.6
+ },
+ "subdito": {
+  "hp": 900,
+  "defensa": 60,
+  "ataque": 70,
+  "alcance": 1,
+  "cadencia": 1.2,
+  "velocidad": 45,
+  "vision": 6,
+  "persecucion": 10
+ },
+ "oleadas": {
+  "primera": 15,
+  "cada": 30,
+  "por_carril": 4,
+  "separacion": 1.2
+ },
+ "casillas_por_paso": 3,
+ "_heroes": "Fase 2 (moba_heroe.py): cada jugador elige una clase para el evento (no hace falta que sea la suya) y empieza a nivel 1; sube hasta el 18 con la experiencia de la partida. Sus estadisticas son las de la clase (base + por_nivel x (nivel - 1)) y NO se guardan en el personaje. Poderes: dano (a uno), area (radio alrededor del objetivo), cura (a si mismo y aliados en radio), escudo (defensa +x% durante dura s); lento / aturde (s) al objetivo; dot = dano por segundo durante s; drenaje = % del dano que cura al que lo lanza. mult multiplica su ataque. La ultimate se desbloquea en nivel_min. id = el hechizo del juego cuya animacion se ve.",
+ "niveles": [
+  0,
+  120,
+  280,
+  480,
+  720,
+  1000,
+  1320,
+  1680,
+  2080,
+  2520,
+  3000,
+  3520,
+  4080,
+  4680,
+  5320,
+  6000,
+  6720,
+  7480
+ ],
+ "exp": {
+  "subdito": 45,
+  "torre": 250,
+  "heroe": 320,
+  "por_nivel_heroe": 30,
+  "radio": 12,
+  "grande": 140,
+  "pequeno": 60,
+  "jefe": 400
+ },
+ "respawn": {
+  "base": 6,
+  "por_nivel": 2
+ },
+ "regeneracion": {
+  "cada": 2,
+  "hp_pct": 0.01,
+  "mp_pct": 0.015,
+  "en_base_pct": 0.08
+ },
+ "clases": {
+  "espada": {
+   "nombre": "Swordsman",
+   "rama": 9,
+   "rol": "Fighter",
+   "fisico": true,
+   "alcance": 1,
+   "cadencia": 1.0,
+   "base": {
+    "hp": 760,
+    "mp": 240,
+    "atk": 115,
+    "def": 45,
+    "mdef": 30
+   },
+   "por_nivel": {
+    "hp": 100,
+    "mp": 20,
+    "atk": 11,
+    "def": 5,
+    "mdef": 3
+   },
+   "poderes": [
+    {
+     "id": 645,
+     "nombre": "Slicing Hit",
+     "tipo": "dano",
+     "mult": 1.7,
+     "alcance": 2,
+     "cd": 6,
+     "mana": 40
+    },
+    {
+     "id": 680,
+     "nombre": "Spliting Attack",
+     "tipo": "area",
+     "mult": 1.2,
+     "alcance": 2,
+     "cd": 9,
+     "mana": 60,
+     "radio": 2
+    },
+    {
+     "id": 651,
+     "nombre": "Swift Slash",
+     "tipo": "dano",
+     "mult": 1.3,
+     "alcance": 5,
+     "cd": 10,
+     "mana": 50,
+     "lento": 2
+    },
+    {
+     "id": 5735,
+     "nombre": "Blade Storm",
+     "tipo": "area",
+     "mult": 3.2,
+     "alcance": 1,
+     "cd": 60,
+     "mana": 120,
+     "radio": 3,
+     "ultimate": true,
+     "nivel_min": 6
+    }
+   ],
+   "icono": 7
+  },
+  "hacha": {
+   "nombre": "Warrior",
+   "rama": 10,
+   "rol": "Tank",
+   "fisico": true,
+   "alcance": 1,
+   "cadencia": 1.15,
+   "base": {
+    "hp": 860,
+    "mp": 240,
+    "atk": 115,
+    "def": 55,
+    "mdef": 30
+   },
+   "por_nivel": {
+    "hp": 115,
+    "mp": 20,
+    "atk": 11,
+    "def": 5,
+    "mdef": 3
+   },
+   "poderes": [
+    {
+     "id": 751,
+     "nombre": "Heavy Beat",
+     "tipo": "dano",
+     "mult": 1.6,
+     "alcance": 2,
+     "cd": 6,
+     "mana": 40
+    },
+    {
+     "id": 749,
+     "nombre": "Shaking Beat",
+     "tipo": "area",
+     "mult": 1.0,
+     "alcance": 2,
+     "cd": 10,
+     "mana": 60,
+     "radio": 2,
+     "aturde": 1
+    },
+    {
+     "id": 747,
+     "nombre": "Fighting Shield",
+     "tipo": "escudo",
+     "mult": 0,
+     "alcance": 0,
+     "cd": 14,
+     "mana": 50,
+     "defensa": 0.5,
+     "dura": 5
+    },
+    {
+     "id": 5620,
+     "nombre": "Earth Bash",
+     "tipo": "area",
+     "mult": 2.6,
+     "alcance": 1,
+     "cd": 60,
+     "mana": 120,
+     "radio": 3,
+     "aturde": 1.5,
+     "ultimate": true,
+     "nivel_min": 6
+    }
+   ],
+   "icono": 6
+  },
+  "lanza": {
+   "nombre": "Spearman",
+   "rama": 11,
+   "rol": "Fighter",
+   "fisico": true,
+   "alcance": 2,
+   "cadencia": 1.05,
+   "base": {
+    "hp": 760,
+    "mp": 240,
+    "atk": 115,
+    "def": 45,
+    "mdef": 30
+   },
+   "por_nivel": {
+    "hp": 100,
+    "mp": 20,
+    "atk": 11,
+    "def": 5,
+    "mdef": 3
+   },
+   "poderes": [
+    {
+     "id": 851,
+     "nombre": "Heart Stab",
+     "tipo": "dano",
+     "mult": 1.8,
+     "alcance": 3,
+     "cd": 7,
+     "mana": 45
+    },
+    {
+     "id": 849,
+     "nombre": "Dancing Stab",
+     "tipo": "area",
+     "mult": 1.2,
+     "alcance": 3,
+     "cd": 9,
+     "mana": 60,
+     "radio": 2
+    },
+    {
+     "id": 852,
+     "nombre": "Spear Hacking",
+     "tipo": "dano",
+     "mult": 1.4,
+     "alcance": 3,
+     "cd": 10,
+     "mana": 50,
+     "lento": 2
+    },
+    {
+     "id": 5880,
+     "nombre": "Skyrender",
+     "tipo": "area",
+     "mult": 3.0,
+     "alcance": 3,
+     "cd": 60,
+     "mana": 120,
+     "radio": 3,
+     "ultimate": true,
+     "nivel_min": 6
+    }
+   ],
+   "icono": 8
+  },
+  "arco": {
+   "nombre": "Archer",
+   "rama": 17,
+   "rol": "Marksman",
+   "fisico": true,
+   "alcance": 7,
+   "cadencia": 0.95,
+   "base": {
+    "hp": 620,
+    "mp": 260,
+    "atk": 120,
+    "def": 30,
+    "mdef": 25
+   },
+   "por_nivel": {
+    "hp": 82,
+    "mp": 22,
+    "atk": 12,
+    "def": 3,
+    "mdef": 3
+   },
+   "poderes": [
+    {
+     "id": 963,
+     "nombre": "Double Shoot",
+     "tipo": "dano",
+     "mult": 1.7,
+     "alcance": 8,
+     "cd": 6,
+     "mana": 40
+    },
+    {
+     "id": 961,
+     "nombre": "Slow Snipe",
+     "tipo": "dano",
+     "mult": 1.2,
+     "alcance": 8,
+     "cd": 9,
+     "mana": 50,
+     "lento": 3
+    },
+    {
+     "id": 962,
+     "nombre": "Bomb Snipe",
+     "tipo": "area",
+     "mult": 1.3,
+     "alcance": 8,
+     "cd": 10,
+     "mana": 60,
+     "radio": 2
+    },
+    {
+     "id": 5765,
+     "nombre": "Arrow Rain",
+     "tipo": "area",
+     "mult": 2.8,
+     "alcance": 9,
+     "cd": 60,
+     "mana": 120,
+     "radio": 4,
+     "ultimate": true,
+     "nivel_min": 6
+    }
+   ],
+   "icono": 9
+  },
+  "sombra": {
+   "nombre": "Assassin",
+   "rama": 30,
+   "rol": "Assassin",
+   "fisico": true,
+   "alcance": 1,
+   "cadencia": 0.85,
+   "base": {
+    "hp": 620,
+    "mp": 260,
+    "atk": 130,
+    "def": 30,
+    "mdef": 25
+   },
+   "por_nivel": {
+    "hp": 82,
+    "mp": 22,
+    "atk": 14,
+    "def": 3,
+    "mdef": 3
+   },
+   "poderes": [
+    {
+     "id": 5405,
+     "nombre": "Stab",
+     "tipo": "dano",
+     "mult": 1.9,
+     "alcance": 2,
+     "cd": 6,
+     "mana": 40
+    },
+    {
+     "id": 5415,
+     "nombre": "Poisoned Dagger",
+     "tipo": "dano",
+     "mult": 0.8,
+     "alcance": 4,
+     "cd": 10,
+     "mana": 50,
+     "dot": 0.35,
+     "dura": 5
+    },
+    {
+     "id": 5420,
+     "nombre": "Stunning Dagger",
+     "tipo": "dano",
+     "mult": 1.0,
+     "alcance": 3,
+     "cd": 12,
+     "mana": 60,
+     "aturde": 1.5
+    },
+    {
+     "id": 5535,
+     "nombre": "Deadly Assassination",
+     "tipo": "dano",
+     "mult": 5.0,
+     "alcance": 3,
+     "cd": 60,
+     "mana": 120,
+     "ultimate": true,
+     "nivel_min": 6
+    }
+   ],
+   "icono": 15
+  },
+  "vida": {
+   "nombre": "Priest",
+   "rama": 1,
+   "rol": "Support",
+   "fisico": false,
+   "alcance": 6,
+   "cadencia": 1.1,
+   "base": {
+    "hp": 640,
+    "mp": 380,
+    "atk": 125,
+    "def": 25,
+    "mdef": 40
+   },
+   "por_nivel": {
+    "hp": 82,
+    "mp": 32,
+    "atk": 13,
+    "def": 3,
+    "mdef": 4
+   },
+   "poderes": [
+    {
+     "id": 73,
+     "nombre": "Shock Wave",
+     "tipo": "dano",
+     "mult": 1.5,
+     "alcance": 7,
+     "cd": 6,
+     "mana": 45
+    },
+    {
+     "id": 74,
+     "nombre": "Cure Spell",
+     "tipo": "cura",
+     "mult": 1.8,
+     "alcance": 0,
+     "cd": 10,
+     "mana": 70,
+     "radio": 6
+    },
+    {
+     "id": 75,
+     "nombre": "Silver Shield",
+     "tipo": "escudo",
+     "mult": 0,
+     "alcance": 0,
+     "cd": 14,
+     "mana": 50,
+     "defensa": 0.4,
+     "dura": 6,
+     "radio": 6
+    },
+    {
+     "id": 84,
+     "nombre": "Angel's Light",
+     "tipo": "area",
+     "mult": 2.4,
+     "alcance": 7,
+     "cd": 60,
+     "mana": 140,
+     "radio": 4,
+     "cura_aliados": 1.5,
+     "ultimate": true,
+     "nivel_min": 6
+    }
+   ],
+   "icono": 1
+  },
+  "espectro": {
+   "nombre": "Summoner",
+   "rama": 2,
+   "rol": "Mage",
+   "fisico": false,
+   "alcance": 6,
+   "cadencia": 1.1,
+   "base": {
+    "hp": 580,
+    "mp": 380,
+    "atk": 125,
+    "def": 25,
+    "mdef": 40
+   },
+   "por_nivel": {
+    "hp": 76,
+    "mp": 32,
+    "atk": 13,
+    "def": 3,
+    "mdef": 4
+   },
+   "poderes": [
+    {
+     "id": 170,
+     "nombre": "Poison Hit",
+     "tipo": "dano",
+     "mult": 0.9,
+     "alcance": 7,
+     "cd": 7,
+     "mana": 45,
+     "dot": 0.4,
+     "dura": 5
+    },
+    {
+     "id": 178,
+     "nombre": "Slow Curse",
+     "tipo": "dano",
+     "mult": 0.9,
+     "alcance": 7,
+     "cd": 10,
+     "mana": 50,
+     "lento": 3
+    },
+    {
+     "id": 181,
+     "nombre": "Blood Absorbing Spell",
+     "tipo": "dano",
+     "mult": 1.6,
+     "alcance": 6,
+     "cd": 9,
+     "mana": 60,
+     "drenaje": 0.5
+    },
+    {
+     "id": 186,
+     "nombre": "Hell Flame",
+     "tipo": "area",
+     "mult": 3.0,
+     "alcance": 7,
+     "cd": 60,
+     "mana": 140,
+     "radio": 3,
+     "ultimate": true,
+     "nivel_min": 6
+    }
+   ],
+   "icono": 2
+  },
+  "caos": {
+   "nombre": "Wizard",
+   "rama": 3,
+   "rol": "Mage",
+   "fisico": false,
+   "alcance": 7,
+   "cadencia": 1.15,
+   "base": {
+    "hp": 580,
+    "mp": 380,
+    "atk": 125,
+    "def": 25,
+    "mdef": 40
+   },
+   "por_nivel": {
+    "hp": 76,
+    "mp": 32,
+    "atk": 13,
+    "def": 3,
+    "mdef": 4
+   },
+   "poderes": [
+    {
+     "id": 275,
+     "nombre": "Fireball Hit",
+     "tipo": "dano",
+     "mult": 1.9,
+     "alcance": 8,
+     "cd": 6,
+     "mana": 50
+    },
+    {
+     "id": 273,
+     "nombre": "Frozen Spell",
+     "tipo": "dano",
+     "mult": 1.2,
+     "alcance": 8,
+     "cd": 9,
+     "mana": 55,
+     "lento": 3
+    },
+    {
+     "id": 5230,
+     "nombre": "Chain Lightning",
+     "tipo": "area",
+     "mult": 1.3,
+     "alcance": 8,
+     "cd": 10,
+     "mana": 70,
+     "radio": 3
+    },
+    {
+     "id": 5235,
+     "nombre": "Hell Storm",
+     "tipo": "area",
+     "mult": 3.4,
+     "alcance": 8,
+     "cd": 60,
+     "mana": 150,
+     "radio": 4,
+     "ultimate": true,
+     "nivel_min": 6
+    }
+   ],
+   "icono": 3
+  },
+  "tierra": {
+   "nombre": "Magician",
+   "rama": 4,
+   "rol": "Controller",
+   "fisico": false,
+   "alcance": 6,
+   "cadencia": 1.1,
+   "base": {
+    "hp": 660,
+    "mp": 380,
+    "atk": 125,
+    "def": 25,
+    "mdef": 40
+   },
+   "por_nivel": {
+    "hp": 88,
+    "mp": 32,
+    "atk": 13,
+    "def": 3,
+    "mdef": 4
+   },
+   "poderes": [
+    {
+     "id": 373,
+     "nombre": "Flying Dart",
+     "tipo": "dano",
+     "mult": 1.7,
+     "alcance": 7,
+     "cd": 6,
+     "mana": 45
+    },
+    {
+     "id": 380,
+     "nombre": "Tendril Entangle",
+     "tipo": "dano",
+     "mult": 0.8,
+     "alcance": 7,
+     "cd": 11,
+     "mana": 60,
+     "aturde": 2
+    },
+    {
+     "id": 381,
+     "nombre": "Energy Flower",
+     "tipo": "cura",
+     "mult": 1.4,
+     "alcance": 0,
+     "cd": 10,
+     "mana": 60,
+     "radio": 5
+    },
+    {
+     "id": 410,
+     "nombre": "Storm Fury",
+     "tipo": "area",
+     "mult": 3.0,
+     "alcance": 7,
+     "cd": 60,
+     "mana": 140,
+     "radio": 4,
+     "lento": 2,
+     "ultimate": true,
+     "nivel_min": 6
+    }
+   ],
+   "icono": 4
+  }
+ },
+ "inscripcion": {
+  "_nota": "moba_lobby.py: a cada hora (del servidor) se juega; la inscripcion se abre abierta_min minutos antes. Partidas de por_equipo contra por_equipo; con menos de minimo apuntados no hay.",
+  "horarios": [
+   "14:00",
+   "21:00"
+  ],
+  "abierta_min": 10,
+  "por_equipo": 5,
+  "minimo": 2,
+  "nivel_min": 0
+ },
+ "_jungla": "Fase 3: campamentos neutrales (equipo 0) entre los carriles. No andan: pegan al heroe que les pega si esta a su alcance; si se aleja mas de \"correa\" casillas de su sitio, vuelven a vida completa. Al caer dan exp al equipo del que los mato y reaparecen a los \"reaparece\" s. El jefe del centro da a todo el equipo \"buff\" (ataque y defensa +x durante \"dura\" s).",
+ "jungla": {
+  "campamentos": [
+   [
+    170,
+    192
+   ],
+   [
+    60,
+    102
+   ],
+   [
+    218,
+    172
+   ],
+   [
+    146,
+    102
+   ]
+  ],
+  "grande": {
+   "npc_types": [
+    897,
+    898,
+    1181,
+    893
+   ],
+   "hp": 4200,
+   "defensa": 140,
+   "ataque": 150,
+   "alcance": 4,
+   "cadencia": 1.5
+  },
+  "pequeno": {
+   "npc_types": [
+    899,
+    894,
+    1183,
+    903,
+    901
+   ],
+   "hp": 1800,
+   "defensa": 80,
+   "ataque": 90,
+   "alcance": 4,
+   "cadencia": 1.4
+  },
+  "pequenos": 2,
+  "correa": 9,
+  "reaparece": 60,
+  "primera": 20
+ },
+ "jefe": {
+  "npc_types": [
+   23520,
+   23518,
+   23623,
+   23612
+  ],
+  "sitio": [
+   146,
+   160
+  ],
+  "hp": 40000,
+  "defensa": 300,
+  "ataque": 380,
+  "alcance": 5,
+  "cadencia": 2.0,
+  "correa": 10,
+  "primera": 120,
+  "reaparece": 240,
+  "buff": {
+   "ataque": 0.25,
+   "defensa": 0.25,
+   "dura": 120
+  }
+ },
+ "_iconos": "icono = el retrato de la clase del cliente, shape\\skill\\jobNN.shp (tools/ventana_moba.py). Van por el id de class.xml salvo la Assassin (14), que es el job15.",
+ "ranking": {
+  "_nota": "moba_ranking.py: puntos de temporada por partida (victoria/derrota + por_baja x bajas); premio_partida = AG al momento; rangos por la suma de la temporada; premios al cerrar la temporada.",
+  "temporada": {
+   "inicio": "2026-11-23",
+   "dias": 14
+  },
+  "top": 10,
+  "puntos": {
+   "victoria": 30,
+   "derrota": 10,
+   "por_baja": 3
+  },
+  "premio_partida": {
+   "victoria": 500,
+   "derrota": 200
+  },
+  "rangos": {
+   "Bronze": 100,
+   "Silver": 300,
+   "Gold": 600,
+   "angel_top": 10
+  },
+  "premios": {
+   "Bronze": {
+    "angel_gold": 1000,
+    "items": []
+   },
+   "Silver": {
+    "angel_gold": 3000,
+    "items": []
+   },
+   "Gold": {
+    "angel_gold": 6000,
+    "items": []
+   },
+   "Angel": {
+    "angel_gold": 12000,
+    "items": []
+   },
+   "Champion": {
+    "angel_gold": 30000,
+    "items": []
+   }
+  }
+ },
+ "rangos_poder": {
+  "_nota": "moba_heroe.py: un punto por nivel (1 al empezar). Cada punto desbloquea o sube un rango de un poder. Basicos: hasta basico_max; el rango r pide nivel 2r-1. Ultimate: un rango en cada nivel de ult_niveles. Cada rango por encima del 1 suma basico_extra / ult_extra al mult.",
+  "basico_max": 5,
+  "basico_extra": 0.15,
+  "ult_niveles": [
+   6,
+   11,
+   16
+  ],
+  "ult_extra": 0.25
+ },
+ "tienda": {
+  "_nota": "moba_tienda.py: oro solo de la partida; los objetos son objetos del juego (id = su item, por su icono). stats suma a hp/mp/atk/def/mdef del heroe; cdr resta recarga (tope cdr_max); cura_pct se toma al comprarla. En la base (radio_base de su nucleo), muerto, o en cualquier sitio tras fuera_de_combate s sin recibir golpes (0 = solo en la base), max_objetos a la vez.",
+  "oro": {
+   "inicial": 300,
+   "cada": 5,
+   "goteo": 10,
+   "subdito": 20,
+   "pequeno": 30,
+   "grande": 60,
+   "heroe": 250,
+   "asistencia": 80,
+   "torre": 150,
+   "jefe": 200
+  },
+  "max_objetos": 6,
+  "radio_base": 10,
+  "cdr_max": 0.3,
+  "objetos": [
+   {
+    "id": 33330,
+    "nombre": "Arclight Sword",
+    "precio": 350,
+    "texto": "ATK +20",
+    "stats": {
+     "atk": 20
+    }
+   },
+   {
+    "id": 27536,
+    "nombre": "Crystal Dragon Staff",
+    "precio": 800,
+    "texto": "ATK +50",
+    "stats": {
+     "atk": 50
+    }
+   },
+   {
+    "id": 19210,
+    "nombre": "Heavy Armor Triceratops",
+    "precio": 450,
+    "texto": "HP +350",
+    "stats": {
+     "hp": 350
+    }
+   },
+   {
+    "id": 37103,
+    "nombre": "Mastadon's Shield",
+    "precio": 500,
+    "texto": "DEF +25 MDEF +15",
+    "stats": {
+     "def": 25,
+     "mdef": 15
+    }
+   },
+   {
+    "id": 37265,
+    "nombre": "Cerulean Necklace",
+    "precio": 450,
+    "texto": "MP +200 MDEF +20",
+    "stats": {
+     "mp": 200,
+     "mdef": 20
+    }
+   },
+   {
+    "id": 28693,
+    "nombre": "Scarlet Wing Boots",
+    "precio": 550,
+    "texto": "Cooldown -15%",
+    "cdr": 0.15
+   },
+   {
+    "id": 40620,
+    "nombre": "Spring's Bloom",
+    "precio": 1000,
+    "texto": "HP+200 ATK+25 DEF+10",
+    "stats": {
+     "hp": 200,
+     "atk": 25,
+     "def": 10
+    }
+   },
+   {
+    "id": 31,
+    "nombre": "Red Potion",
+    "precio": 120,
+    "texto": "Heal 40% HP/MP now",
+    "cura_pct": 0.4
+   }
+  ],
+  "fuera_de_combate": 6
+ }
+}

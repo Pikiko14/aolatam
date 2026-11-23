@@ -59,6 +59,10 @@ _CMDS_EFECTO_MAGIA = ('fxm', 'efectomagia', 'brillo')
 _CMDS_TORRE = ('torre', 'tower')
 # Pet Defense, fase 2: /pd start (empieza una partida), /pd stop, /pd tipo <guardian|arquero|fuego>, /pd info.
 _CMDS_PD = ('pd', 'petdefense')
+# Angel MOBA: /moba start [1|2] [clase] (prueba: tu solo en el equipo Jiabli o Raphael, con esa clase de
+# plantillas/moba.json: espada, hacha, lanza, arco, sombra, vida, espectro, caos, tierra), /moba stop,
+# /moba open (abre la inscripcion ya) y /moba go (empieza ya con los apuntados, moba_lobby.py).
+_CMDS_MOBA = ('moba',)
 # Prueba del 0x001D kind 9 (hechizo) con un tercer campo a eleccion. Solo se midio con
 # rango I (valor 1). Sirve para averiguar si un valor (p.ej. 0) le quita al cliente un
 # hechizo, que es lo que haria falta para que el rango II tape al I sin reloguear.
@@ -71,7 +75,7 @@ _CMDS = frozenset(('help',) + _CMDS_ITEM + _CMDS_LEVEL + _CMDS_SETLEVEL + _CMDS_
                   + _CMDS_CLEARSKILLS + _CMDS_PET + _CMDS_QUEST + _CMDS_BALL
                   + _CMDS_GUILDLEVEL + _CMDS_GUILDREP + _CMDS_GUILD
                   + _CMDS_TW + _CMDS_FARM + _CMDS_SETMAP + _CMDS_ANIM + _CMDS_EFECTO + _CMDS_HECHIZO + _CMDS_TRADE
-                  + _CMDS_EFECTO_MAGIA + _CMDS_TORRE + _CMDS_PD)
+                  + _CMDS_EFECTO_MAGIA + _CMDS_TORRE + _CMDS_PD + _CMDS_MOBA)
 # _CMDS se quedaba sin 'gold' y 'setlevel' (se anadieron arriba, al vuelo: no se tocan las
 # tuplas que ya tenia cada quien para no reordenar nada). No cambia nada vivo: _CMDS solo lo
 # usa texto_de(), y nada del servidor llama a texto_de() hoy (ver mas abajo, PALABRAS).
@@ -94,14 +98,14 @@ _GRUPOS_DELEGADOS = (_CMDS_LEVEL, _CMDS_SETLEVEL, _CMDS_GOLD, _CMDS_LEVELALL,
                     _CMDS_SKILLS, _CMDS_SKILLSALL, _CMDS_SKILLS5, _CMDS_CLEARSKILLS,
                     _CMDS_PET, _CMDS_QUEST, _CMDS_BALL, _CMDS_SETMAP, _CMDS_ANIM, _CMDS_EFECTO, _CMDS_HECHIZO,
                     _CMDS_TRADE,    # /job, /caravana, /aro: sin esto el chat no los mandaba aqui (06/11/2026)
-                    _CMDS_EFECTO_MAGIA, _CMDS_TORRE, _CMDS_PD)
+                    _CMDS_EFECTO_MAGIA, _CMDS_TORRE, _CMDS_PD, _CMDS_MOBA)
 PALABRAS_DELEGADAS = frozenset(w for grupo in _GRUPOS_DELEGADOS for w in grupo)
 # Los 'kind' que gm.parsear() puede devolver para PALABRAS_DELEGADAS, para que el
 # dispatcher de app.py sepa cuales reenviar a gm.aplicar().
 RESULTADOS_DELEGADOS = frozenset((
     'level', 'levelall', 'setlevel', 'gold', 'skills', 'skillsall', 'skills5',
     'clearskills', 'pet', 'quest', 'ball', 'setmap', 'anim', 'efecto', 'hechizo', 'trade',
-    'efecto_magia', 'brillo', 'torre', 'pd',
+    'efecto_magia', 'brillo', 'torre', 'pd', 'moba',
 ))
 
 AYUDA = ("GM: /item <id> [qty]  /level <n>  /levelall <n>  /setlevel <name|all> <n>/guildlevel <1..10>  /guildrep <n>  "
@@ -680,6 +684,9 @@ def parsear(texto: str):
             return ('err', 'usage: /efecto <numero>  (0x0020 sobre el totem del mapa o sobre ti)')
     if cmd == 'brillo':
         return ('brillo',)
+    if cmd in _CMDS_MOBA:
+        return ('moba', parts[1].lower() if len(parts) > 1 else 'start', parts[2] if len(parts) > 2 else '1',
+                parts[3].lower() if len(parts) > 3 else '')
     if cmd in _CMDS_PD:
         return ('pd', parts[1].lower() if len(parts) > 1 else 'info', parts[2].lower() if len(parts) > 2 else '')
     if cmd in _CMDS_TORRE:
@@ -898,6 +905,25 @@ def aplicar(ses, parsed) -> str:
             eid = _tw_fx.eid_totem(p.stage)
         ses.enviar(struct.pack('<HIHI', 0x0020, eid, int(parsed[1]) & 0xFFFF, eid))
         msg = 'effect %d sobre %s' % (parsed[1], 'el totem' if eid != p.entity_id else 'ti')
+        _avisar(ses, msg)
+        return msg
+    if kind == 'moba':
+        import moba as _mb
+        if parsed[1] in ('stop', 'salir', 'leave'):
+            msg = _mb.salir(ses, getattr(ses, 'addr', '?'))
+        elif parsed[1] == 'open':                   # abre la inscripcion ya (abierta_min minutos)
+            import moba_lobby as _mbl
+            import time as _t_mb
+            minutos = float(_mbl._cfg().get('abierta_min', 10))
+            _mbl.abrir_inscripcion(_t_mb.time() + minutos * 60)
+            msg = 'MOBA sign-up open for %d min (/moba go to start now)' % minutos
+        elif parsed[1] == 'go':                     # empieza ya con los apuntados
+            import moba_lobby as _mbl
+            _mbl._ESTADO['empieza'] = _mbl._ESTADO['abierta_desde'] = None
+            msg = 'MOBA: %d match(es) started' % _mbl.armar()
+        else:
+            msg = _mb.empezar_prueba(ses, getattr(ses, 'addr', '?'), 2 if parsed[2] == '2' else 1,
+                                     parsed[3] if len(parsed) > 3 else None)
         _avisar(ses, msg)
         return msg
     if kind == 'pd':
