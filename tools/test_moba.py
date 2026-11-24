@@ -289,6 +289,24 @@ def test_las_unidades_le_pegan_muere_y_reaparece(heroe):
     assert not h.muerto and not ses.muerto and h.hp == h.hp_max
 
 
+def test_doble_triple_cuadruple_y_pentakill(heroe):
+    """"Sonidos de doble kill... pentakill": bajas seguidas (< 10 s), el anuncio y el efecto con su voz."""
+    import struct
+    ses, pa, h = heroe
+    efectos = []
+    for k in range(5):
+        ses.enviados.clear()
+        assert moba_heroe.racha(pa, h, 100.0 + k * 5) == k + 1
+        efectos.append([p[2] | (p[3] & 0x0F) << 8 for p in ses.enviados       # el efecto va en 12 bits
+                        if struct.unpack_from('<H', p)[0] == 0x0011 and not p[3] & 0xF0])
+    assert [e[:1] for e in efectos] == [[], [53], [55], [72], [301]]
+    assert moba_heroe.racha(pa, h, 200.0) == 1                      # paso mucho: vuelve a empezar
+    import pathlib
+    raiz = pathlib.Path(moba.__file__).resolve().parent.parent
+    for _, ef in moba_heroe.RACHAS.values():
+        assert (raiz / 'parches' / 'extras' / 'sound' / ('magic%03d.wav' % ef)).exists()
+
+
 def test_la_estatua_grande_tambien_ataca(heroe):
     """"Las estatuas deben atacar": el nucleo enemigo pega al heroe y a los subditos."""
     ses, pa, h = heroe
@@ -595,6 +613,23 @@ def test_los_objetos_de_la_tienda_son_del_juego():
         assert app._icono_item(o['id']) > 0, o['nombre']
 
 
+def test_cada_clase_ve_sus_armas_y_las_comunes(heroe):
+    """"Que la tienda tenga mas objetos para todas las clases": 3 armas de su clase y las de todos, 12 casillas."""
+    import inventario as inv
+    ses, pa, h = heroe
+    for clave in CFG['clases']:
+        h.clave = clave
+        vistos = [CFG['tienda']['objetos'][i] for i in moba_tienda.indices_de(h)]
+        armas = [o for o in vistos if o.get('clases')]
+        assert len(vistos) == moba_tienda.CASILLAS and len(armas) == 3, clave
+        assert all(clave in o['clases'] and inv.ranura_equipo_de(o['id']) == 3 for o in armas)
+    h.clave = 'espada'
+    ses.personaje.tile_x, ses.personaje.tile_y = CFG['equipos']['1']['nucleo']
+    h.oro = 10 ** 6
+    moba_tienda.procesar(ses, 2)                                  # la casilla 3: su arma mejor
+    assert CFG['tienda']['objetos'][h.objetos[-1]]['nombre'] == 'Arclight Sword'
+
+
 def test_lo_comprado_se_ve_puesto_y_al_salir_no(heroe):
     """"Compro 1 espada, se me ve esa espada": a la vista, sin tocar el inventario; al salir, lo suyo."""
     import struct
@@ -605,15 +640,37 @@ def test_lo_comprado_se_ve_puesto_y_al_salir_no(heroe):
     i = next(k for k, o in enumerate(CFG['tienda']['objetos']) if o['nombre'] == 'Arclight Sword')
     espada = CFG['tienda']['objetos'][i]['id']
     h.oro = 10 ** 6
+    ses.enviados.clear()
     assert moba_tienda.comprar(pa, h, i)[0]
     assert ses.inventario == {}
+    casillas = [p for p in ses.enviados if struct.unpack_from('<H', p)[0] == 0x001B]
+    assert any(struct.pack('<I', espada) in p for p in casillas)    # su cliente la dibuja desde la casilla
 
     def puesto():
         return {struct.unpack_from('<II', p, 8) for p in app._apariencia(ses)}
-    assert (3, espada) in puesto() and (169, espada) in puesto()
+    assert (3, espada) in puesto() and (169, 0) in puesto()            # su fashion vacia, como al equiparse
     assert struct.unpack_from('<I', presencia._spawn(ses), 2 + 96)[0] == espada
+    ses.enviados.clear()
     moba_heroe.salir(ses, pa)
     assert (3, espada) not in puesto()
+    assert any(struct.unpack_from('<H', p)[0] == 0x001B for p in ses.enviados)   # las casillas de verdad
+
+
+def test_un_mago_que_compra_espada_ve_el_baston_del_mismo_escalon(heroe):
+    """El cliente no pinta una espada en un mago: se quedaba sin arma ("sigue sin verse el item")."""
+    import struct
+    ses, pa, h = heroe
+    ses.personaje.tile_x, ses.personaje.tile_y = CFG['equipos']['1']['nucleo']
+    ses.inventario = {3: 19850}                                      # FreshmanWalking Stick (杖)
+    objs = CFG['tienda']['objetos']
+    i = next(k for k, o in enumerate(objs) if o['nombre'] == 'Steel Trace Blade')
+    baston = next(o['id'] for o in objs if o['nombre'] == 'Feather Snake Staff')
+    h.oro = 10 ** 6
+    assert moba_tienda.comprar(pa, h, i)[0]
+    assert (3, baston) in {struct.unpack_from('<II', p, 8) for p in app._apariencia(ses)}
+    assert moba_tienda.arma_visible(ses, 33330) == next(o['id'] for o in objs if o['nombre'] == 'Beryl Staff')
+    ses.inventario = {3: 18994}                                      # con espada de verdad, la espada
+    assert moba_tienda.arma_visible(ses, 33330) == 33330
 
 
 def test_comprar_en_la_base_sube_las_estadisticas(heroe):

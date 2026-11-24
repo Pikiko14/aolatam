@@ -11552,179 +11552,247 @@
     <window class="WND_CLASS_BASE" id="58535" range="0,0,380,226" icon="58437">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_DLG_1" range="0,0,408,308" id="58560" title="Angel MOBA shop" fcolor="104" font="1">
+    <window class="WND_CLASS_DLG_1" range="0,0,408,402" id="58560" title="Angel MOBA shop" fcolor="104" font="1">
         <style wsVisible="" wsMoveable="" />
         <child>58561</child>
-        <child>58563</child>
-        <child>58571</child>
-        <child>58587</child>
-        <child>58579</child>
-        <child>58564</child>
-        <child>58572</child>
-        <child>58588</child>
-        <child>58580</child>
-        <child>58565</child>
-        <child>58573</child>
-        <child>58589</child>
-        <child>58581</child>
-        <child>58566</child>
-        <child>58574</child>
-        <child>58590</child>
-        <child>58582</child>
-        <child>58567</child>
-        <child>58575</child>
-        <child>58591</child>
-        <child>58583</child>
-        <child>58568</child>
-        <child>58576</child>
-        <child>58592</child>
-        <child>58584</child>
-        <child>58569</child>
-        <child>58577</child>
-        <child>58593</child>
-        <child>58585</child>
-        <child>58570</child>
-        <child>58578</child>
-        <child>58594</child>
-        <child>58586</child>
-        <child>58595</child>
-        <child>58596</child>
-        <child>58597</child>
-        <child>58598</child>
-        <child>58599</child>
-        <child>58600</child>
+        <child>58700</child>
+        <child>58712</child>
+        <child>58736</child>
+        <child>58724</child>
+        <child>58701</child>
+        <child>58713</child>
+        <child>58737</child>
+        <child>58725</child>
+        <child>58702</child>
+        <child>58714</child>
+        <child>58738</child>
+        <child>58726</child>
+        <child>58703</child>
+        <child>58715</child>
+        <child>58739</child>
+        <child>58727</child>
+        <child>58704</child>
+        <child>58716</child>
+        <child>58740</child>
+        <child>58728</child>
+        <child>58705</child>
+        <child>58717</child>
+        <child>58741</child>
+        <child>58729</child>
+        <child>58706</child>
+        <child>58718</child>
+        <child>58742</child>
+        <child>58730</child>
+        <child>58707</child>
+        <child>58719</child>
+        <child>58743</child>
+        <child>58731</child>
+        <child>58708</child>
+        <child>58720</child>
+        <child>58744</child>
+        <child>58732</child>
+        <child>58709</child>
+        <child>58721</child>
+        <child>58745</child>
+        <child>58733</child>
+        <child>58710</child>
+        <child>58722</child>
+        <child>58746</child>
+        <child>58734</child>
+        <child>58711</child>
+        <child>58723</child>
+        <child>58747</child>
+        <child>58735</child>
+        <child>58748</child>
+        <child>58749</child>
+        <child>58750</child>
+        <child>58751</child>
+        <child>58752</child>
+        <child>58753</child>
         <child>58562</child>
-        <child>58601</child>
+        <child>58754</child>
     </window>
     <window class="WND_CLASS_STATIC" id="58561" range="10,5,380,14" title="" fcolor="59782" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="58563" range="35,31,36,36" title="" icon="58440" tooltip="10040" tooltext="Buy">
+    <window class="WND_CLASS_BUTTON" id="58700" range="35,31,36,36" title="" icon="58440" tooltip="10040" tooltext="Buy">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnMBComprar1</OnCommand>
     </window>
-    <window class="WND_CLASS_STATIC" id="58571" range="9,70,88,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="58712" range="9,70,88,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="58587" range="9,84,88,14" title="" fcolor="59780" font="1">
+    <window class="WND_CLASS_STATIC" id="58736" range="9,84,88,14" title="" fcolor="59780" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="58579" range="9,98,88,14" title="" fcolor="59782" font="1">
+    <window class="WND_CLASS_STATIC" id="58724" range="9,98,88,14" title="" fcolor="59782" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="58564" range="133,31,36,36" title="" icon="58440" tooltip="10040" tooltext="Buy">
+    <window class="WND_CLASS_BUTTON" id="58701" range="133,31,36,36" title="" icon="58440" tooltip="10040" tooltext="Buy">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnMBComprar2</OnCommand>
     </window>
-    <window class="WND_CLASS_STATIC" id="58572" range="107,70,88,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="58713" range="107,70,88,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="58588" range="107,84,88,14" title="" fcolor="59780" font="1">
+    <window class="WND_CLASS_STATIC" id="58737" range="107,84,88,14" title="" fcolor="59780" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="58580" range="107,98,88,14" title="" fcolor="59782" font="1">
+    <window class="WND_CLASS_STATIC" id="58725" range="107,98,88,14" title="" fcolor="59782" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="58565" range="231,31,36,36" title="" icon="58440" tooltip="10040" tooltext="Buy">
+    <window class="WND_CLASS_BUTTON" id="58702" range="231,31,36,36" title="" icon="58440" tooltip="10040" tooltext="Buy">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnMBComprar3</OnCommand>
     </window>
-    <window class="WND_CLASS_STATIC" id="58573" range="205,70,88,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="58714" range="205,70,88,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="58589" range="205,84,88,14" title="" fcolor="59780" font="1">
+    <window class="WND_CLASS_STATIC" id="58738" range="205,84,88,14" title="" fcolor="59780" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="58581" range="205,98,88,14" title="" fcolor="59782" font="1">
+    <window class="WND_CLASS_STATIC" id="58726" range="205,98,88,14" title="" fcolor="59782" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="58566" range="329,31,36,36" title="" icon="58440" tooltip="10040" tooltext="Buy">
+    <window class="WND_CLASS_BUTTON" id="58703" range="329,31,36,36" title="" icon="58440" tooltip="10040" tooltext="Buy">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnMBComprar4</OnCommand>
     </window>
-    <window class="WND_CLASS_STATIC" id="58574" range="303,70,88,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="58715" range="303,70,88,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="58590" range="303,84,88,14" title="" fcolor="59780" font="1">
+    <window class="WND_CLASS_STATIC" id="58739" range="303,84,88,14" title="" fcolor="59780" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="58582" range="303,98,88,14" title="" fcolor="59782" font="1">
+    <window class="WND_CLASS_STATIC" id="58727" range="303,98,88,14" title="" fcolor="59782" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="58567" range="35,125,36,36" title="" icon="58440" tooltip="10040" tooltext="Buy">
+    <window class="WND_CLASS_BUTTON" id="58704" range="35,125,36,36" title="" icon="58440" tooltip="10040" tooltext="Buy">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnMBComprar5</OnCommand>
     </window>
-    <window class="WND_CLASS_STATIC" id="58575" range="9,164,88,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="58716" range="9,164,88,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="58591" range="9,178,88,14" title="" fcolor="59780" font="1">
+    <window class="WND_CLASS_STATIC" id="58740" range="9,178,88,14" title="" fcolor="59780" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="58583" range="9,192,88,14" title="" fcolor="59782" font="1">
+    <window class="WND_CLASS_STATIC" id="58728" range="9,192,88,14" title="" fcolor="59782" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="58568" range="133,125,36,36" title="" icon="58440" tooltip="10040" tooltext="Buy">
+    <window class="WND_CLASS_BUTTON" id="58705" range="133,125,36,36" title="" icon="58440" tooltip="10040" tooltext="Buy">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnMBComprar6</OnCommand>
     </window>
-    <window class="WND_CLASS_STATIC" id="58576" range="107,164,88,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="58717" range="107,164,88,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="58592" range="107,178,88,14" title="" fcolor="59780" font="1">
+    <window class="WND_CLASS_STATIC" id="58741" range="107,178,88,14" title="" fcolor="59780" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="58584" range="107,192,88,14" title="" fcolor="59782" font="1">
+    <window class="WND_CLASS_STATIC" id="58729" range="107,192,88,14" title="" fcolor="59782" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="58569" range="231,125,36,36" title="" icon="58440" tooltip="10040" tooltext="Buy">
+    <window class="WND_CLASS_BUTTON" id="58706" range="231,125,36,36" title="" icon="58440" tooltip="10040" tooltext="Buy">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnMBComprar7</OnCommand>
     </window>
-    <window class="WND_CLASS_STATIC" id="58577" range="205,164,88,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="58718" range="205,164,88,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="58593" range="205,178,88,14" title="" fcolor="59780" font="1">
+    <window class="WND_CLASS_STATIC" id="58742" range="205,178,88,14" title="" fcolor="59780" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="58585" range="205,192,88,14" title="" fcolor="59782" font="1">
+    <window class="WND_CLASS_STATIC" id="58730" range="205,192,88,14" title="" fcolor="59782" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="58570" range="329,125,36,36" title="" icon="58440" tooltip="10040" tooltext="Buy">
+    <window class="WND_CLASS_BUTTON" id="58707" range="329,125,36,36" title="" icon="58440" tooltip="10040" tooltext="Buy">
         <style wsVisible="" wsTab="" />
         <OnCommand>OnMBComprar8</OnCommand>
     </window>
-    <window class="WND_CLASS_STATIC" id="58578" range="303,164,88,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_STATIC" id="58719" range="303,164,88,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="58594" range="303,178,88,14" title="" fcolor="59780" font="1">
+    <window class="WND_CLASS_STATIC" id="58743" range="303,178,88,14" title="" fcolor="59780" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="58586" range="303,192,88,14" title="" fcolor="59782" font="1">
+    <window class="WND_CLASS_STATIC" id="58731" range="303,192,88,14" title="" fcolor="59782" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="58595" range="96,220,36,36" title="" icon="58440">
+    <window class="WND_CLASS_BUTTON" id="58708" range="35,219,36,36" title="" icon="58440" tooltip="10040" tooltext="Buy">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnMBComprar9</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="58720" range="9,258,88,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58744" range="9,272,88,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58732" range="9,286,88,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="58709" range="133,219,36,36" title="" icon="58440" tooltip="10040" tooltext="Buy">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnMBComprar10</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="58721" range="107,258,88,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58745" range="107,272,88,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58733" range="107,286,88,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="58710" range="231,219,36,36" title="" icon="58440" tooltip="10040" tooltext="Buy">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnMBComprar11</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="58722" range="205,258,88,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58746" range="205,272,88,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58734" range="205,286,88,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="58711" range="329,219,36,36" title="" icon="58440" tooltip="10040" tooltext="Buy">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnMBComprar12</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="58723" range="303,258,88,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58747" range="303,272,88,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58735" range="303,286,88,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="58748" range="96,314,36,36" title="" icon="58440">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="58596" range="142,220,36,36" title="" icon="58440">
+    <window class="WND_CLASS_BUTTON" id="58749" range="142,314,36,36" title="" icon="58440">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="58597" range="188,220,36,36" title="" icon="58440">
+    <window class="WND_CLASS_BUTTON" id="58750" range="188,314,36,36" title="" icon="58440">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="58598" range="234,220,36,36" title="" icon="58440">
+    <window class="WND_CLASS_BUTTON" id="58751" range="234,314,36,36" title="" icon="58440">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="58599" range="280,220,36,36" title="" icon="58440">
+    <window class="WND_CLASS_BUTTON" id="58752" range="280,314,36,36" title="" icon="58440">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_BUTTON" id="58600" range="326,220,36,36" title="" icon="58440">
+    <window class="WND_CLASS_BUTTON" id="58753" range="326,314,36,36" title="" icon="58440">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="58562" range="10,264,380,14" title="" fcolor="59782" font="1">
+    <window class="WND_CLASS_STATIC" id="58562" range="10,358,380,14" title="" fcolor="59782" font="1">
         <style wsVisible="" ssVCenter="" />
     </window>
-    <window class="WND_CLASS_BASE" id="58601" range="0,0,400,284" icon="58439">
+    <window class="WND_CLASS_BASE" id="58754" range="0,0,400,378" icon="58439">
         <style wsVisible="" />
     </window>
     <icon id="58400" dir="\wnd01\" normal="aolat_mb_fondo" focus="normal" down="normal" disable="normal" />

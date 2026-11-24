@@ -5121,7 +5121,9 @@ def _apariencia(ses):
     pd = __import__('trade_routes').pd_de(ses)
     for r in range(167, 175):
         r_eq = {174: 10}.get(r, r - 166)
-        out.append(_cb.equipar_visual(ent, r, int(mb.get(r_eq) or pd.get(r) or bolsa.get(r, 0) or 0)))
+        # Lo comprado en el MOBA va en la de equipo y su fashion se manda VACIA, como al equiparse de verdad sin fashion:
+        # con el arma tambien en la 169 el cliente no pintaba ningun arma ("no se ve el item", 23/11/2026).
+        out.append(_cb.equipar_visual(ent, r, 0 if r_eq in mb else int(pd.get(r) or bolsa.get(r, 0) or 0)))
     return out
 
 

@@ -54,13 +54,16 @@ I_PODER0 = 58600                                      # + clase x 4 + poder: el 
 P_BOTON_W, P_BOTON_H = 90, 24
 # La tienda (58560): "que se puedan comprar items para mejorar los stats" (23/11/2026). Los iconos son los de los
 # objetos del juego (el Lua los pone con game.getitemicon); aqui solo el marco de cada casilla.
-V_TIENDA, T_TITULO, T_ESTADO, T_ITEM, T_NOMBRE, T_PRECIO, T_TEXTO = 58560, 58561, 58562, 58563, 58571, 58579, 58587
-T_PROPIO, T_FONDO = 58595, 58601                      # T_PROPIO + 0..5
+# 12 casillas (las armas de cada clase y los objetos de todas, 23/11/2026): los ids, en el hueco libre 58700..
+T_CASILLAS = 12
+V_TIENDA, T_TITULO, T_ESTADO = 58560, 58561, 58562
+T_ITEM, T_NOMBRE, T_PRECIO, T_TEXTO = 58700, 58712, 58724, 58736  # + 0..11
+T_PROPIO, T_FONDO = 58748, 58754                      # T_PROPIO + 0..5
 I_T_FONDO, I_T_CASILLA = 58439, 58440
-TW, TH = 400, 284
+TW, TH = 400, 378
 T_CW, T_CH, T_PASO_X, T_PASO_Y, T_Y0 = 94, 88, 98, 94, 26
 T_ICONO = 36
-T_PROPIOS_Y = T_Y0 + 2 * T_PASO_Y + 4
+T_PROPIOS_Y = T_Y0 + 3 * T_PASO_Y + 4
 FW, FH = 340, 280
 CARTEL = (4, 4, FW - 4, 56)
 CERRAR_XY = ((FW - 110) // 2, FH - 8 - 26)
@@ -209,7 +212,7 @@ def fondo_tienda():
     im = vp._degradado(TW, TH, vp.FONDO_ARRIBA, vp.FONDO_ABAJO)
     d = ImageDraw.Draw(im)
     d.rectangle((0, 0, TW - 1, TH - 1), outline=vp._rgba(vp.LINEA))
-    for i in range(8):
+    for i in range(T_CASILLAS):
         x, y = 6 + (i % 4) * T_PASO_X, T_Y0 + (i // 4) * T_PASO_Y
         d.rounded_rectangle((x, y, x + T_CW - 1, y + T_CH - 1), radius=8, fill=vp._rgba(vp.SUPERFICIE),
                             outline=vp._rgba(vp.LINEA))
@@ -370,7 +373,7 @@ def bloque() -> str:
     iconos += [vp._icono(I_P_FONDO, 'aolat_mb_pfondo'),
                vp._icono(I_ELEGIR, 'aolat_mb_elegir_n', 'aolat_mb_elegir_f', 'aolat_mb_elegir_s')]
     ti = [(T_TITULO, vp._texto(T_TITULO, 10, 5, TW - 20, vp.C_ORO))]
-    for i in range(8):
+    for i in range(T_CASILLAS):
         x, y = 6 + (i % 4) * T_PASO_X, T_Y0 + (i // 4) * T_PASO_Y
         ti += [(T_ITEM + i, vp._boton(T_ITEM + i, x + (T_CW - T_ICONO) // 2, y + 5, T_ICONO, T_ICONO, I_T_CASILLA,
                                       'OnMBComprar%d' % (i + 1), 'Buy')),

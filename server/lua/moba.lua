@@ -244,11 +244,11 @@ function OnMBPunto3(dwID, dwCmdID, dwParam, pParam) return punto(3) end
 function OnMBPunto4(dwID, dwCmdID, dwParam, pParam) return punto(4) end
 
 -- ------------------------------------------------------------------------------------------------- la tienda
--- 58560 (server/moba_tienda.ventana): filas = {{nombre, precio, texto, item_id}, ...} (8); propios = {item_id, ...}.
+-- 58560 (server/moba_tienda.ventana): filas = {{nombre, precio, texto, item_id}, ...} (12); propios = {item_id, ...}.
 -- Los iconos son los de los objetos del juego (game.getitemicon, como el Item Mall nuevo).
 WND_MB_TIENDA = WND_MB_TIENDA or 0
-local T_TITULO, T_ESTADO, T_ITEM, T_NOMBRE, T_PRECIO, T_TEXTO, T_PROPIO = 58561, 58562, 58563, 58571, 58579, 58587, 58595
-local TW, TH = 408, 308
+local T_TITULO, T_ESTADO, T_ITEM, T_NOMBRE, T_PRECIO, T_TEXTO, T_PROPIO = 58561, 58562, 58700, 58712, 58724, 58736, 58748
+local TW, TH = 400, 378
 
 function MBTienda(titulo, estado, filas, propios)
   if not window.isexist(WND_MB_TIENDA) then
@@ -263,7 +263,7 @@ function MBTienda(titulo, estado, filas, propios)
   local w = WND_MB_TIENDA
   window.settitle(window.find(w, T_TITULO), corto(titulo, 56))
   window.settitle(window.find(w, T_ESTADO), corto(estado, 56))
-  for i = 0, 7 do
+  for i = 0, 11 do
     local f = filas and filas[i + 1]
     window.show(window.find(w, T_ITEM + i), f ~= nil)
     if f then
@@ -312,3 +312,7 @@ function OnMBComprar5(dwID, dwCmdID, dwParam, pParam) return comprar(5) end
 function OnMBComprar6(dwID, dwCmdID, dwParam, pParam) return comprar(6) end
 function OnMBComprar7(dwID, dwCmdID, dwParam, pParam) return comprar(7) end
 function OnMBComprar8(dwID, dwCmdID, dwParam, pParam) return comprar(8) end
+function OnMBComprar9(dwID, dwCmdID, dwParam, pParam) return comprar(9) end
+function OnMBComprar10(dwID, dwCmdID, dwParam, pParam) return comprar(10) end
+function OnMBComprar11(dwID, dwCmdID, dwParam, pParam) return comprar(11) end
+function OnMBComprar12(dwID, dwCmdID, dwParam, pParam) return comprar(12) end

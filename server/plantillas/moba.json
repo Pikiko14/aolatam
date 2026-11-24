@@ -957,7 +957,7 @@
   "ult_extra": 0.25
  },
  "tienda": {
-  "_nota": "moba_tienda.py: oro solo de la partida; los objetos son objetos del juego (id = su item, por su icono). stats suma a hp/mp/atk/def/mdef del heroe; cdr resta recarga (tope cdr_max); cura_pct se toma al comprarla. En la base (radio_base de su nucleo), muerto, o en cualquier sitio tras fuera_de_combate s sin recibir golpes (0 = solo en la base), max_objetos a la vez.",
+  "_nota": "moba_tienda.py: oro solo de la partida; los objetos son objetos del juego (id = su item, por su icono). stats suma a hp/mp/atk/def/mdef del heroe; cdr resta recarga (tope cdr_max); cura_pct se toma al comprarla. En la base (radio_base de su nucleo), muerto, o en cualquier sitio tras fuera_de_combate s sin recibir golpes (0 = solo en la base), max_objetos a la vez. \"clases\": solo la ven esas clases (sus armas; \"que la tienda tenga mas objetos para todas las clases\", 23/11/2026); sin \"clases\", todas. Cada clase ve 12 como mucho.",
   "oro": {
    "inicial": 300,
    "cada": 5,
@@ -975,13 +975,204 @@
   "cdr_max": 0.3,
   "objetos": [
    {
-    "id": 33330,
-    "nombre": "Arclight Sword",
+    "id": 18994,
+    "nombre": "Steel Trace Blade",
     "precio": 350,
     "texto": "ATK +20",
     "stats": {
      "atk": 20
-    }
+    },
+    "clases": [
+     "espada"
+    ]
+   },
+   {
+    "id": 30001,
+    "nombre": "Soul Hunt",
+    "precio": 800,
+    "texto": "ATK +50",
+    "stats": {
+     "atk": 50
+    },
+    "clases": [
+     "espada"
+    ]
+   },
+   {
+    "id": 33330,
+    "nombre": "Arclight Sword",
+    "precio": 1500,
+    "texto": "ATK +90 HP +200",
+    "stats": {
+     "atk": 90,
+     "hp": 200
+    },
+    "clases": [
+     "espada"
+    ]
+   },
+   {
+    "id": 19016,
+    "nombre": "Thorny Axe",
+    "precio": 350,
+    "texto": "ATK +20",
+    "stats": {
+     "atk": 20
+    },
+    "clases": [
+     "hacha"
+    ]
+   },
+   {
+    "id": 27545,
+    "nombre": "Tigris Axe",
+    "precio": 800,
+    "texto": "ATK +50",
+    "stats": {
+     "atk": 50
+    },
+    "clases": [
+     "hacha"
+    ]
+   },
+   {
+    "id": 37074,
+    "nombre": "Vanquisher's Drive",
+    "precio": 1500,
+    "texto": "ATK +90 HP +200",
+    "stats": {
+     "atk": 90,
+     "hp": 200
+    },
+    "clases": [
+     "hacha"
+    ]
+   },
+   {
+    "id": 19019,
+    "nombre": "Fin Spear",
+    "precio": 350,
+    "texto": "ATK +20",
+    "stats": {
+     "atk": 20
+    },
+    "clases": [
+     "lanza"
+    ]
+   },
+   {
+    "id": 27567,
+    "nombre": "Timeflow Spear",
+    "precio": 800,
+    "texto": "ATK +50",
+    "stats": {
+     "atk": 50
+    },
+    "clases": [
+     "lanza"
+    ]
+   },
+   {
+    "id": 40626,
+    "nombre": "Mystic Eye",
+    "precio": 1500,
+    "texto": "ATK +90 HP +200",
+    "stats": {
+     "atk": 90,
+     "hp": 200
+    },
+    "clases": [
+     "lanza"
+    ]
+   },
+   {
+    "id": 19022,
+    "nombre": "Ice Crystal Bow",
+    "precio": 350,
+    "texto": "ATK +20",
+    "stats": {
+     "atk": 20
+    },
+    "clases": [
+     "arco"
+    ]
+   },
+   {
+    "id": 27570,
+    "nombre": "Vulture's Grip",
+    "precio": 800,
+    "texto": "ATK +50",
+    "stats": {
+     "atk": 50
+    },
+    "clases": [
+     "arco"
+    ]
+   },
+   {
+    "id": 40629,
+    "nombre": "Glorious Bud",
+    "precio": 1500,
+    "texto": "ATK +90 HP +200",
+    "stats": {
+     "atk": 90,
+     "hp": 200
+    },
+    "clases": [
+     "arco"
+    ]
+   },
+   {
+    "id": 19029,
+    "nombre": "Blood Scar Blade",
+    "precio": 350,
+    "texto": "ATK +20",
+    "stats": {
+     "atk": 20
+    },
+    "clases": [
+     "sombra"
+    ]
+   },
+   {
+    "id": 27577,
+    "nombre": "Lightning Flash",
+    "precio": 800,
+    "texto": "ATK +50",
+    "stats": {
+     "atk": 50
+    },
+    "clases": [
+     "sombra"
+    ]
+   },
+   {
+    "id": 40636,
+    "nombre": "Divine Shadow",
+    "precio": 1500,
+    "texto": "ATK +90 HP +200",
+    "stats": {
+     "atk": 90,
+     "hp": 200
+    },
+    "clases": [
+     "sombra"
+    ]
+   },
+   {
+    "id": 19026,
+    "nombre": "Feather Snake Staff",
+    "precio": 350,
+    "texto": "ATK +20",
+    "stats": {
+     "atk": 20
+    },
+    "clases": [
+     "vida",
+     "espectro",
+     "caos",
+     "tierra"
+    ]
    },
    {
     "id": 27536,
@@ -990,20 +1181,79 @@
     "texto": "ATK +50",
     "stats": {
      "atk": 50
-    }
+    },
+    "clases": [
+     "vida",
+     "espectro",
+     "caos",
+     "tierra"
+    ]
    },
    {
-    "id": 19210,
-    "nombre": "Heavy Armor Triceratops",
-    "precio": 450,
-    "texto": "HP +350",
+    "id": 40633,
+    "nombre": "Beryl Staff",
+    "precio": 1500,
+    "texto": "ATK +90 HP +200",
     "stats": {
-     "hp": 350
+     "atk": 90,
+     "hp": 200
+    },
+    "clases": [
+     "vida",
+     "espectro",
+     "caos",
+     "tierra"
+    ]
+   },
+   {
+    "id": 27697,
+    "nombre": "Peregrine Hat",
+    "precio": 400,
+    "texto": "HP +250",
+    "stats": {
+     "hp": 250
     }
    },
    {
-    "id": 37103,
-    "nombre": "Mastadon's Shield",
+    "id": 27700,
+    "nombre": "Peregrine Armor",
+    "precio": 600,
+    "texto": "DEF +30 HP +150",
+    "stats": {
+     "def": 30,
+     "hp": 150
+    }
+   },
+   {
+    "id": 27703,
+    "nombre": "Peregrine Gloves",
+    "precio": 450,
+    "texto": "ATK +15 MDEF +10",
+    "stats": {
+     "atk": 15,
+     "mdef": 10
+    }
+   },
+   {
+    "id": 28693,
+    "nombre": "Scarlet Wing Boots",
+    "precio": 550,
+    "texto": "Cooldown -15%",
+    "cdr": 0.15
+   },
+   {
+    "id": 27746,
+    "nombre": "Astro Cape",
+    "precio": 500,
+    "texto": "MDEF +30 HP +100",
+    "stats": {
+     "mdef": 30,
+     "hp": 100
+    }
+   },
+   {
+    "id": 27721,
+    "nombre": "Starguard Shield",
     "precio": 500,
     "texto": "DEF +25 MDEF +15",
     "stats": {
@@ -1022,21 +1272,12 @@
     }
    },
    {
-    "id": 28693,
-    "nombre": "Scarlet Wing Boots",
-    "precio": 550,
-    "texto": "Cooldown -15%",
-    "cdr": 0.15
-   },
-   {
-    "id": 40620,
-    "nombre": "Spring's Bloom",
-    "precio": 1000,
-    "texto": "HP+200 ATK+25 DEF+10",
+    "id": 19210,
+    "nombre": "Heavy Armor Triceratops",
+    "precio": 450,
+    "texto": "Mount: HP +350",
     "stats": {
-     "hp": 200,
-     "atk": 25,
-     "def": 10
+     "hp": 350
     }
    },
    {

@@ -61,7 +61,8 @@ _CMDS_TORRE = ('torre', 'tower')
 _CMDS_PD = ('pd', 'petdefense')
 # Angel MOBA: /moba start [1|2] [clase] (prueba: tu solo en el equipo Jiabli o Raphael, con esa clase de
 # plantillas/moba.json: espada, hacha, lanza, arco, sombra, vida, espectro, caos, tierra), /moba stop,
-# /moba open (abre la inscripcion ya) y /moba go (empieza ya con los apuntados, moba_lobby.py).
+# /moba open (abre la inscripcion ya), /moba go (empieza ya con los apuntados, moba_lobby.py) y /moba kill (una
+# baja mas a tu racha, para oir el double/triple/quadra/penta kill).
 _CMDS_MOBA = ('moba',)
 # Prueba del 0x001D kind 9 (hechizo) con un tercer campo a eleccion. Solo se midio con
 # rango I (valor 1). Sirve para averiguar si un valor (p.ej. 0) le quita al cliente un
@@ -921,6 +922,12 @@ def aplicar(ses, parsed) -> str:
             import moba_lobby as _mbl
             _mbl._ESTADO['empieza'] = _mbl._ESTADO['abierta_desde'] = None
             msg = 'MOBA: %d match(es) started' % _mbl.armar()
+        elif parsed[1] in ('kill', 'racha'):        # prueba de los anuncios: una baja mas a tu racha
+            import moba_heroe as _mbh
+            import time as _t_mb
+            pa = _mb.partida_de(ses)
+            h = pa.heroes.get(ses) if pa else None
+            msg = ('MOBA: streak %d' % _mbh.racha(pa, h, _t_mb.time())) if h else 'MOBA: you are not in a match.'
         else:
             msg = _mb.empezar_prueba(ses, getattr(ses, 'addr', '?'), 2 if parsed[2] == '2' else 1,
                                      parsed[3] if len(parsed) > 3 else None)

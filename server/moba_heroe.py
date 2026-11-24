@@ -238,8 +238,10 @@ def _recarga(h, sk, segundos, ahora=None):
         return
     avisos[sk] = ahora
     yo = h.entidad
-    h.ses.enviar(struct.pack('<HIBBII', 0x001D, yo, 1, 3, int(sk), ms))
-    import moba
+    import combate as cb
+    # Con el GCD a 0 (combate.gcd_paquete, como app en cada habilidad): sin el, el cliente aplicaba su recarga global
+    # a TODA la barra y un poder dejaba en espera a los otros ("que el cd de los poderes no stakee en otros", 23/11/2026).
+    h.ses.enviar(struct.pack('<HIBBII', 0x001D, yo, 1, 3, int(sk), ms), cb.gcd_paquete())
 
     def _lista():
         try:
@@ -658,6 +660,35 @@ def unidad_golpea(pa, m, h, ahora):
     recibir(pa, h, dano, m.entity_id, None, ahora)
 
 
+# ---------------------------------------------------------------------------------------------- dobles, triples...
+# "Sonidos de doble kill, triple kill, cuadruple kill y pentakill" (23/11/2026). El Lua del cliente no puede tocar un
+# sonido suelto, pero los efectos de magia si. El sonido NO sale del numero de efecto: lo pide por nombre el script
+# del efecto (script\magic.so, la llamada nativa 132 con la cadena); con 203/204/184/116 "no suena" porque sus
+# scripts no piden ningun magicNNN. Estos cuatro piden un sonido que no existe en el cliente (Magic053_Burst ->
+# "magic053", Magic055_Ball -> "magic055", Magic072_Ice -> "magic072", Magic301_Ices -> "magic301") y ninguna
+# habilidad los usa (magic.xml); el parche trae esos wav con la voz (parches/extras/sound, voz del sistema).
+# Bajas del mismo heroe con menos de RACHA_SEGUNDOS entre una y otra.
+RACHA_SEGUNDOS = 10.0
+RACHAS = {2: ('DOUBLE KILL', 53), 3: ('TRIPLE KILL', 55), 4: ('QUADRA KILL', 72), 5: ('PENTA KILL', 301)}
+
+
+def racha(pa, h, ahora):
+    """Suma la baja a la racha del heroe; con 2..5 seguidas, el anuncio y su sonido a toda la partida. La racha."""
+    import combate as cb
+    import moba
+    n = h.__dict__.get('_racha', 0) + 1 if ahora - h.__dict__.get('_racha_t', -1e9) <= RACHA_SEGUNDOS else 1
+    h._racha, h._racha_t = n, ahora
+    nombre, efecto = RACHAS.get(min(n, 5), (None, 0)) if n >= 2 else (None, 0)
+    if not nombre:
+        return n
+    moba._aviso_todos(pa, '%s: %s!' % (h.ses.personaje.nombre, nombre))
+    difundir(pa, lambda v: (cb.numero_de_dano(eid_para(v, h), eid_para(v, h), 0, ataque=0, efecto=efecto,
+                                              cast_time=100, es_magia=True),
+                            cb.cierre_de_dano(eid_para(v, h), eid_para(v, h), ataque=0, efecto=efecto, es_magia=True)))
+    log.info('MOBA %s: %s %s', pa.id, h.ses.personaje.nombre, nombre)
+    return n
+
+
 # ---------------------------------------------------------------------------------------------- muerte y experiencia
 def morir(pa, h, atacante_eid, matador, ahora=None):
     import combate as cb
@@ -676,7 +707,11 @@ def morir(pa, h, atacante_eid, matador, ahora=None):
     h.muertes += 1
     if matador is not None:
         matador.bajas += 1
-    nombre_m = matador.ses.personaje.nombre if matador is not None else 'the %s units' % pa.cfg['equipos'][str(3 - h.equipo)]['nombre']
+        try:
+            racha(pa, matador, ahora)
+        except Exception:
+            log.exception('MOBA: racha')
+    nombre_m =matador.ses.personaje.nombre if matador is not None else 'the %s units' % pa.cfg['equipos'][str(3 - h.equipo)]['nombre']
     moba._aviso_todos(pa, '%s was slain by %s! Respawn in %d s.' % (h.ses.personaje.nombre, nombre_m,
                                                                       int(h.muerto_hasta - ahora)))
     try:

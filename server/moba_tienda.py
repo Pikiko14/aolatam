@@ -27,6 +27,14 @@ def objetos():
     return cfg().get('objetos') or []
 
 
+CASILLAS = 12                                    # tools/ventana_moba.py: las de la ventana
+
+
+def indices_de(h):
+    """Los objetos que ve ese heroe (indices de objetos()): las armas de su clase y los de todas, CASILLAS como mucho."""
+    return [i for i, o in enumerate(objetos()) if not o.get('clases') or h.clave in o['clases']][:CASILLAS]
+
+
 def bonus(h, clave):
     """Lo que suman los objetos del heroe a esa estadistica."""
     objs = objetos()
@@ -154,25 +162,87 @@ def _redibujar(ses):
         log.debug('moba: vestir', exc_info=True)
 
 
+def _fashion_de(r):
+    """La ranura de fashion que tapa a la de equipo r (presencia._spawn: 1..7 -> 167..173, 10 -> 174)."""
+    return {10: 174}.get(int(r), int(r) + 166)
+
+
+_FAMILIA_ARMA = (('劍', 'espada'), ('刀', 'espada'), ('斧', 'hacha'), ('錘', 'hacha'), ('锤', 'hacha'),
+                 ('影刃', 'sombra'), ('槍', 'lanza'), ('弓', 'arco'), ('杖', 'mago'))
+_MAGOS = ('vida', 'espectro', 'caos', 'tierra')
+
+
+def _familia(item_id):
+    import inventario as inv
+    try:
+        cat = inv.categoria_de(int(item_id)) or ''
+    except Exception:
+        return ''
+    return next((f for k, f in _FAMILIA_ARMA if k in cat), '')
+
+
+def arma_visible(ses, item_id):
+    """El arma que se le PUEDE DIBUJAR. El cliente solo pinta las armas del tipo que lleva el personaje de verdad: con un
+    mago (bastón en la 3) que compra la Steel Trace Blade, el bastón desaparecía y la espada no salía, quedaba con las
+    manos vacías ("sigue sin verse el item", 23/11/2026). Si el arma comprada no es de su tipo, se ve la de su tipo del
+    mismo escalón de la tienda (la espada de 350 -> el bastón de 350)."""
+    real = (getattr(ses, 'inventario', None) or {}).get(3)
+    fam_real, fam = _familia(real) if real else '', _familia(item_id)
+    if not fam or not fam_real or fam == fam_real:
+        return int(item_id)
+
+    def de(f):
+        return sorted((o for o in objetos() if (o.get('clases') or []) and
+                       (any(c in _MAGOS for c in o['clases']) if f == 'mago' else f in o['clases'])),
+                      key=lambda o: int(o['precio']))
+    suyas, propias = de(fam), de(fam_real)
+    escalon = next((n for n, o in enumerate(suyas) if int(o['id']) == int(item_id)), None)
+    if escalon is None or not propias:
+        return int(item_id)
+    return int(propias[min(escalon, len(propias) - 1)]['id'])
+
+
 def vestir(ses, item_id):
     """Lo comprado se le ve puesto ("compro 1 espada, se me ve esa espada", 23/11/2026): solo a la vista
     (ses._mb_visual, que app._apariencia y presencia._spawn ponen por encima de lo suyo), el inventario no se toca.
-    El ultimo de cada ranura es el que se ve; el collar no tiene ranura visible."""
+    El ultimo de cada ranura es el que se ve; el collar no tiene ranura visible.
+
+    El jugador mismo lo dibuja desde SU INVENTARIO, no desde el 0x001D de apariencia (se mandaba bien, ranura 3 y
+    169 con la Arclight Sword, y "no se ve el item"): al equipar de verdad va tambien el 0x001B de la casilla. Asi que
+    a su cliente se le manda la casilla con lo comprado (y vacia la de fashion que lo taparia); en el servidor la
+    bolsa sigue igual y al salir se le reenvian las casillas de verdad (desvestir)."""
     import app
     import inventario as inv
     r = inv.ranura_equipo_de(int(item_id))
     if r not in app.RANURAS_VISIBLES:
         return False
+    if r == 3:
+        item_id = arma_visible(ses, item_id)
     ses.__dict__.setdefault('_mb_visual', {})[int(r)] = int(item_id)
+    try:
+        cid = ses.personaje.char_id
+        pk = [inv.actualizar_ranura(cid, int(r), int(item_id), 1, inv.instancia_nueva(), app._dueno(ses))]
+        if (getattr(ses, 'inventario', None) or {}).get(_fashion_de(r)):
+            pk.append(inv.vaciar_ranura(ses.personaje.entity_id, _fashion_de(r)))
+        ses.enviar(*pk)
+    except Exception:
+        log.debug('moba: casilla de lo comprado', exc_info=True)
     _redibujar(ses)
     return True
 
 
 def desvestir(ses):
-    """Al salir del MOBA: vuelve lo suyo (moba_heroe.salir)."""
-    if getattr(ses, '_mb_visual', None):
-        ses._mb_visual = {}
-        _redibujar(ses)
+    """Al salir del MOBA: vuelve lo suyo (moba_heroe.salir), las casillas de verdad tambien."""
+    tocadas = getattr(ses, '_mb_visual', None)
+    if not tocadas:
+        return
+    ses._mb_visual = {}
+    try:
+        import app
+        ses.enviar(*app._refrescar(ses, [x for r in tocadas for x in (int(r), _fashion_de(r))]))
+    except Exception:
+        log.debug('moba: casillas de verdad', exc_info=True)
+    _redibujar(ses)
 
 
 # ---------------------------------------------------------------------------------------------- la ventana
@@ -183,7 +253,8 @@ def titulo(h):
 def ventana(pa, h):
     import moba_lobby
     h.ses._mb_tienda = True
-    filas = [[o['nombre'], int(o['precio']), o.get('texto', ''), int(o['id'])] for o in objetos()]
+    filas = [[o['nombre'], int(o['precio']), o.get('texto', ''), int(o['id'])]
+             for o in (objetos()[i] for i in indices_de(h))]
     propios = [int(objetos()[i]['id']) for i in h.objetos if i < len(objetos())]
     estado = puede_comprar(pa, h) or 'Click an item to buy it.'
     return moba_lobby.preparar(h.ses) + [canal_lua.llamar('MBTienda', titulo(h), estado, filas, propios)]
@@ -196,6 +267,7 @@ def procesar(ses, b):
     h = pa.heroes.get(ses) if pa else None
     if h is None:
         return
-    ok, msg = comprar(pa, h, b)
+    lista = indices_de(h)                       # b es la casilla de la ventana, no el indice del catalogo
+    ok, msg = comprar(pa, h, lista[int(b)]) if 0 <= int(b) < len(lista) else (False, 'Unknown item.')
     ses.enviar(*ventana(pa, h))
     ses.enviar(canal_lua.llamar('MBTiendaAviso', msg))
