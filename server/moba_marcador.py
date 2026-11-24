@@ -33,6 +33,10 @@ def lineas_hud(pa, ses, ahora=None):
         abajo += '   Boss buff %d s' % int(b[0] - ahora)
     elif pa.jefe_proximo is None:
         abajo += '   Boss is up!'
+    if getattr(pa, 'dragones', None) is not None and pa.cfg.get('dragones'):
+        abajo += '   Dragons %d-%d' % (len(pa.dragones.get(h.equipo, ())), len(pa.dragones.get(3 - h.equipo, ())))
+        if __import__('moba').dragon_vivo(pa) is not None:
+            abajo += ' (up!)'
     if h.muerto:
         abajo += '   Respawn in %d s' % max(0, int(h.muerto_hasta - ahora + 0.99))
     return arriba, abajo

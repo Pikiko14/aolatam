@@ -485,7 +485,7 @@ def test_sale_la_jungla_y_no_pelea_con_los_carriles(partida):
     ses, pa = partida
     moba._jungla(pa, pa.inicio + 10 ** 6)
     neutrales = [m for m in pa.unidades.values() if m.moba_tipo in moba.NEUTRALES]
-    assert len(neutrales) == len(CFG['jungla']['campamentos']) * 3 + 1
+    assert len(neutrales) == len(CFG['jungla']['campamentos']) * 3 + 1 + 1        # + el jefe + un dragon
     sub = moba._nueva_unidad(pa, 'subdito', 1, tuple(CFG['jungla']['campamentos'][0]), 'mid')
     assert not any(u.moba_equipo == 0 for u in moba._enemigos(pa, sub)) and moba._enemigos(pa, neutrales[0]) == []
 
@@ -523,6 +523,72 @@ def test_el_jefe_da_buff_al_equipo(heroe):
     j = moba._nueva_unidad(pa, 'jefe', 0, (ses.personaje.tile_x + 1, ses.personaje.tile_y), npc=CFG['jefe']['npc_types'][0])
     moba.muere(pa, j, ses)
     assert h.atk > atk and h.defensa() > df and pa.jefe_proximo is not None
+
+
+def test_los_sitios_de_los_dragones_estan_en_suelo_alcanzable():
+    import pet_defense_partida as pp
+    st = CFG['mapa']['stage']
+    for eq in ('1', '2'):
+        base = tuple(CFG['equipos'][eq]['llegada'])
+        for sitio in CFG['dragones']['sitios']:
+            assert transitable.se_pisa(st, *sitio) and pp.camino(st, base, tuple(sitio)), sitio
+
+
+def _dragones_salen(pa, ahora):
+    moba._jungla(pa, ahora)
+    return [u for u in pa.unidades.values() if u.moba_tipo == 'dragon']
+
+
+def test_los_dragones_uno_a_la_vez_cada_x_y_maximo_5(heroe):
+    """"Dragones, 1 distribuido en el mapa, que al matarlo de bufos al equipo que lo mate, maximo 5 en toda la partida,
+    salgan cada x tiempo" (24/11/2026)."""
+    ses, pa, h = heroe
+    dr = CFG['dragones']
+    ahora = pa.inicio + dr['primera'] - 1
+    assert _dragones_salen(pa, ahora) == []                       # aun no
+    ahora += 1
+    vistos, sitios, nombres = 0, [], []
+    for k in range(dr['maximo']):
+        d = _dragones_salen(pa, ahora)
+        assert len(d) == 1, k                                     # uno a la vez
+        assert len(_dragones_salen(pa, ahora + 10 ** 4)) == 1     # mientras vive no sale otro
+        sitios.append((d[0].tile_x, d[0].tile_y))
+        nombres.append(d[0].moba_dragon['nombre'])
+        assert [d[0].tile_x, d[0].tile_y] in dr['sitios']
+        atk, df, vida = h.atk, h.defensa(), h.hp_max
+        moba.muere(pa, d[0], ses)
+        assert len(pa.dragones[1]) == k + 1 and h.atk >= atk and h.defensa() >= df and h.hp_max >= vida
+        assert (h.atk, h.defensa(), h.hp_max) != (atk, df, vida)  # cada uno da algo
+        if k < dr['maximo'] - 1:
+            import time as _t                                     # moba.muere va con el reloj de verdad
+            assert pa.dragon_proximo == pytest.approx(_t.time() + dr['cada'], abs=5)
+            ahora = pa.dragon_proximo
+            assert _dragones_salen(pa, ahora - 1) == []
+        vistos += 1
+    assert vistos == 5 and pa.dragon_proximo is None
+    assert _dragones_salen(pa, ahora + 10 ** 5) == []             # no hay sexto
+    assert all(a != b for a, b in zip(sitios, sitios[1:]))        # nunca dos seguidos en el mismo sitio
+    assert sorted(nombres[:4]) == sorted(e['nombre'] for e in dr['elementos']) and nombres[4] == dr['ultimo']['nombre']
+    assert pa.dragones[2] == []                                   # el otro equipo no se lleva nada
+
+
+def test_el_dragon_se_defiende_y_su_buff_se_queda(heroe):
+    import moba_marcador
+    ses, pa, h = heroe
+    d = _dragones_salen(pa, pa.inicio + CFG['dragones']['primera'])[0]
+    ses.personaje.tile_x, ses.personaje.tile_y = d.tile_x + 1, d.tile_y
+    hp = h.hp
+    moba_heroe.accion(ses, combate.ATAQUE_NORMAL, d.entity_id, ahora=9000.0)
+    assert d.moba_blanco is ses and 'Dragons 0-0 (up!)' in moba_marcador.lineas_hud(pa, ses, 9000.0)[1]
+    moba._tick_unidad(pa, d, 9000.5)
+    assert h.hp < hp
+    oro, exp = h.oro, h.exp
+    d.hp = 1
+    moba_heroe.accion(ses, combate.ATAQUE_NORMAL, d.entity_id, ahora=9010.0)
+    assert d.entity_id not in pa.unidades and h.oro > oro and h.exp > exp
+    assert 'Dragons 1-0' in moba_marcador.lineas_hud(pa, ses, 9011.0)[1]
+    # para toda la partida: mucho despues sigue
+    assert sum(h.buff(k, 10 ** 9) for k in ('ataque', 'defensa', 'vida', 'vel_ataque')) > 0
 
 
 def test_el_marcador_y_el_final(heroe):

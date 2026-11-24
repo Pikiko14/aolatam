@@ -108,10 +108,10 @@ def al_caer(pa, tipo, equipo_ganador, matador_ses, centro):
     import moba_heroe
     o = cfg().get('oro') or {}
     h = pa.heroes.get(matador_ses) if matador_ses is not None else None
-    if tipo in ('torre', 'jefe'):
+    if tipo in ('torre', 'jefe', 'dragon'):
         for x in pa.heroes.values():
             if x.equipo == int(equipo_ganador):
-                dar_oro(x, int(o.get(tipo, 0)), 'tower' if tipo == 'torre' else 'boss')
+                dar_oro(x, int(o.get(tipo, 0)), {'torre': 'tower', 'jefe': 'boss'}.get(tipo, tipo))
         return
     dar_oro(h, int(o.get(tipo, 0)), {'heroe': 'hero kill'}.get(tipo, ''))
     if tipo == 'heroe':

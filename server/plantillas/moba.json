@@ -194,7 +194,8 @@
   "radio": 12,
   "grande": 140,
   "pequeno": 60,
-  "jefe": 400
+  "jefe": 400,
+  "dragon": 400
  },
  "respawn": {
   "base": 6,
@@ -899,6 +900,90 @@
    "dura": 120
   }
  },
+ "_dragones": "moba.py _dragon: un dragon a la vez en uno de los \"sitios\" (al azar, nunca el mismo que el anterior), el primero a los \"primera\" s y el siguiente \"cada\" s despues de caer el anterior; \"maximo\" en toda la partida. Los cuatro de \"elementos\" salen en orden al azar y el ultimo es \"ultimo\" (el Ancient Dragon). Pelea como la jungla (pega al que le pega, vuelve a vida completa si se aleja mas de \"correa\"). El equipo que lo mata se queda su \"buff\" hasta el final y se suman: ataque, defensa (y defensa magica), vida (vida maxima) y vel_ataque (menos espera del basico), en partes de 1. hp_x / ataque_x: veces la vida y el ataque de base.",
+ "dragones": {
+  "primera": 180,
+  "cada": 150,
+  "maximo": 5,
+  "hp": 30000,
+  "defensa": 260,
+  "ataque": 320,
+  "alcance": 5,
+  "cadencia": 1.8,
+  "correa": 10,
+  "sitios": [
+   [
+    59,
+    199
+   ],
+   [
+    120,
+    250
+   ],
+   [
+    110,
+    160
+   ],
+   [
+    200,
+    130
+   ],
+   [
+    248,
+    118
+   ],
+   [
+    187,
+    68
+   ]
+  ],
+  "elementos": [
+   {
+    "npc": 8093,
+    "nombre": "Fire",
+    "texto": "ATK +10%",
+    "buff": {
+     "ataque": 0.1
+    }
+   },
+   {
+    "npc": 8071,
+    "nombre": "Water",
+    "texto": "DEF and MDEF +12%",
+    "buff": {
+     "defensa": 0.12
+    }
+   },
+   {
+    "npc": 8082,
+    "nombre": "Earth",
+    "texto": "Max HP +10%",
+    "buff": {
+     "vida": 0.1
+    }
+   },
+   {
+    "npc": 8046,
+    "nombre": "Wind",
+    "texto": "Attack speed +12%",
+    "buff": {
+     "vel_ataque": 0.12
+    }
+   }
+  ],
+  "ultimo": {
+   "npc": 5335,
+   "nombre": "Ancient",
+   "hp_x": 2.0,
+   "ataque_x": 1.4,
+   "texto": "ATK, DEF and Max HP +15%",
+   "buff": {
+    "ataque": 0.15,
+    "defensa": 0.15,
+    "vida": 0.15
+   }
+  }
+ },
  "_iconos": "icono = el retrato de la clase del cliente, shape\\skill\\jobNN.shp (tools/ventana_moba.py). Van por el id de class.xml salvo la Assassin (14), que es el job15.",
  "ranking": {
   "_nota": "moba_ranking.py: puntos de temporada por partida (victoria/derrota + por_baja x bajas); premio_partida = AG al momento; rangos por la suma de la temporada; premios al cerrar la temporada.",
@@ -968,7 +1053,8 @@
    "heroe": 250,
    "asistencia": 80,
    "torre": 150,
-   "jefe": 200
+   "jefe": 200,
+   "dragon": 150
   },
   "max_objetos": 6,
   "radio_base": 10,

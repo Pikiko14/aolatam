@@ -58,18 +58,20 @@ class Heroe:
 
     @property
     def hp_max(self):
-        return self._stat('hp')
+        return int(self._stat('hp') * (1 + self.buff('vida')))
 
     @property
     def mp_max(self):
         return self._stat('mp')
 
     def buff(self, clave, ahora=None):
-        """El buff del jefe de su equipo (moba.Partida.buffs), 0 si no tiene."""
+        """El buff del jefe de su equipo (moba.Partida.buffs, mientras dure) mas los de sus dragones (para toda la
+        partida, moba._cae_dragon), 0 si no tiene."""
+        dragones = sum(float(d.get(clave, 0)) for d in (getattr(self.pa, 'dragones', None) or {}).get(self.equipo, ()))
         b = getattr(self.pa, 'buffs', {}).get(self.equipo)
         if not b or (time.time() if ahora is None else ahora) >= b[0]:
-            return 0.0
-        return float(b[1].get(clave, 0))
+            return dragones
+        return float(b[1].get(clave, 0)) + dragones
 
     @property
     def atk(self):
@@ -481,7 +483,9 @@ def accion(ses, tipo, objetivo, tx=0, ty=0, ahora=None):
     if int(tipo) == cb.ATAQUE_NORMAL:
         if blanco is not None and ahora >= h.proximo_basico and _a_tiro(h, blanco, int(h.datos.get('alcance', 1)) + 1):
             import moba_tienda
-            h.proximo_basico = ahora + float(h.datos.get('cadencia', 1.0)) * (1 - moba_tienda.extra(h, 'vel_ataque'))
+            rapidez = min(float(moba_tienda.cfg().get('vel_ataque_max', 0.5)),
+                          moba_tienda.extra(h, 'vel_ataque') + h.buff('vel_ataque', ahora))     # tienda y dragones
+            h.proximo_basico = ahora + float(h.datos.get('cadencia', 1.0)) * (1 - rapidez)
             _basico(pa, h, blanco, ahora)
         return True
     poder = h.poderes().get(int(tipo))

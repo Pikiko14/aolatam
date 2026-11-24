@@ -97,6 +97,13 @@ class Partida:
         self.jungla_proxima = {i: ahora + float(jg.get('primera', 20)) for i in range(len(jg.get('campamentos') or []))}
         self.jefe_proximo = ahora + float((self.cfg.get('jefe') or {}).get('primera', 120))
         self.buffs = {}                # equipo -> (hasta, {'ataque': x, 'defensa': y})
+        # Los dragones (_dragon): cuando sale el siguiente, cuantos han salido, el orden de los elementos y lo que lleva
+        # cada equipo (la lista de los suyos, con su buff para toda la partida)
+        dr = self.cfg.get('dragones') or {}
+        self.dragon_proximo = ahora + float(dr.get('primera', 180)) if dr else None
+        self.dragones_salidos, self.dragon_sitio = 0, None
+        self.dragon_orden = random.sample(dr.get('elementos') or [], len(dr.get('elementos') or []))
+        self.dragones = {1: [], 2: []}
         self._hud = {}                 # sesion -> lo ultimo que se le mando
         self._proximo_hud = 0.0
 
@@ -124,7 +131,7 @@ def _mandar(pa, *pk):
             log.debug('moba: mandar', exc_info=True)
 
 
-NEUTRALES = ('grande', 'pequeno', 'jefe')
+NEUTRALES = ('grande', 'pequeno', 'jefe', 'dragon')
 ESTATUAS = ('torre', 'nucleo')
 RAYO_MAGIA, RAYO_EFECTO, RAYO_MS = 283, 7, 350     # Thunder Strike V (magic.xml; el efecto 7 esta en shape/magic)
 
@@ -153,6 +160,8 @@ def datos_de(pa, tipo):
     """Los numeros de ese tipo de unidad: subdito, torre, nucleo (arriba en moba.json), grande y pequeno (jungla) o jefe."""
     if tipo in ('grande', 'pequeno'):
         return pa.cfg['jungla'][tipo]
+    if tipo == 'dragon':
+        return pa.cfg['dragones']
     return pa.cfg[tipo]
 
 
@@ -395,6 +404,74 @@ def _jungla(pa, ahora):
         pa.jefe_proximo = None
         m = _nueva_unidad(pa, 'jefe', 0, tuple(j['sitio']), npc=int(random.choice(j['npc_types'])))
         _aviso_todos(pa, '%s has appeared in the middle of the jungle! Slay it to empower your team.' % m.nombre)
+    _dragon(pa, ahora)
+
+
+# ---------------------------------------------------------------------------------------------- los dragones
+# "Que tengamos dragones, 1 distribuido en el mapa, que al matarlo de bufos al equipo que lo mate, maximo 5 dragones en
+# toda la partida, salgan cada x tiempo" (24/11/2026). moba.json "dragones": uno a la vez, en uno de sus sitios.
+def dragon_vivo(pa):
+    return next((u for u in pa.unidades.values() if u.moba_tipo == 'dragon' and u.hp > 0), None)
+
+
+def _siguiente_dragon(pa):
+    """Los datos del dragon que toca: los elementos en su orden al azar y el ultimo, el Ancient."""
+    dr = pa.cfg['dragones']
+    n = pa.dragones_salidos
+    if n >= int(dr.get('maximo', 5)) - 1 and dr.get('ultimo'):
+        return dr['ultimo']
+    orden = pa.dragon_orden or dr['elementos']
+    return orden[n % len(orden)]
+
+
+def _dragon(pa, ahora):
+    dr = pa.cfg.get('dragones') or {}
+    if not dr or pa.dragon_proximo is None or ahora < pa.dragon_proximo:
+        return
+    if pa.dragones_salidos >= int(dr.get('maximo', 5)) or dragon_vivo(pa) is not None:
+        pa.dragon_proximo = None
+        return
+    pa.dragon_proximo = None
+    sitios = [tuple(s) for s in dr['sitios'] if tuple(s) != pa.dragon_sitio] or [tuple(s) for s in dr['sitios']]
+    pa.dragon_sitio = random.choice(sitios)
+    datos = _siguiente_dragon(pa)
+    m = _nueva_unidad(pa, 'dragon', 0, pa.dragon_sitio, npc=int(datos['npc']))
+    m.hp_max = m.hp = int(m.hp_max * float(datos.get('hp_x', 1)))
+    m.atk = int(m.atk * float(datos.get('ataque_x', 1)))
+    m.var = max(1, m.atk // 10)
+    m.moba_dragon = datos
+    pa.dragones_salidos += 1
+    _mandar(pa, __import__('combate').atributo(m.entity_id, m.porcentaje))
+    _aviso_todos(pa, '%s Dragon (%s) has appeared at %d,%d! Dragon %d of %d: slay it for %s.' % (
+        datos['nombre'], m.nombre, pa.dragon_sitio[0], pa.dragon_sitio[1], pa.dragones_salidos,
+        int(dr.get('maximo', 5)), datos.get('texto', 'a team buff')))
+    log.info('MOBA %s: dragon %d (%s) en %s', pa.id, pa.dragones_salidos, m.nombre, pa.dragon_sitio)
+
+
+def _cae_dragon(pa, u, h, ahora):
+    """El buff del dragon al equipo que lo mato (para toda la partida, se suman) y el siguiente, si quedan."""
+    import moba_heroe
+    dr = pa.cfg['dragones']
+    datos = getattr(u, 'moba_dragon', None) or {}
+    if pa.dragones_salidos < int(dr.get('maximo', 5)):
+        pa.dragon_proximo = ahora + float(dr.get('cada', 150))
+    if h is None:
+        return
+    equipo = h.equipo
+    antes = {x: (x.hp_max, x.mp_max) for x in pa.heroes.values() if x.equipo == equipo}
+    pa.dragones.setdefault(equipo, []).append(dict(datos.get('buff') or {}, nombre=datos.get('nombre', '')))
+    for x, (hp, _mp) in antes.items():            # la vida maxima nueva llega llena, como al comprar
+        if not x.muerto:
+            x.hp += max(0, x.hp_max - hp)
+        try:
+            x.ses.enviar(*moba_heroe.paquetes_heroe(x))
+        except Exception:
+            log.debug('moba: stats tras el dragon', exc_info=True)
+    quedan = int(dr.get('maximo', 5)) - pa.dragones_salidos
+    _aviso_todos(pa, '%s slew the %s Dragon! Team %s gets %s for the rest of the match.%s' % (
+        h.ses.personaje.nombre, datos.get('nombre', ''), pa.cfg['equipos'][str(equipo)]['nombre'],
+        datos.get('texto', 'its buff'), (' Next dragon in %d s.' % int(dr.get('cada', 150))) if quedan > 0 else
+        ' That was the last dragon.'))
 
 
 def _caida_neutral(pa, u, matador_ses, ahora):
@@ -410,6 +487,8 @@ def _caida_neutral(pa, u, matador_ses, ahora):
                                                                        'defensa': float(b.get('defensa', 0))})
             _aviso_todos(pa, '%s slew %s! Team %s is empowered for %d s.' % (
                 h.ses.personaje.nombre, u.nombre, pa.cfg['equipos'][str(h.equipo)]['nombre'], int(b.get('dura', 120))))
+    elif u.moba_tipo == 'dragon':
+        _cae_dragon(pa, u, h, ahora)
     elif u.moba_campamento is not None:
         if not any(o.moba_campamento == u.moba_campamento for o in pa.unidades.values()):
             pa.jungla_proxima[u.moba_campamento] = ahora + float(pa.cfg['jungla'].get('reaparece', 60))
