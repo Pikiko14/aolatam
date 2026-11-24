@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-24",
+    "titulo": "Angel MOBA: dragons",
+    "texto": "Dragons now roam the Angel MOBA battlefield. One dragon appears at a time somewhere on the map: the first at 3 minutes, the next 2:30 after the previous one falls, up to 5 per match. The Fire, Water, Earth and Wind dragons come in random order (ATK +10%, DEF and MDEF +12%, Max HP +10%, attack speed +12%) and the fifth is always the Ancient Dragon (ATK, DEF and Max HP +15%). The team that slays it keeps the buff for the rest of the match, and buffs stack. Each dragon also gives 150 gold to the whole team. The scoreboard shows how many dragons each team has."
+  },
+  {
+    "fecha": "2026-11-24",
     "titulo": "Angel MOBA: new map and a bigger shop",
     "texto": "The Angel MOBA has its own battlefield: dark crystal grounds with giant mushrooms and turquoise water, same three lanes. The shop now has 76 items in four tabs (Weapons, Armor, Special, Potions) with pages: new items give critical hits, armor ignore, lifesteal and attack speed, and the Stealth Potion makes you invisible for 12 seconds (towers and minions ignore you; attacking reveals you). The experience bar now fills up as you kill."
   },
