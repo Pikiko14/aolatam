@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-23",
+    "titulo": "Angel MOBA: bigger shop and multi-kills",
+    "texto": "The Angel MOBA shop now has 12 items: 3 weapons for your class plus helmets, armor, gloves, boots (-15% cooldown), cape, shield, necklace, a mount and potions. What you buy is shown on your character. Chain kills within 10 seconds for DOUBLE, TRIPLE, QUADRA and PENTA KILL, announced to the whole match with their own voice. Skill cooldowns no longer block your other skills."
+  },
+  {
+    "fecha": "2026-11-23",
     "titulo": "New event: Angel MOBA (5v5)",
     "texto": "Angel MOBA is here! Sign up at 14:00 and 21:00 with the MOBA button on your bar, pick one of the 9 classes and fight 5v5 on a three-lane map with minions, towers, jungle camps and a boss. Everyone starts at level 1 (max 18) with 3 skills and an ultimate: earn a skill point every level and choose what to unlock. Collect gold to buy items from the MOBA shop and destroy the enemy statue to win. Climb the season ranking for AG rewards!"
   },
