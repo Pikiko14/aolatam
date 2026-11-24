@@ -34,7 +34,9 @@ N_CLASES = 9
 V_HUD, H_ARRIBA, H_ABAJO, H_FONDO = 58350, 58351, 58352, 58353
 V_FIN, F_CARTEL, F_LINEA, F_CERRAR, F_FONDO = 58360, 58361, 58362, 58374, 58375          # F_LINEA + 0..11
 I_HUD, I_FIN, I_VICTORIA, I_DERROTA, I_CERRAR = 58430, 58431, 58432, 58433, 58434
-HW, HH = 420, 40
+HW, HH = 500, 40
+# El boton Shop del marcador: la tienda solo se abre DENTRO de la partida (24/11/2026, sin icono en la barra)
+H_TIENDA, I_H_TIENDA, HT_W, HT_H = 58354, 58441, 66, 26
 # Fase 4: el boton Ranking (en el banner) y la ventana del ranking (58380, filas en 58450..58499)
 L_RANKING, I_RANKING, I_R_FONDO = 58313, 58435, 58436
 V_RANKING, R_TITULO, R_MARCA, R_RANGOS, R_PREMIOS, R_VACIO, R_FONDO = range(58380, 58387)
@@ -295,6 +297,7 @@ def piezas() -> dict:
     p['aolat_mb_derrota'] = cartel('DEFEAT', vp.ROJO_CLARO, (60, 14, 20), (24, 6, 10))
     for e in 'nfs':
         p['aolat_mb_cerrar_%s' % e] = vp.boton('Close', e)
+        p['aolat_mb_shop_%s' % e] = vp.boton('Shop', e, HT_W, HT_H, tam=12)
     normal = al_estilo_nativo(icono_barra())
     p[NOMBRE_BOTON + '_n'] = normal
     p[NOMBRE_BOTON + '_f'] = ImageEnhance.Brightness(normal).enhance(1.25)
@@ -326,8 +329,10 @@ def bloque() -> str:
               vp._icono(I_UNIRSE, 'aolat_mb_unirse_n', 'aolat_mb_unirse_f', 'aolat_mb_unirse_s'),
               vp._icono(I_DEJAR, 'aolat_mb_dejar_n', 'aolat_mb_dejar_f', 'aolat_mb_dejar_s')]
     # el marcador y el final
-    hud = [(H_ARRIBA, vp._texto(H_ARRIBA, 12, 4, HW - 24, vp.C_BLANCO, '', ' ssHCenter=""')),
-           (H_ABAJO, vp._texto(H_ABAJO, 12, 21, HW - 24, vp.C_ORO, '', ' ssHCenter=""')),
+    hud = [(H_TIENDA, vp._boton(H_TIENDA, HW - 8 - HT_W, (HH - HT_H) // 2, HT_W, HT_H, I_H_TIENDA, 'OnMBHudTienda',
+                                'Angel MOBA shop')),
+           (H_ARRIBA, vp._texto(H_ARRIBA, 12, 4, HW - 32 - HT_W, vp.C_BLANCO, '', ' ssHCenter=""')),
+           (H_ABAJO, vp._texto(H_ABAJO, 12, 21, HW - 32 - HT_W, vp.C_ORO, '', ' ssHCenter=""')),
            (H_FONDO, vp._w('WND_CLASS_BASE', H_FONDO, 0, 0, HW, HH, ' icon="%d"' % I_HUD))]
     xml += [vp._dlg(V_HUD, 'Angel MOBA', HW, HH, [c for c, _ in hud])] + [x for _, x in hud]
     fin = [(F_CERRAR, vp._boton(F_CERRAR, CERRAR_XY[0], CERRAR_XY[1], BOTON_W, BOTON_H, I_CERRAR, 'OnMBFinCerrar'))]
@@ -389,6 +394,7 @@ def bloque() -> str:
     iconos += [vp._icono(I_T_FONDO, 'aolat_mb_tfondo'), vp._icono(I_T_CASILLA, 'aolat_mb_casilla')]
     iconos += [vp._icono(I_R_FONDO, 'aolat_mb_rfondo'),
                vp._icono(I_RANKING, 'aolat_mb_ranking_n', 'aolat_mb_ranking_f', 'aolat_mb_ranking_s')]
+    iconos += [vp._icono(I_H_TIENDA, 'aolat_mb_shop_n', 'aolat_mb_shop_f', 'aolat_mb_shop_s')]
     iconos += [vp._icono(I_HUD, 'aolat_mb_hud'), vp._icono(I_FIN, 'aolat_mb_fin'),
                vp._icono(I_VICTORIA, 'aolat_mb_victoria'), vp._icono(I_DERROTA, 'aolat_mb_derrota'),
                vp._icono(I_CERRAR, 'aolat_mb_cerrar_n', 'aolat_mb_cerrar_f', 'aolat_mb_cerrar_s')]
@@ -409,24 +415,12 @@ def wnd03(texto: str) -> str:
 
 
 def wnd01(texto: str) -> str:
-    """El boton en la barra, a la izquierda del de Pet Defense (idempotente)."""
+    """Quita el boton 59006 de la barra (24/11/2026: "quita el icono moba, que solo salga dentro del evento"); la
+    inscripcion es el NPC Angel MOBA de la Sign Up Office y la tienda el boton Shop del marcador. Idempotente."""
     nl = '\r\n' if '\r\n' in texto else '\n'
     texto = _quitar_marca(texto.replace('\r\n', '\n'))
     texto = re.sub(r'\n[ \t]*<child>%d</child>' % BOTON_BARRA, '', texto)
-    m = re.search(r'([ \t]*)<child>%d</child>' % vp.BOTON_BARRA, texto)
-    if not m:
-        raise SystemExit('no esta el boton de Pet Defense (%d) en wnd01.xml' % vp.BOTON_BARRA)
-    texto = texto[:m.end()] + '\n' + m.group(1) + '<child>%d</child>' % BOTON_BARRA + texto[m.end():]
-    boton_xml = ('    <!-- %s -->\n' % MARCA
-                 + '    <window class="WND_CLASS_BUTTON" range="%d,%d,40,56" id="%d" icon="%d" tooltip="10043" '
-                   'tooltext="Angel MOBA">\n        <style wsVisible="" wsTab="" />\n'
-                   '        <OnCommand>OnCommandMoba</OnCommand>\n    </window>\n'
-                   % (X_BARRA, Y_BARRA, BOTON_BARRA, BOTON_BARRA)
-                 + '    <icon id="%d" dir="\\wnd01\\" normal="%s_n" focus="%s_f" down="%s_n" disable="normal" />\n'
-                   % (BOTON_BARRA, NOMBRE_BOTON, NOMBRE_BOTON, NOMBRE_BOTON)
-                 + '    <!-- /%s -->\n' % MARCA)
-    fin = texto.rindex('</root>')
-    return (texto[:fin] + boton_xml + texto[fin:]).replace('\n', nl)
+    return texto.replace('\n', nl)
 
 
 def main():

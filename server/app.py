@@ -22653,6 +22653,10 @@ class Servidor:
                         return
 
                 _nom_ent = _nombre_entidad(ses, ent) or ''
+                _mbl = __import__('moba_lobby')
+                if ses.personaje and _nom_ent == _mbl.NPC_NOMBRE and ses.personaje.stage == _mbl.NPC_STAGE:
+                    ses.enviar(*_mbl.abrir(ses))          # la inscripcion del Angel MOBA
+                    return
                 if ses.personaje and __import__('recent_mall').pulsar(ses,ent,addr):
                     return
                 if ses.personaje and __import__('olympus').pulsar(ses,ent,addr):

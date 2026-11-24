@@ -11163,19 +11163,24 @@
     <window class="WND_CLASS_BASE" id="58312" range="0,0,470,386" icon="58400">
         <style wsVisible="" />
     </window>
-    <window class="WND_CLASS_DLG_1" range="0,0,428,64" id="58350" title="Angel MOBA" fcolor="104" font="1">
+    <window class="WND_CLASS_DLG_1" range="0,0,508,64" id="58350" title="Angel MOBA" fcolor="104" font="1">
         <style wsVisible="" wsMoveable="" />
+        <child>58354</child>
         <child>58351</child>
         <child>58352</child>
         <child>58353</child>
     </window>
-    <window class="WND_CLASS_STATIC" id="58351" range="12,4,396,14" title="" fcolor="103" font="1">
+    <window class="WND_CLASS_BUTTON" id="58354" range="426,7,66,26" title="" icon="58441" tooltip="10040" tooltext="Angel MOBA shop">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnMBHudTienda</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="58351" range="12,4,402,14" title="" fcolor="103" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_STATIC" id="58352" range="12,21,396,14" title="" fcolor="59782" font="1">
+    <window class="WND_CLASS_STATIC" id="58352" range="12,21,402,14" title="" fcolor="59782" font="1">
         <style wsVisible="" ssVCenter="" ssHCenter="" />
     </window>
-    <window class="WND_CLASS_BASE" id="58353" range="0,0,420,40" icon="58430">
+    <window class="WND_CLASS_BASE" id="58353" range="0,0,500,40" icon="58430">
         <style wsVisible="" />
     </window>
     <window class="WND_CLASS_DLG_1" range="0,0,348,304" id="58360" title="Angel MOBA" fcolor="104" font="1">
@@ -11840,6 +11845,7 @@
     <icon id="58440" dir="\wnd01\" normal="aolat_mb_casilla" focus="normal" down="normal" disable="normal" />
     <icon id="58436" dir="\wnd01\" normal="aolat_mb_rfondo" focus="normal" down="normal" disable="normal" />
     <icon id="58435" dir="\wnd01\" normal="aolat_mb_ranking_n" focus="aolat_mb_ranking_f" down="aolat_mb_ranking_s" disable="normal" />
+    <icon id="58441" dir="\wnd01\" normal="aolat_mb_shop_n" focus="aolat_mb_shop_f" down="aolat_mb_shop_s" disable="normal" />
     <icon id="58430" dir="\wnd01\" normal="aolat_mb_hud" focus="normal" down="normal" disable="normal" />
     <icon id="58431" dir="\wnd01\" normal="aolat_mb_fin" focus="normal" down="normal" disable="normal" />
     <icon id="58432" dir="\wnd01\" normal="aolat_mb_victoria" focus="normal" down="normal" disable="normal" />

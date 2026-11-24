@@ -109,7 +109,7 @@ WND_MB_FIN = WND_MB_FIN or 0
 local H_ARRIBA, H_ABAJO = 58351, 58352
 local F_CARTEL, F_LINEA = 58361, 58362
 local I_VICTORIA, I_DERROTA = 58432, 58433
-local HW, FW, FH = 428, 348, 304
+local HW, FW, FH = 508, 348, 304
 
 function MBHud(arriba, abajo)
   if not window.isexist(WND_MB_HUD) then
@@ -121,6 +121,12 @@ function MBHud(arriba, abajo)
   end
   window.settitle(window.find(WND_MB_HUD, H_ARRIBA), corto(arriba, 70))
   window.settitle(window.find(WND_MB_HUD, H_ABAJO), corto(abajo, 70))
+end
+
+-- El boton Shop del marcador (58354): la tienda, solo en la partida (ya no hay icono en la barra, 24/11/2026).
+function OnMBHudTienda(dwID, dwCmdID, dwParam, pParam)
+  game.netcommand2(CMD_MB, 1, 0)
+  return 1
 end
 
 function MBHudCerrar()

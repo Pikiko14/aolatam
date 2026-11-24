@@ -5,7 +5,8 @@
   {"entity_id": 114001, "nombre": "Low-Tier Clerk", "npc_type": 2431, "sprite": 40071, "klass": 199, "monstruo": false, "tile": [23, 45], "direccion": 6, "rotar_al_aparecer": true},
   {"entity_id": 114002, "nombre": "BattlefieldClerk", "npc_type": 2432, "sprite": 40069, "klass": 199, "monstruo": false, "tile": [67, 43], "direccion": 6, "rotar_al_aparecer": true},
   {"entity_id": 114003, "nombre": "Mid-Tier Clerk", "npc_type": 11292, "sprite": 40071, "klass": 199, "monstruo": false, "tile": [26, 47], "direccion": 6, "rotar_al_aparecer": true},
-  {"entity_id": 114004, "nombre": "High-Tier Clerk", "npc_type": 11293, "sprite": 40071, "klass": 199, "monstruo": false, "tile": [29, 48], "direccion": 6, "rotar_al_aparecer": true}
+  {"entity_id": 114004, "nombre": "High-Tier Clerk", "npc_type": 11293, "sprite": 40071, "klass": 199, "monstruo": false, "tile": [29, 48], "direccion": 6, "rotar_al_aparecer": true},
+  {"entity_id": 114005, "nombre": "Angel MOBA", "npc_type": 2429, "sprite": 40053, "klass": 199, "monstruo": false, "tile": [66, 30], "direccion": 6, "rotar_al_aparecer": true, "puesto_por": "moba_lobby: inscripcion del Angel MOBA (24/11/2026)"}
  ],
  "recursos": []
 }

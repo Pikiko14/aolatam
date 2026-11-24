@@ -327,6 +327,7 @@ def entrar(ses, pa, clave):
     pk.append(clases.aviso('You are a %s (%s). You get a skill point every level: choose which skill to unlock.' % (
         h.datos['nombre'], h.datos.get('rol', '')), tipo=0))
     ses.enviar(*pk)
+    __import__('moba_tienda').armar_al_entrar(ses, h.clave)   # el arma de su clase: sin ella no salen sus poderes
     try:
         ses.enviar(*ventana_puntos(h))
     except Exception:

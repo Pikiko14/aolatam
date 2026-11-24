@@ -656,21 +656,24 @@ def test_lo_comprado_se_ve_puesto_y_al_salir_no(heroe):
     assert any(struct.unpack_from('<H', p)[0] == 0x001B for p in ses.enviados)   # las casillas de verdad
 
 
-def test_un_mago_que_compra_espada_ve_el_baston_del_mismo_escalon(heroe):
-    """El cliente no pinta una espada en un mago: se quedaba sin arma ("sigue sin verse el item")."""
+def test_al_entrar_lleva_el_arma_de_su_clase_de_heroe(heroe):
+    """"Lo aprendi y no esta": un mago jugando de Swordsman, sin espada en la casilla 3 el cliente no deja usar sus
+    poderes ("It needs equipment Sword Blade"). Al entrar lleva el arma inicial de su clase; lo comprado la sustituye."""
     import struct
     ses, pa, h = heroe
+    ses.inventario = {3: 19850}                                      # el baston de verdad del mago
+    moba_heroe.salir(ses, pa)
+    ses.enviados.clear()
+    moba_heroe.entrar(ses, pa, 'espada')
+    puesto = {struct.unpack_from('<II', p, 8) for p in app._apariencia(ses)}
+    assert (3, moba_tienda.ARMA_INICIAL['espada']) in puesto
+    assert any(struct.unpack_from('<H', p)[0] == 0x001B and struct.pack('<I', 10) in p for p in ses.enviados)
+    h = pa.heroes[ses]
     ses.personaje.tile_x, ses.personaje.tile_y = CFG['equipos']['1']['nucleo']
-    ses.inventario = {3: 19850}                                      # FreshmanWalking Stick (杖)
-    objs = CFG['tienda']['objetos']
-    i = next(k for k, o in enumerate(objs) if o['nombre'] == 'Steel Trace Blade')
-    baston = next(o['id'] for o in objs if o['nombre'] == 'Feather Snake Staff')
+    i = next(k for k, o in enumerate(CFG['tienda']['objetos']) if o['nombre'] == 'Steel Trace Blade')
     h.oro = 10 ** 6
     assert moba_tienda.comprar(pa, h, i)[0]
-    assert (3, baston) in {struct.unpack_from('<II', p, 8) for p in app._apariencia(ses)}
-    assert moba_tienda.arma_visible(ses, 33330) == next(o['id'] for o in objs if o['nombre'] == 'Beryl Staff')
-    ses.inventario = {3: 18994}                                      # con espada de verdad, la espada
-    assert moba_tienda.arma_visible(ses, 33330) == 33330
+    assert (3, 18994) in {struct.unpack_from('<II', p, 8) for p in app._apariencia(ses)}
 
 
 def test_comprar_en_la_base_sube_las_estadisticas(heroe):
@@ -737,3 +740,22 @@ def test_al_aprender_se_vuelve_a_mandar_la_barra(heroe):
     moba_heroe.subir(h, 0)                                        # sin bucle, _despues lo hace ya
     barras = [p for p in ses.enviados if struct.unpack_from('<H', p)[0] == 0x005B]
     assert len(barras) == 2
+
+
+def test_la_inscripcion_es_un_npc_en_la_sign_up_office_y_la_tienda_un_boton_del_marcador():
+    """"El npc del MOBA donde esta el de HBF, en el 66 30; quita el icono, que solo salga dentro del evento"."""
+    import json
+    import pathlib
+    import sys
+    import moba_lobby
+    raiz = pathlib.Path(moba.__file__).resolve().parent.parent
+    spawns = json.loads((raiz / 'server' / 'plantillas' / 'sign_up_office.json').read_text(encoding='utf-8'))['spawns']
+    npc = next(s for s in spawns if s['nombre'] == moba_lobby.NPC_NOMBRE)
+    assert npc['tile'] == [66, 30] and moba_lobby.NPC_STAGE == 114
+    sys.path.insert(0, str(raiz / 'tools'))
+    import ventana_moba as vm
+    barra = '<root>\n    <child>59005</child>\n    <child>59006</child>\n</root>'
+    assert '59006' not in vm.wnd01(barra) and vm.wnd01(vm.wnd01(barra)) == vm.wnd01(barra)
+    assert 'OnMBHudTienda' in vm.bloque()
+    lua = (raiz / 'server' / 'lua' / 'moba.lua').read_text(encoding='utf-8')
+    assert 'function OnMBHudTienda' in lua

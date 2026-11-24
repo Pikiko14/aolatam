@@ -167,39 +167,16 @@ def _fashion_de(r):
     return {10: 174}.get(int(r), int(r) + 166)
 
 
-_FAMILIA_ARMA = (('劍', 'espada'), ('刀', 'espada'), ('斧', 'hacha'), ('錘', 'hacha'), ('锤', 'hacha'),
-                 ('影刃', 'sombra'), ('槍', 'lanza'), ('弓', 'arco'), ('杖', 'mago'))
-_MAGOS = ('vida', 'espectro', 'caos', 'tierra')
+# El arma inicial del juego de cada clase de heroe (clases.ARMA_POR_SKILL): sin un arma de su tipo en la casilla 3 el
+# cliente no deja usar sus poderes ni los ensena en la barra ("It needs equipment Sword Blade": "lo aprendi y no esta",
+# 24/11/2026, un mago jugando de Swordsman). Se le pone a la vista al entrar, como lo comprado.
+ARMA_INICIAL = {'espada': 10, 'hacha': 14, 'lanza': 15, 'arco': 16, 'sombra': 13485,
+                'vida': 18, 'espectro': 18, 'caos': 18, 'tierra': 18}
 
 
-def _familia(item_id):
-    import inventario as inv
-    try:
-        cat = inv.categoria_de(int(item_id)) or ''
-    except Exception:
-        return ''
-    return next((f for k, f in _FAMILIA_ARMA if k in cat), '')
-
-
-def arma_visible(ses, item_id):
-    """El arma que se le PUEDE DIBUJAR. El cliente solo pinta las armas del tipo que lleva el personaje de verdad: con un
-    mago (bastón en la 3) que compra la Steel Trace Blade, el bastón desaparecía y la espada no salía, quedaba con las
-    manos vacías ("sigue sin verse el item", 23/11/2026). Si el arma comprada no es de su tipo, se ve la de su tipo del
-    mismo escalón de la tienda (la espada de 350 -> el bastón de 350)."""
-    real = (getattr(ses, 'inventario', None) or {}).get(3)
-    fam_real, fam = _familia(real) if real else '', _familia(item_id)
-    if not fam or not fam_real or fam == fam_real:
-        return int(item_id)
-
-    def de(f):
-        return sorted((o for o in objetos() if (o.get('clases') or []) and
-                       (any(c in _MAGOS for c in o['clases']) if f == 'mago' else f in o['clases'])),
-                      key=lambda o: int(o['precio']))
-    suyas, propias = de(fam), de(fam_real)
-    escalon = next((n for n, o in enumerate(suyas) if int(o['id']) == int(item_id)), None)
-    if escalon is None or not propias:
-        return int(item_id)
-    return int(propias[min(escalon, len(propias) - 1)]['id'])
+def armar_al_entrar(ses, clave):
+    arma = ARMA_INICIAL.get(clave)
+    return vestir(ses, arma) if arma else False
 
 
 def vestir(ses, item_id):
@@ -216,8 +193,6 @@ def vestir(ses, item_id):
     r = inv.ranura_equipo_de(int(item_id))
     if r not in app.RANURAS_VISIBLES:
         return False
-    if r == 3:
-        item_id = arma_visible(ses, item_id)
     ses.__dict__.setdefault('_mb_visual', {})[int(r)] = int(item_id)
     try:
         cid = ses.personaje.char_id

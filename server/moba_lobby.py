@@ -22,6 +22,11 @@ import canal_lua
 log = logging.getLogger('moba')
 
 CMD_MOBA = 175
+# "El npc del MOBA en el mapa donde esta el de HBF, que no sea 1 icono" (24/11/2026): la inscripcion es el NPC
+# Angel MOBA de la Sign Up Office (114, en 66,30, junto al BattlefieldClerk; plantillas/sign_up_office.json). Ya no
+# hay icono en la barra (tools/ventana_moba.wnd01 lo quita): la tienda es el boton Shop del marcador de la partida.
+NPC_NOMBRE, NPC_STAGE = 'Angel MOBA', 114
+# Para el cliente que aun tenga el boton 59006 de antes.
 SALUDO_LUA = ('function OnCommandMoba(dwID, dwCmdID, dwParam, pParam) '
               'game.netcommand2(%d, 1, 0) return 1 end' % CMD_MOBA)
 
@@ -82,7 +87,7 @@ def abrir_inscripcion(empieza, ahora=None):
     ahora = time.time() if ahora is None else ahora
     _ESTADO['empieza'], _ESTADO['abierta_desde'], _ESTADO['anunciado'] = float(empieza), ahora, set()
     minutos = max(1, int(round((empieza - ahora) / 60.0)))
-    _anunciar('Angel MOBA sign-up is open! 5 vs 5 in %d minute%s. Press the MOBA button and pick your class.'
+    _anunciar('Angel MOBA sign-up is open! 5 vs 5 in %d minute%s. Talk to Angel MOBA in the Sign Up Office and pick your class.'
               % (minutos, '' if minutos == 1 else 's'))
     log.info('MOBA: inscripcion abierta, empieza en %d min', minutos)
 
