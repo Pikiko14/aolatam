@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-24",
+    "titulo": "Angel MOBA: new map and a bigger shop",
+    "texto": "The Angel MOBA has its own battlefield: dark crystal grounds with giant mushrooms and turquoise water, same three lanes. The shop now has 76 items in four tabs (Weapons, Armor, Special, Potions) with pages: new items give critical hits, armor ignore, lifesteal and attack speed, and the Stealth Potion makes you invisible for 12 seconds (towers and minions ignore you; attacking reveals you). The experience bar now fills up as you kill."
+  },
+  {
+    "fecha": "2026-11-24",
     "titulo": "Angel MOBA: sign up with Angel MOBA",
     "texto": "Angel MOBA sign-up has moved: talk to the new Angel MOBA NPC in the Sign Up Office, next to the Battlefield Clerk. The MOBA icon is gone from your bar; during a match, open the shop with the Shop button on the scoreboard. Heroes now start with their class weapon, so all their skills are ready to use, and weapons you buy are shown on your character. More than 10 players? Extra matches are created automatically."
   },
