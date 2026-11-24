@@ -1,4 +1,5 @@
 """Angel MOBA, fase 1 (23/11/2026): mapa 918, carriles, oleadas, torres, nucleos y quien pega a quien (server/moba.py)."""
+import struct
 import time
 import pathlib
 import sys
@@ -191,6 +192,23 @@ def test_empieza_a_nivel_1_y_sube_hasta_18(heroe):
     moba_heroe.dar_exp(pa, h, 10 ** 7)
     assert h.nivel == 18 == len(CFG['niveles'])
     assert ses.personaje.nivel == 200                     # el personaje de verdad no cambia
+
+
+def _barra_exp(ses):
+    """(base, siguiente, actual) del ultimo paquete de nivel 0x001D kind 4 (campos 30, 31 y 32)."""
+    for pk in reversed(ses.enviados):
+        if pk[:2] == b'\x1d\x00' and len(pk) >= 7 and pk[6] == 4 and pk[7] == 29:
+            c = {pk[i]: struct.unpack_from('<Q', pk, i + 1)[0] for i in range(7, len(pk), 9)}
+            return c[30], c[31], c[32]
+
+
+def test_la_barra_de_exp_avanza_al_matar(heroe):
+    """"no sube la exp a medida que mata minions" (24/11/2026): el 30 es la exp del inicio del nivel, no la actual."""
+    ses, pa, h = heroe
+    moba_heroe.dar_exp(pa, h, CFG['niveles'][1] + 50)                 # nivel 2 y 50 dentro
+    base, sig, actual = _barra_exp(ses)
+    assert (base, sig, actual) == (CFG['niveles'][1], CFG['niveles'][2], CFG['niveles'][1] + 50)
+    assert 0 < (actual - base) / (sig - base) < 1
 
 
 def test_la_ultimate_desde_nivel_6(heroe):
@@ -573,7 +591,6 @@ def test_la_ventana_del_ranking(rk_tmp):
 
 
 # ---------------------------------------------------------------------------------------------- MP, recarga y tienda
-import struct  # noqa: E402
 
 import moba_tienda  # noqa: E402
 
@@ -614,20 +631,130 @@ def test_los_objetos_de_la_tienda_son_del_juego():
 
 
 def test_cada_clase_ve_sus_armas_y_las_comunes(heroe):
-    """"Que la tienda tenga mas objetos para todas las clases": 3 armas de su clase y las de todos, 12 casillas."""
+    """"Agrega mas de 30 items que se puedan comprar para las diferentes clases" (24/11/2026): 7 armas de su clase,
+    lo de todas y lo de su tipo (escudo los de cuerpo a cuerpo, libro y totem los magos), por categorias."""
     import inventario as inv
     ses, pa, h = heroe
+    objs = CFG['tienda']['objetos']
+    assert len(objs) >= 27 + 30 + 13 and len({o['id'] for o in objs}) == len(objs)
+    cats = [c for c, _ in moba_tienda.categorias()]
+    assert all(o['cat'] in cats for o in objs)
+    assert all((o['cat'] == 'arma') == (inv.ranura_equipo_de(o['id']) == 3) for o in objs)
     for clave in CFG['clases']:
         h.clave = clave
-        vistos = [CFG['tienda']['objetos'][i] for i in moba_tienda.indices_de(h)]
-        armas = [o for o in vistos if o.get('clases')]
-        assert len(vistos) == moba_tienda.CASILLAS and len(armas) == 3, clave
-        assert all(clave in o['clases'] and inv.ranura_equipo_de(o['id']) == 3 for o in armas)
+        vistos = [objs[i] for i in moba_tienda.indices_de(h)]
+        armas = [o for o in vistos if o['cat'] == 'arma']
+        assert len(armas) == 7 and all(clave in o['clases'] for o in armas), clave
+        assert all(not o.get('clases') or clave in o['clases'] for o in vistos)
+        assert {o['cat'] for o in vistos} == set(cats), clave
     h.clave = 'espada'
     ses.personaje.tile_x, ses.personaje.tile_y = CFG['equipos']['1']['nucleo']
     h.oro = 10 ** 6
-    moba_tienda.procesar(ses, 2)                                  # la casilla 3: su arma mejor
-    assert CFG['tienda']['objetos'][h.objetos[-1]]['nombre'] == 'Arclight Sword'
+    moba_tienda.procesar(ses, 5)                                  # Weapons, casilla 6: Arclight Sword (por precio)
+    assert objs[h.objetos[-1]]['nombre'] == 'Arclight Sword'
+
+
+def _cmd(ses, a, b):
+    moba_lobby.procesar(ses, struct.pack('<BII', moba_lobby.CMD_MOBA, a, b))
+
+
+def test_la_tienda_por_categorias_y_paginas(heroe):
+    """"Categorizalos" (24/11/2026): pestanas Weapons, Armor, Special y Potions; < y > dentro de cada una."""
+    ses, pa, h = heroe
+    objs = CFG['tienda']['objetos']
+    ses.personaje.tile_x, ses.personaje.tile_y = CFG['equipos']['1']['nucleo']
+    h.oro = 10 ** 6
+    assert moba_tienda.categoria(h) == 0 and 'Weapons 1/1' in moba_tienda.titulo(h)
+    _cmd(ses, 9, 2)                                               # Special
+    assert all(objs[i]['cat'] == 'especial' for i in moba_tienda.de_la_pagina(h))
+    assert moba_tienda.paginas(h) == 2 and any(b'Special 1/2' in pk for pk in ses.enviados)
+    _cmd(ses, 8, 1)                                               # >
+    assert moba_tienda.pagina(h) == 1
+    i = moba_tienda.de_la_pagina(h)[0]
+    moba_tienda.procesar(ses, 0)                                  # la casilla 1 de la pagina 2 de Special
+    assert h.objetos[-1] == i == moba_tienda.de_categoria(h)[moba_tienda.POR_PAGINA]
+    _cmd(ses, 8, 1)                                               # > da la vuelta
+    assert moba_tienda.pagina(h) == 0
+    _cmd(ses, 9, 3)                                               # Potions: desde su primera pagina
+    assert moba_tienda.pagina(h) == 0
+    assert {objs[i]['nombre'] for i in moba_tienda.de_la_pagina(h)} >= {'Red Potion', 'Stealth Potion'}
+
+
+def _comprar(h, nombre):
+    i = next(k for k, o in enumerate(CFG['tienda']['objetos']) if o['nombre'] == nombre)
+    h.oro = 10 ** 6
+    ok, msg = moba_tienda.comprar(h.pa, h, i)
+    assert ok, msg
+
+
+def test_critico_e_ignorar_armadura(heroe, monkeypatch):
+    """"Objetos que den critical, armor ignore y demas" (24/11/2026)."""
+    import random
+    ses, pa, h = heroe
+    ses.personaje.tile_x, ses.personaje.tile_y = CFG['equipos']['1']['nucleo']
+    s = moba._nueva_unidad(pa, 'subdito', 2, (ses.personaje.tile_x + 1, ses.personaje.tile_y), 'mid')
+    s.defensa = 420
+    monkeypatch.setattr(random, 'uniform', lambda a, b: 1.0)
+    monkeypatch.setattr(random, 'random', lambda: 0.05)
+    base, crit = moba_heroe._dano_a(h, s, 1.0, False, 0)
+    assert not crit and base == int(h.atk * 0.5)                     # 420 de defensa: la mitad
+    _comprar(h, "Evil Killer's Cuffs")                               # 12 % de critico
+    _comprar(h, 'Piercing Hammer')                                   # ignora el 12 % de la defensa
+    dano, crit = moba_heroe._dano_a(h, s, 1.0, False, 0)
+    assert crit and dano == int(h.atk * CFG['tienda']['crit_dano'] * 420.0 / (420 * 0.88 + 420))
+    monkeypatch.setattr(random, 'random', lambda: 0.5)
+    assert not moba_heroe._dano_a(h, s, 1.0, False, 0)[1]
+    # el numero naranja del critico
+    ses.enviados.clear()
+    monkeypatch.setattr(random, 'random', lambda: 0.0)
+    moba_heroe.accion(ses, combate.ATAQUE_NORMAL, s.entity_id, ahora=6000.0)
+    assert any(pk[:2] == b'\x0b\x00' and pk[6] == combate.TIPO_DANO_CRITICO for pk in ses.enviados)
+    # los topes
+    h.objetos += [h.objetos[-1]] * 20
+    assert moba_tienda.extra(h, 'pen') == CFG['tienda']['pen_max']
+
+
+def test_robo_de_vida_y_velocidad_de_ataque(heroe):
+    ses, pa, h = heroe
+    ses.personaje.tile_x, ses.personaje.tile_y = CFG['equipos']['1']['nucleo']
+    s = moba._nueva_unidad(pa, 'subdito', 2, (ses.personaje.tile_x + 1, ses.personaje.tile_y), 'mid')
+    _comprar(h, 'Evil Leechs')                                       # 15 %
+    _comprar(h, 'Swiftness Scroll')                                  # 15 % mas rapido
+    h.hp = 100
+    moba_heroe.accion(ses, combate.ATAQUE_NORMAL, s.entity_id, ahora=7000.0)
+    assert h.hp > 100
+    assert h.proximo_basico == pytest.approx(7000.0 + h.datos.get('cadencia', 1.0) * 0.85)
+
+
+def test_la_stealth_potion_vuelve_invisible(heroe):
+    """"Y que vuelvan invisible" (24/11/2026): el sigilo del juego; las torres no le pegan y al atacar se ve."""
+    ses, pa, h = heroe
+    ses.personaje.tile_x, ses.personaje.tile_y = CFG['equipos']['1']['nucleo']
+    ses.enviados.clear()
+    _comprar(h, 'Stealth Potion')
+    assert moba_heroe.invisible(h) and ses.sigilo_hasta == h.invisible_hasta
+    sigilo = [pk for pk in ses.enviados if pk[:2] == b'\x85\x01']
+    assert sigilo and struct.unpack_from('<I', sigilo[-1], 10)[0] & app.SIGILO_BIT_ALTO
+    assert not moba_tienda.comprar(pa, h, moba_tienda.objetos().index(
+        next(o for o in moba_tienda.objetos() if o['nombre'] == 'Stealth Potion')))[0]     # ya lo es
+    import time as _t
+    ahora = _t.time()
+    torre = moba._nueva_unidad(pa, 'torre', 2, (ses.personaje.tile_x + 2, ses.personaje.tile_y))
+    hp = h.hp
+    moba._tick_unidad(pa, torre, ahora)
+    assert h.hp == hp                                                # no lo ve
+    s = moba._nueva_unidad(pa, 'subdito', 2, (ses.personaje.tile_x + 1, ses.personaje.tile_y), 'mid')
+    ses.enviados.clear()
+    moba_heroe.accion(ses, combate.ATAQUE_NORMAL, s.entity_id, ahora=ahora)
+    assert not moba_heroe.invisible(h) and not ses.sigilo_hasta     # atacar lo descubre
+    sigilo = [pk for pk in ses.enviados if pk[:2] == b'\x85\x01']
+    assert sigilo and not struct.unpack_from('<I', sigilo[-1], 10)[0] & app.SIGILO_BIT_ALTO
+    moba._tick_unidad(pa, torre, ahora + 10)
+    assert h.hp < hp
+    # y se acaba solo
+    moba_heroe.volver_invisible(pa, h, 12, ahora=100.0)
+    moba_heroe.tick(pa, 113.0)
+    assert not moba_heroe.invisible(h, 113.0) and not h.invisible_hasta
 
 
 def test_lo_comprado_se_ve_puesto_y_al_salir_no(heroe):
@@ -759,3 +886,23 @@ def test_la_inscripcion_es_un_npc_en_la_sign_up_office_y_la_tienda_un_boton_del_
     assert 'OnMBHudTienda' in vm.bloque()
     lua = (raiz / 'server' / 'lua' / 'moba.lua').read_text(encoding='utf-8')
     assert 'function OnMBHudTienda' in lua
+
+
+def test_el_mapa_tiene_bioma_y_minimapa_propios():
+    """"Rediseña el mapa para que no parezca el de hbf" (24/11/2026): tools/mapa_moba_tema.py."""
+    import pathlib
+    import sys
+    raiz = pathlib.Path(moba.__file__).resolve().parent.parent
+    sys.path.insert(0, str(raiz / 'tools'))
+    import mapa_moba
+    import mapa_moba_tema as mt
+
+    def d(nombre, carpeta='\\stage\\21\\', bloquea=False, proceso=''):
+        return dict(nombre=nombre, directorio=carpeta, bloquea=bloquea, proceso=proceso)
+    assert mt.tipo(d('水中光點2')) == 'quitar' and mt.tipo(d('白化珊瑚2(X)')) == 'quitar'
+    assert mt.tipo(d('樹-椰子樹01-3', bloquea=True)) == 'arbol' and mt.tipo(d('戰場牆')) == 'muro'
+    assert mt.tipo(d('矮樹叢-椰樹叢3(X)')) == 'arbusto' and mt.tipo(d('草叢02-7')) == 'arbusto'
+    assert mt.tipo(d('怪物-M570', '\\mon\\m570\\')) is None                    # lo de las bases se queda
+    fila = '<場景 編號="112" 名稱="Holy Battlefield" 地圖檔="map\\map112.mpc" 雷達圖="smap\\112" />\n'
+    nueva = mapa_moba.fila_stage(fila)
+    assert '編號="918"' in nueva and '雷達圖="smap\\918"' in nueva and 'map\\map918.mpc' in nueva

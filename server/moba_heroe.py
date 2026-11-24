@@ -46,6 +46,7 @@ class Heroe:
         self.rangos = {int(p['id']): 0 for p in self.datos['poderes']}
         self.puntos = 1                     # "los poderes debo irlos desbloqueando, que me de la opcion" (23/11/2026)
         self.objetos = []                   # indices de moba_tienda.objetos()
+        self.invisible_hasta = 0.0          # la Stealth Potion de la tienda
         self.oro = int((((_cfg().get('tienda') or {}).get('oro')) or {}).get('inicial', 0))
         self.hp, self.mp = self.hp_max, self.mp_max
 
@@ -218,11 +219,13 @@ def _u64(v):
     return v & 0xFFFFFFFF, v >> 32
 
 
-def _paquete_nivel(eid, nivel, exp, sig):
+def _paquete_nivel(eid, nivel, exp, sig, base=0):
     """Nivel y experiencia (las de 64 bits en dos mitades: la de un personaje de nivel alto no cabe en 32,
-    "struct.error" al salir del MOBA, 23/11/2026)."""
+    "struct.error" al salir del MOBA, 23/11/2026). El 30 es la experiencia con la que EMPIEZA el nivel (como
+    app.py al subir de nivel): la barra es (exp - base) / (sig - base). Con la actual ahi salia siempre al 0 %
+    ("no sube la exp a medida que mata minions", 24/11/2026)."""
     return (struct.pack('<HIB', 0x001D, eid, 4) + struct.pack('<BII', 29, int(nivel), 0)
-            + struct.pack('<BII', 30, *_u64(exp)) + struct.pack('<BII', 31, *_u64(sig))
+            + struct.pack('<BII', 30, *_u64(base)) + struct.pack('<BII', 31, *_u64(sig))
             + struct.pack('<BII', 32, *_u64(exp)))
 
 
@@ -304,6 +307,11 @@ def _paquete_barra(ids):
     return Msg.registry[(0x005B, 's2c', 'privado')].build(ranuras=r)
 
 
+def _base_exp(nivel):
+    niveles = _cfg()['niveles']
+    return niveles[min(nivel, len(niveles)) - 1]
+
+
 def _sig_exp(nivel):
     niveles = _cfg()['niveles']
     return niveles[nivel] if nivel < len(niveles) else niveles[-1]
@@ -312,7 +320,7 @@ def _sig_exp(nivel):
 def paquetes_heroe(h):
     """Todo lo que el cliente tiene que ensenar del heroe: nivel, estadisticas, vida, mana."""
     import combate as cb
-    return [_paquete_nivel(h.entidad, h.nivel, h.exp, _sig_exp(h.nivel)), _paquete_stats(h),
+    return [_paquete_nivel(h.entidad, h.nivel, h.exp, _sig_exp(h.nivel), _base_exp(h.nivel)), _paquete_stats(h),
             cb.atributo(h.entidad, h.hp, cb.KIND_HP), cb.atributo(h.entidad, h.mp, cb.KIND_MP)]
 
 
@@ -345,11 +353,13 @@ def salir(ses, pa):
     p = getattr(ses, 'personaje', None)
     if h is None or p is None:
         return
+    romper_invisible(pa, h)
     pk = []
     if h.muerto or getattr(ses, 'muerto', False):
         ses.muerto = False
         pk.append(struct.pack('<HIII', 0x000A, p.entity_id, 0, 0))
-    pk += [_paquete_nivel(p.entity_id, int(p.nivel), int(p.exp), min(0xFFFFFFFF, cb.exp_para_nivel(p.nivel + 1))),
+    pk += [_paquete_nivel(p.entity_id, int(p.nivel), int(p.exp), min(0xFFFFFFFF, cb.exp_para_nivel(p.nivel + 1)),
+                          cb.exp_para_nivel(p.nivel)),
            app._stats_ses(ses), cb.atributo(p.entity_id, p.hp, cb.KIND_HP), cb.atributo(p.entity_id, p.mp, cb.KIND_MP),
            login._barra(p, b'')]
     if getattr(ses, '_mb_lua', False):            # sus ventanas del evento, fuera
@@ -378,7 +388,7 @@ def _a_unidad(pa, h, u, dano):
     return hecho
 
 
-def recibir(pa, objetivo, dano, atacante_eid, matador=None, ahora=None):
+def recibir(pa, objetivo, dano, atacante_eid, matador=None, ahora=None, critico=False):
     """Dano a un heroe (ya con su defensa). Manda su vida a todos; si cae, muere."""
     import combate as cb
     import moba
@@ -386,7 +396,8 @@ def recibir(pa, objetivo, dano, atacante_eid, matador=None, ahora=None):
         return 0
     dano = max(1, int(dano))
     objetivo.hp = max(0, objetivo.hp - dano)
-    difundir(pa, lambda v: (cb.numero_flotante(eid_para(v, objetivo), dano), vida_para(v, objetivo)))
+    tipo = _tipo_num(critico)
+    difundir(pa, lambda v: (cb.numero_flotante(eid_para(v, objetivo), dano, tipo), vida_para(v, objetivo)))
     objetivo.ses.ultimo_combate = time.time() if ahora is None else ahora
     if objetivo.hp <= 0:
         morir(pa, objetivo, atacante_eid, matador, ahora)
@@ -465,9 +476,12 @@ def accion(ses, tipo, objetivo, tx=0, ty=0, ahora=None):
     blanco = pa.unidades.get(int(objetivo or 0)) or heroe_por_entidad(pa, objetivo)
     if blanco is not None and getattr(blanco, 'moba_equipo', getattr(blanco, 'equipo', None)) == h.equipo:
         blanco = None                                           # a los suyos no
+    if blanco is not None and hasattr(blanco, 'ses') and invisible(blanco, ahora):
+        blanco = None                                           # al invisible no se le apunta
     if int(tipo) == cb.ATAQUE_NORMAL:
         if blanco is not None and ahora >= h.proximo_basico and _a_tiro(h, blanco, int(h.datos.get('alcance', 1)) + 1):
-            h.proximo_basico = ahora + float(h.datos.get('cadencia', 1.0))
+            import moba_tienda
+            h.proximo_basico = ahora + float(h.datos.get('cadencia', 1.0)) * (1 - moba_tienda.extra(h, 'vel_ataque'))
             _basico(pa, h, blanco, ahora)
         return True
     poder = h.poderes().get(int(tipo))
@@ -519,15 +533,33 @@ def _no_puede(h, poder, blanco, ahora):
 
 
 def _dano_a(h, blanco, mult, magia, ahora):
+    """(dano, critico). Lo de la tienda (moba_tienda.extra): 'crit' la probabilidad de critico (x crit_dano), 'pen' la
+    parte de la defensa del blanco que se ignora ("objetos que den critical, armor ignore", 24/11/2026)."""
+    import moba_tienda
     base = h.atk * float(mult) * random.uniform(0.92, 1.08)
-    if hasattr(blanco, 'ses'):
-        return max(1, int(base * _factor(blanco.defensa(magia, ahora))))
-    return max(1, int(base * _factor(blanco.mdef if magia else blanco.defensa)))
+    critico = random.random() < moba_tienda.extra(h, 'crit')
+    if critico:
+        base *= float(moba_tienda.cfg().get('crit_dano', 1.75))
+    defensa = blanco.defensa(magia, ahora) if hasattr(blanco, 'ses') else (blanco.mdef if magia else blanco.defensa)
+    return max(1, int(base * _factor(defensa * (1 - moba_tienda.extra(h, 'pen'))))), critico
 
 
-def _aplicar(pa, h, blanco, dano, ahora):
+def _robar(pa, h, hecho):
+    """El robo de vida de la tienda ('robo': esa parte del dano hecho vuelve como vida)."""
+    import moba_tienda
+    r = moba_tienda.extra(h, 'robo')
+    if r > 0 and hecho:
+        curar(pa, h, int(hecho) * r)
+
+
+def _tipo_num(critico):
+    import combate as cb
+    return cb.TIPO_DANO_CRITICO if critico else cb.TIPO_DANO
+
+
+def _aplicar(pa, h, blanco, dano, ahora, critico=False):
     if hasattr(blanco, 'ses'):
-        return recibir(pa, blanco, dano, h.entidad, h, ahora)
+        return recibir(pa, blanco, dano, h.entidad, h, ahora, critico)
     return _a_unidad(pa, h, blanco, dano)
 
 
@@ -535,14 +567,17 @@ def _basico(pa, h, blanco, ahora):
     import combate as cb
     import moba
     magia = not h.datos.get('fisico', True)
-    dano = _dano_a(h, blanco, 1.0, magia, ahora)
+    romper_invisible(pa, h)
+    dano, critico = _dano_a(h, blanco, 1.0, magia, ahora)
     beid = eid_para(None, blanco)
     difundir(pa, lambda v: (cb.ataque(eid_para(v, h), eid_para(v, blanco), 0),
                             cb.numero_de_dano(eid_para(v, h), eid_para(v, blanco), dano, ataque=0, efecto=0),
                             cb.cierre_de_dano(eid_para(v, h), eid_para(v, blanco), ataque=0, efecto=0)))
-    hecho = _aplicar(pa, h, blanco, dano, ahora)
+    hecho = _aplicar(pa, h, blanco, dano, ahora, critico)
     if not hasattr(blanco, 'ses'):
-        moba._mandar(pa, cb.numero_flotante(beid, hecho or dano), cb.atributo(beid, blanco.porcentaje if blanco.hp > 0 else 0))
+        moba._mandar(pa, cb.numero_flotante(beid, hecho or dano, _tipo_num(critico)),
+                     cb.atributo(beid, blanco.porcentaje if blanco.hp > 0 else 0))
+    _robar(pa, h, hecho or dano)
 
 
 def lanzar(pa, h, poder, blanco, ahora):
@@ -557,6 +592,7 @@ def lanzar(pa, h, poder, blanco, ahora):
     import moba_tienda
     cd = float(poder.get('cd', 8)) * (1 - moba_tienda.cdr(h))
     h.cds[sk] = ahora + cd
+    romper_invisible(pa, h)
     h.mp = max(0, h.mp - int(poder.get('mana', 0)))
     _recarga(h, sk, cd, ahora)
     destino = h if blanco is None else blanco
@@ -601,13 +637,14 @@ def _resolver(pa, h, poder, blanco, magia, ahora):
                                                                   int(poder.get('radio', 2)))
         total = 0
         for b in blancos:
-            dano = _dano_a(h, b, mult_de(h, poder), magia, ahora)
-            hecho = _aplicar(pa, h, b, dano, ahora) or dano
+            dano, critico = _dano_a(h, b, mult_de(h, poder), magia, ahora)
+            hecho = _aplicar(pa, h, b, dano, ahora, critico) or dano
             total += hecho
             if not hasattr(b, 'ses'):
                 import combate as cb
                 import moba
-                moba._mandar(pa, cb.numero_flotante(b.entity_id, hecho), cb.atributo(b.entity_id, b.porcentaje if b.hp > 0 else 0))
+                moba._mandar(pa, cb.numero_flotante(b.entity_id, hecho, _tipo_num(critico)),
+                             cb.atributo(b.entity_id, b.porcentaje if b.hp > 0 else 0))
             if poder.get('lento'):
                 _lento(b, float(poder['lento']), ahora)
             if poder.get('aturde'):
@@ -616,6 +653,7 @@ def _resolver(pa, h, poder, blanco, magia, ahora):
                 _dot(b, int(h.atk * float(poder['dot'])), float(poder.get('dura', 4)), h.entidad, ahora)
         if poder.get('drenaje') and total:
             curar(pa, h, total * float(poder['drenaje']))
+        _robar(pa, h, total)
         if poder.get('cura_aliados'):
             for a in _aliados_cerca(pa, h, int(poder.get('radio', 4))):
                 curar(pa, a, h.atk * float(poder['cura_aliados']))
@@ -661,6 +699,35 @@ def unidad_golpea(pa, m, h, ahora):
     recibir(pa, h, dano, m.entity_id, None, ahora)
 
 
+# ---------------------------------------------------------------------------------------------- invisible
+# "Y que vuelvan invisible" (24/11/2026): la Stealth Potion de la tienda. Es el sigilo del juego (app._paquete_sigilo, el
+# bit del Sneak en el 0x0185): el cliente lo dibuja casi transparente, sin nombre ni barra, y el cursor no lo elige; el
+# que llega despues tambien lo ve asi (presencia, por ses.sigilo_hasta). Torres, subditos y jungla no lo atacan
+# (moba._tick_unidad) ni se le apunta (accion). Se rompe al atacar o lanzar un poder, al morir y al salir.
+def invisible(h, ahora=None):
+    return (time.time() if ahora is None else ahora) < h.invisible_hasta
+
+
+def volver_invisible(pa, h, segundos, ahora=None):
+    import app
+    ahora = time.time() if ahora is None else ahora
+    h.invisible_hasta = ahora + float(segundos)
+    h.ses.sigilo_hasta = h.invisible_hasta
+    app._avisar_sigilo(h.ses, True)
+
+
+def romper_invisible(pa, h):
+    if not h.invisible_hasta:
+        return
+    import app
+    h.invisible_hasta = 0.0
+    h.ses.sigilo_hasta = 0
+    try:
+        app._avisar_sigilo(h.ses, False)
+    except Exception:
+        log.debug('moba: fin de invisible', exc_info=True)
+
+
 # ---------------------------------------------------------------------------------------------- dobles, triples...
 # "Sonidos de doble kill, triple kill, cuadruple kill y pentakill" (23/11/2026). El Lua del cliente no puede tocar un
 # sonido suelto, pero los efectos de magia si. El sonido NO sale del numero de efecto: lo pide por nombre el script
@@ -698,6 +765,7 @@ def morir(pa, h, atacante_eid, matador, ahora=None):
     r = _cfg().get('respawn') or {}
     h.muerto_hasta = ahora + float(r.get('base', 6)) + float(r.get('por_nivel', 2)) * h.nivel
     h.dots.clear()
+    romper_invisible(pa, h)
     h.ses.muerto = True
     def _muerte(v):
         a = eid_para(v, matador) if matador is not None else int(atacante_eid or 0)
@@ -752,7 +820,7 @@ def dar_exp(pa, h, cantidad):
         ult = next((p for p in h.datos['poderes'] if p.get('ultimate') and nivel_para(p, 1) == h.nivel), None)
         if ult:
             h.ses.enviar(clases.aviso('Level %d: you can unlock your ultimate %s!' % (h.nivel, ult['nombre']), tipo=0))
-    pk = [_paquete_nivel(h.entidad, h.nivel, h.exp, _sig_exp(h.nivel))]
+    pk = [_paquete_nivel(h.entidad, h.nivel, h.exp, _sig_exp(h.nivel), _base_exp(h.nivel))]
     if subio:
         pk = [cb.efecto_level_up(h.entidad, es_skill=False)] + paquetes_heroe(h)
         try:
@@ -769,6 +837,8 @@ def tick(pa, ahora):
     import moba
     reg = _cfg().get('regeneracion') or {}
     for h in list(pa.heroes.values()):
+        if h.invisible_hasta and ahora >= h.invisible_hasta:
+            romper_invisible(pa, h)
         if h.muerto:
             if ahora >= h.muerto_hasta:
                 reaparecer(pa, h)

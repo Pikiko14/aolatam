@@ -136,7 +136,7 @@
     <場景 編號="110" 名稱="Limitless Tower" 地圖檔="map\map110.mpc" 筆刷檔="brush\brush.gic" 雷達圖="smap\004" 配樂檔1="music\39.ogg" 亮度="180" 天氣="0" 平行空間="15" 分配類型="隊伍" 不可標記="是" 動態空間="是" 不顯示小地圖="是" />
     <場景 編號="111" 名稱="Cloud-top Land" 地圖檔="map\map111.mpc" 筆刷檔="brush\brush.gic" 雷達圖="smap\004" 配樂檔1="music\39.ogg" 亮度="255" 天氣="0" 平行空間="15" 分配類型="隊伍" 不可標記="是" 動態空間="是" 不顯示小地圖="是" />
     <場景 編號="112" 名稱="Holy Battlefield" 地圖檔="map\map112.mpc" 筆刷檔="brush\brush.gic" 雷達圖="smap\112" 配樂檔1="music\39.ogg" 亮度="255" 天氣="0" 人數="500" 不懲罰="是" 不可標記="是" />
-    <場景 編號="918" 名稱="Angel MOBA" 地圖檔="map\map918.mpc" 筆刷檔="brush\brush.gic" 雷達圖="smap\112" 配樂檔1="music\39.ogg" 亮度="255" 天氣="0" 人數="500" 不懲罰="是" 不可標記="是" />
+    <場景 編號="918" 名稱="Angel MOBA" 地圖檔="map\map918.mpc" 筆刷檔="brush\brush.gic" 雷達圖="smap\918" 配樂檔1="music\39.ogg" 亮度="255" 天氣="0" 人數="500" 不懲罰="是" 不可標記="是" />
     <場景 編號="113" 名稱="Angel Arena" 地圖檔="map\map113.mpc" 筆刷檔="brush\brush.gic" 雷達圖="smap\004" 配樂檔1="music\39.ogg" 亮度="255" 天氣="0" 人數="500" 不懲罰="是" 不可標記="是" 不顯示小地圖="是" />
     <場景 編號="114" 名稱="Sign-up Office" 地圖檔="map\map114.mpc" 筆刷檔="brush\brush.gic" 雷達圖="smap\114" 配樂檔1="music\02.ogg" 亮度="255" 天氣="0" 不可標記="是" />
     <場景 編號="115" 名稱="Halloween Area I" 地圖檔="map\map115.mpc" 筆刷檔="brush\brush.gic" 雷達圖="smap\100" 配樂檔1="music\26.ogg" 亮度="255" 天氣="0" 平行空間="20" 不可標記="是" />

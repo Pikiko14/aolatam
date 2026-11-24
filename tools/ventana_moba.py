@@ -62,8 +62,15 @@ V_TIENDA, T_TITULO, T_ESTADO = 58560, 58561, 58562
 T_ITEM, T_NOMBRE, T_PRECIO, T_TEXTO = 58700, 58712, 58724, 58736  # + 0..11
 T_PROPIO, T_FONDO = 58748, 58754                      # T_PROPIO + 0..5
 I_T_FONDO, I_T_CASILLA = 58439, 58440
-TW, TH = 400, 378
-T_CW, T_CH, T_PASO_X, T_PASO_Y, T_Y0 = 94, 88, 98, 94, 26
+# Paginas (24/11/2026, "agrega mas de 30 items": cada clase ve unos 26): < y > abajo a la derecha, junto al aviso
+T_ANT, T_SIG, I_T_ANT, I_T_SIG = 58563, 58564, 58442, 58443
+TPAG_W, TPAG_H = 40, 24
+# Las pestanas de categoria ("categorizalos", 24/11/2026), bajo el titulo: Weapons, Armor, Special, Potions
+T_CAT, I_T_CAT = 58565, 58444                          # + 0..3
+T_CATEGORIAS = ('Weapons', 'Armor', 'Special', 'Potions')
+TCAT_W, TCAT_H, TCAT_Y = 92, 24, 24
+TW, TH = 400, 432
+T_CW, T_CH, T_PASO_X, T_PASO_Y, T_Y0 = 94, 88, 98, 94, 54
 T_ICONO = 36
 T_PROPIOS_Y = T_Y0 + 3 * T_PASO_Y + 4
 FW, FH = 340, 280
@@ -298,6 +305,10 @@ def piezas() -> dict:
     for e in 'nfs':
         p['aolat_mb_cerrar_%s' % e] = vp.boton('Close', e)
         p['aolat_mb_shop_%s' % e] = vp.boton('Shop', e, HT_W, HT_H, tam=12)
+        p['aolat_mb_tant_%s' % e] = vp.boton('<', e, TPAG_W, TPAG_H, tam=14)
+        for k, nombre in enumerate(T_CATEGORIAS):
+            p['aolat_mb_tcat%d_%s' % (k, e)] = vp.boton(nombre, e, TCAT_W, TCAT_H, tam=12)
+        p['aolat_mb_tsig_%s' % e] = vp.boton('>', e, TPAG_W, TPAG_H, tam=14)
     normal = al_estilo_nativo(icono_barra())
     p[NOMBRE_BOTON + '_n'] = normal
     p[NOMBRE_BOTON + '_f'] = ImageEnhance.Brightness(normal).enhance(1.25)
@@ -378,6 +389,9 @@ def bloque() -> str:
     iconos += [vp._icono(I_P_FONDO, 'aolat_mb_pfondo'),
                vp._icono(I_ELEGIR, 'aolat_mb_elegir_n', 'aolat_mb_elegir_f', 'aolat_mb_elegir_s')]
     ti = [(T_TITULO, vp._texto(T_TITULO, 10, 5, TW - 20, vp.C_ORO))]
+    for k, nombre in enumerate(T_CATEGORIAS):
+        ti.append((T_CAT + k, vp._boton(T_CAT + k, 6 + k * (TCAT_W + 6), TCAT_Y, TCAT_W, TCAT_H, I_T_CAT + k,
+                                        'OnMBTiendaCat%d' % (k + 1), nombre)))
     for i in range(T_CASILLAS):
         x, y = 6 + (i % 4) * T_PASO_X, T_Y0 + (i // 4) * T_PASO_Y
         ti += [(T_ITEM + i, vp._boton(T_ITEM + i, x + (T_CW - T_ICONO) // 2, y + 5, T_ICONO, T_ICONO, I_T_CASILLA,
@@ -388,10 +402,16 @@ def bloque() -> str:
     for k in range(6):
         ti.append((T_PROPIO + k, vp._w('WND_CLASS_BUTTON', T_PROPIO + k, 96 + k * 46, T_PROPIOS_Y + 2, T_ICONO, T_ICONO,
                                         ' title="" icon="%d"' % I_T_CASILLA)))
-    ti += [(T_ESTADO, vp._texto(T_ESTADO, 10, TH - 20, TW - 20, vp.C_ORO)),
+    ty = TH - 8 - TPAG_H
+    ti += [(T_ANT, vp._boton(T_ANT, TW - 16 - 2 * TPAG_W, ty, TPAG_W, TPAG_H, I_T_ANT, 'OnMBTiendaAnt', 'Previous page')),
+           (T_SIG, vp._boton(T_SIG, TW - 8 - TPAG_W, ty, TPAG_W, TPAG_H, I_T_SIG, 'OnMBTiendaSig', 'Next page'))]
+    ti += [(T_ESTADO, vp._texto(T_ESTADO, 10, ty + 5, TW - 36 - 2 * TPAG_W, vp.C_ORO)),
            (T_FONDO, vp._w('WND_CLASS_BASE', T_FONDO, 0, 0, TW, TH, ' icon="%d"' % I_T_FONDO))]
     xml += [vp._dlg(V_TIENDA, 'Angel MOBA shop', TW, TH, [c for c, _ in ti])] + [x for _, x in ti]
-    iconos += [vp._icono(I_T_FONDO, 'aolat_mb_tfondo'), vp._icono(I_T_CASILLA, 'aolat_mb_casilla')]
+    iconos += [vp._icono(I_T_FONDO, 'aolat_mb_tfondo'), vp._icono(I_T_CASILLA, 'aolat_mb_casilla'),
+               vp._icono(I_T_ANT, 'aolat_mb_tant_n', 'aolat_mb_tant_f', 'aolat_mb_tant_s'),
+               vp._icono(I_T_SIG, 'aolat_mb_tsig_n', 'aolat_mb_tsig_f', 'aolat_mb_tsig_s')]
+    iconos += [vp._icono(I_T_CAT + k, *('aolat_mb_tcat%d_%s' % (k, e) for e in 'nfs')) for k in range(len(T_CATEGORIAS))]
     iconos += [vp._icono(I_R_FONDO, 'aolat_mb_rfondo'),
                vp._icono(I_RANKING, 'aolat_mb_ranking_n', 'aolat_mb_ranking_f', 'aolat_mb_ranking_s')]
     iconos += [vp._icono(I_H_TIENDA, 'aolat_mb_shop_n', 'aolat_mb_shop_f', 'aolat_mb_shop_s')]

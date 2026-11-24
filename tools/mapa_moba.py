@@ -41,6 +41,7 @@ def fila_stage(texto):
     fila = m.group(0).replace('編號="%d"' % STAGE_ORIGEN, '編號="%d"' % STAGE)
     fila = re.sub(r'名稱="[^"]*"', '名稱="%s"' % NOMBRE, fila, count=1)
     fila = re.sub(r'(地圖檔="map\\)map\d+\.mpc"', r'\g<1>map%d.mpc"' % STAGE, fila, count=1)
+    fila = re.sub(r'雷達圖="smap\\\d+"', r'雷達圖="smap\\%d"' % STAGE, fila, count=1)      # su minimapa (mapa_moba_tema)
     return texto[:m.end()] + fila + texto[m.end():]
 
 
@@ -56,9 +57,15 @@ def main():
     for o in m['objetos']:
         if len(o) > 6 and o[6]:
             o[6] = '00000000' + o[6][8:]
+    # Su aspecto propio, el del Crystal Grounds ("que no parezca el de hbf", 24/11/2026): tools/mapa_moba_tema.py.
+    import mapa_moba_tema as mt
+    em = mt._editor()
+    print('bioma:', mt.tematizar(m, em))
     SALIDA.parent.mkdir(parents=True, exist_ok=True)
     SALIDA.write_bytes(mpcio.escribir(m))
     print('mapa %d (%dx%d, %d objetos) -> %s' % (STAGE, m['w'], m['h'], len(m['objetos']), SALIDA))
+    mt.minimapa(m, em)
+    print('minimapa ->', mt.SMAP)
     crudo = STAGE_XML.read_bytes()
     bom = crudo.startswith(b'\xef\xbb\xbf')
     texto = crudo.decode('utf-8-sig')

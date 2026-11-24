@@ -306,6 +306,10 @@ def procesar(ses, cuerpo, addr='?') -> bool:
         ses.enviar(*ranking(ses))
     elif a == 7:
         __import__('moba_tienda').procesar(ses, b)
+    elif a == 8:
+        __import__('moba_tienda').pasar(ses, b)
+    elif a == 9:
+        __import__('moba_tienda').elegir_categoria(ses, b)
     elif a == 6:
         import moba
         import moba_heroe

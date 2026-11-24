@@ -451,6 +451,7 @@ def _tick_unidad(pa, m, ahora):
             _mover_subdito(pa, m, ahora, (int(u.tile_x), int(u.tile_y)))
         return
     heroes = [h for h in pa.heroes.values() if h.equipo != m.moba_equipo and not h.muerto
+              and not getattr(h, 'invisible_hasta', 0) > ahora                     # la Stealth Potion
               and int(getattr(h.ses.personaje, 'stage', 0) or 0) == pa.stage]
     h = _cercano(m, heroes, lambda h: (h.ses.personaje.tile_x, h.ses.personaje.tile_y), vision)
     if h is not None:

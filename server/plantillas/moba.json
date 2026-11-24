@@ -957,7 +957,7 @@
   "ult_extra": 0.25
  },
  "tienda": {
-  "_nota": "moba_tienda.py: oro solo de la partida; los objetos son objetos del juego (id = su item, por su icono). stats suma a hp/mp/atk/def/mdef del heroe; cdr resta recarga (tope cdr_max); cura_pct se toma al comprarla. En la base (radio_base de su nucleo), muerto, o en cualquier sitio tras fuera_de_combate s sin recibir golpes (0 = solo en la base), max_objetos a la vez. \"clases\": solo la ven esas clases (sus armas; \"que la tienda tenga mas objetos para todas las clases\", 23/11/2026); sin \"clases\", todas. Cada clase ve 12 como mucho.",
+  "_nota": "moba_tienda.py: oro solo de la partida; los objetos son objetos del juego (id = su item, por su icono). stats suma a hp/mp/atk/def/mdef del heroe; cdr resta recarga (tope cdr_max); cura_pct se toma al comprarla. En la base (radio_base de su nucleo), muerto, o en cualquier sitio tras fuera_de_combate s sin recibir golpes (0 = solo en la base), max_objetos a la vez. \"clases\": solo la ven esas clases (sus armas; \"que la tienda tenga mas objetos para todas las clases\", 23/11/2026); sin \"clases\", todas. La ventana ensena 12 por pagina, con < y > para pasar (moba_tienda.POR_PAGINA), por \"categorias\" (cat de cada objeto; pestanas arriba). En stats, ademas: crit (probabilidad, x crit_dano), pen (parte de la defensa enemiga que se ignora), robo (robo de vida) y vel_ataque (menos espera del ataque basico), cada una con su <clave>_max. \"invisible\": segundos de sigilo al comprarla (se rompe al atacar).",
   "oro": {
    "inicial": 300,
    "cada": 5,
@@ -975,115 +975,17 @@
   "cdr_max": 0.3,
   "objetos": [
    {
-    "id": 18994,
-    "nombre": "Steel Trace Blade",
-    "precio": 350,
-    "texto": "ATK +20",
+    "id": 7541,
+    "nombre": "Pan's Rescue",
+    "precio": 200,
+    "texto": "ATK +12",
     "stats": {
-     "atk": 20
+     "atk": 12
     },
     "clases": [
-     "espada"
-    ]
-   },
-   {
-    "id": 30001,
-    "nombre": "Soul Hunt",
-    "precio": 800,
-    "texto": "ATK +50",
-    "stats": {
-     "atk": 50
-    },
-    "clases": [
-     "espada"
-    ]
-   },
-   {
-    "id": 33330,
-    "nombre": "Arclight Sword",
-    "precio": 1500,
-    "texto": "ATK +90 HP +200",
-    "stats": {
-     "atk": 90,
-     "hp": 200
-    },
-    "clases": [
-     "espada"
-    ]
-   },
-   {
-    "id": 19016,
-    "nombre": "Thorny Axe",
-    "precio": 350,
-    "texto": "ATK +20",
-    "stats": {
-     "atk": 20
-    },
-    "clases": [
-     "hacha"
-    ]
-   },
-   {
-    "id": 27545,
-    "nombre": "Tigris Axe",
-    "precio": 800,
-    "texto": "ATK +50",
-    "stats": {
-     "atk": 50
-    },
-    "clases": [
-     "hacha"
-    ]
-   },
-   {
-    "id": 37074,
-    "nombre": "Vanquisher's Drive",
-    "precio": 1500,
-    "texto": "ATK +90 HP +200",
-    "stats": {
-     "atk": 90,
-     "hp": 200
-    },
-    "clases": [
-     "hacha"
-    ]
-   },
-   {
-    "id": 19019,
-    "nombre": "Fin Spear",
-    "precio": 350,
-    "texto": "ATK +20",
-    "stats": {
-     "atk": 20
-    },
-    "clases": [
-     "lanza"
-    ]
-   },
-   {
-    "id": 27567,
-    "nombre": "Timeflow Spear",
-    "precio": 800,
-    "texto": "ATK +50",
-    "stats": {
-     "atk": 50
-    },
-    "clases": [
-     "lanza"
-    ]
-   },
-   {
-    "id": 40626,
-    "nombre": "Mystic Eye",
-    "precio": 1500,
-    "texto": "ATK +90 HP +200",
-    "stats": {
-     "atk": 90,
-     "hp": 200
-    },
-    "clases": [
-     "lanza"
-    ]
+     "arco"
+    ],
+    "cat": "arma"
    },
    {
     "id": 19022,
@@ -1095,7 +997,21 @@
     },
     "clases": [
      "arco"
-    ]
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 19003,
+    "nombre": "Disorder Bow",
+    "precio": 550,
+    "texto": "ATK +35",
+    "stats": {
+     "atk": 35
+    },
+    "clases": [
+     "arco"
+    ],
+    "cat": "arma"
    },
    {
     "id": 27570,
@@ -1107,7 +1023,22 @@
     },
     "clases": [
      "arco"
-    ]
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 21454,
+    "nombre": "Hanil's Glory",
+    "precio": 1100,
+    "texto": "ATK +70 HP +100",
+    "stats": {
+     "atk": 70,
+     "hp": 100
+    },
+    "clases": [
+     "arco"
+    ],
+    "cat": "arma"
    },
    {
     "id": 40629,
@@ -1120,7 +1051,317 @@
     },
     "clases": [
      "arco"
-    ]
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 37101,
+    "nombre": "Orion's Precision",
+    "precio": 2200,
+    "texto": "ATK +130 HP +300",
+    "stats": {
+     "atk": 130,
+     "hp": 300
+    },
+    "clases": [
+     "arco"
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 3291,
+    "nombre": "Common Soldier Sword",
+    "precio": 200,
+    "texto": "ATK +12",
+    "stats": {
+     "atk": 12
+    },
+    "clases": [
+     "espada"
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 18994,
+    "nombre": "Steel Trace Blade",
+    "precio": 350,
+    "texto": "ATK +20",
+    "stats": {
+     "atk": 20
+    },
+    "clases": [
+     "espada"
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 7048,
+    "nombre": "Cyclone Sharp Cut",
+    "precio": 550,
+    "texto": "ATK +35",
+    "stats": {
+     "atk": 35
+    },
+    "clases": [
+     "espada"
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 30001,
+    "nombre": "Soul Hunt",
+    "precio": 800,
+    "texto": "ATK +50",
+    "stats": {
+     "atk": 50
+    },
+    "clases": [
+     "espada"
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 21445,
+    "nombre": "Light of Haymudayer",
+    "precio": 1100,
+    "texto": "ATK +70 HP +100",
+    "stats": {
+     "atk": 70,
+     "hp": 100
+    },
+    "clases": [
+     "espada"
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 33330,
+    "nombre": "Arclight Sword",
+    "precio": 1500,
+    "texto": "ATK +90 HP +200",
+    "stats": {
+     "atk": 90,
+     "hp": 200
+    },
+    "clases": [
+     "espada"
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 37092,
+    "nombre": "Algos' Clout",
+    "precio": 2200,
+    "texto": "ATK +130 HP +300",
+    "stats": {
+     "atk": 130,
+     "hp": 300
+    },
+    "clases": [
+     "espada"
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 242,
+    "nombre": "Fight Blood Axe",
+    "precio": 200,
+    "texto": "ATK +12",
+    "stats": {
+     "atk": 12
+    },
+    "clases": [
+     "hacha"
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 19016,
+    "nombre": "Thorny Axe",
+    "precio": 350,
+    "texto": "ATK +20",
+    "stats": {
+     "atk": 20
+    },
+    "clases": [
+     "hacha"
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 13674,
+    "nombre": "Soul Grabber",
+    "precio": 550,
+    "texto": "ATK +35",
+    "stats": {
+     "atk": 35
+    },
+    "clases": [
+     "hacha"
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 27545,
+    "nombre": "Tigris Axe",
+    "precio": 800,
+    "texto": "ATK +50",
+    "stats": {
+     "atk": 50
+    },
+    "clases": [
+     "hacha"
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 23141,
+    "nombre": "Axe of Rex",
+    "precio": 1100,
+    "texto": "ATK +70 HP +100",
+    "stats": {
+     "atk": 70,
+     "hp": 100
+    },
+    "clases": [
+     "hacha"
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 37074,
+    "nombre": "Vanquisher's Drive",
+    "precio": 1500,
+    "texto": "ATK +90 HP +200",
+    "stats": {
+     "atk": 90,
+     "hp": 200
+    },
+    "clases": [
+     "hacha"
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 37038,
+    "nombre": "Fontas' Silencer",
+    "precio": 2200,
+    "texto": "ATK +130 HP +300",
+    "stats": {
+     "atk": 130,
+     "hp": 300
+    },
+    "clases": [
+     "hacha"
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 1461,
+    "nombre": "Soldier Javelin",
+    "precio": 200,
+    "texto": "ATK +12",
+    "stats": {
+     "atk": 12
+    },
+    "clases": [
+     "lanza"
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 19019,
+    "nombre": "Fin Spear",
+    "precio": 350,
+    "texto": "ATK +20",
+    "stats": {
+     "atk": 20
+    },
+    "clases": [
+     "lanza"
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 13677,
+    "nombre": "Dragon Tooth Thorn",
+    "precio": 550,
+    "texto": "ATK +35",
+    "stats": {
+     "atk": 35
+    },
+    "clases": [
+     "lanza"
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 27567,
+    "nombre": "Timeflow Spear",
+    "precio": 800,
+    "texto": "ATK +50",
+    "stats": {
+     "atk": 50
+    },
+    "clases": [
+     "lanza"
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 21489,
+    "nombre": "Soul of Poseidon",
+    "precio": 1100,
+    "texto": "ATK +70 HP +100",
+    "stats": {
+     "atk": 70,
+     "hp": 100
+    },
+    "clases": [
+     "lanza"
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 40626,
+    "nombre": "Mystic Eye",
+    "precio": 1500,
+    "texto": "ATK +90 HP +200",
+    "stats": {
+     "atk": 90,
+     "hp": 200
+    },
+    "clases": [
+     "lanza"
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 37096,
+    "nombre": "Gale Pike",
+    "precio": 2200,
+    "texto": "ATK +130 HP +300",
+    "stats": {
+     "atk": 130,
+     "hp": 300
+    },
+    "clases": [
+     "lanza"
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 13530,
+    "nombre": "Teeth Blade",
+    "precio": 200,
+    "texto": "ATK +12",
+    "stats": {
+     "atk": 12
+    },
+    "clases": [
+     "sombra"
+    ],
+    "cat": "arma"
    },
    {
     "id": 19029,
@@ -1132,7 +1373,21 @@
     },
     "clases": [
      "sombra"
-    ]
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 21461,
+    "nombre": "Broken Soul",
+    "precio": 550,
+    "texto": "ATK +35",
+    "stats": {
+     "atk": 35
+    },
+    "clases": [
+     "sombra"
+    ],
+    "cat": "arma"
    },
    {
     "id": 27577,
@@ -1144,7 +1399,22 @@
     },
     "clases": [
      "sombra"
-    ]
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 25870,
+    "nombre": "Invisible Doctrine",
+    "precio": 1100,
+    "texto": "ATK +70 HP +100",
+    "stats": {
+     "atk": 70,
+     "hp": 100
+    },
+    "clases": [
+     "sombra"
+    ],
+    "cat": "arma"
    },
    {
     "id": 40636,
@@ -1157,7 +1427,39 @@
     },
     "clases": [
      "sombra"
-    ]
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 40619,
+    "nombre": "Abyss Edge",
+    "precio": 2200,
+    "texto": "ATK +130 HP +300",
+    "stats": {
+     "atk": 130,
+     "hp": 300
+    },
+    "clases": [
+     "sombra"
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 9734,
+    "nombre": "Supreme Wand",
+    "precio": 200,
+    "texto": "ATK +12 MP +100",
+    "stats": {
+     "atk": 12,
+     "mp": 100
+    },
+    "clases": [
+     "vida",
+     "espectro",
+     "caos",
+     "tierra"
+    ],
+    "cat": "arma"
    },
    {
     "id": 19026,
@@ -1172,7 +1474,25 @@
      "espectro",
      "caos",
      "tierra"
-    ]
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 21456,
+    "nombre": "Judger Token",
+    "precio": 550,
+    "texto": "ATK +35 MP +200",
+    "stats": {
+     "atk": 35,
+     "mp": 200
+    },
+    "clases": [
+     "vida",
+     "espectro",
+     "caos",
+     "tierra"
+    ],
+    "cat": "arma"
    },
    {
     "id": 27536,
@@ -1187,7 +1507,26 @@
      "espectro",
      "caos",
      "tierra"
-    ]
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 25905,
+    "nombre": "Deathrattle Tune",
+    "precio": 1100,
+    "texto": "ATK +70 HP +100 MP +300",
+    "stats": {
+     "atk": 70,
+     "hp": 100,
+     "mp": 300
+    },
+    "clases": [
+     "vida",
+     "espectro",
+     "caos",
+     "tierra"
+    ],
+    "cat": "arma"
    },
    {
     "id": 40633,
@@ -1203,7 +1542,37 @@
      "espectro",
      "caos",
      "tierra"
-    ]
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 37105,
+    "nombre": "Alfin's Will",
+    "precio": 2200,
+    "texto": "ATK +130 HP +300 MP +400",
+    "stats": {
+     "atk": 130,
+     "hp": 300,
+     "mp": 400
+    },
+    "clases": [
+     "vida",
+     "espectro",
+     "caos",
+     "tierra"
+    ],
+    "cat": "arma"
+   },
+   {
+    "id": 16548,
+    "nombre": "King's Mantle",
+    "precio": 300,
+    "texto": "DEF +15 HP +100",
+    "stats": {
+     "def": 15,
+     "hp": 100
+    },
+    "cat": "defensa"
    },
    {
     "id": 27697,
@@ -1212,17 +1581,8 @@
     "texto": "HP +250",
     "stats": {
      "hp": 250
-    }
-   },
-   {
-    "id": 27700,
-    "nombre": "Peregrine Armor",
-    "precio": 600,
-    "texto": "DEF +30 HP +150",
-    "stats": {
-     "def": 30,
-     "hp": 150
-    }
+    },
+    "cat": "defensa"
    },
    {
     "id": 27703,
@@ -1232,14 +1592,20 @@
     "stats": {
      "atk": 15,
      "mdef": 10
-    }
+    },
+    "cat": "defensa"
    },
    {
-    "id": 28693,
-    "nombre": "Scarlet Wing Boots",
-    "precio": 550,
-    "texto": "Cooldown -15%",
-    "cdr": 0.15
+    "id": 31418,
+    "nombre": "Dellwood Crown",
+    "precio": 450,
+    "texto": "DEF +20 MDEF +15 HP +150",
+    "stats": {
+     "def": 20,
+     "mdef": 15,
+     "hp": 150
+    },
+    "cat": "defensa"
    },
    {
     "id": 27746,
@@ -1249,7 +1615,8 @@
     "stats": {
      "mdef": 30,
      "hp": 100
-    }
+    },
+    "cat": "defensa"
    },
    {
     "id": 27721,
@@ -1259,7 +1626,100 @@
     "stats": {
      "def": 25,
      "mdef": 15
-    }
+    },
+    "cat": "defensa"
+   },
+   {
+    "id": 28692,
+    "nombre": "Scarlet Wing Cuff",
+    "precio": 500,
+    "texto": "ATK +20 MDEF +10",
+    "stats": {
+     "atk": 20,
+     "mdef": 10
+    },
+    "cat": "defensa"
+   },
+   {
+    "id": 28693,
+    "nombre": "Scarlet Wing Boots",
+    "precio": 550,
+    "texto": "Cooldown -15%",
+    "cdr": 0.15,
+    "cat": "defensa"
+   },
+   {
+    "id": 27700,
+    "nombre": "Peregrine Armor",
+    "precio": 600,
+    "texto": "DEF +30 HP +150",
+    "stats": {
+     "def": 30,
+     "hp": 150
+    },
+    "cat": "defensa"
+   },
+   {
+    "id": 31421,
+    "nombre": "Dellwood Boots",
+    "precio": 600,
+    "texto": "DEF +10 Cooldown -10%",
+    "stats": {
+     "def": 10
+    },
+    "cdr": 0.1,
+    "cat": "defensa"
+   },
+   {
+    "id": 31419,
+    "nombre": "Dellwood Mail",
+    "precio": 700,
+    "texto": "DEF +45 HP +200",
+    "stats": {
+     "def": 45,
+     "hp": 200
+    },
+    "cat": "defensa"
+   },
+   {
+    "id": 31426,
+    "nombre": "Milkway Shield",
+    "precio": 750,
+    "texto": "DEF +50 HP +200",
+    "stats": {
+     "def": 50,
+     "hp": 200
+    },
+    "clases": [
+     "espada",
+     "hacha",
+     "lanza",
+     "sombra"
+    ],
+    "cat": "defensa"
+   },
+   {
+    "id": 33508,
+    "nombre": "Cobalt Cloak",
+    "precio": 900,
+    "texto": "DEF +40 MDEF +40 HP +250",
+    "stats": {
+     "def": 40,
+     "mdef": 40,
+     "hp": 250
+    },
+    "cat": "defensa"
+   },
+   {
+    "id": 16545,
+    "nombre": "Crystal Tear",
+    "precio": 300,
+    "texto": "MP +150 MDEF +10",
+    "stats": {
+     "mp": 150,
+     "mdef": 10
+    },
+    "cat": "especial"
    },
    {
     "id": 37265,
@@ -1269,7 +1729,8 @@
     "stats": {
      "mp": 200,
      "mdef": 20
-    }
+    },
+    "cat": "especial"
    },
    {
     "id": 19210,
@@ -1278,16 +1739,232 @@
     "texto": "Mount: HP +350",
     "stats": {
      "hp": 350
-    }
+    },
+    "cat": "especial"
+   },
+   {
+    "id": 9748,
+    "nombre": "Evil Killer's Cap",
+    "precio": 500,
+    "texto": "Crit 8% HP +100",
+    "stats": {
+     "crit": 0.08,
+     "hp": 100
+    },
+    "cat": "especial"
+   },
+   {
+    "id": 1162,
+    "nombre": "Piercing Hammer",
+    "precio": 500,
+    "texto": "Armor ignore 12%",
+    "stats": {
+     "pen": 0.12
+    },
+    "cat": "especial"
+   },
+   {
+    "id": 11716,
+    "nombre": "Evil Leech",
+    "precio": 550,
+    "texto": "Lifesteal 8%",
+    "stats": {
+     "robo": 0.08
+    },
+    "cat": "especial"
+   },
+   {
+    "id": 2020,
+    "nombre": "Swiftness Scroll",
+    "precio": 600,
+    "texto": "Attack speed 15%",
+    "stats": {
+     "vel_ataque": 0.15
+    },
+    "cat": "especial"
+   },
+   {
+    "id": 21684,
+    "nombre": "Anca Ring",
+    "precio": 650,
+    "texto": "ATK +30 HP +100",
+    "stats": {
+     "atk": 30,
+     "hp": 100
+    },
+    "cat": "especial"
+   },
+   {
+    "id": 9802,
+    "nombre": "Evil Killer's Cuffs",
+    "precio": 700,
+    "texto": "Crit 12% ATK +15",
+    "stats": {
+     "crit": 0.12,
+     "atk": 15
+    },
+    "cat": "especial"
+   },
+   {
+    "id": 21675,
+    "nombre": "Book of Wisdom",
+    "precio": 800,
+    "texto": "MP +300 MDEF +25",
+    "stats": {
+     "mp": 300,
+     "mdef": 25
+    },
+    "clases": [
+     "vida",
+     "espectro",
+     "caos",
+     "tierra"
+    ],
+    "cat": "especial"
+   },
+   {
+    "id": 9829,
+    "nombre": "Evil Killer's Boots",
+    "precio": 800,
+    "texto": "Crit 10% Speed 10%",
+    "stats": {
+     "crit": 0.1,
+     "vel_ataque": 0.1
+    },
+    "cat": "especial"
+   },
+   {
+    "id": 26074,
+    "nombre": "Owl Totem Magic",
+    "precio": 900,
+    "texto": "MP +150 Cooldown -10%",
+    "stats": {
+     "mp": 150
+    },
+    "cdr": 0.1,
+    "clases": [
+     "vida",
+     "espectro",
+     "caos",
+     "tierra"
+    ],
+    "cat": "especial"
+   },
+   {
+    "id": 1206,
+    "nombre": "5-star Piercing Hammer",
+    "precio": 1000,
+    "texto": "Ignore 22% ATK+20",
+    "stats": {
+     "pen": 0.22,
+     "atk": 20
+    },
+    "cat": "especial"
+   },
+   {
+    "id": 2445,
+    "nombre": "Swiftness Song V",
+    "precio": 1100,
+    "texto": "Speed 25% Crit 5%",
+    "stats": {
+     "vel_ataque": 0.25,
+     "crit": 0.05
+    },
+    "cat": "especial"
+   },
+   {
+    "id": 7484,
+    "nombre": "Evil Leechs",
+    "precio": 1200,
+    "texto": "Lifesteal 15% ATK+25",
+    "stats": {
+     "robo": 0.15,
+     "atk": 25
+    },
+    "cat": "especial"
+   },
+   {
+    "id": 9775,
+    "nombre": "Evil Killer's Armor",
+    "precio": 1300,
+    "texto": "Crit 20% ATK +30",
+    "stats": {
+     "crit": 0.2,
+     "atk": 30
+    },
+    "cat": "especial"
+   },
+   {
+    "id": 37272,
+    "nombre": "Dahlia's Love",
+    "precio": 1400,
+    "texto": "ATK +60 MDEF +40 HP +300",
+    "stats": {
+     "atk": 60,
+     "mdef": 40,
+     "hp": 300
+    },
+    "cat": "especial"
+   },
+   {
+    "id": 1211,
+    "nombre": "10-star Piercing Hammer",
+    "precio": 1800,
+    "texto": "Ignore 35% ATK+40",
+    "stats": {
+     "pen": 0.35,
+     "atk": 40
+    },
+    "cat": "especial"
    },
    {
     "id": 31,
     "nombre": "Red Potion",
     "precio": 120,
     "texto": "Heal 40% HP/MP now",
-    "cura_pct": 0.4
+    "cura_pct": 0.4,
+    "cat": "consumible"
+   },
+   {
+    "id": 1884,
+    "nombre": "Healing Potion",
+    "precio": 220,
+    "texto": "Heal 70% HP/MP now",
+    "cura_pct": 0.7,
+    "cat": "consumible"
+   },
+   {
+    "id": 1962,
+    "nombre": "Stealth Potion",
+    "precio": 250,
+    "texto": "Invisible 12 s",
+    "invisible": 12,
+    "cat": "consumible"
    }
   ],
-  "fuera_de_combate": 6
+  "fuera_de_combate": 6,
+  "categorias": [
+   [
+    "arma",
+    "Weapons"
+   ],
+   [
+    "defensa",
+    "Armor"
+   ],
+   [
+    "especial",
+    "Special"
+   ],
+   [
+    "consumible",
+    "Potions"
+   ]
+  ],
+  "crit_dano": 1.75,
+  "crit_max": 0.6,
+  "pen_max": 0.5,
+  "robo_max": 0.3,
+  "vel_ataque_max": 0.5
  }
 }

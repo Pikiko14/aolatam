@@ -8,7 +8,10 @@
   en cualquier sitio, tras 'fuera_de_combate' segundos sin recibir golpes ("no me deja comprar nada": solo en la base
   habia que cruzar el mapa, 23/11/2026). Se llevan como mucho 'max_objetos'. Cada uno suma a las estadisticas del heroe (hp, mp, atk, def, mdef) o resta
   recarga (cdr, con tope 'cdr_max'); la pocion (cura_pct) se gasta al comprarla.
-* Se abre con el boton del MOBA de la barra estando en la partida. c2s 0x002F [175][7][i] compra el objeto i.
+* Se abre con el boton Shop del marcador estando en la partida. c2s 0x002F [175][7][i] compra la casilla i de la
+  pagina que ve; [175][8][0|1] pasa a la pagina anterior / siguiente (POR_PAGINA por pagina: "agrega mas de 30 items
+  que se puedan comprar para las diferentes clases", 24/11/2026) y [175][9][k] cambia a la categoria k ("categorizalos":
+  Weapons, Armor, Special, Potions; tienda.categorias y el 'cat' de cada objeto).
 """
 import logging
 import time
@@ -27,18 +30,56 @@ def objetos():
     return cfg().get('objetos') or []
 
 
-CASILLAS = 12                                    # tools/ventana_moba.py: las de la ventana
+POR_PAGINA = 12                                  # tools/ventana_moba.py T_CASILLAS: las de la ventana
 
 
 def indices_de(h):
-    """Los objetos que ve ese heroe (indices de objetos()): las armas de su clase y los de todas, CASILLAS como mucho."""
-    return [i for i, o in enumerate(objetos()) if not o.get('clases') or h.clave in o['clases']][:CASILLAS]
+    """Los objetos que ve ese heroe (indices de objetos()): las armas de su clase y los de todas."""
+    return [i for i, o in enumerate(objetos()) if not o.get('clases') or h.clave in o['clases']]
+
+
+def categorias():
+    return cfg().get('categorias') or [['arma', 'Weapons'], ['defensa', 'Armor'], ['especial', 'Special'],
+                                       ['consumible', 'Potions']]
+
+
+def categoria(h):
+    """La categoria que ve (0..)."""
+    return max(0, min(int(getattr(h.ses, '_mb_cat', 0) or 0), len(categorias()) - 1))
+
+
+def de_categoria(h):
+    clave = categorias()[categoria(h)][0]
+    return [i for i in indices_de(h) if objetos()[i].get('cat', 'arma') == clave]
+
+
+def paginas(h):
+    return max(1, (len(de_categoria(h)) + POR_PAGINA - 1) // POR_PAGINA)
+
+
+def pagina(h):
+    """La pagina que ve (0..), dentro de las que hay."""
+    return max(0, min(int(getattr(h.ses, '_mb_pagina', 0) or 0), paginas(h) - 1))
+
+
+def de_la_pagina(h):
+    p = pagina(h)
+    return de_categoria(h)[p * POR_PAGINA:(p + 1) * POR_PAGINA]
 
 
 def bonus(h, clave):
     """Lo que suman los objetos del heroe a esa estadistica."""
     objs = objetos()
     return sum(float((objs[i].get('stats') or {}).get(clave, 0)) for i in getattr(h, 'objetos', ()) if i < len(objs))
+
+
+# Lo que no es una estadistica entera del heroe: probabilidad de critico, parte de la defensa enemiga que se ignora,
+# robo de vida y velocidad de ataque (24/11/2026), cada una con su tope ('<clave>_max').
+TOPES = {'crit': 0.6, 'pen': 0.5, 'robo': 0.3, 'vel_ataque': 0.5}
+
+
+def extra(h, clave):
+    return max(0.0, min(float(cfg().get(clave + '_max', TOPES.get(clave, 1.0))), bonus(h, clave)))
 
 
 def cdr(h):
@@ -129,6 +170,13 @@ def comprar(pa, h, i):
         return False, motivo
     if h.oro < int(o['precio']):
         return False, 'Not enough gold (%d).' % int(o['precio'])
+    if o.get('invisible'):                           # Stealth Potion: se toma al momento
+        import moba_heroe
+        if moba_heroe.invisible(h):
+            return False, 'You are already invisible.'
+        h.oro -= int(o['precio'])
+        moba_heroe.volver_invisible(pa, h, float(o['invisible']))
+        return True, 'Invisible for %d s: attacking reveals you.' % int(o['invisible'])
     if o.get('cura_pct'):                            # se toma al momento
         if h.hp >= h.hp_max and h.mp >= h.mp_max:
             return False, 'You are already full.'
@@ -222,14 +270,15 @@ def desvestir(ses):
 
 # ---------------------------------------------------------------------------------------------- la ventana
 def titulo(h):
-    return 'Gold %d   Items %d/%d' % (h.oro, len(h.objetos), int(cfg().get('max_objetos', 6)))
+    return 'Gold %d   Items %d/%d   %s %d/%d' % (h.oro, len(h.objetos), int(cfg().get('max_objetos', 6)),
+                                                 categorias()[categoria(h)][1], pagina(h) + 1, paginas(h))
 
 
 def ventana(pa, h):
     import moba_lobby
     h.ses._mb_tienda = True
     filas = [[o['nombre'], int(o['precio']), o.get('texto', ''), int(o['id'])]
-             for o in (objetos()[i] for i in indices_de(h))]
+             for o in (objetos()[i] for i in de_la_pagina(h))]
     propios = [int(objetos()[i]['id']) for i in h.objetos if i < len(objetos())]
     estado = puede_comprar(pa, h) or 'Click an item to buy it.'
     return moba_lobby.preparar(h.ses) + [canal_lua.llamar('MBTienda', titulo(h), estado, filas, propios)]
@@ -242,7 +291,29 @@ def procesar(ses, b):
     h = pa.heroes.get(ses) if pa else None
     if h is None:
         return
-    lista = indices_de(h)                       # b es la casilla de la ventana, no el indice del catalogo
+    lista = de_la_pagina(h)                     # b es la casilla de la ventana, no el indice del catalogo
     ok, msg = comprar(pa, h, lista[int(b)]) if 0 <= int(b) < len(lista) else (False, 'Unknown item.')
     ses.enviar(*ventana(pa, h))
     ses.enviar(canal_lua.llamar('MBTiendaAviso', msg))
+
+
+def pasar(ses, b):
+    """Accion 8 del 0x002F del MOBA: b = 0 la pagina anterior, 1 la siguiente (da la vuelta)."""
+    import moba
+    pa = moba.partida_de(ses)
+    h = pa.heroes.get(ses) if pa else None
+    if h is None:
+        return
+    ses._mb_pagina = (pagina(h) + (1 if int(b) else -1)) % paginas(h)
+    ses.enviar(*ventana(pa, h))
+
+
+def elegir_categoria(ses, b):
+    """Accion 9 del 0x002F del MOBA: la pestana b (0..), desde su primera pagina."""
+    import moba
+    pa = moba.partida_de(ses)
+    h = pa.heroes.get(ses) if pa else None
+    if h is None or not 0 <= int(b) < len(categorias()):
+        return
+    ses._mb_cat, ses._mb_pagina = int(b), 0
+    ses.enviar(*ventana(pa, h))

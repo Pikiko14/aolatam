@@ -254,7 +254,7 @@ function OnMBPunto4(dwID, dwCmdID, dwParam, pParam) return punto(4) end
 -- Los iconos son los de los objetos del juego (game.getitemicon, como el Item Mall nuevo).
 WND_MB_TIENDA = WND_MB_TIENDA or 0
 local T_TITULO, T_ESTADO, T_ITEM, T_NOMBRE, T_PRECIO, T_TEXTO, T_PROPIO = 58561, 58562, 58700, 58712, 58724, 58736, 58748
-local TW, TH = 400, 378
+local TW, TH = 400, 432
 
 function MBTienda(titulo, estado, filas, propios)
   if not window.isexist(WND_MB_TIENDA) then
@@ -285,6 +285,15 @@ function MBTienda(titulo, estado, filas, propios)
     window.seticon(window.find(w, T_PROPIO + k), id and game.getitemicon(id) or 0)
   end
 end
+
+-- < y > (58563 / 58564): la pagina anterior / siguiente (moba_tienda.pasar).
+function OnMBTiendaAnt(dwID, dwCmdID, dwParam, pParam) game.netcommand2(CMD_MB, 8, 0) return 1 end
+function OnMBTiendaSig(dwID, dwCmdID, dwParam, pParam) game.netcommand2(CMD_MB, 8, 1) return 1 end
+-- Las pestanas (58565..58568): Weapons, Armor, Special, Potions (moba_tienda.elegir_categoria).
+function OnMBTiendaCat1(dwID, dwCmdID, dwParam, pParam) game.netcommand2(CMD_MB, 9, 0) return 1 end
+function OnMBTiendaCat2(dwID, dwCmdID, dwParam, pParam) game.netcommand2(CMD_MB, 9, 1) return 1 end
+function OnMBTiendaCat3(dwID, dwCmdID, dwParam, pParam) game.netcommand2(CMD_MB, 9, 2) return 1 end
+function OnMBTiendaCat4(dwID, dwCmdID, dwParam, pParam) game.netcommand2(CMD_MB, 9, 3) return 1 end
 
 function MBTiendaOro(titulo)
   if window.isexist(WND_MB_TIENDA) then
