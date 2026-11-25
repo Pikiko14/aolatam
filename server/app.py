@@ -2127,7 +2127,7 @@ PALABRAS_GM = frozenset((
     'daily', 'dailystart', 'dailystop', 'quiz', 'gvg',
     'recipes', 'recetas',
     'notice', 'aviso', 'anuncio', 'gmsg', 'twtotem',
-    'reinicio', 'restart', 'santa',
+    'reinicio', 'restart', 'santa', 'worldboss',
     'mall', 'malltecla',
 )) | gm.PALABRAS
 
@@ -2228,6 +2228,12 @@ def _gm_parsear(texto: str):
         return ('aviso_reinicio', partes)
     if cmd == 'santa':
         return ('santa', partes)
+    if cmd in ('worldboss', 'jefemundo'):
+        return ('jefe_mundo', partes)
+    if cmd in ('events', 'eventos', 'calendar', 'calendario'):
+        return ('calendario',)
+    if cmd in ('missions', 'misiones'):
+        return ('misiones_diarias',)
     if cmd in ('mall', 'malltecla'):
         return (cmd,)
     if cmd in ('recipes','recetas'):return ('recipes',partes[1:])
@@ -2374,7 +2380,7 @@ def _gm_parsear(texto: str):
 
 
 # Lo que _gm_parsear reconoce pero puede usar cualquier jugador.
-COMANDOS_DE_JUGADOR = frozenset(('emote', 'emote_list', 'guild'))
+COMANDOS_DE_JUGADOR = frozenset(('emote', 'emote_list', 'guild', 'calendario', 'misiones_diarias'))
 
 
 def _gm_sin_permiso(ses, cuerpo, addr) -> bool:
@@ -2404,6 +2410,15 @@ def _probar_gm(ses, cuerpo, addr) -> bool:
     if leido[0] == 'santa':
         _resp_sc = __import__('santa_clausula').comando(leido[1])
         ses.enviar(_cl.aviso('GM: ' + _resp_sc, tipo=0, msg_id=_cl.MSG_TEXTO))
+        return True
+    if leido[0] == 'jefe_mundo':
+        ses.enviar(_cl.aviso('GM: ' + __import__('jefe_mundo').comando(leido[1]), tipo=0, msg_id=_cl.MSG_TEXTO))
+        return True
+    if leido[0] == 'misiones_diarias' and ses.personaje:
+        __import__('misiones_diarias').comando(ses)  # /missions: las diarias, las semanales y la racha
+        return True
+    if leido[0] == 'calendario' and ses.personaje:
+        __import__('calendario').comando(ses)        # /events: la semana de eventos (cualquier jugador)
         return True
     if leido[0] == 'malltecla' and ses.personaje:
         # Prueba de Alt+I: llama desde Lua a CreateMallWnd como lo hace el exe con la tecla (14/11/2026).
@@ -4024,6 +4039,17 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
             __import__('santa_clausula').al_morir(ses, m)
         except Exception:
             log.exception('Santa Clausula al morir')
+    # El jefe de mundo (jefe_mundo.py): ranking de dano y premio por puesto, antes de que se vacie dano_por.
+    if getattr(m, 'jefe_mundo', False):
+        try:
+            __import__('jefe_mundo').al_morir(ses, m)
+        except Exception:
+            log.exception('jefe de mundo al morir')
+    # Misiones diarias y semanales (misiones_diarias.py): monstruos y jefes, antes de que se vacie dano_por.
+    try:
+        __import__('misiones_diarias').al_matar(ses, m)
+    except Exception:
+        log.exception('misiones diarias al matar')
 
     if getattr(m, 'sello', None):
         __import__('instancia_oscura').al_morir(ses, m)
@@ -13873,6 +13899,14 @@ class Servidor:
                 _entrar_en_sala(ses, addr)
             except Exception:
                 log.exception('no se pudo entrar en la sala del mapa al conectar')
+            try:
+                __import__('calendario').al_conectar(ses)    # los eventos que quedan hoy
+            except Exception:
+                log.exception('calendario: al conectar')
+            try:
+                __import__('misiones_diarias').al_conectar(ses)
+            except Exception:
+                log.exception('misiones diarias: al conectar')
             # La Torre de Babel: el jefe del piso en la copia, o fuera si no hay corrida (torre_babel.py). Va aqui y no
             # dentro de _entrar_en_sala: esa vuelve antes de tiempo la primera vez que se entra a una copia, justo cuando
             # hay que sacar el primer jefe.
@@ -19149,6 +19183,8 @@ class Servidor:
             if __import__('pet_defense_ui').procesar(ses, cuerpo, addr):  # Pet Defense (174)
                 return
             if __import__('moba_lobby').procesar(ses, cuerpo, addr):      # Angel MOBA (175)
+                return
+            if __import__('misiones_diarias').procesar(ses, cuerpo):     # el panel de misiones diarias (176)
                 return
             if __import__('item_mall').procesar(ses,opcode,cuerpo):
                 return
@@ -24878,6 +24914,7 @@ class Servidor:
         log.info("server.xml del cliente ya apunta aca (ip=127.0.0.1 port=16768)")
         log.info("GM: /item <id> [qty]  /level <n>  /levelall <n>  (also console or data/gm.txt)")
         tareas.append(__import__('santa_clausula').vigilar())
+        tareas.append(__import__('jefe_mundo').vigilar())
         tareas.append(_vigilar_eventos_propios())      # reglas de horario del editor
         tareas.append(cuentas.tarea_backup_periodico())
         tareas.append(self.vigilar_baneos())

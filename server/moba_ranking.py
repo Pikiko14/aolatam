@@ -111,6 +111,13 @@ def registrar(pa, ganador, ahora=None):
                 log.exception('MOBA: premio de partida')
                 ag = 0
         out[ses] = (pts, ag)
+        try:
+            import misiones_diarias
+            misiones_diarias.sumar(ses, 'moba_jugar')
+            if gano:
+                misiones_diarias.sumar(ses, 'moba_ganar')
+        except Exception:
+            log.exception('MOBA: misiones diarias')
     with _LOCK:
         con = _con()
         try:

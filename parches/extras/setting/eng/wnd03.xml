@@ -11897,4 +11897,103 @@
     <icon id="58417" dir="\wnd01\" normal="aolat_mb_c7_n" focus="aolat_mb_c7_f" down="aolat_mb_c7_f" disable="normal" />
     <icon id="58418" dir="\wnd01\" normal="aolat_mb_c8_n" focus="aolat_mb_c8_f" down="aolat_mb_c8_f" disable="normal" />
     <!-- /aolat angel moba -->
+    <!-- aolat misiones diarias -->
+    <window class="WND_CLASS_DLG_1" range="0,0,428,392" id="58800" title="Daily Missions" fcolor="104" font="1">
+        <style wsVisible="" wsMoveable="" />
+        <child>58801</child>
+        <child>58802</child>
+        <child>58803</child>
+        <child>58810</child>
+        <child>58820</child>
+        <child>58830</child>
+        <child>58811</child>
+        <child>58821</child>
+        <child>58831</child>
+        <child>58812</child>
+        <child>58822</child>
+        <child>58832</child>
+        <child>58813</child>
+        <child>58823</child>
+        <child>58833</child>
+        <child>58814</child>
+        <child>58824</child>
+        <child>58834</child>
+        <child>58815</child>
+        <child>58825</child>
+        <child>58835</child>
+        <child>58804</child>
+        <child>58805</child>
+    </window>
+    <window class="WND_CLASS_STATIC" id="58801" range="10,4,400,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58802" range="14,28,391,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58803" range="14,44,391,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58810" range="14,86,270,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58820" range="296,86,110,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="58830" range="14,106,392,6" picon="58851">
+        <style wsVisible="" psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58811" range="14,126,270,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58821" range="296,126,110,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="58831" range="14,146,392,6" picon="58851">
+        <style wsVisible="" psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58812" range="14,166,270,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58822" range="296,166,110,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="58832" range="14,186,392,6" picon="58851">
+        <style wsVisible="" psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58813" range="14,226,270,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58823" range="296,226,110,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="58833" range="14,246,392,6" picon="58851">
+        <style wsVisible="" psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58814" range="14,266,270,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58824" range="296,266,110,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="58834" range="14,286,392,6" picon="58851">
+        <style wsVisible="" psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58815" range="14,306,270,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58825" range="296,306,110,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" ssRight="" />
+    </window>
+    <window class="WND_CLASS_PROGRESS" id="58835" range="14,326,392,6" picon="58851">
+        <style wsVisible="" psHorizontal="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58804" range="10,346,400,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BASE" id="58805" range="0,0,420,368" icon="58850">
+        <style wsVisible="" />
+    </window>
+    <icon id="58850" dir="\wnd01\" normal="aolat_md_fondo" focus="normal" down="normal" disable="normal" />
+    <icon id="58851" dir="\wnd01\" normal="aolat_md_barra" focus="normal" down="normal" disable="normal" />
+    <!-- /aolat misiones diarias -->
 </root>

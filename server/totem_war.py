@@ -1040,8 +1040,20 @@ def capturado(ses, m):
         NOMBRE_TW[st], NOMBRE_FACCION.get(f, '?'))
 
 
+def _horario():
+    """HORARIO, o las horas de la Totem War en el calendario semanal (calendario.py) si las lleva."""
+    try:
+        import calendario
+        cal = calendario.slots('totem')
+    except Exception:
+        cal = None
+    if cal is None:
+        return HORARIO
+    return tuple((wd,) + tuple(int(x) for x in h.split(':')) for wd, h in cal)
+
+
 def _toca_por_horario(ahora):
-    for dia, h, mi in HORARIO:
+    for dia, h, mi in _horario():
         ini = ahora.replace(hour=h, minute=mi, second=0, microsecond=0)
         if ahora.weekday() == dia and ini <= ahora < ini + datetime.timedelta(minutes=DURACION_HORARIO):
             return ini

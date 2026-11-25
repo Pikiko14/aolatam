@@ -1,0 +1,21 @@
+{
+ "_nota": "jefe_mundo.py: a las horas del calendario semanal (calendario.json, evento 'jefe'; sin el, 'horas' todos los dias) sale uno de 'jefes' (monstruos del juego, content.db) con 'vida' en uno de 'mapas' (los de caza junto a las ciudades, como Santa Clausula); se va a los 'duracion_min'. 'premios' por puesto en el ranking de dano: 'exp' en partes de lo que pide el nivel del jugador e 'items' (uno de 'de' con probabilidad 'prob').",
+ "horas": ["12:00", "19:30", "23:00"],
+ "duracion_min": 45,
+ "vida": 1500000,
+ "jefes": [707, 661, 4611, 5067, 802],
+ "_jefes": "Azrael Leader (63), Gebuer Cock (60), Demon Bazac (70), Wolf King Mark (75), Lion Dragon (78)",
+ "mapas": [[6, "Spike Farm"], [32, "Shadowy Path"], [23, "Dense Forest"], [37, "Wishing Tear"]],
+ "premios": [
+  {"desde": 1, "hasta": 1, "exp": 0.30, "items": [
+   {"de": [89200, 89201, 89202, 89203, 89204, 89205, 89206], "prob": 1.0},
+   {"de": [89171, 89172, 89173, 89174, 89175, 89176, 89177], "prob": 1.0}]},
+  {"desde": 2, "hasta": 3, "exp": 0.20, "items": [
+   {"de": [89171, 89172, 89173, 89174, 89175, 89176, 89177], "prob": 1.0},
+   {"de": [89200, 89201, 89202, 89203, 89204, 89205, 89206], "prob": 0.30}]},
+  {"desde": 4, "hasta": 10, "exp": 0.15, "items": [
+   {"de": [89171, 89172, 89173, 89174, 89175, 89176, 89177], "prob": 1.0}]},
+  {"desde": 11, "hasta": 9999, "exp": 0.08, "items": [
+   {"de": [89171, 89172, 89173, 89174, 89175, 89176, 89177], "prob": 0.25}]}
+ ]
+}

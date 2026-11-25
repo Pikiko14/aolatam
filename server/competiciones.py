@@ -1118,8 +1118,14 @@ def cron(ahora=None):
     auto = {int(s) for s in (config_eventos().get('horario_automatico') or [])}
     windows = [(t[2], t[0], t[3], t[4], t[5], configuracion.DURACION_ANGEL_ARENA_MIN) for t in TRAMOS]
     hh = config_eventos().get('holy_horario') or {}
-    windows += [(112, 1, int(day), int(hour), 0, int(hh.get('duracion_min', 60)))
-                for day in hh.get('dias', (4, 6)) for hour in hh.get('horas', (12, 21))]
+    import calendario
+    cal = calendario.slots('holy')              # el calendario semanal manda, si lleva el Holy Battlefield
+    if cal is not None:
+        windows += [(112, 1, wd, int(h.split(':')[0]), int(h.split(':')[1]), int(hh.get('duracion_min', 60)))
+                    for wd, h in cal]
+    else:
+        windows += [(112, 1, int(day), int(hour), 0, int(hh.get('duracion_min', 60)))
+                    for day in hh.get('dias', (4, 6)) for hour in hh.get('horas', (12, 21))]
     for stage, level, weekday, hour, minute, duration in windows:
         if stage not in auto:
             continue
@@ -1152,6 +1158,10 @@ async def reloj():
                 __import__('pet_defense_ranking').cron()      # Pet Defense: premios al cerrar cada temporada
             except Exception:
                 log.exception('Pet Defense season clock')
+            try:
+                __import__('calendario').cron()               # el cartel de "empieza en 30 minutos"
+            except Exception:
+                log.exception('calendario clock')
             try:
                 __import__('moba_lobby').cron()               # Angel MOBA: inscripcion a horas fijas
                 __import__('moba_ranking').cron()             # y premios al cerrar cada temporada

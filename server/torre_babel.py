@@ -462,6 +462,11 @@ def al_morir(ses, m, addr='?'):
             log.exception('Torre de Babel: no se pudo quitar el jefe a un companero')
     if piso % 10 == 0:
         _premio_cada_diez(ses, piso, addr)
+    for s in _en_la_copia(ses):                         # un piso mas para las misiones diarias de todos los de dentro
+        try:
+            __import__('misiones_diarias').sumar(s, 'torre')
+        except Exception:
+            log.exception('Torre de Babel: misiones diarias')
     if piso >= total_pisos():
         segundos = time.time() - c['inicio']
         _cartel(ses, 'The Tower of Babel is conquered! %d floors in %d:%02d' % ((piso,) + divmod(int(segundos), 60)))

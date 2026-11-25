@@ -1,10 +1,10 @@
 {
- "version": "0.0.0.230",
- "numero": 230,
- "huella": "74f1b4b3d579ed344eb849853053a9c556ef4ccbc6f201fe4228c135f0ab0bee",
+ "version": "0.0.0.231",
+ "numero": 231,
+ "huella": "5f62cfea45f70576f247249f9d03965bfe47783610320d4a35b7bd9d993d58de",
  "pak": "update27.pak",
- "bytes": 32722040,
- "sha256": "3f59dc49cd1cd4f6d1fe8d8c8cd054d3d04e8dcbe3624beaab61dd2903670aef",
+ "bytes": 32729775,
+ "sha256": "6c96b05462d5c36eef46e31a9ed8c2e837de9b7823055d1a63c6c0906f40d5fb",
  "archivos": [
   "AGREEMENT.TXT",
   "MAP\\MAP002.MPC",
@@ -2227,6 +2227,10 @@
   "SHAPE\\WND01\\AOLAT_MB_UNIRSE_N.SHP",
   "SHAPE\\WND01\\AOLAT_MB_UNIRSE_S.SHP",
   "SHAPE\\WND01\\AOLAT_MB_VICTORIA.SHP",
+  "SHAPE\\WND01\\AOLAT_MD_BARRA.SHP",
+  "SHAPE\\WND01\\AOLAT_MD_F.SHP",
+  "SHAPE\\WND01\\AOLAT_MD_FONDO.SHP",
+  "SHAPE\\WND01\\AOLAT_MD_N.SHP",
   "SHAPE\\WND01\\AOLAT_ORDENAR_D.SHP",
   "SHAPE\\WND01\\AOLAT_ORDENAR_F.SHP",
   "SHAPE\\WND01\\AOLAT_ORDENAR_N.SHP",
@@ -2523,5 +2527,5 @@
   "SOUND\\MAGIC204.WAV",
   "SOUND\\MAGIC301.WAV"
  ],
- "generado": "2026-11-24 11:54:12"
+ "generado": "2026-11-25 07:52:22"
 }

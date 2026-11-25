@@ -1,0 +1,35 @@
+{
+ "_nota": "misiones_diarias.py: cada dia 'por_dia' de 'diarias' y cada semana 'por_semana' de 'semanales' (las mismas para todos, como mucho una del MOBA). tipo: matar (monstruos), jefe (jefes, cuenta para todos los que le pegaron), moba_jugar, moba_ganar, pet_defense (partidas terminadas), torre (pisos de la Torre de Babel), jefe_mundo. Premios: exp en partes de lo que pide el nivel, oro_por_nivel x nivel, items (uno de 'de' con 'prob'); por el multiplicador de la racha (1 + por_dia x (dias-1), hasta tope). racha.premios: el dia del ciclo en que se da algo mas.",
+ "por_dia": 3,
+ "por_semana": 3,
+ "diarias": [
+  {"id": "matar200", "tipo": "matar", "n": 200, "texto": "Defeat 200 monsters"},
+  {"id": "jefe3", "tipo": "jefe", "n": 3, "texto": "Defeat 3 bosses"},
+  {"id": "moba1", "tipo": "moba_jugar", "n": 1, "texto": "Play 1 Angel MOBA match"},
+  {"id": "mobagana1", "tipo": "moba_ganar", "n": 1, "texto": "Win 1 Angel MOBA match"},
+  {"id": "pd1", "tipo": "pet_defense", "n": 1, "texto": "Finish 1 Pet Defense game"},
+  {"id": "torre5", "tipo": "torre", "n": 5, "texto": "Clear 5 floors of the Tower of Babel"},
+  {"id": "jm1", "tipo": "jefe_mundo", "n": 1, "texto": "Fight a World Boss until it falls"}
+ ],
+ "semanales": [
+  {"id": "matar2000", "tipo": "matar", "n": 2000, "texto": "Defeat 2000 monsters"},
+  {"id": "jefe20", "tipo": "jefe", "n": 20, "texto": "Defeat 20 bosses"},
+  {"id": "mobagana5", "tipo": "moba_ganar", "n": 5, "texto": "Win 5 Angel MOBA matches"},
+  {"id": "pd5", "tipo": "pet_defense", "n": 5, "texto": "Finish 5 Pet Defense games"},
+  {"id": "torre30", "tipo": "torre", "n": 30, "texto": "Clear 30 floors of the Tower of Babel"},
+  {"id": "jm5", "tipo": "jefe_mundo", "n": 5, "texto": "Defeat 5 World Bosses"}
+ ],
+ "pie": "Each daily: +10% EXP and gold. Each weekly: +50% EXP, gold and a Gear Gacha.",
+ "premio_diaria": {"exp": 0.10, "oro_por_nivel": 300},
+ "premio_semanal": {"exp": 0.50, "oro_por_nivel": 1500, "items": [
+  {"de": [89171, 89172, 89173, 89174, 89175, 89176, 89177], "prob": 1.0}]},
+ "racha": {
+  "por_dia": 0.10,
+  "tope": 2.0,
+  "ciclo": 7,
+  "premios": {
+   "3": {"texto": "Gear Gacha", "items": [{"de": [89171, 89172, 89173, 89174, 89175, 89176, 89177], "prob": 1.0}]},
+   "7": {"texto": "Lv60 Box", "items": [{"de": [89200, 89201, 89202, 89203, 89204, 89205, 89206], "prob": 1.0}]}
+  }
+ }
+}

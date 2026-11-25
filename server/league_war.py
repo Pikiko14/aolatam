@@ -22,6 +22,10 @@ _ROOMS={}
 
 @functools.lru_cache(maxsize=1)
 def config():return json.loads((Path(__file__).parent/'plantillas/league_war.json').read_text('utf8'))
+def _schedules():
+    """Las horas del calendario semanal (calendario.py) si lleva la League War; si no, las de league_war.json."""
+    cal=__import__('calendario').slots('liga')
+    return config()['schedules'] if cal is None else [{'weekday':wd,'start':h} for wd,h in cal]
 def _key(s):return '%s:%d'%(s.usuario.casefold(),s.personaje.char_id)
 def _notice(s,text):s.enviar(__import__('clases').aviso(text,tipo=0))
 def _guild(s):return __import__('gremios').obtener_gremio_de(s.personaje.char_id)
@@ -572,7 +576,7 @@ def process(s,opcode,body):
 
 def cron(now=None):
     now=dt.datetime.fromtimestamp(time.time()) if now is None else now;stamp=now.timestamp();r=current()
-    for slot in config()['schedules']:
+    for slot in _schedules():
         if now.weekday()!=slot['weekday']:continue
         h,m=map(int,slot['start'].split(':'));start_at=now.replace(hour=h,minute=m,second=0,microsecond=0).timestamp()
         identity='gvg:'+str(int(start_at))

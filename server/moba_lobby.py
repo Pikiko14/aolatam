@@ -60,6 +60,18 @@ def proxima(ahora_local=None):
     """El datetime de la proxima partida programada (hoy o manana)."""
     ahora_local = ahora_local or _ahora_local()
     horas = []
+    import calendario
+    cal = calendario.slots('moba')              # el calendario semanal manda, si lleva el MOBA
+    if cal is not None:
+        for dias in range(8):
+            dia = ahora_local + dt.timedelta(days=dias)
+            for wd, h in cal:
+                if dia.weekday() == wd:
+                    hh, mm = (int(x) for x in h.split(':'))
+                    t = dia.replace(hour=hh, minute=mm, second=0, microsecond=0)
+                    if t > ahora_local:
+                        horas.append(t)
+        return min(horas) if horas else None
     for h in _cfg().get('horarios') or []:
         hh, mm = (int(x) for x in str(h).split(':'))
         for dias in (0, 1):
@@ -185,6 +197,9 @@ def _texto_horario():
     horas = ', '.join(str(h) for h in _cfg().get('horarios') or [])
     if t is None:
         return 'No matches scheduled.'
+    import calendario
+    if calendario.slots('moba') is not None:
+        return 'Next match: %s %s (/events for the week).' % (calendario.DIAS[t.weekday()], t.strftime('%H:%M'))
     return 'Next match at %s (daily: %s).' % (t.strftime('%H:%M'), horas)
 
 

@@ -1,0 +1,21 @@
+{
+ "_nota": "calendario.py: la semana de eventos (hora del servidor). Cada evento de 'eventos' toma sus horas de 'semana' y deja de usar su horario propio (moba.json inscripcion.horarios, competiciones_config holy_horario, totem_war.HORARIO, league_war.json schedules, daily_schedule.json slots); si se quita de 'eventos', vuelve al suyo. 'duracion' en minutos (solo para saber si ya termino); 'aviso_min': el cartel a todos antes de empezar.",
+ "aviso_min": 30,
+ "eventos": {
+  "moba": {"nombre": "Angel MOBA", "duracion": 30, "donde": "Talk to Angel MOBA in the Sign Up Office."},
+  "holy": {"nombre": "Holy Battlefield", "duracion": 60},
+  "totem": {"nombre": "Totem War", "duracion": 120},
+  "liga": {"nombre": "League War", "duracion": 30},
+  "quick": {"nombre": "Quick Reflexes", "duracion": 30},
+  "jefe": {"nombre": "World Boss", "duracion": 45, "donde": "It appears in a hunting field next to a city."}
+ },
+ "semana": {
+  "Monday":    [["12:00", "jefe"], ["14:00", "moba"], ["18:00", "quick"], ["19:30", "jefe"], ["21:00", "moba"], ["23:00", "jefe"]],
+  "Tuesday":   [["12:00", "jefe"], ["14:00", "moba"], ["18:00", "moba"], ["19:30", "jefe"], ["21:00", "liga"], ["23:00", "jefe"]],
+  "Wednesday": [["12:00", "jefe"], ["14:00", "moba"], ["18:00", "moba"], ["19:30", "jefe"], ["21:00", "totem"], ["23:00", "jefe"]],
+  "Thursday":  [["12:00", "jefe"], ["14:00", "moba"], ["18:00", "moba"], ["19:30", "jefe"], ["21:00", "quick"], ["23:00", "jefe"]],
+  "Friday":    [["10:00", "holy"], ["12:00", "jefe"], ["14:00", "moba"], ["16:00", "holy"], ["19:30", "jefe"], ["21:00", "moba"], ["23:00", "jefe"]],
+  "Saturday":  [["12:00", "jefe"], ["14:00", "totem"], ["18:00", "moba"], ["19:30", "jefe"], ["21:00", "moba"], ["23:00", "jefe"]],
+  "Sunday":    [["10:00", "holy"], ["12:00", "jefe"], ["14:00", "moba"], ["16:00", "holy"], ["18:00", "liga"], ["19:30", "jefe"], ["21:00", "moba"], ["22:30", "liga"], ["23:00", "jefe"]]
+ }
+}

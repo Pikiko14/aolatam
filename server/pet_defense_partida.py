@@ -671,6 +671,11 @@ def terminar(ses, resultado, avisar=True):
         pa.resultado_datos['angel_gold'] = __import__('pet_defense_ranking').premiar_oleadas(ses, superadas)
     except Exception:
         log.exception('Pet Defense: AG por oleadas')
+    if resultado in ('victoria', 'derrota'):            # terminada (no abandonada): cuenta para las misiones diarias
+        try:
+            __import__('misiones_diarias').sumar(ses, 'pet_defense')
+        except Exception:
+            log.exception('Pet Defense: misiones diarias')
     try:
         __import__('pet_defense_ui').fin(pa)
     except Exception:

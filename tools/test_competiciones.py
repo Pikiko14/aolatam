@@ -421,12 +421,12 @@ def test_pending_combo_cannot_hit_new_holy_life(world, monkeypatch):
 
 
 def test_official_holy_window_and_no_restart_of_finished_round(world):
-    instant = dt.datetime(2026,10,23,11,45)  # Friday, 15 min before noon
+    instant = dt.datetime(2026,10,23,9,45)  # Friday, 15 min before 10:00 (plantillas/calendario.json, 25/11/2026)
     world.now[0] = instant.timestamp()
     c.cron(instant)
     r = c.ronda(112)
     assert c.fase(r) == 'registro'
-    assert r['inicio'] == instant.replace(hour=12,minute=0).timestamp()
+    assert r['inicio'] == instant.replace(hour=10,minute=0).timestamp()
     assert r['fin'] - r['inicio'] == 3600
     c.terminar(112)
     original_id = r['id']

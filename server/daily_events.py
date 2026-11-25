@@ -48,10 +48,21 @@ def programacion():
     return json.loads((pathlib.Path(__file__).parent/'plantillas/daily_schedule.json').read_text('utf8'))
 
 
+def slots():
+    """Los de daily_schedule.json, salvo los eventos que lleve el calendario semanal (calendario.py), que salen de alli.
+    day aqui es 0=domingo (el del cliente); el calendario usa 0=lunes."""
+    import calendario as cal
+    propios=[a for a in ALIASES if cal.slots(a) is not None]
+    out=[s for s in programacion()['slots'] if s['alias'] not in propios]
+    for a in propios:
+        out+=[{'day':(wd+1)%7,'alias':a,'start':h} for wd,h in cal.slots(a)]
+    return sorted(out,key=lambda s:((s['day']+6)%7,s['start']))
+
+
 def calendario():
     rows=[]
     cfg=programacion()
-    for slot in cfg['slots']:
+    for slot in slots():
         name,brackets=GAMES[ALIASES[slot['alias']]]
         hour,minute=map(int,slot['start'].split(':'));start=hour*60+minute
         for stage,title,help_id,minimum,maximum in brackets:
@@ -596,7 +607,7 @@ def cron(now=None):
     stamp=current.timestamp()
     changed=False
     cfg=programacion()
-    for slot in cfg['slots']:
+    for slot in slots():
         if slot['day']!=(current.weekday()+1)%7:continue
         hour,minute=map(int,slot['start'].split(':'))
         start=current.replace(hour=hour,minute=minute,second=0,microsecond=0).timestamp()
