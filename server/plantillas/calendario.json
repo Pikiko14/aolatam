@@ -4,18 +4,22 @@
  "eventos": {
   "moba": {"nombre": "Angel MOBA", "duracion": 30, "donde": "Talk to Angel MOBA in the Sign Up Office."},
   "holy": {"nombre": "Holy Battlefield", "duracion": 60},
+  "arena": {"nombre": "Angel Arena Lv50-89", "duracion": 30, "tramo": 50},
   "totem": {"nombre": "Totem War", "duracion": 120},
   "liga": {"nombre": "League War", "duracion": 30},
   "quick": {"nombre": "Quick Reflexes", "duracion": 30},
-  "jefe": {"nombre": "World Boss", "duracion": 45, "donde": "It appears in a hunting field next to a city."}
+  "jefe": {"nombre": "World Boss", "duracion": 45, "donde": "It appears in a hunting field next to a city."},
+  "tesoro": {"nombre": "Treasure Hunt", "duracion": 30, "donde": "A chest appears in a hunting field: follow the clues."},
+  "caza": {"nombre": "Hunted Hunter", "duracion": 15, "donde": "Sign up in Events (button on the bar)."},
+  "torneo": {"nombre": "Pet Tournament", "duracion": 5, "donde": "Sign up your pet in Challenges (button on the bar)."}
  },
  "semana": {
-  "Monday":    [["12:00", "jefe"], ["14:00", "moba"], ["18:00", "quick"], ["19:30", "jefe"], ["21:00", "moba"], ["23:00", "jefe"]],
-  "Tuesday":   [["12:00", "jefe"], ["14:00", "moba"], ["18:00", "moba"], ["19:30", "jefe"], ["21:00", "liga"], ["23:00", "jefe"]],
-  "Wednesday": [["12:00", "jefe"], ["14:00", "moba"], ["18:00", "moba"], ["19:30", "jefe"], ["21:00", "totem"], ["23:00", "jefe"]],
-  "Thursday":  [["12:00", "jefe"], ["14:00", "moba"], ["18:00", "moba"], ["19:30", "jefe"], ["21:00", "quick"], ["23:00", "jefe"]],
-  "Friday":    [["10:00", "holy"], ["12:00", "jefe"], ["14:00", "moba"], ["16:00", "holy"], ["19:30", "jefe"], ["21:00", "moba"], ["23:00", "jefe"]],
-  "Saturday":  [["12:00", "jefe"], ["14:00", "totem"], ["18:00", "moba"], ["19:30", "jefe"], ["21:00", "moba"], ["23:00", "jefe"]],
-  "Sunday":    [["10:00", "holy"], ["12:00", "jefe"], ["14:00", "moba"], ["16:00", "holy"], ["18:00", "liga"], ["19:30", "jefe"], ["21:00", "moba"], ["22:30", "liga"], ["23:00", "jefe"]]
+  "Monday":    [["12:00", "jefe"], ["14:00", "moba"], ["18:00", "quick"], ["19:30", "jefe"], ["21:00", "moba"], ["23:00", "jefe"], ["13:00", "tesoro"], ["20:15", "tesoro"], ["22:00", "caza"], ["18:40", "torneo"]],
+  "Tuesday":   [["16:00", "arena"], ["12:00", "jefe"], ["14:00", "moba"], ["18:00", "moba"], ["19:30", "jefe"], ["21:00", "liga"], ["23:00", "jefe"], ["13:00", "tesoro"], ["20:15", "tesoro"], ["22:00", "caza"], ["18:40", "torneo"]],
+  "Wednesday": [["12:00", "jefe"], ["14:00", "moba"], ["18:00", "moba"], ["19:30", "jefe"], ["21:00", "totem"], ["23:00", "jefe"], ["13:00", "tesoro"], ["20:15", "tesoro"], ["16:30", "caza"], ["18:40", "torneo"]],
+  "Thursday":  [["16:00", "arena"], ["12:00", "jefe"], ["14:00", "moba"], ["18:00", "moba"], ["19:30", "jefe"], ["21:00", "quick"], ["23:00", "jefe"], ["13:00", "tesoro"], ["20:15", "tesoro"], ["22:00", "caza"], ["18:40", "torneo"]],
+  "Friday":    [["10:00", "holy"], ["12:00", "jefe"], ["14:00", "moba"], ["16:00", "holy"], ["19:30", "jefe"], ["21:00", "moba"], ["23:00", "jefe"], ["13:00", "tesoro"], ["20:15", "tesoro"], ["22:00", "caza"], ["18:40", "torneo"]],
+  "Saturday":  [["16:00", "arena"], ["12:00", "jefe"], ["14:00", "totem"], ["18:00", "moba"], ["19:30", "jefe"], ["21:00", "moba"], ["23:00", "jefe"], ["13:00", "tesoro"], ["20:15", "tesoro"], ["22:00", "caza"], ["18:40", "torneo"]],
+  "Sunday":    [["10:00", "holy"], ["12:00", "jefe"], ["14:00", "moba"], ["16:00", "holy"], ["18:00", "liga"], ["19:30", "jefe"], ["21:00", "moba"], ["22:30", "liga"], ["23:00", "jefe"], ["13:00", "tesoro"], ["20:15", "tesoro"], ["17:15", "caza"], ["18:40", "torneo"]]
  }
 }

@@ -346,7 +346,7 @@ def al_conectar(ses):
         return
     ses._misiones_saludado = True
     hechas = sum(1 for linea in lineas(ses) if linea.startswith('[Daily]') and linea.endswith('(done)'))
-    _aviso(ses, 'Daily missions: %d/%d done. Type /missions to see them.' % (hechas, int(config().get('por_dia', 3))))
+    _aviso(ses, 'Daily missions: %d/%d done. Open them with the scroll button on the bar.' % (hechas, int(config().get('por_dia', 3))))
 
 
 def al_matar(ses, m):

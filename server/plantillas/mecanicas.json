@@ -1,0 +1,37 @@
+{
+ "_nota": "Mecanicas nuevas (25/11/2026), en la ventana Challenges (boton 59009 de la barra, server/mecanicas_ui.py). contratos.py: tablon de encargos entre jugadores. torneo_mascotas.py: torneo autobattler de mascotas a las horas del calendario ('torneo'); cada uno inscribe su mascota mas fuerte con una estrategia (agresiva gana a astuta, astuta a defensiva, defensiva a agresiva: +'ventaja' % de dano). hardcore.py: modo hardcore por temporada (mes): se apunta un personaje de nivel <= 'nivel_max'; gana +'exp_extra' % de EXP; si lo mata un monstruo (solo PvE: PvP, duelos y eventos no cuentan) vuelve al nivel y oro con que empezo la temporada y queda fuera; quien llega a 'nivel_premio' sin morir gana 'ag_premio' de Angel Gold del item mall (una vez por temporada); los que acaban la temporada vivos reciben 'premios'.",
+ "contratos": {
+  "oro_min": 1000,
+  "oro_max": 100000000,
+  "cantidad_max": 999,
+  "max_por_jugador": 3,
+  "duracion_h": 72,
+  "comision": 5
+ },
+ "torneo": {
+  "estrategias": {
+   "agresiva": {"nombre": "Aggressive", "atk": 25, "def": -15, "hp": 0, "vel": 0, "crit": 10, "esquiva": 0},
+   "defensiva": {"nombre": "Defensive", "atk": -10, "def": 30, "hp": 15, "vel": -10, "crit": 5, "esquiva": 5},
+   "astuta": {"nombre": "Tricky", "atk": 0, "def": 0, "hp": 0, "vel": 20, "crit": 20, "esquiva": 10}
+  },
+  "gana_a": {"agresiva": "astuta", "astuta": "defensiva", "defensiva": "agresiva"},
+  "ventaja": 8,
+  "turnos_max": 40,
+  "premios": [
+   {"puesto": 1, "oro_por_nivel": 3000, "exp": 0.25, "items": [{"de": [89200, 89201, 89202, 89203, 89204, 89205, 89206], "prob": 1.0}]},
+   {"puesto": 2, "oro_por_nivel": 1500, "exp": 0.15, "items": [{"de": [89171, 89172, 89173, 89174, 89175, 89176, 89177], "prob": 1.0}]},
+   {"puesto": 3, "oro_por_nivel": 800, "exp": 0.10},
+   {"puesto": 99, "oro_por_nivel": 200, "exp": 0.03}
+  ]
+ },
+ "hardcore": {
+  "nivel_max": 10,
+  "exp_extra": 30,
+  "magia": 23450,
+  "icono": 10566,
+  "premios": [1193, 278],
+  "texto_premio": "Angel Wings and Angel's Halo",
+  "nivel_premio": 60,
+  "ag_premio": 50000
+ }
+}

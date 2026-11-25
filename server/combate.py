@@ -1063,6 +1063,12 @@ class Monstruo:
         total = max(1, base + atk_mod)
         if dmg_pct != 0:
             total = max(1, int(round(total * (1.0 + dmg_pct / 100.0))))
+        try:                                    # el clima y lo salvaje del mapa (mundo_vivo.py)
+            _mv = __import__('mundo_vivo').mult(self.stage, 'atk')
+            if _mv != 1.0:
+                total = max(1, int(round(total * _mv)))
+        except Exception:
+            pass
         return total
 
     def toca_reaparecer(self) -> bool:

@@ -195,6 +195,8 @@
 		<child>59004</child>
 		<child>59005</child>
 		<child>59007</child>
+		<child>59008</child>
+		<child>59009</child>
 		<child>59002</child>
 		<child>59001</child>
         <child>12600</child>
@@ -2834,6 +2836,7 @@
     <!-- 對話選項 -->
     <window class="WND_CLASS_BASE" id="565" range="100,100,160,130" fillrange="7, 7,300,100" puzzle1="10021" puzzle2="10022" puzzle3="10023" puzzle4="10024" puzzle5="10025" puzzle6="10026" puzzle7="10027" puzzle8="10028" puzzle9="10029">
         <style wsVisible="" wsPuzzle="" wsPopup="" wsAutoClose="" />
+        <child>59661</child>
         <child>59660</child>
         <child>566</child>
         <child>567</child>
@@ -6250,4 +6253,22 @@
     </window>
     <icon id="59007" dir="\wnd01\" normal="aolat_md_n" focus="aolat_md_f" down="aolat_md_n" disable="normal" />
     <!-- /aolat misiones diarias -->
+    <!-- aolat eventos sociales barra -->
+    <window class="WND_CLASS_BUTTON" range="75,-127,40,56" id="59008" icon="59008" tooltip="10043" tooltext="Events">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnCommandEventos</OnCommand>
+    </window>
+    <icon id="59008" dir="\wnd01\" normal="aolat_ev_n" focus="aolat_ev_f" down="aolat_ev_n" disable="normal" />
+    <window class="WND_CLASS_BUTTON" range="2,175,110,12" id="59661" fcolor="106" font="1" title="Duel">
+        <style ssVCenter="" ssHCenter="" wsTab="" />
+        <OnCommand>OnClickChatOptionDuelo</OnCommand>
+    </window>
+    <!-- /aolat eventos sociales barra -->
+    <!-- aolat mecanicas barra -->
+    <window class="WND_CLASS_BUTTON" range="29,-127,40,56" id="59009" icon="59009" tooltip="10043" tooltext="Challenges">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnCommandChallenges</OnCommand>
+    </window>
+    <icon id="59009" dir="\wnd01\" normal="aolat_ch_n" focus="aolat_ch_f" down="aolat_ch_n" disable="normal" />
+    <!-- /aolat mecanicas barra -->
 </root>

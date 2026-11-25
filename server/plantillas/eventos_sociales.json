@@ -1,0 +1,41 @@
+{
+ "_nota": "Eventos sociales (25/11/2026). tesoro_servidor.py: a las horas del calendario ('tesoro') sale un cofre (60153) en un mapa de caza, visible para todos; pistas cada 'pista_cada_min' (letra y largo del mapa, el mapa, la zona, las coordenadas); el primero que lo pulsa a 'radio' casillas se lo lleva. cazador.py: /hunt join para apuntarse; a las horas del calendario ('caza') uno de los apuntados en un mapa de caza es la presa 'duracion_min'; su posicion se anuncia cada 'aviso_cada_s'; solo los apuntados pueden pegarle (y el a ellos). duelos.py: /duel <nombre> <oro>, el otro /duel accept; 'apuestas_s' segundos para que el resto apueste con /bet <nombre> <oro>; luego pelean hasta que uno cae (sin perder EXP), el ganador se lleva las dos apuestas y los que acertaron se reparten lo que perdieron los demas (menos 'comision' %). votacion.py: de lunes a jueves /vote; el viernes 00:00 gana la opcion con mas votos y se aplica el fin de semana.",
+ "tesoro": {
+  "duracion_min": 30,
+  "pista_cada_min": 6,
+  "radio": 3,
+  "premio": {"oro_por_nivel": 1500, "exp": 0.20, "ag": 1500, "items": [
+   {"de": [89171, 89172, 89173, 89174, 89175, 89176, 89177], "prob": 1.0},
+   {"de": [89200, 89201, 89202, 89203, 89204, 89205, 89206], "prob": 0.3}]}
+ },
+ "caza": {
+  "duracion_min": 15,
+  "aviso_cada_s": 60,
+  "nivel_min": 30,
+  "premio_presa": {"oro_por_nivel": 3000, "exp": 0.40, "ag": 1500, "items": [
+   {"de": [89200, 89201, 89202, 89203, 89204, 89205, 89206], "prob": 1.0}]},
+  "premio_cazador": {"oro_por_nivel": 2000, "exp": 0.25, "ag": 1500, "items": [
+   {"de": [89171, 89172, 89173, 89174, 89175, 89176, 89177], "prob": 1.0}]}
+ },
+ "duelo": {
+  "oro_min": 1000,
+  "oro_max": 50000000,
+  "apuesta_min": 500,
+  "apuestas_s": 30,
+  "pelea_max_s": 180,
+  "distancia": 15,
+  "comision": 5
+ },
+ "votacion": {
+  "opciones_exp": 3,
+  "eventos": [
+   {"id": "jefe", "texto": "Extra World Boss on Saturday and Sunday at 17:00", "slots": [[5, "17:00"], [6, "17:00"]]},
+   {"id": "moba", "texto": "Extra Angel MOBA on Saturday and Sunday at 16:00", "slots": [[5, "16:00"], [6, "16:00"]]},
+   {"id": "totem", "texto": "Extra Totem War on Sunday at 20:00", "slots": [[6, "20:00"]]},
+   {"id": "tesoro", "texto": "Extra Treasure Hunt on Saturday and Sunday at 15:00", "slots": [[5, "15:00"], [6, "15:00"]]},
+   {"id": "caza", "texto": "Extra Hunted Hunter on Saturday and Sunday at 22:00", "slots": [[5, "22:00"], [6, "22:00"]]}
+  ],
+  "eventos_por_semana": 2,
+  "exp_doble": 100
+ }
+}

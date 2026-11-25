@@ -297,6 +297,23 @@ MAGIAS_PROPIAS[23410] = {'編號': '23410', '介面圖號': '10827', '名稱': '
                          '說明': 'You carry Trade Routes cargo. Deliver it before the time runs out (%1).',
                          '同類無法使用': '是'}
 
+# Los iconos del clima, de la tierra salvaje y de la agitada (mundo_vivo.py, 23420..23428).
+try:
+    from mundo_vivo import magias_propias as _mv_magias
+    MAGIAS_PROPIAS.update(_mv_magias())
+except Exception:
+    pass
+try:                                    # los iconos de las bendiciones de la Torre de Babel (torre_roguelike.py)
+    from torre_roguelike import magias_propias as _tr_magias
+    MAGIAS_PROPIAS.update(_tr_magias())
+except Exception:
+    pass
+try:                                    # el icono de la temporada hardcore (hardcore.py)
+    from hardcore import magias_propias as _hc_magias
+    MAGIAS_PROPIAS.update(_hc_magias())
+except Exception:
+    pass
+
 
 def _parchear_cast_rapido_xml_bytes(xml_bytes: bytes) -> bytes:
     """前置時間 de los AOE de mago de combate.CAST_RAPIDO, para que la barra de lanzamiento del cliente dure lo mismo."""

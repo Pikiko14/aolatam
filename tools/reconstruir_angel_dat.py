@@ -21,6 +21,7 @@ Orden que reproduce el binario actual byte a byte:
   8. sin_acuerdo_angel_dat
   9. seleccion_angel_dat
  9b. parche_tooltip_verde (.aolatv)
+ 9c. parche_clima_exe (.aolatw): climas propios del s2c 0x0015 (niebla, brasas...)
  10. (opcional) icono_angel_dat_en_sitio — cambia el emblema; rompe el sha
 
 Alternativa --icono-update: tras el UPX aplica UpdateResource con launcher/icono.ico
@@ -54,6 +55,7 @@ from parche_teclas_aof import parchear as parche_teclas  # noqa: E402
 import sin_acuerdo_angel_dat as sin_acuerdo  # noqa: E402
 import seleccion_angel_dat as seleccion  # noqa: E402
 from parche_tooltip_verde import parchear as parche_verde  # noqa: E402
+from parche_clima_exe import parchear as parche_clima  # noqa: E402
 
 IGG_DEF = pathlib.Path(r'C:\AO\Angels Online\angel_igg.dat')
 REF_DEF = RAIZ / 'parches' / 'juego' / 'angel.dat'
@@ -189,6 +191,9 @@ def reconstruir(
 
         print('9b/10 tooltip verde (.aolatv)')
         work.write_bytes(parche_verde(work.read_bytes()))
+
+        print('9c/10 climas propios (.aolatw)')
+        work.write_bytes(parche_clima(work.read_bytes()))
 
         if emblema is not None:
             print('10/10 emblema en sitio', emblema)

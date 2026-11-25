@@ -1,0 +1,19 @@
+{
+ "_nota": "npc_memoria.py. Cada NPC con el que hablas antes de comprar recuerda cuanto oro le has gastado (por personaje): 'niveles' da el descuento (pct) desde ese gasto, con su 'titulo'. Si pasas 'olvido_dias' sin comprarle, pierde un nivel. Desde el primer nivel, una vez al dia te pide un favor ('favores': derrotar n monstruos de tu nivel +-'margen_nivel' o 'jefes' jefes); al volver a hablarle te paga 'premio' (exp en partes del nivel, oro_por_nivel x nivel) y suma 'gasto_favor' oro a su memoria.",
+ "niveles": [
+  {"desde": 5000, "pct": 3, "titulo": "regular"},
+  {"desde": 25000, "pct": 5, "titulo": "good customer"},
+  {"desde": 100000, "pct": 8, "titulo": "loyal customer"},
+  {"desde": 500000, "pct": 12, "titulo": "best customer"}
+ ],
+ "olvido_dias": 14,
+ "minutos_tienda": 10,
+ "margen_nivel": 10,
+ "favores": [
+  {"tipo": "matar", "n": 60, "texto": "defeat %d monsters around your level (%d-%d)"},
+  {"tipo": "matar", "n": 100, "texto": "defeat %d monsters around your level (%d-%d)"},
+  {"tipo": "jefes", "n": 2, "texto": "defeat %d bosses"}
+ ],
+ "premio": {"exp": 0.06, "oro_por_nivel": 400},
+ "gasto_favor": 5000
+}

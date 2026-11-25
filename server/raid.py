@@ -957,7 +957,7 @@ def herir(s, m, pct, magia=MAGIA_AVISO, efecto=EFECTO_AVISO):
           cb.numero_flotante(yo, dano), cb.atributo(yo, p.hp, cb.KIND_HP)]
     if p.hp <= 0:
         s.enviar(*pk)
-        app._quitar_buffs_al_morir(s)
+        app._quitar_buffs_al_morir(s, pve=True)
         s.enviar(cb.ataque(yo, m.entity_id, 0, cb.TIPO_MUERTE), cb.atributo(yo, 0, cb.KIND_HP))
         s.muerto = True
         app._avisar_muerte_a_los_demas(s, m.entity_id)

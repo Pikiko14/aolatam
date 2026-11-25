@@ -435,12 +435,12 @@ def test_official_holy_window_and_no_restart_of_finished_round(world):
 
 
 def test_sunday_official_401_plus_window_is_1932(world):
+    # "Solo Angel Arena para lvl 60" (25/11/2026): con el Angel Arena en el calendario solo abre solo el tramo
+    # Lv50-89; el 401+ del domingo 19:32 ya no.
     instant = dt.datetime(2026,10,25,19,17)
     world.now[0] = instant.timestamp()
     c.cron(instant)
-    r = c.ronda(240)
-    assert r['min'] == 401 and dt.datetime.fromtimestamp(r['inicio']).strftime('%H:%M') == '19:32'
-    assert r['fin'] - r['inicio'] == configuracion.DURACION_ANGEL_ARENA_MIN*60
+    assert c.fase(c.ronda(240)) == 'cerrada'
 
 
 def test_round_and_membership_survive_cache_reload(world):

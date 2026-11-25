@@ -1116,9 +1116,17 @@ def cron(ahora=None):
     if _modo_pruebas():
         return  # test mode: GM opens rounds by hand
     auto = {int(s) for s in (config_eventos().get('horario_automatico') or [])}
-    windows = [(t[2], t[0], t[3], t[4], t[5], configuracion.DURACION_ANGEL_ARENA_MIN) for t in TRAMOS]
-    hh = config_eventos().get('holy_horario') or {}
     import calendario
+    cal_arena = calendario.slots('arena')       # "solo Angel Arena para lvl 60" (25/11/2026): el tramo del calendario
+    if cal_arena is not None:
+        nivel = int(((calendario.config().get('eventos') or {}).get('arena') or {}).get('tramo', 50))
+        t = tramo(nivel)
+        windows = [(t[2], nivel, wd, int(h.split(':')[0]), int(h.split(':')[1]),
+                    configuracion.DURACION_ANGEL_ARENA_MIN) for wd, h in cal_arena] if t else []
+        auto = auto | {t[2]} if t else auto
+    else:
+        windows = [(t[2], t[0], t[3], t[4], t[5], configuracion.DURACION_ANGEL_ARENA_MIN) for t in TRAMOS]
+    hh = config_eventos().get('holy_horario') or {}
     cal = calendario.slots('holy')              # el calendario semanal manda, si lleva el Holy Battlefield
     if cal is not None:
         windows += [(112, 1, wd, int(h.split(':')[0]), int(h.split(':')[1]), int(hh.get('duracion_min', 60)))

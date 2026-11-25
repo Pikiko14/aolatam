@@ -56,6 +56,21 @@ def test_el_holy_battlefield_abre_a_las_horas_del_calendario(monkeypatch):
     assert abiertos == []
 
 
+def test_el_angel_arena_solo_abre_el_tramo_lv50_89(monkeypatch):
+    import competiciones
+    abiertos = []
+    monkeypatch.setattr(competiciones, '_modo_pruebas', lambda: False)
+    monkeypatch.setattr(competiciones, 'iniciar', lambda stage, *a, **k: abiertos.append((stage, a)))
+    monkeypatch.setattr(competiciones, 'fase', lambda r, t: 'cerrada')
+    monkeypatch.setattr(competiciones, '_RONDAS', {})
+    martes = (LUNES + dt.timedelta(days=1)).replace(hour=15, minute=50).astimezone()
+    competiciones.cron(martes)
+    assert len(abiertos) == 1 and abiertos[0][0] == 159 and competiciones.tramo(abiertos[0][1][2])[0] == 50
+    abiertos.clear()
+    competiciones.cron(LUNES.replace(hour=19, minute=20).astimezone())      # el horario viejo por tramos ya no
+    assert abiertos == []
+
+
 def test_aviso_30_minutos_antes_y_una_sola_vez(monkeypatch):
     import competiciones
     carteles = []
@@ -65,15 +80,19 @@ def test_aviso_30_minutos_antes_y_una_sola_vez(monkeypatch):
     calendario.cron(lunes)
     calendario.cron(lunes + dt.timedelta(seconds=40))
     assert carteles == ['Angel MOBA starts in 30 minutes (14:00)! Talk to Angel MOBA in the Sign Up Office.']
-    calendario.cron(lunes.replace(hour=12))
-    assert len(carteles) == 1
+    calendario.cron(lunes.replace(hour=12))                       # 12:30: el del tesoro de las 13:00, no otro del MOBA
+    assert len(carteles) == 2 and carteles[1].startswith('Treasure Hunt starts in 30 minutes (13:00)')
 
 
 def test_al_conectar_y_el_comando(monkeypatch):
     lunes = LUNES.replace(hour=15).astimezone()
-    assert calendario.texto_hoy(lunes) == ("Today's events: 18:00 Quick Reflexes, 19:30 World Boss, 21:00 Angel MOBA, "
-                                          "23:00 World Boss. Type /events for the week.")
+    assert calendario.texto_hoy(lunes) == ("Today's events: 18:00 Quick Reflexes, 18:40 Pet Tournament, "
+                                          "19:30 World Boss, 20:15 Treasure Hunt, "
+                                          "21:00 Angel MOBA, 22:00 Hunted Hunter, 23:00 World Boss. "
+                                          "Type /events for the week.")
     assert calendario.texto_hoy(lunes.replace(hour=23, minute=50)).startswith('No more events today')
-    assert calendario.lineas_semana()[0] == ('Monday: 12:00 World Boss, 14:00 Angel MOBA, 18:00 Quick Reflexes, '
-                                             '19:30 World Boss, 21:00 Angel MOBA, 23:00 World Boss')
+    assert calendario.lineas_semana()[0] == ('Monday: 12:00 World Boss, 13:00 Treasure Hunt, 14:00 Angel MOBA, '
+                                             '18:00 Quick Reflexes, 18:40 Pet Tournament, 19:30 World Boss, '
+                                             '20:15 Treasure Hunt, '
+                                             '21:00 Angel MOBA, 22:00 Hunted Hunter, 23:00 World Boss')
     assert app._gm_parsear('/events') == ('calendario',) and 'calendario' in app.COMANDOS_DE_JUGADOR

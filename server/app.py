@@ -2127,7 +2127,7 @@ PALABRAS_GM = frozenset((
     'daily', 'dailystart', 'dailystop', 'quiz', 'gvg',
     'recipes', 'recetas',
     'notice', 'aviso', 'anuncio', 'gmsg', 'twtotem',
-    'reinicio', 'restart', 'santa', 'worldboss',
+    'reinicio', 'restart', 'santa', 'worldboss', 'world', 'treasure',
     'mall', 'malltecla',
 )) | gm.PALABRAS
 
@@ -2234,6 +2234,22 @@ def _gm_parsear(texto: str):
         return ('calendario',)
     if cmd in ('missions', 'misiones'):
         return ('misiones_diarias',)
+    if cmd in ('hunt', 'caza'):
+        return ('cazador', partes)
+    if cmd in ('duel', 'duelo'):
+        return ('duelo', partes)
+    if cmd in ('bet', 'apostar', 'apuesta'):
+        return ('apuesta', partes)
+    if cmd in ('vote', 'votar', 'votacion'):
+        return ('votacion', partes)
+    if cmd in ('treasure', 'tesoro'):
+        return ('tesoro_servidor', partes)
+    if cmd in ('weather', 'clima', 'tiempo'):
+        return ('clima',)
+    if cmd in ('favor', 'favores'):
+        return ('favor',)
+    if cmd in ('world', 'mundo'):
+        return ('mundo_vivo', partes)
     if cmd in ('mall', 'malltecla'):
         return (cmd,)
     if cmd in ('recipes','recetas'):return ('recipes',partes[1:])
@@ -2380,7 +2396,8 @@ def _gm_parsear(texto: str):
 
 
 # Lo que _gm_parsear reconoce pero puede usar cualquier jugador.
-COMANDOS_DE_JUGADOR = frozenset(('emote', 'emote_list', 'guild', 'calendario', 'misiones_diarias'))
+COMANDOS_DE_JUGADOR = frozenset(('emote', 'emote_list', 'guild', 'calendario', 'misiones_diarias', 'clima',
+                                  'favor', 'cazador', 'duelo', 'apuesta', 'votacion'))
 
 
 def _gm_sin_permiso(ses, cuerpo, addr) -> bool:
@@ -2419,6 +2436,38 @@ def _probar_gm(ses, cuerpo, addr) -> bool:
         return True
     if leido[0] == 'calendario' and ses.personaje:
         __import__('calendario').comando(ses)        # /events: la semana de eventos (cualquier jugador)
+        return True
+    if leido[0] == 'cazador' and ses.personaje:
+        _sub_cz = leido[1][1].lower() if len(leido[1]) > 1 else ''
+        if _sub_cz in ('start', 'stop') and __import__('configuracion').es_gm(getattr(ses, 'usuario', None)):
+            ses.enviar(_cl.aviso('GM: ' + __import__('cazador').comando_gm(leido[1]), tipo=0, msg_id=_cl.MSG_TEXTO))
+        else:
+            __import__('cazador').comando(ses, leido[1])     # /hunt join | leave
+        return True
+    if leido[0] == 'duelo' and ses.personaje:
+        __import__('duelos').comando(ses, leido[1])          # /duel <nombre> <oro> | accept | no
+        return True
+    if leido[0] == 'apuesta' and ses.personaje:
+        __import__('duelos').comando_bet(ses, leido[1])      # /bet <nombre> <oro>
+        return True
+    if leido[0] == 'votacion' and ses.personaje:
+        _sub_vt = leido[1][1].lower() if len(leido[1]) > 1 else ''
+        if _sub_vt in ('close', 'reset') and __import__('configuracion').es_gm(getattr(ses, 'usuario', None)):
+            ses.enviar(_cl.aviso('GM: ' + __import__('votacion').comando_gm(leido[1]), tipo=0, msg_id=_cl.MSG_TEXTO))
+        else:
+            __import__('votacion').comando(ses, leido[1])    # /vote [n]
+        return True
+    if leido[0] == 'tesoro_servidor':
+        ses.enviar(_cl.aviso('GM: ' + __import__('tesoro_servidor').comando_gm(leido[1]), tipo=0, msg_id=_cl.MSG_TEXTO))
+        return True
+    if leido[0] == 'clima' and ses.personaje:
+        __import__('mundo_vivo').comando(ses)        # /weather: el clima y el estado del mapa
+        return True
+    if leido[0] == 'favor' and ses.personaje:
+        __import__('npc_memoria').comando(ses)       # /favor: el favor que te pidio un NPC
+        return True
+    if leido[0] == 'mundo_vivo':
+        ses.enviar(_cl.aviso('GM: ' + __import__('mundo_vivo').comando_gm(leido[1], ses), tipo=0, msg_id=_cl.MSG_TEXTO))
         return True
     if leido[0] == 'malltecla' and ses.personaje:
         # Prueba de Alt+I: llama desde Lua a CreateMallWnd como lo hace el exe con la tecla (14/11/2026).
@@ -4050,6 +4099,13 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
         __import__('misiones_diarias').al_matar(ses, m)
     except Exception:
         log.exception('misiones diarias al matar')
+    # El mundo vivo (mapas que se agitan, jefe local, lo salvaje) y el favor que pidio un NPC.
+    try:
+        __import__('npc_memoria').al_matar(ses, m)
+        __import__('mundo_vivo').al_matar(ses, m)
+        __import__('contratos').al_matar(ses, m)          # contratos de cazarrecompensas de ese jefe
+    except Exception:
+        log.exception('mundo vivo al matar')
 
     if getattr(m, 'sello', None):
         __import__('instancia_oscura').al_morir(ses, m)
@@ -4229,6 +4285,10 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
         yo = ses.personaje.entity_id if ses.personaje else yo_muerte
         buffs = ses.personaje.buffs if ses.personaje else {}
         exp_ganada = _cb.calcular_exp(m.npc_type, buffs, base=getattr(m, 'exp_propia', None))
+        _mv_st = getattr(m, 'stage', None)     # el clima y lo salvaje del mapa (mundo_vivo.py)
+        exp_ganada = max(1, int(round(exp_ganada * __import__('mundo_vivo').mult(_mv_st, 'exp'))))
+        exp_ganada = max(1, int(round(exp_ganada * __import__('votacion').mult_exp(_mv_st))))   # mapa votado
+        exp_ganada = max(1, int(round(exp_ganada * __import__('hardcore').mult_exp(ses))))      # temporada hardcore
         if fraccion < 1.0:
             exp_ganada = max(1, int(round(exp_ganada * fraccion)))
         sk_exp_ganada = _cb.calcular_skill_exp(buffs)
@@ -4239,6 +4299,7 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
         # tabla de su npc_type es la del de nivel 150+ en el que se basa.
         _npc_oro = 0 if getattr(m, 'propio', None) else (getattr(m, 'npc_type', 0) or 0)
         oro = _cb.botin(getattr(m, 'nivel', 0) or 0, _npc_oro)
+        oro = int(oro * __import__('mundo_vivo').mult(_mv_st, 'oro'))
         if fraccion < 1.0:
             oro = int(oro * fraccion)
         ses.oro = getattr(ses, 'oro', 0) + oro
@@ -4304,6 +4365,10 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
                     p.exp = min(int(p.exp), max(_cb.exp_para_nivel(p.nivel), _cb.exp_para_nivel(p.nivel + 1) - 1))
                 exp_actual_ui, exp_siguiente_ui = _cb.exp_para_barra(p.nivel, p.exp)
                 if subio_nivel:
+                    try:
+                        __import__('hardcore').al_subir(ses)     # ranking y el premio de nivel 60 sin morir
+                    except Exception:
+                        log.exception('hardcore al subir')
                     p.hp = _vida_max(p)
                     p.mp = _mana_max(p, ses.inventario)
                     salida_combate.append(_cl.aviso(f"Level Up! Reached Level {p.nivel}!", tipo=0, msg_id=_cl.MSG_TEXTO))
@@ -8901,13 +8966,18 @@ def _guardar_mascota_al_morir(ses):
             return
 
 
-def _quitar_buffs_al_morir(ses):
+def _quitar_buffs_al_morir(ses, pve=False):
     """Al morir se caen los buffs que no llevan 死亡不消失 en magic.xml, la transformacion la primera.
 
     No se quitaba ninguno. Transformado (el cactus de Shapeshifting MidSummer Cactus Baby no tiene 死亡不消失), el
     cliente no hacia la animacion de muerte: se quedaba de pie con 0 de vida, sin la ventana de revivir, y los demas
     le veian vivo (01/11/2026). Va a la victima ANTES del 0x000A de muerte."""
     import combate as _cb_bm
+    try:                                                 # hardcore: pierde la temporada, solo si lo mato un bicho
+        if pve and __import__('hardcore').vivo(ses):
+            asyncio.get_event_loop().call_later(3.0, __import__('hardcore').al_morir, ses)
+    except Exception:
+        log.exception('hardcore al morir')
     try:
         __import__('trade_routes').soltar(ses)          # la carga de Trade Routes cae al suelo
     except Exception:
@@ -10774,6 +10844,10 @@ def _tw_al_entrar(ses):
         __import__('trade_routes').al_entrar_mapa(ses)
     except Exception:
         log.exception('trade routes: al entrar al mapa')
+    try:
+        __import__('tesoro_servidor').al_entrar(ses)      # el cofre del tesoro, si esta en este mapa
+    except Exception:
+        log.exception('tesoro del servidor: al entrar al mapa')
     _eventos_propios_al_entrar(ses)          # reglas "al entrar al mapa" del editor
     p = ses.personaje
     if _tw_e.es_totem_decorativo(getattr(p, 'stage', 0)):
@@ -13907,6 +13981,15 @@ class Servidor:
                 __import__('misiones_diarias').al_conectar(ses)
             except Exception:
                 log.exception('misiones diarias: al conectar')
+            try:
+                __import__('mundo_vivo').al_entrar(ses)      # el clima del mapa
+            except Exception:
+                log.exception('mundo vivo: al conectar')
+            try:
+                __import__('contratos').al_conectar(ses)     # lo que le dejaron los contratos mientras no estaba
+                __import__('hardcore').al_conectar(ses)      # el icono de la temporada hardcore
+            except Exception:
+                log.exception('contratos / hardcore: al conectar')
             # La Torre de Babel: el jefe del piso en la copia, o fuera si no hay corrida (torre_babel.py). Va aqui y no
             # dentro de _entrar_en_sala: esa vuelve antes de tiempo la primera vez que se entra a una copia, justo cuando
             # hay que sacar el primer jefe.
@@ -14816,7 +14899,7 @@ class Servidor:
 
                                                     if pj.hp <= 0:
                                                         ses.enviar_inmediato(*pkgs_imp_yo)
-                                                        _quitar_buffs_al_morir(ses)
+                                                        _quitar_buffs_al_morir(ses, pve=True)
                                                         ses.enviar_inmediato(
                                                             _cb.ataque(yo, m.entity_id, 0, _cb.TIPO_MUERTE),
                                                             _cb.atributo(yo, 0, _cb.KIND_HP))
@@ -16450,6 +16533,7 @@ class Servidor:
                         _pct_buffs = _cb.pct_dano_buffs(buffs_activos, is_magic_skill)
                         if _pct_buffs:
                             mult_spell *= (1.0 + _pct_buffs / 100.0)
+                        mult_spell *= __import__('mundo_vivo').mult_dano(ses.personaje.stage, is_magic_skill)  # clima
 
                         extra_crit = 0
                         if buffs_activos:
@@ -17793,6 +17877,7 @@ class Servidor:
                 getattr(ses.personaje, 'buffs', None), is_magic_skill)
             if _pct_buffs:
                 mult_spell *= (1.0 + _pct_buffs / 100.0)
+            mult_spell *= __import__('mundo_vivo').mult_dano(ses.personaje.stage, is_magic_skill)  # clima del mapa
 
             # Guardamos el multiplicador base (habilidad + equipo + buffs, sin el critico del 1er golpe)
             # para que todos los golpes de un combo (Strangle Strike, Cross Chop, etc.) peguen con el
@@ -18341,6 +18426,10 @@ class Servidor:
                 _entrar_en_sala(ses, addr)
             except Exception:
                 log.exception('no se pudo entrar en la sala del mapa')
+            try:
+                __import__('mundo_vivo').al_entrar(ses)      # el clima y el estado del mapa nuevo
+            except Exception:
+                log.exception('mundo vivo: al entrar')
             # La Torre de Babel: el jefe del piso en la copia, o fuera si no hay corrida (torre_babel.py). Va aqui y no
             # dentro de _entrar_en_sala: esa vuelve antes de tiempo la primera vez que se entra a una copia, justo cuando
             # hay que sacar el primer jefe.
@@ -18609,7 +18698,7 @@ class Servidor:
                 ses.enviar(_c.aviso('This item is no longer sold here.', tipo=0))
                 return
 
-            total_pedido = sum(_precio_compra(i) * c for i, c in pedido)
+            total_pedido = __import__('npc_memoria').precio(ses, sum(_precio_compra(i) * c for i, c in pedido))
             if getattr(ses, 'oro', 0) < total_pedido:
                 log.warning(f"[{addr}] compra rechazada: cuesta {total_pedido} y hay "
                             f"{getattr(ses, 'oro', 0)}")
@@ -18636,12 +18725,15 @@ class Servidor:
                 if avisos:
                     ses.enviar(*avisos)
                 return
+            _sin_desc = total
+            total = __import__('npc_memoria').precio(ses, total)     # el descuento del mercader que te conoce
             ses.oro -= total
             if ses.personaje:
                 ses.personaje.oro = ses.oro
             ses.enviar(*_refrescar(ses, tocadas, con_oro=True),
                        _c.aviso(f'{total} Gold', tipo=0, msg_id=_c.MSG_PAGO),
                        *avisos)
+            __import__('npc_memoria').al_comprar(ses, total, _sin_desc)
             _guardar_bolsa(ses, cid)
             if getattr(ses, 'usuario', None):
                 cuentas.guardar_oro(ses.usuario, cid, ses.oro)
@@ -19185,6 +19277,14 @@ class Servidor:
             if __import__('moba_lobby').procesar(ses, cuerpo, addr):      # Angel MOBA (175)
                 return
             if __import__('misiones_diarias').procesar(ses, cuerpo):     # el panel de misiones diarias (176)
+                return
+            if __import__('votacion').procesar(ses, cuerpo):            # la votacion semanal (177)
+                return
+            if __import__('sociales_ui').procesar(ses, cuerpo):         # panel Events y ventanita del duelo (178)
+                return
+            if __import__('torre_roguelike').procesar(ses, cuerpo):     # bendicion de la torre (179)
+                return
+            if __import__('mecanicas_ui').procesar(ses, cuerpo):        # ventana Challenges (180)
                 return
             if __import__('item_mall').procesar(ses,opcode,cuerpo):
                 return
@@ -22382,6 +22482,8 @@ class Servidor:
                 return
             if ses.personaje and __import__('eventos_propios').pulsar(ses, ent):
                 return
+            if ses.personaje and __import__('tesoro_servidor').pulsar(ses, ent):
+                return                                  # el cofre del tesoro del servidor
             if ses.personaje and _tesoro_pulsar(ses, addr, ent):
                 return                                  # el cofre del mapa del tesoro
             if __import__('travel_items').pulsar(ses,ent):
@@ -22702,6 +22804,8 @@ class Servidor:
                 if not _nom_ent:
                     log.debug(f"[{addr}] clic en entidad {ent} sin nombre registrado")
                     return
+                if ses.personaje:
+                    __import__('npc_memoria').al_hablar(ses, _nom_ent, ses.personaje.stage)  # te recuerda
 
                 if ses.personaje and _nom_ent == 'Aliua':
                     _aliua_hablar(ses, addr, ent)
@@ -24915,6 +25019,8 @@ class Servidor:
         log.info("GM: /item <id> [qty]  /level <n>  /levelall <n>  (also console or data/gm.txt)")
         tareas.append(__import__('santa_clausula').vigilar())
         tareas.append(__import__('jefe_mundo').vigilar())
+        tareas.append(__import__('sociales').vigilar())   # tesoro, cazador cazado, duelos y votacion
+        tareas.append(__import__('mundo_vivo').vigilar())
         tareas.append(_vigilar_eventos_propios())      # reglas de horario del editor
         tareas.append(cuentas.tarea_backup_periodico())
         tareas.append(self.vigilar_baneos())

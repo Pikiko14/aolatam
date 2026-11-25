@@ -162,7 +162,7 @@ def area_a_otros(ses, m, magia, efecto):
                   cb.cierre_de_dano(m.entity_id, yo, magia, efecto=efecto),
                   cb.numero_flotante(yo, dano), cb.atributo(yo, p.hp, cb.KIND_HP)]
             if p.hp <= 0:
-                app._quitar_buffs_al_morir(s)
+                app._quitar_buffs_al_morir(s, pve=True)
                 pk += [cb.ataque(yo, m.entity_id, 0, cb.TIPO_MUERTE), cb.atributo(yo, 0, cb.KIND_HP)]
                 s.muerto = True
                 app._avisar_muerte_a_los_demas(s, m.entity_id)

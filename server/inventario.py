@@ -633,8 +633,8 @@ def vida_maxima(hp_max, habilidades, bolsa=None, mejoras=None, buffs=None, mp_ma
         now = time.time()
         for b_id, b_data in buffs.items():
             if isinstance(b_data, dict) and b_data.get('fin', 0) > now:
-                if 'hp_pct' in b_data and b_data['hp_pct'] > 0:
-                    total += int(round(total * (b_data['hp_pct'] / 100.0)))
+                if 'hp_pct' in b_data and b_data['hp_pct']:          # negativo: las bendiciones de la torre
+                    total = max(1, total + int(round(total * (max(-90, b_data['hp_pct']) / 100.0))))
                 if 'hp_bonus' in b_data and b_data['hp_bonus'] > 0:
                     total += int(b_data['hp_bonus'])
                 if 'mp_to_hp_pct' in b_data and b_data['mp_to_hp_pct'] > 0:

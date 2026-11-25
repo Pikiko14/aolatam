@@ -349,10 +349,13 @@ def al_entrar(ses, addr='?'):
     """El jugador termino de cargar un mapa. En la torre: sin corrida, fuera; con ella, el jefe del piso si no esta."""
     p = getattr(ses, 'personaje', None)
     if not p or getattr(p, 'stage', None) != STAGE:
+        if p is not None and __import__('torre_roguelike').tiene(ses):
+            __import__('torre_roguelike').limpiar(ses)          # bendiciones de una subida que ya acabo
         return
     c = corrida(ses)
     if c is None:
         import clases
+        __import__('torre_roguelike').limpiar(ses)
         ses.enviar(clases.aviso('The Tower of Babel climb is over. Start again from the tower button.', tipo=0))
         _sacar(ses, addr)
         return
@@ -467,6 +470,12 @@ def al_morir(ses, m, addr='?'):
             __import__('misiones_diarias').sumar(s, 'torre')
         except Exception:
             log.exception('Torre de Babel: misiones diarias')
+    if piso < total_pisos():                            # roguelike: cada uno elige una bendicion para seguir
+        for s in _en_la_copia(ses):
+            try:
+                __import__('torre_roguelike').ofrecer(s, piso, c['inicio'])
+            except Exception:
+                log.exception('Torre de Babel: bendiciones')
     if piso >= total_pisos():
         segundos = time.time() - c['inicio']
         _cartel(ses, 'The Tower of Babel is conquered! %d floors in %d:%02d' % ((piso,) + divmod(int(segundos), 60)))
@@ -494,6 +503,11 @@ def terminar(ses, pisos_superados=None):
         c = _CORRIDAS.pop(clave, None)
     if c is None:
         return
+    for s in _en_la_copia(ses):                         # las bendiciones se pierden; los premios se quedan
+        try:
+            __import__('torre_roguelike').limpiar(s)
+        except Exception:
+            log.exception('Torre de Babel: quitar bendiciones')
     superados = c['piso'] - 1 if pisos_superados is None else pisos_superados
     segundos = time.time() - c['inicio']
     guardar(c['modo'], c['nombres'] or {ses.personaje.nombre}, superados, segundos)
@@ -513,6 +527,10 @@ def antes_de_viajar(ses, stage_destino):
     p = getattr(ses, 'personaje', None)
     if not p or getattr(p, 'stage', None) != STAGE or int(stage_destino) == STAGE:
         return
+    try:
+        __import__('torre_roguelike').limpiar(ses)      # al salir de la torre se pierden las bendiciones
+    except Exception:
+        log.exception('Torre de Babel: quitar bendiciones al salir')
     if corrida(ses) is None:
         return
     quedan = [s for s in _en_la_copia(ses) if s is not ses]

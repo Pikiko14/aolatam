@@ -100,6 +100,8 @@ def _por_que_no(ses, otro):
     if gvg_reason is not None:return gvg_reason
     trade_reason=__import__('trade_routes').motivo_pvp(ses,otro)      # Trade Routes: thieves contra la carga
     if trade_reason is not None:return trade_reason
+    social_reason=__import__('sociales').motivo_pvp(ses,otro)         # El cazador cazado y los duelos de apuesta
+    if social_reason is not None:return social_reason
     import outpost_pvp
     if not outpost_pvp.es_mapa(p.stage) and (not totem_war.activa() or not totem_war.es_mapa_tw(p.stage)):
         return 'sin Totem War o fuera de la arena'
@@ -650,6 +652,8 @@ def _aplicar(ses, otro, dano, es_crit, con_efecto, tipo, efecto, magia, *, orige
             log.debug('aviso de muerte PvP a los demas', exc_info=True)
         otro.muerto = True
         otro.objetivo_actual = None
+        if __import__('sociales').baja(ses, otro):
+            return  # cazador cazado / duelo: lo resuelve el evento (sin creditos ni perder EXP)
         import competiciones
         if p.stage in competiciones.MAPAS:
             competiciones.baja(ses, otro)

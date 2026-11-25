@@ -1,0 +1,17 @@
+{
+ "_nota": "torre_roguelike.py: al superar cada piso de la Torre de Babel, a cada uno de la copia le salen 'por_piso' de 'bendiciones' (sorteadas con la corrida, el piso y el personaje: cada subida es distinta) y elige una. Se acumulan como buffs (crit, phys_dmg_pct, mag_dmg_pct, hp_pct, cast_redux) con su icono (magic.xml 'magia', 'icono') y se pierden al salir de la torre o caer. Los premios de los pisos se quedan.",
+ "por_piso": 3,
+ "duracion_s": 7200,
+ "bendiciones": [
+  {"id": "ojo", "nombre": "Sharp Eye", "magia": 23440, "icono": 10600, "bueno": "+30% critical rate", "malo": "-20% max HP", "efectos": {"crit": 30, "hp_pct": -20}},
+  {"id": "furia", "nombre": "Berserker Rage", "magia": 23441, "icono": 10604, "bueno": "+35% physical damage", "malo": "-25% max HP", "efectos": {"phys_dmg_pct": 35, "hp_pct": -25}},
+  {"id": "arcano", "nombre": "Arcane Surge", "magia": 23442, "icono": 10594, "bueno": "+35% spell damage", "malo": "-25% max HP", "efectos": {"mag_dmg_pct": 35, "hp_pct": -25}},
+  {"id": "piel", "nombre": "Iron Skin", "magia": 23443, "icono": 10595, "bueno": "+40% max HP", "malo": "-20% all damage", "efectos": {"hp_pct": 40, "phys_dmg_pct": -20, "mag_dmg_pct": -20}},
+  {"id": "cristal", "nombre": "Glass Cannon", "magia": 23444, "icono": 10566, "bueno": "+50% all damage", "malo": "-40% max HP", "efectos": {"phys_dmg_pct": 50, "mag_dmg_pct": 50, "hp_pct": -40}},
+  {"id": "verdugo", "nombre": "Executioner", "magia": 23445, "icono": 10858, "bueno": "+20% crit, +15% physical damage", "malo": "-30% max HP", "efectos": {"crit": 20, "phys_dmg_pct": 15, "hp_pct": -30}},
+  {"id": "salvaje", "nombre": "Wild Magic", "magia": 23446, "icono": 10572, "bueno": "+60% spell damage", "malo": "-30% physical, -15% max HP", "efectos": {"mag_dmg_pct": 60, "phys_dmg_pct": -30, "hp_pct": -15}},
+  {"id": "rapido", "nombre": "Quick Chant", "magia": 23447, "icono": 10778, "bueno": "-0.6 s cast time", "malo": "-15% spell damage", "efectos": {"cast_redux": 600, "mag_dmg_pct": -15}},
+  {"id": "titan", "nombre": "Titan's Blood", "magia": 23448, "icono": 31172, "bueno": "+60% max HP", "malo": "-15% critical rate", "efectos": {"hp_pct": 60, "crit": -15}},
+  {"id": "equilibrio", "nombre": "Balance", "magia": 23449, "icono": 10905, "bueno": "+15% all damage, +10% max HP", "malo": "-10% critical rate", "efectos": {"phys_dmg_pct": 15, "mag_dmg_pct": 15, "hp_pct": 10, "crit": -10}}
+ ]
+}

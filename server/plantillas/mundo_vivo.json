@@ -1,0 +1,43 @@
+{
+ "_nota": "mundo_vivo.py. CLIMA: cada hora, en cada mapa de caza, uno de 'climas' por su 'peso' (el mismo para todos; se sortea con la fecha, la hora y el mapa). Efectos en %: mag (dano de hechizos), fis (dano fisico), exp y oro (de cada monstruo), atk (lo que pegan los monstruos). CIELO (lo que pinta el cliente, s2c 0x0015): 'cielo' = codigo (0 nada, 1-3 lluvia, 4 nieve, 5 petalos; 6+ los propios de tools/parche_clima_exe.py: 6 niebla, 7 brasas, 8 ceniza, 9 hojas, 10 luciernagas, 11 arena, 12 lluvia de sangre, 13 polvo de estrellas), nivel (1-3: 32/128/256 particulas) y hora (0-23, la luz del dia; 15 la normal). 'fx': hechizo del juego cuyo efecto cae sobre los monstruos cercanos (0 = ninguno). EVOLUCION: muertes de monstruos en un mapa en los ultimos 'ventana_min'; con 'agitado' salen 'elites' monstruos del mapa reforzados; con 'jefe_local' sale el mas fuerte del mapa como jefe local; al morir este (o pasar 'jefe_min') el mapa se calma. ABANDONO: un mapa sin nadie 'abandono_h' horas se vuelve salvaje (efectos de 'salvaje') hasta que alli se maten 'domar' monstruos.",
+ "climas": [
+  {"id": "clear", "nombre": "Clear skies", "peso": 30, "efectos": {}, "cielo": [0, 0, 15]},
+  {"id": "rain", "magia": 23421, "icono": 10778, "fx": 0, "nombre": "Rain", "peso": 14, "efectos": {"mag": 15, "fis": -10}, "cielo": [2, 2, 15]},
+  {"id": "storm", "magia": 23422, "icono": 10594, "fx": 8463, "nombre": "Thunderstorm", "peso": 8, "efectos": {"mag": 25, "atk": 10}, "cielo": [3, 3, 19]},
+  {"id": "fog", "magia": 23423, "icono": 10572, "fx": 0, "nombre": "Fog", "peso": 10, "efectos": {"exp": 25, "atk": 10}, "cielo": [6, 1, 17]},
+  {"id": "heat", "magia": 23424, "icono": 10604, "fx": 0, "nombre": "Heat wave", "peso": 10, "efectos": {"fis": 15, "mag": -10}, "cielo": [7, 2, 13]},
+  {"id": "snow", "magia": 23425, "icono": 10595, "fx": 0, "nombre": "Snowfall", "peso": 10, "efectos": {"oro": 30, "fis": -10}, "cielo": [4, 2, 15]},
+  {"id": "blossom", "magia": 23429, "icono": 10905, "fx": 0, "nombre": "Blossom breeze", "peso": 8, "efectos": {"exp": 10, "oro": 10}, "cielo": [5, 2, 15]},
+  {"id": "bloodmoon", "magia": 23426, "icono": 10566, "fx": 7442, "nombre": "Blood Moon", "peso": 4, "efectos": {"exp": 50, "oro": 50, "atk": 30}, "cielo": [8, 2, 0]},
+  {"id": "gale", "magia": 23430, "icono": 10977, "fx": 0, "nombre": "Autumn gale", "peso": 8, "efectos": {"fis": 10, "oro": 15}, "cielo": [9, 2, 15]},
+  {"id": "fireflies", "magia": 23431, "icono": 10739, "fx": 0, "nombre": "Firefly night", "peso": 6, "efectos": {"exp": 20, "mag": 10}, "cielo": [10, 2, 21]},
+  {"id": "sandstorm", "magia": 23432, "icono": 10991, "fx": 0, "nombre": "Sandstorm", "peso": 6, "efectos": {"atk": 15, "oro": 25, "fis": -10}, "cielo": [11, 3, 14]},
+  {"id": "bloodrain", "magia": 23433, "icono": 31078, "fx": 7442, "nombre": "Blood rain", "peso": 3, "efectos": {"exp": 35, "atk": 25}, "cielo": [12, 2, 1]},
+  {"id": "starfall", "magia": 23434, "icono": 10935, "fx": 0, "nombre": "Starfall", "peso": 4, "efectos": {"exp": 30, "oro": 20}, "cielo": [13, 2, 22]}
+ ],
+ "evolucion": {
+  "ventana_min": 30,
+  "agitado": 250,
+  "jefe_local": 500,
+  "elites": 3,
+  "elite": {"vida": 5.0, "atk": 1.5, "exp": 5.0},
+  "jefe": {"vida": 40.0, "atk": 2.0, "exp": 30.0},
+  "jefe_min": 30,
+  "premio_jefe": [
+   {"desde": 1, "hasta": 1, "exp": 0.10, "items": [{"de": [89171, 89172, 89173, 89174, 89175, 89176, 89177], "prob": 1.0}]},
+   {"desde": 2, "hasta": 3, "exp": 0.07, "items": [{"de": [89171, 89172, 89173, 89174, 89175, 89176, 89177], "prob": 0.4}]},
+   {"desde": 4, "hasta": 99, "exp": 0.04}
+  ]
+ },
+ "minimo_monstruos": 20,
+ "bajo_techo": ["cave", "maze", "palace", "pit", "abyss", "square", "church", "tower", "room", "hall", "dungeon", "castle", "temple", "mine", "mines", "underground", "hell", "lair", "grotto"],
+ "fx_monstruos": false,
+ "fx_cada": 5,
+ "fx_por_jugador": 2,
+ "fx_radio": 14,
+ "magia_salvaje": {"magia": 23427, "icono": 10858, "fx": 6280},
+ "magia_agitado": {"magia": 23428, "icono": 31172},
+ "abandono_h": 3,
+ "domar": 150,
+ "salvaje": {"exp": 40, "oro": 40, "atk": 20}
+}

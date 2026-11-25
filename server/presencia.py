@@ -116,6 +116,10 @@ def marcas_limpias(ses, visor=None):
             limpias += tuple(__import__('trade_routes').marcas_para(visor, ses))
         except Exception:
             log.debug('marcas de trade routes', exc_info=True)
+        try:
+            limpias += tuple(__import__('sociales').marcas_para(visor, ses))   # cazador cazado y duelos
+        except Exception:
+            log.debug('marcas de los eventos sociales', exc_info=True)
     return limpias
 
 

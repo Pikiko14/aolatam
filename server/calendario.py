@@ -50,6 +50,12 @@ def semana():
         for hora, clave in (cfg.get('semana') or {}).get(nombre, ()):
             _hora(hora)
             filas.append((dia, '%02d:%02d' % _hora(hora), str(clave)))
+    try:                                    # el evento extra que gano la votacion de la semana (votacion.py)
+        for dia, hora, clave in __import__('votacion').slots_extra():
+            if clave in (cfg.get('eventos') or {}):
+                filas.append((int(dia), '%02d:%02d' % _hora(hora), str(clave)))
+    except Exception:
+        pass
     return sorted(filas)
 
 
