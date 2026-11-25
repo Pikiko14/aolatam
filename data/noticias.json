@@ -1,5 +1,10 @@
 [
   {
+    "fecha": "2026-11-25",
+    "titulo": "Event calendar, World Boss and Daily Missions",
+    "texto": "Events now follow a weekly calendar so they never overlap: type /events to see this week. You get a server-wide warning 30 minutes before each one. A World Boss appears every day at 12:00, 19:30 and 23:00 on a random field map, with 45 minutes to bring it down. Everyone who hits it is rewarded by damage rank: EXP, Level 40 Gear Gachas and Lv60 boxes for the top players. Daily Missions: 3 daily and 3 weekly missions (monsters, bosses, Angel MOBA, Pet Defense, Tower of Babel, World Boss). Open the new panel from the scroll button on the bar or type /missions. Finish all dailies every day to build a streak: rewards grow +10% per day (up to x2), with a Gear Gacha on day 3 and a Lv60 Box on day 7."
+  },
+  {
     "fecha": "2026-11-24",
     "titulo": "Angel MOBA: dragons",
     "texto": "Dragons now roam the Angel MOBA battlefield. One dragon appears at a time somewhere on the map: the first at 3 minutes, the next 2:30 after the previous one falls, up to 5 per match. The Fire, Water, Earth and Wind dragons come in random order (ATK +10%, DEF and MDEF +12%, Max HP +10%, attack speed +12%) and the fifth is always the Ancient Dragon (ATK, DEF and Max HP +15%). The team that slays it keeps the buff for the rest of the match, and buffs stack. Each dragon also gives 150 gold to the whole team. The scoreboard shows how many dragons each team has."
