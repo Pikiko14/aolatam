@@ -1,6 +1,31 @@
 [
   {
     "fecha": "2026-11-25",
+    "titulo": "New Events panel: Duels, Hunted Hunter, Weekly Vote, Treasure Hunt and Calendar",
+    "texto": "Open the new Events button on the bar (crossed swords). Everything works with buttons, no commands. It has 5 tabs. DUELS: right-click any player and pick Duel, set your stake (min 1,000 gold). Once accepted, everyone has 30 seconds to bet on the winner. The winner takes both stakes and right bets share the losing ones (5% fee). Nobody loses EXP. HUNTED HUNTER (daily 22:00, Wednesday 16:30, Sunday 17:15, level 30+): sign up, and one signed-up player becomes the prey for 15 minutes while their position is announced every minute. The prey wins by surviving; the hunter who takes them down wins instead. Both prizes include 1,500 Angel Gold. WEEKLY VOTE (Monday to Thursday): one vote per character for a double EXP map or an extra weekend event; the most voted option wins on Friday 00:00. TREASURE HUNT (13:00 and 20:15): a chest appears on a random hunting map, a new clue comes every 6 minutes, and the first player to click it wins 1,500 Angel Gold, gold, EXP and gear boxes. CALENDAR: every event of the week by day, with what is live now and how long until the next one."
+  },
+  {
+    "fecha": "2026-11-25",
+    "titulo": "Challenges: Contracts, Pet Tournament and Hardcore Season",
+    "texto": "New Challenges button on the bar (scroll with a red seal). CONTRACTS: post a request for items or a boss kill with a gold reward (held until done). Players with the items press Deliver and get paid at once, and you receive them even offline. For boss contracts, whoever kills the boss gets paid. 72 hours; unfinished or cancelled contracts refund. PET TOURNAMENT (daily 18:40): sign up your strongest pet as Aggressive, Defensive or Tricky (Aggressive beats Tricky, Tricky beats Defensive, Defensive beats Aggressive). Pets fight on their own in a knockout bracket; top 3 win gold, EXP and boxes, everyone gets something. HARDCORE SEASON (monthly, characters up to level 10): +30% EXP. If a monster kills you, you go back to your starting level and gold and the season is over; PvP, duel and event deaths do not count. Reach level 60 without dying once for 50,000 Angel Gold, and survive the month for Angel Wings and Angel's Halo."
+  },
+  {
+    "fecha": "2026-11-25",
+    "titulo": "Tower of Babel: roguelike blessings",
+    "texto": "After every floor you clear, choose 1 of 3 random blessings. Each run, floor and player gets different options, and blessings stack, but each has a cost: Glass Cannon (+50% all damage, -40% HP), Berserker Rage, Arcane Surge, Wild Magic, Sharp Eye, Executioner, Iron Skin, Titan's Blood, Quick Chant (-0.6 s cast time) and Balance. You lose them if you die or leave the tower; floor rewards stay with you."
+  },
+  {
+    "fecha": "2026-11-25",
+    "titulo": "Living World: weather, evolving maps and NPCs who remember you",
+    "texto": "Hunting maps now have real weather that changes every hour: rain, thunderstorms, fog, heat waves, snow, cherry blossoms, autumn gales, fireflies, sandstorms, starfall, blood rain and the rare Blood Moon (EXP +50%, gold +50%, monsters hit 30% harder). Each weather has its own bonuses, shown in an icon on your buff bar. Indoor maps stay dry. Hunt a map hard and it becomes Restless: elite monsters appear, then a local boss with rewards for the top damage dealers. Leave a map alone for 3 hours and it turns Wild: +40% EXP and gold, but monsters hit 20% harder, until 150 monsters are defeated there. Merchants remember how much you spend with them: 3% to 12% discount, and once you are a regular they ask you for a daily favor that pays EXP and gold."
+  },
+  {
+    "fecha": "2026-11-25",
+    "titulo": "Angel Arena Lv50-89 on the calendar",
+    "texto": "The Angel Arena for levels 50-89 now opens automatically on Tuesday, Thursday and Saturday at 16:00 (sign-up 15 minutes before). You can see it in Events > Calendar along with every other event."
+  },
+  {
+    "fecha": "2026-11-25",
     "titulo": "Event calendar, World Boss and Daily Missions",
     "texto": "Events now follow a weekly calendar so they never overlap: type /events to see this week. You get a server-wide warning 30 minutes before each one. A World Boss appears every day at 12:00, 19:30 and 23:00 on a random field map, with 45 minutes to bring it down. Everyone who hits it is rewarded by damage rank: EXP, Level 40 Gear Gachas and Lv60 boxes for the top players. Daily Missions: 3 daily and 3 weekly missions (monsters, bosses, Angel MOBA, Pet Defense, Tower of Babel, World Boss). Open the new panel from the scroll button on the bar or type /missions. Finish all dailies every day to build a streak: rewards grow +10% per day (up to x2), with a Gear Gacha on day 3 and a Lv60 Box on day 7."
   },
