@@ -916,8 +916,8 @@ def stats(bolsa=None, habilidades: list = None,
         for b_id, b_data in buffs.items():
             if isinstance(b_data, dict) and b_data.get('fin', 0) > now:
                 # 1. Multiplicadores porcentuales (% sobre stats totales equipados)
-                if 'hp_pct' in b_data and b_data['hp_pct'] > 0:
-                    hp_max_eff += int(round(hp_max_eff * (b_data['hp_pct'] / 100.0)))
+                if 'hp_pct' in b_data and b_data['hp_pct']:          # negativo: las bendiciones de la torre
+                    hp_max_eff = max(1, hp_max_eff + int(round(hp_max_eff * (max(-90, b_data['hp_pct']) / 100.0))))
                 if 'mp_pct' in b_data and b_data['mp_pct'] > 0:
                     mp_max_eff += int(round(mp_max_eff * (b_data['mp_pct'] / 100.0)))
                 if 'mp_to_hp_pct' in b_data and b_data['mp_to_hp_pct'] > 0:

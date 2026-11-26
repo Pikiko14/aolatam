@@ -31,6 +31,24 @@ SALIDA_OBD = EXTRAS / 'setting' / 'mapobj.obd'
 CARPETA = 'aolat_tb'
 SALIDA_SHAPES = EXTRAS / 'shape' / 'stage' / CARPETA
 
+# "Cambia el piso de la torre por otro que no se parezca a la dungeon de forest" (26/11/2026): el ajedrezado azul (86)
+# y el marmol claro (87, 88) de la Limitless Tower pasan a ajedrezado granate (186) y piedra oscura con runas (192, 193).
+SUELOS = {86: 186, 87: 192, 88: 193}
+
+
+def cambiar_suelo(m):
+    """Cambia los pinceles de suelo de SUELOS en la cuadricula y en la lista de tilesets del mapa."""
+    cel = bytearray(m['celdas'])
+    n = 0
+    for i in range(0, len(cel), 6):
+        if cel[i] in SUELOS:
+            cel[i] = SUELOS[cel[i]]
+            n += 1
+    m['celdas'] = bytes(cel)
+    m['tilesets'] = [SUELOS.get(t, t) for t in m['tilesets']]
+    return n
+
+
 ID_BASE = 45000            # libres: los de mapobj.obd llegan a 44779 y los de servidor van desde 60000
 MARCA = '// ---- Torre de Babel oscura (tools/oscurecer_torre.py) ----'
 
@@ -231,6 +249,7 @@ def main():
     for o in m['objetos']:
         o[0] = nuevo_de.get(o[0], o[0])
     puestos = decorar(m)
+    cambiar_suelo(m)
     SALIDA_MPC.write_bytes(mpcio.escribir(m))
     print('%d objetos de decorado oscuro sembrados por las salas' % puestos)
     print('%d objetos oscurecidos (ids %d-%d), %d sprites, %d piezas del mapa cambiadas'
