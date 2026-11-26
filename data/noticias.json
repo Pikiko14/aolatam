@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-26",
+    "titulo": "Combat and Quick Reflexes fixes",
+    "texto": "Stunning Dagger now slows monsters instead of stunning them, so they fight back. Monsters hit a little harder the higher their level. Quick Reflexes chests now spawn across the whole map, not at the exit. HP and MP potions now grey out while on cooldown."
+  },
+  {
+    "fecha": "2026-11-26",
     "titulo": "Pet Defense: 20 waves",
     "texto": "Pet Defense now has 20 waves instead of 10, with more enemies in the late waves. Enemy HP and defense grow 20% per wave (was 30%), and every wave still gives Angel Gold, so a full run pays twice as much. Balance: Dragon and Holy Blades hit 20% less at level 2 and 35% less at level 3; upgrading them still makes them stronger."
   },
