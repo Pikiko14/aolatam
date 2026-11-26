@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-26",
+    "titulo": "Treasure Hunt and Hunted Hunter only on open maps",
+    "texto": "The Treasure Hunt chest, the Hunted Hunter, the weather and the Weekly Vote maps now only use the hunting maps that are open on the server. No more chests in areas you cannot enter."
+  },
+  {
+    "fecha": "2026-11-26",
     "titulo": "Pet Defense: easier start",
     "texto": "Pet Defense now starts with 1,200 Essence (was 600), so you can place more pets from the first wave. Enemies walk 20% slower, and they only get 1% faster each wave (was 5%)."
   },
