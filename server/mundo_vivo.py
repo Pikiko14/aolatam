@@ -274,7 +274,14 @@ def cielo_de(stage, ahora=None):
     """(codigo, nivel, hora) que toca pintar en ese mapa ahora."""
     c = clima(stage, ahora)
     if c and c.get('cielo'):
-        return tuple(int(x) for x in c['cielo'])
+        codigo, nivel, hora = (int(x) for x in c['cielo'])
+        # Los codigos 6+ son climas propios que solo entiende el angel.dat nuevo; uno viejo (START.EXE de IGG o sin
+        # actualizar) se cierra al recibirlos ("se me esta crasheando en el vps", 26/11/2026). Sin 'cielo_propios'
+        # van a su equivalente nativo de 'cielo_nativo' (0 = sin particulas; la luz de la hora se manda igual).
+        if codigo > 5 and not config().get('cielo_propios', False):
+            codigo = int((config().get('cielo_nativo') or {}).get(str(codigo), 0))
+            nivel = nivel if codigo else 0
+        return (codigo, nivel, hora)
     return (0, 0, HORA_NORMAL)
 
 

@@ -217,7 +217,14 @@ def test_el_cielo_de_verdad(monkeypatch):
     assert ses.enviados == [struct.pack('<HBBB', 0x0015, 2, 4, 2), struct.pack('<HBB', 0x0015, 1, 15)]
     mv.cielo(ses, DIA)                                     # sin cambios, nada
     assert len(ses.enviados) == 2
-    actual['c'] = climas['bloodmoon']                      # cambia: noche y ceniza (codigo propio 8)
+    actual['c'] = climas['bloodmoon']                      # cambia: noche; sin cielo_propios, sin la ceniza (8)
+    mv.cielo(ses, DIA)
+    assert ses.enviados[-2:] == [struct.pack('<HBBB', 0x0015, 2, 0, 0), struct.pack('<HBB', 0x0015, 1, 0)]
+    cfg = dict(mv.config(), cielo_propios=True)             # con el angel.dat nuevo para todos: la ceniza
+    monkeypatch.setattr(mv, 'config', lambda: cfg)
+    actual['c'] = climas['storm']
+    mv.cielo(ses, DIA)
+    actual['c'] = climas['bloodmoon']
     mv.cielo(ses, DIA)
     assert ses.enviados[-2:] == [struct.pack('<HBBB', 0x0015, 2, 8, 2), struct.pack('<HBB', 0x0015, 1, 0)]
     ses.personaje.stage = CIUDAD                           # a la ciudad: cielo normal
