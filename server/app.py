@@ -14734,7 +14734,7 @@ class Servidor:
                                                 ice_d = max(0, getattr(m, 'ice_atk', 0) - def_elem['ice'])
                                                 rot_d = max(0, getattr(m, 'rotten_atk', 0) - def_elem['rotten'])
                                                 elem_tot = thnd_d + fire_d + ice_d + rot_d
-                                                suyo = _cb.dano_recibido(m.pegar(), def_targ, elem_atk=elem_tot, elem_def=0)
+                                                suyo = _cb.dano_recibido(m.pegar(), def_targ, elem_atk=elem_tot, elem_def=0, nivel=getattr(m, 'nivel', 0))
                                             elif f_pet and targ_eid == pet_eid:
                                                 b_st_def = _ms.bonos_efectivos(f_pet)
                                                 b_bf_def = _ms.bonos_buffs(f_pet)
@@ -14742,16 +14742,16 @@ class Servidor:
                                                 if int(f_pet.get('saciedad', 0)) > 100:
                                                     def_targ = int(round(def_targ * 1.4))
                                                 elem_tot = getattr(m, 'thnd_atk', 0) + getattr(m, 'fire_atk', 0) + getattr(m, 'ice_atk', 0) + getattr(m, 'rotten_atk', 0)
-                                                suyo = _cb.dano_recibido(m.pegar(), def_targ, elem_atk=elem_tot, elem_def=0)
+                                                suyo = _cb.dano_recibido(m.pegar(), def_targ, elem_atk=elem_tot, elem_def=0, nivel=getattr(m, 'nivel', 0))
                                             elif (getattr(ses, 'monstruo_encantado', None) is not None
                                                   and targ_eid == ses.monstruo_encantado.entity_id):
                                                 def_targ = int(getattr(ses.monstruo_encantado, 'defensa', 100) or 100)
-                                                suyo = _cb.dano_recibido(m.pegar(), def_targ)
+                                                suyo = _cb.dano_recibido(m.pegar(), def_targ, nivel=getattr(m, 'nivel', 0))
                                             else:
                                                 # Invocacion o doble: su defensa (la sube el 仇恨加成 de Sacred Pact...).
                                                 _sen_d = next((i for i in _senuelos(ses) if i.get('entity_id') == targ_eid), None)
                                                 def_targ = int((_sen_d or {}).get('defensa') or 100)
-                                                suyo = _cb.dano_recibido(m.pegar(), def_targ)
+                                                suyo = _cb.dano_recibido(m.pegar(), def_targ, nivel=getattr(m, 'nivel', 0))
                                             # En sigilo se esquiva: Sneak V da
                                             # un 75% (物理迴避). Un golpe esquivado
                                             # hace 0; no hay paquete de "Miss"
@@ -22170,6 +22170,20 @@ class Servidor:
                     log.info('[%s] consumible %s rechazado: cooldown de %.1fs', addr, item_id, _cfg_pot.COOLDOWN_POCION_S)
                     return
                 ses._pocion_ultima = _t_pot
+                # EL ICONO OPACO mientras dura el enfriamiento ("las pociones de vida y mp deben hacer este efecto
+                # cuando se usan: el opaco", 26/11/2026): el 0x001D de kind 3 con el hechizo de la pocion (su 常駐法術,
+                # Red Potion 5 -> 1929) y los ms, como el de las habilidades; a los ms otro con 0 lo devuelve.
+                _mid_pot = inv.resident_magic_de(item_id)
+                if _mid_pot:
+                    _cd_pot = int(_cfg_pot.COOLDOWN_POCION_S * 1000)
+                    _eid_pot = ses.personaje.entity_id
+                    ses.enviar_inmediato(struct.pack('<HIBBII', 0x001D, _eid_pot, 1, 3, int(_mid_pot), _cd_pot))
+                    try:
+                        asyncio.get_event_loop().call_later(
+                            _cd_pot / 1000.0, lambda e=_eid_pot, b=int(_mid_pot): ses.enviar_inmediato(
+                                struct.pack('<HIBBII', 0x001D, e, 1, 3, b, 0)))
+                    except RuntimeError:
+                        pass
                 # Una unidad del monton. Antes se borraba la casilla entera:
                 # con una sola galleta daba igual, pero con una pila de diez
                 # desaparecian las diez de un mordisco.

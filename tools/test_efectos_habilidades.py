@@ -249,3 +249,11 @@ def test_el_empuje_mueve_al_bicho_y_no_al_jefe(monkeypatch):
     assert app._desplazar(ses, m, 801) == (13, 10) and (m.tile_x, m.tile_y) == (13, 10) and env
     m.inmune_empuje = True
     assert app._desplazar(ses, m, 801) is None
+
+
+def test_stunning_dagger_frena_pero_deja_pegar():
+    """麻痺 con 移動速度 (Stunning Dagger) frena; no aturde como antes ("se demora en atacarme")."""
+    m = _bicho()
+    assert m.aplicar_efecto(combate.efecto_secundario(5418)) == 'lento'
+    assert not m.aturdido
+    assert m.debuffs[3363]['vel_mov_mod'] == -10

@@ -910,6 +910,12 @@ class Monstruo:
                 self.debuffs = {}
             deb['fin'] = fin
             self.debuffs[mid or ('ef', id(ef))] = deb
+        # 麻痺 CON 移動速度 NO ES UN STUN ("se demora en atacarme", 26/11/2026: el Stunning Dagger del asesino lo
+        # dejaba 5 s sin pegar y, repetido, el bicho no contestaba nunca). magic.xml lo describe solo como freno:
+        # Stunning Dagger "Movement is reduced" (-10), Stunning Ambush -15..-35, Howl "Unable to move" (-1000).
+        # Anda mas lento o no anda, pero sigue pegando. Sin 移動速度 (Thor's Hammer, Stiffening Arrow) sigue parando.
+        if ef.get('estado') == 'paralizado' and ef.get('vel_mov', 0) < 0:
+            return 'lento'
         if ef.get('estado') in ('aturdido', 'congelado', 'inmovilizado',
                                 'paralizado', 'atado'):
             self.aturdido_hasta = max(self.aturdido_hasta, fin)
@@ -3202,15 +3208,27 @@ DIVISOR_DEFENSA_MONSTRUO = DIVISOR_DEFENSA_FISICA
 # hacia 3 y en su servidor un Slarm (Atk 28) a Dfs 30 hace 16 --. Con la misma curva que el golpe a un monstruo y K = 40
 # salen los 16 del Slarm y los de la captura del Thunder Rabbit de 27 a 14 (medidos 29 a 11): cuadra arriba y abajo.
 K_GOLPE_A_JUGADOR = 40.0
+# "porque pega tan poco el Fane Priest" (26/11/2026): con K fija en 40 un Lv61 (Atk 1713) a Dfs 763 hacia 85. La K sube
+# un poco con el nivel del monstruo (+1 por nivel; la del jugador sube +5): el Lv61 hace ~200 y a nivel bajo casi igual.
+K_JUGADOR_POR_NIVEL = 1.0
 
 
-def dano_recibido(ataque: int, defensa: int, elem_atk: int = 0, elem_def: int = 0) -> int:
+def k_golpe_a_jugador(nivel=0) -> float:
+    try:
+        nivel = int(nivel or 0)
+    except (TypeError, ValueError):
+        nivel = 0
+    return K_GOLPE_A_JUGADOR + K_JUGADOR_POR_NIVEL * max(0, nivel - 1)
+
+
+def dano_recibido(ataque: int, defensa: int, elem_atk: int = 0, elem_def: int = 0, nivel: int = 0) -> int:
     """Dano que recibe el jugador (o su mascota) del golpe de un monstruo, con su defensa fisica y elemental.
 
     (ataque + elemento que pasa) x K_GOLPE_A_JUGADOR / (defensa + K_GOLPE_A_JUGADOR), como poco 1. El elemento que
-    pasa es el del monstruo menos la defensa de ese elemento del jugador."""
+    pasa es el del monstruo menos la defensa de ese elemento del jugador. `nivel`: el del monstruo (sube la K)."""
     elem_d = max(0, int(elem_atk or 0) - max(0, int(elem_def or 0)))
-    bruto = (ataque + elem_d) * K_GOLPE_A_JUGADOR / (max(0, defensa) + K_GOLPE_A_JUGADOR)
+    k = k_golpe_a_jugador(nivel)
+    bruto = (ataque + elem_d) * k / (max(0, defensa) + k)
     return max(1, int(round(bruto)))
 
 

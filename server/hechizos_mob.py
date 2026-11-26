@@ -90,5 +90,5 @@ def dano(hechizo, m, defensa_fisica, defensa_magica, rng=None):
         pct = _mod_magico(m, 'mag_dmg_pct')
         if pct:
             base = max(1, int(base * (100 + pct) / 100))
-        return cb.dano_recibido(base, int(defensa_magica))
-    return cb.dano_recibido(int(m.pegar() * MULT_FISICA), int(defensa_fisica))
+        return cb.dano_recibido(base, int(defensa_magica), nivel=getattr(m, 'nivel', 0))
+    return cb.dano_recibido(int(m.pegar() * MULT_FISICA), int(defensa_fisica), nivel=getattr(m, 'nivel', 0))

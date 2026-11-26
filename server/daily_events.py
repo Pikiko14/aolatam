@@ -293,9 +293,12 @@ def room(r):
     if r['id'] in _ROOMS:return _ROOMS[r['id']]
     import eventos_mundo,combate
     e=eventos_mundo.EstadoDeMapa(r['stage']);e.monstruos={}
+    cofres=_puntos_cofre(r)
     for row in datos(r['stage'])['spawns']:
         if not row.get('monstruo') or (row.get('apagado') and row.get('zona') not in r.get('released',[])):continue
-        m=combate.Monstruo(row['entity_id'],row['npc_type'],row['nombre'],row['tile'],row['sprite'],stage=r['stage'])
+        tile=row['tile']
+        if row.get('npc_type')==COFRE_QUICK and cofres:tile=cofres.pop()
+        m=combate.Monstruo(row['entity_id'],row['npc_type'],row['nombre'],tile,row['sprite'],stage=r['stage'])
         m.zona_plantilla=row.get('zona',0);m.daily_round=r['id'];m.daily_respawn=row.get('respawn',30)
         if row.get('apagado'):m.generado=True;m.zona_generador=row.get('zona',0)
         if m.entity_id in r['dead']:m.vivo=False;m.hp=0
@@ -315,6 +318,20 @@ def room(r):
             e.monstruos[eid]=m
     _ROOMS[r['id']]=e
     return e
+
+
+# QUICK REFLEXES: "no salen cofres en el mapa, y afuera tambien salen" (26/11/2026). Los 40 Quick Hand Treasure Box
+# del .mpc estan todos amontonados junto a la entrada (x 250-299, y 131-174); el mapa trae 80 puntos de cofre en la
+# etiqueta 70 repartidos por todas las plataformas. Cada ronda los 40 salen en 40 de esos puntos, al azar.
+COFRE_QUICK=9234
+TAG_COFRES=70
+
+
+def _puntos_cofre(r):
+    import random
+    pts=[tuple(t) for t in (datos(r['stage']).get('tags') or {}).get(str(TAG_COFRES),[])]
+    random.Random(str(r.get('id'))).shuffle(pts)
+    return pts
 
 
 def generar(ses,stage,tag):
