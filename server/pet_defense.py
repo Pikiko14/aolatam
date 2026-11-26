@@ -87,7 +87,10 @@ def dano_de(datos, nivel):
     costes = [int(x.get('coste', 0)) for x in (cfg.get('torres') or {}).values() if int(x.get('coste', 0)) > 0]
     ref = float(cfg.get('coste_referencia') or (min(costes) if costes else 1))
     base = int(fijos[min(len(fijos), max(1, int(nivel))) - 1])
-    return int(round(base * max(1, int(datos.get('coste', ref))) / ref / 10.0)) * 10
+    # "Reduce el ataque del dragon y del sword pet, pegan mucho en su fase 2 y 3" (26/11/2026): 'factor_dano' de la
+    # torre por nivel ({"2": 0.6, "3": 0.6}).
+    factor = float((datos.get('factor_dano') or {}).get(str(int(nivel)), 1))
+    return int(round(base * max(1, int(datos.get('coste', ref))) / ref * factor / 10.0)) * 10
 
 
 def sprite_de(datos, nivel):

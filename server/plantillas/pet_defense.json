@@ -10,8 +10,8 @@
     "flor":     {"nombre": "Flower Fairy","rol": "Hits 2 at once",     "sprites": [3026, 3028, 3033], "alcance": 6, "cadencia": 1.4, "ataque": 180, "magico": true, "objetivos": 2, "coste": 100},
     "elfo":     {"nombre": "Elf Queen",   "rol": "Magic sniper",       "sprites": [3086, 3088, 3092], "alcance": 9, "cadencia": 1.3, "ataque": 260, "magico": true, "coste": 110},
     "fuego":    {"nombre": "Fire Bomber", "rol": "Magic splash",       "sprites": [3050, 3054, 3056], "alcance": 6, "cadencia": 2.0, "ataque": 400, "magico": true, "area": 2, "coste": 120, "coste_nivel": {"3": 1200}},
-    "espada":   {"nombre": "Holy Blades", "rol": "Hits 3 at once",     "sprites": [3110, 3112, 3116], "alcance": 5, "cadencia": 1.1, "ataque": 200, "magico": false, "objetivos": 3, "coste": 150, "coste_nivel": {"3": 1200}},
-    "dragon":   {"nombre": "Dragon",      "rol": "Big magic splash",   "sprites": [3098, 3100, 3105], "alcance": 7, "cadencia": 2.2, "ataque": 700, "magico": true, "area": 2, "coste": 220, "coste_nivel": {"3": 1200}}
+    "espada":   {"nombre": "Holy Blades", "rol": "Hits 3 at once",     "sprites": [3110, 3112, 3116], "alcance": 5, "cadencia": 1.1, "ataque": 200, "magico": false, "objetivos": 3, "coste": 150, "coste_nivel": {"3": 1200}, "factor_dano": {"2": 0.8, "3": 0.65}},
+    "dragon":   {"nombre": "Dragon",      "rol": "Big magic splash",   "sprites": [3098, 3100, 3105], "alcance": 7, "cadencia": 2.2, "ataque": 700, "magico": true, "area": 2, "coste": 220, "coste_nivel": {"3": 1200}, "factor_dano": {"2": 0.8, "3": 0.65}}
   },
   "torre_por_defecto": "guardian",
   "max_torres_por_jugador": 16,
@@ -72,7 +72,7 @@
     "pausa_entre_oleadas": 12,
     "separacion_enemigos": 1.0,
     "casillas_por_paso": 3,
-    "stats_por_oleada": 0.3,
+    "stats_por_oleada": 0.2,
     "velocidad_por_oleada": 0.01
   },
 
@@ -99,6 +99,16 @@
     {"enemigos": [["normal", 18], ["blindado", 8], ["rapido", 6]]},
     {"enemigos": [["blindado", 16], ["normal", 12]]},
     {"enemigos": [["rapido", 14], ["blindado", 12], ["normal", 12]]},
-    {"enemigos": [["normal", 20], ["blindado", 12], ["rapido", 10]]}
+    {"enemigos": [["normal", 20], ["blindado", 12], ["rapido", 10]]},
+    {"enemigos": [["normal", 22], ["blindado", 12], ["rapido", 10]]},
+    {"enemigos": [["rapido", 24], ["blindado", 10], ["normal", 10]]},
+    {"enemigos": [["blindado", 20], ["normal", 16], ["rapido", 8]]},
+    {"enemigos": [["normal", 24], ["blindado", 14], ["rapido", 12]]},
+    {"enemigos": [["rapido", 28], ["normal", 14], ["blindado", 8]]},
+    {"enemigos": [["blindado", 22], ["normal", 18], ["rapido", 12]]},
+    {"enemigos": [["normal", 26], ["blindado", 16], ["rapido", 14]]},
+    {"enemigos": [["rapido", 30], ["blindado", 16], ["normal", 12]]},
+    {"enemigos": [["blindado", 26], ["normal", 20], ["rapido", 14]]},
+    {"enemigos": [["normal", 28], ["blindado", 20], ["rapido", 18]]}
   ]
 }

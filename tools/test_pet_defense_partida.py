@@ -216,9 +216,10 @@ def rk_tmp(tmp_path, monkeypatch):
 
 def test_los_stats_suben_un_10_por_ciento_por_oleada():
     """"Que aumenten todos los stat de mob en .1 por cada oleada" (22/11/2026)."""
-    assert CFG['partida']['stats_por_oleada'] == 0.3
+    # 26/11/2026: 20 oleadas y +20 % por oleada (con +30 % la 20 tendria 6,7 veces la vida)
+    assert CFG['partida']['stats_por_oleada'] == 0.2 and len(CFG['oleadas']) == 20
     assert pp.multiplicador_oleada(CFG, 1) == 1.0
-    assert abs(pp.multiplicador_oleada(CFG, 10) - 3.7) < 1e-9
+    assert abs(pp.multiplicador_oleada(CFG, 20) - 4.8) < 1e-9
 
 
 def test_el_enemigo_sale_con_sus_stats_de_la_oleada(ses):

@@ -329,13 +329,17 @@ def test_el_dano_es_por_nivel_y_por_coste():
     torres = CFG['torres']
     barata = min(torres.values(), key=lambda d: d['coste'])
     assert [pd.dano_de(barata, n) for n in (1, 2, 3)] == CFG['dano_por_nivel'] == [500, 700, 1200]
-    por_coste = sorted(torres.values(), key=lambda d: d['coste'])
+    # sin las rebajadas a mano ('factor_dano': Dragon y Holy Blades en sus niveles 2 y 3, 26/11/2026)
+    por_coste = sorted((d for d in torres.values() if not d.get('factor_dano')), key=lambda d: d['coste'])
     for n in (1, 2, 3):
         danos = [pd.dano_de(d, n) for d in por_coste]
         assert danos == sorted(danos) and danos[-1] > danos[0]
     m = combate.Monstruo(9400, 6, 'Fire Goblin', (5, 5), 0, stage=917)
     m.hp_max = m.hp = 10_000
     m.defensa = 5000                                            # sin defensa: quita lo justo
+    for d in torres.values():                                   # mejorar siempre pega mas
+        assert pd.dano_de(d, 1) < pd.dano_de(d, 2) < pd.dano_de(d, 3)
+    assert pd.dano_de(torres['dragon'], 3) == 3430 and pd.dano_de(torres['espada'], 3) == 2340
     t = NS(dano_fijo=pd.dano_de(barata, 3), ataque=1, magico=False, ralentiza=0, area=0, entidad=1, ficha={'nombre': 'Wolf'})
     pd.disparar(t, m)
     assert m.hp == 10_000 - 1200
