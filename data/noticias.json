@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-26",
+    "titulo": "Tower of Babel: new floor and blessing fix",
+    "texto": "The Tower of Babel has a new look: dark crimson checkered floors and dark stone with glowing red runes. Fixed: blessings that lower your max HP (Glass Cannon, Executioner, Berserker Rage...) now show the reduced max HP on your HP bar, so you can see how much you can really heal."
+  },
+  {
+    "fecha": "2026-11-26",
     "titulo": "Fix: game closing on some maps",
     "texto": "Fixed the error that closed the game when entering some maps with special weather (like Angel Lyceum). If you use the AngelsLauncher, it will download an updated game file: just open it and press Play."
   },
