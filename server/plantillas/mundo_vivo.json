@@ -31,7 +31,7 @@
  },
  "minimo_monstruos": 20,
  "bajo_techo": ["cave", "maze", "palace", "pit", "abyss", "square", "church", "tower", "room", "hall", "dungeon", "castle", "temple", "mine", "mines", "underground", "hell", "lair", "grotto"],
- "cielo_propios": false,
+ "cielo_propios": true,
  "cielo_nativo": {"6": 0, "7": 0, "8": 0, "9": 0, "10": 0, "11": 0, "12": 1, "13": 0},
  "fx_monstruos": false,
  "fx_cada": 5,
