@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-26",
+    "titulo": "Pet Defense: 20 waves",
+    "texto": "Pet Defense now has 20 waves instead of 10, with more enemies in the late waves. Enemy HP and defense grow 20% per wave (was 30%), and every wave still gives Angel Gold, so a full run pays twice as much. Balance: Dragon and Holy Blades hit 20% less at level 2 and 35% less at level 3; upgrading them still makes them stronger."
+  },
+  {
+    "fecha": "2026-11-26",
     "titulo": "Santa Clausula on the Event Calendar",
     "texto": "The Christmas troll boss Santa Clausula now appears Monday to Saturday at 17:00 and Sunday at 15:00 (server time), in a hunting field next to a city, for 60 minutes. You can see it in Events > Calendar and you get a warning 30 minutes before."
   },
