@@ -1,5 +1,10 @@
 [
   {
+    "fecha": "2026-11-26",
+    "titulo": "Pet Defense: easier start",
+    "texto": "Pet Defense now starts with 1,200 Essence (was 600), so you can place more pets from the first wave. Enemies walk 20% slower, and they only get 1% faster each wave (was 5%)."
+  },
+  {
     "fecha": "2026-11-25",
     "titulo": "New Events panel: Duels, Hunted Hunter, Weekly Vote, Treasure Hunt and Calendar",
     "texto": "Open the new Events button on the bar (crossed swords). Everything works with buttons, no commands. It has 5 tabs. DUELS: right-click any player and pick Duel, set your stake (min 1,000 gold). Once accepted, everyone has 30 seconds to bet on the winner. The winner takes both stakes and right bets share the losing ones (5% fee). Nobody loses EXP. HUNTED HUNTER (daily 22:00, Wednesday 16:30, Sunday 17:15, level 30+): sign up, and one signed-up player becomes the prey for 15 minutes while their position is announced every minute. The prey wins by surviving; the hunter who takes them down wins instead. Both prizes include 1,500 Angel Gold. WEEKLY VOTE (Monday to Thursday): one vote per character for a double EXP map or an extra weekend event; the most voted option wins on Friday 00:00. TREASURE HUNT (13:00 and 20:15): a chest appears on a random hunting map, a new clue comes every 6 minutes, and the first player to click it wins 1,500 Angel Gold, gold, EXP and gear boxes. CALENDAR: every event of the week by day, with what is live now and how long until the next one."
