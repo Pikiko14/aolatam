@@ -86,13 +86,14 @@ def test_aviso_30_minutos_antes_y_una_sola_vez(monkeypatch):
 
 def test_al_conectar_y_el_comando(monkeypatch):
     lunes = LUNES.replace(hour=15).astimezone()
-    assert calendario.texto_hoy(lunes) == ("Today's events: 18:00 Quick Reflexes, 18:40 Pet Tournament, "
+    assert calendario.texto_hoy(lunes) == ("Today's events: 17:00 Santa Clausula, 18:00 Quick Reflexes, 18:40 Pet Tournament, "
                                           "19:30 World Boss, 20:15 Treasure Hunt, "
                                           "21:00 Angel MOBA, 22:00 Hunted Hunter, 23:00 World Boss. "
                                           "Type /events for the week.")
     assert calendario.texto_hoy(lunes.replace(hour=23, minute=50)).startswith('No more events today')
     assert calendario.lineas_semana()[0] == ('Monday: 12:00 World Boss, 13:00 Treasure Hunt, 14:00 Angel MOBA, '
-                                             '18:00 Quick Reflexes, 18:40 Pet Tournament, 19:30 World Boss, '
+                                             '17:00 Santa Clausula, 18:00 Quick Reflexes, 18:40 Pet Tournament, '
+                                             '19:30 World Boss, '
                                              '20:15 Treasure Hunt, '
                                              '21:00 Angel MOBA, 22:00 Hunted Hunter, 23:00 World Boss')
     assert app._gm_parsear('/events') == ('calendario',) and 'calendario' in app.COMANDOS_DE_JUGADOR

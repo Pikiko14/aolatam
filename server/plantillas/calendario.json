@@ -5,6 +5,7 @@
   "moba": {"nombre": "Angel MOBA", "duracion": 30, "donde": "Talk to Angel MOBA in the Sign Up Office."},
   "holy": {"nombre": "Holy Battlefield", "duracion": 60},
   "arena": {"nombre": "Angel Arena Lv50-89", "duracion": 30, "tramo": 50},
+  "santa": {"nombre": "Santa Clausula", "duracion": 60, "donde": "The Christmas troll boss appears in a hunting field next to a city."},
   "totem": {"nombre": "Totem War", "duracion": 120},
   "liga": {"nombre": "League War", "duracion": 30},
   "quick": {"nombre": "Quick Reflexes", "duracion": 30},
@@ -14,12 +15,12 @@
   "torneo": {"nombre": "Pet Tournament", "duracion": 5, "donde": "Sign up your pet in Challenges (button on the bar)."}
  },
  "semana": {
-  "Monday":    [["12:00", "jefe"], ["14:00", "moba"], ["18:00", "quick"], ["19:30", "jefe"], ["21:00", "moba"], ["23:00", "jefe"], ["13:00", "tesoro"], ["20:15", "tesoro"], ["22:00", "caza"], ["18:40", "torneo"]],
-  "Tuesday":   [["16:00", "arena"], ["12:00", "jefe"], ["14:00", "moba"], ["18:00", "moba"], ["19:30", "jefe"], ["21:00", "liga"], ["23:00", "jefe"], ["13:00", "tesoro"], ["20:15", "tesoro"], ["22:00", "caza"], ["18:40", "torneo"]],
-  "Wednesday": [["12:00", "jefe"], ["14:00", "moba"], ["18:00", "moba"], ["19:30", "jefe"], ["21:00", "totem"], ["23:00", "jefe"], ["13:00", "tesoro"], ["20:15", "tesoro"], ["16:30", "caza"], ["18:40", "torneo"]],
-  "Thursday":  [["16:00", "arena"], ["12:00", "jefe"], ["14:00", "moba"], ["18:00", "moba"], ["19:30", "jefe"], ["21:00", "quick"], ["23:00", "jefe"], ["13:00", "tesoro"], ["20:15", "tesoro"], ["22:00", "caza"], ["18:40", "torneo"]],
-  "Friday":    [["10:00", "holy"], ["12:00", "jefe"], ["14:00", "moba"], ["16:00", "holy"], ["19:30", "jefe"], ["21:00", "moba"], ["23:00", "jefe"], ["13:00", "tesoro"], ["20:15", "tesoro"], ["22:00", "caza"], ["18:40", "torneo"]],
-  "Saturday":  [["16:00", "arena"], ["12:00", "jefe"], ["14:00", "totem"], ["18:00", "moba"], ["19:30", "jefe"], ["21:00", "moba"], ["23:00", "jefe"], ["13:00", "tesoro"], ["20:15", "tesoro"], ["22:00", "caza"], ["18:40", "torneo"]],
-  "Sunday":    [["10:00", "holy"], ["12:00", "jefe"], ["14:00", "moba"], ["16:00", "holy"], ["18:00", "liga"], ["19:30", "jefe"], ["21:00", "moba"], ["22:30", "liga"], ["23:00", "jefe"], ["13:00", "tesoro"], ["20:15", "tesoro"], ["17:15", "caza"], ["18:40", "torneo"]]
+  "Monday":    [["17:00", "santa"], ["12:00", "jefe"], ["14:00", "moba"], ["18:00", "quick"], ["19:30", "jefe"], ["21:00", "moba"], ["23:00", "jefe"], ["13:00", "tesoro"], ["20:15", "tesoro"], ["22:00", "caza"], ["18:40", "torneo"]],
+  "Tuesday":   [["17:00", "santa"], ["16:00", "arena"], ["12:00", "jefe"], ["14:00", "moba"], ["18:00", "moba"], ["19:30", "jefe"], ["21:00", "liga"], ["23:00", "jefe"], ["13:00", "tesoro"], ["20:15", "tesoro"], ["22:00", "caza"], ["18:40", "torneo"]],
+  "Wednesday": [["17:00", "santa"], ["12:00", "jefe"], ["14:00", "moba"], ["18:00", "moba"], ["19:30", "jefe"], ["21:00", "totem"], ["23:00", "jefe"], ["13:00", "tesoro"], ["20:15", "tesoro"], ["16:30", "caza"], ["18:40", "torneo"]],
+  "Thursday":  [["17:00", "santa"], ["16:00", "arena"], ["12:00", "jefe"], ["14:00", "moba"], ["18:00", "moba"], ["19:30", "jefe"], ["21:00", "quick"], ["23:00", "jefe"], ["13:00", "tesoro"], ["20:15", "tesoro"], ["22:00", "caza"], ["18:40", "torneo"]],
+  "Friday":    [["17:00", "santa"], ["10:00", "holy"], ["12:00", "jefe"], ["14:00", "moba"], ["16:00", "holy"], ["19:30", "jefe"], ["21:00", "moba"], ["23:00", "jefe"], ["13:00", "tesoro"], ["20:15", "tesoro"], ["22:00", "caza"], ["18:40", "torneo"]],
+  "Saturday":  [["17:00", "santa"], ["16:00", "arena"], ["12:00", "jefe"], ["14:00", "totem"], ["18:00", "moba"], ["19:30", "jefe"], ["21:00", "moba"], ["23:00", "jefe"], ["13:00", "tesoro"], ["20:15", "tesoro"], ["22:00", "caza"], ["18:40", "torneo"]],
+  "Sunday":    [["15:00", "santa"], ["10:00", "holy"], ["12:00", "jefe"], ["14:00", "moba"], ["16:00", "holy"], ["18:00", "liga"], ["19:30", "jefe"], ["21:00", "moba"], ["22:30", "liga"], ["23:00", "jefe"], ["13:00", "tesoro"], ["20:15", "tesoro"], ["17:15", "caza"], ["18:40", "torneo"]]
  }
 }

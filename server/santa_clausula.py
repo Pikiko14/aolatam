@@ -226,8 +226,28 @@ def _guardar_estado(d):
 
 
 def proxima_hora(ahora):
-    """El proximo HORA_EVENTO:00 (hora local del servidor) despues de `ahora`."""
+    """La proxima salida despues de `ahora`: la del calendario semanal si lo lleva ('santa', "y el jefe santa donde
+    esta??", 26/11/2026: antes no salia en Events > Calendar y se pisaba con el World Boss y el tesoro), si no
+    HORA_EVENTO:00 cada dia (hora local del servidor)."""
     import datetime
+    try:
+        import calendario
+        slots = calendario.slots('santa')
+    except Exception:
+        slots = None
+    if slots:
+        zona = calendario._ahora().tzinfo
+        t = datetime.datetime.fromtimestamp(ahora, zona)
+        mejor = None
+        for wd, h in slots:
+            hh, mm = (int(x) for x in h.split(':'))
+            c = (t + datetime.timedelta(days=(wd - t.weekday()) % 7)).replace(hour=hh, minute=mm, second=0,
+                                                                            microsecond=0)
+            if c <= t:
+                c += datetime.timedelta(days=7)
+            if mejor is None or c < mejor:
+                mejor = c
+        return mejor.timestamp()
     t = datetime.datetime.fromtimestamp(ahora)
     h = t.replace(hour=HORA_EVENTO, minute=0, second=0, microsecond=0)
     if h <= t:
@@ -353,8 +373,9 @@ async def vigilar(cada=20.0):
     import asyncio
     import time
     est = _leer_estado()
-    if not est.get('proximo'):
-        est['proximo'] = proxima_hora(time.time())
+    nueva = proxima_hora(time.time())              # al arrancar, la del horario actual (por si cambio el calendario)
+    if est.get('proximo') != nueva:
+        est['proximo'] = nueva
         _guardar_estado(est)
     while True:
         await asyncio.sleep(cada)

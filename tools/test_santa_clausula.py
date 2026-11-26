@@ -71,10 +71,13 @@ def test_botin_una_caja_60_de_cada_cinco():
 
 
 def test_proxima_hora():
-    base = datetime.datetime(2026, 12, 1, 19, 59).timestamp()
-    assert datetime.datetime.fromtimestamp(sc.proxima_hora(base)).hour == sc.HORA_EVENTO
-    despues = datetime.datetime(2026, 12, 1, 21, 0).timestamp()
+    # Desde el 26/11/2026 sale a las horas del calendario ('santa'): 17:00 de lunes a sabado, 15:00 el domingo.
+    base = datetime.datetime(2026, 12, 1, 16, 59).timestamp()                 # martes
+    assert datetime.datetime.fromtimestamp(sc.proxima_hora(base)).hour == 17
+    despues = datetime.datetime(2026, 12, 1, 18, 0).timestamp()
     assert datetime.datetime.fromtimestamp(sc.proxima_hora(despues)).day == 2
+    sabado = datetime.datetime(2026, 12, 5, 18, 0).timestamp()
+    assert datetime.datetime.fromtimestamp(sc.proxima_hora(sabado)).hour == 15                 # el domingo
 
 
 def test_aparece_se_va_y_reparte(monkeypatch):
