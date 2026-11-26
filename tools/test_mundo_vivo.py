@@ -210,6 +210,8 @@ def test_el_cielo_de_verdad(monkeypatch):
     """"o genera los efectos e implementalos al cliente" (25/11/2026): el s2c 0x0015 del propio cliente."""
     import struct
     climas = {c['id']: c for c in mv.config()['climas']}
+    apagado = dict(mv.config(), cielo_propios=False)        # con clientes de angel.dat viejo
+    monkeypatch.setattr(mv, 'config', lambda: apagado)
     actual = {'c': climas['snow']}
     monkeypatch.setattr(mv, 'clima', lambda st, ahora=None: actual['c'] if st == SPIKE else None)
     ses = _ses_en(SPIKE)
