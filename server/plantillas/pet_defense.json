@@ -67,25 +67,25 @@
 
   "partida": {
     "vida_cristal": 30,
-    "essence_inicial": 600,
+    "essence_inicial": 1200,
     "pausa_inicial": 20,
     "pausa_entre_oleadas": 12,
     "separacion_enemigos": 1.0,
     "casillas_por_paso": 3,
     "stats_por_oleada": 0.3,
-    "velocidad_por_oleada": 0.05
+    "velocidad_por_oleada": 0.01
   },
 
   "_enemigos": "La vida va x2,8 sobre la de nivel 60 desde que las mascotas pegan un dano fijo sin defensa (dano_por_nivel): asi el jugador simulado gana dejando 21 de 30 de cristal (21/11/2026). Stats de nivel 60 del juego base: los mobs de nivel 55-65 de los mapas de siempre tienen 2.000-4.500 de vida, ~620 de defensa y ~250 de defensa magica; los blindados (Dark Elite) ~1.500 de defensa; el jefe de nivel 60 de la Torre de Babel (Cat Lord) 25.949 de vida, 633 y 419. npc_types: los aspectos, de monster.xml, de mapas de antes de las expansiones nuevas; cada mob sale con uno al azar de su lista y el jefe de cada oleada es el de su numero (jefe 1 en la oleada 1...): jefes de las expansiones que el servidor tiene apagadas, de los que el cliente sabe dibujar ('utiliza jefes de las expansiones que no tenemos habilitadas, que se vea bien exotico', 22/11/2026): Blossom Hail, General Tengu, Scorpion Lyst, Raider Lobb, Inhibitor Speiss, C-Fallen Swordsman, Mech Angel Alpha, Raptor Treynor, C-Ghost King y C-Cartastolov.",
   "enemigos": {
     "normal":   {"npc_types": [193, 199, 203, 804, 1175, 1176, 204, 822, 1177, 1178, 205, 206, 814, 899, 1179, 894, 901, 902, 1183, 903, 953, 951, 1185, 900, 952, 825, 3571, 805, 1180, 891, 3572],
-                 "hp": 8400, "defensa": 620, "mdef": 250, "velocidad": 45, "essence": 15, "dano_cristal": 1},
+                 "hp": 8400, "defensa": 620, "mdef": 250, "velocidad": 36, "essence": 15, "dano_cristal": 1},
     "rapido":   {"npc_types": [840, 841, 843, 847, 895, 848, 912],
-                 "hp": 5600, "defensa": 450, "mdef": 220, "velocidad": 85, "essence": 15, "dano_cristal": 1},
+                 "hp": 5600, "defensa": 450, "mdef": 220, "velocidad": 68, "essence": 15, "dano_cristal": 1},
     "blindado": {"npc_types": [897, 898, 832, 835, 1181, 893, 887],
-                 "hp": 12600, "defensa": 1500, "mdef": 280, "velocidad": 35, "essence": 22, "dano_cristal": 2},
+                 "hp": 12600, "defensa": 1500, "mdef": 280, "velocidad": 28, "essence": 22, "dano_cristal": 2},
     "jefe":     {"npc_types": [23520, 23518, 23623, 23612, 23634, 23713, 23638, 23637, 23712, 23687],
-                 "hp": 72800, "defensa": 633, "mdef": 419, "velocidad": 28, "essence": 200, "dano_cristal": 3}
+                 "hp": 72800, "defensa": 633, "mdef": 419, "velocidad": 22, "essence": 200, "dano_cristal": 3}
   },
   "jefe_cada_oleada": true,
 
