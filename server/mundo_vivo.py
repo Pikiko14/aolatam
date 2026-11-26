@@ -46,15 +46,18 @@ def config():
 
 
 def campos():
-    """Los mapas de caza abiertos: con plantilla de monstruos, sin ser instancia ni de evento."""
+    """Los mapas de caza abiertos: con plantilla de monstruos, sin ser instancia ni de evento, y no cerrados
+    (configuracion.MAPAS_APAGADOS: "el treasure hunt debe ser solo en los mapas habilitados", 26/11/2026; el cofre
+    salio en Machinery Ruins, que esta cerrado)."""
     if not _CAMPOS:
         try:
             import app
+            import configuracion
             fuera = set(__import__('daily_events').STAGES) | set(__import__('league_war').STAGES) | {501}
             plantillas = pathlib.Path(__file__).parent / 'plantillas'
             minimo = int(config().get('minimo_monstruos', 20))
             for s, nombre in sorted((k, v) for k, v in app.mapas_poblados().items() if isinstance(k, int)):
-                if s in fuera or app.es_instancia(s):
+                if s in fuera or app.es_instancia(s) or configuracion.mapa_apagado(s):
                     continue
                 try:
                     d = json.loads((plantillas / nombre).read_text(encoding='utf-8'))

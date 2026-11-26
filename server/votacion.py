@@ -64,7 +64,11 @@ def _semana(clave):
 
 
 def opciones(clave):
-    """[{'tipo': 'exp', 'stage', 'texto'} | {'tipo': 'evento', 'id', 'texto', 'slots'}] de esa semana."""
+    """[{'tipo': 'exp', 'stage', 'texto'} | {'tipo': 'evento', 'id', 'texto', 'slots'}] de esa semana. Se guardan al
+    primer voto: si cambia la lista de mapas a mitad de semana, los votos siguen apuntando a lo mismo."""
+    guardadas = _semana(clave).get('opciones')
+    if guardadas:
+        return guardadas
     c = cfg()
     rng = random.Random('votacion-' + clave)
     import mundo_vivo
@@ -98,6 +102,7 @@ def votar(ses, n, ahora=None):
     if not 1 <= n <= len(ops):
         return 'Choose an option from 1 to %d.' % len(ops)
     _semana(clave)['votos'][str(ses.personaje.char_id)] = n - 1
+    _semana(clave).setdefault('opciones', ops)
     _guardar()
     return 'You voted for: %s.' % ops[n - 1]['texto']
 
