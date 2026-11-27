@@ -35,6 +35,7 @@ SALIDA = RAIZ / 'parches' / 'extras' / 'setting' / 'eng' / 'wnd05.xml'
 
 TAB, PAGINA, DIALOGO = 59100, 59101, 59110
 SLOT0 = 59120
+POS_PESTANAS = {12003: 2, 12004: 63, 12005: 124, 59100: 185}       # Sound, Display, Set ITF, AOF
 
 PAGINA_XML = '''    <!-- AOF: la pestana propia (tools/parche_aof_ventana.py, server/lua/teclas.lua) -->
     <window class="WND_CLASS_BUTTON" id="59100" appdata="59101" range="197,299,50,17" fcolor="101" font="1" icon="12003" check="12004" title="AOF">
@@ -125,7 +126,15 @@ def generar(texto: str) -> str:
     botones = nl.join(BOTON_SLOT.format(id=SLOT0 + i, y=26 + 22 * i, n=i + 1) for i in range(12))
     nuevo = PAGINA_XML.replace('{hijos}', hijos).replace('{botones}', botones).replace('\n', nl)
     pos = texto.rindex('</root>')
-    return texto[:pos] + nuevo + texto[pos:]
+    texto = texto[:pos] + nuevo + texto[pos:]
+    # 4. Las cuatro pestanas dentro del marco ("que el tab de config de aof no sobresalga", 27/11/2026): la imagen
+    # (btn120) mide ~61 px y venian cada 63 desde x 8, asi que la cuarta se salia por la derecha.
+    for wid, x in POS_PESTANAS.items():
+        texto, n = re.subn(r'(<window class="WND_CLASS_BUTTON" id="%d"[^>]*range=")\d+(,299,)' % wid,
+                           r'\g<1>%d\2' % x, texto)
+        if n != 1:
+            raise SystemExit('no encuentro la pestana %d' % wid)
+    return texto
 
 
 # LAS ETIQUETAS DE LA BARRA ("y puede cambiar aca el numero que lanza??", 07/11/2026). Los rotulos F1..F12 vienen

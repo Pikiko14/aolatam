@@ -229,6 +229,13 @@ def al_entrar(ses):
     if p is None:
         return
     st = getattr(p, 'stage', None)
+    if not getattr(ses, '_clima_lua', False):        # una vez por conexion: dice la opcion Weather del cliente
+        ses._clima_lua = True
+        try:
+            import canal_lua
+            ses.enviar(canal_lua.paquete(_saludo_lua()))
+        except Exception:
+            log.debug('mundo vivo: lua del clima', exc_info=True)
     iconos(ses)
     cielo(ses, forzar=True)
     if not es_campo(st):
@@ -270,6 +277,38 @@ def paquetes_cielo(codigo, nivel, hora):
             struct.pack('<HBB', 0x0015, 1, int(hora) % 24)]
 
 
+# APAGARLO EN LAS OPCIONES (27/11/2026: "haz que el clima se pueda desactivar desde las opciones, en display, me
+# refiero al efecto"). System > Display > Weather (Open / Close) es del cliente (sys.lua ShowWeather) y no frenaba lo
+# que manda el servidor. lua/clima.lua le dice al servidor la opcion (c2s 0x002F [u8 181][u32 ShowWeather][u32 0]) al
+# entrar y al cambiarla; con Close no se le manda cielo (ni luz) ni efectos del clima. Los bonos del clima siguen.
+CMD_CLIMA = 181
+_LUA_CLIMA = None
+
+
+def _saludo_lua():
+    global _LUA_CLIMA
+    if _LUA_CLIMA is None:
+        import canal_lua
+        _LUA_CLIMA = (canal_lua.CARPETA / 'clima.lua').read_text(encoding='utf-8')
+    return _LUA_CLIMA
+
+
+def clima_apagado(ses):
+    return bool(getattr(ses, '_clima_off', False))
+
+
+def procesar(ses, cuerpo) -> bool:
+    import struct
+    if len(cuerpo) < 9 or cuerpo[0] != CMD_CLIMA or getattr(ses, 'personaje', None) is None:
+        return False
+    a, _b = struct.unpack_from('<II', cuerpo, 1)
+    antes = clima_apagado(ses)
+    ses._clima_off = int(a) == 1
+    if ses._clima_off != antes:
+        cielo(ses, forzar=True)
+    return True
+
+
 def cielo_de(stage, ahora=None):
     """(codigo, nivel, hora) que toca pintar en ese mapa ahora."""
     c = clima(stage, ahora)
@@ -291,7 +330,7 @@ def cielo(ses, ahora=None, forzar=False):
     if p is None:
         return
     try:
-        quiero = cielo_de(getattr(p, 'stage', None), ahora)
+        quiero = (0, 0, HORA_NORMAL) if clima_apagado(ses) else cielo_de(getattr(p, 'stage', None), ahora)
         tengo = getattr(ses, '_mv_cielo', None)
         if forzar and tengo is None and quiero == (0, 0, HORA_NORMAL):
             return                      # nunca se le mando nada: el 0x0014 del mapa ya lo deja asi
@@ -403,7 +442,7 @@ def paquetes_ambiente(ses, stage, monstruos, rng=None, ahora=None):
     rng = rng or random
     mid = _fx_del_mapa(stage, ahora)
     p = getattr(ses, 'personaje', None)
-    if not mid or p is None:
+    if not mid or p is None or clima_apagado(ses):
         return []
     cfg = config()
     radio = int(cfg.get('fx_radio', 14))

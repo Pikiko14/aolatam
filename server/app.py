@@ -19287,6 +19287,8 @@ class Servidor:
                 return
             if __import__('mecanicas_ui').procesar(ses, cuerpo):        # ventana Challenges (180)
                 return
+            if __import__('mundo_vivo').procesar(ses, cuerpo):          # opcion Weather de Display (181)
+                return
             if __import__('item_mall').procesar(ses,opcode,cuerpo):
                 return
             if __import__('salon').procesar(ses, cuerpo):
@@ -21937,12 +21939,18 @@ class Servidor:
                 _sacar(ses, ranura, 1)
                 yo = ses.personaje.entity_id
 
+                ses.personaje.hechizos_aprendidos.add(mid)
+                # LA LISTA ENTERA, como al cambiar de mapa ("cuando aprendo una habilidad no se me estaquea aca pero si
+                # paso 1 mapa si", 27/11/2026): con el 0x001D de solo el hechizo nuevo la ventana Skill no lo ponia
+                # hasta el proximo mapa; con todos (el rango mas alto de cada linea) se rehace al momento.
+                _ids_sk = [h[0] for h in (ses.personaje.habilidades or [])]
+                _todos_sk = sorted(set(n for n, _ in _c.hechizos_iniciales(_ids_sk))
+                                   | set(ses.personaje.hechizos_aprendidos))
                 salida = [
-                    struct.pack('<HIB', 0x001D, yo, 1) + struct.pack('<BII', _c.KIND_HECHIZO, mid, mlv),
+                    *_c.otorgar_hechizos(ses.personaje.entity_id, _todos_sk),
                     _c.aviso(mnombre, tipo=7, msg_id=_c.MSG_HECHIZO),
                     *_refrescar(ses, [ranura])
                 ]
-                ses.personaje.hechizos_aprendidos.add(mid)
                 # El rango nuevo pasa a la barra en el sitio del viejo de su linea (el I
                 # se quedaba en F1 aunque se aprendiera el II). login._barra hace lo mismo
                 # al entrar; aqui se reenvia el 0x005B para verlo sin reloguear.

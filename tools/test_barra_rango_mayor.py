@@ -46,6 +46,10 @@ def test_al_aprender_con_pergamino_la_barra_cambia_ya():
     assert BASIC_ATTACK_II in p.hechizos_aprendidos
     assert p.barra == [[1, BASIC_ATTACK_II], [1, BLOODY_SONG_I]]
     assert any(pk[:2] == struct.pack('<H', 0x005B) for pk in packets)
+    # La ventana Skill lo pone ya: la lista entera de hechizos, como al cambiar de mapa (27/11/2026).
+    lista = [pk for pk in packets if pk[:2] == struct.pack('<H', 0x001D) and pk[6] > 1]
+    assert lista and struct.pack('<BI', 9, BASIC_ATTACK_II) in lista[0]
+    assert struct.pack('<BI', 9, BASIC_ATTACK_I) not in lista[0]
 
 
 def test_sin_rango_nuevo_la_barra_queda_igual():

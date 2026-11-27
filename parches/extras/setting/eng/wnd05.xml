@@ -189,15 +189,15 @@
     <icon id="12008" dir="\wnd01\" normal="btn153_n" focus="btn153_f" down="btn153_d" disable="normal" />
     <!-- 離開遊戲按鈕 -->
     <!-- 換頁按鈕 -->
-    <window class="WND_CLASS_BUTTON" id="12003" appdata="12011" range="8,299,50,17" fcolor="101" font="1" icon="12003" check="12004" title="Sound">
+    <window class="WND_CLASS_BUTTON" id="12003" appdata="12011" range="2,299,50,17" fcolor="101" font="1" icon="12003" check="12004" title="Sound">
         <style wsVisible="" bsVCenter="" bsHCenter="" bsRadio="" bsRadioBegin="" wsTab="" />
         <OnCommand>Setting_ChangePage</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="12004" appdata="12031" range="71,299,50,17" fcolor="101" font="1" icon="12003" check="12004" title="Display">
+    <window class="WND_CLASS_BUTTON" id="12004" appdata="12031" range="63,299,50,17" fcolor="101" font="1" icon="12003" check="12004" title="Display">
         <style wsVisible="" bsVCenter="" bsHCenter="" bsRadio="" wsTab="" />
         <OnCommand>Setting_ChangePage</OnCommand>
     </window>
-    <window class="WND_CLASS_BUTTON" id="12005" appdata="12081" range="134,299,50,17" fcolor="101" font="1" icon="12003" check="12004" title="Set ITF">
+    <window class="WND_CLASS_BUTTON" id="12005" appdata="12081" range="124,299,50,17" fcolor="101" font="1" icon="12003" check="12004" title="Set ITF">
         <style wsVisible="" bsVCenter="" bsHCenter="" bsRadio="" wsTab="" />
         <OnCommand>Setting_ChangePage</OnCommand>
     </window>
@@ -5738,7 +5738,7 @@ Leagues will receive different amounts of Repute based on the outcome of the bat
 		<style wsVisible="" csVScroll="" csSimple=""/>
 	</window>
     <!-- AOF: la pestana propia (tools/parche_aof_ventana.py, server/lua/teclas.lua) -->
-    <window class="WND_CLASS_BUTTON" id="59100" appdata="59101" range="197,299,50,17" fcolor="101" font="1" icon="12003" check="12004" title="AOF">
+    <window class="WND_CLASS_BUTTON" id="59100" appdata="59101" range="185,299,50,17" fcolor="101" font="1" icon="12003" check="12004" title="AOF">
         <style wsVisible="" bsVCenter="" bsHCenter="" bsRadio="" bsRadioEnd="" wsTab="" />
         <OnCommand>Setting_ChangePage</OnCommand>
     </window>

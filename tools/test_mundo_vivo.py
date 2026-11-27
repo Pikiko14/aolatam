@@ -257,3 +257,22 @@ def test_los_climas_propios_del_cliente():
     sin = RAIZ / 'parches' / 'juego' / 'angel.dat.sin_clima'
     if sin.exists():
         assert pc.parchear(sin.read_bytes()) == exe.read_bytes()
+
+
+def test_el_clima_se_apaga_desde_display(monkeypatch):
+    """"que el clima se pueda desactivar desde las opciones, en display" (27/11/2026): lua/clima.lua manda ShowWeather."""
+    import struct
+    climas = {c['id']: c for c in mv.config()['climas']}
+    monkeypatch.setattr(mv, 'clima', lambda st, ahora=None: climas['snow'] if st == SPIKE else None)
+    ses = _ses_en(SPIKE)
+    mv.cielo(ses, DIA, forzar=True)
+    assert ses.enviados[-2][3] != 0                                       # nieve
+    assert mv.procesar(ses, struct.pack('<BII', 181, 1, 0))               # Weather: Close
+    assert ses.enviados[-2:] == [struct.pack('<HBBB', 0x0015, 2, 0, 0), struct.pack('<HBB', 0x0015, 1, 15)]
+    n = len(ses.enviados)
+    mv.cielo(ses, DIA, forzar=True)                                       # al cambiar de mapa sigue sin clima
+    assert ses.enviados[-2:] == [struct.pack('<HBBB', 0x0015, 2, 0, 0), struct.pack('<HBB', 0x0015, 1, 15)]
+    assert mv.paquetes_ambiente(ses, SPIKE, {}) == []
+    assert mv.procesar(ses, struct.pack('<BII', 181, 0, 0))               # Open: vuelve la nieve
+    assert ses.enviados[-2][3] != 0 and len(ses.enviados) > n
+    assert not mv.procesar(ses, struct.pack('<BII', 180, 0, 0))           # no es suyo
