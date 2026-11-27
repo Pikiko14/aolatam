@@ -23705,7 +23705,9 @@ class Servidor:
                 # Elecciones especiales
                 if _el in DESTINOS_ENTRENAMIENTO and ses.personaje:
                     _st_area, _tile_area, _nombre_area = DESTINOS_ENTRENAMIENTO[_el]
-                    ses.viaje_pendiente = (_st_area, _tile_area, _nombre_area)
+                    # Las Training Areas estan cerradas (configuracion.MAPAS_APAGADOS, 27/11/2026): aviso y sin viaje.
+                    if not _rechazar_mapa_apagado(ses, _st_area):
+                        ses.viaje_pendiente = (_st_area, _tile_area, _nombre_area)
                 elif _el == 10125 and ses.personaje:
                     if _es_graduado(ses):
                         ses.enviar(dialogos.armar_linea(11512, 2, []), struct.pack('<H', 0x0012) + dialogos.FIN)

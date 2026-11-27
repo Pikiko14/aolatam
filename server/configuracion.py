@@ -305,6 +305,12 @@ MAPAS_APAGADOS = frozenset({
     420,  # Bling Plaza
     421,  # Ultimate Arena
     422,  # Secret Peak
+    # Training Areas A-D (las del Terra Keeper de Sunflower Plain, Foggy Forest, Mysterious Garden y Megalith Plain):
+    # "quitalas que no se pueda entrar a ellas" (27/11/2026)
+    118,  # Training Area A
+    134,  # Training Area B
+    135,  # Training Area C
+    136,  # Training Area D
 })
 AVISO_MAPA_APAGADO = 'This area is closed for now.'
 
