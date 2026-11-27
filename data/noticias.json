@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-27",
+    "titulo": "EXP by level and pet recovery",
+    "texto": "Monster EXP now depends on the level gap: hunting monsters more than 5 levels below you gives less EXP (down to 10%), and stronger monsters give up to 40% more. Pets use their own level. Pets now recover HP and MP while they are calm. Souls walk at normal speed. Weather messages now appear only in chat."
+  },
+  {
+    "fecha": "2026-11-27",
     "titulo": "Weather option and skill fixes",
     "texto": "You can now turn the weather effects off in System > Display > Weather (Close). Skills learned from scrolls now show up in the Skill window right away. The System window tabs now fit inside the window."
   },
