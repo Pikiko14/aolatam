@@ -1,0 +1,11 @@
+{
+ "_nota": "Honor Points por PvP (server/honor.py). Precios de la tienda en tools/tienda_honor.py.",
+ "duelo": {"victoria": 3, "oro_min": 100000, "tope_dia": 5, "tope_rival_dia": 2},
+ "caza": {"presa_sobrevive": 25, "cazador": 15},
+ "baja": {"puntos": 1, "dif_nivel": 10, "tope_dia": 30, "tope_rival_dia": 3},
+ "arena": {"campeon": 30, "participa": 8},
+ "holy": {"ganador": 20, "perdedor": 8, "empate": 12},
+ "league_war": {"win": 25, "loss": 8, "draw": 12},
+ "moba": {"victoria": 20, "derrota": 8},
+ "daily_pvp": {"victoria": 10, "derrota": 4}
+}

@@ -27,6 +27,16 @@ def _miles(n):
     return format(int(n), ',')
 
 
+def _corto(n):
+    """1,500,000 -> 1.5M, 40,000 -> 40K."""
+    n = int(n)
+    for div, suf in ((1000000000, 'B'), (1000000, 'M'), (1000, 'K')):
+        if n >= div:
+            t = ('%.1f' % (n / div)).rstrip('0').rstrip('.')
+            return t + suf
+    return str(n)
+
+
 def proxima(clave, ahora=None):
     """'HH:MM' (o 'Day HH:MM') de la proxima vez del evento en el calendario, o ''."""
     import calendario
@@ -58,12 +68,14 @@ def _duelos(ses, ahora):
         ba, bb = duelos._botes(d)
         a, b = duelos._nombre(d['a']), duelos._nombre(d['b'])
         if d['fase'] == 'apuestas':
-            resto = 'bets %ds' % max(0, int(d['fin_apuestas'] - ahora))
+            resto = '%ds to bet' % max(0, int(d['fin_apuestas'] - ahora))
             puede = cid not in (d['a'], d['b']) and cid not in d['apuestas']
         else:
-            resto, puede = 'FIGHTING', False
-        filas.append(['%s vs %s  Pot %s  (%s/%s)  %s' % (a, b, _miles(d['oro'] * 2), _miles(ba), _miles(bb), resto),
-                      a if puede else '', b if puede else ''])
+            resto, puede = 'FIGHTING!', False
+        # la tarjeta: [centro, luchador A, luchador B, 1 si se puede apostar]; las apuestas a cada uno, junto al nombre
+        filas.append(['VS  Pot %s  -  %s' % (_corto(d['oro'] * 2), resto),
+                      '%s (%s)' % (a, _corto(ba)) if ba else a, '%s (%s)' % (b, _corto(bb)) if bb else b,
+                      1 if puede else 0])
         ids.append(d['id'])
     ses._soc_duelos = ids
     return filas
@@ -96,14 +108,14 @@ def _premio_txt(p):
 def _p_duelos(ses, ahora):
     c = sociales.config()['duelo']
     filas = _duelos(ses, ahora)
-    abiertos = sum(1 for f in filas if f[1] or f[2])
+    abiertos = sum(1 for f in filas if f[3])
     estado = ('%d duel%s right now, %d open for bets.' % (len(filas), '' if len(filas) == 1 else 's', abiertos)
               if filas else 'No duels right now. Be the first: right-click a player!')
     reglas = ['Right-click a player, pick Duel and set the stake (min %s gold).' % _miles(c['oro_min']),
               'Once accepted, everyone has %d s to bet: amount, then a name.' % int(c['apuestas_s']),
               'Winner takes both stakes. Right bets share the rest (-%d%% fee).' % int(c['comision']),
               'Duels are safe: no EXP is lost. Fights last up to %d minutes.' % (int(c['pelea_max_s']) // 60)]
-    return estado, reglas, ['Type an amount, then click a name to bet.', filas]
+    return estado, reglas, ['then click a fighter', filas]
 
 
 def _p_caza(ses):

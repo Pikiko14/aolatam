@@ -555,6 +555,13 @@ def _finish(r,cancel=False):
             con.execute('INSERT OR IGNORE INTO daily_rewards VALUES(?,?,?,?,0)',(new['id'],m['usuario'],m['char_id'],item))
     _ROUNDS[new['id']]=new
     cuentas._notificar_cambio(inmediato=True)
+    if not cancel and r['kind']==0:
+        try:
+            import honor
+            for key,m in new['members'].items():
+                if key in eligible and m.get('team'):honor.daily(m['char_id'],m['team'] in teams,new['name'])
+        except Exception:
+            __import__('logging').getLogger('daily_events').exception('honor')
     for player in _sessions(new):
         aura(player,False)
         player.personaje.buffs.pop('daily_joy',None)

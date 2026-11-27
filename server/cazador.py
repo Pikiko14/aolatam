@@ -113,6 +113,7 @@ def baja(ses, otro):
     if es_presa(otro) and apuntado(ses):
         premio = sociales.premiar(ses, cfg()['premio_cazador'])
         sociales.aviso(ses, '[Hunted Hunter] You caught the prey! You get %s.' % premio)
+        __import__('honor').caza(ses, False)
         sociales.revivir(otro)
         terminar('%s caught the prey %s! Well hunted.' % (ses.personaje.nombre, otro.personaje.nombre))
         return True
@@ -135,6 +136,7 @@ def tick(ahora=None):
         if ts >= c['fin']:
             premio = sociales.premiar(presa, cfg()['premio_presa'])
             sociales.aviso(presa, '[Hunted Hunter] You survived! You get %s.' % premio)
+            __import__('honor').caza(presa, True)
             terminar('%s survived the hunt! The prey wins.' % presa.personaje.nombre)
             return
         if ts - c['ultimo_aviso'] >= float(cfg()['aviso_cada_s']):

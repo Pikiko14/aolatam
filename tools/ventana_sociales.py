@@ -11,8 +11,13 @@ usuarios normales nada de comandos".
     elegida y enciende su boton. La quinta, Calendar ("que salga una 5 tab que sea el calendario de aa, hbf, moba y
     demas"): un boton por dia y los eventos de ese dia con su hora y si ya pasaron, estan en marcha o cuanto falta.
 
-Ids: duelo 58900..58907; el panel 58920 con sus hijos en 57100..57169 e iconos 57170..57179; iconos del duelo
-58950..58955; boton de la barra 59008, opcion del menu 59661.
+"Hazlo amigable, moderno y bonito" (26/11/2026): la ventanita del duelo crece (cabecera con las espadas, la apuesta
+en su tarjeta con la moneda y botones de monto rapido 10K / 100K / 1M / 10M) y cada duelo del panel es una tarjeta
+"A  vs  B" con un boton por luchador (rojo / azul, gris si ya no se puede apostar), el bote en medio y montos rapidos
+junto a "Your bet". El Join / Leave de El cazador cazado es verde / rojo.
+
+Ids: duelo 58900..58911; el panel 58920 con sus hijos en 57100..57169 e iconos 57170..57186; iconos del duelo
+58950..58958; boton de la barra 59008, opcion del menu 59661.
 
     python tools/ventana_sociales.py [--vista CARPETA]
 """
@@ -36,7 +41,10 @@ BOTON_BARRA, X_BARRA, Y_BARRA, NOMBRE_BOTON = 59008, 75, -127, 'aolat_ev'
 
 # --- la ventanita del duelo
 V_DU, DU_L1, DU_L2, DU_ORO_L, DU_ORO, DU_OK, DU_NO, DU_FONDO = 58900, 58901, 58902, 58903, 58904, 58905, 58906, 58907
-DW, DH = 260, 112
+DU_RAPIDO = 58908                                  # + 0..3: 10K 100K 1M 10M
+RAPIDOS_DUELO = ('10K', '100K', '1M', '10M')
+DW, DH = 300, 204
+DU_CAJA_Y = 92                                     # la tarjeta de la apuesta
 # --- el panel con pestanas
 V_SO, W, H = 58920, 500, 420
 TABS = (57100, 57101, 57102, 57103, 57109)
@@ -62,6 +70,11 @@ I_DIA_SI, I_DIA_NO = 57178, 57179
 I_TAB_SI, I_TAB_NO, I_B454, I_B136 = 57174, 57175, 57176, 57091     # 57091: el verde de 136 de Challenges
 I_DU_FONDO, I_B90, I_B80 = 58950, 58952, 58953        # 58953: tambien lo usa Challenges
 I_B90_ROJO = 58955
+I_CHIP62, I_B120, I_B120_ROJO = 58956, 58957, 58958
+I_LADO_A, I_LADO_B, I_LADO_NO, I_CHIP50, I_B136_ROJO = 57180, 57181, 57182, 57184, 57185
+D_RAPIDO = 57165                                   # + 0..2: montos rapidos de la apuesta
+RAPIDOS_APUESTA = ('1K', '10K', '100K')
+LADO_W = 132
 
 TAB_W, TAB_X0, TAB_PASO = 94, 8, 97
 FILA_Y0, FILA_PASO = 126, 26
@@ -155,10 +168,39 @@ def fondo_pestana(i):
     return im
 
 
+def moneda(lado=18):
+    k = 4
+    im = Image.new('RGBA', (lado * k, lado * k), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    d.ellipse((0, 0, lado * k - 1, lado * k - 1), fill=(250, 204, 21, 255), outline=(146, 92, 10, 255), width=k)
+    d.ellipse((3 * k, 3 * k, lado * k - 3 * k, lado * k - 3 * k), outline=(202, 138, 4, 255), width=k)
+    d.ellipse((5 * k, 4 * k, 8 * k, 7 * k), fill=(254, 240, 170, 255))
+    return im.resize((lado, lado), Image.LANCZOS)
+
+
 def fondo_duelo():
+    acento = em.ACENTOS['duelo']
     im = em.fondo(DW, DH)
-    em.tarjeta(im, (4, 3, DW - 5, DH - 4), em.ACENTOS['duelo'])
-    im.alpha_composite(em.casilla(136), (60, 52))
+    # la cabecera: las espadas en su circulo, DUEL y un velo rojo que se apaga
+    caja = (4, 4, DW - 5, 60)
+    em.tarjeta(im, caja, acento)
+    velo = Image.new('RGBA', (caja[2] - caja[0] - 8, caja[3] - caja[1] - 6))
+    vd = ImageDraw.Draw(velo)
+    for x in range(velo.width):
+        vd.line((x, 0, x, velo.height), fill=tuple(acento) + (int(255 * max(0.0, 0.25 * (1 - x / (velo.width * 0.75)))),))
+    base = im.crop((caja[0] + 4, caja[1] + 3, caja[0] + 4 + velo.width, caja[1] + 3 + velo.height))
+    base.alpha_composite(velo)
+    im.paste(base, (caja[0] + 4, caja[1] + 3))
+    im.alpha_composite(_icono_grande(em.ic_espadas, acento, 40), (12, 12))
+    d = ImageDraw.Draw(im)
+    d.text((62, 9), 'DUEL', font=vp._fuente('segoeuib.ttf', 15), fill=tuple(acento))
+    # la apuesta
+    em.tarjeta(im, (4, DU_CAJA_Y, DW - 5, DH - 36), em.ORO)
+    em.cabecera(im, (14, DU_CAJA_Y + 6), 'STAKE (EACH PLAYER)', em.ic_estrella, em.ORO, tam=10)
+    im.alpha_composite(moneda(), (16, DU_CAJA_Y + 27))
+    im.alpha_composite(em.casilla(150, 20), (40, DU_CAJA_Y + 26))
+    d = ImageDraw.Draw(im)
+    d.text((198, DU_CAJA_Y + 29), 'Gold', font=vp._fuente('segoeuib.ttf', 11), fill=em.ORO)
     return im
 
 
@@ -186,7 +228,11 @@ def piezas() -> dict:
     for i in range(len(PESTANAS)):
         p['aolat_ev_fondo%d' % (i + 1)] = fondo_pestana(i)
     for nombre, w, color in (('aolat_ev_b90', 90, 'verde'), ('aolat_ev_b90r', 90, 'rojo'),
-                             ('aolat_ev_b80', 80, 'verde'), ('aolat_ev_b454', W - 20, 'azul')):
+                             ('aolat_ev_b80', 80, 'verde'), ('aolat_ev_b454', W - 20, 'azul'),
+                             ('aolat_du_chip', 62, 'azul'), ('aolat_du_b120', 120, 'verde'),
+                             ('aolat_du_b120r', 120, 'rojo'), ('aolat_ev_ladoa', LADO_W, 'rojo'),
+                             ('aolat_ev_ladob', LADO_W, 'cielo'), ('aolat_ev_ladono', LADO_W, 'gris'),
+                             ('aolat_ev_chip', 50, 'azul'), ('aolat_ev_b136r', 136, 'rojo')):
         for e in ('n', 'f', 's'):
             p['%s_%s' % (nombre, e)] = em.boton(w, 18, color, e)
     for e in ('n', 'f', 's'):
@@ -220,12 +266,14 @@ def bloque() -> str:
         xml.extend(x for _, x in hijos)
 
     ventana(V_DU, 'Duel', DW, DH, [
-        (DU_L1, vp._texto(DU_L1, 10, 8, DW - 20, vp.C_ORO)),
-        (DU_L2, vp._texto(DU_L2, 10, 28, DW - 20, vp.C_TENUE)),
-        (DU_ORO_L, vp._texto(DU_ORO_L, 14, 54, 44, vp.C_BLANCO, 'Gold:')),
-        (DU_ORO, _edit(DU_ORO, 64, 54, 128)),
-        (DU_OK, _boton_texto(DU_OK, 34, 84, 90, I_B90, 'OnDueloOk', 'Challenge')),
-        (DU_NO, _boton_texto(DU_NO, 136, 84, 90, I_B90_ROJO, 'OnDueloNo', 'Cancel')),
+        (DU_L1, vp._texto(DU_L1, 62, 30, DW - 76, vp.C_BLANCO)),
+        (DU_L2, vp._texto(DU_L2, 12, 68, DW - 24, vp.C_TENUE)),
+        (DU_ORO_L, vp._texto(DU_ORO_L, 232, DU_CAJA_Y + 29, 58, vp.C_ORO)),
+        (DU_ORO, _edit(DU_ORO, 46, DU_CAJA_Y + 29, 138)),
+    ] + [(DU_RAPIDO + i, _boton_texto(DU_RAPIDO + i, 14 + 68 * i, DU_CAJA_Y + 50, 62, I_CHIP62, 'OnDueloRapido',
+                                      RAPIDOS_DUELO[i])) for i in range(4)] + [
+        (DU_OK, _boton_texto(DU_OK, 24, DH - 28, 120, I_B120, 'OnDueloOk', 'Challenge')),
+        (DU_NO, _boton_texto(DU_NO, 156, DH - 28, 120, I_B120_ROJO, 'OnDueloNo', 'Cancel')),
         (DU_FONDO, vp._w('WND_CLASS_BASE', DU_FONDO, 0, 0, DW, DH, ' icon="%d"' % I_DU_FONDO)),
     ])
     hijos = [(TABS[i], _boton_texto(TABS[i], TAB_X0 + TAB_PASO * i, 5, TAB_W, I_TAB_SI if i == 0 else I_TAB_NO,
@@ -237,12 +285,16 @@ def bloque() -> str:
     # duelos
     hijos += [(D_APUESTA_L, vp._texto(D_APUESTA_L, 14, 102, 60, vp.C_BLANCO, 'Your bet:')),
               (D_APUESTA, _edit(D_APUESTA, 79, 102, 98)),
-              (D_AYUDA, vp._texto(D_AYUDA, 190, 102, W - 202, vp.C_TENUE))]
+              (D_AYUDA, vp._texto(D_AYUDA, 352, 102, W - 362, vp.C_TENUE))]
+    hijos += [(D_RAPIDO + i, _boton_texto(D_RAPIDO + i, 186 + 54 * i, 100, 50, I_CHIP50, 'OnSocialRapido',
+                                          RAPIDOS_APUESTA[i])) for i in range(3)]
     for i in range(N_DUELOS):
         y = FILA_Y0 + FILA_PASO * i
-        hijos += [(D_FILA + i, vp._texto(D_FILA + i, 16, y, W - 222, vp.C_BLANCO)),
-                  (D_A + i, _boton_texto(D_A + i, W - 204, y - 2, 90, I_B90, 'OnSocialApostarA', visible=False)),
-                  (D_B + i, _boton_texto(D_B + i, W - 108, y - 2, 90, I_B90, 'OnSocialApostarB', visible=False))]
+        hijos += [(D_A + i, _boton_texto(D_A + i, 14, y - 2, LADO_W, I_LADO_A, 'OnSocialApostarA', visible=False)),
+                  (D_FILA + i, vp._texto(D_FILA + i, 20 + LADO_W, y, W - 40 - 2 * LADO_W, vp.C_ORO,
+                                         estilo=' ssHCenter=""')),
+                  (D_B + i, _boton_texto(D_B + i, W - 14 - LADO_W, y - 2, LADO_W, I_LADO_B, 'OnSocialApostarB',
+                                         visible=False))]
     hijos.append((D_SIN, vp._texto(D_SIN, 16, FILA_Y0, W - 32, vp.C_TENUE)))
     # cazador
     for i in range(N_CAZA):
@@ -273,6 +325,10 @@ def bloque() -> str:
     ventana(V_SO, 'Events', W, H, hijos)
 
     iconos = [vp._icono(I_DU_FONDO, 'aolat_du_fondo')]
+    for iid, nombre in ((I_CHIP62, 'aolat_du_chip'), (I_B120, 'aolat_du_b120'), (I_B120_ROJO, 'aolat_du_b120r'),
+                        (I_LADO_A, 'aolat_ev_ladoa'), (I_LADO_B, 'aolat_ev_ladob'), (I_LADO_NO, 'aolat_ev_ladono'),
+                        (I_CHIP50, 'aolat_ev_chip'), (I_B136_ROJO, 'aolat_ev_b136r')):
+        iconos.append(vp._icono(iid, nombre + '_n', nombre + '_f', nombre + '_s'))
     iconos += [vp._icono(I_FONDOS[i], 'aolat_ev_fondo%d' % (i + 1)) for i in range(len(PESTANAS))]
     for iid, nombre in ((I_B90, 'aolat_ev_b90'), (I_B90_ROJO, 'aolat_ev_b90r'), (I_B80, 'aolat_ev_b80'),
                         (I_B454, 'aolat_ev_b454'),

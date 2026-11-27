@@ -3,12 +3,12 @@
 	<兌換商店 編號="1" 名稱="Winter Holiday PD" 群組="622"/>
 	<兌換商店 編號="2" 名稱="Ride and Robots" 群組="538"/>
 	<兌換商店 編號="3" 名稱="Enhanced Pestle and Ride Feed" 群組="595"/>
-	<兌換商店/>
-	<兌換商店/>
-	<兌換商店/>
-	<兌換商店/>
-	<兌換商店/>
-	<兌換商店/>
+	<兌換商店 編號="4" 名稱="Honor: Hats" 群組="660"/>
+	<兌換商店 編號="5" 名稱="Honor: Outfits" 群組="661"/>
+	<兌換商店 編號="6" 名稱="Honor: Gloves and Shoes" 群組="662"/>
+	<兌換商店 編號="7" 名稱="Honor: Weapon Looks" 群組="663"/>
+	<兌換商店 編號="8" 名稱="Honor: Wings" 群組="664"/>
+	<兌換商店 編號="9" 名稱="Honor: Mounts" 群組="665"/>
 	<ALIAS exchangegroup="兌換商店" id="編號"/>
 	<ALIAS title="名稱" group="群組"/>
 </root>

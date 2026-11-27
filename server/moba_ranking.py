@@ -112,6 +112,10 @@ def registrar(pa, ganador, ahora=None):
                 ag = 0
         out[ses] = (pts, ag)
         try:
+            __import__('honor').moba(ses, gano)
+        except Exception:
+            log.exception('MOBA: honor')
+        try:
             import misiones_diarias
             misiones_diarias.sumar(ses, 'moba_jugar')
             if gano:

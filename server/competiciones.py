@@ -852,6 +852,10 @@ def terminar(stage, motivo='gm'):
             cid for cid in dict.fromkeys(alive + list(reversed(r['eliminados'])))
             if not r['miembros'][cid].get('sin_puesto')]
     _guardar(r, resultado=True)
+    try:
+        __import__('honor').competicion(r)
+    except Exception:
+        log.exception('honor de la competicion')
     anunciar_resultados(r)
     if stage == 112:
         # Client string.xml 2147: a draw has no winning-side suffix.

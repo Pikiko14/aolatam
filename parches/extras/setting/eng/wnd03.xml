@@ -11996,446 +11996,6 @@
     <icon id="58850" dir="\wnd01\" normal="aolat_md_fondo" focus="normal" down="normal" disable="normal" />
     <icon id="58851" dir="\wnd01\" normal="aolat_md_barra" focus="normal" down="normal" disable="normal" />
     <!-- /aolat misiones diarias -->
-    <!-- aolat eventos sociales -->
-    <window class="WND_CLASS_DLG_1" range="0,0,268,136" id="58900" title="Duel" fcolor="104" font="1">
-        <style wsVisible="" wsMoveable="" />
-        <child>58901</child>
-        <child>58902</child>
-        <child>58903</child>
-        <child>58904</child>
-        <child>58905</child>
-        <child>58906</child>
-        <child>58907</child>
-    </window>
-    <window class="WND_CLASS_STATIC" id="58901" range="10,8,240,14" title="" fcolor="59782" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="58902" range="10,28,240,14" title="" fcolor="59781" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="58903" range="14,54,44,14" title="Gold:" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_EDIT" id="58904" range="64,54,128,14" fcolor="103" font="1" tpos="1,0" limit="9">
-        <style wsVisible="" esNumber="" esVCenter="" wsTab="" />
-    </window>
-    <window class="WND_CLASS_BUTTON" id="58905" range="34,84,90,18" title="Challenge" icon="58952" fcolor="103" font="1">
-        <style wsVisible="" wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnDueloOk</OnCommand>
-    </window>
-    <window class="WND_CLASS_BUTTON" id="58906" range="136,84,90,18" title="Cancel" icon="58955" fcolor="103" font="1">
-        <style wsVisible="" wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnDueloNo</OnCommand>
-    </window>
-    <window class="WND_CLASS_BASE" id="58907" range="0,0,260,112" icon="58950">
-        <style wsVisible="" />
-    </window>
-    <window class="WND_CLASS_DLG_1" range="0,0,508,444" id="58920" title="Events" fcolor="104" font="1">
-        <style wsVisible="" wsMoveable="" />
-        <child>57100</child>
-        <child>57101</child>
-        <child>57102</child>
-        <child>57103</child>
-        <child>57109</child>
-        <child>57104</child>
-        <child>57105</child>
-        <child>57106</child>
-        <child>57107</child>
-        <child>57108</child>
-        <child>57110</child>
-        <child>57111</child>
-        <child>57112</child>
-        <child>57113</child>
-        <child>57118</child>
-        <child>57123</child>
-        <child>57114</child>
-        <child>57119</child>
-        <child>57124</child>
-        <child>57115</child>
-        <child>57120</child>
-        <child>57125</child>
-        <child>57116</child>
-        <child>57121</child>
-        <child>57126</child>
-        <child>57117</child>
-        <child>57122</child>
-        <child>57127</child>
-        <child>57128</child>
-        <child>57130</child>
-        <child>57131</child>
-        <child>57132</child>
-        <child>57133</child>
-        <child>57134</child>
-        <child>57135</child>
-        <child>57136</child>
-        <child>57140</child>
-        <child>57141</child>
-        <child>57142</child>
-        <child>57143</child>
-        <child>57144</child>
-        <child>57145</child>
-        <child>57146</child>
-        <child>57150</child>
-        <child>57151</child>
-        <child>57152</child>
-        <child>57153</child>
-        <child>57154</child>
-        <child>57155</child>
-        <child>57200</child>
-        <child>57201</child>
-        <child>57202</child>
-        <child>57203</child>
-        <child>57204</child>
-        <child>57205</child>
-        <child>57206</child>
-        <child>57210</child>
-        <child>57230</child>
-        <child>57211</child>
-        <child>57231</child>
-        <child>57212</child>
-        <child>57232</child>
-        <child>57213</child>
-        <child>57233</child>
-        <child>57214</child>
-        <child>57234</child>
-        <child>57215</child>
-        <child>57235</child>
-        <child>57216</child>
-        <child>57236</child>
-        <child>57217</child>
-        <child>57237</child>
-        <child>57218</child>
-        <child>57238</child>
-        <child>57219</child>
-        <child>57239</child>
-        <child>57220</child>
-        <child>57240</child>
-        <child>57221</child>
-        <child>57241</child>
-        <child>57222</child>
-        <child>57242</child>
-        <child>57223</child>
-        <child>57243</child>
-        <child>57250</child>
-        <child>57160</child>
-        <child>57161</child>
-        <child>57162</child>
-        <child>57163</child>
-        <child>57164</child>
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57100" range="8,5,94,18" title="Duels" icon="57174" fcolor="103" font="1">
-        <style wsVisible="" wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialPestana</OnCommand>
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57101" range="105,5,94,18" title="Hunted Hunter" icon="57175" fcolor="103" font="1">
-        <style wsVisible="" wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialPestana</OnCommand>
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57102" range="202,5,94,18" title="Weekly Vote" icon="57175" fcolor="103" font="1">
-        <style wsVisible="" wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialPestana</OnCommand>
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57103" range="299,5,94,18" title="Treasure Hunt" icon="57175" fcolor="103" font="1">
-        <style wsVisible="" wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialPestana</OnCommand>
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57109" range="396,5,94,18" title="Calendar" icon="57175" fcolor="103" font="1">
-        <style wsVisible="" wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialPestana</OnCommand>
-    </window>
-    <window class="WND_CLASS_STATIC" id="57104" range="66,71,420,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57105" range="16,356,468,14" title="" fcolor="59781" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57106" range="16,371,468,14" title="" fcolor="59781" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57107" range="16,386,468,14" title="" fcolor="59781" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57108" range="16,401,468,14" title="" fcolor="59781" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57110" range="14,102,60,14" title="Your bet:" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_EDIT" id="57111" range="79,102,98,14" fcolor="103" font="1" tpos="1,0" limit="9">
-        <style wsVisible="" esNumber="" esVCenter="" wsTab="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57112" range="190,102,298,14" title="" fcolor="59781" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57113" range="16,126,278,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57118" range="296,124,90,18" title="" icon="58952" fcolor="103" font="1">
-        <style wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialApostarA</OnCommand>
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57123" range="392,124,90,18" title="" icon="58952" fcolor="103" font="1">
-        <style wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialApostarB</OnCommand>
-    </window>
-    <window class="WND_CLASS_STATIC" id="57114" range="16,152,278,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57119" range="296,150,90,18" title="" icon="58952" fcolor="103" font="1">
-        <style wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialApostarA</OnCommand>
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57124" range="392,150,90,18" title="" icon="58952" fcolor="103" font="1">
-        <style wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialApostarB</OnCommand>
-    </window>
-    <window class="WND_CLASS_STATIC" id="57115" range="16,178,278,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57120" range="296,176,90,18" title="" icon="58952" fcolor="103" font="1">
-        <style wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialApostarA</OnCommand>
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57125" range="392,176,90,18" title="" icon="58952" fcolor="103" font="1">
-        <style wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialApostarB</OnCommand>
-    </window>
-    <window class="WND_CLASS_STATIC" id="57116" range="16,204,278,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57121" range="296,202,90,18" title="" icon="58952" fcolor="103" font="1">
-        <style wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialApostarA</OnCommand>
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57126" range="392,202,90,18" title="" icon="58952" fcolor="103" font="1">
-        <style wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialApostarB</OnCommand>
-    </window>
-    <window class="WND_CLASS_STATIC" id="57117" range="16,230,278,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57122" range="296,228,90,18" title="" icon="58952" fcolor="103" font="1">
-        <style wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialApostarA</OnCommand>
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57127" range="392,228,90,18" title="" icon="58952" fcolor="103" font="1">
-        <style wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialApostarB</OnCommand>
-    </window>
-    <window class="WND_CLASS_STATIC" id="57128" range="16,126,468,14" title="" fcolor="59781" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57130" range="16,104,468,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57131" range="16,126,468,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57132" range="16,148,468,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57133" range="16,170,468,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57134" range="16,192,468,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57135" range="16,214,468,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57136" range="182,242,136,18" title="Join" icon="57091" fcolor="103" font="1">
-        <style wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialCaza</OnCommand>
-    </window>
-    <window class="WND_CLASS_STATIC" id="57140" range="16,102,468,14" title="" fcolor="59781" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57141" range="10,124,480,18" title="" icon="57176" fcolor="103" font="1">
-        <style wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialVotar</OnCommand>
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57142" range="10,150,480,18" title="" icon="57176" fcolor="103" font="1">
-        <style wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialVotar</OnCommand>
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57143" range="10,176,480,18" title="" icon="57176" fcolor="103" font="1">
-        <style wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialVotar</OnCommand>
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57144" range="10,202,480,18" title="" icon="57176" fcolor="103" font="1">
-        <style wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialVotar</OnCommand>
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57145" range="10,228,480,18" title="" icon="57176" fcolor="103" font="1">
-        <style wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialVotar</OnCommand>
-    </window>
-    <window class="WND_CLASS_STATIC" id="57146" range="16,258,468,14" title="" fcolor="59782" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57150" range="16,104,468,14" title="" fcolor="59782" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57151" range="16,126,468,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57152" range="16,148,468,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57153" range="16,170,468,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57154" range="16,192,468,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57155" range="16,214,468,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57200" range="10,100,64,18" title="Mon" icon="57179" fcolor="103" font="1">
-        <style wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialDia</OnCommand>
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57201" range="78,100,64,18" title="Tue" icon="57179" fcolor="103" font="1">
-        <style wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialDia</OnCommand>
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57202" range="146,100,64,18" title="Wed" icon="57179" fcolor="103" font="1">
-        <style wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialDia</OnCommand>
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57203" range="214,100,64,18" title="Thu" icon="57179" fcolor="103" font="1">
-        <style wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialDia</OnCommand>
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57204" range="282,100,64,18" title="Fri" icon="57179" fcolor="103" font="1">
-        <style wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialDia</OnCommand>
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57205" range="350,100,64,18" title="Sat" icon="57179" fcolor="103" font="1">
-        <style wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialDia</OnCommand>
-    </window>
-    <window class="WND_CLASS_BUTTON" id="57206" range="418,100,64,18" title="Sun" icon="57179" fcolor="103" font="1">
-        <style wsTab="" ssVCenter="" ssHCenter="" />
-        <OnCommand>OnSocialDia</OnCommand>
-    </window>
-    <window class="WND_CLASS_STATIC" id="57210" range="16,126,350,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57230" range="370,126,116,14" title="" fcolor="59780" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57211" range="16,144,350,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57231" range="370,144,116,14" title="" fcolor="59780" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57212" range="16,162,350,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57232" range="370,162,116,14" title="" fcolor="59780" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57213" range="16,180,350,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57233" range="370,180,116,14" title="" fcolor="59780" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57214" range="16,198,350,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57234" range="370,198,116,14" title="" fcolor="59780" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57215" range="16,216,350,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57235" range="370,216,116,14" title="" fcolor="59780" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57216" range="16,234,350,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57236" range="370,234,116,14" title="" fcolor="59780" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57217" range="16,252,350,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57237" range="370,252,116,14" title="" fcolor="59780" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57218" range="16,270,350,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57238" range="370,270,116,14" title="" fcolor="59780" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57219" range="16,288,350,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57239" range="370,288,116,14" title="" fcolor="59780" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57220" range="16,306,350,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57240" range="370,306,116,14" title="" fcolor="59780" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57221" range="16,324,350,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57241" range="370,324,116,14" title="" fcolor="59780" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57222" range="16,342,350,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57242" range="370,342,116,14" title="" fcolor="59780" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57223" range="16,360,350,14" title="" fcolor="103" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57243" range="370,360,116,14" title="" fcolor="59780" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_STATIC" id="57250" range="16,382,468,14" title="" fcolor="59781" font="1">
-        <style wsVisible="" ssVCenter="" />
-    </window>
-    <window class="WND_CLASS_BASE" id="57160" range="0,0,500,420" icon="57170">
-        <style wsVisible="" />
-    </window>
-    <window class="WND_CLASS_BASE" id="57161" range="0,0,500,420" icon="57171">
-        <style wsVisible="" />
-    </window>
-    <window class="WND_CLASS_BASE" id="57162" range="0,0,500,420" icon="57172">
-        <style wsVisible="" />
-    </window>
-    <window class="WND_CLASS_BASE" id="57163" range="0,0,500,420" icon="57173">
-        <style wsVisible="" />
-    </window>
-    <window class="WND_CLASS_BASE" id="57164" range="0,0,500,420" icon="57177">
-        <style wsVisible="" />
-    </window>
-    <icon id="58950" dir="\wnd01\" normal="aolat_du_fondo" focus="normal" down="normal" disable="normal" />
-    <icon id="57170" dir="\wnd01\" normal="aolat_ev_fondo1" focus="normal" down="normal" disable="normal" />
-    <icon id="57171" dir="\wnd01\" normal="aolat_ev_fondo2" focus="normal" down="normal" disable="normal" />
-    <icon id="57172" dir="\wnd01\" normal="aolat_ev_fondo3" focus="normal" down="normal" disable="normal" />
-    <icon id="57173" dir="\wnd01\" normal="aolat_ev_fondo4" focus="normal" down="normal" disable="normal" />
-    <icon id="57177" dir="\wnd01\" normal="aolat_ev_fondo5" focus="normal" down="normal" disable="normal" />
-    <icon id="58952" dir="\wnd01\" normal="aolat_ev_b90_n" focus="aolat_ev_b90_f" down="aolat_ev_b90_s" disable="normal" />
-    <icon id="58955" dir="\wnd01\" normal="aolat_ev_b90r_n" focus="aolat_ev_b90r_f" down="aolat_ev_b90r_s" disable="normal" />
-    <icon id="58953" dir="\wnd01\" normal="aolat_ev_b80_n" focus="aolat_ev_b80_f" down="aolat_ev_b80_s" disable="normal" />
-    <icon id="57176" dir="\wnd01\" normal="aolat_ev_b454_n" focus="aolat_ev_b454_f" down="aolat_ev_b454_s" disable="normal" />
-    <icon id="57174" dir="\wnd01\" normal="aolat_ev_tabsi_n" focus="aolat_ev_tabsi_f" down="aolat_ev_tabsi_s" disable="normal" />
-    <icon id="57175" dir="\wnd01\" normal="aolat_ev_tabno_n" focus="aolat_ev_tabno_f" down="aolat_ev_tabno_s" disable="normal" />
-    <icon id="57178" dir="\wnd01\" normal="aolat_ev_diasi_n" focus="aolat_ev_diasi_f" down="aolat_ev_diasi_s" disable="normal" />
-    <icon id="57179" dir="\wnd01\" normal="aolat_ev_diano_n" focus="aolat_ev_diano_f" down="aolat_ev_diano_s" disable="normal" />
-    <!-- /aolat eventos sociales -->
     <!-- aolat mecanicas -->
     <window class="WND_CLASS_DLG_1" range="0,0,448,354" id="57000" title="Challenges" fcolor="104" font="1">
         <style wsVisible="" wsMoveable="" />
@@ -12794,4 +12354,487 @@
     <icon id="57098" dir="\wnd01\" normal="aolat_ch_tabsi_n" focus="aolat_ch_tabsi_f" down="aolat_ch_tabsi_s" disable="normal" />
     <icon id="57099" dir="\wnd01\" normal="aolat_ch_tabno_n" focus="aolat_ch_tabno_f" down="aolat_ch_tabno_s" disable="normal" />
     <!-- /aolat mecanicas -->
+    <!-- aolat eventos sociales -->
+    <window class="WND_CLASS_DLG_1" range="0,0,308,228" id="58900" title="Duel" fcolor="104" font="1">
+        <style wsVisible="" wsMoveable="" />
+        <child>58901</child>
+        <child>58902</child>
+        <child>58903</child>
+        <child>58904</child>
+        <child>58908</child>
+        <child>58909</child>
+        <child>58910</child>
+        <child>58911</child>
+        <child>58905</child>
+        <child>58906</child>
+        <child>58907</child>
+    </window>
+    <window class="WND_CLASS_STATIC" id="58901" range="62,30,224,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58902" range="12,68,276,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="58903" range="232,121,58,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_EDIT" id="58904" range="46,121,138,14" fcolor="103" font="1" tpos="1,0" limit="9">
+        <style wsVisible="" esNumber="" esVCenter="" wsTab="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="58908" range="14,142,62,18" title="10K" icon="58956" fcolor="103" font="1">
+        <style wsVisible="" wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnDueloRapido</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="58909" range="82,142,62,18" title="100K" icon="58956" fcolor="103" font="1">
+        <style wsVisible="" wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnDueloRapido</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="58910" range="150,142,62,18" title="1M" icon="58956" fcolor="103" font="1">
+        <style wsVisible="" wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnDueloRapido</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="58911" range="218,142,62,18" title="10M" icon="58956" fcolor="103" font="1">
+        <style wsVisible="" wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnDueloRapido</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="58905" range="24,176,120,18" title="Challenge" icon="58957" fcolor="103" font="1">
+        <style wsVisible="" wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnDueloOk</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="58906" range="156,176,120,18" title="Cancel" icon="58958" fcolor="103" font="1">
+        <style wsVisible="" wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnDueloNo</OnCommand>
+    </window>
+    <window class="WND_CLASS_BASE" id="58907" range="0,0,300,204" icon="58950">
+        <style wsVisible="" />
+    </window>
+    <window class="WND_CLASS_DLG_1" range="0,0,508,444" id="58920" title="Events" fcolor="104" font="1">
+        <style wsVisible="" wsMoveable="" />
+        <child>57100</child>
+        <child>57101</child>
+        <child>57102</child>
+        <child>57103</child>
+        <child>57109</child>
+        <child>57104</child>
+        <child>57105</child>
+        <child>57106</child>
+        <child>57107</child>
+        <child>57108</child>
+        <child>57110</child>
+        <child>57111</child>
+        <child>57112</child>
+        <child>57165</child>
+        <child>57166</child>
+        <child>57167</child>
+        <child>57118</child>
+        <child>57113</child>
+        <child>57123</child>
+        <child>57119</child>
+        <child>57114</child>
+        <child>57124</child>
+        <child>57120</child>
+        <child>57115</child>
+        <child>57125</child>
+        <child>57121</child>
+        <child>57116</child>
+        <child>57126</child>
+        <child>57122</child>
+        <child>57117</child>
+        <child>57127</child>
+        <child>57128</child>
+        <child>57130</child>
+        <child>57131</child>
+        <child>57132</child>
+        <child>57133</child>
+        <child>57134</child>
+        <child>57135</child>
+        <child>57136</child>
+        <child>57140</child>
+        <child>57141</child>
+        <child>57142</child>
+        <child>57143</child>
+        <child>57144</child>
+        <child>57145</child>
+        <child>57146</child>
+        <child>57150</child>
+        <child>57151</child>
+        <child>57152</child>
+        <child>57153</child>
+        <child>57154</child>
+        <child>57155</child>
+        <child>57200</child>
+        <child>57201</child>
+        <child>57202</child>
+        <child>57203</child>
+        <child>57204</child>
+        <child>57205</child>
+        <child>57206</child>
+        <child>57210</child>
+        <child>57230</child>
+        <child>57211</child>
+        <child>57231</child>
+        <child>57212</child>
+        <child>57232</child>
+        <child>57213</child>
+        <child>57233</child>
+        <child>57214</child>
+        <child>57234</child>
+        <child>57215</child>
+        <child>57235</child>
+        <child>57216</child>
+        <child>57236</child>
+        <child>57217</child>
+        <child>57237</child>
+        <child>57218</child>
+        <child>57238</child>
+        <child>57219</child>
+        <child>57239</child>
+        <child>57220</child>
+        <child>57240</child>
+        <child>57221</child>
+        <child>57241</child>
+        <child>57222</child>
+        <child>57242</child>
+        <child>57223</child>
+        <child>57243</child>
+        <child>57250</child>
+        <child>57160</child>
+        <child>57161</child>
+        <child>57162</child>
+        <child>57163</child>
+        <child>57164</child>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57100" range="8,5,94,18" title="Duels" icon="57174" fcolor="103" font="1">
+        <style wsVisible="" wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialPestana</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57101" range="105,5,94,18" title="Hunted Hunter" icon="57175" fcolor="103" font="1">
+        <style wsVisible="" wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialPestana</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57102" range="202,5,94,18" title="Weekly Vote" icon="57175" fcolor="103" font="1">
+        <style wsVisible="" wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialPestana</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57103" range="299,5,94,18" title="Treasure Hunt" icon="57175" fcolor="103" font="1">
+        <style wsVisible="" wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialPestana</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57109" range="396,5,94,18" title="Calendar" icon="57175" fcolor="103" font="1">
+        <style wsVisible="" wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialPestana</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="57104" range="66,71,420,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57105" range="16,356,468,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57106" range="16,371,468,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57107" range="16,386,468,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57108" range="16,401,468,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57110" range="14,102,60,14" title="Your bet:" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_EDIT" id="57111" range="79,102,98,14" fcolor="103" font="1" tpos="1,0" limit="9">
+        <style wsVisible="" esNumber="" esVCenter="" wsTab="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57112" range="352,102,138,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57165" range="186,100,50,18" title="1K" icon="57184" fcolor="103" font="1">
+        <style wsVisible="" wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialRapido</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57166" range="240,100,50,18" title="10K" icon="57184" fcolor="103" font="1">
+        <style wsVisible="" wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialRapido</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57167" range="294,100,50,18" title="100K" icon="57184" fcolor="103" font="1">
+        <style wsVisible="" wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialRapido</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57118" range="14,124,132,18" title="" icon="57180" fcolor="103" font="1">
+        <style wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialApostarA</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="57113" range="152,126,196,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57123" range="354,124,132,18" title="" icon="57181" fcolor="103" font="1">
+        <style wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialApostarB</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57119" range="14,150,132,18" title="" icon="57180" fcolor="103" font="1">
+        <style wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialApostarA</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="57114" range="152,152,196,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57124" range="354,150,132,18" title="" icon="57181" fcolor="103" font="1">
+        <style wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialApostarB</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57120" range="14,176,132,18" title="" icon="57180" fcolor="103" font="1">
+        <style wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialApostarA</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="57115" range="152,178,196,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57125" range="354,176,132,18" title="" icon="57181" fcolor="103" font="1">
+        <style wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialApostarB</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57121" range="14,202,132,18" title="" icon="57180" fcolor="103" font="1">
+        <style wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialApostarA</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="57116" range="152,204,196,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57126" range="354,202,132,18" title="" icon="57181" fcolor="103" font="1">
+        <style wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialApostarB</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57122" range="14,228,132,18" title="" icon="57180" fcolor="103" font="1">
+        <style wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialApostarA</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="57117" range="152,230,196,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" ssHCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57127" range="354,228,132,18" title="" icon="57181" fcolor="103" font="1">
+        <style wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialApostarB</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="57128" range="16,126,468,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57130" range="16,104,468,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57131" range="16,126,468,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57132" range="16,148,468,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57133" range="16,170,468,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57134" range="16,192,468,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57135" range="16,214,468,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57136" range="182,242,136,18" title="Join" icon="57091" fcolor="103" font="1">
+        <style wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialCaza</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="57140" range="16,102,468,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57141" range="10,124,480,18" title="" icon="57176" fcolor="103" font="1">
+        <style wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialVotar</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57142" range="10,150,480,18" title="" icon="57176" fcolor="103" font="1">
+        <style wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialVotar</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57143" range="10,176,480,18" title="" icon="57176" fcolor="103" font="1">
+        <style wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialVotar</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57144" range="10,202,480,18" title="" icon="57176" fcolor="103" font="1">
+        <style wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialVotar</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57145" range="10,228,480,18" title="" icon="57176" fcolor="103" font="1">
+        <style wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialVotar</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="57146" range="16,258,468,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57150" range="16,104,468,14" title="" fcolor="59782" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57151" range="16,126,468,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57152" range="16,148,468,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57153" range="16,170,468,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57154" range="16,192,468,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57155" range="16,214,468,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57200" range="10,100,64,18" title="Mon" icon="57179" fcolor="103" font="1">
+        <style wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialDia</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57201" range="78,100,64,18" title="Tue" icon="57179" fcolor="103" font="1">
+        <style wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialDia</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57202" range="146,100,64,18" title="Wed" icon="57179" fcolor="103" font="1">
+        <style wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialDia</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57203" range="214,100,64,18" title="Thu" icon="57179" fcolor="103" font="1">
+        <style wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialDia</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57204" range="282,100,64,18" title="Fri" icon="57179" fcolor="103" font="1">
+        <style wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialDia</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57205" range="350,100,64,18" title="Sat" icon="57179" fcolor="103" font="1">
+        <style wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialDia</OnCommand>
+    </window>
+    <window class="WND_CLASS_BUTTON" id="57206" range="418,100,64,18" title="Sun" icon="57179" fcolor="103" font="1">
+        <style wsTab="" ssVCenter="" ssHCenter="" />
+        <OnCommand>OnSocialDia</OnCommand>
+    </window>
+    <window class="WND_CLASS_STATIC" id="57210" range="16,126,350,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57230" range="370,126,116,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57211" range="16,144,350,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57231" range="370,144,116,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57212" range="16,162,350,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57232" range="370,162,116,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57213" range="16,180,350,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57233" range="370,180,116,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57214" range="16,198,350,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57234" range="370,198,116,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57215" range="16,216,350,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57235" range="370,216,116,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57216" range="16,234,350,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57236" range="370,234,116,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57217" range="16,252,350,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57237" range="370,252,116,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57218" range="16,270,350,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57238" range="370,270,116,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57219" range="16,288,350,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57239" range="370,288,116,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57220" range="16,306,350,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57240" range="370,306,116,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57221" range="16,324,350,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57241" range="370,324,116,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57222" range="16,342,350,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57242" range="370,342,116,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57223" range="16,360,350,14" title="" fcolor="103" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57243" range="370,360,116,14" title="" fcolor="59780" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_STATIC" id="57250" range="16,382,468,14" title="" fcolor="59781" font="1">
+        <style wsVisible="" ssVCenter="" />
+    </window>
+    <window class="WND_CLASS_BASE" id="57160" range="0,0,500,420" icon="57170">
+        <style wsVisible="" />
+    </window>
+    <window class="WND_CLASS_BASE" id="57161" range="0,0,500,420" icon="57171">
+        <style wsVisible="" />
+    </window>
+    <window class="WND_CLASS_BASE" id="57162" range="0,0,500,420" icon="57172">
+        <style wsVisible="" />
+    </window>
+    <window class="WND_CLASS_BASE" id="57163" range="0,0,500,420" icon="57173">
+        <style wsVisible="" />
+    </window>
+    <window class="WND_CLASS_BASE" id="57164" range="0,0,500,420" icon="57177">
+        <style wsVisible="" />
+    </window>
+    <icon id="58950" dir="\wnd01\" normal="aolat_du_fondo" focus="normal" down="normal" disable="normal" />
+    <icon id="58956" dir="\wnd01\" normal="aolat_du_chip_n" focus="aolat_du_chip_f" down="aolat_du_chip_s" disable="normal" />
+    <icon id="58957" dir="\wnd01\" normal="aolat_du_b120_n" focus="aolat_du_b120_f" down="aolat_du_b120_s" disable="normal" />
+    <icon id="58958" dir="\wnd01\" normal="aolat_du_b120r_n" focus="aolat_du_b120r_f" down="aolat_du_b120r_s" disable="normal" />
+    <icon id="57180" dir="\wnd01\" normal="aolat_ev_ladoa_n" focus="aolat_ev_ladoa_f" down="aolat_ev_ladoa_s" disable="normal" />
+    <icon id="57181" dir="\wnd01\" normal="aolat_ev_ladob_n" focus="aolat_ev_ladob_f" down="aolat_ev_ladob_s" disable="normal" />
+    <icon id="57182" dir="\wnd01\" normal="aolat_ev_ladono_n" focus="aolat_ev_ladono_f" down="aolat_ev_ladono_s" disable="normal" />
+    <icon id="57184" dir="\wnd01\" normal="aolat_ev_chip_n" focus="aolat_ev_chip_f" down="aolat_ev_chip_s" disable="normal" />
+    <icon id="57185" dir="\wnd01\" normal="aolat_ev_b136r_n" focus="aolat_ev_b136r_f" down="aolat_ev_b136r_s" disable="normal" />
+    <icon id="57170" dir="\wnd01\" normal="aolat_ev_fondo1" focus="normal" down="normal" disable="normal" />
+    <icon id="57171" dir="\wnd01\" normal="aolat_ev_fondo2" focus="normal" down="normal" disable="normal" />
+    <icon id="57172" dir="\wnd01\" normal="aolat_ev_fondo3" focus="normal" down="normal" disable="normal" />
+    <icon id="57173" dir="\wnd01\" normal="aolat_ev_fondo4" focus="normal" down="normal" disable="normal" />
+    <icon id="57177" dir="\wnd01\" normal="aolat_ev_fondo5" focus="normal" down="normal" disable="normal" />
+    <icon id="58952" dir="\wnd01\" normal="aolat_ev_b90_n" focus="aolat_ev_b90_f" down="aolat_ev_b90_s" disable="normal" />
+    <icon id="58955" dir="\wnd01\" normal="aolat_ev_b90r_n" focus="aolat_ev_b90r_f" down="aolat_ev_b90r_s" disable="normal" />
+    <icon id="58953" dir="\wnd01\" normal="aolat_ev_b80_n" focus="aolat_ev_b80_f" down="aolat_ev_b80_s" disable="normal" />
+    <icon id="57176" dir="\wnd01\" normal="aolat_ev_b454_n" focus="aolat_ev_b454_f" down="aolat_ev_b454_s" disable="normal" />
+    <icon id="57174" dir="\wnd01\" normal="aolat_ev_tabsi_n" focus="aolat_ev_tabsi_f" down="aolat_ev_tabsi_s" disable="normal" />
+    <icon id="57175" dir="\wnd01\" normal="aolat_ev_tabno_n" focus="aolat_ev_tabno_f" down="aolat_ev_tabno_s" disable="normal" />
+    <icon id="57178" dir="\wnd01\" normal="aolat_ev_diasi_n" focus="aolat_ev_diasi_f" down="aolat_ev_diasi_s" disable="normal" />
+    <icon id="57179" dir="\wnd01\" normal="aolat_ev_diano_n" focus="aolat_ev_diano_f" down="aolat_ev_diano_s" disable="normal" />
+    <!-- /aolat eventos sociales -->
 </root>

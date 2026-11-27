@@ -664,6 +664,10 @@ def _aplicar(ses, otro, dano, es_crit, con_efecto, tipo, efecto, magia, *, orige
         if p.stage in __import__('league_war').STAGES:
             __import__('league_war').kill(ses,otro)
             return
+        try:
+            __import__('honor').baja(ses, otro)      # Honor Points (mundo, Totem War, Outpost)
+        except Exception:
+            log.exception('honor de la baja')
         import outpost_pvp
         if not outpost_pvp.es_mapa(p.stage):
             _contar_baja(ses, p, q)  # Outpost is not a source of TW credits/round kills.

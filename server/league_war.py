@@ -379,6 +379,18 @@ def finish(cancel=False):
                         (v['owner'],v['character'],points))
         _save(r,con)
     _ROUND=r;cuentas._notificar_cambio(inmediato=True)
+    try:
+        import honor
+        for stage,m in r['matches'].items():
+            played={v['guild'] for v in m['members'].values() if v['played']}
+            if cancel or len(m['guilds'])!=2 or len(played)!=2:continue
+            scores=m['scores'];winner=0 if scores['1']==scores['2'] else (1 if scores['1']>scores['2'] else 2)
+            for team,g in enumerate(m['guilds'],1):
+                outcome='draw' if not winner else ('win' if winner==team else 'loss')
+                for v in m['members'].values():
+                    if v['played'] and v['guild']==g['id']:honor.guerra(v['character'],outcome)
+    except Exception:
+        __import__('logging').getLogger('league_war').exception('honor')
     _announce('League War has ended!'+(' (cancelled)' if cancel else ' Results saved.'))
     for s in _sessions():
         if s.personaje.stage in STAGES:

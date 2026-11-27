@@ -254,12 +254,12 @@ def test_duelo_y_apuestas_desde_las_ventanas(mundo, monkeypatch):
     pestana, titulos, _estado, reglas, d = sociales_ui.vista(p)    # el panel de Pepe: el duelo con dos botones
     filas = d[1]
     assert pestana == 1 and titulos[0] == 'Duels (1)' and len(reglas) == 4
-    assert filas[0][1:] == ['Ana', 'Bob'] and filas[0][0].startswith('Ana vs Bob  Pot 20,000')
+    assert filas[0][1:] == ['Ana', 'Bob', 1] and filas[0][0].startswith('VS  Pot 20K')
     sociales_ui.procesar(p, _cmd(41, 0))                            # fila que no existe: nada
     sociales_ui.procesar(p, _cmd(40, 4000))                         # 4000 a Bob (fila 0, segundo boton)
     assert p.oro == 5000 and duelos._DUELOS[0]['apuestas'][3] == [2, 4000]
-    assert sociales_ui.vista(p)[4][1][0][1:] == ['', '']            # ya aposto: sin botones
-    assert sociales_ui.vista(a)[4][1][0][1:] == ['', '']            # los duelistas no apuestan
+    assert sociales_ui.vista(p)[4][1][0][1:] == ['Ana', 'Bob (4K)', 0]   # ya aposto: botones en gris
+    assert sociales_ui.vista(a)[4][1][0][3] == 0                   # los duelistas no apuestan
 
 
 def test_caza_y_votacion_con_botones(mundo):

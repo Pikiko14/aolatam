@@ -175,6 +175,10 @@ def _cerrar(d, ganador, motivo=''):
     sociales.cartel('[Duel] %s defeated %s%s and wins %d Gold!' % (_nombre(ganador), _nombre(perdedor), motivo,
                                                                  d['oro'] * 2))
     sociales.refrescar(*[s for s in (sg, sociales.por_cid(perdedor)) if s])
+    try:
+        __import__('honor').duelo(ganador, perdedor, d['oro'])
+    except Exception:
+        log.exception('honor del duelo')
 
 
 def baja(ses, otro):

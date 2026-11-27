@@ -13988,6 +13988,7 @@ class Servidor:
             try:
                 __import__('contratos').al_conectar(ses)     # lo que le dejaron los contratos mientras no estaba
                 __import__('hardcore').al_conectar(ses)      # el icono de la temporada hardcore
+                __import__('honor').al_conectar(ses)         # el honor que gano sin estar o con la mochila llena
             except Exception:
                 log.exception('contratos / hardcore: al conectar')
             # La Torre de Babel: el jefe del piso en la copia, o fuera si no hay corrida (torre_babel.py). Va aqui y no

@@ -375,6 +375,15 @@ LINEA_XML_MONEDA_MONTURA = (
     '    <道具 編號="%d" 原型介面="30691" 基本名稱="Mount Coin" 物品類別="一般" 重量="1" log等級="60" '
     '說明定義="%s" 可堆疊="是" />') % (ITEM_MONEDA_MONTURA, _DESC_MONEDA_MONTURA)
 
+# HONOR POINT (26/11/2026): la moneda del PvP (server/honor.py), para la tienda de fashion PD de Event Overview >
+# Exchange > Honor (tools/tienda_honor.py). Icono de Nary's Honoraria (6506).
+ITEM_HONOR = 89350
+_DESC_HONOR = ('Won in PvP: duels, Hunted Hunter, Angel Arena, Holy Battlefield, League War, MOBA and player kills. '
+               'Exchange it in Event Overview > Exchange > Honor for fashion, wings and mounts.')
+LINEA_XML_HONOR = (
+    '    <道具 編號="%d" 原型介面="9515" 基本名稱="Honor Point" 物品類別="一般" 重量="0" log等級="1" '
+    '說明定義="%s" 可堆疊="是" />') % (ITEM_HONOR, _DESC_HONOR)
+
 # LAS LUCKY BAGS DEL ITEM MALL por clase (Lv30-60), montura y craftsman (03/11/2026): items propios de item9.xml como
 # la caja de nivel 55, con su contenido en plantillas/lucky_bags_mall.json (tools/generar_lucky_bags.py), que tambien
 # lo pone en drops_bolsas.json con el mismo id para abrirlas.
@@ -422,7 +431,7 @@ def _cargas_trade_routes():
     return [trade_routes.CARGAS[k] for k in sorted(trade_routes.CARGAS)]
 _IDS_LUCKY_BAGS = {b['id'] for b in LUCKY_BAGS_MALL} | {p['id'] for p in SET_RECOLECTOR}
 LINEAS_ITEM9_PROPIAS = ((83266, LINEA_XML_MEDALLA), (ITEM_CAJA_55, LINEA_XML_CAJA_55),
-                        (ITEM_MONEDA_MONTURA, LINEA_XML_MONEDA_MONTURA)) + tuple(
+                        (ITEM_MONEDA_MONTURA, LINEA_XML_MONEDA_MONTURA), (ITEM_HONOR, LINEA_XML_HONOR)) + tuple(
     (c['item'], _linea_xml_carga(c)) for c in _cargas_trade_routes()) + tuple(
     (iid, _linea_xml_maleta_pd(iid)) for iid in MALETAS_PD) + tuple(
     (aura[0], _linea_xml_aura(aura)) for aura in AURAS_LOW) + tuple(
@@ -912,6 +921,13 @@ def registrar_medalla_en_servidor():
                      'update26'))
                 con.commit()
                 log.info("Item %d (Mount Coin) registrado en corpus/content.db", ITEM_MONEDA_MONTURA)
+            if not con.execute('SELECT id FROM item9 WHERE id = ?', (str(ITEM_HONOR),)).fetchone():
+                con.execute(
+                    'INSERT INTO item9 (id, "原型介面", "基本名稱", "物品類別", weight, "log等級", "說明定義", "可堆疊", _pak) '
+                    'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                    (str(ITEM_HONOR), '9515', 'Honor Point', '一般', '0', '1', _DESC_HONOR, '是', 'update26'))
+                con.commit()
+                log.info("Item %d (Honor Point) registrado en corpus/content.db", ITEM_HONOR)
             for _c_tr in _cargas_trade_routes():
                 if not con.execute('SELECT id FROM item9 WHERE id = ?', (str(_c_tr['item']),)).fetchone():
                     con.execute(
@@ -992,6 +1008,7 @@ def registrar_medalla_en_servidor():
             propios.update({str(pieza[0]): pieza[4] for pieza in PD_INVIERNO})
             propios.update({str(maleta[0]): maleta[2] for maleta in MALETAS_INVIERNO})
             propios[str(ITEM_MONEDA_MONTURA)] = 'Mount Coin'
+            propios[str(ITEM_HONOR)] = 'Honor Point'
             propios.update({str(c['item']): c['nombre'] for c in _cargas_trade_routes()})
             propios.update({str(b['id']): b['nombre'] for b in LUCKY_BAGS_MALL})
             propios.update({str(p['id']): p['nombre'] for p in SET_RECOLECTOR})

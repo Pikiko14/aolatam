@@ -6253,6 +6253,13 @@
     </window>
     <icon id="59007" dir="\wnd01\" normal="aolat_md_n" focus="aolat_md_f" down="aolat_md_n" disable="normal" />
     <!-- /aolat misiones diarias -->
+    <!-- aolat mecanicas barra -->
+    <window class="WND_CLASS_BUTTON" range="29,-127,40,56" id="59009" icon="59009" tooltip="10043" tooltext="Challenges">
+        <style wsVisible="" wsTab="" />
+        <OnCommand>OnCommandChallenges</OnCommand>
+    </window>
+    <icon id="59009" dir="\wnd01\" normal="aolat_ch_n" focus="aolat_ch_f" down="aolat_ch_n" disable="normal" />
+    <!-- /aolat mecanicas barra -->
     <!-- aolat eventos sociales barra -->
     <window class="WND_CLASS_BUTTON" range="75,-127,40,56" id="59008" icon="59008" tooltip="10043" tooltext="Events">
         <style wsVisible="" wsTab="" />
@@ -6264,11 +6271,4 @@
         <OnCommand>OnClickChatOptionDuelo</OnCommand>
     </window>
     <!-- /aolat eventos sociales barra -->
-    <!-- aolat mecanicas barra -->
-    <window class="WND_CLASS_BUTTON" range="29,-127,40,56" id="59009" icon="59009" tooltip="10043" tooltext="Challenges">
-        <style wsVisible="" wsTab="" />
-        <OnCommand>OnCommandChallenges</OnCommand>
-    </window>
-    <icon id="59009" dir="\wnd01\" normal="aolat_ch_n" focus="aolat_ch_f" down="aolat_ch_n" disable="normal" />
-    <!-- /aolat mecanicas barra -->
 </root>

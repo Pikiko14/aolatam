@@ -9,7 +9,11 @@ WND_DUELO = WND_DUELO or 0
 WND_SOCIAL = WND_SOCIAL or 0
 SOCIAL = SOCIAL or {modo = "", nombre = ""}
 
-local DU_L1, DU_L2, DU_ORO, DU_OK, DU_NO = 58901, 58902, 58904, 58905, 58906
+local DU_L1, DU_L2, DU_BOTE, DU_ORO, DU_OK, DU_NO, DU_RAPIDO = 58901, 58902, 58903, 58904, 58905, 58906, 58908
+local RAPIDOS_DUELO = {10000, 100000, 1000000, 10000000}
+local RAPIDOS_APUESTA = {1000, 10000, 100000}
+local D_RAPIDO = 57165
+local I_LADO_A, I_LADO_B, I_LADO_NO, I_B136, I_B136_ROJO = 57180, 57181, 57182, 57091, 57185
 -- el panel con pestanas (tools/ventana_sociales.py)
 local TABS = {57100, 57101, 57102, 57103, 57109}
 local ESTADO, REGLA = 57104, 57105
@@ -39,6 +43,16 @@ local function corto(texto, n)
     return string.sub(texto, 1, n - 2) .. ".."
   end
   return texto
+end
+
+local function miles(n)
+  local s = tostring(math.floor(tonumber(n) or 0))
+  local r = ""
+  while string.len(s) > 3 do
+    r = "," .. string.sub(s, -3) .. r
+    s = string.sub(s, 1, -4)
+  end
+  return s .. r
 end
 
 local function mandar_nombre(nombre, base)
@@ -115,18 +129,23 @@ function DueloAbrir(modo, nombre, oro)
     end
     window.move(WND_DUELO, SYSTEM_SCREEN_WIDTH / 2 - 134, SYSTEM_SCREEN_HEIGHT / 2 - 90)
   end
+  for i = 0, 3 do
+    window.show(du(DU_RAPIDO + i), modo == "retar")
+  end
   if modo == "retar" then
-    window.settitle(du(DU_L1), corto("Challenge " .. nombre .. " to a duel", 40))
-    window.settitle(du(DU_L2), "Both put the same gold. The winner takes it all.")
+    window.settitle(du(DU_L1), corto("Challenge " .. nombre, 34))
+    window.settitle(du(DU_L2), "You both put the same gold. The winner takes it all.")
     window.settitle(du(DU_ORO), "")
+    window.settitle(du(DU_BOTE), "")
     window.enable(du(DU_ORO), true)
     window.setfocus(du(DU_ORO))
     window.settitle(du(DU_OK), "Challenge")
     window.settitle(du(DU_NO), "Cancel")
   else
-    window.settitle(du(DU_L1), corto(nombre .. " challenges you to a duel!", 40))
-    window.settitle(du(DU_L2), corto("Stake: " .. tostring(oro) .. " Gold each. Winner takes " .. tostring(oro * 2) .. ".", 52))
-    window.settitle(du(DU_ORO), tostring(oro))
+    window.settitle(du(DU_L1), corto(nombre .. " challenges you!", 34))
+    window.settitle(du(DU_L2), corto("Winner takes " .. miles(oro * 2) .. " Gold. Answer within 60 seconds.", 60))
+    window.settitle(du(DU_ORO), miles(oro))
+    window.settitle(du(DU_BOTE), "")
     window.enable(du(DU_ORO), false)
     window.settitle(du(DU_OK), "Accept")
     window.settitle(du(DU_NO), "Decline")
@@ -140,9 +159,19 @@ function DueloCerrar()
   WND_DUELO = 0
 end
 
+function OnDueloRapido(dwID, dwCmdID, dwParam, pParam)
+  for i = 0, 3 do
+    if du(DU_RAPIDO + i) == dwID then
+      window.settitle(du(DU_ORO), tostring(RAPIDOS_DUELO[i + 1]))
+      window.settitle(du(DU_L2), "Winner takes " .. miles(RAPIDOS_DUELO[i + 1] * 2) .. " Gold.")
+    end
+  end
+  return 1
+end
+
 function OnDueloOk(dwID, dwCmdID, dwParam, pParam)
   if SOCIAL.modo == "retar" then
-    local oro = tonumber(window.gettitle(du(DU_ORO))) or 0
+    local oro = tonumber((string.gsub(window.gettitle(du(DU_ORO)) or "", ",", ""))) or 0
     mandar_nombre(SOCIAL.nombre, 20)
     game.netcommand2(CMD_SO, 24, oro)
   else
@@ -195,24 +224,30 @@ function SocialDatos(pestana, titulos, estado, reglas, d)
   window.settitle(so(ESTADO), corto(estado, 64))
   lineas(REGLA, 4, reglas, 72)
   if pestana == 1 then
-    window.settitle(so(57112), corto(d[1], 42))
+    window.settitle(so(57112), corto(d[1], 24))
     window.show(so(D_SIN), #d[2] == 0)
     window.settitle(so(D_SIN), "No duels right now. Right-click a player and pick Duel.")
     for i = 0, 4 do
       local f = d[2][i + 1]
       window.show(so(D_FILA + i), f ~= nil)
-      window.show(so(D_A + i), f ~= nil and f[2] ~= "")
-      window.show(so(D_B + i), f ~= nil and f[3] ~= "")
+      window.show(so(D_A + i), f ~= nil)
+      window.show(so(D_B + i), f ~= nil)
       if f then
-        window.settitle(so(D_FILA + i), corto(f[1], 42))
-        window.settitle(so(D_A + i), corto(f[2], 12))
-        window.settitle(so(D_B + i), corto(f[3], 12))
+        local puede = f[4] == 1
+        window.settitle(so(D_FILA + i), corto(f[1], 34))
+        window.settitle(so(D_A + i), corto(f[2], 20))
+        window.settitle(so(D_B + i), corto(f[3], 20))
+        window.seticon(so(D_A + i), puede and I_LADO_A or I_LADO_NO)
+        window.seticon(so(D_B + i), puede and I_LADO_B or I_LADO_NO)
+        window.enable(so(D_A + i), puede)
+        window.enable(so(D_B + i), puede)
       end
     end
   elseif pestana == 2 then
     lineas(H_LINEA, 6, d[1], 72)
     window.show(so(H_BOTON), d[2] ~= "")
     window.settitle(so(H_BOTON), d[2])
+    window.seticon(so(H_BOTON), d[2] == "Leave" and I_B136_ROJO or I_B136)
   elseif pestana == 3 then
     window.settitle(so(V_INFO), corto(d[1], 72))
     for i = 0, 4 do
@@ -285,6 +320,14 @@ local function apostar(dwID, base, cmd)
   local i = cual(dwID, base, 5)
   if i >= 0 then
     game.netcommand2(CMD_SO, cmd + i, tonumber(window.gettitle(so(D_APUESTA))) or 0)
+  end
+  return 1
+end
+
+function OnSocialRapido(dwID, dwCmdID, dwParam, pParam)
+  local i = cual(dwID, D_RAPIDO, 3)
+  if i >= 0 then
+    window.settitle(so(D_APUESTA), tostring(RAPIDOS_APUESTA[i + 1]))
   end
   return 1
 end
