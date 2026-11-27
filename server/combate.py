@@ -366,6 +366,31 @@ def exp_para_barra(nivel: int, exp: int) -> tuple:
 
 
 
+# LA EXP SEGUN LA DIFERENCIA DE NIVEL ("la experiencia ganada de los mob puede ser proporcional al lvl de la entidad
+# (personaje, pet) y el lvl del mob", 27/11/2026: un Fat Robot Lv18 le daba ~500 a un Lv57). Quien le lleva al mob mas
+# de EXP_NIVEL_LIBRE niveles pierde EXP_MENOS_POR_NIVEL por cada nivel de mas (nunca menos de EXP_PISO); contra un mob
+# de mas nivel gana EXP_MAS_POR_NIVEL por nivel (hasta EXP_TECHO). El jugador va por su nivel y la mascota por el suyo.
+EXP_NIVEL_LIBRE = 5
+EXP_MENOS_POR_NIVEL = 0.10
+EXP_PISO = 0.10
+EXP_MAS_POR_NIVEL = 0.04
+EXP_TECHO = 1.40
+
+
+def factor_exp_nivel(nivel_entidad, nivel_mob) -> float:
+    try:
+        d = int(nivel_entidad or 0) - int(nivel_mob or 0)
+    except (TypeError, ValueError):
+        return 1.0
+    if not nivel_mob or not nivel_entidad:
+        return 1.0
+    if d > EXP_NIVEL_LIBRE:
+        return max(EXP_PISO, 1.0 - EXP_MENOS_POR_NIVEL * (d - EXP_NIVEL_LIBRE))
+    if d < 0:
+        return min(EXP_TECHO, 1.0 + EXP_MAS_POR_NIVEL * (-d))
+    return 1.0
+
+
 def calcular_exp(npc_type: int, buffs: dict = None, base: int = None) -> int:
     """Calcula la EXP de personaje ganada aplicando los multiplicadores de configuracion.
     `base` manda sobre la de su npc_type (monstruos propios, ver aplicar_propio)."""

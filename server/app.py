@@ -4330,8 +4330,12 @@ def _procesar_muerte_monstruo(ses, m, yo, addr, espera=0.0):
                 pct_jug = 1.0
                 pct_pet = 0.0
 
-            exp_jug = max(1, int(round(exp_ganada * pct_jug))) if pct_jug > 0 else 0
-            exp_pet = max(1, int(round(exp_ganada * pct_pet))) if (pct_pet > 0 and pet_fuera) else 0
+            # Por la diferencia de nivel con el mob: el jugador por el suyo y la mascota por el suyo (combate.factor_exp_nivel).
+            _nv_mob = getattr(m, 'nivel', 0) or 0
+            _f_jug = _cb.factor_exp_nivel(getattr(p, 'nivel', 0), _nv_mob)
+            _f_pet = _cb.factor_exp_nivel((f_pet or {}).get('nivel') if pet_fuera else 0, _nv_mob)
+            exp_jug = max(1, int(round(exp_ganada * pct_jug * _f_jug))) if pct_jug > 0 else 0
+            exp_pet = max(1, int(round(exp_ganada * pct_pet * _f_pet))) if (pct_pet > 0 and pet_fuera) else 0
             # En el nivel maximo no se gana exp ni sale el "Obtain N Exp": "si estoy en el lvl max no debo sumar ni mas
             # exp de skill ni mas exp de jugador normal" (03/11/2026). Antes se sumaba y se recortaba despues.
             if p.nivel >= _cb.nivel_maximo():
@@ -4976,6 +4980,48 @@ def posicion_actual(ses, ahora=None):
     return int((cx + (dx - cx) * f) // 32), int((cy + (dy - cy) * f) // 32)
 
 
+# LA MASCOTA TAMBIEN SE RECUPERA ("si el pet esta calmado no se recupera, o sea no esta atacando ni nada",
+# 27/11/2026). No habia regeneracion pasiva de la mascota: solo pociones y curas. Fuera, viva, sin objetivo
+# (ses.pet_objetivo) y sin que le peguen en PET_REGEN_CALMA_S segundos, cada PET_REGEN_CADA_S recupera HP y MP con la
+# misma formula que el jugador de pie (configuracion.regenera, por su nivel).
+PET_REGEN_CADA_S = 2.0
+PET_REGEN_CALMA_S = 4.0
+
+
+def _regen_mascota(ses, ahora):
+    import configuracion as _cf_pr
+    import mascotas as _ms_pr
+    import combate as _cb_pr
+    p = getattr(ses, 'personaje', None)
+    f = getattr(p, 'mascota', None) if p is not None else None
+    peid = getattr(ses, 'pet_entity_id', None) or (f.get('entidad') if isinstance(f, dict) else None)
+    if not isinstance(f, dict) or not f.get('fuera') or not peid or getattr(ses, 'muerto', False):
+        return False
+    if int(f.get('hp') or 0) <= 0 or getattr(ses, 'pet_objetivo', None) is not None:
+        return False
+    if ahora - float(f.get('_golpe_en') or 0) < PET_REGEN_CALMA_S:
+        return False
+    if ahora - float(f.get('_regen_en') or 0) < PET_REGEN_CADA_S:
+        return False
+    f['_regen_en'] = ahora
+    nv = max(1, int(f.get('nivel') or 1))
+    hp, hp_max = int(f.get('hp') or 0), int(f.get('hp_max') or f.get('hp') or 100)
+    mp, mp_max = int(f.get('mp') or 0), int(f.get('mp_max') or f.get('mp') or 0)
+    cambio = False
+    if hp < hp_max:
+        f['hp'] = min(hp_max, hp + _cf_pr.regenera(hp_max, nv, False, True))
+        cambio = True
+    if mp_max and mp < mp_max:
+        f['mp'] = min(mp_max, mp + _cf_pr.regenera(mp_max, nv, False, False))
+        cambio = True
+    if not cambio:
+        return False
+    ses.enviar_inmediato(_cb_pr.atributo(int(peid), _ms_pr.hp_eff(f), _cb_pr.KIND_HP), _ms_pr.armar(f))
+    if int(f['hp']) >= hp_max and (not mp_max or int(f.get('mp') or 0) >= mp_max) and getattr(ses, 'usuario', None):
+        cuentas.guardar_mascota(ses.usuario, p.char_id, f, getattr(p, 'mascotas', None))
+    return True
+
+
 def _velocidad_de(ses) -> int:
     """Velocidad del 0x0005, con monturas y buffs activos de movimiento. Con carga de Trade Routes, la mitad."""
     v = _velocidad_sin_carga(ses)
@@ -4988,6 +5034,10 @@ def _velocidad_de(ses) -> int:
 
 def _velocidad_sin_carga(ses) -> int:
     base = VELOCIDAD_JUGADOR
+    # EL ALMA ANDA A PIE ("porque cuando estoy en modo alma camina rapido", 27/11/2026): la montura sigue en su ranura
+    # al morir y su velocidad (y la de los buffs) se le seguia sumando al alma, que no va montada.
+    if getattr(ses, 'fantasma', False) or getattr(ses, 'muerto', False):
+        return base
     carrier=(getattr(getattr(ses,'personaje',None),'buffs',None) or {}).get(3141,{})
     if carrier.get('hb_crystal') and carrier.get('fin',0)>time.time():
         return base  # XML3141: movement is reduced to default, including mounts.
@@ -12756,6 +12806,11 @@ class Servidor:
                                                      p.hp, p.mp, p.habilidades,
                                                      hp_max=p.hp_max, mp_max=p.mp_max, sp=getattr(ses, "sp", None), buffs=getattr(ses.personaje, "buffs", None) if ses.personaje else None)
 
+                try:
+                    _regen_mascota(ses, ahora)
+                except Exception:
+                    log.exception('regeneracion de la mascota')
+
                 # --- Decaimiento periodico de saciedad (60s) y ganancia/perdida de intimidad (180s) ---
                 f_pet = getattr(p, 'mascota', None)
                 if isinstance(f_pet, dict) and f_pet.get('fuera'):
@@ -14920,6 +14975,7 @@ class Servidor:
                                                 elif f_pet and teid == pet_eid:
                                                     dano_base = max(1, int(round(suyo / 3.5))) if int(f_pet.get('saciedad', 0)) > 100 else suyo
                                                     f_pet['hp'] = max(0, int(f_pet.get('hp', 100)) - dano_base)
+                                                    f_pet['_golpe_en'] = time.time()    # en combate: no se recupera
                                                     if f_pet['hp'] <= 0:
                                                         # Muere: su animacion y se guarda a los pocos segundos (_mascota_muere).
                                                         ses.pet_objetivo = None

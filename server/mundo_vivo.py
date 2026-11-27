@@ -243,9 +243,7 @@ def al_entrar(ses):
     _VISTO[int(st)] = time.time()
     for l in lineas(st):
         _aviso(ses, l)
-    cartel = texto_cartel(st)
-    if cartel:
-        _cartel(ses, cartel)
+    # Sin el cartel que cruza la pantalla ("ese mensaje salga aca", en el chat, 27/11/2026): ya lo dicen las lineas.
 
 
 def comando(ses):
@@ -677,8 +675,6 @@ def tick(ahora=None):
             _CLIMA_DICHO[st] = (ahora.hour, c['id'])
             if previo is not None and previo[1] != c['id'] and presencia._vivas(st):
                 _a_los_del_mapa(st, '[Weather] The weather changes: ' + texto_clima(st, ahora))
-                for s in presencia._vivas(st):
-                    _cartel(s, 'The weather changes! ' + (texto_cartel(st, ahora, cambio=True) or ''))
         for s in presencia._vivas(st):
             iconos(s, ahora)
             cielo(s, ahora)

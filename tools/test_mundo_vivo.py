@@ -194,16 +194,15 @@ def test_los_rayos_caen_sobre_los_monstruos_cercanos(monkeypatch):
     assert mv.paquetes_ambiente(ses, SPIKE, {11: cerca}) == []
 
 
-def test_el_cartel_al_entrar(monkeypatch):
+def test_el_clima_al_entrar_va_al_chat_sin_cartel(monkeypatch):
+    """"ese mensaje salga aca" (27/11/2026): el clima en el chat, sin el cartel que cruza la pantalla."""
     nieve = next(c for c in mv.config()['climas'] if c['id'] == 'snow')
     monkeypatch.setattr(mv, 'clima', lambda st, ahora=None: nieve if st == SPIKE else None)
-    carteles = []
+    carteles, chat = [], []
     monkeypatch.setattr(mv, '_cartel', lambda s, t: carteles.append(t))
-    monkeypatch.setattr(mv, '_aviso', lambda s, t: None)
+    monkeypatch.setattr(mv, '_aviso', lambda s, t: chat.append(t))
     mv.al_entrar(_ses_en(SPIKE))
-    assert carteles == ['Snowfall in Spike Farm: gold +30%, physical damage -10%']
-    mv.al_entrar(_ses_en(CIUDAD))
-    assert len(carteles) == 1
+    assert carteles == [] and any('Snowfall' in t for t in chat)
 
 
 def test_el_cielo_de_verdad(monkeypatch):

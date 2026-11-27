@@ -1,10 +1,10 @@
 {
- "version": "0.0.0.243",
- "numero": 243,
- "huella": "c31d4ac3e1d928eea24803722bc4820744130d7b94184ef9893ca3a996a3d7af",
+ "version": "0.0.0.244",
+ "numero": 244,
+ "huella": "8d6e4ed2e707b5a891d9bddfcdd912034c64a7f496d22bc03051d6ac335decea",
  "pak": "update27.pak",
- "bytes": 32863957,
- "sha256": "b105bb6f5db0fc2c66bf4d8bc38e32cfeaeaec402052d2dfb891a5a89f4d8f49",
+ "bytes": 32863960,
+ "sha256": "940d8f5c7b32a58b01c942b838e056b60fca45e15c7d3ef3a1dc896f57fb2b19",
  "archivos": [
   "AGREEMENT.TXT",
   "MAP\\MAP002.MPC",
@@ -2617,5 +2617,5 @@
   "SOUND\\MAGIC204.WAV",
   "SOUND\\MAGIC301.WAV"
  ],
- "generado": "2026-11-27 08:03:02"
+ "generado": "2026-11-27 15:28:35"
 }
