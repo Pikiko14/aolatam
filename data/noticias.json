@@ -1,6 +1,11 @@
 [
   {
     "fecha": "2026-11-26",
+    "titulo": "Honor Points and new duel windows",
+    "texto": "Win PvP to earn Honor Points: duels, Hunted Hunter, Angel Arena, Holy Battlefield, League War, MOBA, PvP daily events and player kills. Spend them in Event Overview > Exchange > Honor: over 1,200 fashion items, wings and mounts. The duel and betting windows got a new look with quick amount buttons."
+  },
+  {
+    "fecha": "2026-11-26",
     "titulo": "Combat and Quick Reflexes fixes",
     "texto": "Stunning Dagger now slows monsters instead of stunning them, so they fight back. Monsters hit a little harder the higher their level. Quick Reflexes chests now spawn across the whole map, not at the exit. HP and MP potions now grey out while on cooldown."
   },
